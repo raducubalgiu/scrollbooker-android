@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Scroll Booker</string>
+    <string name="feed">Acasă</string>
+    <string name="inbox">Inbox</string>
+    <string name="search">Servicii</string>
+    <string name="appointments">Comenzi</string>
+    <string name="profile">Profil</string>
+    <string name="login">Loghează-te</string>
+    <string name="register">Înregistrează-te</string>
+    <string name="alreadyHaveAnAccount">Ai deja un cont</string>
+    <string name="dontHaveAnAccount">Nu ai încă un cont</string>
+</resources>
