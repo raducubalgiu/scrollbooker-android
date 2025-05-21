@@ -4,15 +4,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,8 +16,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.example.scrollbooker.core.navigation.BottomNavigationBar
-import com.example.scrollbooker.core.navigation.NavigationHost
+import com.example.scrollbooker.core.nav.AppNavHost
+import com.example.scrollbooker.core.nav.BottomNavigationBar
+import com.example.scrollbooker.core.nav.routes.GlobalRoute
 import com.example.scrollbooker.feature.auth.data.dataStore.AuthDataStore
 import com.example.scrollbooker.ui.theme.ScrollBookerTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,29 +45,28 @@ class MainActivity : ComponentActivity() {
                     isLoggedIn = !token.isNullOrEmpty()
                 }
 
+                val startDestination = if (isLoggedIn == true) GlobalRoute.MAIN else GlobalRoute.AUTH
+
                 if(isLoggedIn == null) {
-                    Surface(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.background)
-                    ) { CircularProgressIndicator() }
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        CircularProgressIndicator()
+                    }
                 } else if(isLoggedIn == true) {
                     Scaffold(
-                        bottomBar = {
-                            BottomNavigationBar(navController = navController)
-                        }
-
+                        bottomBar = { BottomNavigationBar(navController) }
                     ) { innerPadding ->
-                        NavigationHost(
-                            navController = navController,
-                            modifier = Modifier.padding(innerPadding),
-                            isLoggedIn = true
-                        )
+                        Box(modifier = Modifier.padding(innerPadding)) {
+                            AppNavHost(
+                                navController = navController,
+                                startDestination = startDestination
+                            )
+                        }
                     }
                 } else {
-                    Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
-                        NavigationHost(navController = navController, isLoggedIn = false)
-                    }
+                    AppNavHost(
+                        navController = navController,
+                        startDestination = startDestination
+                    )
                 }
             }
         }
