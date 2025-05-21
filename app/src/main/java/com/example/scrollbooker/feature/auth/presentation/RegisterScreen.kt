@@ -33,7 +33,7 @@ import androidx.navigation.NavController
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.Input
 import com.example.scrollbooker.core.nav.routes.AuthRoute
-import com.example.scrollbooker.core.util.Dimens.ScreenPadding
+import com.example.scrollbooker.core.util.Dimens.BasePadding
 
 @Composable
 fun RegisterScreen(
@@ -49,7 +49,7 @@ fun RegisterScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(vertical = 50.dp, horizontal = ScreenPadding)
+            .padding(vertical = 50.dp, horizontal = BasePadding)
             .statusBarsPadding(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {

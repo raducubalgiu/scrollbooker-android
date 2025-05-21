@@ -5,4 +5,7 @@ sealed class AuthRoute(val route: String) {
     object Register: AuthRoute(route = "register")
     object Username: AuthRoute(route = "username")
     object BirthDate: AuthRoute(route = "birthdate")
+    object BusinessLocation: AuthRoute(route = "businessLocation")
+    object BusinessServices: AuthRoute(route = "businessServices")
+    object BusinessSchedules: AuthRoute(route = "businessSchedules")
 }

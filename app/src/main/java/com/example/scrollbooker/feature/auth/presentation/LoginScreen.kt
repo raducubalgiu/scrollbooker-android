@@ -11,12 +11,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.runtime.getValue
@@ -25,7 +23,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -33,7 +30,7 @@ import androidx.navigation.NavController
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.Input
 import com.example.scrollbooker.core.nav.routes.AuthRoute
-import com.example.scrollbooker.core.util.Dimens.ScreenPadding
+import com.example.scrollbooker.core.util.Dimens.BasePadding
 
 @Composable
 fun LoginScreen(
@@ -48,7 +45,7 @@ fun LoginScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(vertical = 50.dp, horizontal = ScreenPadding)
+            .padding(vertical = 50.dp, horizontal = BasePadding)
             .statusBarsPadding(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
@@ -81,7 +78,7 @@ fun LoginScreen(
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 //onClick = { viewModel.login("radu", "password") },
-                onClick = { navController.navigate(route = AuthRoute.Username.route) },
+                onClick = { navController.navigate(route = AuthRoute.BusinessLocation.route) },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary
                 )

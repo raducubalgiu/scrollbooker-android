@@ -8,6 +8,9 @@ import com.example.scrollbooker.core.nav.routes.AuthRoute
 import com.example.scrollbooker.core.nav.routes.GlobalRoute
 import com.example.scrollbooker.feature.auth.presentation.LoginScreen
 import com.example.scrollbooker.feature.auth.presentation.RegisterScreen
+import com.example.scrollbooker.feature.auth.presentation.collectBusinessDetails.CollectBusinessLocationScreen
+import com.example.scrollbooker.feature.auth.presentation.collectBusinessDetails.CollectBusinessSchedulesScreen
+import com.example.scrollbooker.feature.auth.presentation.collectBusinessDetails.CollectBusinessServicesScreen
 import com.example.scrollbooker.feature.auth.presentation.collectClientDetails.CollectBirthDateScreen
 import com.example.scrollbooker.feature.auth.presentation.collectClientDetails.CollectUsernameScreen
 
@@ -22,11 +25,30 @@ fun NavGraphBuilder.authGraph(navController: NavController) {
         composable(route = AuthRoute.Register.route) {
             RegisterScreen(navController = navController, onRegisterSuccess = {})
         }
+
+        // Client Auth Onboarding
         composable(route = AuthRoute.Username.route) {
             CollectUsernameScreen(navController = navController)
         }
         composable(route = AuthRoute.BirthDate.route) {
             CollectBirthDateScreen(navController = navController)
+        }
+
+        // Business Auth OnBoarding
+        composable(route = AuthRoute.BirthDate.route) {
+            CollectBirthDateScreen(navController = navController)
+        }
+
+        composable(route = AuthRoute.BusinessLocation.route) {
+            CollectBusinessLocationScreen(navController = navController)
+        }
+
+        composable(route = AuthRoute.BusinessServices.route) {
+            CollectBusinessServicesScreen(navController = navController)
+        }
+
+        composable(route = AuthRoute.BusinessSchedules.route) {
+            CollectBusinessSchedulesScreen(navController = navController)
         }
     }
 }

@@ -12,4 +12,12 @@
     <string name="dateOfBirth">Data de naștere</string>
     <string name="omit">Omite</string>
     <string name="nextStep">Pasul următor</string>
+    <string name="username">Utilizator</string>
+    <string name="addUniqueUsername">Introdu un nume de utilizator unic</string>
+    <string name="location">Locație</string>
+    <string name="addYourBusinessLocation">Adaugă Locația Business-ului tău</string>
+    <string name="services">Servicii</string>
+    <string name="addYourBusinessServices">Adaugă Serviciile Business-ului tău</string>
+    <string name="schedule">Programul de lucru</string>
+    <string name="addYourBusinessSchedule">Adaugă programul de lucru pentru Business-ului tău</string>
 </resources>
