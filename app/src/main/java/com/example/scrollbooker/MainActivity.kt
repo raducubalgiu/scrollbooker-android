@@ -4,10 +4,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -38,12 +40,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             ScrollBookerTheme(dynamicColor = false) {
                 val navController = rememberNavController()
-                var isLoggedIn by remember { mutableStateOf<Boolean?>(null) }
-
-                LaunchedEffect(Unit) {
-                    val token = authDataStore.getAccessToken().first()
-                    isLoggedIn = !token.isNullOrEmpty()
-                }
+//                var isLoggedIn by remember { mutableStateOf<Boolean?>(null) }
+//
+//                LaunchedEffect(Unit) {
+//                    val token = authDataStore.getAccessToken().first()
+//                    isLoggedIn = !token.isNullOrEmpty()
+//                }
+                val isLoggedIn = false
 
                 val startDestination = if (isLoggedIn == true) GlobalRoute.MAIN else GlobalRoute.AUTH
 
@@ -63,10 +66,12 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 } else {
-                    AppNavHost(
-                        navController = navController,
-                        startDestination = startDestination
-                    )
+                    Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+                        AppNavHost(
+                            navController = navController,
+                            startDestination = startDestination
+                        )
+                    }
                 }
             }
         }

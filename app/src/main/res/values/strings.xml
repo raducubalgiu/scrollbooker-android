@@ -9,4 +9,7 @@
     <string name="register">Înregistrează-te</string>
     <string name="alreadyHaveAnAccount">Ai deja un cont</string>
     <string name="dontHaveAnAccount">Nu ai încă un cont</string>
+    <string name="dateOfBirth">Data de naștere</string>
+    <string name="omit">Omite</string>
+    <string name="nextStep">Pasul următor</string>
 </resources>

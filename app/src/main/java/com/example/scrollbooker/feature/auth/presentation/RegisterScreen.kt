@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -31,6 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.Input
+import com.example.scrollbooker.core.nav.routes.AuthRoute
+import com.example.scrollbooker.core.util.Dimens.ScreenPadding
 
 @Composable
 fun RegisterScreen(
@@ -45,8 +48,9 @@ fun RegisterScreen(
 
     Column(
         modifier = Modifier
-            .padding(vertical = 100.dp, horizontal = 16.dp)
-            .fillMaxSize(),
+            .fillMaxSize()
+            .padding(vertical = 50.dp, horizontal = ScreenPadding)
+            .statusBarsPadding(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column {
@@ -110,7 +114,9 @@ fun RegisterScreen(
                     text = "${stringResource(id = R.string.alreadyHaveAnAccount)}?"
                 )
 
-                TextButton(onClick = { navController.navigate(route = "login")  }) {
+                TextButton(onClick = {
+                    navController.navigate(route = AuthRoute.Login.route)
+                }) {
                     Text(
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Bold,
