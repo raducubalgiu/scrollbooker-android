@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.example.scrollbooker.core.nav.AppNavHost
 import com.example.scrollbooker.core.nav.BottomNavigationBar
+import com.example.scrollbooker.core.nav.MainScaffold
 import com.example.scrollbooker.core.nav.routes.GlobalRoute
 import com.example.scrollbooker.feature.auth.data.dataStore.AuthDataStore
 import com.example.scrollbooker.ui.theme.ScrollBookerTheme
@@ -59,21 +60,10 @@ class MainActivity : ComponentActivity() {
                         CircularProgressIndicator()
                     }
                 } else if(isLoggedIn == true) {
-                    Scaffold(
-                        bottomBar = {
-                            Column {
-                                HorizontalDivider()
-                                BottomNavigationBar(navController)
-                            }
-                        }
-                    ) { innerPadding ->
-                        Box(modifier = Modifier.padding(innerPadding)) {
-                            AppNavHost(
-                                navController = navController,
-                                startDestination = startDestination
-                            )
-                        }
-                    }
+                    MainScaffold(
+                        navController = navController,
+                        startDestination = startDestination
+                    )
                 } else {
                     Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
                         AppNavHost(

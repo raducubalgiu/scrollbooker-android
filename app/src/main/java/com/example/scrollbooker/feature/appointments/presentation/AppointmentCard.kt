@@ -1,5 +1,6 @@
 package com.example.scrollbooker.feature.appointments.presentation
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -23,7 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.AvatarSizeS
@@ -31,6 +31,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
+import com.example.scrollbooker.ui.theme.ScrollBookerTheme
 
 @Composable
 fun AppointmentCard() {
@@ -41,8 +42,9 @@ fun AppointmentCard() {
                 contentDescription = null,
                 modifier = Modifier
                     .size(AvatarSizeS)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.onSurface),
+                    .clip(CircleShape),
+                placeholder = painterResource(R.drawable.ic_user),
+                error = painterResource(R.drawable.ic_user),
                 contentScale = ContentScale.Crop
             )
 
@@ -104,7 +106,7 @@ fun AppointmentCard() {
             Box(modifier = Modifier
                 .clip(shape = MaterialTheme.shapes.small)
                 .background(MaterialTheme.colorScheme.error.copy(alpha = 0.8f))
-                .padding(vertical = SpacingXXS, horizontal = SpacingXS)
+                .padding(vertical = SpacingXS, horizontal = SpacingS)
             ) {
                 Text(
                     style = MaterialTheme.typography.bodyLarge,
@@ -117,4 +119,13 @@ fun AppointmentCard() {
     }
 
     HorizontalDivider()
+}
+
+@Composable
+@Preview(name = "Light", showBackground = true)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+fun AppointmentCardPreview() {
+    ScrollBookerTheme(dynamicColor = false) {
+        AppointmentCard()
+    }
 }
