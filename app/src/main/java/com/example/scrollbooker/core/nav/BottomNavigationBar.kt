@@ -1,6 +1,8 @@
 package com.example.scrollbooker.core.nav
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -16,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.nav.routes.MainRoute.Appointments
 import com.example.scrollbooker.core.nav.routes.MainRoute.Feed
 import com.example.scrollbooker.core.nav.routes.MainRoute.Inbox
@@ -25,15 +28,20 @@ import com.example.scrollbooker.core.nav.routes.MainRoute.Search
 @Composable
 fun BottomNavigationBar(navController: NavController) {
     val items = listOf(Feed, Inbox, Search, Appointments, Profile)
+    val error = MaterialTheme.colorScheme.error
+    val background = MaterialTheme.colorScheme.background
+    val onBackground = MaterialTheme.colorScheme.onBackground
 
     val currentBackStackEntry = navController.currentBackStackEntryAsState().value
     val currentRoute = currentBackStackEntry?.destination?.route
 
-    val selectedColor = MaterialTheme.colorScheme.onBackground
     val unselectedColor = Color.Gray
+    val selectedColor = if(currentRoute == Feed.route) Color(0xFFE0E0E0) else onBackground
+    val containerColor = if(currentRoute == Feed.route) Color(0xFF121212) else background
+
 
     NavigationBar(
-        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+        containerColor = containerColor,
         tonalElevation = 0.dp,
     ) {
         items.forEach { item ->
@@ -53,11 +61,19 @@ fun BottomNavigationBar(navController: NavController) {
                     }
                 },
                 icon = {
-                    Icon(
-                        painterResource(id = item.icon),
-                        contentDescription = null,
-                        tint = if (isSelected) selectedColor else unselectedColor
-                    )
+                    BadgedBox(
+                        badge = {
+                            when(item.route) {
+                                Inbox.route -> Badge(containerColor = error) { Text(text = "3") }
+                                Appointments.route -> Badge(containerColor = error) { Text(text = "10") }
+                            }
+                        }
+                    ) {
+                        Icon(painterResource(id = item.icon),
+                            contentDescription = null,
+                            tint = if (isSelected) selectedColor else unselectedColor
+                        )
+                    }
                 },
                 label = { Text(stringResource(id = item.label)) },
                 colors = NavigationBarItemDefaults.colors(
@@ -69,7 +85,6 @@ fun BottomNavigationBar(navController: NavController) {
                 ),
                 interactionSource = remember { MutableInteractionSource() },
                 enabled = true,
-
                 )
         }
     }

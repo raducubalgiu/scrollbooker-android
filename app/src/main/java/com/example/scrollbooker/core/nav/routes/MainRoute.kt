@@ -15,3 +15,7 @@ sealed class MainRoute(
     object Appointments: MainRoute(route = "appointments", R.drawable.ic_calendar, R.string.appointments)
     object Profile: MainRoute(route = "profile", R.drawable.ic_person, R.string.profile)
 }
+
+object AppointmentsDetailRoute {
+    const val route = "appointmentsDetail"
+}

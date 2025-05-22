@@ -14,7 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
-import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingM
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,7 +34,7 @@ fun AppointmentsScreen() {
             fontSize = 20.sp
         )
 
-        Spacer(modifier = Modifier.height(BasePadding))
+        Spacer(modifier = Modifier.height(SpacingM))
 
         when {
             isEmployee -> AppointmentsTabs()

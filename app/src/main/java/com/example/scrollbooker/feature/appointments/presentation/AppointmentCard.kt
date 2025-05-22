@@ -2,6 +2,7 @@ package com.example.scrollbooker.feature.appointments.presentation
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,7 +36,11 @@ import com.example.scrollbooker.ui.theme.ScrollBookerTheme
 
 @Composable
 fun AppointmentCard() {
-    Column(Modifier.fillMaxWidth().padding(BasePadding)) {
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(BasePadding)
+        .clickable(onClick = {})
+    ) {
         Row {
             AsyncImage(
                 model = "https://example.com/image.jpg",
@@ -92,7 +97,7 @@ fun AppointmentCard() {
 
         Text(
             color = MaterialTheme.colorScheme.onBackground,
-            style = MaterialTheme.typography.titleSmall,
+            style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold,
             text = "Joi, 15 Mai - 17:30"
         )

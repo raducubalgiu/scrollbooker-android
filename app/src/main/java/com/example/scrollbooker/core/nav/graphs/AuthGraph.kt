@@ -50,5 +50,7 @@ fun NavGraphBuilder.authGraph(navController: NavController) {
         composable(route = AuthRoute.BusinessSchedules.route) {
             CollectBusinessSchedulesScreen(navController = navController)
         }
+
+
     }
 }
