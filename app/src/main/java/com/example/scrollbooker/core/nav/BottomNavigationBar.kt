@@ -3,6 +3,7 @@ package com.example.scrollbooker.core.nav
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -39,7 +40,7 @@ fun BottomNavigationBar(navController: NavController) {
 
     NavigationBar(
         containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
-        tonalElevation = 5.dp,
+        tonalElevation = 0.dp,
     ) {
         items.forEach { item ->
             val isSelected = currentRoute == item.route

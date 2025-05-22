@@ -20,4 +20,6 @@
     <string name="addYourBusinessServices">Adaugă Serviciile Business-ului tău</string>
     <string name="schedule">Programul de lucru</string>
     <string name="addYourBusinessSchedule">Adaugă programul de lucru pentru Business-ului tău</string>
+    <string name="forOthers">Pentru alții</string>
+    <string name="forMe">Pentru mine</string>
 </resources>
