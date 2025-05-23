@@ -1,11 +1,12 @@
-package com.example.scrollbooker.core.nav.graphs
+package com.example.scrollbooker.core.nav.host
 
+import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigation
+import androidx.navigation.compose.rememberNavController
+import com.example.scrollbooker.MainViewModel
 import com.example.scrollbooker.core.nav.routes.AuthRoute
-import com.example.scrollbooker.core.nav.routes.GlobalRoute
 import com.example.scrollbooker.feature.auth.presentation.LoginScreen
 import com.example.scrollbooker.feature.auth.presentation.RegisterScreen
 import com.example.scrollbooker.feature.auth.presentation.collectBusinessDetails.CollectBusinessLocationScreen
@@ -14,13 +15,17 @@ import com.example.scrollbooker.feature.auth.presentation.collectBusinessDetails
 import com.example.scrollbooker.feature.auth.presentation.collectClientDetails.CollectBirthDateScreen
 import com.example.scrollbooker.feature.auth.presentation.collectClientDetails.CollectUsernameScreen
 
-fun NavGraphBuilder.authGraph(navController: NavController) {
-    navigation(
-        route = GlobalRoute.AUTH,
+@Composable
+fun AuthNavHost(
+    navController: NavController,
+    viewModel: MainViewModel
+) {
+    NavHost(
+        navController = rememberNavController(),
         startDestination = AuthRoute.Login.route
     ) {
         composable(route = AuthRoute.Login.route) {
-            LoginScreen(navController = navController)
+            LoginScreen(onLoginSuccess = {})
         }
         composable(route = AuthRoute.Register.route) {
             RegisterScreen(navController = navController, onRegisterSuccess = {})
@@ -50,7 +55,5 @@ fun NavGraphBuilder.authGraph(navController: NavController) {
         composable(route = AuthRoute.BusinessSchedules.route) {
             CollectBusinessSchedulesScreen(navController = navController)
         }
-
-
     }
 }

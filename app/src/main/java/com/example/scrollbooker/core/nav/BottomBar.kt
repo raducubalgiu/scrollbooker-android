@@ -1,35 +1,39 @@
 package com.example.scrollbooker.core.nav
 
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.scrollbooker.R
 import com.example.scrollbooker.core.nav.routes.MainRoute.Appointments
 import com.example.scrollbooker.core.nav.routes.MainRoute.Feed
 import com.example.scrollbooker.core.nav.routes.MainRoute.Inbox
-import com.example.scrollbooker.core.nav.routes.MainRoute.Profile
-import com.example.scrollbooker.core.nav.routes.MainRoute.Search
-import com.example.scrollbooker.core.util.Dimens.BaseIconSize
-import com.example.scrollbooker.core.util.Dimens.IconSizeL
 
 @Composable
-fun BottomNavigationBar(navController: NavController) {
-    val items = listOf(Feed, Inbox, Search, Appointments, Profile)
+fun BottomBar(navController: NavController) {
+    val items = listOf(
+        BottomNavItem(route = "feed", R.string.feed, R.drawable.ic_home),
+        BottomNavItem(route = "inbox", R.string.inbox, R.drawable.ic_notifications),
+        BottomNavItem(route = "search", R.string.search, R.drawable.ic_search),
+        BottomNavItem(route = "appointments", R.string.appointments, R.drawable.ic_calendar),
+        BottomNavItem(route = "profile", R.string.profile, R.drawable.ic_person)
+    )
+
     val error = MaterialTheme.colorScheme.error
     val background = MaterialTheme.colorScheme.background
     val onBackground = MaterialTheme.colorScheme.onBackground
@@ -42,8 +46,8 @@ fun BottomNavigationBar(navController: NavController) {
     val containerColor = if(currentRoute == Feed.route) Color(0xFF121212) else background
 
     NavigationBar(
-        containerColor = containerColor,
         tonalElevation = 0.dp,
+        containerColor = containerColor
     ) {
         items.forEach { item ->
             val isSelected = currentRoute == item.route
@@ -57,7 +61,6 @@ fun BottomNavigationBar(navController: NavController) {
                                 inclusive = true
                             }
                             launchSingleTop = true
-                            restoreState = true
                         }
                     }
                 },
@@ -74,7 +77,6 @@ fun BottomNavigationBar(navController: NavController) {
                             painterResource(id = item.icon),
                             contentDescription = null,
                             tint = if (isSelected) selectedColor else unselectedColor,
-                            modifier = Modifier.size(IconSizeL),
                         )
                     }
                 },
@@ -88,7 +90,13 @@ fun BottomNavigationBar(navController: NavController) {
                 ),
                 interactionSource = remember { MutableInteractionSource() },
                 enabled = true,
-                )
+            )
         }
     }
 }
+
+data class BottomNavItem(
+    val route: String,
+    @StringRes val label: Int,
+    @DrawableRes val icon: Int
+)

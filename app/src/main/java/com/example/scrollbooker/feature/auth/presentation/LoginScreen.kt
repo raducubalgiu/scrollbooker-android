@@ -15,8 +15,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,18 +24,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.Input
-import com.example.scrollbooker.core.nav.routes.AuthRoute
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 
 @Composable
 fun LoginScreen(
-    navController: NavController,
-    viewModel: AuthViewModel = hiltViewModel()
+    //navController: NavController,
+    //viewModel: AuthViewModel = hiltViewModel(),
+    onLoginSuccess: () -> Unit
 ) {
-    val state by viewModel.loginState.collectAsState()
+    //val state by viewModel.loginState.collectAsState()
 
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -78,7 +75,7 @@ fun LoginScreen(
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 //onClick = { viewModel.login("radu", "password") },
-                onClick = { navController.navigate(route = AuthRoute.BusinessLocation.route) },
+                onClick = { onLoginSuccess },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary
                 )
@@ -110,7 +107,7 @@ fun LoginScreen(
                     text = "${stringResource(id = R.string.dontHaveAnAccount)}?"
                 )
                 TextButton(onClick = {
-                    navController.navigate(route = AuthRoute.Register.route)
+                    //navController.navigate(route = AuthRoute.Register.route)
                 }) {
                     Text(
                         style = MaterialTheme.typography.bodyLarge,

@@ -42,6 +42,5 @@ fun ProfileScreen() {
 
     Column(modifier = Modifier.fillMaxSize()) {
         ProfileHeader(onOpenBottomSheet = { showBottomSheet = true })
-
     }
 }
