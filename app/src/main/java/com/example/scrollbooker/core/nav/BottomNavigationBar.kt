@@ -1,6 +1,7 @@
 package com.example.scrollbooker.core.nav
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.MaterialTheme
@@ -11,6 +12,7 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -22,6 +24,8 @@ import com.example.scrollbooker.core.nav.routes.MainRoute.Feed
 import com.example.scrollbooker.core.nav.routes.MainRoute.Inbox
 import com.example.scrollbooker.core.nav.routes.MainRoute.Profile
 import com.example.scrollbooker.core.nav.routes.MainRoute.Search
+import com.example.scrollbooker.core.util.Dimens.BaseIconSize
+import com.example.scrollbooker.core.util.Dimens.IconSizeL
 
 @Composable
 fun BottomNavigationBar(navController: NavController) {
@@ -66,9 +70,11 @@ fun BottomNavigationBar(navController: NavController) {
                             }
                         }
                     ) {
-                        Icon(painterResource(id = item.icon),
+                        Icon(
+                            painterResource(id = item.icon),
                             contentDescription = null,
-                            tint = if (isSelected) selectedColor else unselectedColor
+                            tint = if (isSelected) selectedColor else unselectedColor,
+                            modifier = Modifier.size(IconSizeL),
                         )
                     }
                 },

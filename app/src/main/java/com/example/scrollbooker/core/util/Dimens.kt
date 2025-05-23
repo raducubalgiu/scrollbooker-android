@@ -17,5 +17,13 @@ object Dimens {
     val AvatarSizeS = 56.dp
     val AvatarSizeM = 60.dp
 
-    val ButtonSizeXS = 25.dp
+    // Icons
+    val IconSizeXS = 16.dp
+    val IconSizeS = 20.dp
+    val IconSizeM = 24.dp
+    val IconSizeL = 28.dp
+    val IconSizeXL = 32.dp
+    val IconSizeXXL = 40.dp
+
+    val BaseIconSize = IconSizeM
 }
