@@ -16,7 +16,7 @@ import com.example.scrollbooker.feature.search.presentation.SearchScreen
 fun NavGraphBuilder.mainGraph(navController: NavController) {
     navigation(
         route = GlobalRoute.MAIN,
-        startDestination = MainRoute.Feed.route
+        startDestination = MainRoute.Feed.route,
     ) {
         composable(route = MainRoute.Feed.route) {
             FeedScreen()

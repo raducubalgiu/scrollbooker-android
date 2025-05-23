@@ -3,7 +3,6 @@ package com.example.scrollbooker.core.nav
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -18,7 +17,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.nav.routes.MainRoute.Appointments
 import com.example.scrollbooker.core.nav.routes.MainRoute.Feed
 import com.example.scrollbooker.core.nav.routes.MainRoute.Inbox
@@ -39,7 +37,6 @@ fun BottomNavigationBar(navController: NavController) {
     val selectedColor = if(currentRoute == Feed.route) Color(0xFFE0E0E0) else onBackground
     val containerColor = if(currentRoute == Feed.route) Color(0xFF121212) else background
 
-
     NavigationBar(
         containerColor = containerColor,
         tonalElevation = 0.dp,
@@ -53,7 +50,7 @@ fun BottomNavigationBar(navController: NavController) {
                     if(currentRoute != item.route) {
                         navController.navigate(item.route) {
                             popUpTo(navController.graph.startDestinationId) {
-                                saveState = true
+                                inclusive = true
                             }
                             launchSingleTop = true
                             restoreState = true
