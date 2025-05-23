@@ -1,5 +1,7 @@
 package com.example.scrollbooker.feature.inbox.presentation
 
+import android.content.res.Configuration
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -15,12 +17,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.Avatar
 import com.example.scrollbooker.core.util.Dimens.AvatarSizeM
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
+import com.example.scrollbooker.ui.theme.ScrollBookerTheme
 
 @Composable
 fun NotificationItem(
@@ -81,5 +85,19 @@ fun NotificationItem(
                 )
             }
         }
+    }
+}
+
+@Preview(name = "Light", showBackground = true)
+@Preview(name = "Dark", showBackground = true, uiMode = UI_MODE_NIGHT_YES)
+@Composable
+fun NotificationItemPreview() {
+    ScrollBookerTheme(dynamicColor = false) {
+        NotificationItem(
+            url = "",
+            fullName = "Some User",
+            type = "follow",
+            isFollow = false
+        )
     }
 }
