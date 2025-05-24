@@ -56,18 +56,18 @@ fun MainNavHost(viewModel: MainViewModel) {
             NavHost(
                 navController = bottomNavController,
                 startDestination = MainRoute.Feed.route,
-                enterTransition = {
-                    fadeIn(animationSpec = tween(durationMillis = 100))
-                },
-                exitTransition = {
-                    fadeOut(animationSpec = tween(durationMillis = 100))
-                },
-                popEnterTransition = {
-                    fadeIn(animationSpec = tween(durationMillis = 100))
-                },
-                popExitTransition = {
-                    fadeOut(animationSpec = tween(durationMillis = 100))
-                },
+//                enterTransition = {
+//                    fadeIn(animationSpec = tween(durationMillis = 100))
+//                },
+//                exitTransition = {
+//                    fadeOut(animationSpec = tween(durationMillis = 100))
+//                },
+//                popEnterTransition = {
+//                    fadeIn(animationSpec = tween(durationMillis = 100))
+//                },
+//                popExitTransition = {
+//                    fadeOut(animationSpec = tween(durationMillis = 100))
+//                },
             ) {
                 composable(MainRoute.Feed.route) {
                     FeedScreen()

@@ -58,7 +58,7 @@ fun SettingsScreen(navController: NavController) {
         ItemList(
             headLine = stringResource(R.string.display),
             leftIcon = painterResource(R.drawable.ic_theme),
-            onClick = {}
+            onClick = { navController.navigate(MainRoute.Display.route) }
         )
 
         ItemList(
@@ -70,13 +70,13 @@ fun SettingsScreen(navController: NavController) {
         ItemList(
             headLine = stringResource(R.string.support),
             leftIcon = painterResource(R.drawable.ic_support),
-            onClick = {}
+            onClick = { navController.navigate(MainRoute.Support.route) }
         )
 
         ItemList(
             headLine = stringResource(R.string.termsAndConditions),
             leftIcon = painterResource(R.drawable.ic_info),
-            onClick = {}
+            onClick = { navController.navigate(MainRoute.TermsAndConditions.route) }
         )
     }
 }

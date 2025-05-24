@@ -10,10 +10,13 @@ sealed class MainRoute(val route: String) {
     object Profile: MainRoute(route = "profile")
 
     object SettingsNavigator: MainRoute(route = "settingsNavigator")
-    object Account: MainRoute(route = "Account")
-    object Privacy: MainRoute(route = "Privacy")
-    object Security: MainRoute(route = "Security")
     object Settings: MainRoute(route = "settings")
+    object Account: MainRoute(route = "account")
+    object Privacy: MainRoute(route = "privacy")
+    object Security: MainRoute(route = "security")
     object NotificationSettings: MainRoute(route = "notificationSettings")
+    object Display: MainRoute(route = "display")
     object ReportProblem: MainRoute(route = "reportProblem")
+    object Support: MainRoute(route = "support")
+    object TermsAndConditions: MainRoute(route = "termsAndConditions")
 }

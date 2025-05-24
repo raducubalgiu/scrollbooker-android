@@ -7,10 +7,13 @@ import androidx.navigation.navigation
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.feature.settings.presentation.SettingsScreen
 import com.example.scrollbooker.feature.settings.presentation.account.AccountScreen
+import com.example.scrollbooker.feature.settings.presentation.display.DisplayScreen
 import com.example.scrollbooker.feature.settings.presentation.notifications.NotificationSettings
 import com.example.scrollbooker.feature.settings.presentation.privacy.PrivacyScreen
 import com.example.scrollbooker.feature.settings.presentation.reportProblem.ReportProblemScreen
 import com.example.scrollbooker.feature.settings.presentation.security.SecurityScreen
+import com.example.scrollbooker.feature.settings.presentation.support.SupportScreen
+import com.example.scrollbooker.feature.settings.presentation.terms.TermsAndConditionsScreen
 
 fun NavGraphBuilder.settingsGraph(navController: NavController) {
     navigation(
@@ -37,8 +40,20 @@ fun NavGraphBuilder.settingsGraph(navController: NavController) {
             NotificationSettings(navController)
         }
 
+        composable(MainRoute.Display.route) {
+            DisplayScreen(navController)
+        }
+
         composable(MainRoute.ReportProblem.route) {
             ReportProblemScreen(navController)
+        }
+
+        composable(MainRoute.Support.route) {
+            SupportScreen(navController)
+        }
+
+        composable(MainRoute.TermsAndConditions.route) {
+            TermsAndConditionsScreen(navController)
         }
     }
 }
