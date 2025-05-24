@@ -14,6 +14,7 @@ import androidx.navigation.NavController
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.Header
 import com.example.scrollbooker.components.ItemList
+import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 
 @Composable
@@ -51,7 +52,7 @@ fun SettingsScreen(navController: NavController) {
         ItemList(
             headLine = "Notifications",
             leftIcon = painterResource(R.drawable.ic_notifications),
-            onClick = {}
+            onClick = { navController.navigate(MainRoute.NotificationSettings.route) }
         )
 
         ItemList(

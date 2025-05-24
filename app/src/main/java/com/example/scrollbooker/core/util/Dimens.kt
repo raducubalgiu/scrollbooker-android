@@ -14,7 +14,7 @@ object Dimens {
     val BasePadding = SpacingL
 
     // Components
-    val AvatarSizeS = 56.dp
+    val AvatarSizeS = 52.dp
     val AvatarSizeM = 60.dp
 
     // Icons

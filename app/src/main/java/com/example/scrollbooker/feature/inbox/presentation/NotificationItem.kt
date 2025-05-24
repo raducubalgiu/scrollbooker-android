@@ -20,7 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.Avatar
-import com.example.scrollbooker.core.util.Dimens.AvatarSizeM
+import com.example.scrollbooker.core.util.Dimens.AvatarSizeS
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.ui.theme.ScrollBookerTheme
@@ -52,7 +52,7 @@ fun NotificationItem(
             modifier = Modifier.weight(1f),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Avatar(url = url, size = AvatarSizeM)
+            Avatar(url = url, size = AvatarSizeS)
             Spacer(Modifier.width(SpacingM))
             Column(Modifier.weight(1f)) {
                 Text(

@@ -34,78 +34,79 @@ import com.example.scrollbooker.ui.theme.ScrollBookerTheme
 fun AppointmentCard() {
     Column(modifier = Modifier
         .fillMaxWidth()
-        .padding(BasePadding)
         .clickable(onClick = {})
     ) {
-        Row {
-            Avatar(url = "https://example.com/image.jpg")
+        Column(modifier = Modifier.fillMaxWidth().padding(BasePadding)) {
+            Row {
+                Avatar(url = "https://example.com/image.jpg")
 
-            Spacer(modifier = Modifier.width(BasePadding))
+                Spacer(modifier = Modifier.width(BasePadding))
 
-            Column {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Column {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            style = MaterialTheme.typography.titleSmall,
+                            text = "House Of Barbers",
+                            fontWeight = FontWeight.ExtraBold,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                        Spacer(Modifier.width(BasePadding))
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_star),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                        Spacer(Modifier.width(SpacingXS))
+                        Text(
+                            style = MaterialTheme.typography.bodyMedium,
+                            text = "4.5",
+                            fontWeight = FontWeight.ExtraBold,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
                     Text(
-                        style = MaterialTheme.typography.titleSmall,
-                        text = "House Of Barbers",
-                        fontWeight = FontWeight.ExtraBold,
-                        color = MaterialTheme.colorScheme.onBackground
+                        style = MaterialTheme.typography.bodyMedium,
+                        text = "Doctor Stomatolog",
+                        fontWeight = FontWeight.Normal,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
-                    Spacer(Modifier.width(BasePadding))
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_star),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                    Spacer(Modifier.width(SpacingXS))
+                    Spacer(Modifier.height(SpacingXXS))
                     Text(
                         style = MaterialTheme.typography.bodyLarge,
-                        text = "4.5",
                         fontWeight = FontWeight.ExtraBold,
-                        color = MaterialTheme.colorScheme.onBackground
+                        color = MaterialTheme.colorScheme.onBackground,
+                        text = "Tuns Barbati"
                     )
                 }
-                Text(
-                    style = MaterialTheme.typography.bodyLarge,
-                    text = "Doctor Stomatolog",
-                    fontWeight = FontWeight.Normal,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Spacer(Modifier.height(SpacingXXS))
-                Text(
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    text = "Tuns Barbati"
-                )
             }
-        }
 
-        Spacer(Modifier.height(BasePadding))
+            Spacer(Modifier.height(BasePadding))
 
-        Text(
-            color = MaterialTheme.colorScheme.onBackground,
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Bold,
-            text = "Joi, 15 Mai - 17:30"
-        )
+            Text(
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold,
+                text = "Joi, 15 Mai - 17:30"
+            )
 
-        Spacer(Modifier.height(BasePadding))
+            Spacer(Modifier.height(BasePadding))
 
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.End
-        ) {
-            Box(modifier = Modifier
-                .clip(shape = MaterialTheme.shapes.small)
-                .background(MaterialTheme.colorScheme.error.copy(alpha = 0.8f))
-                .padding(vertical = SpacingXS, horizontal = SpacingS)
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.End
             ) {
-                Text(
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onError,
-                    fontWeight = FontWeight.SemiBold,
-                    text = "Anulat"
-                )
+                Box(modifier = Modifier
+                    .clip(shape = MaterialTheme.shapes.small)
+                    .background(MaterialTheme.colorScheme.error.copy(alpha = 0.8f))
+                    .padding(vertical = SpacingXS, horizontal = SpacingS)
+                ) {
+                    Text(
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onError,
+                        fontWeight = FontWeight.SemiBold,
+                        text = "Anulat"
+                    )
+                }
             }
         }
     }
