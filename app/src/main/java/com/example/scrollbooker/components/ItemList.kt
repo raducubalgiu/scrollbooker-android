@@ -41,13 +41,14 @@ fun ItemList(
             .then(modifier),
         headlineContent = {
             Text(
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.SemiBold,
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.Bold,
                 text = headLine
             )},
         supportingContent = {
             if(supportingText.isNotEmpty()) {
                 Text(
+                    style = MaterialTheme.typography.labelMedium,
                     text = supportingText
                 )
             }

@@ -8,11 +8,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.navigation.NavController
 import com.example.scrollbooker.components.Header
 
 @Composable
-fun SettingsScreen(modifier: Modifier = Modifier) {
+fun SettingsScreen(
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
     Column(modifier = Modifier.fillMaxSize()) {
-        Header(title = "Settings")
+        Header(title = "Settings", navController = navController)
     }
 }

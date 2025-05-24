@@ -21,31 +21,29 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.scrollbooker.R
+import com.example.scrollbooker.components.Header
+import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InboxScreen(modifier: Modifier = Modifier) {
+fun InboxScreen(
+    modifier: Modifier = Modifier,
+    navController: NavController
+) {
     val coroutineScope = rememberCoroutineScope()
     var isRefreshing by remember { mutableStateOf(false) }
 
     Column() {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = stringResource(id = R.string.appointments),
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp
-            )
-        }
-
-        Spacer(modifier = Modifier.height(SpacingXL))
+        Header(
+            title = stringResource(id = R.string.appointments),
+            enableBack = false,
+            navController = navController
+        )
 
         PullToRefreshBox(
             isRefreshing = isRefreshing,
@@ -58,6 +56,7 @@ fun InboxScreen(modifier: Modifier = Modifier) {
             },
             modifier = modifier
         ) {
+            Spacer(Modifier.height(BasePadding))
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(30) { item ->
                     NotificationItem(

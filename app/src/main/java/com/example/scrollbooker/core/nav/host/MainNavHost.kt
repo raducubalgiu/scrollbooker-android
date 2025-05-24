@@ -62,7 +62,9 @@ fun MainNavHost(viewModel: MainViewModel) {
                 }
 
                 composable(MainRoute.Inbox.route) {
-                    InboxScreen()
+                    InboxScreen(
+                        navController = bottomNavController
+                    )
                 }
 
                 composable(MainRoute.Search.route) {
@@ -70,7 +72,9 @@ fun MainNavHost(viewModel: MainViewModel) {
                 }
 
                 composable(MainRoute.Appointments.route) {
-                    AppointmentsScreen()
+                    AppointmentsScreen(
+                        navController = bottomNavController
+                    )
                 }
 
                 profileGraph(navController = bottomNavController)

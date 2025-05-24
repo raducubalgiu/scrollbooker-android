@@ -37,7 +37,7 @@ fun AppointmentsTabs(modifier: Modifier = Modifier) {
                 Box(
                     Modifier
                         .tabIndicatorOffset(tabPositions[selectedTabIndex])
-                        .height(2.dp)
+                        .height(1.5.dp)
                         .background(onBackground)
                 )
             },
