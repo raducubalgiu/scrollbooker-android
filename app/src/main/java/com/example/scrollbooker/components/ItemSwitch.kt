@@ -38,7 +38,7 @@ fun ItemSwitch(
             .fillMaxWidth()
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
-                indication = ripple(),
+                indication = null,
                 onClick = onClick,
             )
             .then(modifier),

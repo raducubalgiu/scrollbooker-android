@@ -32,49 +32,49 @@ fun SettingsScreen(navController: NavController) {
         }
 
         ItemList(
-            headLine = "Account",
+            headLine = stringResource(R.string.account),
             leftIcon = painterResource(R.drawable.ic_person),
-            onClick = {}
+            onClick = { navController.navigate(MainRoute.Account.route) }
         )
 
         ItemList(
-            headLine = "Privacy",
+            headLine = stringResource(R.string.privacy),
             leftIcon = painterResource(R.drawable.ic_privacy),
-            onClick = {}
+            onClick = { navController.navigate(MainRoute.Privacy.route) }
         )
 
         ItemList(
-            headLine = "Security",
+            headLine = stringResource(R.string.security),
             leftIcon = painterResource(R.drawable.ic_security),
             onClick = {}
         )
 
         ItemList(
-            headLine = "Notifications",
+            headLine = stringResource(R.string.notifications),
             leftIcon = painterResource(R.drawable.ic_notifications),
             onClick = { navController.navigate(MainRoute.NotificationSettings.route) }
         )
 
         ItemList(
-            headLine = "Display",
+            headLine = stringResource(R.string.display),
             leftIcon = painterResource(R.drawable.ic_theme),
             onClick = {}
         )
 
         ItemList(
-            headLine = "Report a Problem",
+            headLine = stringResource(R.string.reportProblem),
             leftIcon = painterResource(R.drawable.ic_report),
             onClick = { navController.navigate(MainRoute.ReportProblem.route) }
         )
 
         ItemList(
-            headLine = "Support",
+            headLine = stringResource(R.string.support),
             leftIcon = painterResource(R.drawable.ic_support),
             onClick = {}
         )
 
         ItemList(
-            headLine = "Terms and Policies",
+            headLine = stringResource(R.string.termsAndConditions),
             leftIcon = painterResource(R.drawable.ic_info),
             onClick = {}
         )

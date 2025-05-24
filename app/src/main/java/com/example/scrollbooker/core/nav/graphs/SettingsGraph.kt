@@ -1,0 +1,39 @@
+package com.example.scrollbooker.core.nav.graphs
+
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
+import androidx.navigation.navigation
+import com.example.scrollbooker.core.nav.routes.MainRoute
+import com.example.scrollbooker.feature.settings.presentation.SettingsScreen
+import com.example.scrollbooker.feature.settings.presentation.account.AccountScreen
+import com.example.scrollbooker.feature.settings.presentation.notifications.NotificationSettings
+import com.example.scrollbooker.feature.settings.presentation.privacy.PrivacyScreen
+import com.example.scrollbooker.feature.settings.presentation.reportProblem.ReportProblemScreen
+
+fun NavGraphBuilder.settingsGraph(navController: NavController) {
+    navigation(
+        route = MainRoute.SettingsNavigator.route,
+        startDestination = MainRoute.Settings.route,
+    ) {
+        composable(MainRoute.Account.route) {
+            AccountScreen(navController)
+        }
+
+        composable(MainRoute.Privacy.route) {
+            PrivacyScreen(navController)
+        }
+
+        composable(MainRoute.Settings.route) {
+            SettingsScreen(navController)
+        }
+
+        composable(MainRoute.NotificationSettings.route) {
+            NotificationSettings(navController)
+        }
+
+        composable(MainRoute.ReportProblem.route) {
+            ReportProblemScreen(navController)
+        }
+    }
+}

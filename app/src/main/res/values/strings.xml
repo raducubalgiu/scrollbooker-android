@@ -27,8 +27,14 @@
     <string name="startedFollowingYou">a început să te urmărească</string>
     <string name="likedYourPost">ți-a apreciat postarea</string>
     <string name="settings">Setări</string>
+    <string name="privacy">Confidențialitate</string>
     <string name="calendar">Calendar</string>
     <string name="myBusiness">Afacerea mea</string>
+    <string name="account">Cont</string>
+    <string name="security">Securitate</string>
     <string name="notifications">Notificări</string>
+    <string name="display">Afișare</string>
     <string name="reportProblem">Raportează o problemă</string>
+    <string name="support">Suport</string>
+    <string name="termsAndConditions">Termeni și condiții</string>
 </resources>
