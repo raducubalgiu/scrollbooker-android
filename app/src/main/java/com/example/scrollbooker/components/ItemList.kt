@@ -16,7 +16,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import com.example.scrollbooker.R
 
 @Composable
 fun ItemList(
@@ -24,7 +26,7 @@ fun ItemList(
     headLine: String,
     supportingText: String = "",
     leftIcon: Painter? = null,
-    rightIcon: Painter? = null,
+    displayRightIcon: Boolean = true,
     onClick: () -> Unit
 ) {
     val isDarkMode = isSystemInDarkTheme()
@@ -62,9 +64,9 @@ fun ItemList(
             }
         },
         trailingContent = {
-            if(rightIcon != null) {
+            if(displayRightIcon) {
                 Icon(
-                    painter = rightIcon,
+                    painter = painterResource(id = R.drawable.ic_next),
                     contentDescription = null,
                 )
             }

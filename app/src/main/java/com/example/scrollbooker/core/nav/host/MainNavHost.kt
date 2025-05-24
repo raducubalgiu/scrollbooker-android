@@ -32,9 +32,21 @@ fun MainNavHost(viewModel: MainViewModel) {
 
     val containerColor = if(currentRoute == MainRoute.Feed.route) Color(0xFF121212) else MaterialTheme.colorScheme.background
 
+    val bottomBarRoutes = setOf(
+        MainRoute.Feed.route,
+        MainRoute.Inbox.route,
+        MainRoute.Search.route,
+        MainRoute.Appointments.route,
+        MainRoute.Profile.route
+    )
+
     Scaffold(
         containerColor = containerColor,
-        bottomBar = { BottomBar(bottomNavController) }
+        bottomBar = {
+            if(currentRoute in bottomBarRoutes) {
+                BottomBar(bottomNavController)
+            }
+        }
     ) { innerPadding ->
         Box(modifier = Modifier
             .fillMaxWidth()
