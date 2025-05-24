@@ -1,5 +1,6 @@
 package com.example.scrollbooker.feature.settings.presentation
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -19,7 +20,9 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 
 @Composable
 fun SettingsScreen(navController: NavController) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background)) {
         Header(title = "", navController = navController)
 
         Column(modifier = Modifier.padding(BasePadding)) {
