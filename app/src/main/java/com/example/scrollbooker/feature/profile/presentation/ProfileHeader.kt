@@ -46,10 +46,10 @@ fun ProfileHeader(
                 ),
             contentAlignment = Alignment.CenterStart
         ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_prev),
-                contentDescription = null
-            )
+//            Icon(
+//                painter = painterResource(R.drawable.ic_prev),
+//                contentDescription = null
+//            )
         }
         Text(
             style = MaterialTheme.typography.titleSmall,

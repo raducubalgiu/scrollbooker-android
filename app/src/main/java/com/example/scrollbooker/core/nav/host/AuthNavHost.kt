@@ -1,7 +1,13 @@
 package com.example.scrollbooker.core.nav.host
 
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -16,44 +22,66 @@ import com.example.scrollbooker.feature.auth.presentation.collectClientDetails.C
 import com.example.scrollbooker.feature.auth.presentation.collectClientDetails.CollectUsernameScreen
 
 @Composable
-fun AuthNavHost(
-    navController: NavController,
-    viewModel: MainViewModel
-) {
-    NavHost(
-        navController = rememberNavController(),
-        startDestination = AuthRoute.Login.route
+fun AuthNavHost(viewModel: MainViewModel) {
+    val navController = rememberNavController()
+
+    Box(
+        modifier = Modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background)
+        .safeDrawingPadding()
     ) {
-        composable(route = AuthRoute.Login.route) {
-            LoginScreen(onLoginSuccess = {})
-        }
-        composable(route = AuthRoute.Register.route) {
-            RegisterScreen(navController = navController, onRegisterSuccess = {})
-        }
+        NavHost(
+            navController = navController,
+            startDestination = AuthRoute.Login.route
+        ) {
 
-        // Client Auth Onboarding
-        composable(route = AuthRoute.Username.route) {
-            CollectUsernameScreen(navController = navController)
-        }
-        composable(route = AuthRoute.BirthDate.route) {
-            CollectBirthDateScreen(navController = navController)
-        }
+            composable(route = AuthRoute.Login.route) {
+                LoginScreen(navController = navController)
+            }
+            composable(route = AuthRoute.Register.route) {
+                RegisterScreen(
+                    navController = navController,
+                    onRegisterSuccess = {}
+                )
+            }
 
-        // Business Auth OnBoarding
-        composable(route = AuthRoute.BirthDate.route) {
-            CollectBirthDateScreen(navController = navController)
-        }
+            // Client Auth Onboarding
+            composable(
+                route = AuthRoute.Username.route,
+            ) {
+                CollectUsernameScreen(navController = navController)
+            }
+            composable(
+                route = AuthRoute.BirthDate.route
+            ) {
+                CollectBirthDateScreen(navController = navController)
+            }
 
-        composable(route = AuthRoute.BusinessLocation.route) {
-            CollectBusinessLocationScreen(navController = navController)
-        }
+            // Business Auth OnBoarding
+            composable(
+                route = AuthRoute.BusinessLocation.route,
+                enterTransition = { slideInHorizontally(initialOffsetX = { 1000 }) },
+                popEnterTransition = { slideInHorizontally(initialOffsetX = { -1000 }) }
+            ) {
+                CollectBusinessLocationScreen(navController = navController)
+            }
 
-        composable(route = AuthRoute.BusinessServices.route) {
-            CollectBusinessServicesScreen(navController = navController)
-        }
+            composable(
+                route = AuthRoute.BusinessServices.route,
+                enterTransition = { slideInHorizontally(initialOffsetX = { 1000 }) },
+                popEnterTransition = { slideInHorizontally(initialOffsetX = { -1000 }) }
+            ) {
+                CollectBusinessServicesScreen(navController = navController)
+            }
 
-        composable(route = AuthRoute.BusinessSchedules.route) {
-            CollectBusinessSchedulesScreen(navController = navController)
+            composable(
+                route = AuthRoute.BusinessSchedules.route,
+                enterTransition = { slideInHorizontally(initialOffsetX = { 1000 }) },
+                popEnterTransition = { slideInHorizontally(initialOffsetX = { -1000 }) }
+            ) {
+                CollectBusinessSchedulesScreen(navController = navController)
+            }
         }
     }
 }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -24,15 +25,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.Input
+import com.example.scrollbooker.core.nav.routes.AuthRoute
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 
 @Composable
 fun LoginScreen(
-    //navController: NavController,
+    navController: NavController,
     //viewModel: AuthViewModel = hiltViewModel(),
-    onLoginSuccess: () -> Unit
 ) {
     //val state by viewModel.loginState.collectAsState()
 
@@ -42,8 +44,8 @@ fun LoginScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(vertical = 50.dp, horizontal = BasePadding)
-            .statusBarsPadding(),
+            .safeDrawingPadding()
+            .padding(top = 50.dp, start = BasePadding, end = BasePadding),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column {
@@ -75,7 +77,7 @@ fun LoginScreen(
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 //onClick = { viewModel.login("radu", "password") },
-                onClick = { onLoginSuccess },
+                onClick = { navController.navigate(AuthRoute.BusinessLocation.route) },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary
                 )
@@ -107,7 +109,7 @@ fun LoginScreen(
                     text = "${stringResource(id = R.string.dontHaveAnAccount)}?"
                 )
                 TextButton(onClick = {
-                    //navController.navigate(route = AuthRoute.Register.route)
+                    navController.navigate(route = AuthRoute.Register.route)
                 }) {
                     Text(
                         style = MaterialTheme.typography.bodyLarge,

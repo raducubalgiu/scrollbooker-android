@@ -1,5 +1,6 @@
 package com.example.scrollbooker.feature.auth.presentation.collectBusinessDetails
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -42,7 +43,12 @@ fun CollectBusinessDetails(
     onNext: () -> Unit,
     content: @Composable () -> Unit,
 ) {
-    Column(modifier = Modifier.safeDrawingPadding()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(BasePadding)
+    ) {
         TopAppBar(
             title = {},
             colors = TopAppBarDefaults.topAppBarColors(
@@ -58,7 +64,7 @@ fun CollectBusinessDetails(
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = null
                             ),
-                        contentAlignment = Alignment.Center
+                        contentAlignment = Alignment.CenterStart
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_prev),
@@ -68,9 +74,7 @@ fun CollectBusinessDetails(
                 }
             }
         )
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = BasePadding),
+        Column(modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column {

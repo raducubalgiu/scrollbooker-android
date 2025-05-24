@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -49,8 +50,8 @@ fun RegisterScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(vertical = 50.dp, horizontal = BasePadding)
-            .statusBarsPadding(),
+            .safeDrawingPadding()
+            .padding(top = 50.dp, start = BasePadding, end = BasePadding),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column {

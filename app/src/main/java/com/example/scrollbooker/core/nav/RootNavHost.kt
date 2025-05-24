@@ -23,11 +23,11 @@ fun RootNavHost() {
         startDestination = if(isLoggedIn) GlobalRoute.MAIN else GlobalRoute.AUTH
     ) {
         composable(GlobalRoute.AUTH) {
-            AuthNavHost(navController, viewModel)
+            AuthNavHost(viewModel)
         }
         
         composable(GlobalRoute.MAIN) {
-            MainNavHost(navController, viewModel)
+            MainNavHost(viewModel)
         }
     }
 }

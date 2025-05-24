@@ -5,5 +5,8 @@ sealed class MainRoute(val route: String) {
     object Inbox: MainRoute(route = "inbox")
     object Search: MainRoute(route = "search")
     object Appointments: MainRoute(route = "appointments")
+
+    object ProfileNavigator: MainRoute(route = "profileNavigator")
     object Profile: MainRoute(route = "profile")
+    object Settings: MainRoute(route = "settings")
 }
