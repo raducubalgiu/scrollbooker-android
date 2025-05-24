@@ -64,7 +64,7 @@ fun SettingsScreen(navController: NavController) {
         ItemList(
             headLine = "Report a Problem",
             leftIcon = painterResource(R.drawable.ic_report),
-            onClick = {}
+            onClick = { navController.navigate(MainRoute.ReportProblem.route) }
         )
 
         ItemList(
