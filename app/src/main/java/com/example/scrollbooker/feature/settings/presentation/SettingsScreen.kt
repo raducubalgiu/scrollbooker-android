@@ -46,7 +46,7 @@ fun SettingsScreen(navController: NavController) {
         ItemList(
             headLine = stringResource(R.string.security),
             leftIcon = painterResource(R.drawable.ic_security),
-            onClick = {}
+            onClick = { navController.navigate(MainRoute.Security.route) }
         )
 
         ItemList(

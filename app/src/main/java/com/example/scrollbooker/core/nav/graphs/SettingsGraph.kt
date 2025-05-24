@@ -10,6 +10,7 @@ import com.example.scrollbooker.feature.settings.presentation.account.AccountScr
 import com.example.scrollbooker.feature.settings.presentation.notifications.NotificationSettings
 import com.example.scrollbooker.feature.settings.presentation.privacy.PrivacyScreen
 import com.example.scrollbooker.feature.settings.presentation.reportProblem.ReportProblemScreen
+import com.example.scrollbooker.feature.settings.presentation.security.SecurityScreen
 
 fun NavGraphBuilder.settingsGraph(navController: NavController) {
     navigation(
@@ -22,6 +23,10 @@ fun NavGraphBuilder.settingsGraph(navController: NavController) {
 
         composable(MainRoute.Privacy.route) {
             PrivacyScreen(navController)
+        }
+
+        composable(MainRoute.Security.route) {
+            SecurityScreen(navController)
         }
 
         composable(MainRoute.Settings.route) {
