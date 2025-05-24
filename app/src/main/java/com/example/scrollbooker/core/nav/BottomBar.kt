@@ -1,22 +1,27 @@
 package com.example.scrollbooker.core.nav
 
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.scrollbooker.R
@@ -45,26 +50,36 @@ fun BottomBar(navController: NavController) {
     val selectedColor = if(currentRoute == Feed.route) Color(0xFFE0E0E0) else onBackground
     val containerColor = if(currentRoute == Feed.route) Color(0xFF121212) else background
 
+    val interactionSource = remember { MutableInteractionSource() }
+
     NavigationBar(
         tonalElevation = 0.dp,
         containerColor = containerColor
     ) {
-        items.forEach { item ->
-            val isSelected = currentRoute == item.route
+        Row(modifier = Modifier.fillMaxWidth()) {
+            items.forEach { item ->
+                val isSelected = currentRoute == item.route
 
-            NavigationBarItem(
-                selected = isSelected,
-                onClick = {
-                    if(currentRoute != item.route) {
-                        navController.navigate(item.route) {
-                            popUpTo(navController.graph.startDestinationId) {
-                                inclusive = true
+                Column(modifier = Modifier
+                    .weight(1f)
+                    .clickable(
+                        interactionSource = interactionSource,
+                        indication = null,
+                        onClick = {
+                            if(currentRoute != item.route) {
+                                navController.navigate(item.route) {
+                                    popUpTo(navController.graph.startDestinationId) {
+                                        inclusive = true
+                                    }
+                                    launchSingleTop = true
+                                }
                             }
-                            launchSingleTop = true
                         }
-                    }
-                },
-                icon = {
+                    )
+                    .padding(vertical = 8.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     BadgedBox(
                         badge = {
                             when(item.route) {
@@ -79,24 +94,13 @@ fun BottomBar(navController: NavController) {
                             tint = if (isSelected) selectedColor else unselectedColor,
                         )
                     }
-                },
-                label = { Text(stringResource(id = item.label)) },
-                colors = NavigationBarItemDefaults.colors(
-                    indicatorColor = Color.Transparent,
-                    selectedIconColor = selectedColor,
-                    unselectedIconColor = unselectedColor,
-                    selectedTextColor = selectedColor,
-                    unselectedTextColor = unselectedColor
-                ),
-                interactionSource = remember { MutableInteractionSource() },
-                enabled = true,
-            )
+                    Text(
+                        text = stringResource(id = item.label),
+                        color = if (isSelected) selectedColor else unselectedColor,
+                        fontSize = 12.sp
+                    )
+                }
+            }
         }
     }
 }
-
-data class BottomNavItem(
-    val route: String,
-    @StringRes val label: Int,
-    @DrawableRes val icon: Int
-)

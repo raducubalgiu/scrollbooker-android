@@ -29,6 +29,7 @@ fun MainNavHost(
 ) {
     val bottomNavController = rememberNavController()
     val currentRoute = bottomNavController.currentBackStackEntryAsState().value?.destination?.route
+
     val containerColor = if(currentRoute == MainRoute.Feed.route) Color(0xFF121212) else MaterialTheme.colorScheme.background
 
     Scaffold(

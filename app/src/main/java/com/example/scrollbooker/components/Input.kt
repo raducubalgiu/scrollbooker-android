@@ -53,7 +53,7 @@ fun Input(
 @Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun InputPreview() {
-    ScrollBookerTheme(dynamicColor = false) {
+    ScrollBookerTheme() {
         Input(value = "", onValueChange = {})
     }
 }

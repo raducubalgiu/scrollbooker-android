@@ -1,6 +1,5 @@
 package com.example.scrollbooker.feature.inbox.presentation
 
-import android.content.res.Configuration
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -92,7 +91,7 @@ fun NotificationItem(
 @Preview(name = "Dark", showBackground = true, uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun NotificationItemPreview() {
-    ScrollBookerTheme(dynamicColor = false) {
+    ScrollBookerTheme() {
         NotificationItem(
             url = "",
             fullName = "Some User",

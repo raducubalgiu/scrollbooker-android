@@ -117,7 +117,7 @@ fun AppointmentCard() {
 @Preview(name = "Light", showBackground = true)
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun AppointmentCardPreview() {
-    ScrollBookerTheme(dynamicColor = false) {
+    ScrollBookerTheme() {
         AppointmentCard()
     }
 }

@@ -33,10 +33,10 @@ fun Avatar(url: String, size: Dp = AvatarSizeS ) {
 }
 
 @Preview(name = "Light", showBackground = true)
-@Preview(name = "Dark", uiMode = UI_MODE_NIGHT_YES)
+@Preview(name = "Dark", showBackground = true, uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun AvatarPreview() {
-    ScrollBookerTheme(dynamicColor = false) {
+    ScrollBookerTheme() {
         Avatar(url = "")
     }
 }

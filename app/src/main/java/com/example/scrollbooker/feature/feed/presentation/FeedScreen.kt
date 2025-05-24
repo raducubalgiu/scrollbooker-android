@@ -1,5 +1,6 @@
 package com.example.scrollbooker.feature.feed.presentation
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,12 +11,13 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 
 @Composable
 fun FeedScreen() {
-    LazyColumn(modifier = Modifier
-        .fillMaxSize()
-        .padding(BasePadding)
-    ) {
-        items(100) { item ->
-            Text(text = "Item ${item}")
-        }
-    }
+    Column(modifier = Modifier.fillMaxSize()) {  }
+//    LazyColumn(modifier = Modifier
+//        .fillMaxSize()
+//        .padding(BasePadding)
+//    ) {
+//        items(100) { item ->
+//            Text(text = "Item ${item}")
+//        }
+//    }
 }
