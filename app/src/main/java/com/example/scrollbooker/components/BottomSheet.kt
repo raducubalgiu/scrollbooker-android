@@ -28,6 +28,8 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
+import com.example.scrollbooker.ui.theme.Background
+import com.example.scrollbooker.ui.theme.SurfaceBG
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,7 +53,7 @@ fun BottomSheet(
     )
 
     val isDarkTheme = isSystemInDarkTheme()
-    val containerColor = if(isDarkTheme) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.background
+    val containerColor = if(isDarkTheme) SurfaceBG else Background
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {

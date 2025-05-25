@@ -5,10 +5,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.example.scrollbooker.R
+import com.example.scrollbooker.ui.theme.Error
+import com.example.scrollbooker.ui.theme.OnSurfaceBG
+import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable
 fun DialogConfirm(
@@ -21,7 +23,7 @@ fun DialogConfirm(
         title = {
             Text(
                 style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = OnSurfaceBG,
                 fontWeight = FontWeight.Bold,
                 text = title
             )
@@ -42,7 +44,7 @@ fun DialogConfirm(
                 }
             ) {
                 Text(
-                    color = MaterialTheme.colorScheme.error,
+                    color = Error,
                     fontWeight = FontWeight.ExtraBold,
                     text = "Sterge"
                 )
@@ -56,10 +58,10 @@ fun DialogConfirm(
             ) {
                 Text(
                     text = stringResource(R.string.cancel),
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = OnSurfaceBG
                 )
             }
         },
-        containerColor = MaterialTheme.colorScheme.surface
+        containerColor = SurfaceBG
     )
 }

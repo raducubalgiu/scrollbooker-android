@@ -1,19 +1,15 @@
 package com.example.scrollbooker.ui.theme
 
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 
 private val LightColorScheme = lightColorScheme(
-    primary = Primary,
-    onPrimary = Color.White,
+    primary = Color(0xFFFF6F00),
+    onPrimary = Color(0xFFFFFFFF),
 
     secondary = Color(0xFFFFC107),
     onSecondary = Color.Black,
@@ -27,19 +23,19 @@ private val LightColorScheme = lightColorScheme(
     surface = Color(0xFFF1F1F1),
     onSurface = Color(0xFF1C1B1F),
 
-    error = Error,
-    onError = onError
+    error = Color(0xFFD32F2F),
+    onError = Color.White
 )
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Primary,
-    onPrimary = Color.White,
+    primary = Color(0xFFFF6F00),
+    onPrimary = Color(0xFFE0E0E0),
 
     secondary = Color(0xFFFFB300),
-    onSecondary = Color.Black,
+    onSecondary = Color(0xFFE0E0E0),
 
     tertiary = Color(0xFF8E24AA),
-    onTertiary = Color.White,
+    onTertiary = Color(0xFFE0E0E0),
 
     background = Color(0xFF121212),
     onBackground = Color(0xFFE0E0E0),
@@ -47,8 +43,8 @@ private val DarkColorScheme = darkColorScheme(
     surface = Color(0xFF1C1C1C),
     onSurface = Color(0xFFAAAAAA),
 
-    error = Error,
-    onError = onError
+    error = Color(0xFFD32F2F),
+    onError = Color(0xFFE0E0E0)
 )
 
 @Composable

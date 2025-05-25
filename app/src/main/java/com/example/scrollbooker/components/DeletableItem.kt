@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
@@ -24,6 +23,9 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.ui.theme.Error
+import com.example.scrollbooker.ui.theme.OnSurfaceBG
+import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable
 fun DeletableItem(
@@ -32,7 +34,7 @@ fun DeletableItem(
     onDelete: (String) -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-    val containerColor = if(isSelected) MaterialTheme.colorScheme.error.copy(0.2f) else MaterialTheme.colorScheme.surface
+    val containerColor = if(isSelected) Error.copy(0.2f) else SurfaceBG
 
     Column(
         Modifier
@@ -59,7 +61,7 @@ fun DeletableItem(
                     horizontal = BasePadding,
                     vertical = SpacingM
                 ),
-                color = MaterialTheme.colorScheme.onSurface,
+                color = OnSurfaceBG,
                 fontWeight = FontWeight.SemiBold,
                 text = label
             )
@@ -68,7 +70,7 @@ fun DeletableItem(
                 modifier = Modifier.padding(end = BasePadding),
                 painter = painterResource(R.drawable.ic_close),
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.error
+                tint = Error
             )
         }
     }

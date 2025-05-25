@@ -2,7 +2,6 @@ package com.example.scrollbooker.feature.appointments.presentation.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,7 +23,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -37,7 +35,12 @@ import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.feature.appointments.domain.model.Appointment
+import com.example.scrollbooker.ui.theme.Error
+import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.OnSurfaceBG
+import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.ScrollBookerTheme
+import com.example.scrollbooker.ui.theme.onPrimary
 
 @Composable
 fun AppointmentCard(appointment: Appointment) {
@@ -47,9 +50,7 @@ fun AppointmentCard(appointment: Appointment) {
     ) {
         val supportingText = if(appointment.isCustomer) "@${appointment.user.username}" else appointment.user.profession
         val channelMessage = if(appointment.channel == "scroll_booker") "Scroll Booker" else "Client propriu"
-        val chipColor = if(appointment.channel == "scroll_booker")
-            MaterialTheme.colorScheme.primary
-        else MaterialTheme.colorScheme.error
+        val chipColor = if(appointment.channel == "scroll_booker") Primary else Error
 
         Column(
             modifier = Modifier
@@ -73,7 +74,7 @@ fun AppointmentCard(appointment: Appointment) {
                                 style = MaterialTheme.typography.titleSmall,
                                 text = appointment.user.fullName,
                                 fontWeight = FontWeight.ExtraBold,
-                                color = MaterialTheme.colorScheme.onBackground
+                                color = OnBackground
                             )
                             if(!appointment.isCustomer) {
                                 Spacer(Modifier.width(BasePadding))
@@ -87,7 +88,7 @@ fun AppointmentCard(appointment: Appointment) {
                                     style = MaterialTheme.typography.bodyLarge,
                                     text = appointment.user.ratingsAverage.toString(),
                                     fontWeight = FontWeight.ExtraBold,
-                                    color = MaterialTheme.colorScheme.onBackground
+                                    color = OnBackground
                                 )
                             }
                         }
@@ -96,7 +97,7 @@ fun AppointmentCard(appointment: Appointment) {
                             style = MaterialTheme.typography.labelLarge,
                             text = supportingText,
                             fontWeight = FontWeight.Normal,
-                            color = MaterialTheme.colorScheme.onSurface
+                            color = OnSurfaceBG
                         )
                     }
                 }
@@ -107,7 +108,7 @@ fun AppointmentCard(appointment: Appointment) {
                         onClick = {},
                         colors = SuggestionChipDefaults.suggestionChipColors(
                             containerColor = chipColor,
-                            labelColor = MaterialTheme.colorScheme.onPrimary
+                            labelColor = onPrimary
                         ),
                         shape = ShapeDefaults.ExtraSmall,
                         border = BorderStroke(width = 0.dp, color = Color.Transparent)
@@ -118,7 +119,7 @@ fun AppointmentCard(appointment: Appointment) {
             Spacer(Modifier.height(BasePadding))
 
             Text(
-                color = MaterialTheme.colorScheme.onBackground,
+                color = OnBackground,
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold,
                 text = "Joi, 15 Mai - 17:30"
@@ -129,7 +130,7 @@ fun AppointmentCard(appointment: Appointment) {
             Text(
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground,
+                color = OnBackground,
                 text = appointment.product.name
             )
 
@@ -138,7 +139,7 @@ fun AppointmentCard(appointment: Appointment) {
             Text(
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground,
+                color = OnBackground,
                 text = "${appointment.product.price} ${appointment.product.currency}"
             )
 

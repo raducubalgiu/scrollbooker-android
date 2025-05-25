@@ -10,7 +10,6 @@ import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,6 +18,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
+import com.example.scrollbooker.ui.theme.Background
+import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable
 fun ItemSwitch(
@@ -30,7 +31,7 @@ fun ItemSwitch(
     checked: Boolean = true,
 ) {
     val isDarkMode = isSystemInDarkTheme()
-    val background = if(isDarkMode) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.background
+    val background = if(isDarkMode) SurfaceBG else Background
     var checked by remember { mutableStateOf(checked) }
 
     ListItem(

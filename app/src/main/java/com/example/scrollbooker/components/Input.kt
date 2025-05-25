@@ -11,7 +11,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.scrollbooker.ui.theme.OnSurfaceBG
+import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.ScrollBookerTheme
+import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable
 fun Input(
@@ -33,19 +36,19 @@ fun Input(
         singleLine = true,
         shape = MaterialTheme.shapes.medium,
         colors = TextFieldDefaults.colors(
-            focusedContainerColor = MaterialTheme.colorScheme.surface,
-            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-            cursorColor = MaterialTheme.colorScheme.primary,
+            focusedContainerColor = SurfaceBG,
+            unfocusedContainerColor = SurfaceBG,
+            cursorColor = Primary,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            focusedLabelColor = MaterialTheme.colorScheme.primary,
-            unfocusedLabelColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-            focusedTextColor = MaterialTheme.colorScheme.onSurface,
-            unfocusedTextColor = MaterialTheme.colorScheme.onSurface
+            focusedLabelColor = Primary,
+            unfocusedLabelColor = OnSurfaceBG.copy(alpha = 0.7f),
+            focusedTextColor = OnSurfaceBG,
+            unfocusedTextColor = OnSurfaceBG
         ),
         modifier = modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.medium)
+            .background(OnSurfaceBG, MaterialTheme.shapes.medium)
     )
 }
 

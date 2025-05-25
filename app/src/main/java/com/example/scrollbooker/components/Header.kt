@@ -22,6 +22,7 @@ import androidx.navigation.NavController
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
+import com.example.scrollbooker.ui.theme.OnBackground
 
 @Composable
 fun Header(
@@ -50,7 +51,7 @@ fun Header(
             if(enableBack) {
                 Icon(
                     painter = painterResource(R.drawable.ic_prev),
-                    tint = MaterialTheme.colorScheme.onBackground,
+                    tint = OnBackground,
                     contentDescription = null
                 )
             }
@@ -59,7 +60,7 @@ fun Header(
             if (title.isNotEmpty()) {
                 Text(
                     style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = OnBackground,
                     fontWeight = FontWeight.Bold,
                     text = title
                 )

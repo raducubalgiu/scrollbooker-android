@@ -1,12 +1,9 @@
 package com.example.scrollbooker.components
 
-import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
@@ -20,6 +17,8 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import com.example.scrollbooker.R
+import com.example.scrollbooker.ui.theme.Background
+import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable
 fun ItemList(
@@ -31,7 +30,7 @@ fun ItemList(
     onClick: () -> Unit
 ) {
     val isDarkMode = isSystemInDarkTheme()
-    val background = if(isDarkMode) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.background
+    val background = if(isDarkMode) SurfaceBG else Background
 
     ListItem(
         modifier = Modifier
