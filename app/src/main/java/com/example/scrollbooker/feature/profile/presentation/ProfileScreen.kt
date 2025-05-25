@@ -27,6 +27,9 @@ import androidx.navigation.NavController
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.BottomSheet
 import com.example.scrollbooker.components.ItemList
+import com.example.scrollbooker.ui.theme.Background
+import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -77,14 +80,14 @@ fun ProfileScreen(navController: NavController) {
 
         Column {
             TabRow(
-                containerColor = MaterialTheme.colorScheme.background,
-                contentColor = MaterialTheme.colorScheme.onSurface,
+                containerColor = Background,
+                contentColor = OnSurfaceBG,
                 indicator = {  tabPositions ->
                     Box(
                         Modifier
                             .tabIndicatorOffset(tabPositions[selectedTabIndex])
                             .height(1.5.dp)
-                            .background(MaterialTheme.colorScheme.onBackground)
+                            .background(OnBackground)
                     )
                 },
                 selectedTabIndex = selectedTabIndex
@@ -104,7 +107,7 @@ fun ProfileScreen(navController: NavController) {
                         text = { Text(
                             text = title,
                             style = MaterialTheme.typography.bodyLarge,
-                            color = if(isSelected) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.onSurface,
+                            color = if(isSelected) Background else OnSurfaceBG,
                             fontWeight = if(isSelected) FontWeight.Bold else FontWeight.Normal
                         )}
                     )

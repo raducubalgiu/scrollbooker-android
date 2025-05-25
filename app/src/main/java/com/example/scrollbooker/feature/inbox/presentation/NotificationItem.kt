@@ -20,8 +20,11 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.Avatar
 import com.example.scrollbooker.core.util.Dimens.AvatarSizeS
-import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
+import com.example.scrollbooker.ui.theme.Background
+import com.example.scrollbooker.ui.theme.Error
+import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.ScrollBookerTheme
 
 @Composable
@@ -49,7 +52,7 @@ fun NotificationItem(
             Text(
                 modifier = Modifier.padding(SpacingXXS),
                 style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.onBackground,
+                color = OnBackground,
                 text = fullName
             )
         },
@@ -68,8 +71,8 @@ fun NotificationItem(
                     onClick = {},
                     label = { Text(text = isFollowText) },
                     colors = SuggestionChipDefaults.suggestionChipColors(
-                        containerColor = MaterialTheme.colorScheme.error,
-                        labelColor = MaterialTheme.colorScheme.onPrimary
+                        containerColor = Error,
+                        labelColor = OnPrimary
                     ),
                     shape = ShapeDefaults.ExtraSmall,
                     border = BorderStroke(width = 0.dp, color = Color.Transparent)
@@ -77,7 +80,7 @@ fun NotificationItem(
             }
         },
         colors = ListItemDefaults.colors(
-            containerColor = MaterialTheme.colorScheme.background
+            containerColor = Background
         )
     )
 }

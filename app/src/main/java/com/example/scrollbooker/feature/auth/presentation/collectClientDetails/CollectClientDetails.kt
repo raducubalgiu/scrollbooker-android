@@ -24,6 +24,8 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.ScreenIndicator
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingL
+import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.OnSurfaceBG
 
 @Composable
 fun CollectClientDetails(
@@ -43,14 +45,14 @@ fun CollectClientDetails(
         Column {
             Text(
                 style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.onBackground,
+                color = OnBackground,
                 fontWeight = FontWeight.ExtraBold,
                 text = headLine
             )
             Text(
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Normal,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                color = OnSurfaceBG.copy(alpha = 0.7f),
                 text = subHeadLine,
             )
             Spacer(Modifier.height(SpacingL))

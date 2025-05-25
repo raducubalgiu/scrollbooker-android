@@ -7,7 +7,7 @@ import androidx.compose.ui.graphics.Color
 val Primary: Color
     @Composable get() = MaterialTheme.colorScheme.primary
 
-val onPrimary: Color
+val OnPrimary: Color
     @Composable get() = MaterialTheme.colorScheme.onPrimary
 
 val Secondary: Color

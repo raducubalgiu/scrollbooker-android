@@ -35,6 +35,8 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.Input
 import com.example.scrollbooker.core.nav.routes.AuthRoute
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.Primary
 
 @Composable
 fun RegisterScreen(
@@ -57,7 +59,7 @@ fun RegisterScreen(
         Column {
             Text(
                 style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.onBackground,
+                color = OnBackground,
                 fontWeight = FontWeight.ExtraBold,
                 text = stringResource(id = R.string.register)
             )
@@ -85,7 +87,8 @@ fun RegisterScreen(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = { viewModel.login("radu", "password") },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary)
+                    containerColor = Primary
+                )
             ) {
                 Text(text = stringResource(id = R.string.register))
             }
@@ -111,7 +114,7 @@ fun RegisterScreen(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = OnBackground,
                     text = "${stringResource(id = R.string.alreadyHaveAnAccount)}?"
                 )
 

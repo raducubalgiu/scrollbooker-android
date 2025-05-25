@@ -17,18 +17,20 @@ import com.example.scrollbooker.components.Header
 import com.example.scrollbooker.components.ItemList
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.ui.theme.Background
+import com.example.scrollbooker.ui.theme.OnBackground
 
 @Composable
 fun SettingsScreen(navController: NavController) {
     Column(modifier = Modifier
         .fillMaxSize()
-        .background(MaterialTheme.colorScheme.background)) {
+        .background(Background)) {
         Header(title = "", navController = navController)
 
         Column(modifier = Modifier.padding(BasePadding)) {
             Text(
                 style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.onBackground,
+                color = OnBackground,
                 fontWeight = FontWeight.ExtraBold,
                 text = stringResource(id = R.string.settings)
             )

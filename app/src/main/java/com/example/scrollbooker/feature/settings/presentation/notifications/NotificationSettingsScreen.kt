@@ -1,9 +1,6 @@
 package com.example.scrollbooker.feature.settings.presentation.notifications
-
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -14,9 +11,7 @@ import com.example.scrollbooker.components.ItemSwitch
 
 @Composable
 fun NotificationSettings(navController: NavController) {
-    Column(modifier = Modifier
-        .fillMaxSize()
-    ) {
+    Column(modifier = Modifier.fillMaxSize()) {
         Header(
             title = stringResource(id = R.string.notifications),
             navController = navController

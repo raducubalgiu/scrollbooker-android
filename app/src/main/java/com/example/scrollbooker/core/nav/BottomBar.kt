@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +27,9 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.core.nav.routes.MainRoute.Appointments
 import com.example.scrollbooker.core.nav.routes.MainRoute.Feed
 import com.example.scrollbooker.core.nav.routes.MainRoute.Inbox
+import com.example.scrollbooker.ui.theme.Background
+import com.example.scrollbooker.ui.theme.Error
+import com.example.scrollbooker.ui.theme.OnBackground
 
 @Composable
 fun BottomBar(navController: NavController) {
@@ -39,25 +41,17 @@ fun BottomBar(navController: NavController) {
         BottomNavItem(route = "profile", R.string.profile, R.drawable.ic_person)
     )
 
-    val error = MaterialTheme.colorScheme.error
-    val background = MaterialTheme.colorScheme.background
-    val onBackground = MaterialTheme.colorScheme.onBackground
-
     val currentBackStackEntry = navController.currentBackStackEntryAsState().value
     val currentRoute = currentBackStackEntry?.destination?.route
-
-    val unselectedColor = Color.Gray
     val isFeedScreen = currentRoute == Feed.route
 
-    val selectedColor = if(isFeedScreen) Color(0xFFE0E0E0) else onBackground
-    val containerColor = if(isFeedScreen) Color(0xFF121212) else background
+    val selectedColor = if(isFeedScreen) Color(0xFFE0E0E0) else OnBackground
+    val containerColor = if(isFeedScreen) Color(0xFF121212) else Background
+    val unselectedColor = Color.Gray
 
     val interactionSource = remember { MutableInteractionSource() }
 
-    NavigationBar(
-        tonalElevation = 0.dp,
-        containerColor = containerColor
-    ) {
+    NavigationBar(tonalElevation = 0.dp, containerColor = containerColor) {
         Row(modifier = Modifier.fillMaxWidth()) {
             items.forEach { item ->
                 val isSelected = currentRoute == item.route
@@ -85,8 +79,8 @@ fun BottomBar(navController: NavController) {
                     BadgedBox(
                         badge = {
                             when(item.route) {
-                                Inbox.route -> Badge(containerColor = error) { Text(text = "3") }
-                                Appointments.route -> Badge(containerColor = error) { Text(text = "10") }
+                                Inbox.route -> Badge(containerColor = Error) { Text(text = "3") }
+                                Appointments.route -> Badge(containerColor = Error) { Text(text = "10") }
                             }
                         }
                     ) {

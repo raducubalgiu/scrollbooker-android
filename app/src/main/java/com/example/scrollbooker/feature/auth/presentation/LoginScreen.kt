@@ -30,6 +30,8 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.Input
 import com.example.scrollbooker.core.nav.routes.AuthRoute
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.Primary
 
 @Composable
 fun LoginScreen(
@@ -51,7 +53,7 @@ fun LoginScreen(
         Column {
             Text(
                 style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.onBackground,
+                color = OnBackground,
                 fontWeight = FontWeight.ExtraBold,
                 text = stringResource(id = R.string.login)
             )
@@ -79,7 +81,7 @@ fun LoginScreen(
                 //onClick = { viewModel.login("radu", "password") },
                 onClick = { navController.navigate(AuthRoute.BusinessLocation.route) },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary
+                    containerColor = Primary
                 )
             ) {
                 Text(text = stringResource(id = R.string.login))
@@ -105,7 +107,7 @@ fun LoginScreen(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = OnBackground,
                     text = "${stringResource(id = R.string.dontHaveAnAccount)}?"
                 )
                 TextButton(onClick = {

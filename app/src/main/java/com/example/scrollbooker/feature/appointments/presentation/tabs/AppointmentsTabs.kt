@@ -20,27 +20,27 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.feature.appointments.presentation.tabs.business.AppointmentsBusinessTab
 import com.example.scrollbooker.feature.appointments.presentation.tabs.client.AppointmentsClientTab
+import com.example.scrollbooker.ui.theme.Background
+import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import kotlinx.coroutines.launch
 
 @Composable
-fun AppointmentsTabs(modifier: Modifier = Modifier) {
+fun AppointmentsTabs() {
     val pagerState = rememberPagerState(initialPage = 0) { 2 }
     val selectedTabIndex = pagerState.currentPage
     val tabs = listOf(stringResource(id = R.string.asEmployee), stringResource(id = R.string.asClient))
 
-    val onBackground = MaterialTheme.colorScheme.onBackground
-    val onSurface = MaterialTheme.colorScheme.onSurface
-
     Column {
         TabRow(
-            containerColor = MaterialTheme.colorScheme.background,
-            contentColor = onSurface,
+            containerColor = Background,
+            contentColor = OnSurfaceBG,
             indicator = {  tabPositions ->
                 Box(
                     Modifier
                         .tabIndicatorOffset(tabPositions[selectedTabIndex])
                         .height(1.5.dp)
-                        .background(onBackground)
+                        .background(OnBackground)
                 )
             },
             selectedTabIndex = selectedTabIndex
@@ -60,7 +60,7 @@ fun AppointmentsTabs(modifier: Modifier = Modifier) {
                     text = { Text(
                         text = title,
                         style = MaterialTheme.typography.bodyLarge,
-                        color = if(isSelected) onBackground else onSurface,
+                        color = if(isSelected) OnBackground else OnSurfaceBG,
                         fontWeight = if(isSelected) FontWeight.Bold else FontWeight.Normal
                     )}
                 )
