@@ -3,7 +3,9 @@ package com.example.scrollbooker.feature.myBusiness
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -22,5 +24,9 @@ fun MyBusinessScreen(navController: NavController) {
             navController = navController,
             title = stringResource(R.string.myBusiness),
         )
+
+        Button(onClick = { navController.navigate("Services") }) {
+            Text(text = "Go To Services")
+        }
     }
 }

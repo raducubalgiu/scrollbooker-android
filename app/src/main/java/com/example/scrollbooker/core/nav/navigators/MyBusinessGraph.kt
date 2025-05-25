@@ -10,6 +10,7 @@ import androidx.navigation.navigation
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.feature.calendar.CalendarScreen
 import com.example.scrollbooker.feature.myBusiness.MyBusinessScreen
+import com.example.scrollbooker.feature.myBusiness.services.presentation.ServicesScreen
 
 fun NavGraphBuilder.myBusinessGraph(navController: NavController) {
     navigation(
@@ -73,6 +74,35 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavController) {
             }
         ) {
             MyBusinessScreen(navController = navController)
+        }
+        composable(
+            MainRoute.Services.route,
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { fullWidth -> fullWidth },
+                    animationSpec = tween(300)
+                )
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { fullWidth -> -fullWidth },
+                    animationSpec = tween(300)
+                )
+            },
+            popEnterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { fullWidth -> -fullWidth },
+                    animationSpec = tween(300)
+                )
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { fullWidth -> fullWidth },
+                    animationSpec = tween(300)
+                )
+            }
+        ) {
+            ServicesScreen(navController = navController)
         }
     }
 }

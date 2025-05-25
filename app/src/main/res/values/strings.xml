@@ -41,4 +41,5 @@
     <string name="bookAgain">Rezervă din nou</string>
     <string name="asEmployee">Ca angajat</string>
     <string name="asClient">Ca și client</string>
+    <string name="add">Adaugă</string>
 </resources>
