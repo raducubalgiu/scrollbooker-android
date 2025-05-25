@@ -53,39 +53,27 @@ fun MainNavHost(viewModel: MainViewModel) {
             modifier = Modifier.padding(innerPadding),
             navController = bottomNavController,
             startDestination = MainRoute.Feed.route,
-            enterTransition = {
-                fadeIn(animationSpec = tween(durationMillis = 0))
-            },
-            exitTransition = {
-                fadeOut(animationSpec = tween(durationMillis = 0))
-            },
-            popEnterTransition = {
-                fadeIn(animationSpec = tween(durationMillis = 0))
-            },
-            popExitTransition = {
-                fadeOut(animationSpec = tween(durationMillis = 0))
-            },
+            enterTransition = { fadeIn(animationSpec = tween(durationMillis = 0)) },
+            exitTransition = { fadeOut(animationSpec = tween(durationMillis = 0)) },
+            popEnterTransition = { fadeIn(animationSpec = tween(durationMillis = 0)) },
+            popExitTransition = { fadeOut(animationSpec = tween(durationMillis = 0)) },
         ) {
             composable(MainRoute.Feed.route) {
                 FeedScreen()
             }
-
             composable(MainRoute.Inbox.route) {
                 InboxScreen(
                     navController = bottomNavController
                 )
             }
-
             composable(MainRoute.Search.route) {
                 SearchScreen()
             }
-
             composable(MainRoute.Appointments.route) {
                 AppointmentsScreen(
                     navController = bottomNavController
                 )
             }
-
             profileNavigator(navController = bottomNavController)
         }
     }

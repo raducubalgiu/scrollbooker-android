@@ -1,15 +1,18 @@
 package com.example.scrollbooker.core.nav.navigators
 
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.scrollbooker.core.nav.routes.MainRoute
+import com.example.scrollbooker.core.nav.transitions.slideInFromLeft
+import com.example.scrollbooker.core.nav.transitions.slideInFromRight
+import com.example.scrollbooker.core.nav.transitions.slideOutToLeft
+import com.example.scrollbooker.core.nav.transitions.slideOutToRight
 import com.example.scrollbooker.feature.calendar.CalendarScreen
 import com.example.scrollbooker.feature.myBusiness.MyBusinessScreen
+import com.example.scrollbooker.feature.myBusiness.products.presentation.ProductsScreen
+import com.example.scrollbooker.feature.myBusiness.schedules.presentation.SchedulesScreen
 import com.example.scrollbooker.feature.myBusiness.services.presentation.ServicesScreen
 
 fun NavGraphBuilder.myBusinessGraph(navController: NavController) {
@@ -19,90 +22,42 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavController) {
     ) {
         composable(
             MainRoute.Calendar.route,
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { fullWidth -> fullWidth },
-                    animationSpec = tween(300)
-                )
-            },
-            exitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { fullWidth -> -fullWidth },
-                    animationSpec = tween(300)
-                )
-            },
-            popEnterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { fullWidth -> -fullWidth },
-                    animationSpec = tween(300)
-                )
-            },
-            popExitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { fullWidth -> fullWidth },
-                    animationSpec = tween(300)
-                )
-            }
-        ) {
-            CalendarScreen(navController)
-        }
+            enterTransition = slideInFromRight(),
+            exitTransition = slideOutToLeft(),
+            popEnterTransition = slideInFromLeft(),
+            popExitTransition = slideOutToRight()
+        ) { CalendarScreen(navController) }
+
         composable(
             MainRoute.MyBusiness.route,
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { fullWidth -> fullWidth },
-                    animationSpec = tween(300)
-                )
-            },
-            exitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { fullWidth -> -fullWidth },
-                    animationSpec = tween(300)
-                )
-            },
-            popEnterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { fullWidth -> -fullWidth },
-                    animationSpec = tween(300)
-                )
-            },
-            popExitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { fullWidth -> fullWidth },
-                    animationSpec = tween(300)
-                )
-            }
-        ) {
-            MyBusinessScreen(navController = navController)
-        }
+            enterTransition = slideInFromRight(),
+            exitTransition = slideOutToLeft(),
+            popEnterTransition = slideInFromLeft(),
+            popExitTransition = slideOutToRight()
+        ) { MyBusinessScreen(navController = navController) }
+
         composable(
             MainRoute.Services.route,
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { fullWidth -> fullWidth },
-                    animationSpec = tween(300)
-                )
-            },
-            exitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { fullWidth -> -fullWidth },
-                    animationSpec = tween(300)
-                )
-            },
-            popEnterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { fullWidth -> -fullWidth },
-                    animationSpec = tween(300)
-                )
-            },
-            popExitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { fullWidth -> fullWidth },
-                    animationSpec = tween(300)
-                )
-            }
-        ) {
-            ServicesScreen(navController = navController)
-        }
+            enterTransition = slideInFromRight(),
+            exitTransition = slideOutToLeft(),
+            popEnterTransition = slideInFromLeft(),
+            popExitTransition = slideOutToRight()
+        ) { ServicesScreen(navController = navController) }
+
+        composable(
+            MainRoute.Products.route,
+            enterTransition = slideInFromRight(),
+            exitTransition = slideOutToLeft(),
+            popEnterTransition = slideInFromLeft(),
+            popExitTransition = slideOutToRight()
+        ) { ProductsScreen(navController = navController) }
+
+        composable(
+            MainRoute.Schedules.route,
+            enterTransition = slideInFromRight(),
+            exitTransition = slideOutToLeft(),
+            popEnterTransition = slideInFromLeft(),
+            popExitTransition = slideOutToRight()
+        ) { SchedulesScreen(navController = navController) }
     }
 }
