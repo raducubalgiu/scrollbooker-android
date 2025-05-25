@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,7 +18,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.Header
-import com.example.scrollbooker.components.ScreenContainer
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
