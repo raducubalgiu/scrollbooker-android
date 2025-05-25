@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 fun AppointmentsTabs(modifier: Modifier = Modifier) {
     val pagerState = rememberPagerState(initialPage = 0) { 2 }
     val selectedTabIndex = pagerState.currentPage
-    val tabs = listOf(stringResource(id = R.string.forOthers), stringResource(id = R.string.forMe))
+    val tabs = listOf(stringResource(id = R.string.asEmployee), stringResource(id = R.string.asClient))
 
     val onBackground = MaterialTheme.colorScheme.onBackground
     val onSurface = MaterialTheme.colorScheme.onSurface
@@ -59,6 +59,7 @@ fun AppointmentsTabs(modifier: Modifier = Modifier) {
                     },
                     text = { Text(
                         text = title,
+                        style = MaterialTheme.typography.bodyLarge,
                         color = if(isSelected) onBackground else onSurface,
                         fontWeight = if(isSelected) FontWeight.Bold else FontWeight.Normal
                     )}
@@ -68,8 +69,8 @@ fun AppointmentsTabs(modifier: Modifier = Modifier) {
 
         HorizontalPager(state = pagerState) { page ->
             when(page) {
-                0 -> AppointmentsClientTab()
-                1 -> AppointmentsBusinessTab()
+                0 -> AppointmentsBusinessTab()
+                1 -> AppointmentsClientTab()
             }
         }
     }

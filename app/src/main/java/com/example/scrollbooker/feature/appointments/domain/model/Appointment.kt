@@ -6,7 +6,8 @@ data class Appointment(
     val channel: String,
     val status: String,
     val product: Product,
-    val user: User
+    val user: User,
+    val isCustomer: Boolean
 )
 
 data class Product(
@@ -22,12 +23,7 @@ data class User(
     val id: Int,
     val avatar: String,
     val fullName: String,
+    val username: String,
     val ratingsAverage: Double,
     val profession: String
 )
-
-enum class AppointmentChannel {
-    SCROLL_BOOKER,
-    OWN_CLIENT,
-    UNKNOWN
-}

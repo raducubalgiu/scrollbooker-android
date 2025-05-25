@@ -39,4 +39,6 @@
     <string name="termsAndConditions">Termeni și condiții</string>
     <string name="cancel">Anulează</string>
     <string name="bookAgain">Rezervă din nou</string>
+    <string name="asEmployee">Ca angajat</string>
+    <string name="asClient">Ca și client</string>
 </resources>

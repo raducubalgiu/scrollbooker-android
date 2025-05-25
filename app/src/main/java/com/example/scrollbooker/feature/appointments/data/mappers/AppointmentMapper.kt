@@ -15,6 +15,7 @@ fun AppointmentDto.toDomain(): Appointment {
         status = status,
         product = product.toDomain(),
         user = user.toDomain(),
+        isCustomer = isCustomer,
     )
 }
 
@@ -34,6 +35,7 @@ fun UserDto.toDomain(): User {
         id = id,
         avatar = avatar,
         fullName = fullName,
+        username = username,
         ratingsAverage = ratingsAverage,
         profession = profession,
     )

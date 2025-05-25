@@ -2,6 +2,7 @@ package com.example.scrollbooker.feature.appointments.presentation.tabs.business
 
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
@@ -11,7 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.example.scrollbooker.feature.appointments.presentation.components.AppointmentClientCard
+import com.example.scrollbooker.feature.appointments.presentation.components.AppointmentCard
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -20,6 +21,7 @@ import kotlinx.coroutines.launch
 fun AppointmentsBusinessTab(modifier: Modifier = Modifier) {
     val coroutineScope = rememberCoroutineScope()
     var isRefreshing by remember { mutableStateOf(false) }
+    val appointments = remember { dummyBusinessAppointments }
 
     PullToRefreshBox(
         isRefreshing = isRefreshing,
@@ -33,12 +35,12 @@ fun AppointmentsBusinessTab(modifier: Modifier = Modifier) {
         modifier = modifier
     ) {
 
-//        LazyColumn(
-//            Modifier.fillMaxHeight()
-//        ) {
-//            items(40) { appointment ->
-//                AppointmentClientCard(appointment = appointment)
-//            }
-//        }
+        LazyColumn(
+            Modifier.fillMaxHeight()
+        ) {
+            items(appointments) { appointment ->
+                AppointmentCard(appointment)
+            }
+        }
     }
 }

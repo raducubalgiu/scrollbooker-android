@@ -27,7 +27,8 @@ import com.example.scrollbooker.core.util.Dimens.SpacingM
 fun Header(
     navController: NavController,
     title: String,
-    enableBack: Boolean = true
+    enableBack: Boolean = true,
+    actions: @Composable (() -> Unit)? = null
 ) {
     Row(
         modifier = Modifier
@@ -64,6 +65,8 @@ fun Header(
                 )
             }
         }
-        Box(Modifier.size(40.dp))
+        Box(Modifier.size(40.dp)) {
+            actions
+        }
     }
 }

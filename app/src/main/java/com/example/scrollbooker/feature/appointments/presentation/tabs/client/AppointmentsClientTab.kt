@@ -12,7 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.example.scrollbooker.feature.appointments.presentation.components.AppointmentClientCard
+import com.example.scrollbooker.feature.appointments.presentation.components.AppointmentCard
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -36,7 +36,7 @@ fun AppointmentsClientTab() {
 
         LazyColumn(Modifier.fillMaxHeight()) {
             items(appointments) { appointment ->
-                AppointmentClientCard(appointment)
+                AppointmentCard(appointment)
             }
         }
     }
