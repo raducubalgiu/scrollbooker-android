@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.appointments.presentation
+package com.example.scrollbooker.feature.appointments.presentation.tabs
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -18,6 +18,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
+import com.example.scrollbooker.feature.appointments.presentation.tabs.business.AppointmentsBusinessTab
+import com.example.scrollbooker.feature.appointments.presentation.tabs.client.AppointmentsClientTab
 import kotlinx.coroutines.launch
 
 @Composable
@@ -66,8 +68,8 @@ fun AppointmentsTabs(modifier: Modifier = Modifier) {
 
         HorizontalPager(state = pagerState) { page ->
             when(page) {
-                0 -> AppointmentsForOtherTab()
-                1 -> AppointmentsForMeTab()
+                0 -> AppointmentsClientTab()
+                1 -> AppointmentsBusinessTab()
             }
         }
     }

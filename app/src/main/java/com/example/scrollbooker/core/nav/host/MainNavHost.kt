@@ -5,7 +5,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -18,7 +18,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.scrollbooker.MainViewModel
 import com.example.scrollbooker.core.nav.BottomBar
-import com.example.scrollbooker.core.nav.graphs.profileGraph
+import com.example.scrollbooker.core.nav.navigators.profileNavigator
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.feature.appointments.presentation.AppointmentsScreen
 import com.example.scrollbooker.feature.feed.presentation.FeedScreen
@@ -29,8 +29,9 @@ import com.example.scrollbooker.feature.search.presentation.SearchScreen
 fun MainNavHost(viewModel: MainViewModel) {
     val bottomNavController = rememberNavController()
     val currentRoute = bottomNavController.currentBackStackEntryAsState().value?.destination?.route
+    val isFeedScreen = (currentRoute == MainRoute.Feed.route)
 
-    val containerColor = if(currentRoute == MainRoute.Feed.route) Color(0xFF121212) else MaterialTheme.colorScheme.background
+    val containerColor = if(isFeedScreen) Color(0xFF121212) else MaterialTheme.colorScheme.background
 
     val bottomBarRoutes = setOf(
         MainRoute.Feed.route,
@@ -41,56 +42,51 @@ fun MainNavHost(viewModel: MainViewModel) {
     )
 
     Scaffold(
-        containerColor = containerColor,
+        containerColor = Color.Transparent,
         bottomBar = {
             if(currentRoute in bottomBarRoutes) {
                 BottomBar(bottomNavController)
             }
         }
     ) { innerPadding ->
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .background(containerColor)
-            .padding(innerPadding)
+        NavHost(
+            modifier = Modifier.padding(innerPadding),
+            navController = bottomNavController,
+            startDestination = MainRoute.Feed.route,
+            enterTransition = {
+                fadeIn(animationSpec = tween(durationMillis = 0))
+            },
+            exitTransition = {
+                fadeOut(animationSpec = tween(durationMillis = 0))
+            },
+            popEnterTransition = {
+                fadeIn(animationSpec = tween(durationMillis = 0))
+            },
+            popExitTransition = {
+                fadeOut(animationSpec = tween(durationMillis = 0))
+            },
         ) {
-            NavHost(
-                navController = bottomNavController,
-                startDestination = MainRoute.Feed.route,
-//                enterTransition = {
-//                    fadeIn(animationSpec = tween(durationMillis = 100))
-//                },
-//                exitTransition = {
-//                    fadeOut(animationSpec = tween(durationMillis = 100))
-//                },
-//                popEnterTransition = {
-//                    fadeIn(animationSpec = tween(durationMillis = 100))
-//                },
-//                popExitTransition = {
-//                    fadeOut(animationSpec = tween(durationMillis = 100))
-//                },
-            ) {
-                composable(MainRoute.Feed.route) {
-                    FeedScreen()
-                }
-
-                composable(MainRoute.Inbox.route) {
-                    InboxScreen(
-                        navController = bottomNavController
-                    )
-                }
-
-                composable(MainRoute.Search.route) {
-                    SearchScreen()
-                }
-
-                composable(MainRoute.Appointments.route) {
-                    AppointmentsScreen(
-                        navController = bottomNavController
-                    )
-                }
-
-                profileGraph(navController = bottomNavController)
+            composable(MainRoute.Feed.route) {
+                FeedScreen()
             }
+
+            composable(MainRoute.Inbox.route) {
+                InboxScreen(
+                    navController = bottomNavController
+                )
+            }
+
+            composable(MainRoute.Search.route) {
+                SearchScreen()
+            }
+
+            composable(MainRoute.Appointments.route) {
+                AppointmentsScreen(
+                    navController = bottomNavController
+                )
+            }
+
+            profileNavigator(navController = bottomNavController)
         }
     }
 }

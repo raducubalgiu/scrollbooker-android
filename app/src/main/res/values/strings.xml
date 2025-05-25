@@ -37,4 +37,6 @@
     <string name="reportProblem">Raportează o problemă</string>
     <string name="support">Suport</string>
     <string name="termsAndConditions">Termeni și condiții</string>
+    <string name="cancel">Anulează</string>
+    <string name="bookAgain">Rezervă din nou</string>
 </resources>

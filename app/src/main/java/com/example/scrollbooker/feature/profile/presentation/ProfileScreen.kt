@@ -30,13 +30,19 @@ fun ProfileScreen(navController: NavController) {
                 headLine = stringResource(id = R.string.calendar),
                 leftIcon = painterResource(R.drawable.ic_calendar),
                 displayRightIcon = false,
-                onClick = {}
+                onClick = {
+                    showBottomSheet = false
+                    navController.navigate("calendar")
+                }
             )
             ItemList(
                 headLine = stringResource(id = R.string.myBusiness),
                 leftIcon = painterResource(R.drawable.ic_business),
                 displayRightIcon = false,
-                onClick = {}
+                onClick = {
+                    showBottomSheet = false
+                    navController.navigate("myBusiness")
+                }
             )
             ItemList(
                 headLine = stringResource(id = R.string.settings),

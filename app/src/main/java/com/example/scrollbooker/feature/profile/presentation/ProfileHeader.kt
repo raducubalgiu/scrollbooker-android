@@ -53,6 +53,7 @@ fun ProfileHeader(
         }
         Text(
             style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Bold,
             text = "Radu Balgiu"
         )
@@ -69,6 +70,7 @@ fun ProfileHeader(
             Icon(
                 painter = painterResource(R.drawable.ic_menu),
                 contentDescription = null,
+                tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.size(IconSizeXL)
             )
         }

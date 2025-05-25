@@ -1,0 +1,25 @@
+package com.example.scrollbooker.feature.calendar
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavController
+import com.example.scrollbooker.R
+import com.example.scrollbooker.components.Header
+
+@Composable
+fun CalendarScreen(navController: NavController) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background)
+    ) {
+        Header(
+            navController = navController,
+            title = stringResource(R.string.calendar)
+        )
+    }
+}

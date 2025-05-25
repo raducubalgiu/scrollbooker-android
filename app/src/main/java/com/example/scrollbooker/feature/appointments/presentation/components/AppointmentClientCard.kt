@@ -1,9 +1,7 @@
-package com.example.scrollbooker.feature.appointments.presentation
+package com.example.scrollbooker.feature.appointments.presentation.components
 
 import android.content.res.Configuration
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -18,27 +17,32 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.Avatar
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
+import com.example.scrollbooker.feature.appointments.domain.model.Appointment
 import com.example.scrollbooker.ui.theme.ScrollBookerTheme
 
 @Composable
-fun AppointmentCard() {
+fun AppointmentClientCard(appointment: Appointment) {
     Column(modifier = Modifier
         .fillMaxWidth()
         .clickable(onClick = {})
     ) {
-        Column(modifier = Modifier.fillMaxWidth().padding(BasePadding)) {
-            Row {
-                Avatar(url = "https://example.com/image.jpg")
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(BasePadding),
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Avatar(url = appointment.user.avatar)
 
                 Spacer(modifier = Modifier.width(BasePadding))
 
@@ -46,7 +50,7 @@ fun AppointmentCard() {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             style = MaterialTheme.typography.titleSmall,
-                            text = "House Of Barbers",
+                            text = appointment.user.fullName,
                             fontWeight = FontWeight.ExtraBold,
                             color = MaterialTheme.colorScheme.onBackground
                         )
@@ -58,24 +62,18 @@ fun AppointmentCard() {
                         )
                         Spacer(Modifier.width(SpacingXS))
                         Text(
-                            style = MaterialTheme.typography.bodyMedium,
-                            text = "4.5",
+                            style = MaterialTheme.typography.bodyLarge,
+                            text = appointment.user.ratingsAverage.toString(),
                             fontWeight = FontWeight.ExtraBold,
                             color = MaterialTheme.colorScheme.onBackground
                         )
                     }
-                    Text(
-                        style = MaterialTheme.typography.bodyMedium,
-                        text = "Doctor Stomatolog",
-                        fontWeight = FontWeight.Normal,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
                     Spacer(Modifier.height(SpacingXXS))
                     Text(
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        text = "Tuns Barbati"
+                        style = MaterialTheme.typography.labelLarge,
+                        text = appointment.user.profession,
+                        fontWeight = FontWeight.Normal,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }
@@ -89,24 +87,31 @@ fun AppointmentCard() {
                 text = "Joi, 15 Mai - 17:30"
             )
 
+            Spacer(Modifier.height(SpacingM))
+
+            Text(
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.ExtraBold,
+                color = MaterialTheme.colorScheme.onBackground,
+                text = appointment.product.name
+            )
+
+            Spacer(Modifier.height(SpacingM))
+
+            Text(
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.ExtraBold,
+                color = MaterialTheme.colorScheme.onBackground,
+                text = "${appointment.product.price} ${appointment.product.currency}"
+            )
+
             Spacer(Modifier.height(BasePadding))
 
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.End
-            ) {
-                Box(modifier = Modifier
-                    .clip(shape = MaterialTheme.shapes.small)
-                    .background(MaterialTheme.colorScheme.error.copy(alpha = 0.8f))
-                    .padding(vertical = SpacingXS, horizontal = SpacingS)
-                ) {
-                    Text(
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onError,
-                        fontWeight = FontWeight.SemiBold,
-                        text = "Anulat"
-                    )
-                }
+            if(appointment.status == "finished") {
+                Button(
+                    onClick = {  },
+                    modifier = Modifier.fillMaxWidth(),
+                ) { Text(text = stringResource(id = R.string.bookAgain)) }
             }
         }
     }
@@ -119,6 +124,8 @@ fun AppointmentCard() {
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun AppointmentCardPreview() {
     ScrollBookerTheme() {
-        AppointmentCard()
+        AppointmentClientCard(
+            appointment = TODO()
+        )
     }
 }

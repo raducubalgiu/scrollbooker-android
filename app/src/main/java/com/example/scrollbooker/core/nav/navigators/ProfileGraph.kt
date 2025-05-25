@@ -1,4 +1,4 @@
-package com.example.scrollbooker.core.nav.graphs
+package com.example.scrollbooker.core.nav.navigators
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -13,9 +13,7 @@ fun NavGraphBuilder.profileGraph(navController: NavController) {
         startDestination = MainRoute.Profile.route,
     ) {
         composable(MainRoute.Profile.route) {
-            ProfileScreen(navController = navController)
+            ProfileScreen(navController)
         }
-
-        settingsGraph(navController)
     }
 }

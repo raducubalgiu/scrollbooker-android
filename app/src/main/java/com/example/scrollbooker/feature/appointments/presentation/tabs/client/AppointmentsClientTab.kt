@@ -1,13 +1,9 @@
-package com.example.scrollbooker.feature.appointments.presentation
+package com.example.scrollbooker.feature.appointments.presentation.tabs.client
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -16,15 +12,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.feature.appointments.presentation.components.AppointmentClientCard
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppointmentsForOtherTab(modifier: Modifier = Modifier) {
+fun AppointmentsClientTab() {
     val coroutineScope = rememberCoroutineScope()
     var isRefreshing by remember { mutableStateOf(false) }
+    val appointments = remember { dummyClientAppointments }
 
     PullToRefreshBox(
         isRefreshing = isRefreshing,
@@ -35,12 +32,11 @@ fun AppointmentsForOtherTab(modifier: Modifier = Modifier) {
                 isRefreshing = false
             }
         },
-        modifier = modifier
     ) {
 
         LazyColumn(Modifier.fillMaxHeight()) {
-            items(30) { item ->
-                AppointmentCard()
+            items(appointments) { appointment ->
+                AppointmentClientCard(appointment)
             }
         }
     }

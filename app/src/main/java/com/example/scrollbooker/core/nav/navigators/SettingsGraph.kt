@@ -1,4 +1,4 @@
-package com.example.scrollbooker.core.nav.graphs
+package com.example.scrollbooker.core.nav.navigators
 
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally

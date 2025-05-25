@@ -47,8 +47,10 @@ fun BottomBar(navController: NavController) {
     val currentRoute = currentBackStackEntry?.destination?.route
 
     val unselectedColor = Color.Gray
-    val selectedColor = if(currentRoute == Feed.route) Color(0xFFE0E0E0) else onBackground
-    val containerColor = if(currentRoute == Feed.route) Color(0xFF121212) else background
+    val isFeedScreen = currentRoute == Feed.route
+
+    val selectedColor = if(isFeedScreen) Color(0xFFE0E0E0) else onBackground
+    val containerColor = if(isFeedScreen) Color(0xFF121212) else background
 
     val interactionSource = remember { MutableInteractionSource() }
 

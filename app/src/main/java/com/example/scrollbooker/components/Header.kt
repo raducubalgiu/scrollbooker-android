@@ -49,6 +49,7 @@ fun Header(
             if(enableBack) {
                 Icon(
                     painter = painterResource(R.drawable.ic_prev),
+                    tint = MaterialTheme.colorScheme.onBackground,
                     contentDescription = null
                 )
             }
@@ -57,6 +58,7 @@ fun Header(
             if (title.isNotEmpty()) {
                 Text(
                     style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.onBackground,
                     fontWeight = FontWeight.Bold,
                     text = title
                 )
