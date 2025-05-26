@@ -7,7 +7,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.Header
-import com.example.scrollbooker.components.ItemSwitch
+import com.example.scrollbooker.components.list.ItemSwitch
 
 @Composable
 fun NotificationSettings(navController: NavController) {

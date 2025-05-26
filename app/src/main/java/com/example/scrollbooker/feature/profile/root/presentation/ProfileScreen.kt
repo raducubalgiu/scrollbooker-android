@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.BottomSheet
-import com.example.scrollbooker.components.ItemList
+import com.example.scrollbooker.components.list.ItemList
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground

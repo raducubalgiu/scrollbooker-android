@@ -1,10 +1,13 @@
 package com.example.scrollbooker.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
 private val LightColorScheme = lightColorScheme(
@@ -24,7 +27,7 @@ private val LightColorScheme = lightColorScheme(
     onSurface = Color(0xFF1C1B1F),
 
     error = Color(0xFFD32F2F),
-    onError = Color.White
+    onError = Color.White,
 )
 
 private val DarkColorScheme = darkColorScheme(
@@ -47,6 +50,21 @@ private val DarkColorScheme = darkColorScheme(
     onError = Color(0xFFE0E0E0)
 )
 
+data class ExtendedColors(
+    val divider: Color
+)
+
+private val LightExtendedColors = ExtendedColors(
+    divider = Color(0xFFCCCCCC)
+)
+private val DarkExtendedColor = ExtendedColors(
+    divider = Color(0xFF3A3A3A)
+)
+
+val LocalExtendedColors = staticCompositionLocalOf {
+    ExtendedColors(divider = Color.Gray)
+}
+
 @Composable
 fun ScrollBookerTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -57,9 +75,13 @@ fun ScrollBookerTheme(
         else -> LightColorScheme
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
+    val extendedColors = if(darkTheme) DarkExtendedColor else LightExtendedColors
+
+    CompositionLocalProvider(LocalExtendedColors provides extendedColors) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = Typography,
+            content = content
+        )
+    }
 }

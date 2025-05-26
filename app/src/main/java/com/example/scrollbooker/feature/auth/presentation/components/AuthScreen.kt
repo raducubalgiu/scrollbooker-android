@@ -19,7 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.MainButton
+import com.example.scrollbooker.components.buttons.MainButton
 import com.example.scrollbooker.core.nav.routes.AuthRoute
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.theme.OnBackground

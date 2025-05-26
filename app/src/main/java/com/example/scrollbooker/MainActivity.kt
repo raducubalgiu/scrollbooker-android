@@ -7,10 +7,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.example.scrollbooker.core.nav.RootNavHost
+import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.ScrollBookerTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,10 +25,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             ScrollBookerTheme() {
-                Box(Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background)
-                ) {
+                Box(Modifier.fillMaxSize().background(Background)) {
                     RootNavHost()
                 }
             }

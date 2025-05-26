@@ -48,4 +48,5 @@
     <string name="myProducts">Produsele mele</string>
     <string name="myServices">Serviciile mele</string>
     <string name="mySchedule">Programul meu de lucru</string>
+    <string name="name">Nume</string>
 </resources>

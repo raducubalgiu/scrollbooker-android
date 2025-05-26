@@ -1,5 +1,6 @@
 package com.example.scrollbooker.ui.theme
 
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -39,4 +40,12 @@ val Error: Color
 
 val OnError: Color
     @Composable get() = MaterialTheme.colorScheme.onError
+
+object ExtendedTheme {
+    val colors: ExtendedColors
+        @Composable get() = LocalExtendedColors.current
+}
+
+val Divider: Color
+    @Composable get() = ExtendedTheme.colors.divider
 

@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -14,7 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.Header
-import com.example.scrollbooker.components.ItemList
+import com.example.scrollbooker.components.list.ItemList
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.theme.Background

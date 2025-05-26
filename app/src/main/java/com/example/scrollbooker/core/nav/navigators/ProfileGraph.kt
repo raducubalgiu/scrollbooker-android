@@ -9,6 +9,7 @@ import com.example.scrollbooker.core.nav.transitions.slideInFromLeft
 import com.example.scrollbooker.core.nav.transitions.slideInFromRight
 import com.example.scrollbooker.core.nav.transitions.slideOutToLeft
 import com.example.scrollbooker.core.nav.transitions.slideOutToRight
+import com.example.scrollbooker.feature.profile.editProfile.presentation.EditFullNameScreen
 import com.example.scrollbooker.feature.profile.editProfile.presentation.EditProfileScreen
 import com.example.scrollbooker.feature.profile.root.presentation.ProfileScreen
 
@@ -28,6 +29,16 @@ fun NavGraphBuilder.profileGraph(navController: NavController) {
             popExitTransition = slideOutToRight()
         ) {
             EditProfileScreen(navController)
+        }
+
+        composable(
+            MainRoute.EditFullName.route,
+            enterTransition = slideInFromRight(),
+            exitTransition = slideOutToLeft(),
+            popEnterTransition = slideInFromLeft(),
+            popExitTransition = slideOutToRight()
+        ) {
+            EditFullNameScreen(navController)
         }
     }
 }

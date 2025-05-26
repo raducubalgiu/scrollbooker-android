@@ -1,4 +1,4 @@
-package com.example.scrollbooker.components
+package com.example.scrollbooker.components.inputs
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
