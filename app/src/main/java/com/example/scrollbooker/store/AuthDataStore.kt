@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.auth.data.dataStore
+package com.example.scrollbooker.store
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit

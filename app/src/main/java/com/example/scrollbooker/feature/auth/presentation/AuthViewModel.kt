@@ -2,7 +2,7 @@ package com.example.scrollbooker.feature.auth.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.scrollbooker.feature.auth.data.dataStore.AuthDataStore
+import com.example.scrollbooker.store.AuthDataStore
 import com.example.scrollbooker.feature.auth.domain.model.LoginRequest
 import com.example.scrollbooker.feature.auth.domain.usecase.LoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel

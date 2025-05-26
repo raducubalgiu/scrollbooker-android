@@ -42,7 +42,12 @@ fun CollectClientDetails(
     Column(modifier = Modifier
         .fillMaxSize()
         .safeDrawingPadding()
-        .padding(BasePadding),
+        .padding(
+            top = 50.dp,
+            bottom = BasePadding,
+            start = BasePadding,
+            end = BasePadding
+        ),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column {

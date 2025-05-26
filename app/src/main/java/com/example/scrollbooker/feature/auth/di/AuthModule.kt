@@ -1,7 +1,7 @@
 package com.example.scrollbooker.feature.auth.di
 
 import android.content.Context
-import com.example.scrollbooker.feature.auth.data.dataStore.AuthDataStore
+import com.example.scrollbooker.store.AuthDataStore
 import com.example.scrollbooker.feature.auth.data.remote.AuthApiService
 import com.example.scrollbooker.feature.auth.data.repository.AuthRepositoryImpl
 import com.example.scrollbooker.feature.auth.domain.repository.AuthRepository
