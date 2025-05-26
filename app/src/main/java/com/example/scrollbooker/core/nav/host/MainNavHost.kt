@@ -50,10 +50,10 @@ fun MainNavHost(viewModel: MainViewModel) {
             modifier = Modifier.padding(innerPadding),
             navController = bottomNavController,
             startDestination = MainRoute.Feed.route,
-            enterTransition = { fadeIn(animationSpec = tween(durationMillis = 0)) },
-            exitTransition = { fadeOut(animationSpec = tween(durationMillis = 0)) },
-            popEnterTransition = { fadeIn(animationSpec = tween(durationMillis = 0)) },
-            popExitTransition = { fadeOut(animationSpec = tween(durationMillis = 0)) },
+            enterTransition = { fadeIn(animationSpec = tween(durationMillis = 500)) },
+            exitTransition = { fadeOut(animationSpec = tween(durationMillis = 500)) },
+            popEnterTransition = { fadeIn(animationSpec = tween(durationMillis = 500)) },
+            popExitTransition = { fadeOut(animationSpec = tween(durationMillis = 500)) },
         ) {
             composable(MainRoute.Feed.route) {
                 FeedScreen()

@@ -49,4 +49,5 @@
     <string name="myServices">Serviciile mele</string>
     <string name="mySchedule">Programul meu de lucru</string>
     <string name="name">Nume</string>
+    <string name="editProfile">Editează profilul</string>
 </resources>

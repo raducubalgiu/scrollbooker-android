@@ -49,6 +49,7 @@ fun ProfileScreen(navController: NavController) {
     var showBottomSheet by remember { mutableStateOf(false) }
     val pagerState = rememberPagerState(initialPage = 0) { 4 }
     val selectedTabIndex = pagerState.currentPage
+
     val tabs = listOf(
         ProfileTab(
             route = "Posts",

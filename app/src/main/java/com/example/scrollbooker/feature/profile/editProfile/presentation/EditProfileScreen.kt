@@ -6,33 +6,45 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import com.example.scrollbooker.R
 import com.example.scrollbooker.components.Header
 import com.example.scrollbooker.components.list.ItemListInfo
+import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.ui.theme.Background
 
 @Composable
 fun EditProfileScreen(navController: NavController) {
-    Column(Modifier.fillMaxSize().background(Background)) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .background(Background)
+    ) {
         Header(
             navController = navController,
-            title = "Edit Profile",
+            title = stringResource(R.string.editProfile),
         )
         Text(text = "Despre tine")
+
         ItemListInfo(
-            headLine = "Nume",
+            headLine = stringResource(R.string.name),
             supportingText = "Radu Balgiu",
-            onClick = {}
+            onClick = { navController.navigate(MainRoute.EditFullName.route) }
         )
         ItemListInfo(
             headLine = "Username",
             supportingText = "@radu_balgiu",
-            onClick = {}
+            onClick = { navController.navigate(MainRoute.EditUsername.route) }
         )
         ItemListInfo(
             headLine = "Bio",
             supportingText = "Sunt medic stomatolog si sunt..",
-            onClick = {}
+            onClick = { navController.navigate(MainRoute.EditBio.route) }
+        )
+        ItemListInfo(
+            headLine = "Gender",
+            supportingText = "Male",
+            onClick = { navController.navigate(MainRoute.EditGender.route) }
         )
     }
 }

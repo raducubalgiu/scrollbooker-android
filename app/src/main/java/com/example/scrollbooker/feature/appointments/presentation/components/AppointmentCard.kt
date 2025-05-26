@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.SuggestionChipDefaults
@@ -42,6 +41,7 @@ import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.ScrollBookerTheme
 import com.example.scrollbooker.ui.theme.bodyLarge
+import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.labelLarge
 import com.example.scrollbooker.ui.theme.titleSmall
 
@@ -123,7 +123,7 @@ fun AppointmentCard(appointment: Appointment) {
 
             Text(
                 color = OnBackground,
-                style = bodyLarge,
+                style = bodyMedium,
                 fontWeight = FontWeight.Bold,
                 text = "Joi, 15 Mai - 17:30"
             )
@@ -131,7 +131,7 @@ fun AppointmentCard(appointment: Appointment) {
             Spacer(Modifier.height(SpacingM))
 
             Text(
-                style = bodyLarge,
+                style = bodyMedium,
                 fontWeight = FontWeight.Bold,
                 color = OnBackground,
                 text = appointment.product.name
@@ -140,7 +140,7 @@ fun AppointmentCard(appointment: Appointment) {
             Spacer(Modifier.height(SpacingM))
 
             Text(
-                style = bodyLarge,
+                style = bodyMedium,
                 fontWeight = FontWeight.Bold,
                 color = OnBackground,
                 text = "${appointment.product.price} ${appointment.product.currency}"
