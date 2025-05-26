@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.SuggestionChipDefaults
@@ -28,12 +27,8 @@ import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.ScrollBookerTheme
 import com.example.scrollbooker.ui.theme.bodyMedium
-import com.example.scrollbooker.ui.theme.bodySmall
 import com.example.scrollbooker.ui.theme.labelLarge
-import com.example.scrollbooker.ui.theme.labelMedium
-import com.example.scrollbooker.ui.theme.labelSmall
 import com.example.scrollbooker.ui.theme.titleMedium
-import com.example.scrollbooker.ui.theme.titleSmall
 
 @Composable
 fun NotificationItem(

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.auth.presentation.collectClientDetails
+package com.example.scrollbooker.feature.auth.presentation.components.collectClientDetails
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -26,30 +26,29 @@ fun CollectUsernameScreen(navController: NavController) {
         selectedScreen = 0,
         onOmit = { navController.navigate(AuthRoute.BirthDate.route) },
         onNext = { navController.navigate(AuthRoute.BirthDate.route) },
-        content = {
-            var username by remember { mutableStateOf("") }
+    ) {
+        var username by remember { mutableStateOf("") }
 
-            Input(
-                value = username,
-                onValueChange = { username = it },
-                label = "Username"
-            )
+        Input(
+            value = username,
+            onValueChange = { username = it },
+            label = "Username"
+        )
 
-            Spacer(modifier = Modifier.height(BasePadding))
+        Spacer(modifier = Modifier.height(BasePadding))
 
-            Text(
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-                text = "Numele de utilizator poate contine doar litere mici, numbere, underscore, si perioade."
-            )
+        Text(
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface,
+            text = "Numele de utilizator poate contine doar litere mici, numbere, underscore, si perioade."
+        )
 
-            Spacer(modifier = Modifier.height(BasePadding))
+        Spacer(modifier = Modifier.height(BasePadding))
 
-            Text(
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-                text = "Iti poti schimba numele de utilizator o data la 30 de zile"
-            )
-        }
-    )
+        Text(
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface,
+            text = "Iti poti schimba numele de utilizator o data la 30 de zile"
+        )
+    }
 }

@@ -3,11 +3,7 @@ package com.example.scrollbooker.core.nav.host
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -24,6 +20,7 @@ import com.example.scrollbooker.feature.appointments.presentation.AppointmentsSc
 import com.example.scrollbooker.feature.feed.presentation.FeedScreen
 import com.example.scrollbooker.feature.inbox.presentation.InboxScreen
 import com.example.scrollbooker.feature.search.presentation.SearchScreen
+import com.example.scrollbooker.ui.theme.Background
 
 @Composable
 fun MainNavHost(viewModel: MainViewModel) {
@@ -31,7 +28,7 @@ fun MainNavHost(viewModel: MainViewModel) {
     val currentRoute = bottomNavController.currentBackStackEntryAsState().value?.destination?.route
     val isFeedScreen = (currentRoute == MainRoute.Feed.route)
 
-    val containerColor = if(isFeedScreen) Color(0xFF121212) else MaterialTheme.colorScheme.background
+    val containerColor = if(isFeedScreen) Color(0xFF121212) else Background
 
     val bottomBarRoutes = setOf(
         MainRoute.Feed.route,

@@ -41,6 +41,9 @@ import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.ScrollBookerTheme
+import com.example.scrollbooker.ui.theme.bodyLarge
+import com.example.scrollbooker.ui.theme.labelLarge
+import com.example.scrollbooker.ui.theme.titleSmall
 
 @Composable
 fun AppointmentCard(appointment: Appointment) {
@@ -71,7 +74,7 @@ fun AppointmentCard(appointment: Appointment) {
                     Column {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
-                                style = MaterialTheme.typography.titleSmall,
+                                style = titleSmall,
                                 text = appointment.user.fullName,
                                 fontWeight = FontWeight.ExtraBold,
                                 color = OnBackground
@@ -81,11 +84,11 @@ fun AppointmentCard(appointment: Appointment) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.ic_star),
                                     contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary
+                                    tint = Primary
                                 )
                                 Spacer(Modifier.width(SpacingXS))
                                 Text(
-                                    style = MaterialTheme.typography.bodyLarge,
+                                    style = bodyLarge,
                                     text = appointment.user.ratingsAverage.toString(),
                                     fontWeight = FontWeight.ExtraBold,
                                     color = OnBackground
@@ -94,7 +97,7 @@ fun AppointmentCard(appointment: Appointment) {
                         }
                         Spacer(Modifier.height(SpacingXXS))
                         Text(
-                            style = MaterialTheme.typography.labelLarge,
+                            style = labelLarge,
                             text = supportingText,
                             fontWeight = FontWeight.Normal,
                             color = OnSurfaceBG
@@ -120,7 +123,7 @@ fun AppointmentCard(appointment: Appointment) {
 
             Text(
                 color = OnBackground,
-                style = MaterialTheme.typography.bodyLarge,
+                style = bodyLarge,
                 fontWeight = FontWeight.Bold,
                 text = "Joi, 15 Mai - 17:30"
             )
@@ -128,7 +131,7 @@ fun AppointmentCard(appointment: Appointment) {
             Spacer(Modifier.height(SpacingM))
 
             Text(
-                style = MaterialTheme.typography.bodyLarge,
+                style = bodyLarge,
                 fontWeight = FontWeight.Bold,
                 color = OnBackground,
                 text = appointment.product.name
@@ -137,7 +140,7 @@ fun AppointmentCard(appointment: Appointment) {
             Spacer(Modifier.height(SpacingM))
 
             Text(
-                style = MaterialTheme.typography.bodyLarge,
+                style = bodyLarge,
                 fontWeight = FontWeight.Bold,
                 color = OnBackground,
                 text = "${appointment.product.price} ${appointment.product.currency}"

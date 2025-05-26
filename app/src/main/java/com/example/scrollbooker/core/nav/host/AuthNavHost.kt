@@ -17,11 +17,11 @@ import com.example.scrollbooker.core.nav.transitions.slideOutToLeft
 import com.example.scrollbooker.core.nav.transitions.slideOutToRight
 import com.example.scrollbooker.feature.auth.presentation.LoginScreen
 import com.example.scrollbooker.feature.auth.presentation.RegisterScreen
-import com.example.scrollbooker.feature.auth.presentation.collectBusinessDetails.CollectBusinessLocationScreen
-import com.example.scrollbooker.feature.auth.presentation.collectBusinessDetails.CollectBusinessSchedulesScreen
-import com.example.scrollbooker.feature.auth.presentation.collectBusinessDetails.CollectBusinessServicesScreen
-import com.example.scrollbooker.feature.auth.presentation.collectClientDetails.CollectBirthDateScreen
-import com.example.scrollbooker.feature.auth.presentation.collectClientDetails.CollectUsernameScreen
+import com.example.scrollbooker.feature.auth.presentation.components.collectBusinessDetails.CollectBusinessLocationScreen
+import com.example.scrollbooker.feature.auth.presentation.components.collectBusinessDetails.CollectBusinessSchedulesScreen
+import com.example.scrollbooker.feature.auth.presentation.components.collectBusinessDetails.CollectBusinessServicesScreen
+import com.example.scrollbooker.feature.auth.presentation.components.collectClientDetails.CollectBirthDateScreen
+import com.example.scrollbooker.feature.auth.presentation.components.collectClientDetails.CollectUsernameScreen
 import com.example.scrollbooker.ui.theme.Background
 
 @Composable
@@ -38,27 +38,19 @@ fun AuthNavHost(viewModel: MainViewModel) {
             navController = navController,
             startDestination = AuthRoute.Login.route
         ) {
-
-            composable(route = AuthRoute.Login.route) {
-                LoginScreen(navController = navController)
+            composable(AuthRoute.Login.route) {
+                LoginScreen(navController)
             }
-            composable(route = AuthRoute.Register.route) {
-                RegisterScreen(
-                    navController = navController,
-                    onRegisterSuccess = {}
-                )
+            composable(AuthRoute.Register.route) {
+                RegisterScreen(navController)
             }
 
             // Client Auth Onboarding
-            composable(
-                route = AuthRoute.Username.route,
-            ) {
-                CollectUsernameScreen(navController = navController)
+            composable(AuthRoute.Username.route) {
+                CollectUsernameScreen(navController)
             }
-            composable(
-                route = AuthRoute.BirthDate.route
-            ) {
-                CollectBirthDateScreen(navController = navController)
+            composable(AuthRoute.BirthDate.route) {
+                CollectBirthDateScreen(navController)
             }
 
             // Business Auth OnBoarding
@@ -69,27 +61,27 @@ fun AuthNavHost(viewModel: MainViewModel) {
                 popEnterTransition = slideInFromLeft(),
                 popExitTransition = slideOutToRight()
             ) {
-                CollectBusinessLocationScreen(navController = navController)
+                CollectBusinessLocationScreen(navController)
             }
 
             composable(
-                route = AuthRoute.BusinessServices.route,
+                AuthRoute.BusinessServices.route,
                 enterTransition = slideInFromRight(),
                 exitTransition = slideOutToLeft(),
                 popEnterTransition = slideInFromLeft(),
                 popExitTransition = slideOutToRight()
             ) {
-                CollectBusinessServicesScreen(navController = navController)
+                CollectBusinessServicesScreen(navController)
             }
 
             composable(
-                route = AuthRoute.BusinessSchedules.route,
+                AuthRoute.BusinessSchedules.route,
                 enterTransition = slideInFromRight(),
                 exitTransition = slideOutToLeft(),
                 popEnterTransition = slideInFromLeft(),
                 popExitTransition = slideOutToRight()
             ) {
-                CollectBusinessSchedulesScreen(navController = navController)
+                CollectBusinessSchedulesScreen(navController)
             }
         }
     }

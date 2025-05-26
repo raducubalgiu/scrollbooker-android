@@ -19,6 +19,7 @@ import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.headlineLarge
 
 @Composable
 fun SettingsScreen(navController: NavController) {
@@ -29,7 +30,7 @@ fun SettingsScreen(navController: NavController) {
 
         Column(modifier = Modifier.padding(BasePadding)) {
             Text(
-                style = MaterialTheme.typography.headlineLarge,
+                style = headlineLarge,
                 color = OnBackground,
                 fontWeight = FontWeight.ExtraBold,
                 text = stringResource(id = R.string.settings)

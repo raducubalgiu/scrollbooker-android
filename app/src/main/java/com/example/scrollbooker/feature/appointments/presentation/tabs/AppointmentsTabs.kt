@@ -23,6 +23,7 @@ import com.example.scrollbooker.feature.appointments.presentation.tabs.client.Ap
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
+import com.example.scrollbooker.ui.theme.bodyLarge
 import kotlinx.coroutines.launch
 
 @Composable
@@ -59,7 +60,7 @@ fun AppointmentsTabs() {
                     },
                     text = { Text(
                         text = title,
-                        style = MaterialTheme.typography.bodyLarge,
+                        style = bodyLarge,
                         color = if(isSelected) OnBackground else OnSurfaceBG,
                         fontWeight = if(isSelected) FontWeight.Bold else FontWeight.Normal
                     )}

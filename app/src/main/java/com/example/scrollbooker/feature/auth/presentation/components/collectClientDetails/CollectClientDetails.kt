@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.auth.presentation.collectClientDetails
+package com.example.scrollbooker.feature.auth.presentation.components.collectClientDetails
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,6 +26,8 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingL
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
+import com.example.scrollbooker.ui.theme.headlineLarge
+import com.example.scrollbooker.ui.theme.titleSmall
 
 @Composable
 fun CollectClientDetails(
@@ -33,24 +35,25 @@ fun CollectClientDetails(
     subHeadLine: String,
     screenSize: Int,
     selectedScreen: Int,
-    content: @Composable () -> Unit,
     onOmit: () -> Unit,
     onNext: () -> Unit,
+    content: @Composable () -> Unit,
 ) {
     Column(modifier = Modifier
         .fillMaxSize()
-        .safeDrawingPadding(),
+        .safeDrawingPadding()
+        .padding(BasePadding),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column {
             Text(
-                style = MaterialTheme.typography.headlineLarge,
+                style = headlineLarge,
                 color = OnBackground,
                 fontWeight = FontWeight.ExtraBold,
                 text = headLine
             )
             Text(
-                style = MaterialTheme.typography.titleSmall,
+                style = titleSmall,
                 fontWeight = FontWeight.Normal,
                 color = OnSurfaceBG.copy(alpha = 0.7f),
                 text = subHeadLine,

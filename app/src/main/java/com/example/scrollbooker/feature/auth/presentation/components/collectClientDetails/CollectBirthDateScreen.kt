@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.auth.presentation.collectClientDetails
+package com.example.scrollbooker.feature.auth.presentation.components.collectClientDetails
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,8 +15,7 @@ fun CollectBirthDateScreen(navController: NavController) {
         selectedScreen = 1,
         onOmit = {},
         onNext = {},
-        content = {
-            Text(text = "Hello World")
-        }
-    )
+    ) {
+        Text(text = "BirthDate Screen")
+    }
 }

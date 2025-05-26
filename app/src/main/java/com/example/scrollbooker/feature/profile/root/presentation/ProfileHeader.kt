@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -23,6 +22,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.IconSizeXL
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun ProfileHeader(
@@ -51,7 +51,7 @@ fun ProfileHeader(
 //            )
         }
         Text(
-            style = MaterialTheme.typography.titleMedium,
+            style = titleMedium,
             color = OnBackground,
             fontWeight = FontWeight.Bold,
             text = "Radu Balgiu"

@@ -1,5 +1,6 @@
-package com.example.scrollbooker.feature.auth.presentation.collectBusinessDetails
+package com.example.scrollbooker.feature.auth.presentation.components.collectBusinessDetails
 
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
@@ -14,6 +15,7 @@ fun CollectBusinessLocationScreen(navController: NavController) {
         subHeadLine = stringResource(id = R.string.addYourBusinessLocation),
         onBack = { navController.popBackStack() },
         onNext = { navController.navigate(AuthRoute.BusinessServices.route) },
-        content = {},
-    )
+    ) {
+        Text(text = "Business Location Screen")
+    }
 }

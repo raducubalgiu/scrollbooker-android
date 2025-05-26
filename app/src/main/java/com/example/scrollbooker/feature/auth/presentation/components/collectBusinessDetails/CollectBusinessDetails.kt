@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.auth.presentation.collectBusinessDetails
+package com.example.scrollbooker.feature.auth.presentation.components.collectBusinessDetails
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -33,6 +32,8 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
+import com.example.scrollbooker.ui.theme.headlineLarge
+import com.example.scrollbooker.ui.theme.titleSmall
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,13 +82,13 @@ fun CollectBusinessDetails(
         ) {
             Column {
                 Text(
-                    style = MaterialTheme.typography.headlineLarge,
+                    style = headlineLarge,
                     color = OnBackground,
                     fontWeight = FontWeight.ExtraBold,
                     text = headLine
                 )
                 Text(
-                    style = MaterialTheme.typography.titleSmall,
+                    style = titleSmall,
                     fontWeight = FontWeight.Normal,
                     color = OnSurfaceBG.copy(alpha = 0.7f),
                     text = subHeadLine,
