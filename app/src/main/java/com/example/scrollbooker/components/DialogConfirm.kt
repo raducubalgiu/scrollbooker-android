@@ -1,7 +1,6 @@
 package com.example.scrollbooker.components
 
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -11,6 +10,8 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.SurfaceBG
+import com.example.scrollbooker.ui.theme.titleLarge
+import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun DialogConfirm(
@@ -22,7 +23,7 @@ fun DialogConfirm(
     AlertDialog(
         title = {
             Text(
-                style = MaterialTheme.typography.titleMedium,
+                style = titleMedium,
                 color = OnSurfaceBG,
                 fontWeight = FontWeight.Bold,
                 text = title
@@ -30,7 +31,7 @@ fun DialogConfirm(
         },
         text = {
             Text(
-                style = MaterialTheme.typography.labelLarge,
+                style = titleLarge,
                 text = text
             )
         },

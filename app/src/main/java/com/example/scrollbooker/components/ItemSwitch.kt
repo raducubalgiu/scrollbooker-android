@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +19,8 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.SurfaceBG
+import com.example.scrollbooker.ui.theme.labelLarge
+import com.example.scrollbooker.ui.theme.labelMedium
 
 @Composable
 fun ItemSwitch(
@@ -45,14 +46,14 @@ fun ItemSwitch(
             .then(modifier),
         headlineContent = {
             Text(
-                style = MaterialTheme.typography.labelLarge,
+                style = labelLarge,
                 fontWeight = FontWeight.Bold,
                 text = headLine
             )},
         supportingContent = {
             if(supportingText.isNotEmpty()) {
                 Text(
-                    style = MaterialTheme.typography.labelMedium,
+                    style = labelMedium,
                     text = supportingText
                 )
             }

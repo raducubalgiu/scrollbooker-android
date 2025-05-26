@@ -15,6 +15,8 @@ import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.ScrollBookerTheme
 import com.example.scrollbooker.ui.theme.SurfaceBG
+import com.example.scrollbooker.ui.theme.bodyLarge
+import com.example.scrollbooker.ui.theme.labelLarge
 
 @Composable
 fun Input(
@@ -29,10 +31,10 @@ fun Input(
         label = {
             Text(
                 text = label,
-                style = MaterialTheme.typography.labelLarge
+                style = labelLarge
             )
         },
-        textStyle = MaterialTheme.typography.bodyLarge,
+        textStyle = bodyLarge,
         singleLine = true,
         shape = MaterialTheme.shapes.medium,
         colors = TextFieldDefaults.colors(

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.profile.presentation
+package com.example.scrollbooker.feature.profile.root.presentation
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -51,7 +51,7 @@ fun ProfileHeader(
 //            )
         }
         Text(
-            style = MaterialTheme.typography.titleSmall,
+            style = MaterialTheme.typography.titleMedium,
             color = OnBackground,
             fontWeight = FontWeight.Bold,
             text = "Radu Balgiu"

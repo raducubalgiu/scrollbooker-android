@@ -37,10 +37,10 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.feature.appointments.domain.model.Appointment
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.ScrollBookerTheme
-import com.example.scrollbooker.ui.theme.onPrimary
 
 @Composable
 fun AppointmentCard(appointment: Appointment) {
@@ -108,7 +108,7 @@ fun AppointmentCard(appointment: Appointment) {
                         onClick = {},
                         colors = SuggestionChipDefaults.suggestionChipColors(
                             containerColor = chipColor,
-                            labelColor = onPrimary
+                            labelColor = OnPrimary
                         ),
                         shape = ShapeDefaults.ExtraSmall,
                         border = BorderStroke(width = 0.dp, color = Color.Transparent)

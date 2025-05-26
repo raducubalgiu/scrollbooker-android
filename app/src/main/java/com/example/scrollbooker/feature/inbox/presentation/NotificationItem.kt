@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
@@ -26,6 +27,13 @@ import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.ScrollBookerTheme
+import com.example.scrollbooker.ui.theme.bodyMedium
+import com.example.scrollbooker.ui.theme.bodySmall
+import com.example.scrollbooker.ui.theme.labelLarge
+import com.example.scrollbooker.ui.theme.labelMedium
+import com.example.scrollbooker.ui.theme.labelSmall
+import com.example.scrollbooker.ui.theme.titleMedium
+import com.example.scrollbooker.ui.theme.titleSmall
 
 @Composable
 fun NotificationItem(
@@ -51,14 +59,14 @@ fun NotificationItem(
         headlineContent = {
             Text(
                 modifier = Modifier.padding(SpacingXXS),
-                style = MaterialTheme.typography.titleSmall,
+                style = titleMedium,
                 color = OnBackground,
                 text = fullName
             )
         },
         supportingContent = {
             Text(
-                style = MaterialTheme.typography.labelLarge,
+                style = bodyMedium,
                 text = message
             )
         },
@@ -69,7 +77,13 @@ fun NotificationItem(
             if(type == "follow") {
                 SuggestionChip(
                     onClick = {},
-                    label = { Text(text = isFollowText) },
+                    label = {
+                        Text(
+                            style = labelLarge,
+                            fontWeight = FontWeight.SemiBold,
+                            text = isFollowText
+                        )
+                    },
                     colors = SuggestionChipDefaults.suggestionChipColors(
                         containerColor = Error,
                         labelColor = OnPrimary
