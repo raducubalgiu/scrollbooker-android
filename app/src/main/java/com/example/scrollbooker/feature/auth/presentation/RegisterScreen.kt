@@ -33,7 +33,8 @@ fun RegisterScreen(
         Input(
             value = username,
             onValueChange = {username = it},
-            label = "Username"
+            label = "Username",
+            placeholder = "Username"
         )
 
         Spacer(Modifier.height(SpacingS))
@@ -41,7 +42,8 @@ fun RegisterScreen(
         Input(
             value = password,
             onValueChange = { password = it },
-            label = "Password"
+            label = "Password",
+            placeholder = "Password"
         )
     }
 }

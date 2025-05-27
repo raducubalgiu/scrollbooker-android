@@ -36,7 +36,8 @@ fun LoginScreen(
         Input(
             value = username,
             onValueChange = {username = it},
-            label = "Username"
+            label = "Username",
+            placeholder = "Username"
         )
 
         Spacer(Modifier.height(SpacingS))
@@ -44,7 +45,8 @@ fun LoginScreen(
         Input(
             value = password,
             onValueChange = { password = it },
-            label = "Password"
+            label = "Password",
+            placeholder = "Username"
         )
     }
 }

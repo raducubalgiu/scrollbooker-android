@@ -32,7 +32,8 @@ fun CollectUsernameScreen(navController: NavController) {
         Input(
             value = username,
             onValueChange = { username = it },
-            label = "Username"
+            label = "Username",
+            placeholder = "Username"
         )
 
         Spacer(modifier = Modifier.height(BasePadding))
