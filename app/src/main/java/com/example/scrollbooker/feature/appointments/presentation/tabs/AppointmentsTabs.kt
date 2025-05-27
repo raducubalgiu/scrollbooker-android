@@ -3,8 +3,10 @@ package com.example.scrollbooker.feature.appointments.presentation.tabs
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -67,7 +69,12 @@ fun AppointmentsTabs() {
             }
         }
 
-        HorizontalPager(state = pagerState) { page ->
+        HorizontalPager(
+            state = pagerState,
+            pageSize = PageSize.Fill,
+            beyondViewportPageCount = 1,
+            modifier = Modifier.fillMaxSize()
+        ) { page ->
             when(page) {
                 0 -> AppointmentsBusinessTab()
                 1 -> AppointmentsClientTab()
