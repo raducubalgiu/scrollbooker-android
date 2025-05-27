@@ -6,6 +6,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.example.scrollbooker.components.Layout
 import com.example.scrollbooker.components.inputs.SearchBar
+import com.example.scrollbooker.components.typography.TitleLarge
 
 @Composable
 fun SearchScreen() {
@@ -18,5 +19,7 @@ fun SearchScreen() {
             placeholder = "Ce serviciu cauti?",
             onSearch = {}
         )
+
+        TitleLarge(text = "Servicii Populare")
     }
 }
