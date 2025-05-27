@@ -5,7 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.navigation
 import com.example.scrollbooker.core.nav.routes.MainRoute
 
-fun NavGraphBuilder.profileNavigator(navController: NavController) {
+fun NavGraphBuilder.profileRootGraph(navController: NavController) {
     navigation(
         route = MainRoute.ProfileRootNavigator.route,
         startDestination = MainRoute.Profile.route,

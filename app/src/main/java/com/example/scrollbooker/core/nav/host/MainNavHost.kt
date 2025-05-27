@@ -4,6 +4,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -14,13 +15,14 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.scrollbooker.MainViewModel
 import com.example.scrollbooker.core.nav.BottomBar
-import com.example.scrollbooker.core.nav.navigators.profileNavigator
+import com.example.scrollbooker.core.nav.navigators.appointmentsGraph
+import com.example.scrollbooker.core.nav.navigators.profileRootGraph
 import com.example.scrollbooker.core.nav.routes.MainRoute
-import com.example.scrollbooker.feature.appointments.presentation.AppointmentsScreen
 import com.example.scrollbooker.feature.feed.presentation.FeedScreen
 import com.example.scrollbooker.feature.inbox.presentation.InboxScreen
 import com.example.scrollbooker.feature.search.presentation.SearchScreen
 import com.example.scrollbooker.ui.theme.Background
+import com.example.scrollbooker.ui.theme.Divider
 
 @Composable
 fun MainNavHost(viewModel: MainViewModel) {
@@ -46,6 +48,7 @@ fun MainNavHost(viewModel: MainViewModel) {
             }
         }
     ) { innerPadding ->
+        HorizontalDivider(color = Divider)
         NavHost(
             modifier = Modifier.padding(innerPadding),
             navController = bottomNavController,
@@ -66,12 +69,8 @@ fun MainNavHost(viewModel: MainViewModel) {
             composable(MainRoute.Search.route) {
                 SearchScreen()
             }
-            composable(MainRoute.Appointments.route) {
-                AppointmentsScreen(
-                    navController = bottomNavController
-                )
-            }
-            profileNavigator(navController = bottomNavController)
+            appointmentsGraph(navController = bottomNavController)
+            profileRootGraph(navController = bottomNavController)
         }
     }
 }

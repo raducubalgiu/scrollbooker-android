@@ -35,11 +35,12 @@ fun AppointmentsBusinessTab(modifier: Modifier = Modifier) {
         modifier = modifier
     ) {
 
-        LazyColumn(
-            Modifier.fillMaxHeight()
-        ) {
+        LazyColumn(Modifier.fillMaxHeight()) {
             items(appointments) { appointment ->
-                AppointmentCard(appointment)
+                AppointmentCard(
+                    appointment = appointment,
+                    onAppointmentDetails = {}
+                )
             }
         }
     }

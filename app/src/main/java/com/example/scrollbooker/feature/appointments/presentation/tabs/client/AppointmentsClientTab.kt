@@ -36,7 +36,10 @@ fun AppointmentsClientTab() {
 
         LazyColumn(Modifier.fillMaxHeight()) {
             items(appointments) { appointment ->
-                AppointmentCard(appointment)
+                AppointmentCard(
+                    appointment = appointment,
+                    onAppointmentDetails = {}
+                )
             }
         }
     }

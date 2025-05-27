@@ -46,10 +46,13 @@ import com.example.scrollbooker.ui.theme.labelLarge
 import com.example.scrollbooker.ui.theme.titleSmall
 
 @Composable
-fun AppointmentCard(appointment: Appointment) {
+fun AppointmentCard(
+    appointment: Appointment,
+    onAppointmentDetails: () -> Unit
+) {
     Column(modifier = Modifier
         .fillMaxWidth()
-        .clickable(onClick = {})
+        .clickable(onClick = onAppointmentDetails)
     ) {
         val supportingText = if(appointment.isCustomer) "@${appointment.user.username}" else appointment.user.profession
         val channelMessage = if(appointment.channel == "scroll_booker") "Scroll Booker" else "Client propriu"
@@ -166,7 +169,8 @@ fun AppointmentCard(appointment: Appointment) {
 fun AppointmentCardPreview() {
     ScrollBookerTheme() {
         AppointmentCard(
-            appointment = TODO()
+            appointment = TODO(),
+            onAppointmentDetails = {}
         )
     }
 }
