@@ -67,7 +67,7 @@ fun MainNavHost(viewModel: MainViewModel) {
             bottomBar = {
                 if(currentRoute in bottomBarRoutes) {
                     Column {
-                        HorizontalDivider(color = Divider, thickness = 0.5.dp)
+//                        HorizontalDivider(color = Divider, thickness = 0.5.dp)
                         BottomBar(bottomNavController)
                     }
                 }

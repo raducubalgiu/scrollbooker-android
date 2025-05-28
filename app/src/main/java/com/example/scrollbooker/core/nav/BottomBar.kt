@@ -5,10 +5,13 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Text
@@ -51,8 +54,14 @@ fun BottomBar(navController: NavController) {
 
     val interactionSource = remember { MutableInteractionSource() }
 
-    NavigationBar(tonalElevation = 0.dp, containerColor = containerColor) {
-        Row(modifier = Modifier.fillMaxWidth()) {
+    NavigationBar(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(100.dp),
+        tonalElevation = 0.dp,
+        containerColor = containerColor
+    ) {
+        Row(modifier = Modifier.fillMaxSize().padding(vertical = 10.dp)) {
             items.forEach { item ->
                 val isSelected = currentRoute == item.route
 

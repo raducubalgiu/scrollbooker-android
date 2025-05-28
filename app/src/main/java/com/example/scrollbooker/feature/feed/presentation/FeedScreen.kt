@@ -1,6 +1,4 @@
 package com.example.scrollbooker.feature.feed.presentation
-import android.util.Log
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
@@ -27,35 +25,33 @@ fun FeedScreen(onOpenDrawer: () -> Unit) {
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPageOffsetFraction }
             .collect { offset ->
-                Log.d("Offset!!", offset.toString())
                 isUserSwiping.value = offset != 0f
             }
     }
 
-    Box(Modifier.fillMaxSize()) {
-        HorizontalPager(
-            state = pagerState,
-            pageSize = PageSize.Fill,
-            beyondViewportPageCount = 1,
-            modifier = Modifier.fillMaxSize()
-        ) { page ->
-            val shouldVideoPlay = !isUserSwiping.value && pagerState.currentPage == page
+    HorizontalPager(
+        state = pagerState,
+        pageSize = PageSize.Fill,
+        modifier = Modifier.fillMaxSize(),
+        beyondViewportPageCount = 0,
+        key = { it }
+    ) { page ->
+        val shouldVideoPlay = !isUserSwiping.value && pagerState.currentPage == page
 
-            when(page) {
-                0 -> BookNowTab(shouldVideoPlay)
-                1 -> FollowingTab(shouldVideoPlay)
+        when(page) {
+            0 -> BookNowTab(shouldVideoPlay)
+            1 -> FollowingTab(shouldVideoPlay)
+        }
+    }
+
+    FeedTabs(
+        selectedTabIndex = selectedTabIndex,
+        onOpenDrawer = onOpenDrawer,
+        onChangeTab = {
+            coroutineScope.launch {
+                pagerState.animateScrollToPage(it)
             }
         }
-
-        FeedTabs(
-            selectedTabIndex = selectedTabIndex,
-            onOpenDrawer = onOpenDrawer,
-            onChangeTab = {
-                coroutineScope.launch {
-                    pagerState.animateScrollToPage(it)
-                }
-            }
-        )
-    }
+    )
 }
 
