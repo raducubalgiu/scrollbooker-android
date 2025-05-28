@@ -1,8 +1,11 @@
 package com.example.scrollbooker.feature.auth.presentation
 
+import android.util.Log
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -12,27 +15,39 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.inputs.Input
 import com.example.scrollbooker.core.nav.routes.AuthRoute
+import com.example.scrollbooker.core.nav.routes.GlobalRoute
+import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.feature.auth.presentation.components.AuthScreen
 
 @Composable
 fun LoginScreen(
-    navController: NavController,
+    authNavController: NavController,
+    rootNavController: NavHostController,
     viewModel: AuthViewModel = hiltViewModel(),
 ) {
-    val state by viewModel.loginState.collectAsState()
+    val loginState by viewModel.loginState.collectAsState()
 
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
+    LaunchedEffect(loginState) {
+        if(loginState is LoginState.Success) {
+            rootNavController.navigate(GlobalRoute.MAIN) {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+    }
+
     AuthScreen(
-        navController = navController,
+        navController = authNavController,
         type = stringResource(R.string.login),
         onSubmit = {
-            //navController.navigate(AuthRoute.Username.route)
+            viewModel.login(username, password)
         }
     ) {
         Input(
@@ -50,5 +65,13 @@ fun LoginScreen(
             label = "Password",
             placeholder = "Username"
         )
+
+        when(loginState) {
+            is LoginState.Loading -> {
+                CircularProgressIndicator()
+            }
+
+            else -> {}
+        }
     }
 }

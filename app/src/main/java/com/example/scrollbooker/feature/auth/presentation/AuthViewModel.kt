@@ -9,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,23 +20,14 @@ sealed class LoginState {
     data class Error(val message: String): LoginState()
 }
 
-sealed class RegisterState {
-    object Idle: RegisterState()
-    object Loading: RegisterState()
-    object Success: RegisterState()
-    data class Error(val message: String): RegisterState()
-}
-
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
     private val authDataStore: AuthDataStore
 ): ViewModel() {
+
     private val _loginState = MutableStateFlow<LoginState>(LoginState.Idle)
     val loginState: StateFlow<LoginState> = _loginState.asStateFlow()
-
-    private val _registerState = MutableStateFlow<RegisterState>(RegisterState.Idle)
-    val registerState: StateFlow<RegisterState> = _registerState.asStateFlow()
 
     fun login(username: String, password: String) {
         viewModelScope.launch {
@@ -57,9 +49,7 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun register(username: String, password: String) {
-        viewModelScope.launch {
-
-        }
+    suspend fun isLoggedIn(): Boolean {
+        return authDataStore.getAccessToken().firstOrNull()?.isNotBlank() == true
     }
 }

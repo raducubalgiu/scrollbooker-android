@@ -91,4 +91,6 @@ dependencies {
     implementation(libs.androidx.media3.ui)
     implementation(libs.androidx.media3.common)
 
+    implementation(libs.logging.interceptor)
+
 }

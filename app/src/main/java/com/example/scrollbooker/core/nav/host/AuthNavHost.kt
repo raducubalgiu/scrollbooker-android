@@ -1,6 +1,5 @@
 package com.example.scrollbooker.core.nav.host
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeDrawingPadding
@@ -9,12 +8,13 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.scrollbooker.MainViewModel
+import com.example.scrollbooker.core.nav.LocalRootNavController
 import com.example.scrollbooker.core.nav.routes.AuthRoute
 import com.example.scrollbooker.core.nav.transitions.slideInFromLeft
 import com.example.scrollbooker.core.nav.transitions.slideInFromRight
 import com.example.scrollbooker.core.nav.transitions.slideOutToLeft
 import com.example.scrollbooker.core.nav.transitions.slideOutToRight
+import com.example.scrollbooker.feature.auth.presentation.AuthViewModel
 import com.example.scrollbooker.feature.auth.presentation.LoginScreen
 import com.example.scrollbooker.feature.auth.presentation.RegisterScreen
 import com.example.scrollbooker.feature.auth.presentation.components.collectBusinessDetails.CollectBusinessLocationScreen
@@ -22,16 +22,14 @@ import com.example.scrollbooker.feature.auth.presentation.components.collectBusi
 import com.example.scrollbooker.feature.auth.presentation.components.collectBusinessDetails.CollectBusinessServicesScreen
 import com.example.scrollbooker.feature.auth.presentation.components.collectClientDetails.CollectBirthDateScreen
 import com.example.scrollbooker.feature.auth.presentation.components.collectClientDetails.CollectUsernameScreen
-import com.example.scrollbooker.ui.theme.Background
 
 @Composable
-fun AuthNavHost(viewModel: MainViewModel) {
+fun AuthNavHost(viewModel: AuthViewModel) {
     val navController = rememberNavController()
 
     Box(
         modifier = Modifier
         .fillMaxSize()
-        .background(Background)
         .safeDrawingPadding()
     ) {
         NavHost(
@@ -39,7 +37,11 @@ fun AuthNavHost(viewModel: MainViewModel) {
             startDestination = AuthRoute.Login.route
         ) {
             composable(AuthRoute.Login.route) {
-                LoginScreen(navController)
+                LoginScreen(
+                    authNavController = navController,
+                    rootNavController = LocalRootNavController.current,
+                    viewModel = viewModel
+                )
             }
             composable(AuthRoute.Register.route) {
                 RegisterScreen(navController)
