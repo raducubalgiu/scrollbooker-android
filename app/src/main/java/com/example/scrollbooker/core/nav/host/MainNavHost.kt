@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
@@ -19,12 +18,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.scrollbooker.MainViewModel
 import com.example.scrollbooker.core.nav.BottomBar
 import com.example.scrollbooker.core.nav.navigators.appointmentsGraph
 import com.example.scrollbooker.core.nav.navigators.profileRootGraph
@@ -33,17 +30,13 @@ import com.example.scrollbooker.feature.feed.presentation.FeedScreen
 import com.example.scrollbooker.feature.inbox.presentation.InboxScreen
 import com.example.scrollbooker.feature.search.presentation.SearchScreen
 import com.example.scrollbooker.ui.theme.Background
-import com.example.scrollbooker.ui.theme.Divider
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
-fun MainNavHost(viewModel: MainViewModel) {
+fun MainNavHost() {
     val bottomNavController = rememberNavController()
     val currentRoute = bottomNavController.currentBackStackEntryAsState().value?.destination?.route
-    val isFeedScreen = (currentRoute == MainRoute.Feed.route)
-
-    val containerColor = if(isFeedScreen) Color(0xFF121212) else Background
 
     val bottomBarRoutes = setOf(
         MainRoute.Feed.route,
@@ -66,10 +59,7 @@ fun MainNavHost(viewModel: MainViewModel) {
             containerColor = Color.Transparent,
             bottomBar = {
                 if(currentRoute in bottomBarRoutes) {
-                    Column {
-//                        HorizontalDivider(color = Divider, thickness = 0.5.dp)
-                        BottomBar(bottomNavController)
-                    }
+                    Column { BottomBar(bottomNavController) }
                 }
             },
             contentWindowInsets = WindowInsets(0, 0, 0, 0)

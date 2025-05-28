@@ -5,16 +5,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.example.scrollbooker.MainViewModel
 import androidx.compose.runtime.getValue
+import androidx.navigation.NavHostController
 import com.example.scrollbooker.core.nav.host.AuthNavHost
 import com.example.scrollbooker.core.nav.host.MainNavHost
 import com.example.scrollbooker.core.nav.routes.GlobalRoute
 
 @Composable
-fun RootNavHost() {
-    val navController = rememberNavController()
+fun RootNavHost(navController: NavHostController) {
     val viewModel: MainViewModel = hiltViewModel()
     val isLoggedIn by viewModel.isLoggedIn.collectAsState()
 
@@ -27,7 +26,7 @@ fun RootNavHost() {
         }
         
         composable(GlobalRoute.MAIN) {
-            MainNavHost(viewModel)
+            MainNavHost()
         }
     }
 }

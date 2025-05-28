@@ -4,12 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.ui.Modifier
+import androidx.navigation.compose.rememberNavController
 import com.example.scrollbooker.core.nav.RootNavHost
-import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.ScrollBookerTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,10 +20,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
+            val navController = rememberNavController()
+
             ScrollBookerTheme() {
-                Box(Modifier.fillMaxSize().background(Background)) {
-                    RootNavHost()
-                }
+                RootNavHost(navController = navController)
             }
         }
     }
