@@ -2,10 +2,10 @@ package com.example.scrollbooker.feature.auth.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.scrollbooker.core.nav.routes.GlobalRoute
 import com.example.scrollbooker.store.AuthDataStore
 import com.example.scrollbooker.feature.auth.domain.model.LoginRequest
 import com.example.scrollbooker.feature.auth.domain.usecase.LoginUseCase
+import com.example.scrollbooker.core.network.util.decodeJwtExpiry
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -32,21 +32,23 @@ class AuthViewModel @Inject constructor(
     private val _isInitialized = MutableStateFlow(false)
     val isInitialized: StateFlow<Boolean> = _isInitialized.asStateFlow()
 
-    private val _startDestination = MutableStateFlow<String?>(null)
-    val startDestination: StateFlow<String?> = _startDestination.asStateFlow()
-
     fun checkLoginStatus() {
         viewModelScope.launch {
-            val isLoggedIn = isLoggedIn()
-
-            _startDestination.value = if (isLoggedIn) GlobalRoute.MAIN else GlobalRoute.AUTH
-            _isInitialized.value = true
+            try {
+                val isLoggedIn = isTokenValid()
+                _loginState.value = if (isLoggedIn) LoginState.Success else LoginState.Idle
+            } catch (e: Exception) {
+                _loginState.value = LoginState.Idle
+            } finally {
+                _isInitialized.value = true
+            }
         }
     }
 
     fun login(username: String, password: String) {
         viewModelScope.launch {
             _loginState.value = LoginState.Loading
+
             val result = loginUseCase(LoginRequest(username, password))
             result.fold(
                 onSuccess = {
@@ -56,6 +58,7 @@ class AuthViewModel @Inject constructor(
                         userId = it.userId,
                         businessId = it.businessId
                     )
+                    _loginState.value = LoginState.Success
                 },
                 onFailure = {
                     _loginState.value = LoginState.Error(it.message ?: "Unknown error")
@@ -65,6 +68,12 @@ class AuthViewModel @Inject constructor(
     }
 
     suspend fun isLoggedIn(): Boolean {
-        return authDataStore.getAccessToken().firstOrNull()?.isNotBlank() == true
+        return isTokenValid()
+    }
+
+    private suspend fun isTokenValid(): Boolean {
+        val token = authDataStore.getAccessToken().firstOrNull()
+        val expiry = token?.let { decodeJwtExpiry(it) }
+        return expiry != null && System.currentTimeMillis() < expiry
     }
 }

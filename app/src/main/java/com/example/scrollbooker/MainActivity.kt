@@ -27,6 +27,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        viewModel.checkLoginStatus()
+
         setContent {
             val rootNavController = rememberNavController()
 
@@ -36,7 +38,5 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-
-        viewModel.checkLoginStatus()
     }
 }

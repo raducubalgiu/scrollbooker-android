@@ -1,6 +1,5 @@
 package com.example.scrollbooker.feature.auth.presentation
 
-import android.util.Log
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.CircularProgressIndicator
@@ -18,9 +17,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.inputs.Input
-import com.example.scrollbooker.core.nav.routes.AuthRoute
 import com.example.scrollbooker.core.nav.routes.GlobalRoute
-import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.feature.auth.presentation.components.AuthScreen
 
@@ -48,11 +45,17 @@ fun LoginScreen(
         type = stringResource(R.string.login),
         onSubmit = {
             viewModel.login(username, password)
+
+            if(loginState is LoginState.Success) {
+                rootNavController.navigate(GlobalRoute.MAIN) {
+                    popUpTo(0) { inclusive = true }
+                }
+            }
         }
     ) {
         Input(
             value = username,
-            onValueChange = {username = it},
+            onValueChange = { username = it },
             label = "Username",
             placeholder = "Username"
         )

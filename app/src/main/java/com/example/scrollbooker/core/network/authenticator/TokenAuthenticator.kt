@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.auth.util
+package com.example.scrollbooker.core.network.authenticator
 
 import com.example.scrollbooker.feature.auth.data.remote.AuthApiService
 import com.example.scrollbooker.feature.auth.data.remote.AuthDto

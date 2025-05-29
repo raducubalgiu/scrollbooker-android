@@ -1,13 +1,13 @@
 package com.example.scrollbooker.feature.auth.di
 
 import android.content.Context
+import com.example.scrollbooker.core.network.authenticator.TokenAuthenticator
+import com.example.scrollbooker.core.network.interceptor.AuthInterceptor
 import com.example.scrollbooker.store.AuthDataStore
 import com.example.scrollbooker.feature.auth.data.remote.AuthApiService
 import com.example.scrollbooker.feature.auth.data.repository.AuthRepositoryImpl
 import com.example.scrollbooker.feature.auth.domain.repository.AuthRepository
 import com.example.scrollbooker.feature.auth.domain.usecase.LoginUseCase
-import com.example.scrollbooker.feature.auth.util.AuthenticatedInterceptor
-import com.example.scrollbooker.feature.auth.util.TokenAuthenticator
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,7 +25,7 @@ object AuthModule {
     @Provides
     @Singleton
     fun provideOkHttpClient(
-        authenticatedInterceptor: AuthenticatedInterceptor,
+        authenticatedInterceptor: AuthInterceptor,
         tokenAuthenticator: TokenAuthenticator
     ): OkHttpClient {
         val logging = HttpLoggingInterceptor().apply {
