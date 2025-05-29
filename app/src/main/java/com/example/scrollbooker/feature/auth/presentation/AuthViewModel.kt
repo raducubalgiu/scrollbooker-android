@@ -2,6 +2,7 @@ package com.example.scrollbooker.feature.auth.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.scrollbooker.core.nav.routes.GlobalRoute
 import com.example.scrollbooker.store.AuthDataStore
 import com.example.scrollbooker.feature.auth.domain.model.LoginRequest
 import com.example.scrollbooker.feature.auth.domain.usecase.LoginUseCase
@@ -25,9 +26,23 @@ class AuthViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
     private val authDataStore: AuthDataStore
 ): ViewModel() {
-
     private val _loginState = MutableStateFlow<LoginState>(LoginState.Idle)
     val loginState: StateFlow<LoginState> = _loginState.asStateFlow()
+
+    private val _isInitialized = MutableStateFlow(false)
+    val isInitialized: StateFlow<Boolean> = _isInitialized.asStateFlow()
+
+    private val _startDestination = MutableStateFlow<String?>(null)
+    val startDestination: StateFlow<String?> = _startDestination.asStateFlow()
+
+    fun checkLoginStatus() {
+        viewModelScope.launch {
+            val isLoggedIn = isLoggedIn()
+
+            _startDestination.value = if (isLoggedIn) GlobalRoute.MAIN else GlobalRoute.AUTH
+            _isInitialized.value = true
+        }
+    }
 
     fun login(username: String, password: String) {
         viewModelScope.launch {

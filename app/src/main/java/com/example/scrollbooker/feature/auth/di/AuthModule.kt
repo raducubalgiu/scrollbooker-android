@@ -6,6 +6,8 @@ import com.example.scrollbooker.feature.auth.data.remote.AuthApiService
 import com.example.scrollbooker.feature.auth.data.repository.AuthRepositoryImpl
 import com.example.scrollbooker.feature.auth.domain.repository.AuthRepository
 import com.example.scrollbooker.feature.auth.domain.usecase.LoginUseCase
+import com.example.scrollbooker.feature.auth.util.AuthenticatedInterceptor
+import com.example.scrollbooker.feature.auth.util.TokenAuthenticator
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,12 +24,19 @@ import javax.inject.Singleton
 object AuthModule {
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideOkHttpClient(
+        authenticatedInterceptor: AuthenticatedInterceptor,
+        tokenAuthenticator: TokenAuthenticator
+    ): OkHttpClient {
         val logging = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
 
-        return OkHttpClient.Builder().addInterceptor(logging).build()
+        return OkHttpClient.Builder()
+            .addInterceptor(logging)
+            .addInterceptor(authenticatedInterceptor)
+            .authenticator(tokenAuthenticator)
+            .build()
     }
 
     @Provides

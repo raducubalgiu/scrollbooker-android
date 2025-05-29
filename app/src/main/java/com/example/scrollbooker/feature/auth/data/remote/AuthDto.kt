@@ -23,4 +23,8 @@ object AuthDto {
         @SerializedName("businessId")
         val businessId: Int
     )
+    data class RefreshRequestDto(
+        @SerializedName("refresh_token")
+        val refreshToken: String
+    )
 }

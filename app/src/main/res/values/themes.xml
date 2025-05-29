@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <style name="Theme.ScrollBooker" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.ScrollBooker.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#121212</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_calendar</item>
+        <item name="postSplashScreenTheme">@style/Theme.ScrollBooker</item>
+    </style>
 </resources>

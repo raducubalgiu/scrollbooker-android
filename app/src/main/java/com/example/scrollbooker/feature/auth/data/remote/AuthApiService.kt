@@ -13,4 +13,7 @@ interface AuthApiService {
         @Part("username") username: RequestBody,
         @Part("password") password: RequestBody,
     ): AuthDto.LoginResponseDto
+
+    @POST("refresh")
+    suspend fun refresh(@Body request: AuthDto.RefreshRequestDto): AuthDto.LoginResponseDto
 }
