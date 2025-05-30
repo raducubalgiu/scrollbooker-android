@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.myBusiness.services.domain.model
+package com.example.scrollbooker.feature.myBusiness.domain.model
 
 data class Service(
     val id: Int,

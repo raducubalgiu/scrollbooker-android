@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.myBusiness.products.presentation
+package com.example.scrollbooker.feature.myBusiness.presentation
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,11 +10,11 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.Header
 
 @Composable
-fun ProductsScreen(navController: NavController) {
-    Column(modifier = Modifier.fillMaxSize()) {
+fun SchedulesScreen(navController: NavController) {
+    Column(Modifier.fillMaxSize()) {
         Header(
             navController = navController,
-            title = stringResource(R.string.myProducts),
+            title = stringResource(R.string.mySchedule),
         )
     }
 }

@@ -10,10 +10,10 @@ import com.example.scrollbooker.core.nav.transitions.slideInFromRight
 import com.example.scrollbooker.core.nav.transitions.slideOutToLeft
 import com.example.scrollbooker.core.nav.transitions.slideOutToRight
 import com.example.scrollbooker.feature.calendar.CalendarScreen
-import com.example.scrollbooker.feature.myBusiness.MyBusinessScreen
-import com.example.scrollbooker.feature.myBusiness.products.presentation.ProductsScreen
-import com.example.scrollbooker.feature.myBusiness.schedules.presentation.SchedulesScreen
-import com.example.scrollbooker.feature.myBusiness.services.presentation.ServicesScreen
+import com.example.scrollbooker.feature.myBusiness.presentation.MyBusinessScreen
+import com.example.scrollbooker.feature.myBusiness.presentation.ProductsScreen
+import com.example.scrollbooker.feature.myBusiness.presentation.SchedulesScreen
+import com.example.scrollbooker.feature.myBusiness.presentation.ServicesScreen
 
 fun NavGraphBuilder.myBusinessGraph(navController: NavController) {
     navigation(
