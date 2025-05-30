@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Tab
@@ -28,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.BottomSheet
@@ -46,10 +48,16 @@ class ProfileTab(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(navController: NavController) {
+fun ProfileScreen(
+    navController: NavController,
+    viewModel: ProfileViewModel = hiltViewModel<ProfileViewModel>()
+) {
     var showBottomSheet by remember { mutableStateOf(false) }
     val pagerState = rememberPagerState(initialPage = 0) { 4 }
     val selectedTabIndex = pagerState.currentPage
+
+    val user = viewModel.user
+    val isLoading = viewModel.isLoading
 
     val tabs = listOf(
         ProfileTab(
@@ -107,6 +115,10 @@ fun ProfileScreen(navController: NavController) {
 
     Column(modifier = Modifier.fillMaxSize()) {
         ProfileHeader(onOpenBottomSheet = { showBottomSheet = true })
+
+        if(isLoading) {
+            CircularProgressIndicator()
+        }
 
         LazyColumn {
             item {

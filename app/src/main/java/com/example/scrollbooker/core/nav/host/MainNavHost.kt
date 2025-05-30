@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -26,6 +27,7 @@ import com.example.scrollbooker.core.nav.BottomBar
 import com.example.scrollbooker.core.nav.navigators.appointmentsGraph
 import com.example.scrollbooker.core.nav.navigators.profileRootGraph
 import com.example.scrollbooker.core.nav.routes.MainRoute
+import com.example.scrollbooker.core.snackbar.SnackbarManager
 import com.example.scrollbooker.feature.feed.presentation.FeedScreen
 import com.example.scrollbooker.feature.inbox.presentation.InboxScreen
 import com.example.scrollbooker.feature.search.presentation.SearchScreen
@@ -57,6 +59,7 @@ fun MainNavHost() {
     ) {
         Scaffold(
             containerColor = Color.Transparent,
+            snackbarHost = { SnackbarHost(SnackbarManager.snackbarHostState) },
             bottomBar = {
                 if(currentRoute in bottomBarRoutes) {
                     Column { BottomBar(bottomNavController) }

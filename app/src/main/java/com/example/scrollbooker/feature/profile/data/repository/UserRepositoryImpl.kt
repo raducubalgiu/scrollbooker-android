@@ -1,5 +1,6 @@
 package com.example.scrollbooker.feature.profile.data.repository
 
+import android.util.Log
 import com.example.scrollbooker.feature.profile.data.mappers.toDomain
 import com.example.scrollbooker.feature.profile.data.remote.UserApiService
 import com.example.scrollbooker.feature.profile.domain.model.User
@@ -10,6 +11,7 @@ class UserRepositoryImpl @Inject constructor(
     private val userApiService: UserApiService
 ): UserRepository {
     override suspend fun getUserInfo(): User {
+        Log.d("USER DTO!!!!", "Response: ${userApiService.getUserInfo()}")
         return userApiService.getUserInfo().toDomain()
     }
 }

@@ -3,6 +3,7 @@ package com.example.scrollbooker.feature.profile.di
 import com.example.scrollbooker.feature.profile.data.remote.UserApiService
 import com.example.scrollbooker.feature.profile.data.repository.UserRepositoryImpl
 import com.example.scrollbooker.feature.profile.domain.repository.UserRepository
+import com.example.scrollbooker.feature.profile.domain.usecase.GetUserInfoUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,4 +33,9 @@ object ProfileModule {
     fun provideUserRepository(
         userApiService: UserApiService
     ): UserRepository = UserRepositoryImpl(userApiService)
+
+    @Provides
+    @Singleton
+    fun provideGetUserUseCase(repository: UserRepository): GetUserInfoUseCase =
+        GetUserInfoUseCase(repository)
 }
