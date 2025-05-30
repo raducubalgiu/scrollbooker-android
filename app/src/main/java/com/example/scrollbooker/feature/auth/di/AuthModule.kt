@@ -3,6 +3,7 @@ package com.example.scrollbooker.feature.auth.di
 import android.content.Context
 import com.example.scrollbooker.core.network.authenticator.TokenAuthenticator
 import com.example.scrollbooker.core.network.interceptor.AuthInterceptor
+import com.example.scrollbooker.core.util.Constants
 import com.example.scrollbooker.store.AuthDataStore
 import com.example.scrollbooker.feature.auth.data.remote.AuthApiService
 import com.example.scrollbooker.feature.auth.data.repository.AuthRepositoryImpl
@@ -43,7 +44,7 @@ object AuthModule {
     @Singleton
     fun provideAuthApi(): AuthApiService {
         return Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:8000/api/v1/auth/")
+            .baseUrl(Constants.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(AuthApiService::class.java)

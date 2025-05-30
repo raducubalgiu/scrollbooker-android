@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Button
@@ -113,7 +114,11 @@ fun ProfileScreen(
         }
     )
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .statusBarsPadding()
+        .background(Background)
+    ) {
         ProfileHeader(onOpenBottomSheet = { showBottomSheet = true })
 
         if(isLoading) {

@@ -51,4 +51,7 @@
     <string name="name">Nume</string>
     <string name="editProfile">Editează profilul</string>
     <string name="somethingWentWrong">Ceva nu a mers cum trebuie. Încearcă mai târziu</string>
+    <string name="yourBio">Biografia ta</string>
+    <string name="yourName">Numele tău</string>
+    <string name="biography">Biografie</string>
 </resources>

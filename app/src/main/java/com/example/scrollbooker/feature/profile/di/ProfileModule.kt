@@ -1,5 +1,6 @@
 package com.example.scrollbooker.feature.profile.di
 
+import com.example.scrollbooker.core.util.Constants
 import com.example.scrollbooker.feature.profile.data.remote.UserApiService
 import com.example.scrollbooker.feature.profile.data.repository.UserRepositoryImpl
 import com.example.scrollbooker.feature.profile.domain.repository.UserRepository
@@ -21,7 +22,7 @@ object ProfileModule {
     @Singleton
     fun provideUserApiService(okHttpClient: OkHttpClient): UserApiService {
         return Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:8000/api/v1/auth/")
+            .baseUrl(Constants.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

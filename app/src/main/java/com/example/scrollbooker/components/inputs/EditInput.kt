@@ -29,6 +29,7 @@ import com.example.scrollbooker.ui.theme.Primary
 fun EditInput(
     modifier: Modifier = Modifier,
     value: String,
+    placeholder: String,
     onValueChange: (String) -> Unit,
     singleLine: Boolean = true,
     minLines: Int = 1,
@@ -62,7 +63,10 @@ fun EditInput(
             }
         },
         label = null,
-        placeholder = { Text("Name") },
+        placeholder = { Text(
+            text = placeholder,
+            color = Divider
+        ) },
         colors = TextFieldDefaults.colors(
             focusedContainerColor = Color.Transparent,
             unfocusedContainerColor = Color.Transparent,

@@ -38,6 +38,18 @@ class ProfileSharedViewModel @Inject constructor(
         }
     }
 
+    fun updateFullName(newFullName: String) {
+        user = user?.copy(fullName = newFullName)
+    }
+
+    fun updateUsername(newUsername: String) {
+        user = user?.copy(username = newUsername)
+    }
+
+    fun updateBio(newBio: String) {
+        user = user?.copy(bio = newBio)
+    }
+
     init {
         loadUser()
     }
