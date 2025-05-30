@@ -3,21 +3,28 @@ package com.example.scrollbooker.feature.profile.presentation.edit
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.Header
 import com.example.scrollbooker.components.list.ItemListInfo
 import com.example.scrollbooker.core.nav.routes.MainRoute
+import com.example.scrollbooker.feature.profile.presentation.ProfileSharedViewModel
 import com.example.scrollbooker.ui.theme.Background
 
 @Composable
-fun EditProfileScreen(navController: NavController) {
+fun EditProfileScreen(
+    navController: NavController,
+    viewModel: ProfileSharedViewModel
+) {
     Column(modifier = Modifier
         .fillMaxSize()
+        .statusBarsPadding()
         .background(Background)
     ) {
         Header(

@@ -11,7 +11,6 @@ class UserRepositoryImpl @Inject constructor(
     private val userApiService: UserApiService
 ): UserRepository {
     override suspend fun getUserInfo(): User {
-        Log.d("USER DTO!!!!", "Response: ${userApiService.getUserInfo()}")
         return userApiService.getUserInfo().toDomain()
     }
 }

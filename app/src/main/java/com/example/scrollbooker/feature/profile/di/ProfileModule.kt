@@ -21,7 +21,7 @@ object ProfileModule {
     @Singleton
     fun provideUserApiService(okHttpClient: OkHttpClient): UserApiService {
         return Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:8000/api/v1/aut/")
+            .baseUrl("http://10.0.2.2:8000/api/v1/auth/")
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

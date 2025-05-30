@@ -13,7 +13,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileViewModel @Inject constructor(
+class ProfileSharedViewModel @Inject constructor(
     private val getUserInfoUseCase: GetUserInfoUseCase
 ): ViewModel() {
 

@@ -50,7 +50,7 @@ class ProfileTab(
 @Composable
 fun ProfileScreen(
     navController: NavController,
-    viewModel: ProfileViewModel = hiltViewModel<ProfileViewModel>()
+    viewModel: ProfileSharedViewModel
 ) {
     var showBottomSheet by remember { mutableStateOf(false) }
     val pagerState = rememberPagerState(initialPage = 0) { 4 }

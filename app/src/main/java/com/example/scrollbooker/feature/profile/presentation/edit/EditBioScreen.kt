@@ -2,14 +2,21 @@ package com.example.scrollbooker.feature.profile.presentation.edit
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.example.scrollbooker.components.Header
+import com.example.scrollbooker.feature.profile.presentation.ProfileSharedViewModel
 
 @Composable
-fun EditBioScreen(navController: NavController) {
-    Column(Modifier.fillMaxSize()) {
+fun EditBioScreen(
+    navController: NavController,
+    viewModel: ProfileSharedViewModel
+) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .statusBarsPadding()) {
         Header(
             navController = navController,
             title = "Bio",

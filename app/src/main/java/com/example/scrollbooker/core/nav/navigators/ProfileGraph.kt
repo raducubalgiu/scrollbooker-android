@@ -1,5 +1,7 @@
 package com.example.scrollbooker.core.nav.navigators
 
+import androidx.compose.runtime.remember
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -15,23 +17,32 @@ import com.example.scrollbooker.feature.profile.presentation.edit.EditGenderScre
 import com.example.scrollbooker.feature.profile.presentation.edit.EditProfileScreen
 import com.example.scrollbooker.feature.profile.presentation.edit.EditUsernameScreen
 import com.example.scrollbooker.feature.profile.presentation.ProfileScreen
+import com.example.scrollbooker.feature.profile.presentation.ProfileSharedViewModel
 
 fun NavGraphBuilder.profileGraph(navController: NavController) {
     navigation(
         route = MainRoute.ProfileNavigator.route,
         startDestination = MainRoute.Profile.route,
     ) {
-        composable(MainRoute.Profile.route) {
-            ProfileScreen(navController)
+        composable(MainRoute.Profile.route) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(MainRoute.ProfileNavigator.route)
+            }
+            val sharedViewModel: ProfileSharedViewModel = hiltViewModel(parentEntry)
+
+            ProfileScreen(navController, sharedViewModel)
         }
-        composable(
-            MainRoute.EditProfile.route,
+        composable(MainRoute.EditProfile.route,
             enterTransition = slideInFromRight(),
             exitTransition = slideOutToLeft(),
             popEnterTransition = slideInFromLeft(),
             popExitTransition = slideOutToRight()
-        ) {
-            EditProfileScreen(navController)
+        ) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(MainRoute.ProfileNavigator.route)
+            }
+            val sharedViewModel: ProfileSharedViewModel = hiltViewModel(parentEntry)
+            EditProfileScreen(navController, sharedViewModel)
         }
 
         composable(
@@ -40,8 +51,13 @@ fun NavGraphBuilder.profileGraph(navController: NavController) {
             exitTransition = slideOutToLeft(),
             popEnterTransition = slideInFromLeft(),
             popExitTransition = slideOutToRight()
-        ) {
-            EditFullNameScreen(navController)
+        ) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(MainRoute.ProfileNavigator.route)
+            }
+            val sharedViewModel: ProfileSharedViewModel = hiltViewModel(parentEntry)
+
+            EditFullNameScreen(navController, sharedViewModel)
         }
 
         composable(
@@ -50,8 +66,13 @@ fun NavGraphBuilder.profileGraph(navController: NavController) {
             exitTransition = slideOutToLeft(),
             popEnterTransition = slideInFromLeft(),
             popExitTransition = slideOutToRight()
-        ) {
-            EditUsernameScreen(navController)
+        ) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(MainRoute.ProfileNavigator.route)
+            }
+            val sharedViewModel: ProfileSharedViewModel = hiltViewModel(parentEntry)
+
+            EditUsernameScreen(navController, sharedViewModel)
         }
 
         composable(
@@ -60,8 +81,13 @@ fun NavGraphBuilder.profileGraph(navController: NavController) {
             exitTransition = slideOutToLeft(),
             popEnterTransition = slideInFromLeft(),
             popExitTransition = slideOutToRight()
-        ) {
-            EditBioScreen(navController)
+        ) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(MainRoute.ProfileNavigator.route)
+            }
+            val sharedViewModel: ProfileSharedViewModel = hiltViewModel(parentEntry)
+
+            EditBioScreen(navController, sharedViewModel)
         }
 
         composable(
@@ -70,8 +96,13 @@ fun NavGraphBuilder.profileGraph(navController: NavController) {
             exitTransition = slideOutToLeft(),
             popEnterTransition = slideInFromLeft(),
             popExitTransition = slideOutToRight()
-        ) {
-            EditGenderScreen(navController)
+        ) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(MainRoute.ProfileNavigator.route)
+            }
+            val sharedViewModel: ProfileSharedViewModel = hiltViewModel(parentEntry)
+
+            EditGenderScreen(navController, sharedViewModel)
         }
     }
 }
