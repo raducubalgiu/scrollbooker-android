@@ -65,6 +65,7 @@ dependencies {
     // Navigation
     implementation(libs.androidx.navigation.compose)
 
+    // Hilt
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
     ksp(libs.hilt.android.compiler)
@@ -86,11 +87,16 @@ dependencies {
     implementation(libs.androidx.paging.compose)
 
     implementation(libs.androidx.foundation)
-    
+
+    // Exo Player
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.ui)
     implementation(libs.androidx.media3.common)
 
+    // Logging Http
     implementation(libs.logging.interceptor)
+
+    // Timber Logging
+    implementation(libs.timber)
 
 }

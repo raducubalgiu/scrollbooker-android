@@ -14,8 +14,11 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,6 +35,7 @@ import com.example.scrollbooker.feature.feed.presentation.FeedScreen
 import com.example.scrollbooker.feature.inbox.presentation.InboxScreen
 import com.example.scrollbooker.feature.search.presentation.SearchScreen
 import com.example.scrollbooker.ui.theme.Background
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
@@ -49,7 +53,21 @@ fun MainNavHost() {
     )
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
+
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        SnackbarManager.messages.collect { message ->
+            coroutineScope.launch {
+                snackbarHostState.showSnackbar(
+                    message = message.message,
+                    actionLabel = message.actionLabel,
+                    duration = message.duration
+                )
+            }
+        }
+    }
 
     ModalNavigationDrawer(
         drawerContent = { AppDrawer() },
@@ -59,7 +77,7 @@ fun MainNavHost() {
     ) {
         Scaffold(
             containerColor = Color.Transparent,
-            snackbarHost = { SnackbarHost(SnackbarManager.snackbarHostState) },
+            snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
             bottomBar = {
                 if(currentRoute in bottomBarRoutes) {
                     Column { BottomBar(bottomNavController) }
@@ -79,7 +97,7 @@ fun MainNavHost() {
                 composable(MainRoute.Feed.route) {
                     FeedScreen(
                         onOpenDrawer = {
-                            scope.launch {
+                            coroutineScope.launch {
                                 if (drawerState.isClosed) {
                                     drawerState.open()
                                 } else {

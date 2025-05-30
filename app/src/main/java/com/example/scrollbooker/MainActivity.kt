@@ -6,10 +6,13 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import com.example.scrollbooker.core.nav.LocalRootNavController
 import com.example.scrollbooker.core.nav.RootNavHost
+import com.example.scrollbooker.core.snackbar.SnackbarManager
 import com.example.scrollbooker.feature.auth.presentation.AuthViewModel
 import com.example.scrollbooker.ui.theme.ScrollBookerTheme
 import dagger.hilt.android.AndroidEntryPoint

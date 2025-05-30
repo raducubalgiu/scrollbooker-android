@@ -1,5 +1,4 @@
 package com.example.scrollbooker.feature.profile.presentation
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,6 +9,7 @@ import com.example.scrollbooker.feature.profile.domain.model.User
 import com.example.scrollbooker.feature.profile.domain.usecase.GetUserInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,14 +28,10 @@ class ProfileViewModel @Inject constructor(
             isLoading = true
 
             try {
-                Log.d("Profile Request", "Start")
                 user = getUserInfoUseCase()
             } catch (e: Exception) {
-                SnackbarManager.showMessage(
-                    scope = this,
-                    message = "Something went wrong"
-                )
-                Log.d("Profile Request Error", e.message.toString())
+                SnackbarManager.showError("Ceva nu a mers cum trebuie. Încearcă mai târziu")
+                Timber.tag("Profile").e(e, "ERROR: on Loading Profile User Data")
             } finally {
                 isLoading = false
             }

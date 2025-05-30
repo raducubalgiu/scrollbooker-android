@@ -50,4 +50,5 @@
     <string name="mySchedule">Programul meu de lucru</string>
     <string name="name">Nume</string>
     <string name="editProfile">Editează profilul</string>
+    <string name="somethingWentWrong">Ceva nu a mers cum trebuie. Încearcă mai târziu</string>
 </resources>
