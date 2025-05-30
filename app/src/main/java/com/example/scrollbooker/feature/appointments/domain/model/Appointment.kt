@@ -6,7 +6,7 @@ data class Appointment(
     val channel: String,
     val status: String,
     val product: Product,
-    val user: User,
+    val user: UserAppointment,
     val isCustomer: Boolean
 )
 
@@ -19,7 +19,7 @@ data class Product(
     val currency: String
 )
 
-data class User(
+data class UserAppointment(
     val id: Int,
     val avatar: String,
     val fullName: String,

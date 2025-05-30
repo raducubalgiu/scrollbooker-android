@@ -11,7 +11,7 @@ data class AppointmentDto(
     val channel: String,
     val status: String,
     val product: ProductDto,
-    val user: UserDto,
+    val user: UserAppointmentDto,
 
     @SerializedName("is_customer")
     val isCustomer: Boolean
@@ -29,7 +29,7 @@ data class ProductDto(
     val currency: String
 )
 
-data class UserDto(
+data class UserAppointmentDto(
     val id: Int,
     val fullName: String,
     val username: String,

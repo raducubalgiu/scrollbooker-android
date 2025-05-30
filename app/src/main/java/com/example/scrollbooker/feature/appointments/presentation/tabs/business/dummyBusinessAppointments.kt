@@ -2,7 +2,7 @@ package com.example.scrollbooker.feature.appointments.presentation.tabs.business
 
 import com.example.scrollbooker.feature.appointments.domain.model.Appointment
 import com.example.scrollbooker.feature.appointments.domain.model.Product
-import com.example.scrollbooker.feature.appointments.domain.model.User
+import com.example.scrollbooker.feature.appointments.domain.model.UserAppointment
 
 val dummyBusinessAppointments = listOf(
     Appointment(
@@ -18,7 +18,7 @@ val dummyBusinessAppointments = listOf(
             discount = 0,
             currency = "RON"
         ),
-        user = User(
+        user = UserAppointment(
             id = 1,
             avatar = "",
             fullName = "Radu Balgiu",
@@ -41,7 +41,7 @@ val dummyBusinessAppointments = listOf(
             discount = 0,
             currency = "RON"
         ),
-        user = User(
+        user = UserAppointment(
             id = 1,
             avatar = "",
             fullName = "Cristiano Ronaldo",
@@ -64,7 +64,7 @@ val dummyBusinessAppointments = listOf(
             discount = 0,
             currency = "RON"
         ),
-        user = User(
+        user = UserAppointment(
             id = 1,
             avatar = "",
             fullName = "Lionel Messi",

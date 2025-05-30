@@ -9,12 +9,12 @@ import com.example.scrollbooker.core.nav.transitions.slideInFromLeft
 import com.example.scrollbooker.core.nav.transitions.slideInFromRight
 import com.example.scrollbooker.core.nav.transitions.slideOutToLeft
 import com.example.scrollbooker.core.nav.transitions.slideOutToRight
-import com.example.scrollbooker.feature.profile.editProfile.presentation.EditBioScreen
-import com.example.scrollbooker.feature.profile.editProfile.presentation.EditFullNameScreen
-import com.example.scrollbooker.feature.profile.editProfile.presentation.EditGenderScreen
-import com.example.scrollbooker.feature.profile.editProfile.presentation.EditProfileScreen
-import com.example.scrollbooker.feature.profile.editProfile.presentation.EditUsernameScreen
-import com.example.scrollbooker.feature.profile.root.presentation.ProfileScreen
+import com.example.scrollbooker.feature.profile.presentation.edit.EditBioScreen
+import com.example.scrollbooker.feature.profile.presentation.edit.EditFullNameScreen
+import com.example.scrollbooker.feature.profile.presentation.edit.EditGenderScreen
+import com.example.scrollbooker.feature.profile.presentation.edit.EditProfileScreen
+import com.example.scrollbooker.feature.profile.presentation.edit.EditUsernameScreen
+import com.example.scrollbooker.feature.profile.presentation.ProfileScreen
 
 fun NavGraphBuilder.profileGraph(navController: NavController) {
     navigation(

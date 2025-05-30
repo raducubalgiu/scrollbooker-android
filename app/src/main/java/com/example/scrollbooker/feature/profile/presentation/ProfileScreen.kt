@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.profile.root.presentation
+package com.example.scrollbooker.feature.profile.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -33,6 +33,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.BottomSheet
 import com.example.scrollbooker.components.list.ItemList
 import com.example.scrollbooker.core.nav.routes.MainRoute
+import com.example.scrollbooker.feature.profile.presentation.components.ProfileHeader
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnSurfaceBG

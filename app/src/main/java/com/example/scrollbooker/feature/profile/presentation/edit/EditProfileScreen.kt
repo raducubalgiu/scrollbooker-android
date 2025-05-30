@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.profile.editProfile.presentation
+package com.example.scrollbooker.feature.profile.presentation.edit
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
