@@ -1,12 +1,8 @@
 package com.example.scrollbooker.feature.myBusiness.presentation
-
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.scrollbooker.R
@@ -14,30 +10,35 @@ import com.example.scrollbooker.components.Header
 import com.example.scrollbooker.feature.myBusiness.presentation.components.ServicesList
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.scrollbooker.components.Layout
+import com.example.scrollbooker.core.snackbar.SnackbarManager
+import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.feature.myBusiness.domain.model.Service
 
 @Composable
 fun ServicesScreen(
     navController: NavController,
     viewModel: ServicesViewModel = hiltViewModel()
 ) {
-    val services by viewModel.services.collectAsState()
-    val isLoading by viewModel.isLoading.collectAsState()
-    val error by viewModel.error.collectAsState()
+    val state by viewModel.servicesState.collectAsState()
 
-
-    Column(modifier = Modifier.fillMaxSize()) {
+    Layout {
         Header(
             navController = navController,
             title = stringResource(R.string.myServices)
         )
 
-        when {
-            isLoading -> CircularProgressIndicator()
-            services.isEmpty() -> {
-                Text(text = "No Services available")
+        when(state) {
+            is FeatureState.Loading -> CircularProgressIndicator()
+            is FeatureState.Error -> SnackbarManager.showToast(stringResource(id = R.string.somethingWentWrong))
+            is FeatureState.Success -> {
+                val services = (state as FeatureState.Success<List<Service>>).data
+                if(services.isEmpty()) {
+                    Text(text = "No Services available")
+                } else {
+                    ServicesList(services)
+                }
             }
-
-            else -> ServicesList(services)
         }
     }
 }

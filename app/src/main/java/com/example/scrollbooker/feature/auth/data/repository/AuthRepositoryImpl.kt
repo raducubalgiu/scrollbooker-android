@@ -60,6 +60,8 @@ class AuthRepositoryImpl @Inject constructor(
         val accessToken = authDataStore.getAccessToken().firstOrNull()
         val refreshToken = authDataStore.getRefreshToken().firstOrNull()
 
+        tokenProvider.updateTokens(accessToken.toString(), refreshToken)
+
         if(isTokenValid(accessToken)) return true
 
         if(isTokenValid(refreshToken) && !refreshToken.isNullOrBlank()) {

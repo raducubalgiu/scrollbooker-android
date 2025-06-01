@@ -19,7 +19,6 @@ import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.DeletableItem
 import com.example.scrollbooker.components.DialogConfirm
-import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.feature.myBusiness.domain.model.Service
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,8 +31,7 @@ fun ServicesList(
     var isOpen by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(horizontal = BasePadding),
+        .fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         if(isOpen) {

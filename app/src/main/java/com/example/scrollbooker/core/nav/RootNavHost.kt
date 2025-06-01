@@ -8,8 +8,8 @@ import androidx.navigation.NavHostController
 import com.example.scrollbooker.core.nav.host.AuthNavHost
 import com.example.scrollbooker.core.nav.host.MainNavHost
 import com.example.scrollbooker.core.nav.routes.GlobalRoute
+import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.feature.auth.presentation.AuthViewModel
-import com.example.scrollbooker.feature.auth.presentation.FeatureState
 
 @Composable
 fun RootNavHost(

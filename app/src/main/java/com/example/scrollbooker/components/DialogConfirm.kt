@@ -10,7 +10,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.SurfaceBG
-import com.example.scrollbooker.ui.theme.titleLarge
+import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
@@ -31,19 +31,13 @@ fun DialogConfirm(
         },
         text = {
             Text(
-                style = titleLarge,
+                style = bodyMedium,
                 text = text
             )
         },
-        onDismissRequest = {
-            onDismissRequest()
-        },
+        onDismissRequest = onDismissRequest,
         confirmButton = {
-            TextButton(
-                onClick = {
-                    onConfirmation()
-                }
-            ) {
+            TextButton(onClick = onConfirmation) {
                 Text(
                     color = Error,
                     fontWeight = FontWeight.ExtraBold,
@@ -52,11 +46,7 @@ fun DialogConfirm(
             }
         },
         dismissButton = {
-            TextButton(
-                onClick = {
-                    onDismissRequest()
-                }
-            ) {
+            TextButton(onClick = onDismissRequest) {
                 Text(
                     text = stringResource(R.string.cancel),
                     color = OnSurfaceBG

@@ -2,6 +2,7 @@ package com.example.scrollbooker.feature.auth.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.R
+import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.feature.auth.domain.model.LoginRequest
 import com.example.scrollbooker.feature.auth.domain.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,15 +12,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
-
-sealed class FeatureState<out T> {
-    object Loading: FeatureState<Nothing>()
-    data class Success<T>(val data: T): FeatureState<T>()
-    data class Error(
-        val messageRes: Int = R.string.somethingWentWrong,
-        val throwable: Throwable? = null
-    ): FeatureState<Nothing>()
-}
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
@@ -34,6 +26,8 @@ class AuthViewModel @Inject constructor(
 
     fun checkIsLoggedIn() {
         viewModelScope.launch {
+            _loginState.value = FeatureState.Loading
+
             val isLoggedIn = authRepository.isLoggedIn()
 
             if(isLoggedIn) {

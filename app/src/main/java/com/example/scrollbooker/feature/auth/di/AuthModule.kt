@@ -36,7 +36,6 @@ object AuthModule {
     @Singleton
     fun provideOkHttpClient(
         tokenProvider: TokenProvider,
-        authDataStore: AuthDataStore,
         tokenAuthenticator: TokenAuthenticator
     ): OkHttpClient {
         val logging = HttpLoggingInterceptor().apply {
@@ -45,7 +44,7 @@ object AuthModule {
 
         return OkHttpClient.Builder()
             .addInterceptor(logging)
-            .addInterceptor(AuthInterceptor(authDataStore, tokenProvider))
+            .addInterceptor(AuthInterceptor(tokenProvider))
             .authenticator(tokenAuthenticator)
             .build()
     }

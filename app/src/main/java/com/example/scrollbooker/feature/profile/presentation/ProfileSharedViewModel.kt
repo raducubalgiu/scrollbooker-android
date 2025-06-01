@@ -32,7 +32,7 @@ class ProfileSharedViewModel @Inject constructor(
             try {
                 user = getUserInfoUseCase()
             } catch (e: Exception) {
-                SnackbarManager.showError("Ceva nu a mers cum trebuie. Încearcă mai târziu")
+                //SnackbarManager.showError("Ceva nu a mers cum trebuie. Încearcă mai târziu")
                 Timber.tag("Profile").e(e, "ERROR: on Loading Profile User Data")
             } finally {
                 isLoading = false

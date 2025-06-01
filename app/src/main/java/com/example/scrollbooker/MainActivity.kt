@@ -10,8 +10,8 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import com.example.scrollbooker.core.nav.LocalRootNavController
 import com.example.scrollbooker.core.nav.RootNavHost
+import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.feature.auth.presentation.AuthViewModel
-import com.example.scrollbooker.feature.auth.presentation.FeatureState
 import com.example.scrollbooker.ui.theme.ScrollBookerTheme
 import dagger.hilt.android.AndroidEntryPoint
 

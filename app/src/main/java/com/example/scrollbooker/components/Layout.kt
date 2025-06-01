@@ -17,7 +17,7 @@ fun Layout(
     Column(modifier = Modifier
         .fillMaxSize()
         .statusBarsPadding()
-        .padding(BasePadding)
+        .padding(horizontal = BasePadding)
         .then(modifier)
     ){
         content()

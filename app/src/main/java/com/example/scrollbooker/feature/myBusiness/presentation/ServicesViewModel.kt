@@ -2,6 +2,7 @@ package com.example.scrollbooker.feature.myBusiness.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.feature.myBusiness.domain.model.Service
 import com.example.scrollbooker.feature.myBusiness.domain.useCase.GetServicesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,14 +15,9 @@ import javax.inject.Inject
 class ServicesViewModel @Inject constructor(
     private val getServicesUseCase: GetServicesUseCase
 ): ViewModel() {
-    private val _services = MutableStateFlow<List<Service>>(emptyList())
-    val services: StateFlow<List<Service>> = _services
 
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading: StateFlow<Boolean> = _isLoading
-
-    private val _error = MutableStateFlow<String?>(null)
-    val error: StateFlow<String?> = _error
+    private val _servicesState = MutableStateFlow<FeatureState<List<Service>>>(FeatureState.Loading)
+    val servicesState: StateFlow<FeatureState<List<Service>>> = _servicesState
 
     init {
         loadServices()
@@ -29,18 +25,8 @@ class ServicesViewModel @Inject constructor(
 
     private fun loadServices() {
         viewModelScope.launch {
-            _isLoading.value = true
-            _error.value = null
-
-            val result = getServicesUseCase()
-
-            if(result.isSuccess) {
-                _services.value = result.getOrThrow()
-            } else {
-                _error.value = result.exceptionOrNull()?.message ?: "Unknown error"
-            }
-
-            _isLoading.value = false
+            _servicesState.value = FeatureState.Loading
+            _servicesState.value = getServicesUseCase()
         }
     }
 }

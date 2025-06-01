@@ -1,6 +1,4 @@
 package com.example.scrollbooker.feature.myBusiness.presentation
-
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,16 +13,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.Header
+import com.example.scrollbooker.components.Layout
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.ui.theme.Background
 
 @Composable
 fun MyBusinessScreen(navController: NavController) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Background)
-    ) {
+    Layout {
         Header(
             navController = navController,
             title = stringResource(R.string.myBusiness),
