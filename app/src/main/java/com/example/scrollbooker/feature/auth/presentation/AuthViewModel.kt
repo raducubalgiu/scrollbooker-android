@@ -1,79 +1,71 @@
 package com.example.scrollbooker.feature.auth.presentation
-
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.scrollbooker.store.AuthDataStore
+import com.example.scrollbooker.R
 import com.example.scrollbooker.feature.auth.domain.model.LoginRequest
-import com.example.scrollbooker.feature.auth.domain.usecase.LoginUseCase
-import com.example.scrollbooker.core.network.util.decodeJwtExpiry
+import com.example.scrollbooker.feature.auth.domain.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
-sealed class LoginState {
-    object Idle: LoginState()
-    object Loading: LoginState()
-    object Success: LoginState()
-    data class Error(val message: String): LoginState()
+sealed class FeatureState<out T> {
+    object Loading: FeatureState<Nothing>()
+    data class Success<T>(val data: T): FeatureState<T>()
+    data class Error(
+        val messageRes: Int = R.string.somethingWentWrong,
+        val throwable: Throwable? = null
+    ): FeatureState<Nothing>()
 }
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val loginUseCase: LoginUseCase,
-    private val authDataStore: AuthDataStore
+    private val authRepository: AuthRepository
 ): ViewModel() {
-    private val _loginState = MutableStateFlow<LoginState>(LoginState.Idle)
-    val loginState: StateFlow<LoginState> = _loginState.asStateFlow()
+    private val _loginState = MutableStateFlow<FeatureState<Unit>>(FeatureState.Loading)
+    val loginState: StateFlow<FeatureState<Unit>> = _loginState.asStateFlow()
 
-    private val _isInitialized = MutableStateFlow(false)
-    val isInitialized: StateFlow<Boolean> = _isInitialized.asStateFlow()
+    init {
+        checkIsLoggedIn()
+    }
 
-    fun checkLoginStatus() {
+    fun checkIsLoggedIn() {
         viewModelScope.launch {
-            try {
-                val isLoggedIn = isTokenValid()
-                _loginState.value = if (isLoggedIn) LoginState.Success else LoginState.Idle
-            } catch (e: Exception) {
-                _loginState.value = LoginState.Idle
-            } finally {
-                _isInitialized.value = true
+            val isLoggedIn = authRepository.isLoggedIn()
+
+            if(isLoggedIn) {
+                _loginState.value = FeatureState.Success(Unit)
+            } else {
+                _loginState.value = FeatureState.Error(R.string.userNotLoggedIn)
             }
         }
     }
 
     fun login(username: String, password: String) {
         viewModelScope.launch {
-            _loginState.value = LoginState.Loading
+            _loginState.value = FeatureState.Loading
 
-            val result = loginUseCase(LoginRequest(username, password))
-            result.fold(
-                onSuccess = {
-                    authDataStore.saveTokens(
-                        accessToken = it.accessToken,
-                        refreshToken = it.refreshToken,
-                        userId = it.userId,
-                        businessId = it.businessId
-                    )
-                    _loginState.value = LoginState.Success
-                },
+            val result = authRepository.loginAndSaveUserSession(
+                LoginRequest(username = username, password = password)
+            )
+
+            _loginState.value = result.fold(
+                onSuccess = { FeatureState.Success(Unit) },
                 onFailure = {
-                    _loginState.value = LoginState.Error(it.message ?: "Unknown error")
+                    Timber.tag("Login").e(it, "ERROR: Login Failed")
+                    FeatureState.Error(R.string.somethingWentWrong)
                 }
             )
         }
     }
 
-    suspend fun isLoggedIn(): Boolean {
-        return isTokenValid()
-    }
-
-    private suspend fun isTokenValid(): Boolean {
-        val token = authDataStore.getAccessToken().firstOrNull()
-        val expiry = token?.let { decodeJwtExpiry(it) }
-        return expiry != null && System.currentTimeMillis() < expiry
+    fun logout() {
+        viewModelScope.launch {
+            authRepository.logout()
+            checkIsLoggedIn()
+        }
     }
 }

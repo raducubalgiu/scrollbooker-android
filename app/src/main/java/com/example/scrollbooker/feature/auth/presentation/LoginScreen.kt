@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,25 +31,17 @@ fun LoginScreen(
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    LaunchedEffect(loginState) {
-        if(loginState is LoginState.Success) {
-            rootNavController.navigate(GlobalRoute.MAIN) {
-                popUpTo(0) { inclusive = true }
-            }
-        }
-    }
-
     AuthScreen(
         navController = authNavController,
         type = stringResource(R.string.login),
         onSubmit = {
             viewModel.login(username, password)
 
-            if(loginState is LoginState.Success) {
-                rootNavController.navigate(GlobalRoute.MAIN) {
-                    popUpTo(0) { inclusive = true }
-                }
-            }
+//            if(loginState is FeatureState.Success) {
+//                rootNavController.navigate(GlobalRoute.MAIN) {
+//                    popUpTo(0) { inclusive = true }
+//                }
+//            }
         }
     ) {
         Input(
@@ -70,7 +61,7 @@ fun LoginScreen(
         )
 
         when(loginState) {
-            is LoginState.Loading -> {
+            is FeatureState.Loading -> {
                 CircularProgressIndicator()
             }
 

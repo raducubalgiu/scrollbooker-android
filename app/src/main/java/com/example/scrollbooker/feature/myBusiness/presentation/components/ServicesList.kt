@@ -20,11 +20,14 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.DeletableItem
 import com.example.scrollbooker.components.DialogConfirm
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.feature.myBusiness.domain.model.Service
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ServicesList() {
-    var services by remember { mutableStateOf(dummyServices) }
+fun ServicesList(
+    services: List<Service>
+) {
+    var services by remember { mutableStateOf(services) }
     var selectedService by remember { mutableStateOf("") }
     var isOpen by remember { mutableStateOf(false) }
 

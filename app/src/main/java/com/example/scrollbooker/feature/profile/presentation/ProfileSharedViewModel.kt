@@ -5,8 +5,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.snackbar.SnackbarManager
-import com.example.scrollbooker.feature.profile.domain.model.User
-import com.example.scrollbooker.feature.profile.domain.usecase.GetUserInfoUseCase
+import com.example.scrollbooker.feature.auth.domain.model.User
+import com.example.scrollbooker.feature.auth.domain.usecase.GetUserInfoUseCase
+import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -14,6 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileSharedViewModel @Inject constructor(
+    private val authDataStore: AuthDataStore,
     private val getUserInfoUseCase: GetUserInfoUseCase
 ): ViewModel() {
 
@@ -48,6 +50,12 @@ class ProfileSharedViewModel @Inject constructor(
 
     fun updateBio(newBio: String) {
         user = user?.copy(bio = newBio)
+    }
+
+    fun logout() {
+        viewModelScope.launch {
+            authDataStore.clearUserSession()
+        }
     }
 
     init {

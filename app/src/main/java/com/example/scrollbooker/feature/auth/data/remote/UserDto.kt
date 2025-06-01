@@ -1,16 +1,6 @@
-package com.example.scrollbooker.feature.profile.data.remote
+package com.example.scrollbooker.feature.auth.data.remote
 
 import com.google.gson.annotations.SerializedName
-
-//    { "id":1,
-//    "username":"radu",
-//    "fullname":"Raducu Balgiu",
-//    "avatar":null,
-//    "business_id":null,
-//    "business_type_id":null,
-//    "email":"radu@yahoo.com",
-//    "counters":{"user_id":1,"followings_count":0,"followers_count":0,"products_count":0,"posts_count":0,"ratings_count":0,"ratings_average":5},
-//    "profession":"Creator"}
 
 data class UserDto(
     val id: Int,

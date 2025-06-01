@@ -26,11 +26,9 @@ class TokenAuthenticator @Inject constructor(
             }
 
             runBlocking {
-                authDataStore.saveTokens(
+                authDataStore.refreshTokens(
                     accessToken = refreshResponse.accessToken,
                     refreshToken = refreshResponse.refreshToken,
-                    userId = refreshResponse.userId,
-                    businessId = refreshResponse.businessId
                 )
             }
 
@@ -40,7 +38,7 @@ class TokenAuthenticator @Inject constructor(
 
         } catch (e: Exception) {
             runBlocking {
-                authDataStore.clearTokens()
+                authDataStore.clearUserSession()
             }
 
             null // Refresh failed -> Logout

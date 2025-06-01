@@ -2,22 +2,42 @@ package com.example.scrollbooker.feature.myBusiness.presentation
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.Header
 import com.example.scrollbooker.feature.myBusiness.presentation.components.ServicesList
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
-fun ServicesScreen(navController: NavController) {
+fun ServicesScreen(
+    navController: NavController,
+    viewModel: ServicesViewModel = hiltViewModel()
+) {
+    val services by viewModel.services.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+    val error by viewModel.error.collectAsState()
+
+
     Column(modifier = Modifier.fillMaxSize()) {
         Header(
             navController = navController,
             title = stringResource(R.string.myServices)
         )
 
-        ServicesList()
+        when {
+            isLoading -> CircularProgressIndicator()
+            services.isEmpty() -> {
+                Text(text = "No Services available")
+            }
+
+            else -> ServicesList(services)
+        }
     }
 }

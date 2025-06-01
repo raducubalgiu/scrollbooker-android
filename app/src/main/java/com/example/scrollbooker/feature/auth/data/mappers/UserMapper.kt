@@ -1,9 +1,9 @@
-package com.example.scrollbooker.feature.profile.data.mappers
+package com.example.scrollbooker.feature.auth.data.mappers
 
-import com.example.scrollbooker.feature.profile.data.remote.CountersDto
-import com.example.scrollbooker.feature.profile.data.remote.UserDto
-import com.example.scrollbooker.feature.profile.domain.model.Counters
-import com.example.scrollbooker.feature.profile.domain.model.User
+import com.example.scrollbooker.feature.auth.data.remote.CountersDto
+import com.example.scrollbooker.feature.auth.data.remote.UserDto
+import com.example.scrollbooker.feature.auth.domain.model.Counters
+import com.example.scrollbooker.feature.auth.domain.model.User
 
 fun UserDto.toDomain(): User {
     return User(

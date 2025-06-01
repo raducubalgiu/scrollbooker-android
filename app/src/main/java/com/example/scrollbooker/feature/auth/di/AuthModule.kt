@@ -3,12 +3,16 @@ package com.example.scrollbooker.feature.auth.di
 import android.content.Context
 import com.example.scrollbooker.core.network.authenticator.TokenAuthenticator
 import com.example.scrollbooker.core.network.interceptor.AuthInterceptor
+import com.example.scrollbooker.core.network.tokenProvider.TokenProvider
+import com.example.scrollbooker.core.network.tokenProvider.TokenProviderImpl
 import com.example.scrollbooker.core.util.Constants
 import com.example.scrollbooker.store.AuthDataStore
 import com.example.scrollbooker.feature.auth.data.remote.AuthApiService
 import com.example.scrollbooker.feature.auth.data.repository.AuthRepositoryImpl
 import com.example.scrollbooker.feature.auth.domain.repository.AuthRepository
-import com.example.scrollbooker.feature.auth.domain.usecase.LoginUseCase
+import com.example.scrollbooker.feature.auth.domain.usecase.GetLoginUseCase
+import com.example.scrollbooker.feature.auth.domain.usecase.GetUserInfoUseCase
+import com.example.scrollbooker.feature.auth.domain.usecase.GetUserPermissionsUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,10 +27,16 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AuthModule {
+
+    @Provides
+    @Singleton
+    fun provideTokenProvider(): TokenProvider = TokenProviderImpl()
+
     @Provides
     @Singleton
     fun provideOkHttpClient(
-        authenticatedInterceptor: AuthInterceptor,
+        tokenProvider: TokenProvider,
+        authDataStore: AuthDataStore,
         tokenAuthenticator: TokenAuthenticator
     ): OkHttpClient {
         val logging = HttpLoggingInterceptor().apply {
@@ -35,7 +45,7 @@ object AuthModule {
 
         return OkHttpClient.Builder()
             .addInterceptor(logging)
-            .addInterceptor(authenticatedInterceptor)
+            .addInterceptor(AuthInterceptor(authDataStore, tokenProvider))
             .authenticator(tokenAuthenticator)
             .build()
     }
@@ -52,16 +62,31 @@ object AuthModule {
 
     @Provides
     @Singleton
-    fun provideAuthRepository(apiService: AuthApiService): AuthRepository =
-        AuthRepositoryImpl(apiService)
-
-    @Provides
-    @Singleton
-    fun provideLoginUseCase(repository: AuthRepository): LoginUseCase =
-        LoginUseCase(repository)
-
-    @Provides
-    @Singleton
     fun provideAuthDataStore(@ApplicationContext context: Context): AuthDataStore =
         AuthDataStore(context)
+
+    @Provides
+    @Singleton
+    fun provideGetLoginInfoUseCase(authApi: AuthApiService): GetLoginUseCase {
+        return GetLoginUseCase(authApi)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuthRepository(
+        authApiService: AuthApiService,
+        tokenProvider: TokenProvider,
+        authDataStore: AuthDataStore,
+        getLoginUseCase: GetLoginUseCase,
+        getUserInfoUseCase: GetUserInfoUseCase,
+        getUserPermissionsUseCase: GetUserPermissionsUseCase
+    ): AuthRepository =
+        AuthRepositoryImpl(
+            authApi = authApiService,
+            tokenProvider = tokenProvider,
+            authDataStore = authDataStore,
+            getLoginInfoUseCase = getLoginUseCase,
+            getUserInfoUseCase = getUserInfoUseCase,
+            getUserPermissionsUseCase = getUserPermissionsUseCase
+        )
 }

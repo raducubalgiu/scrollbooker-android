@@ -9,7 +9,7 @@ import retrofit2.http.Part
 interface AuthApiService {
     @Multipart
     @POST("auth/login")
-    suspend fun login(
+    suspend fun getLoginInfo(
         @Part("username") username: RequestBody,
         @Part("password") password: RequestBody,
     ): AuthDto.LoginResponseDto

@@ -3,6 +3,7 @@ package com.example.scrollbooker.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.scrollbooker.components.inputs.SearchBar
@@ -15,6 +16,7 @@ fun Layout(
 ) {
     Column(modifier = Modifier
         .fillMaxSize()
+        .statusBarsPadding()
         .padding(BasePadding)
         .then(modifier)
     ){

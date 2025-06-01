@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -36,6 +37,8 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.BottomSheet
 import com.example.scrollbooker.components.list.ItemList
 import com.example.scrollbooker.core.nav.routes.MainRoute
+import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.feature.auth.presentation.AuthViewModel
 import com.example.scrollbooker.feature.profile.presentation.components.ProfileHeader
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
@@ -53,6 +56,8 @@ fun ProfileScreen(
     navController: NavController,
     viewModel: ProfileSharedViewModel
 ) {
+    val authViewModel: AuthViewModel = hiltViewModel()
+
     var showBottomSheet by remember { mutableStateOf(false) }
     val pagerState = rememberPagerState(initialPage = 0) { 4 }
     val selectedTabIndex = pagerState.currentPage
@@ -136,6 +141,10 @@ fun ProfileScreen(
                 ) {
                     Button(onClick = { navController.navigate(MainRoute.EditProfile.route) }) {
                         Text("Edit Profile")
+                    }
+                    Spacer(Modifier.height(BasePadding))
+                    Button(onClick = { authViewModel.logout() }) {
+                        Text("Logout")
                     }
                 }
             }

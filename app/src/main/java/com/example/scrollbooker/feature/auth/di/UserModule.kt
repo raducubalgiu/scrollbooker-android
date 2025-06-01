@@ -1,13 +1,16 @@
-package com.example.scrollbooker.feature.profile.di
+package com.example.scrollbooker.feature.auth.di
 
+import android.content.Context
 import com.example.scrollbooker.core.util.Constants
-import com.example.scrollbooker.feature.profile.data.remote.UserApiService
-import com.example.scrollbooker.feature.profile.data.repository.UserRepositoryImpl
-import com.example.scrollbooker.feature.profile.domain.repository.UserRepository
-import com.example.scrollbooker.feature.profile.domain.usecase.GetUserInfoUseCase
+import com.example.scrollbooker.feature.auth.data.repository.UserRepositoryImpl
+import com.example.scrollbooker.feature.auth.domain.repository.UserRepository
+import com.example.scrollbooker.feature.auth.domain.usecase.GetUserInfoUseCase
+import com.example.scrollbooker.feature.auth.data.remote.UserApiService
+import com.example.scrollbooker.store.AuthDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -16,7 +19,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object ProfileModule {
+object UserModule {
 
     @Provides
     @Singleton
@@ -31,12 +34,12 @@ object ProfileModule {
 
     @Provides
     @Singleton
-    fun provideUserRepository(
-        userApiService: UserApiService
-    ): UserRepository = UserRepositoryImpl(userApiService)
+    fun provideGetUserUseCase(userApiService: UserApiService): GetUserInfoUseCase =
+        GetUserInfoUseCase(userApiService)
 
     @Provides
     @Singleton
-    fun provideGetUserUseCase(repository: UserRepository): GetUserInfoUseCase =
-        GetUserInfoUseCase(repository)
+    fun provideUserRepository(
+        userApiService: UserApiService
+    ): UserRepository = UserRepositoryImpl(userApiService)
 }
