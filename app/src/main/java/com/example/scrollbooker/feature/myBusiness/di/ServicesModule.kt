@@ -1,7 +1,7 @@
 package com.example.scrollbooker.feature.myBusiness.di
 
 import com.example.scrollbooker.core.util.Constants
-import com.example.scrollbooker.feature.myBusiness.data.remote.ServicesApiService
+import com.example.scrollbooker.feature.myBusiness.data.remote.service.ServicesApiService
 import com.example.scrollbooker.feature.myBusiness.data.repository.ServiceRepositoryImpl
 import com.example.scrollbooker.feature.myBusiness.domain.repository.ServiceRepository
 import com.example.scrollbooker.feature.myBusiness.domain.useCase.GetServicesUseCase

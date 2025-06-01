@@ -33,7 +33,7 @@ fun AppointmentsTabs() {
     val selectedTabIndex = pagerState.currentPage
     val tabs = listOf(stringResource(id = R.string.asEmployee), stringResource(id = R.string.asClient))
 
-    Column {
+    Column(Modifier.fillMaxSize()) {
         TabRow(
             containerColor = Background,
             contentColor = OnSurfaceBG,

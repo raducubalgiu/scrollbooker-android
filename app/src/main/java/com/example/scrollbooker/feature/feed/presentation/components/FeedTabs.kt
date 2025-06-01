@@ -29,6 +29,7 @@ fun FeedTabs(
     onChangeTab: (Int) -> Unit
 ) {
     val tabs = listOf("Book Now", "Following")
+    val BackgroundLight = Color(0xFFFDFDFD)
 
     Row(
         modifier = Modifier
@@ -42,6 +43,7 @@ fun FeedTabs(
             onClick = onOpenDrawer,
             icon = painterResource(R.drawable.ic_menu),
             contentAlignment = Alignment.CenterEnd,
+            tint = BackgroundLight
         )
         TabRow(
             modifier = Modifier.width(200.dp),
@@ -63,7 +65,7 @@ fun FeedTabs(
         ) {
             tabs.forEachIndexed { index, title ->
                 val isSelected = selectedTabIndex == index
-                val color = if(isSelected) OnBackground else OnSurfaceBG
+                val color = if(isSelected) BackgroundLight else Color(0xFFAAAAAA)
 
                 CustomTab(
                     title = title,
@@ -75,7 +77,8 @@ fun FeedTabs(
         BoxIcon(
             icon = painterResource(R.drawable.ic_search),
             contentAlignment = Alignment.CenterStart,
-            onClick = {}
+            onClick = {},
+            tint = BackgroundLight
         )
     }
 }

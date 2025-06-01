@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.myBusiness.data.remote
+package com.example.scrollbooker.feature.myBusiness.data.remote.service
 
 import com.google.gson.annotations.SerializedName
 

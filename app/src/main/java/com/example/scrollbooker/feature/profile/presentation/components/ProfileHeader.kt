@@ -31,7 +31,7 @@ fun ProfileHeader(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = BasePadding, vertical = SpacingM),
+            .padding(horizontal = BasePadding),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.myBusiness.data.remote
+package com.example.scrollbooker.feature.myBusiness.data.remote.service
 
 import retrofit2.http.GET
 import retrofit2.http.Path

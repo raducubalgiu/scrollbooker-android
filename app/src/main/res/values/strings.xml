@@ -55,4 +55,6 @@
     <string name="yourName">Numele tău</string>
     <string name="biography">Biografie</string>
     <string name="userNotLoggedIn">User-ul nu este logat</string>
+    <string name="edit">Editează</string>
+    <string name="save">Salvează</string>
 </resources>

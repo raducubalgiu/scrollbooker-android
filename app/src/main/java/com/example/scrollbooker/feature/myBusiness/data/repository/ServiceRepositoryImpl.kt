@@ -1,6 +1,6 @@
 package com.example.scrollbooker.feature.myBusiness.data.repository
 import com.example.scrollbooker.feature.myBusiness.data.mappers.toDomain
-import com.example.scrollbooker.feature.myBusiness.data.remote.ServicesApiService
+import com.example.scrollbooker.feature.myBusiness.data.remote.service.ServicesApiService
 import com.example.scrollbooker.feature.myBusiness.domain.model.Service
 import com.example.scrollbooker.feature.myBusiness.domain.repository.ServiceRepository
 import javax.inject.Inject

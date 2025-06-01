@@ -1,9 +1,11 @@
 package com.example.scrollbooker.feature.inbox.presentation
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -19,6 +21,7 @@ import androidx.navigation.NavController
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.Header
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.ui.theme.Background
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -31,33 +34,38 @@ fun InboxScreen(
     val coroutineScope = rememberCoroutineScope()
     var isRefreshing by remember { mutableStateOf(false) }
 
-    Column(Modifier.fillMaxSize()) {
-        Header(
-            title = stringResource(id = R.string.inbox),
-            enableBack = false,
-            navController = navController
-        )
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .background(Background)
+    ) {
+        Column(modifier = Modifier.fillMaxSize().statusBarsPadding()) {
+            Header(
+                title = stringResource(id = R.string.inbox),
+                enableBack = false,
+                navController = navController
+            )
 
-        PullToRefreshBox(
-            isRefreshing = isRefreshing,
-            onRefresh = {
-                isRefreshing = true
-                coroutineScope.launch {
-                    delay(200)
-                    isRefreshing = false
-                }
-            },
-            modifier = modifier
-        ) {
-            Spacer(Modifier.height(BasePadding))
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
-                items(30) { item ->
-                    NotificationItem(
-                        url = "",
-                        fullName = "Raducu Balgiu",
-                        type = "follow",
-                        isFollow = false
-                    )
+            PullToRefreshBox(
+                isRefreshing = isRefreshing,
+                onRefresh = {
+                    isRefreshing = true
+                    coroutineScope.launch {
+                        delay(200)
+                        isRefreshing = false
+                    }
+                },
+                modifier = modifier
+            ) {
+                Spacer(Modifier.height(BasePadding))
+                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    items(30) { item ->
+                        NotificationItem(
+                            url = "",
+                            fullName = "Raducu Balgiu",
+                            type = "follow",
+                            isFollow = false
+                        )
+                    }
                 }
             }
         }

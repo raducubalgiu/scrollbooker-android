@@ -16,10 +16,8 @@ import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.feature.myBusiness.domain.model.Service
 
 @Composable
-fun ServicesScreen(
-    navController: NavController,
-    viewModel: ServicesViewModel = hiltViewModel()
-) {
+fun ServicesScreen(navController: NavController) {
+    val viewModel: ServicesViewModel = hiltViewModel()
     val state by viewModel.servicesState.collectAsState()
 
     Layout {

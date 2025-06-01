@@ -20,10 +20,8 @@ import com.example.scrollbooker.components.Video
 @OptIn(UnstableApi::class)
 @Composable
 fun BookNowTab(shouldVideoPlay: Boolean) {
-
     LazyColumn(modifier = Modifier
         .fillMaxSize()
-        .overscroll(null)
     ) {
         items(2) { item ->
             Video(

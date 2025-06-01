@@ -7,10 +7,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.NavigationBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.nav.host.currentRoute
+import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.ui.theme.Background
 
 @Composable
@@ -24,12 +26,13 @@ fun BottomBar(navController: NavController) {
     )
 
     val currentRoute = currentRoute(navController = navController)
+    val containerColor = if(currentRoute == MainRoute.Feed.route) Color(0xFF121212) else Background
 
     NavigationBar(
         modifier = Modifier
             .fillMaxWidth()
             .height(100.dp),
-        containerColor = Background
+        containerColor = containerColor
     ) {
         Row(modifier = Modifier
             .fillMaxSize()

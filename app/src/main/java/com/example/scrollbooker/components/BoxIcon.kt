@@ -1,6 +1,4 @@
 package com.example.scrollbooker.components
-
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -23,7 +21,8 @@ fun BoxIcon(
     onClick: () -> Unit,
     icon: Painter,
     contentAlignment: Alignment = Alignment.Center,
-    iconSize: Dp = 30.dp
+    iconSize: Dp = 30.dp,
+    tint: Color = OnBackground
 ) {
     Box(modifier = Modifier
         .clickable(onClick = onClick)
@@ -33,7 +32,7 @@ fun BoxIcon(
         Icon(
             painter = icon,
             contentDescription = null,
-            tint = OnBackground,
+            tint = tint,
             modifier = Modifier
                 .padding(
                     horizontal = BasePadding,
