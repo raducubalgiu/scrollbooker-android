@@ -4,7 +4,7 @@ import com.example.scrollbooker.core.util.Constants
 import com.example.scrollbooker.feature.myBusiness.data.remote.service.ServicesApiService
 import com.example.scrollbooker.feature.myBusiness.data.repository.ServiceRepositoryImpl
 import com.example.scrollbooker.feature.myBusiness.domain.repository.ServiceRepository
-import com.example.scrollbooker.feature.myBusiness.domain.useCase.GetServicesUseCase
+import com.example.scrollbooker.feature.myBusiness.domain.useCase.services.GetServicesUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.Module
 import dagger.Provides

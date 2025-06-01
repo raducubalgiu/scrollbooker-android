@@ -1,10 +1,10 @@
-package com.example.scrollbooker.feature.myBusiness.presentation
+package com.example.scrollbooker.feature.myBusiness.presentation.schedules
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.feature.myBusiness.domain.model.Schedule
-import com.example.scrollbooker.feature.myBusiness.domain.useCase.GetSchedulesUseCase
+import com.example.scrollbooker.feature.myBusiness.domain.useCase.schedules.GetSchedulesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,7 +15,8 @@ import javax.inject.Inject
 class SchedulesViewModel @Inject constructor(
     private val getSchedulesUseCase: GetSchedulesUseCase
 ): ViewModel() {
-    private val _schedulesState = MutableStateFlow<FeatureState<List<Schedule>>>(FeatureState.Loading)
+    private val _schedulesState =
+        MutableStateFlow<FeatureState<List<Schedule>>>(FeatureState.Loading)
     val schedulesState: StateFlow<FeatureState<List<Schedule>>> = _schedulesState
 
     init {

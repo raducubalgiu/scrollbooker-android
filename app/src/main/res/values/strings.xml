@@ -57,4 +57,5 @@
     <string name="userNotLoggedIn">User-ul nu este logat</string>
     <string name="edit">Editează</string>
     <string name="save">Salvează</string>
+    <string name="closed">Închis</string>
 </resources>

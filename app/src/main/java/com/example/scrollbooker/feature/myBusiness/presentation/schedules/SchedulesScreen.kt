@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.myBusiness.presentation
+package com.example.scrollbooker.feature.myBusiness.presentation.schedules
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,9 +17,10 @@ import com.example.scrollbooker.components.Header
 import com.example.scrollbooker.components.Layout
 import com.example.scrollbooker.components.MainButton
 import com.example.scrollbooker.core.snackbar.SnackbarManager
-import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.feature.myBusiness.domain.model.Schedule
+import com.example.scrollbooker.feature.myBusiness.presentation.schedules.SchedulesViewModel
 import com.example.scrollbooker.feature.myBusiness.presentation.components.SchedulesList
 
 @Composable
@@ -34,10 +35,10 @@ fun SchedulesScreen(navController: NavController) {
         )
         Column(modifier = Modifier
             .fillMaxSize()
-            .padding(vertical = BasePadding),
+            .padding(vertical = SpacingXL),
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
-            Column(Modifier.fillMaxSize()) {
+            Column {
                 when(state) {
                     is FeatureState.Loading -> CircularProgressIndicator()
                     is FeatureState.Error -> SnackbarManager.showToast(stringResource(id = R.string.somethingWentWrong))
@@ -55,7 +56,7 @@ fun SchedulesScreen(navController: NavController) {
             MainButton(
                 onClick = {},
                 title = stringResource(id = R.string.save),
-                enabled = false
+                enabled = state != FeatureState.Loading
             )
         }
    }

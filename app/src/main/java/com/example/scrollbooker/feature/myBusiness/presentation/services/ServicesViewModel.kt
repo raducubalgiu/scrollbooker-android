@@ -1,10 +1,10 @@
-package com.example.scrollbooker.feature.myBusiness.presentation
+package com.example.scrollbooker.feature.myBusiness.presentation.services
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.feature.myBusiness.domain.model.Service
-import com.example.scrollbooker.feature.myBusiness.domain.useCase.GetServicesUseCase
+import com.example.scrollbooker.feature.myBusiness.domain.useCase.services.GetServicesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

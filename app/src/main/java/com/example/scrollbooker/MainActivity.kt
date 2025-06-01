@@ -13,6 +13,7 @@ import com.example.scrollbooker.core.nav.RootNavHost
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.feature.auth.presentation.AuthViewModel
 import com.example.scrollbooker.ui.theme.ScrollBookerTheme
+import com.jakewharton.threetenabp.AndroidThreeTen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -26,6 +27,7 @@ class MainActivity : ComponentActivity() {
         }
 
         super.onCreate(savedInstanceState)
+        AndroidThreeTen.init(this)
         enableEdgeToEdge()
 
         setContent {

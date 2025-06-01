@@ -4,7 +4,7 @@ import com.example.scrollbooker.core.util.Constants
 import com.example.scrollbooker.feature.myBusiness.data.remote.schedules.SchedulesApiService
 import com.example.scrollbooker.feature.myBusiness.data.repository.ScheduleRepositoryImpl
 import com.example.scrollbooker.feature.myBusiness.domain.repository.ScheduleRepository
-import com.example.scrollbooker.feature.myBusiness.domain.useCase.GetSchedulesUseCase
+import com.example.scrollbooker.feature.myBusiness.domain.useCase.schedules.GetSchedulesUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.Module
 import dagger.Provides

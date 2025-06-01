@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.myBusiness.presentation
+package com.example.scrollbooker.feature.myBusiness.presentation.services
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,6 +14,7 @@ import com.example.scrollbooker.components.Layout
 import com.example.scrollbooker.core.snackbar.SnackbarManager
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.feature.myBusiness.domain.model.Service
+import com.example.scrollbooker.feature.myBusiness.presentation.services.ServicesViewModel
 
 @Composable
 fun ServicesScreen(navController: NavController) {

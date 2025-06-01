@@ -11,6 +11,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -18,6 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -25,9 +27,9 @@ import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable
 fun InputSelect(
-    options: List<String>,
+    options: List<Option>,
     selectedOption: String,
-    onOptionSelected: (String) -> Unit,
+    onSetSelected: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -39,6 +41,7 @@ fun InputSelect(
     )
 
     Box(modifier = modifier
+        .clip(MaterialTheme.shapes.medium)
         .onGloballyPositioned { coordinates ->
             parentWidth = coordinates.size.width
         }
@@ -65,9 +68,9 @@ fun InputSelect(
         ) {
             options.forEach { option ->
                 DropdownMenuItem(
-                    text = { Text(option) },
+                    text = { Text(option.name) },
                     onClick = {
-                        onOptionSelected(option)
+                        onSetSelected(option.value)
                         expanded = false
                     }
                 )
@@ -75,3 +78,8 @@ fun InputSelect(
         }
     }
 }
+
+data class Option(
+    val value: String,
+    val name: String
+)

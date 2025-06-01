@@ -1,4 +1,5 @@
-package com.example.scrollbooker.feature.myBusiness.domain.useCase
+package com.example.scrollbooker.feature.myBusiness.domain.useCase.services
+
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.feature.myBusiness.domain.model.Service
 import com.example.scrollbooker.feature.myBusiness.domain.repository.ServiceRepository
@@ -16,14 +17,14 @@ class GetServicesUseCase @Inject constructor(
             val userId = authDataStore.getUserId().firstOrNull()
 
             if(userId == null) {
-                Timber.tag("Services").e("ERROR: User Id not found in DataStore")
+                Timber.Forest.tag("Services").e("ERROR: User Id not found in DataStore")
                 return FeatureState.Error()
             }
 
             val services = serviceRepository.getServices(userId)
             FeatureState.Success(services)
         } catch (e: Exception) {
-            Timber.tag("Services").e(e, "ERROR: on Fetching Services")
+            Timber.Forest.tag("Services").e(e, "ERROR: on Fetching Services")
             return FeatureState.Error()
         }
     }

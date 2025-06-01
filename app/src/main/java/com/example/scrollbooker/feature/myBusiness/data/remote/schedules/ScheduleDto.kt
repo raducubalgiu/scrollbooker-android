@@ -8,18 +8,9 @@ data class ScheduleDto (
     @SerializedName("day_of_week")
     val dayOfWeek: String,
 
-    @SerializedName("user_id")
-    val userId: Int,
-
-    @SerializedName("business_id")
-    val businessId: Int,
-
     @SerializedName("start_time")
     val startTime: String,
 
     @SerializedName("end_time")
     val endTime: String,
-
-    @SerializedName("day_of_week")
-    val dayWeekNumber: Int
 )

@@ -7,10 +7,7 @@ fun ScheduleDto.toDomain(): Schedule {
     return Schedule(
         id = id,
         dayOfWeek = dayOfWeek,
-        userId = userId,
-        businessId = businessId,
         startTime = startTime,
-        endTime = endTime,
-        dayWeekNumber = dayWeekNumber
+        endTime = endTime
     )
 }
