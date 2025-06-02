@@ -11,6 +11,7 @@ import com.example.scrollbooker.core.nav.transitions.slideOutToLeft
 import com.example.scrollbooker.core.nav.transitions.slideOutToRight
 import com.example.scrollbooker.feature.calendar.CalendarScreen
 import com.example.scrollbooker.feature.myBusiness.presentation.MyBusinessScreen
+import com.example.scrollbooker.feature.myBusiness.presentation.products.AddProductScreen
 import com.example.scrollbooker.feature.myBusiness.presentation.products.ProductsScreen
 import com.example.scrollbooker.feature.myBusiness.presentation.schedules.SchedulesScreen
 import com.example.scrollbooker.feature.myBusiness.presentation.services.ServicesScreen
@@ -51,6 +52,14 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavController) {
             popEnterTransition = slideInFromLeft(),
             popExitTransition = slideOutToRight()
         ) { ProductsScreen(navController = navController) }
+
+        composable(
+            MainRoute.AddProduct.route,
+            enterTransition = slideInFromRight(),
+            exitTransition = slideOutToLeft(),
+            popEnterTransition = slideInFromLeft(),
+            popExitTransition = slideOutToRight()
+        ) { AddProductScreen(navController = navController) }
 
         composable(
             MainRoute.Schedules.route,

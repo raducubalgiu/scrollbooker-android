@@ -20,7 +20,6 @@ import com.example.scrollbooker.core.snackbar.SnackbarManager
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.feature.myBusiness.domain.model.Schedule
-import com.example.scrollbooker.feature.myBusiness.presentation.schedules.SchedulesViewModel
 import com.example.scrollbooker.feature.myBusiness.presentation.components.SchedulesList
 
 @Composable

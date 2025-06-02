@@ -107,14 +107,10 @@ fun MainNavHost() {
                     )
                 }
                 composable(MainRoute.Inbox.route) {
-                    Box(Modifier.fillMaxSize().statusBarsPadding()) {
-                        InboxScreen(navController = bottomNavController)
-                    }
+                    InboxScreen(navController = bottomNavController)
                 }
                 composable(MainRoute.Search.route) {
-                    Box(Modifier.fillMaxSize().statusBarsPadding()) {
-                        SearchScreen()
-                    }
+                    SearchScreen()
                 }
                 appointmentsGraph(navController = bottomNavController)
                 profileRootGraph(navController = bottomNavController)

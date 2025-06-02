@@ -20,13 +20,7 @@ fun NavGraphBuilder.appointmentsGraph(navController: NavController) {
         startDestination = MainRoute.Appointments.route
     ) {
         composable(MainRoute.Appointments.route) {
-            Box(Modifier
-                .fillMaxSize()
-                .background(Background)
-                .statusBarsPadding()
-            ) {
-                AppointmentsScreen(navController)
-            }
+            AppointmentsScreen(navController)
         }
 
         composable(MainRoute.AppointmentDetails.route) {

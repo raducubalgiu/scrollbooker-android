@@ -26,23 +26,18 @@ fun AppointmentsScreen(navController: NavController) {
     Column(modifier = Modifier
         .fillMaxSize()
         .background(Background)
+        .statusBarsPadding()
     ) {
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .background(Background)
-            .statusBarsPadding()
-        ) {
-            Header(
-                navController = navController,
-                enableBack = false,
-                title = stringResource(id = R.string.appointments),
-            )
+        Header(
+            navController = navController,
+            enableBack = false,
+            title = stringResource(id = R.string.appointments),
+        )
 
-            when {
-                isEmployee -> AppointmentsTabs()
-                isBusiness -> AppointmentsBusinessTab()
-                isCustomer -> AppointmentsClientTab()
-            }
+        when {
+            isEmployee -> AppointmentsTabs()
+            isBusiness -> AppointmentsBusinessTab()
+            isCustomer -> AppointmentsClientTab()
         }
     }
 }

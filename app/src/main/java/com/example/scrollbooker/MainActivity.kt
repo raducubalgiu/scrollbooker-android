@@ -5,13 +5,18 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import com.example.scrollbooker.core.nav.LocalRootNavController
 import com.example.scrollbooker.core.nav.RootNavHost
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.feature.auth.presentation.AuthViewModel
+import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.ScrollBookerTheme
 import com.jakewharton.threetenabp.AndroidThreeTen
 import dagger.hilt.android.AndroidEntryPoint
@@ -35,10 +40,12 @@ class MainActivity : ComponentActivity() {
 
             CompositionLocalProvider(LocalRootNavController provides rootNavController) {
                 ScrollBookerTheme {
-                    RootNavHost(
-                        navController = rootNavController,
-                        viewModel = viewModel
-                    )
+                    Surface(Modifier.fillMaxSize().background(Background)) {
+                        RootNavHost(
+                            navController = rootNavController,
+                            viewModel = viewModel
+                        )
+                    }
                 }
             }
         }
