@@ -8,10 +8,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.Header
+import com.example.scrollbooker.components.core.Header
 import com.example.scrollbooker.components.list.ItemListInfo
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.feature.profile.presentation.ProfileSharedViewModel

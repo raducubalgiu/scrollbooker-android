@@ -11,9 +11,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.Header
-import com.example.scrollbooker.components.Layout
-import com.example.scrollbooker.components.MainButton
+import com.example.scrollbooker.components.core.Header
+import com.example.scrollbooker.components.core.Layout
+import com.example.scrollbooker.components.core.MainButton
 import com.example.scrollbooker.core.snackbar.SnackbarManager
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.FeatureState

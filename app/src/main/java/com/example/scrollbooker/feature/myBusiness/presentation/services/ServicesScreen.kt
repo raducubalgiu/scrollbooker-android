@@ -6,15 +6,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.Header
+import com.example.scrollbooker.components.core.Header
 import com.example.scrollbooker.feature.myBusiness.presentation.components.ServicesList
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.scrollbooker.components.Layout
+import com.example.scrollbooker.components.core.Layout
 import com.example.scrollbooker.core.snackbar.SnackbarManager
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.feature.myBusiness.domain.model.Service
-import com.example.scrollbooker.feature.myBusiness.presentation.services.ServicesViewModel
 
 @Composable
 fun ServicesScreen(navController: NavController) {

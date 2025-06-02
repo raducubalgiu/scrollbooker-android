@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.Header
+import com.example.scrollbooker.components.core.Header
 import com.example.scrollbooker.feature.appointments.presentation.tabs.AppointmentsTabs
 import com.example.scrollbooker.feature.appointments.presentation.tabs.business.AppointmentsBusinessTab
 import com.example.scrollbooker.feature.appointments.presentation.tabs.client.AppointmentsClientTab

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.components
+package com.example.scrollbooker.components.core
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size

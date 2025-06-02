@@ -4,6 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.BookmarkBorder
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.ShoppingBag
+import androidx.compose.material.icons.outlined.ViewComfyAlt
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -12,9 +17,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import com.example.scrollbooker.R
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
@@ -22,7 +26,7 @@ import kotlinx.coroutines.launch
 
 class ProfileTab(
     val route: String,
-    val icon: Int
+    val icon: ImageVector
 )
 
 @Composable
@@ -31,10 +35,10 @@ fun ProfileTabs() {
     val selectedTabIndex = pagerState.currentPage
 
     val tabs = listOf(
-        ProfileTab(route = "Posts", icon = R.drawable.ic_grid),
-        ProfileTab(route = "Products", icon = R.drawable.ic_shop),
-        ProfileTab(route = "Bookmarks", icon = R.drawable.ic_bookmark),
-        ProfileTab(route = "Info", icon = R.drawable.ic_info)
+        ProfileTab(route = "Posts", icon = Icons.Outlined.ViewComfyAlt),
+        ProfileTab(route = "Products", icon = Icons.Outlined.ShoppingBag),
+        ProfileTab(route = "Bookmarks", icon = Icons.Outlined.BookmarkBorder),
+        ProfileTab(route = "Info", icon = Icons.Outlined.Info)
     )
 
     TabRow(
@@ -64,7 +68,7 @@ fun ProfileTabs() {
                 },
                 icon = {
                     Icon(
-                        painter = painterResource(id = item.icon),
+                        imageVector = item.icon,
                         contentDescription = null,
                         tint = if(isSelected) OnBackground else Color.Gray
                     )

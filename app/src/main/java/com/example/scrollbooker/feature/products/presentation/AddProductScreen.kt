@@ -4,8 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.Header
-import com.example.scrollbooker.components.Layout
+import com.example.scrollbooker.components.core.Header
+import com.example.scrollbooker.components.core.Layout
 
 @Composable
 fun AddProductScreen(navController: NavController) {
