@@ -1,7 +1,7 @@
-package com.example.scrollbooker.feature.myBusiness.data.mappers
+package com.example.scrollbooker.feature.products.data.mappers
 
-import com.example.scrollbooker.feature.myBusiness.data.remote.products.ProductDto
-import com.example.scrollbooker.feature.myBusiness.domain.model.Product
+import com.example.scrollbooker.feature.products.data.remote.ProductDto
+import com.example.scrollbooker.feature.products.domain.model.Product
 
 fun ProductDto.toDomain(): Product {
     return Product(

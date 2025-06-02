@@ -1,0 +1,15 @@
+package com.example.scrollbooker.feature.products.data.remote
+
+import com.example.scrollbooker.core.util.PaginatedResponseDto
+import retrofit2.http.GET
+import retrofit2.http.Path
+import retrofit2.http.Query
+
+interface ProductsApiService {
+    @GET("users/{userId}/products")
+    suspend fun getUserProducts(
+        @Path("userId") userId: Int,
+        @Query("page") page: Int,
+        @Query("limit") limit: Int
+    ): PaginatedResponseDto<ProductDto>
+}
