@@ -3,8 +3,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -19,6 +17,7 @@ import com.example.scrollbooker.components.MainButton
 import com.example.scrollbooker.core.snackbar.SnackbarManager
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.util.LoadingScreen
 import com.example.scrollbooker.feature.myBusiness.domain.model.Schedule
 import com.example.scrollbooker.feature.myBusiness.presentation.components.SchedulesList
 
@@ -26,6 +25,7 @@ import com.example.scrollbooker.feature.myBusiness.presentation.components.Sched
 fun SchedulesScreen(navController: NavController) {
     val viewModel: SchedulesViewModel = hiltViewModel()
     val state by viewModel.schedulesState.collectAsState()
+    val isSaving by viewModel.isSaving.collectAsState()
 
     Layout {
         Header(
@@ -39,23 +39,26 @@ fun SchedulesScreen(navController: NavController) {
         ) {
             Column {
                 when(state) {
-                    is FeatureState.Loading -> CircularProgressIndicator()
+                    is FeatureState.Loading -> LoadingScreen()
                     is FeatureState.Error -> SnackbarManager.showToast(stringResource(id = R.string.somethingWentWrong))
                     is FeatureState.Success -> {
                         val schedules = (state as FeatureState.Success<List<Schedule>>).data
-                        if(schedules.isEmpty()) {
-                            Text(text = "No Schedules available")
-                        } else {
-                            SchedulesList(schedules)
-                        }
+
+                        SchedulesList(
+                            schedules,
+                            onScheduleChange = { schedule ->
+                                viewModel.updateScheduleTime(schedule)
+                            }
+                        )
                     }
                 }
             }
 
             MainButton(
-                onClick = {},
+                isLoading = isSaving,
+                onClick = { viewModel.updateSchedules() },
                 title = stringResource(id = R.string.save),
-                enabled = state != FeatureState.Loading
+                enabled = !isSaving
             )
         }
    }

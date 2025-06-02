@@ -59,4 +59,5 @@
     <string name="edit">Editează</string>
     <string name="save">Salvează</string>
     <string name="closed">Închis</string>
+    <string name="youSuccesfullyEditedSchedules">Ți-ai editat cu succes programul</string>
 </resources>

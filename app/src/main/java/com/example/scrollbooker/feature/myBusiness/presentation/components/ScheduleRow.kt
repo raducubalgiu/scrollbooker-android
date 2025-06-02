@@ -13,23 +13,31 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.scrollbooker.R
 import com.example.scrollbooker.components.inputs.InputSelect
+import com.example.scrollbooker.components.inputs.Option
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.formatTime
 import com.example.scrollbooker.core.util.generateTimeSlots
 import com.example.scrollbooker.feature.myBusiness.domain.model.Schedule
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
-fun ScheduleRow(schedule: Schedule) {
-    var selectedStartTime by remember { mutableStateOf(formatTime(schedule.startTime ?: "Inchis")) }
-    var selectedEndTime by remember { mutableStateOf(formatTime(schedule.endTime ?: "Inchis")) }
-    val slots = generateTimeSlots()
+fun ScheduleRow(
+    schedule: Schedule,
+    onChange: (start: String?, end: String?) -> Unit
+) {
+    var selectedStartTime by remember {
+        mutableStateOf(schedule.startTime)
+    }
+    var selectedEndTime by remember {
+        mutableStateOf(schedule.endTime)
+    }
+
+    val slots = remember {
+        listOf(Option(value = null, name = "Inchis")) + generateTimeSlots()
+    }
 
     Row(modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -52,19 +60,27 @@ fun ScheduleRow(schedule: Schedule) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             InputSelect(
+                placeholder = "Inchis",
                 modifier = Modifier.weight(1f),
                 options = slots,
                 selectedOption = selectedStartTime.toString(),
-                onSetSelected = { selectedStartTime = it }
+                onValueChange = {
+                    selectedStartTime = it
+                    onChange(it, selectedStartTime)
+                }
             )
 
             Spacer(Modifier.width(BasePadding))
 
             InputSelect(
+                placeholder = "Inchis",
                 modifier = Modifier.weight(1f),
                 options = slots,
                 selectedOption = selectedEndTime.toString(),
-                onSetSelected = { selectedEndTime = it }
+                onValueChange = {
+                    selectedEndTime = it
+                    onChange(it, selectedEndTime)
+                }
             )
         }
     }

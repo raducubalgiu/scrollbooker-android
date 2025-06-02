@@ -5,11 +5,13 @@ import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
 
 fun formatTime(
-    timeString: String,
+    timeString: String?,
     inputPattern: String = "HH:mm:ss",
     outputPattern: String = "HH:mm"
-): String {
+): String? {
     return try {
+        if(timeString.isNullOrBlank()) return null
+
         val inputFormatter = DateTimeFormatter.ofPattern(inputPattern)
         val outputFormatter = DateTimeFormatter.ofPattern(outputPattern)
 

@@ -9,10 +9,15 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.feature.myBusiness.domain.model.Schedule
 
 @Composable
-fun SchedulesList(schedules: List<Schedule>) {
+fun SchedulesList(schedules: List<Schedule>, onScheduleChange: (Schedule) -> Unit) {
     LazyColumn {
         items(schedules) { schedule ->
-            ScheduleRow(schedule)
+            ScheduleRow(
+                schedule,
+                onChange = { start, end ->
+                    onScheduleChange(schedule.copy(startTime = start, endTime = end))
+                }
+            )
             Spacer(Modifier.height(BasePadding))
         }
     }

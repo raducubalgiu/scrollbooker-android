@@ -5,6 +5,7 @@ import com.example.scrollbooker.feature.myBusiness.data.remote.schedules.Schedul
 import com.example.scrollbooker.feature.myBusiness.data.repository.ScheduleRepositoryImpl
 import com.example.scrollbooker.feature.myBusiness.domain.repository.ScheduleRepository
 import com.example.scrollbooker.feature.myBusiness.domain.useCase.schedules.GetSchedulesUseCase
+import com.example.scrollbooker.feature.myBusiness.domain.useCase.schedules.UpdateSchedulesUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.Module
 import dagger.Provides
@@ -42,5 +43,13 @@ object SchedulesModule {
         authDataStore: AuthDataStore
     ): GetSchedulesUseCase {
         return GetSchedulesUseCase(repository, authDataStore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUpdateSchedulesUseCase(
+        repository: ScheduleRepository
+    ): UpdateSchedulesUseCase {
+        return UpdateSchedulesUseCase(repository)
     }
 }

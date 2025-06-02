@@ -9,8 +9,8 @@ data class ScheduleDto (
     val dayOfWeek: String,
 
     @SerializedName("start_time")
-    val startTime: String,
+    val startTime: String?,
 
     @SerializedName("end_time")
-    val endTime: String,
+    val endTime: String?,
 )

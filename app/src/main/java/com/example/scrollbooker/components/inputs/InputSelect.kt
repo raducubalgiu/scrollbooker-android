@@ -27,10 +27,11 @@ import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable
 fun InputSelect(
+    modifier: Modifier = Modifier,
+    placeholder: String = "",
     options: List<Option>,
     selectedOption: String,
-    onSetSelected: (String) -> Unit,
-    modifier: Modifier = Modifier
+    onValueChange: (String?) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
     var parentWidth by remember { mutableStateOf(0) }
@@ -40,6 +41,8 @@ fun InputSelect(
         label = "ArrowRotation"
     )
 
+    val selected = options.find { it.value == selectedOption }
+
     Box(modifier = modifier
         .clip(MaterialTheme.shapes.medium)
         .onGloballyPositioned { coordinates ->
@@ -47,7 +50,7 @@ fun InputSelect(
         }
     ) {
         ListItem(
-            headlineContent = { Text(selectedOption) },
+            headlineContent = { Text(selected?.name ?: placeholder) },
             trailingContent = {
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowUp,
@@ -70,7 +73,7 @@ fun InputSelect(
                 DropdownMenuItem(
                     text = { Text(option.name) },
                     onClick = {
-                        onSetSelected(option.value)
+                        onValueChange(option.value)
                         expanded = false
                     }
                 )
@@ -80,6 +83,6 @@ fun InputSelect(
 }
 
 data class Option(
-    val value: String,
+    val value: String?,
     val name: String
 )

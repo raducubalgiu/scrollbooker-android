@@ -1,7 +1,6 @@
 package com.example.scrollbooker.feature.auth.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.feature.auth.domain.model.LoginRequest
 import com.example.scrollbooker.feature.auth.domain.repository.AuthRepository
@@ -33,7 +32,7 @@ class AuthViewModel @Inject constructor(
             if(isLoggedIn) {
                 _loginState.value = FeatureState.Success(Unit)
             } else {
-                _loginState.value = FeatureState.Error(R.string.userNotLoggedIn)
+                _loginState.value = FeatureState.Error()
             }
         }
     }
@@ -50,7 +49,7 @@ class AuthViewModel @Inject constructor(
                 onSuccess = { FeatureState.Success(Unit) },
                 onFailure = {
                     Timber.tag("Login").e(it, "ERROR: Login Failed")
-                    FeatureState.Error(R.string.somethingWentWrong)
+                    FeatureState.Error()
                 }
             )
         }

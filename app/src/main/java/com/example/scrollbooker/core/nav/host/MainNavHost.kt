@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalNavigationDrawer
@@ -20,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.NavHost
@@ -31,6 +34,7 @@ import com.example.scrollbooker.core.nav.navigators.appointmentsGraph
 import com.example.scrollbooker.core.nav.navigators.profileRootGraph
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.snackbar.SnackbarManager
+import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.feature.feed.presentation.FeedScreen
 import com.example.scrollbooker.feature.inbox.presentation.InboxScreen
 import com.example.scrollbooker.feature.search.presentation.SearchScreen
@@ -70,13 +74,22 @@ fun MainNavHost() {
 
     ModalNavigationDrawer(
         drawerContent = { AppDrawer() },
-        scrimColor = Background.copy(0.7f),
+        scrimColor = Color(0xFF121212).copy(0.7f),
         drawerState = drawerState,
         gesturesEnabled = drawerState.currentValue == DrawerValue.Open
     ) {
         Scaffold(
             containerColor = Color.Transparent,
-            snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+            snackbarHost = {
+                Box(Modifier.fillMaxSize().statusBarsPadding()) {
+                    Box(modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.TopCenter)
+                    ) {
+                        SnackbarHost(hostState = snackbarHostState)
+                    }
+                }
+            },
             bottomBar = {
                 if(currentRoute in bottomBarRoutes) {
                     Column { BottomBar(bottomNavController) }

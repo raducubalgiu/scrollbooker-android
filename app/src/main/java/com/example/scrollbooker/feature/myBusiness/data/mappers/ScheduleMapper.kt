@@ -11,3 +11,15 @@ fun ScheduleDto.toDomain(): Schedule {
         endTime = endTime
     )
 }
+
+fun Schedule.toDto(): ScheduleDto {
+    return ScheduleDto(
+        id = id,
+        dayOfWeek = dayOfWeek,
+        startTime = startTime,
+        endTime = endTime
+    )
+}
+
+fun List<ScheduleDto>.toDomain(): List<Schedule> = map { it.toDomain() }
+fun List<Schedule>.toDto(): List<ScheduleDto> = map { it.toDto() }
