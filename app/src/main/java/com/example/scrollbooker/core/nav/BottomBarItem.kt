@@ -13,10 +13,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.example.scrollbooker.core.nav.host.MainTab
 import com.example.scrollbooker.core.nav.routes.MainRoute.Appointments
 import com.example.scrollbooker.core.nav.routes.MainRoute.Inbox
 import com.example.scrollbooker.ui.theme.Error
@@ -27,7 +25,7 @@ fun BottomBarItem(
     modifier: Modifier = Modifier,
     onNavigate: () -> Unit,
     isSelected: Boolean,
-    tab: BottomNavItem
+    tab: MainTab
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -49,13 +47,13 @@ fun BottomBarItem(
             }
         ) {
             Icon(
-                painterResource(id = tab.icon),
+                imageVector = tab.iconVector,
                 contentDescription = null,
                 tint = if (isSelected) OnBackground else Color.Gray,
             )
         }
         Text(
-            text = stringResource(id = tab.label),
+            text = tab.label,
             color = if (isSelected) OnBackground else Color.Gray,
             fontSize = 12.sp
         )

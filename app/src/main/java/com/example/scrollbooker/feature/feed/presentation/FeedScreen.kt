@@ -19,7 +19,10 @@ import com.example.scrollbooker.feature.feed.presentation.tabs.FollowingTab
 import kotlinx.coroutines.launch
 
 @Composable
-fun FeedScreen(viewModel: FeedViewModel) {
+fun FeedScreen(
+    viewModel: FeedViewModel,
+    onOpenDrawer: () -> Unit
+) {
     val pagerState = rememberPagerState(initialPage = 0) { 2 }
     val selectedTabIndex = pagerState.currentPage
     val coroutineScope = rememberCoroutineScope()
@@ -54,7 +57,7 @@ fun FeedScreen(viewModel: FeedViewModel) {
 
     FeedTabs(
         selectedTabIndex = selectedTabIndex,
-        onOpenDrawer = {},
+        onOpenDrawer = onOpenDrawer,
         onChangeTab = {
             coroutineScope.launch {
                 pagerState.animateScrollToPage(it)
