@@ -25,7 +25,7 @@ fun SettingsScreen(navController: NavController) {
     Column(modifier = Modifier
         .fillMaxSize()
         .background(Background)) {
-        Header(title = "", navController = navController)
+//        Header(title = "", navController = navController)
 
         Column(modifier = Modifier.padding(BasePadding)) {
             Text(

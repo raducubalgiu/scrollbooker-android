@@ -28,10 +28,10 @@ fun SchedulesScreen(navController: NavController) {
     val isSaving by viewModel.isSaving.collectAsState()
 
     Layout {
-        Header(
-            navController = navController,
-            title = stringResource(R.string.mySchedule),
-        )
+//        Header(
+//            navController = navController,
+//            title = stringResource(R.string.mySchedule),
+//        )
         Column(modifier = Modifier
             .fillMaxSize()
             .padding(vertical = SpacingXL),

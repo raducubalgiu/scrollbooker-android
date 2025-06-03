@@ -1,19 +1,14 @@
 package com.example.scrollbooker.feature.notifications.components
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.Avatar
 import com.example.scrollbooker.components.core.MainButtonSmall
 import com.example.scrollbooker.core.util.Dimens.AvatarSizeS
-import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
@@ -30,9 +25,9 @@ fun NotificationItem(
     trailingTitle: String = "",
     onTrailingClick: (() -> Unit)? = null
 ) {
-    ListItem(modifier = Modifier
+    ListItem(modifier = modifier
         .fillMaxWidth()
-        .padding(vertical = 2.dp)
+        .padding(vertical = SpacingXXS)
         .then(modifier),
         headlineContent = {
             Text(
@@ -64,11 +59,5 @@ fun NotificationItem(
         colors = ListItemDefaults.colors(
             containerColor = Background
         )
-    )
-
-    Spacer(
-        Modifier
-            .height(BasePadding)
-            .background(Background),
     )
 }

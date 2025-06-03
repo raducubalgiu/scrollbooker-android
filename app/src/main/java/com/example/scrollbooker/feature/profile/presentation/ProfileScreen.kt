@@ -17,6 +17,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.BottomSheet
+import com.example.scrollbooker.components.core.Layout
 import com.example.scrollbooker.components.list.ItemList
 import com.example.scrollbooker.feature.auth.presentation.AuthViewModel
 import com.example.scrollbooker.feature.profile.presentation.components.ProfileHeader
@@ -63,13 +64,8 @@ fun ProfileScreen(viewModel: ProfileSharedViewModel) {
         }
     )
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .background(Background)
-    ) {
-        Column(modifier = Modifier.fillMaxSize().statusBarsPadding()) {
-            ProfileHeader(onOpenBottomSheet = { showBottomSheet = true })
-            ProfileTabs()
-        }
+    Layout {
+        ProfileHeader(onOpenBottomSheet = { showBottomSheet = true })
+        ProfileTabs()
     }
 }

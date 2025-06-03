@@ -12,9 +12,9 @@ import com.example.scrollbooker.components.core.Header
 @Composable
 fun PrivacyScreen(navController: NavController) {
     Column(modifier = Modifier.fillMaxSize()) {
-        Header(
-            navController = navController,
-            title = stringResource(R.string.privacy),
-        )
+//        Header(
+//            navController = navController,
+//            title = stringResource(R.string.privacy),
+//        )
     }
 }

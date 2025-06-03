@@ -17,9 +17,9 @@ fun EditUsernameScreen(
     viewModel: ProfileSharedViewModel
 ) {
     Column(Modifier.fillMaxSize().statusBarsPadding()) {
-        Header(
-            navController = navController,
-            title = stringResource(R.string.username),
-        )
+//        Header(
+//            navController = navController,
+//            title = stringResource(R.string.username),
+//        )
     }
 }

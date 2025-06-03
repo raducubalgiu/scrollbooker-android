@@ -10,9 +10,9 @@ import com.example.scrollbooker.components.core.Layout
 @Composable
 fun AddProductScreen(navController: NavController) {
     Layout {
-        Header(
-            navController = navController,
-            title = stringResource(R.string.addNewProduct),
-        )
+//        Header(
+//            navController = navController,
+//            title = stringResource(R.string.addNewProduct),
+//        )
     }
 }

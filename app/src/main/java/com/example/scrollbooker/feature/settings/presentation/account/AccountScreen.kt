@@ -12,9 +12,9 @@ import com.example.scrollbooker.components.core.Header
 @Composable
 fun AccountScreen(navController: NavController) {
     Column(Modifier.fillMaxSize()) {
-        Header(
-            navController = navController,
-            title = stringResource(id = R.string.account),
-        )
+//        Header(
+//            navController = navController,
+//            title = stringResource(id = R.string.account),
+//        )
     }
 }

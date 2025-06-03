@@ -12,9 +12,9 @@ import com.example.scrollbooker.ui.theme.Background
 @Composable
 fun AppointmentDetailsScreen(navController: NavController) {
     Column(Modifier.fillMaxSize().background(Background)) {
-        Header(
-            navController = navController,
-            title = "Detalii programare"
-        )
+//        Header(
+//            navController = navController,
+//            title = "Detalii programare"
+//        )
     }
 }

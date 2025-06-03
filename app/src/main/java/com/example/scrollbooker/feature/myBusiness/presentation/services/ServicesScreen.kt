@@ -21,10 +21,10 @@ fun ServicesScreen(navController: NavController) {
     val state by viewModel.servicesState.collectAsState()
 
     Layout {
-        Header(
-            navController = navController,
-            title = stringResource(R.string.myServices)
-        )
+//        Header(
+//            navController = navController,
+//            title = stringResource(R.string.myServices)
+//        )
 
         when(state) {
             is FeatureState.Loading -> CircularProgressIndicator()

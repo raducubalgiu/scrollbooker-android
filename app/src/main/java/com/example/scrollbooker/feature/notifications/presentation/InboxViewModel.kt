@@ -12,12 +12,14 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class InboxViewModel @Inject constructor(): ViewModel() {
+class InboxViewModel @Inject constructor(
+    getNotificationsUseCase: GetNotificationsUseCase
+): ViewModel() {
 
     init {
         Timber.tag("Init Inbox").e("-> View Model Created")
     }
 
-//    val notifications: Flow<PagingData<Notification>> =
-//                getNotificationsUseCase().cachedIn(viewModelScope)
+    val notifications: Flow<PagingData<Notification>> =
+                getNotificationsUseCase().cachedIn(viewModelScope)
 }

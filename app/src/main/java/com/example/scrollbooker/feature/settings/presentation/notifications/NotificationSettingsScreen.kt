@@ -12,10 +12,10 @@ import com.example.scrollbooker.components.list.ItemSwitch
 @Composable
 fun NotificationSettings(navController: NavController) {
     Column(modifier = Modifier.fillMaxSize()) {
-        Header(
-            title = stringResource(id = R.string.notifications),
-            navController = navController
-        )
+//        Header(
+//            title = stringResource(id = R.string.notifications),
+//            navController = navController
+//        )
 
         ItemSwitch(
             headLine = "Bookings",

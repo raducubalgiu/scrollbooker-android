@@ -26,10 +26,10 @@ fun EditProfileScreen(
         .statusBarsPadding()
         .background(Background)
     ) {
-        Header(
-            navController = navController,
-            title = stringResource(R.string.editProfile),
-        )
+//        Header(
+//            navController = navController,
+//            title = stringResource(R.string.editProfile),
+//        )
         Text(text = "Despre tine")
 
         ItemListInfo(

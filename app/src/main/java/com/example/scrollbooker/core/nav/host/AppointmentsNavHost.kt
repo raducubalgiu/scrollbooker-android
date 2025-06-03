@@ -17,7 +17,9 @@ fun AppointmentsNavHost(navController: NavHostController) {
     ) {
         composable(MainRoute.Appointments.route) { backStackEntry ->
             val viewModel = hiltViewModel<AppointmentsViewModel>(backStackEntry)
-            AppointmentsScreen(viewModel = viewModel)
+            AppointmentsScreen(
+                viewModel = viewModel
+            )
         }
     }
 }

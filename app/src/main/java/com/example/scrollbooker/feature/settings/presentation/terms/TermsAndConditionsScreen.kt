@@ -12,9 +12,9 @@ import com.example.scrollbooker.components.core.Header
 @Composable
 fun TermsAndConditionsScreen(navController: NavController) {
     Column(Modifier.fillMaxSize()) {
-        Header(
-            navController = navController,
-            title = stringResource(R.string.termsAndConditions),
-        )
+//        Header(
+//            navController = navController,
+//            title = stringResource(R.string.termsAndConditions),
+//        )
     }
 }

@@ -19,9 +19,9 @@ fun EditGenderScreen(
             .fillMaxSize()
             .statusBarsPadding()
     ) {
-        Header(
-            navController = navController,
-            title = "Sex",
-        )
+//        Header(
+//            navController = navController,
+//            title = "Sex",
+//        )
     }
 }

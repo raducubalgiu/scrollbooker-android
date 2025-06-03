@@ -12,9 +12,9 @@ import com.example.scrollbooker.components.core.Header
 @Composable
 fun SecurityScreen(navController: NavController) {
     Column(Modifier.fillMaxSize()) {
-        Header(
-            navController = navController,
-            title = stringResource(R.string.security),
-        )
+//        Header(
+//            navController = navController,
+//            title = stringResource(R.string.security),
+//        )
     }
 }

@@ -19,10 +19,10 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 @Composable
 fun MyBusinessScreen(navController: NavController) {
     Layout {
-        Header(
-            navController = navController,
-            title = stringResource(R.string.myBusiness),
-        )
+//        Header(
+//            navController = navController,
+//            title = stringResource(R.string.myBusiness),
+//        )
 
         Column(
             modifier = Modifier.fillMaxSize(),

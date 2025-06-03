@@ -16,14 +16,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.example.scrollbooker.R
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun Header(
-    navController: NavController,
+    onBack: (() -> Unit)? = null,
     title: String,
     enableBack: Boolean = true,
     actions: @Composable (() -> Unit)? = null
@@ -37,7 +36,7 @@ fun Header(
             modifier = Modifier
                 .size(40.dp)
                 .clickable(
-                    onClick = { if(enableBack) navController.popBackStack() else null },
+                    onClick = { onBack },
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null
                 ),

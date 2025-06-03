@@ -5,10 +5,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.example.scrollbooker.components.core.Layout
 
 @Composable
 fun NotificationsScreen(viewModel: NotificationsViewModel) {
-    Column(Modifier.fillMaxSize()) {
-        Text("NotificationsScreen")
+    Layout {
+        Text("Notifications Screen")
     }
 }

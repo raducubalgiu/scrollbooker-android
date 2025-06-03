@@ -33,10 +33,10 @@ fun ProductsScreen(userId: Int, navController: NavController) {
     val lazyPagingItems = viewModel.products.collectAsLazyPagingItems()
 
     Layout {
-        Header(
-            navController = navController,
-            title = stringResource(R.string.myProducts),
-        )
+//        Header(
+//            navController = navController,
+//            title = stringResource(R.string.myProducts),
+//        )
         Column(modifier = Modifier
             .fillMaxSize()
             .padding(vertical = BasePadding)

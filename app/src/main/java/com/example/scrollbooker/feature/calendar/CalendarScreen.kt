@@ -17,9 +17,9 @@ fun CalendarScreen(navController: NavController) {
         .fillMaxSize()
         .background(Background)
     ) {
-        Header(
-            navController = navController,
-            title = stringResource(R.string.calendar)
-        )
+//        Header(
+//            navController = navController,
+//            title = stringResource(R.string.calendar)
+//        )
     }
 }
