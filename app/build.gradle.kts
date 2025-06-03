@@ -87,6 +87,7 @@ dependencies {
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.compose)
 
+    // Foundation
     implementation(libs.androidx.foundation)
 
     // Exo Player

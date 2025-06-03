@@ -28,8 +28,8 @@ data class SenderDto(
     val id: Int,
 
     @SerializedName("fullname")
-    val fullName: String,
+    val fullName: String?,
 
     val username: String,
-    val avatar: String
+    val avatar: String?
 )

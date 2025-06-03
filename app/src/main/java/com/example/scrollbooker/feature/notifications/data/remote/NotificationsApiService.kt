@@ -5,7 +5,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface NotificationsApiService {
-    @GET("/notifications")
+    @GET("notifications/")
     suspend fun getUserNotifications(
         @Query("page") page: Int,
         @Query("limit") limit: Int

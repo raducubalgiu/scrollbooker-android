@@ -23,20 +23,20 @@ fun EditFullNameScreen(
     navController: NavController,
     viewModel: ProfileSharedViewModel
 ) {
-    var name by rememberSaveable { mutableStateOf(viewModel.user?.fullName ?: "") }
-
-    Column(Modifier.fillMaxSize().statusBarsPadding()) {
-        Header(
-            navController = navController,
-            title = stringResource(R.string.name)
-        )
-
-        Column(Modifier.padding(BasePadding)) {
-            EditInput(
-                value = name,
-                onValueChange = { name = it },
-                placeholder = stringResource(R.string.yourName)
-            )
-        }
-    }
+//    var name by rememberSaveable { mutableStateOf(viewModel.user?.fullName ?: "") }
+//
+//    Column(Modifier.fillMaxSize().statusBarsPadding()) {
+//        Header(
+//            navController = navController,
+//            title = stringResource(R.string.name)
+//        )
+//
+//        Column(Modifier.padding(BasePadding)) {
+//            EditInput(
+//                value = name,
+//                onValueChange = { name = it },
+//                placeholder = stringResource(R.string.yourName)
+//            )
+//        }
+//    }
 }

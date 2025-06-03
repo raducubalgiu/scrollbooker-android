@@ -14,7 +14,7 @@ data class Notification(
 
 data class Sender(
     val id: Int,
-    val fullName: String,
+    val fullName: String?,
     val username: String,
-    val avatar: String
+    val avatar: String?
 )

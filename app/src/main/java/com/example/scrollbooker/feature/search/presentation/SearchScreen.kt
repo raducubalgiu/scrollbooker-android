@@ -9,7 +9,7 @@ import com.example.scrollbooker.components.inputs.SearchBar
 import com.example.scrollbooker.components.typography.TitleLarge
 
 @Composable
-fun SearchScreen() {
+fun SearchScreen(viewModel: SearchViewModel) {
     var search by remember { mutableStateOf("") }
 
     Layout {

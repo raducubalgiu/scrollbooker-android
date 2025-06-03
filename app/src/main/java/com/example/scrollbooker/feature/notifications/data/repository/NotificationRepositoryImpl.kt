@@ -15,7 +15,7 @@ class NotificationRepositoryImpl @Inject constructor(
 ): NotificationRepository {
     override fun getNotifications(): Flow<PagingData<Notification>> {
         return Pager(
-            config = PagingConfig(pageSize = 20),
+            config = PagingConfig(pageSize = 10),
             pagingSourceFactory = { NotificationPagingSource(api) }
         ).flow
     }

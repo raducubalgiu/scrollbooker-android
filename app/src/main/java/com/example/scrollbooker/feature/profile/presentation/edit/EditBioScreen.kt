@@ -23,26 +23,26 @@ fun EditBioScreen(
     navController: NavController,
     viewModel: ProfileSharedViewModel
 ) {
-    var bio by rememberSaveable { mutableStateOf(viewModel.user?.bio ?: "") }
-
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .statusBarsPadding()) {
-
-        Header(
-            navController = navController,
-            title = stringResource(R.string.biography),
-        )
-
-        Column(Modifier.padding(BasePadding)) {
-            EditInput(
-                value = bio,
-                singleLine = false,
-                minLines = 5,
-                maxLines = 5,
-                onValueChange = { bio = it },
-                placeholder = stringResource(R.string.yourBio)
-            )
-        }
-    }
+//    var bio by rememberSaveable { mutableStateOf(viewModel.user?.bio ?: "") }
+//
+//    Column(modifier = Modifier
+//        .fillMaxSize()
+//        .statusBarsPadding()) {
+//
+//        Header(
+//            navController = navController,
+//            title = stringResource(R.string.biography),
+//        )
+//
+//        Column(Modifier.padding(BasePadding)) {
+//            EditInput(
+//                value = bio,
+//                singleLine = false,
+//                minLines = 5,
+//                maxLines = 5,
+//                onValueChange = { bio = it },
+//                placeholder = stringResource(R.string.yourBio)
+//            )
+//        }
+//    }
 }

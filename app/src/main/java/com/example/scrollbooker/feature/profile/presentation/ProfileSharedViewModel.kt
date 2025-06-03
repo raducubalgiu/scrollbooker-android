@@ -19,46 +19,47 @@ class ProfileSharedViewModel @Inject constructor(
     private val getUserInfoUseCase: GetUserInfoUseCase
 ): ViewModel() {
 
-    var user by mutableStateOf<User?>(null)
-        private set
-
-    var isLoading by mutableStateOf(false)
-        private set
-
-    fun loadUser() {
-        viewModelScope.launch {
-            isLoading = true
-
-            try {
-                user = getUserInfoUseCase()
-            } catch (e: Exception) {
-                //SnackbarManager.showError("Ceva nu a mers cum trebuie. Încearcă mai târziu")
-                Timber.tag("Profile").e(e, "ERROR: on Loading Profile User Data")
-            } finally {
-                isLoading = false
-            }
-        }
-    }
-
-    fun updateFullName(newFullName: String) {
-        user = user?.copy(fullName = newFullName)
-    }
-
-    fun updateUsername(newUsername: String) {
-        user = user?.copy(username = newUsername)
-    }
-
-    fun updateBio(newBio: String) {
-        user = user?.copy(bio = newBio)
-    }
-
-    fun logout() {
-        viewModelScope.launch {
-            authDataStore.clearUserSession()
-        }
-    }
+//    var user by mutableStateOf<User?>(null)
+//        private set
+//
+//    var isLoading by mutableStateOf(false)
+//        private set
+//
+//    fun loadUser() {
+//        viewModelScope.launch {
+//            isLoading = true
+//
+//            try {
+//                user = getUserInfoUseCase()
+//            } catch (e: Exception) {
+//                //SnackbarManager.showError("Ceva nu a mers cum trebuie. Încearcă mai târziu")
+//                Timber.tag("Profile").e(e, "ERROR: on Loading Profile User Data")
+//            } finally {
+//                isLoading = false
+//            }
+//        }
+//    }
+//
+//    fun updateFullName(newFullName: String) {
+//        user = user?.copy(fullName = newFullName)
+//    }
+//
+//    fun updateUsername(newUsername: String) {
+//        user = user?.copy(username = newUsername)
+//    }
+//
+//    fun updateBio(newBio: String) {
+//        user = user?.copy(bio = newBio)
+//    }
+//
+//    fun logout() {
+//        viewModelScope.launch {
+//            authDataStore.clearUserSession()
+//        }
+//    }
 
     init {
-        loadUser()
+        Timber.tag("Init").e("-> Profile - View Model Created")
+        //loadUser()
     }
 }

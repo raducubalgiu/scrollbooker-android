@@ -14,17 +14,17 @@ import com.example.scrollbooker.feature.appointments.presentation.AppointmentDet
 import com.example.scrollbooker.feature.appointments.presentation.AppointmentsScreen
 import com.example.scrollbooker.ui.theme.Background
 
-fun NavGraphBuilder.appointmentsGraph(navController: NavController) {
-    navigation(
-        route = MainRoute.AppointmentsNavigator.route,
-        startDestination = MainRoute.Appointments.route
-    ) {
-        composable(MainRoute.Appointments.route) {
-            AppointmentsScreen(navController)
-        }
-
-        composable(MainRoute.AppointmentDetails.route) {
-            AppointmentDetailsScreen(navController)
-        }
-    }
-}
+//fun NavGraphBuilder.appointmentsGraph(navController: NavController) {
+//    navigation(
+//        route = MainRoute.AppointmentsNavigator.route,
+//        startDestination = MainRoute.Appointments.route
+//    ) {
+//        composable(MainRoute.Appointments.route) {
+//            AppointmentsScreen(navController)
+//        }
+//
+//        composable(MainRoute.AppointmentDetails.route) {
+//            AppointmentDetailsScreen(navController)
+//        }
+//    }
+//}

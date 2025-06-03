@@ -25,17 +25,8 @@ import com.example.scrollbooker.ui.theme.Background
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(
-    navController: NavController,
-    viewModel: ProfileSharedViewModel
-) {
-    val authViewModel: AuthViewModel = hiltViewModel()
-
+fun ProfileScreen(viewModel: ProfileSharedViewModel) {
     var showBottomSheet by remember { mutableStateOf(false) }
-
-
-    val user = viewModel.user
-    val isLoading = viewModel.isLoading
 
     BottomSheet(
         onDismiss = { showBottomSheet = false },
@@ -48,7 +39,7 @@ fun ProfileScreen(
                 displayRightIcon = false,
                 onClick = {
                     showBottomSheet = false
-                    navController.navigate("calendar")
+                    //navController.navigate("calendar")
                 }
             )
             ItemList(
@@ -57,7 +48,7 @@ fun ProfileScreen(
                 displayRightIcon = false,
                 onClick = {
                     showBottomSheet = false
-                    navController.navigate("myBusiness")
+                    //navController.navigate("myBusiness")
                 }
             )
             ItemList(
@@ -66,7 +57,7 @@ fun ProfileScreen(
                 displayRightIcon = false,
                 onClick = {
                     showBottomSheet = false
-                    navController.navigate("settings")
+                    //navController.navigate("settings")
                 }
             )
         }

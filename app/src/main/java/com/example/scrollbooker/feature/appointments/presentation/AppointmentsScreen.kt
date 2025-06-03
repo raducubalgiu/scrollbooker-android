@@ -18,7 +18,7 @@ import com.example.scrollbooker.ui.theme.Background
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppointmentsScreen(navController: NavController) {
+fun AppointmentsScreen(viewModel: AppointmentsViewModel) {
     val isEmployee = true
     val isBusiness = false
     val isCustomer = false
@@ -28,11 +28,11 @@ fun AppointmentsScreen(navController: NavController) {
         .background(Background)
         .statusBarsPadding()
     ) {
-        Header(
-            navController = navController,
-            enableBack = false,
-            title = stringResource(id = R.string.appointments),
-        )
+//        Header(
+//            navController = navController,
+//            enableBack = false,
+//            title = stringResource(id = R.string.appointments),
+//        )
 
         when {
             isEmployee -> AppointmentsTabs()
