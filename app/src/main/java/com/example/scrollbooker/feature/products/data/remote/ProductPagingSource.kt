@@ -4,6 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.scrollbooker.feature.products.data.mappers.toDomain
 import com.example.scrollbooker.feature.products.domain.model.Product
+import timber.log.Timber
 import java.lang.Exception
 
 class ProductPagingSource(
@@ -30,10 +31,9 @@ class ProductPagingSource(
                 prevKey = null
             )
         } catch (e: Exception) {
+            Timber.tag("Paging Products").e("ERROR: on Loading Products $e")
             e.printStackTrace()
             LoadResult.Error(throwable = e)
         }
     }
-
-
 }

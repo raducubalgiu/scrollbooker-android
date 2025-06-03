@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalNavigationDrawer
@@ -34,11 +33,9 @@ import com.example.scrollbooker.core.nav.navigators.appointmentsGraph
 import com.example.scrollbooker.core.nav.navigators.profileRootGraph
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.snackbar.SnackbarManager
-import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.feature.feed.presentation.FeedScreen
-import com.example.scrollbooker.feature.inbox.presentation.InboxScreen
+import com.example.scrollbooker.feature.notifications.presentation.InboxScreen
 import com.example.scrollbooker.feature.search.presentation.SearchScreen
-import com.example.scrollbooker.ui.theme.Background
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedBoxWithConstraintsScope")

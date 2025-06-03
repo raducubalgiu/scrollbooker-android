@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.inbox.presentation
+package com.example.scrollbooker.feature.notifications.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.BorderStroke
