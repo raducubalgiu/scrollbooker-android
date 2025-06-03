@@ -1,13 +1,23 @@
 package com.example.scrollbooker.core.nav.host
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.scrollbooker.core.nav.routes.MainRoute
+import com.example.scrollbooker.core.nav.transitions.slideInFromLeft
+import com.example.scrollbooker.core.nav.transitions.slideInFromRight
+import com.example.scrollbooker.core.nav.transitions.slideOutToLeft
+import com.example.scrollbooker.core.nav.transitions.slideOutToRight
 import com.example.scrollbooker.feature.profile.presentation.ProfileScreen
 import com.example.scrollbooker.feature.profile.presentation.ProfileSharedViewModel
+import com.example.scrollbooker.feature.profile.presentation.edit.EditBioScreen
+import com.example.scrollbooker.feature.profile.presentation.edit.EditFullNameScreen
+import com.example.scrollbooker.feature.profile.presentation.edit.EditGenderScreen
+import com.example.scrollbooker.feature.profile.presentation.edit.EditProfileScreen
+import com.example.scrollbooker.feature.profile.presentation.edit.EditUsernameScreen
 
 @Composable
 fun ProfileNavHost(navController: NavHostController) {
@@ -17,7 +27,97 @@ fun ProfileNavHost(navController: NavHostController) {
     ) {
         composable(MainRoute.Profile.route) { backStackEntry ->
             val viewModel = hiltViewModel<ProfileSharedViewModel>(backStackEntry)
-            ProfileScreen(viewModel = viewModel)
+            ProfileScreen(
+                viewModel = viewModel,
+                navController = navController
+            )
+        }
+        composable(MainRoute.EditProfile.route,
+            enterTransition = slideInFromRight(),
+            exitTransition = slideOutToLeft(),
+            popEnterTransition = slideInFromLeft(),
+            popExitTransition = slideOutToRight()
+        ) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(MainRoute.Profile.route)
+            }
+            val viewModel = hiltViewModel<ProfileSharedViewModel>(parentEntry)
+
+            EditProfileScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() },
+                onNavigate = { route -> navController.navigate(route) }
+            )
+        }
+        composable(
+            MainRoute.EditFullName.route,
+            enterTransition = slideInFromRight(),
+            exitTransition = slideOutToLeft(),
+            popEnterTransition = slideInFromLeft(),
+            popExitTransition = slideOutToRight()
+        ) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(MainRoute.Profile.route)
+            }
+            val viewModel: ProfileSharedViewModel = hiltViewModel(parentEntry)
+
+            EditFullNameScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() }
+            )
+        }
+        composable(
+            MainRoute.EditUsername.route,
+            enterTransition = slideInFromRight(),
+            exitTransition = slideOutToLeft(),
+            popEnterTransition = slideInFromLeft(),
+            popExitTransition = slideOutToRight()
+        ) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(MainRoute.Profile.route)
+            }
+            val viewModel: ProfileSharedViewModel = hiltViewModel(parentEntry)
+
+            EditUsernameScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(
+            MainRoute.EditBio.route,
+            enterTransition = slideInFromRight(),
+            exitTransition = slideOutToLeft(),
+            popEnterTransition = slideInFromLeft(),
+            popExitTransition = slideOutToRight()
+        ) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(MainRoute.Profile.route)
+            }
+            val viewModel = hiltViewModel<ProfileSharedViewModel>(parentEntry)
+
+            EditBioScreen(
+                viewModel=viewModel,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(
+            MainRoute.EditGender.route,
+            enterTransition = slideInFromRight(),
+            exitTransition = slideOutToLeft(),
+            popEnterTransition = slideInFromLeft(),
+            popExitTransition = slideOutToRight()
+        ) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(MainRoute.Profile.route)
+            }
+            val viewModel = hiltViewModel<ProfileSharedViewModel>(parentEntry)
+
+            EditGenderScreen(
+                viewModel=viewModel,
+                onBack= { navController.popBackStack() }
+            )
         }
     }
 }

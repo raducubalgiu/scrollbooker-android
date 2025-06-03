@@ -4,7 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -15,10 +17,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.BottomSheet
 import com.example.scrollbooker.components.core.Layout
 import com.example.scrollbooker.components.list.ItemList
+import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.feature.auth.presentation.AuthViewModel
 import com.example.scrollbooker.feature.profile.presentation.components.ProfileHeader
 import com.example.scrollbooker.feature.profile.presentation.components.ProfileTabs
@@ -26,7 +30,10 @@ import com.example.scrollbooker.ui.theme.Background
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(viewModel: ProfileSharedViewModel) {
+fun ProfileScreen(
+    viewModel: ProfileSharedViewModel,
+    navController: NavHostController
+) {
     var showBottomSheet by remember { mutableStateOf(false) }
 
     BottomSheet(
@@ -66,6 +73,9 @@ fun ProfileScreen(viewModel: ProfileSharedViewModel) {
 
     Layout {
         ProfileHeader(onOpenBottomSheet = { showBottomSheet = true })
+        Button(onClick = { navController.navigate(MainRoute.EditProfile.route) }) {
+            Text("Edit Profile")
+        }
         ProfileTabs()
     }
 }

@@ -1,24 +1,24 @@
-package com.example.scrollbooker.core.nav.navigators
-
-import androidx.compose.runtime.remember
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
-import androidx.navigation.navigation
-import com.example.scrollbooker.core.nav.routes.MainRoute
-import com.example.scrollbooker.core.nav.transitions.slideInFromLeft
-import com.example.scrollbooker.core.nav.transitions.slideInFromRight
-import com.example.scrollbooker.core.nav.transitions.slideOutToLeft
-import com.example.scrollbooker.core.nav.transitions.slideOutToRight
-import com.example.scrollbooker.feature.profile.presentation.edit.EditBioScreen
-import com.example.scrollbooker.feature.profile.presentation.edit.EditFullNameScreen
-import com.example.scrollbooker.feature.profile.presentation.edit.EditGenderScreen
-import com.example.scrollbooker.feature.profile.presentation.edit.EditProfileScreen
-import com.example.scrollbooker.feature.profile.presentation.edit.EditUsernameScreen
-import com.example.scrollbooker.feature.profile.presentation.ProfileScreen
-import com.example.scrollbooker.feature.profile.presentation.ProfileSharedViewModel
+//package com.example.scrollbooker.core.nav.navigators
 //
+//import androidx.compose.runtime.remember
+//import androidx.hilt.navigation.compose.hiltViewModel
+//import androidx.navigation.NavController
+//import androidx.navigation.NavGraphBuilder
+//import androidx.navigation.compose.composable
+//import androidx.navigation.navigation
+//import com.example.scrollbooker.core.nav.routes.MainRoute
+//import com.example.scrollbooker.core.nav.transitions.slideInFromLeft
+//import com.example.scrollbooker.core.nav.transitions.slideInFromRight
+//import com.example.scrollbooker.core.nav.transitions.slideOutToLeft
+//import com.example.scrollbooker.core.nav.transitions.slideOutToRight
+//import com.example.scrollbooker.feature.profile.presentation.edit.EditBioScreen
+//import com.example.scrollbooker.feature.profile.presentation.edit.EditFullNameScreen
+//import com.example.scrollbooker.feature.profile.presentation.edit.EditGenderScreen
+//import com.example.scrollbooker.feature.profile.presentation.edit.EditProfileScreen
+//import com.example.scrollbooker.feature.profile.presentation.edit.EditUsernameScreen
+//import com.example.scrollbooker.feature.profile.presentation.ProfileScreen
+//import com.example.scrollbooker.feature.profile.presentation.ProfileSharedViewModel
+////
 //fun NavGraphBuilder.profileGraph(navController: NavController) {
 //    navigation(
 //        route = MainRoute.ProfileNavigator.route,

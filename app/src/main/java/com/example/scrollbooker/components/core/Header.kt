@@ -22,13 +22,14 @@ import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun Header(
+    modifier: Modifier = Modifier,
     onBack: (() -> Unit)? = null,
     title: String,
     enableBack: Boolean = true,
     actions: @Composable (() -> Unit)? = null
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().then(modifier),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -36,7 +37,11 @@ fun Header(
             modifier = Modifier
                 .size(40.dp)
                 .clickable(
-                    onClick = { onBack },
+                    onClick = {
+                        if(onBack != null) {
+                            onBack()
+                        }
+                    },
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null
                 ),
