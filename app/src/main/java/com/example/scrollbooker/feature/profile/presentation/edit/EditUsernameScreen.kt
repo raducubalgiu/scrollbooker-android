@@ -1,5 +1,4 @@
 package com.example.scrollbooker.feature.profile.presentation.edit
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AlternateEmail
@@ -38,29 +37,29 @@ fun EditUsernameScreen(
         }
     }
 
-    Layout {
-        HeaderEdit(
-            onBack = onBack,
-            title = stringResource(R.string.username),
-            modifier = Modifier.padding(horizontal = BasePadding),
-            onAction = { viewModel.updateUsername(newUsername) },
-            actionTitle = stringResource(R.string.save),
-            isLoading = isLoading,
-            isEnabled = isEnabled
-        )
-
-        Column(Modifier.padding(BasePadding)) {
-            EditInput(
-                value = newUsername,
-                onValueChange = { newUsername = it },
-                placeholder = stringResource(R.string.username),
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.AlternateEmail,
-                        contentDescription = null
-                    )
-                }
+    Layout(
+        header = {
+            HeaderEdit(
+                onBack = onBack,
+                title = stringResource(R.string.username),
+                modifier = Modifier.padding(horizontal = BasePadding),
+                onAction = { viewModel.updateUsername(newUsername) },
+                actionTitle = stringResource(R.string.save),
+                isLoading = isLoading,
+                isEnabled = isEnabled
             )
         }
+    ) {
+        EditInput(
+            value = newUsername,
+            onValueChange = { newUsername = it },
+            placeholder = stringResource(R.string.username),
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.AlternateEmail,
+                    contentDescription = null
+                )
+            }
+        )
     }
 }

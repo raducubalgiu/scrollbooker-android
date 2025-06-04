@@ -1,6 +1,4 @@
 package com.example.scrollbooker.feature.profile.presentation.edit
-
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,25 +35,25 @@ fun EditFullNameScreen(
         }
     }
 
-    Layout {
-        HeaderEdit(
-            onBack = onBack,
-            title = stringResource(R.string.name),
-            modifier = Modifier.padding(horizontal = BasePadding),
-            onAction = { viewModel.updateFullName(newFullName) },
-            actionTitle = stringResource(R.string.save),
-            isLoading = isLoading,
-            isEnabled = isEnabled
-        )
-
-        Column(Modifier.padding(BasePadding)) {
-            EditInput(
-                value = newFullName,
-                onValueChange = { newFullName = it },
-                placeholder = stringResource(R.string.yourName),
-                isError = isError,
-                isEnabled = !isLoading
+    Layout(
+        header = {
+            HeaderEdit(
+                onBack = onBack,
+                title = stringResource(R.string.name),
+                modifier = Modifier.padding(horizontal = BasePadding),
+                onAction = { viewModel.updateFullName(newFullName) },
+                actionTitle = stringResource(R.string.save),
+                isLoading = isLoading,
+                isEnabled = isEnabled
             )
         }
+    ) {
+        EditInput(
+            value = newFullName,
+            onValueChange = { newFullName = it },
+            placeholder = stringResource(R.string.yourName),
+            isError = isError,
+            isEnabled = !isLoading
+        )
     }
 }

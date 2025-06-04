@@ -18,7 +18,7 @@ fun AppointmentsScreen(
     Layout(
         headerTitle = stringResource(id = R.string.appointments),
         enableBack = false,
-        enabledPadding = false
+        enablePadding = false
     ) {
         when {
             isEmployee -> AppointmentsTabs()

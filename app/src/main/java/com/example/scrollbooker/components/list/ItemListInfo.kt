@@ -31,9 +31,7 @@ fun ItemListInfo(
     ListItem(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(
-                onClick = onClick
-            )
+            .clickable(onClick = onClick)
             .then(modifier),
         headlineContent = {
             Text(

@@ -7,7 +7,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.Header
 import com.example.scrollbooker.components.core.Layout
 import com.example.scrollbooker.components.list.ItemListInfo
 import com.example.scrollbooker.core.nav.routes.MainRoute
@@ -22,13 +21,11 @@ fun EditProfileScreen(
     onNavigate: (String) -> Unit,
     viewModel: ProfileSharedViewModel
 ) {
-
-    Layout {
-        Header(
-            modifier = Modifier.padding(horizontal = BasePadding),
-            onBack = onBack,
-            title = stringResource(R.string.editProfile),
-        )
+    Layout(
+        headerTitle = stringResource(R.string.editProfile),
+        onBack = onBack,
+        enablePadding = false
+    ) {
         Column(Modifier.padding(
             top = BasePadding,
             start = BasePadding,
@@ -38,7 +35,7 @@ fun EditProfileScreen(
                 style = titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = OnSurfaceBG,
-                text = "Despre tine"
+                text = stringResource(R.string.aboutYou)
             )
         }
 

@@ -1,6 +1,4 @@
 package com.example.scrollbooker.feature.profile.presentation.edit
-
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,28 +35,28 @@ fun EditBioScreen(
         }
     }
 
-    Layout {
-        HeaderEdit(
-            onBack = onBack,
-            title = stringResource(R.string.biography),
-            modifier = Modifier.padding(horizontal = BasePadding),
-            onAction = { viewModel.updateBio(newBio) },
-            actionTitle = stringResource(R.string.save),
-            isLoading = isLoading,
-            isEnabled = isEnabled
-        )
-
-        Column(Modifier.padding(BasePadding)) {
-            EditInput(
-                value = newBio,
-                onValueChange = { newBio = it },
-                placeholder = stringResource(R.string.yourBio),
-                singleLine = false,
-                minLines = 5,
-                maxLines = 5,
-                isError = isError,
-                isEnabled = !isLoading
+    Layout(
+        header = {
+            HeaderEdit(
+                onBack = onBack,
+                title = stringResource(R.string.biography),
+                modifier = Modifier.padding(horizontal = BasePadding),
+                onAction = { viewModel.updateBio(newBio) },
+                actionTitle = stringResource(R.string.save),
+                isLoading = isLoading,
+                isEnabled = isEnabled
             )
         }
+    ) {
+        EditInput(
+            value = newBio,
+            onValueChange = { newBio = it },
+            placeholder = stringResource(R.string.yourBio),
+            singleLine = false,
+            minLines = 5,
+            maxLines = 5,
+            isError = isError,
+            isEnabled = !isLoading
+        )
     }
 }
