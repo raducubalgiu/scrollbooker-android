@@ -1,7 +1,10 @@
 package com.example.scrollbooker.feature.user.data.remote
 
 import com.example.scrollbooker.feature.auth.data.remote.PermissionDto
+import com.example.scrollbooker.feature.user.domain.model.UpdateFullNameRequest
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 
 interface UserApiService {
     @GET("auth/user-info")
@@ -9,4 +12,9 @@ interface UserApiService {
 
     @GET("auth/user-permissions")
     suspend fun getUserPermissions(): List<PermissionDto>
+
+    @PATCH("users/user-info/fullname")
+    suspend fun updateUserFullName(
+        @Body request: UpdateFullNameRequest
+    )
 }

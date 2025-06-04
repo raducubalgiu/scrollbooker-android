@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
@@ -35,7 +36,8 @@ fun EditInput(
     minLines: Int = 1,
     maxLines: Int = 1,
     isError: Boolean = false,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    leftIcon: ImageVector? = null
 ) {
     TextField(
         modifier = Modifier
@@ -43,6 +45,13 @@ fun EditInput(
             .then(modifier),
         value = value,
         onValueChange = onValueChange,
+        leadingIcon = {
+            if(leftIcon != null) {
+                Icon(
+                    imageVector = leftIcon,
+                    contentDescription = null
+                )
+            } else null },
         trailingIcon = {
             Column(
                 modifier = Modifier

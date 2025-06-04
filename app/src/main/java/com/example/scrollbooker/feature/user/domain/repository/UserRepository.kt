@@ -6,4 +6,5 @@ import com.example.scrollbooker.feature.user.domain.model.User
 interface UserRepository {
     suspend fun getUserInfo(): User
     suspend fun getUserPermissions(): List<Permission>
+    suspend fun updateFullName(fullName: String)
 }
