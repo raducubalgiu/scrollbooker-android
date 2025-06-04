@@ -17,10 +17,12 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 
 @Composable
 fun MyBusinessScreen(
-    onNavigation: (String) -> Unit
+    onNavigation: (String) -> Unit,
+    onBack: () -> Unit
 ) {
     Layout(
-        headerTitle = stringResource(R.string.myBusiness)
+        headerTitle = stringResource(R.string.myBusiness),
+        onBack = onBack
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),

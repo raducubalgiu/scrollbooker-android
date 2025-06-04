@@ -1,6 +1,5 @@
 package com.example.scrollbooker.core.nav.navigators
 
-import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -22,7 +21,6 @@ import com.example.scrollbooker.feature.myBusiness.presentation.services.Service
 import com.example.scrollbooker.feature.myBusiness.presentation.services.ServicesViewModel
 import com.example.scrollbooker.feature.products.presentation.EditProductScreen
 import com.example.scrollbooker.feature.products.presentation.ProductsViewModel
-import com.example.scrollbooker.feature.profile.presentation.ProfileSharedViewModel
 
 fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
     navigation(
@@ -44,7 +42,8 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
             popEnterTransition = slideInFromLeft(),
             popExitTransition = slideOutToRight()
         ) { MyBusinessScreen(
-            onNavigation = { navController.navigate(it) }
+            onNavigation = { navController.navigate(it) },
+            onBack = { navController.popBackStack() }
         ) }
 
         composable(

@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.scrollbooker.core.nav.BottomBarItem
 import com.example.scrollbooker.core.nav.containers.DefaultTabContainer
@@ -89,25 +90,33 @@ fun MainNavHost() {
     val scope = rememberCoroutineScope()
 
     val isFeedTab = currentTab == MainTab.Feed
+    val bottomBarRoutes = MainTab.allTabs.map { it.route }
+
+    val currentNavController = navControllers[currentTab]!!
+    val currentBackStackEntry by currentNavController.currentBackStackEntryAsState()
+    val currentRoute = currentBackStackEntry?.destination?.route
+
 
     val scaffoldContent: @Composable () -> Unit = {
         Scaffold(
             bottomBar = {
-                NavigationBar(
-                    modifier = Modifier.fillMaxWidth().height(100.dp),
-                    containerColor = if(isFeedTab) Color(0xFF121212) else Background
-                ) {
-                    Row(modifier = Modifier
-                        .fillMaxSize()
-                        .padding(vertical = 10.dp)
+                if(currentRoute in bottomBarRoutes) {
+                    NavigationBar(
+                        modifier = Modifier.fillMaxWidth().height(100.dp),
+                        containerColor = if(isFeedTab) Color(0xFF121212) else Background
                     ) {
-                        allTabs.forEach { tab ->
-                            BottomBarItem(
-                                modifier = Modifier.then(Modifier.weight(1f)),
-                                onNavigate = { currentTab = tab },
-                                isSelected = currentTab == tab,
-                                tab = tab
-                            )
+                        Row(modifier = Modifier
+                            .fillMaxSize()
+                            .padding(vertical = 10.dp)
+                        ) {
+                            allTabs.forEach { tab ->
+                                BottomBarItem(
+                                    modifier = Modifier.then(Modifier.weight(1f)),
+                                    onNavigate = { currentTab = tab },
+                                    isSelected = currentTab == tab,
+                                    tab = tab
+                                )
+                            }
                         }
                     }
                 }

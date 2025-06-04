@@ -25,7 +25,6 @@ class ProductPagingSource(
         val limit = 10
 
         return try {
-            delay(1000)
             val response = api.getUserProducts(userId, page, limit)
             val products = response.results.map { it.toDomain() }
 
