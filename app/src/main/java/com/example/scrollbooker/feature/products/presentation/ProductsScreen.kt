@@ -2,7 +2,6 @@ package com.example.scrollbooker.feature.products.presentation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -11,13 +10,10 @@ import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.Layout
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.example.scrollbooker.components.core.MainButton
 import com.example.scrollbooker.components.customized.ProductCard
 import com.example.scrollbooker.core.enums.ProductCardEnum
-import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.util.ErrorScreen
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.core.util.LoadingScreen
@@ -52,7 +48,11 @@ fun ProductsScreen(
                 items(count = state.itemCount) { index ->
                     val product = state[index]
                     product?.let { Box(Modifier.fillMaxSize()) {
-                        ProductCard(it, mode = ProductCardEnum.OWNER)
+                        ProductCard(
+                            product = it,
+                            mode = ProductCardEnum.OWNER,
+                            onNavigate = onNavigate
+                        )
                     } }
                 }
 

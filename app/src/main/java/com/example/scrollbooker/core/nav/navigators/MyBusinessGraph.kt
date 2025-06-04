@@ -1,9 +1,12 @@
 package com.example.scrollbooker.core.nav.navigators
 
+import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.nav.transitions.slideInFromLeft
@@ -17,6 +20,7 @@ import com.example.scrollbooker.feature.products.presentation.ProductsScreen
 import com.example.scrollbooker.feature.myBusiness.presentation.schedules.SchedulesScreen
 import com.example.scrollbooker.feature.myBusiness.presentation.services.ServicesScreen
 import com.example.scrollbooker.feature.myBusiness.presentation.services.ServicesViewModel
+import com.example.scrollbooker.feature.products.presentation.EditProductScreen
 import com.example.scrollbooker.feature.products.presentation.ProductsViewModel
 import com.example.scrollbooker.feature.profile.presentation.ProfileSharedViewModel
 
@@ -71,21 +75,45 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
                 onBack = { navController.popBackStack() }
             )
         }
-//
-//        composable(
-//            MainRoute.AddProduct.route,
-//            enterTransition = slideInFromRight(),
-//            exitTransition = slideOutToLeft(),
-//            popEnterTransition = slideInFromLeft(),
-//            popExitTransition = slideOutToRight()
-//        ) { AddProductScreen(navController = navController) }
-//
-//        composable(
-//            MainRoute.Schedules.route,
-//            enterTransition = slideInFromRight(),
-//            exitTransition = slideOutToLeft(),
-//            popEnterTransition = slideInFromLeft(),
-//            popExitTransition = slideOutToRight()
-//        ) { SchedulesScreen(navController = navController) }
+
+        composable(
+            route = "${MainRoute.EditProduct.route}/{productId}/{productName}",
+            arguments = listOf(
+                navArgument("productId") { type = NavType.IntType },
+                navArgument("productName") { type = NavType.StringType }
+            ),
+            enterTransition = slideInFromRight(),
+            exitTransition = slideOutToLeft(),
+            popEnterTransition = slideInFromLeft(),
+            popExitTransition = slideOutToRight()
+        ) { backStackEntry ->
+            val productId = backStackEntry.arguments?.getInt("productId") ?: return@composable
+            val productName = backStackEntry.arguments?.getString("productName") ?: return@composable
+            val viewModel = hiltViewModel<ProductsViewModel>(backStackEntry)
+
+            EditProductScreen(
+                productId=productId,
+                productName=productName,
+                onBack = { navController.popBackStack() },
+                viewModel = viewModel
+            )
+        }
+
+        composable(
+            MainRoute.AddProduct.route,
+            enterTransition = slideInFromRight(),
+            exitTransition = slideOutToLeft(),
+            popEnterTransition = slideInFromLeft(),
+            popExitTransition = slideOutToRight()
+        ) { AddProductScreen(navController = navController) }
+
+        composable(
+            MainRoute.Schedules.route,
+            enterTransition = slideInFromRight(),
+            exitTransition = slideOutToLeft(),
+            popEnterTransition = slideInFromLeft(),
+            popExitTransition = slideOutToRight()
+        ) { SchedulesScreen(navController = navController) }
+
     }
 }

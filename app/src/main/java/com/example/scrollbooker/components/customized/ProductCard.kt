@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.MainButton
 import com.example.scrollbooker.core.enums.ProductCardEnum
+import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
@@ -40,7 +41,8 @@ import java.math.BigDecimal
 @Composable
 fun ProductCard(
     product: Product,
-    mode: ProductCardEnum
+    mode: ProductCardEnum,
+    onNavigate: (String) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize().padding(vertical = SpacingXL)) {
         Text(
@@ -105,7 +107,7 @@ fun ProductCard(
                         Text(
                             style = bodyMedium,
                             fontWeight = FontWeight.SemiBold,
-                            text = "Rezerva"
+                            text = stringResource(R.string.book)
                         )
                     }
                 }
@@ -124,7 +126,7 @@ fun ProductCard(
                 MainButton(
                     modifier = Modifier.weight(0.5f),
                     title = stringResource(R.string.edit),
-                    onClick = {},
+                    onClick = { onNavigate("${MainRoute.EditProduct.route}/${product.id}/${product.name}") },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = SurfaceBG,
                         contentColor = OnSurfaceBG
