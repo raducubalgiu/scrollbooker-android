@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.ui.theme.Divider
@@ -37,14 +38,18 @@ fun ItemListInfo(
         headlineContent = {
             Text(
                 style = bodyMedium,
-                text = headLine
+                text = headLine,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         },
         trailingContent = {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     style = bodyMedium,
-                    text = supportingText
+                    text = supportingText,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
                 Spacer(Modifier.width(SpacingS))
                 Icon(

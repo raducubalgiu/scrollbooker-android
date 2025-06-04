@@ -1,10 +1,9 @@
 package com.example.scrollbooker.feature.user.data.repository
-
-import coil.network.HttpException
 import com.example.scrollbooker.feature.auth.data.mappers.toDomain
 import com.example.scrollbooker.feature.user.data.mappers.toDomain
 import com.example.scrollbooker.feature.user.data.remote.UserApiService
 import com.example.scrollbooker.feature.auth.domain.model.Permission
+import com.example.scrollbooker.feature.user.domain.model.UpdateBioRequest
 import com.example.scrollbooker.feature.user.domain.model.UpdateFullNameRequest
 import com.example.scrollbooker.feature.user.domain.model.UpdateUsernameRequest
 import com.example.scrollbooker.feature.user.domain.model.User
@@ -30,5 +29,9 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun updateUsername(username: String) {
         return userApiService.updateUsername(UpdateUsernameRequest(username))
+    }
+
+    override suspend fun updateBio(bio: String) {
+        return userApiService.updateBio(UpdateBioRequest(bio))
     }
 }

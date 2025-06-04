@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.feature.user.domain.model.User
 import com.example.scrollbooker.feature.user.domain.useCase.GetUserInfoUseCase
+import com.example.scrollbooker.feature.user.domain.useCase.UpdateBioUseCase
 import com.example.scrollbooker.feature.user.domain.useCase.UpdateFullNameUseCase
 import com.example.scrollbooker.feature.user.domain.useCase.UpdateUsernameUseCase
 import com.example.scrollbooker.store.AuthDataStore
@@ -24,7 +25,8 @@ class ProfileSharedViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
     private val getUserInfoUseCase: GetUserInfoUseCase,
     private val updateFullNameUseCase: UpdateFullNameUseCase,
-    private val updateUsernameUseCase: UpdateUsernameUseCase
+    private val updateUsernameUseCase: UpdateUsernameUseCase,
+    private val updateBioUseCase: UpdateBioUseCase
 ): ViewModel() {
 
     var user by mutableStateOf<User?>(null)
@@ -90,7 +92,21 @@ class ProfileSharedViewModel @Inject constructor(
     }
 
     fun updateBio(newBio: String) {
-        user = user?.copy(bio = newBio)
+        viewModelScope.launch {
+            _editState.value = FeatureState.Loading
+            delay(500)
+
+            updateBioUseCase(newBio)
+                .onSuccess {
+                    user = user?.copy(bio = newBio)
+                    _editState.value = FeatureState.Success(Unit)
+                    isSaved = true
+                }
+                .onFailure { error ->
+                    Timber.tag("EditProfile").e(error, "ERROR: on Edit Bio User Data")
+                    _editState.value = FeatureState.Error(error = null)
+                }
+        }
     }
 
     fun logout() {

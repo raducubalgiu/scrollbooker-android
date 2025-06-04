@@ -8,4 +8,5 @@ interface UserRepository {
     suspend fun getUserPermissions(): List<Permission>
     suspend fun updateFullName(fullName: String)
     suspend fun updateUsername(username: String)
+    suspend fun updateBio(bio: String)
 }

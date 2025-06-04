@@ -1,6 +1,7 @@
 package com.example.scrollbooker.feature.user.data.remote
 
 import com.example.scrollbooker.feature.auth.data.remote.PermissionDto
+import com.example.scrollbooker.feature.user.domain.model.UpdateBioRequest
 import com.example.scrollbooker.feature.user.domain.model.UpdateFullNameRequest
 import com.example.scrollbooker.feature.user.domain.model.UpdateUsernameRequest
 import retrofit2.http.Body
@@ -22,5 +23,10 @@ interface UserApiService {
     @PATCH("users/user-info/username/")
     suspend fun updateUsername(
         @Body request: UpdateUsernameRequest
+    )
+
+    @PATCH("users/user-info/bio/")
+    suspend fun updateBio(
+        @Body request: UpdateBioRequest
     )
 }

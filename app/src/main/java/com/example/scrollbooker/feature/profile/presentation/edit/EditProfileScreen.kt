@@ -48,17 +48,17 @@ fun EditProfileScreen(
             onClick = { onNavigate(MainRoute.EditFullName.route) }
         )
         ItemListInfo(
-            headLine = "Username",
+            headLine = stringResource(R.string.username),
             supportingText = viewModel.user?.username ?: "",
             onClick = { onNavigate(MainRoute.EditUsername.route) }
         )
         ItemListInfo(
-            headLine = "Bio",
+            headLine = stringResource(R.string.biography),
             supportingText = viewModel.user?.bio ?: "",
             onClick = { onNavigate(MainRoute.EditBio.route) }
         )
         ItemListInfo(
-            headLine = "Gender",
+            headLine = stringResource(R.string.gender),
             supportingText = "Male",
             onClick = { onNavigate(MainRoute.EditGender.route) }
         )

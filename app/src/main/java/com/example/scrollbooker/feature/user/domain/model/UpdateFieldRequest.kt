@@ -12,3 +12,8 @@ data class UpdateUsernameRequest(
     val username: String
 )
 
+@Serializable
+data class UpdateBioRequest(
+    val bio: String
+)
+
