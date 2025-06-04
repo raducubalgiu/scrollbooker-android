@@ -6,7 +6,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.Header
 import com.example.scrollbooker.components.core.Layout
 import com.example.scrollbooker.core.util.EmptyScreen
 import com.example.scrollbooker.core.util.ErrorScreen
@@ -19,12 +18,11 @@ fun InboxScreen(viewModel: InboxViewModel) {
     val notifications = viewModel.notifications.collectAsLazyPagingItems()
     val refreshState = notifications.loadState.refresh
 
-    Layout {
-        Header(
-            title = stringResource(id = R.string.inbox),
-            enableBack = false
-        )
-
+    Layout(
+        headerTitle = stringResource(id = R.string.inbox),
+        enableBack = false,
+        enabledPadding = false
+    ) {
         when(refreshState) {
             is LoadState.Loading -> { LoadingScreen() }
             is LoadState.Error -> {

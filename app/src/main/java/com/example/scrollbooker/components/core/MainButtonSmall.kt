@@ -21,7 +21,7 @@ fun MainButtonSmall(
     title: String
 ) {
     SuggestionChip(
-        modifier = modifier,
+        modifier = modifier.then(modifier),
         onClick = onClick,
         label = {
             Text(

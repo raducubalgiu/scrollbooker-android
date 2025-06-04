@@ -1,5 +1,6 @@
 package com.example.scrollbooker.core.nav.navigators
 
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -15,6 +16,9 @@ import com.example.scrollbooker.feature.products.presentation.AddProductScreen
 import com.example.scrollbooker.feature.products.presentation.ProductsScreen
 import com.example.scrollbooker.feature.myBusiness.presentation.schedules.SchedulesScreen
 import com.example.scrollbooker.feature.myBusiness.presentation.services.ServicesScreen
+import com.example.scrollbooker.feature.myBusiness.presentation.services.ServicesViewModel
+import com.example.scrollbooker.feature.products.presentation.ProductsViewModel
+import com.example.scrollbooker.feature.profile.presentation.ProfileSharedViewModel
 
 fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
     navigation(
@@ -35,23 +39,38 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
             exitTransition = slideOutToLeft(),
             popEnterTransition = slideInFromLeft(),
             popExitTransition = slideOutToRight()
-        ) { MyBusinessScreen() }
+        ) { MyBusinessScreen(
+            onNavigation = { navController.navigate(it) }
+        ) }
 
-//        composable(
-//            MainRoute.Services.route,
-//            enterTransition = slideInFromRight(),
-//            exitTransition = slideOutToLeft(),
-//            popEnterTransition = slideInFromLeft(),
-//            popExitTransition = slideOutToRight()
-//        ) { ServicesScreen(navController = navController) }
-//
-//        composable(
-//            MainRoute.Products.route,
-//            enterTransition = slideInFromRight(),
-//            exitTransition = slideOutToLeft(),
-//            popEnterTransition = slideInFromLeft(),
-//            popExitTransition = slideOutToRight()
-//        ) { ProductsScreen(navController = navController, userId = 3) }
+        composable(
+            MainRoute.Services.route,
+            enterTransition = slideInFromRight(),
+            exitTransition = slideOutToLeft(),
+            popEnterTransition = slideInFromLeft(),
+            popExitTransition = slideOutToRight()
+        ) { backStackEntry ->
+            val viewModel = hiltViewModel<ServicesViewModel>(backStackEntry)
+
+            ServicesScreen(viewModel, onBack = { navController.popBackStack() })
+        }
+
+        composable(
+            MainRoute.Products.route,
+            enterTransition = slideInFromRight(),
+            exitTransition = slideOutToLeft(),
+            popEnterTransition = slideInFromLeft(),
+            popExitTransition = slideOutToRight()
+        ) { backStackEntry ->
+            val viewModel = hiltViewModel<ProductsViewModel>(backStackEntry)
+
+            ProductsScreen(
+                viewModel=viewModel,
+                userId = 3,
+                onNavigate = { navController.navigate(it) },
+                onBack = { navController.popBackStack() }
+            )
+        }
 //
 //        composable(
 //            MainRoute.AddProduct.route,

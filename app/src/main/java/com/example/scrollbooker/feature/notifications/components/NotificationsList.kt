@@ -1,18 +1,12 @@
 package com.example.scrollbooker.feature.notifications.components
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
-import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.feature.notifications.domain.model.Notification
 import timber.log.Timber
 
@@ -51,14 +45,7 @@ fun NotificationsList(notifications: LazyPagingItems<Notification>) {
 
         when(appendState) {
             is LoadState.Loading -> {
-                item {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(BasePadding)
-                            .wrapContentWidth(Alignment.CenterHorizontally)
-                    )
-                }
+                item { LoadMoreSpinner() }
             }
             is LoadState.Error -> {
                 val error = appendState.error

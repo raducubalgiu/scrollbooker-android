@@ -32,7 +32,7 @@ fun ProfileHeader(
     ) {
         Box(
             modifier = Modifier
-                .size(40.dp)
+                .size(50.dp)
                 .clickable(
                     onClick = {},
                     interactionSource = remember { MutableInteractionSource() },
@@ -52,7 +52,7 @@ fun ProfileHeader(
             text = "Radu Balgiu"
         )
         Box(modifier = Modifier
-            .size(40.dp)
+            .size(50.dp)
             .clickable(
                 onClick = onOpenBottomSheet,
                 interactionSource = remember { MutableInteractionSource() },

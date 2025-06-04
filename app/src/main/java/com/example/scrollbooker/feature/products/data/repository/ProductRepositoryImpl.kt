@@ -15,7 +15,10 @@ class ProductRepositoryImpl @Inject constructor(
 ): ProductRepository {
     override fun getProducts(userId: Int): Flow<PagingData<Product>> {
         return Pager(
-            config = PagingConfig(pageSize = 10),
+            config = PagingConfig(
+                pageSize = 10,
+                prefetchDistance = 2
+            ),
             pagingSourceFactory = { ProductPagingSource(api, userId) }
         ).flow
     }

@@ -2,6 +2,7 @@ package com.example.scrollbooker.feature.profile.presentation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
@@ -66,7 +67,7 @@ fun ProfileScreen(
         }
     )
 
-    Layout {
+    Column(Modifier.fillMaxSize()) {
         ProfileHeader(onOpenBottomSheet = { showBottomSheet = true })
         Column(modifier = Modifier
             .fillMaxWidth(),

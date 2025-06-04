@@ -2,73 +2,77 @@ package com.example.scrollbooker.feature.products.presentation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.Header
 import com.example.scrollbooker.components.core.Layout
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.components.core.MainButton
+import com.example.scrollbooker.components.customized.ProductCard
+import com.example.scrollbooker.core.enums.ProductCardEnum
 import com.example.scrollbooker.core.nav.routes.MainRoute
-import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.ErrorScreen
+import com.example.scrollbooker.core.util.LoadMoreSpinner
+import com.example.scrollbooker.core.util.LoadingScreen
 
 @Composable
-fun ProductsScreen(userId: Int, navController: NavController) {
-    val viewModel: ProductsViewModel = hiltViewModel()
-
+fun ProductsScreen(
+    viewModel: ProductsViewModel,
+    userId: Int,
+    onBack: () -> Unit,
+    onNavigate: (String) -> Unit
+) {
     LaunchedEffect(userId) {
         viewModel.loadProducts(userId)
     }
 
-    val lazyPagingItems = viewModel.products.collectAsLazyPagingItems()
+    val state = viewModel.products.collectAsLazyPagingItems()
 
-    Layout {
-//        Header(
-//            navController = navController,
-//            title = stringResource(R.string.myProducts),
-//        )
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(vertical = BasePadding)
-        ) {
-            LazyColumn(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-            ) {
-                items(count = lazyPagingItems.itemCount) { index ->
-                    val product = lazyPagingItems[index]
-                    product?.let { Box(Modifier.fillMaxSize()) { Text(it.name) } }
+    Layout(
+        headerTitle = stringResource(R.string.myProducts),
+        onBack = onBack
+    ) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            state.apply {
+                when(loadState.refresh) {
+                    is LoadState.Loading -> LoadingScreen()
+                    is LoadState.Error -> ErrorScreen()
+                    is LoadState.NotLoading -> Unit
+                }
+            }
+
+            LazyColumn(Modifier.weight(1f)) {
+                items(count = state.itemCount) { index ->
+                    val product = state[index]
+                    product?.let { Box(Modifier.fillMaxSize()) {
+                        ProductCard(it, mode = ProductCardEnum.OWNER)
+                    } }
                 }
 
-                lazyPagingItems.apply {
+                state.apply {
                     when (loadState.append) {
                         is LoadState.Loading -> {
-                            item { CircularProgressIndicator() }
+                            item { LoadMoreSpinner() }
                         }
 
                         is LoadState.Error -> {
                             item { Text("Eroare la incarcare") }
                         }
-
-                        is LoadState.NotLoading -> {}
+                        is LoadState.NotLoading -> Unit
                     }
                 }
             }
-            MainButton(
-                onClick = { navController.navigate(MainRoute.AddProduct.route) },
-                title = stringResource(id = R.string.createNewProduct)
-            )
+//            MainButton(
+//                onClick = { onNavigate(MainRoute.AddProduct.route) },
+//                title = stringResource(id = R.string.createNewProduct)
+//            )
         }
     }
 }
