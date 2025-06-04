@@ -1,16 +1,13 @@
-package com.example.scrollbooker.feature.auth.di
+package com.example.scrollbooker.feature.user.di
 
-import android.content.Context
 import com.example.scrollbooker.core.util.Constants
-import com.example.scrollbooker.feature.auth.data.repository.UserRepositoryImpl
-import com.example.scrollbooker.feature.auth.domain.repository.UserRepository
-import com.example.scrollbooker.feature.auth.domain.usecase.GetUserInfoUseCase
-import com.example.scrollbooker.feature.auth.data.remote.UserApiService
-import com.example.scrollbooker.store.AuthDataStore
+import com.example.scrollbooker.feature.user.data.remote.UserApiService
+import com.example.scrollbooker.feature.user.data.repository.UserRepositoryImpl
+import com.example.scrollbooker.feature.user.domain.repository.UserRepository
+import com.example.scrollbooker.feature.user.domain.useCase.GetUserInfoUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit

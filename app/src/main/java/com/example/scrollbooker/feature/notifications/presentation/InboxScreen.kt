@@ -1,4 +1,6 @@
 package com.example.scrollbooker.feature.notifications.presentation
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.paging.LoadState
@@ -31,8 +33,12 @@ fun InboxScreen(viewModel: InboxViewModel) {
                 ErrorScreen()
             }
             is LoadState.NotLoading -> {
+                Timber.tag("Notifications").e("Notifications count: ${notifications.itemCount}")
                 if(notifications.itemCount == 0) {
-                    EmptyScreen()
+                    EmptyScreen(
+                        message = "Nu ai nici o notificare",
+                        icon = Icons.Outlined.Notifications
+                    )
                 } else {
                     NotificationsList(notifications)
                 }

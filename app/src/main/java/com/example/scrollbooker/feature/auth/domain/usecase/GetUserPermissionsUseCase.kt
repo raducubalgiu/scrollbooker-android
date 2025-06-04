@@ -1,5 +1,5 @@
 package com.example.scrollbooker.feature.auth.domain.usecase
-import com.example.scrollbooker.feature.auth.data.remote.UserApiService
+import com.example.scrollbooker.feature.user.data.remote.UserApiService
 import timber.log.Timber
 import javax.inject.Inject
 

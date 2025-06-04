@@ -4,9 +4,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.scrollbooker.core.snackbar.SnackbarManager
-import com.example.scrollbooker.feature.auth.domain.model.User
-import com.example.scrollbooker.feature.auth.domain.usecase.GetUserInfoUseCase
+import com.example.scrollbooker.feature.user.domain.model.User
+import com.example.scrollbooker.feature.user.domain.useCase.GetUserInfoUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -60,6 +59,6 @@ class ProfileSharedViewModel @Inject constructor(
 
     init {
         Timber.tag("Init").e("-> Profile - View Model Created")
-        //loadUser()
+        loadUser()
     }
 }

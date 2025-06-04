@@ -1,11 +1,8 @@
 package com.example.scrollbooker.feature.profile.presentation
-
-import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -15,20 +12,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.BottomSheet
 import com.example.scrollbooker.components.core.Layout
 import com.example.scrollbooker.components.list.ItemList
 import com.example.scrollbooker.core.nav.routes.MainRoute
-import com.example.scrollbooker.feature.auth.presentation.AuthViewModel
 import com.example.scrollbooker.feature.profile.presentation.components.ProfileHeader
 import com.example.scrollbooker.feature.profile.presentation.components.ProfileTabs
-import com.example.scrollbooker.ui.theme.Background
+import com.example.scrollbooker.ui.theme.OnBackground
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
     viewModel: ProfileSharedViewModel,
@@ -73,6 +66,12 @@ fun ProfileScreen(
 
     Layout {
         ProfileHeader(onOpenBottomSheet = { showBottomSheet = true })
+        Column(modifier = Modifier
+            .fillMaxWidth(),
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(text = viewModel.user?.username ?: "", color = OnBackground)
+        }
         Button(onClick = { navController.navigate(MainRoute.EditProfile.route) }) {
             Text("Edit Profile")
         }

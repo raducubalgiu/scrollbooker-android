@@ -7,7 +7,7 @@ import com.example.scrollbooker.feature.auth.domain.model.LoginRequest
 import com.example.scrollbooker.feature.auth.domain.model.LoginResponse
 import com.example.scrollbooker.feature.auth.domain.repository.AuthRepository
 import com.example.scrollbooker.feature.auth.domain.usecase.GetLoginUseCase
-import com.example.scrollbooker.feature.auth.domain.usecase.GetUserInfoUseCase
+import com.example.scrollbooker.feature.user.domain.useCase.GetUserInfoUseCase
 import com.example.scrollbooker.feature.auth.domain.usecase.GetUserPermissionsUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import kotlinx.coroutines.flow.firstOrNull

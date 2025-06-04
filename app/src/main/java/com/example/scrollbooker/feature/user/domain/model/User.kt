@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.auth.domain.model
+package com.example.scrollbooker.feature.user.domain.model
 
 data class User(
     val id: Int,

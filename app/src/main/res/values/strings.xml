@@ -27,6 +27,7 @@
     <string name="follow">Urmărește</string>
     <string name="following">Urmărești</string>
     <string name="startedFollowingYou">a început să te urmărească</string>
+    <string name="sentYouAnEmploymentRequest">ți-a trimis o cerere de angajare</string>
     <string name="likedYourPost">ți-a apreciat postarea</string>
     <string name="settings">Setări</string>
     <string name="privacy">Confidențialitate</string>
@@ -61,4 +62,5 @@
     <string name="closed">Închis</string>
     <string name="youSuccesfullyEditedSchedules">Ți-ai editat cu succes programul</string>
     <string name="createNewProduct">Creează un produs nou</string>
+    <string name="seeMore">Vezi mai mult</string>
 </resources>

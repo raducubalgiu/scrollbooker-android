@@ -1,5 +1,6 @@
-package com.example.scrollbooker.feature.auth.data.remote
+package com.example.scrollbooker.feature.user.data.remote
 
+import com.example.scrollbooker.feature.auth.data.remote.PermissionDto
 import retrofit2.http.GET
 
 interface UserApiService {

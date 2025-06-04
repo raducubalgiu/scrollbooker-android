@@ -30,10 +30,18 @@ fun NotificationsList(notifications: LazyPagingItems<Notification>) {
                 when(it.type) {
                     "follow" -> {
                         NotificationItem(
-                            fullName = it.sender.username.toString(),
+                            fullName = it.sender.fullName.toString(),
                             message = stringResource(id = R.string.startedFollowingYou),
                             avatar = it.sender.avatar.toString(),
-                            trailingContent = null
+                            actionTitle = stringResource(R.string.follow)
+                        )
+                    }
+                    "employment_request" -> {
+                        NotificationItem(
+                            fullName = it.sender.fullName.toString(),
+                            message = stringResource(R.string.sentYouAnEmploymentRequest),
+                            avatar = it.sender.avatar.toString(),
+                            actionTitle = stringResource(R.string.seeMore)
                         )
                     }
                     else -> Unit

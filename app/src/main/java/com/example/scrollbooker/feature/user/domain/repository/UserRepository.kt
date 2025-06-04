@@ -1,7 +1,7 @@
-package com.example.scrollbooker.feature.auth.domain.repository
+package com.example.scrollbooker.feature.user.domain.repository
 
 import com.example.scrollbooker.feature.auth.domain.model.Permission
-import com.example.scrollbooker.feature.auth.domain.model.User
+import com.example.scrollbooker.feature.user.domain.model.User
 
 interface UserRepository {
     suspend fun getUserInfo(): User

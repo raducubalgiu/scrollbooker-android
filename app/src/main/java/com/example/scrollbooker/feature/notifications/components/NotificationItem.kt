@@ -21,9 +21,10 @@ fun NotificationItem(
     fullName: String,
     message: String,
     avatar: String,
-    trailingContent: (@Composable () -> Unit)? = null,
-    trailingTitle: String = "",
-    onTrailingClick: (() -> Unit)? = null
+    actionModifier: Modifier = Modifier,
+    showAction: Boolean = true,
+    actionTitle: String = "",
+    onActionClick: (() -> Unit)? = null
 ) {
     ListItem(modifier = modifier
         .fillMaxWidth()
@@ -31,7 +32,7 @@ fun NotificationItem(
         .then(modifier),
         headlineContent = {
             Text(
-                modifier = Modifier.padding(SpacingXXS),
+                modifier = Modifier.padding(bottom = SpacingXXS),
                 style = titleMedium,
                 color = OnBackground,
                 text = fullName
@@ -44,13 +45,12 @@ fun NotificationItem(
             )
         },
         trailingContent = {
-            if(trailingContent != null) {
+            if(showAction) {
                 MainButtonSmall(
-                    title = trailingTitle,
-                    onClick = { onTrailingClick }
+                    modifier = actionModifier,
+                    title = actionTitle,
+                    onClick = { onActionClick }
                 )
-            } else {
-                trailingContent?.invoke()
             }
         },
         leadingContent = {
