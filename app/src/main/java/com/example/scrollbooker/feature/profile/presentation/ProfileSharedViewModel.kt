@@ -8,6 +8,7 @@ import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.feature.user.domain.model.User
 import com.example.scrollbooker.feature.user.domain.useCase.GetUserInfoUseCase
 import com.example.scrollbooker.feature.user.domain.useCase.UpdateFullNameUseCase
+import com.example.scrollbooker.feature.user.domain.useCase.UpdateUsernameUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -22,7 +23,8 @@ import kotlin.onSuccess
 class ProfileSharedViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
     private val getUserInfoUseCase: GetUserInfoUseCase,
-    private val updateFullNameUseCase: UpdateFullNameUseCase
+    private val updateFullNameUseCase: UpdateFullNameUseCase,
+    private val updateUsernameUseCase: UpdateUsernameUseCase
 ): ViewModel() {
 
     var user by mutableStateOf<User?>(null)
@@ -64,13 +66,27 @@ class ProfileSharedViewModel @Inject constructor(
                 }
                 .onFailure { error ->
                     Timber.tag("EditProfile").e(error, "ERROR: on Edit FullName User Data")
-                    _editState.value = FeatureState.Error(error)
+                    _editState.value = FeatureState.Error(error = null)
                 }
         }
     }
 
     fun updateUsername(newUsername: String) {
-        user = user?.copy(username = newUsername)
+        viewModelScope.launch {
+            _editState.value = FeatureState.Loading
+            delay(500)
+
+            updateUsernameUseCase(newUsername)
+                .onSuccess {
+                    user = user?.copy(username = newUsername)
+                    _editState.value = FeatureState.Success(Unit)
+                    isSaved = true
+                }
+                .onFailure { error ->
+                    Timber.tag("EditProfile").e(error, "ERROR: on Edit Username User Data")
+                    _editState.value = FeatureState.Error(error = null)
+                }
+        }
     }
 
     fun updateBio(newBio: String) {

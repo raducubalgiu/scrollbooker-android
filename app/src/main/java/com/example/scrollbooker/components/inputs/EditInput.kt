@@ -36,8 +36,8 @@ fun EditInput(
     minLines: Int = 1,
     maxLines: Int = 1,
     isError: Boolean = false,
-    enabled: Boolean = true,
-    leftIcon: ImageVector? = null
+    isEnabled: Boolean = true,
+    leadingIcon: (@Composable () -> Unit)? = null
 ) {
     TextField(
         modifier = Modifier
@@ -45,22 +45,16 @@ fun EditInput(
             .then(modifier),
         value = value,
         onValueChange = onValueChange,
-        leadingIcon = {
-            if(leftIcon != null) {
-                Icon(
-                    imageVector = leftIcon,
-                    contentDescription = null
-                )
-            } else null },
+        leadingIcon = leadingIcon,
         trailingIcon = {
             Column(
                 modifier = Modifier
                     .size(20.dp)
                     .clip(CircleShape)
                     .background(Divider)
-                    .clickable(onClick = { onValueChange("") }),
+                    .clickable(onClick = { if(isEnabled) onValueChange("") }),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.Center,
             ) {
                 Icon(
                     modifier = Modifier.size(15.dp),
@@ -85,11 +79,12 @@ fun EditInput(
             focusedLabelColor = if(isError) Error.copy(alpha = 0.5f) else Divider,
             unfocusedLabelColor = Color.Transparent,
             focusedTextColor = OnBackground,
-            unfocusedTextColor = OnBackground
+            unfocusedTextColor = OnBackground,
+            disabledContainerColor = Color.Transparent
         ),
         singleLine = singleLine,
         minLines = minLines,
         maxLines = maxLines,
-        enabled = enabled
+        enabled = isEnabled
     )
 }

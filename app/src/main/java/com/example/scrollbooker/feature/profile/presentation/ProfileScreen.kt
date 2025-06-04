@@ -1,7 +1,9 @@
 package com.example.scrollbooker.feature.profile.presentation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,6 +20,7 @@ import com.example.scrollbooker.components.BottomSheet
 import com.example.scrollbooker.components.core.Layout
 import com.example.scrollbooker.components.list.ItemList
 import com.example.scrollbooker.core.nav.routes.MainRoute
+import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.feature.profile.presentation.components.ProfileHeader
 import com.example.scrollbooker.feature.profile.presentation.components.ProfileTabs
 import com.example.scrollbooker.ui.theme.OnBackground
@@ -74,6 +77,10 @@ fun ProfileScreen(
         }
         Button(onClick = { navController.navigate(MainRoute.EditProfile.route) }) {
             Text("Edit Profile")
+        }
+        Spacer(Modifier.height(BasePadding))
+        Button(onClick = { viewModel.logout() }) {
+            Text("Logout")
         }
         ProfileTabs()
     }

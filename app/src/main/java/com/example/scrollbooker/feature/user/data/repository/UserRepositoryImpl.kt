@@ -6,6 +6,7 @@ import com.example.scrollbooker.feature.user.data.mappers.toDomain
 import com.example.scrollbooker.feature.user.data.remote.UserApiService
 import com.example.scrollbooker.feature.auth.domain.model.Permission
 import com.example.scrollbooker.feature.user.domain.model.UpdateFullNameRequest
+import com.example.scrollbooker.feature.user.domain.model.UpdateUsernameRequest
 import com.example.scrollbooker.feature.user.domain.model.User
 import com.example.scrollbooker.feature.user.domain.repository.UserRepository
 import javax.inject.Inject
@@ -25,5 +26,9 @@ class UserRepositoryImpl @Inject constructor(
         return userApiService.updateUserFullName(UpdateFullNameRequest(
             fullname = fullName
         ))
+    }
+
+    override suspend fun updateUsername(username: String) {
+        return userApiService.updateUsername(UpdateUsernameRequest(username))
     }
 }

@@ -3,7 +3,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AlternateEmail
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,6 +31,13 @@ fun EditUsernameScreen(
     val isLoading = state == FeatureState.Loading
     val isEnabled = isLoading || newUsername != viewModel.user?.username
 
+    if(viewModel.isSaved) {
+        LaunchedEffect(state) {
+            onBack()
+            viewModel.isSaved = false
+        }
+    }
+
     Layout(noPadding = true) {
         HeaderEdit(
             onBack = onBack,
@@ -45,7 +54,12 @@ fun EditUsernameScreen(
                 value = newUsername,
                 onValueChange = { newUsername = it },
                 placeholder = stringResource(R.string.username),
-                leftIcon = Icons.Default.AlternateEmail
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.AlternateEmail,
+                        contentDescription = null
+                    )
+                }
             )
         }
     }

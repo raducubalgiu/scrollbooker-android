@@ -7,4 +7,5 @@ interface UserRepository {
     suspend fun getUserInfo(): User
     suspend fun getUserPermissions(): List<Permission>
     suspend fun updateFullName(fullName: String)
+    suspend fun updateUsername(username: String)
 }

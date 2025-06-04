@@ -6,3 +6,9 @@ import kotlinx.serialization.Serializable
 data class UpdateFullNameRequest(
     val fullname: String
 )
+
+@Serializable
+data class UpdateUsernameRequest(
+    val username: String
+)
+

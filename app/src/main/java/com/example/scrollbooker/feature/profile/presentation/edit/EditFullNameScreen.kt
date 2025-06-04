@@ -27,6 +27,7 @@ fun EditFullNameScreen(
     var newFullName by rememberSaveable { mutableStateOf(viewModel.user?.fullName ?: "") }
     val state = viewModel.editState.collectAsState().value
     val isLoading = state == FeatureState.Loading
+    val isError = state == FeatureState.Error(error = null)
     val isEnabled = isLoading || newFullName != viewModel.user?.fullName
 
     if(viewModel.isSaved) {
@@ -51,7 +52,9 @@ fun EditFullNameScreen(
             EditInput(
                 value = newFullName,
                 onValueChange = { newFullName = it },
-                placeholder = stringResource(R.string.yourName)
+                placeholder = stringResource(R.string.yourName),
+                isError = isError,
+                isEnabled = !isLoading
             )
         }
     }

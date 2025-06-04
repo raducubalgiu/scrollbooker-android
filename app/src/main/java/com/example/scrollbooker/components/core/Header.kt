@@ -35,7 +35,7 @@ fun Header(
     ) {
         Box(
             modifier = Modifier
-                .size(40.dp)
+                .size(50.dp)
                 .clickable(
                     onClick = {
                         if(onBack != null) {
@@ -65,7 +65,7 @@ fun Header(
                 )
             }
         }
-        Box(Modifier.size(40.dp)) {
+        Box(Modifier.size(50.dp)) {
             actions
         }
     }
