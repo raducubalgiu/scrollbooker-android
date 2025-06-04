@@ -1,7 +1,7 @@
 package com.example.scrollbooker.core.nav.navigators
 
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.scrollbooker.core.nav.routes.MainRoute
@@ -16,7 +16,7 @@ import com.example.scrollbooker.feature.products.presentation.ProductsScreen
 import com.example.scrollbooker.feature.myBusiness.presentation.schedules.SchedulesScreen
 import com.example.scrollbooker.feature.myBusiness.presentation.services.ServicesScreen
 
-fun NavGraphBuilder.myBusinessGraph(navController: NavController) {
+fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
     navigation(
         route = MainRoute.MyBusinessNavigator.route,
         startDestination = MainRoute.MyBusiness.route,
@@ -35,38 +35,38 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavController) {
             exitTransition = slideOutToLeft(),
             popEnterTransition = slideInFromLeft(),
             popExitTransition = slideOutToRight()
-        ) { MyBusinessScreen(navController = navController) }
+        ) { MyBusinessScreen() }
 
-        composable(
-            MainRoute.Services.route,
-            enterTransition = slideInFromRight(),
-            exitTransition = slideOutToLeft(),
-            popEnterTransition = slideInFromLeft(),
-            popExitTransition = slideOutToRight()
-        ) { ServicesScreen(navController = navController) }
-
-        composable(
-            MainRoute.Products.route,
-            enterTransition = slideInFromRight(),
-            exitTransition = slideOutToLeft(),
-            popEnterTransition = slideInFromLeft(),
-            popExitTransition = slideOutToRight()
-        ) { ProductsScreen(navController = navController, userId = 3) }
-
-        composable(
-            MainRoute.AddProduct.route,
-            enterTransition = slideInFromRight(),
-            exitTransition = slideOutToLeft(),
-            popEnterTransition = slideInFromLeft(),
-            popExitTransition = slideOutToRight()
-        ) { AddProductScreen(navController = navController) }
-
-        composable(
-            MainRoute.Schedules.route,
-            enterTransition = slideInFromRight(),
-            exitTransition = slideOutToLeft(),
-            popEnterTransition = slideInFromLeft(),
-            popExitTransition = slideOutToRight()
-        ) { SchedulesScreen(navController = navController) }
+//        composable(
+//            MainRoute.Services.route,
+//            enterTransition = slideInFromRight(),
+//            exitTransition = slideOutToLeft(),
+//            popEnterTransition = slideInFromLeft(),
+//            popExitTransition = slideOutToRight()
+//        ) { ServicesScreen(navController = navController) }
+//
+//        composable(
+//            MainRoute.Products.route,
+//            enterTransition = slideInFromRight(),
+//            exitTransition = slideOutToLeft(),
+//            popEnterTransition = slideInFromLeft(),
+//            popExitTransition = slideOutToRight()
+//        ) { ProductsScreen(navController = navController, userId = 3) }
+//
+//        composable(
+//            MainRoute.AddProduct.route,
+//            enterTransition = slideInFromRight(),
+//            exitTransition = slideOutToLeft(),
+//            popEnterTransition = slideInFromLeft(),
+//            popExitTransition = slideOutToRight()
+//        ) { AddProductScreen(navController = navController) }
+//
+//        composable(
+//            MainRoute.Schedules.route,
+//            enterTransition = slideInFromRight(),
+//            exitTransition = slideOutToLeft(),
+//            popEnterTransition = slideInFromLeft(),
+//            popExitTransition = slideOutToRight()
+//        ) { SchedulesScreen(navController = navController) }
     }
 }

@@ -37,7 +37,7 @@ fun EditBioScreen(
         }
     }
 
-    Layout(noPadding = true) {
+    Layout {
         HeaderEdit(
             onBack = onBack,
             title = stringResource(R.string.biography),

@@ -23,7 +23,7 @@ fun EditProfileScreen(
     viewModel: ProfileSharedViewModel
 ) {
 
-    Layout(noPadding = true) {
+    Layout {
         Header(
             modifier = Modifier.padding(horizontal = BasePadding),
             onBack = onBack,

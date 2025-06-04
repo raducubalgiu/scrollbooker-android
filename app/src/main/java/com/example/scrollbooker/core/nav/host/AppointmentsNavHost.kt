@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.scrollbooker.core.nav.routes.MainRoute
+import com.example.scrollbooker.feature.appointments.presentation.AppointmentDetailsScreen
 import com.example.scrollbooker.feature.appointments.presentation.AppointmentsScreen
 import com.example.scrollbooker.feature.appointments.presentation.AppointmentsViewModel
 
@@ -17,9 +18,13 @@ fun AppointmentsNavHost(navController: NavHostController) {
     ) {
         composable(MainRoute.Appointments.route) { backStackEntry ->
             val viewModel = hiltViewModel<AppointmentsViewModel>(backStackEntry)
-            AppointmentsScreen(
-                viewModel = viewModel
-            )
+            AppointmentsScreen(viewModel)
+        }
+
+        composable(MainRoute.AppointmentDetails.route) { backStackEntry ->
+            val viewModel = hiltViewModel<AppointmentsViewModel>(backStackEntry)
+
+            AppointmentDetailsScreen(viewModel)
         }
     }
 }

@@ -6,6 +6,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.scrollbooker.core.nav.navigators.myBusinessGraph
+import com.example.scrollbooker.core.nav.navigators.settingsGraph
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.nav.transitions.slideInFromLeft
 import com.example.scrollbooker.core.nav.transitions.slideInFromRight
@@ -29,7 +31,7 @@ fun ProfileNavHost(navController: NavHostController) {
             val viewModel = hiltViewModel<ProfileSharedViewModel>(backStackEntry)
             ProfileScreen(
                 viewModel = viewModel,
-                navController = navController
+                onNavigate = { navController.navigate(it) }
             )
         }
         composable(MainRoute.EditProfile.route,
@@ -119,5 +121,8 @@ fun ProfileNavHost(navController: NavHostController) {
                 onBack= { navController.popBackStack() }
             )
         }
+
+        myBusinessGraph(navController)
+        settingsGraph(navController)
     }
 }

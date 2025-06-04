@@ -14,7 +14,7 @@ fun EditGenderScreen(
     viewModel: ProfileSharedViewModel,
     onBack: () -> Unit
 ) {
-    Layout(noPadding = true) {
+    Layout {
         Header(
             title = stringResource(R.string.gender),
             onBack = onBack,

@@ -19,7 +19,7 @@ fun InboxScreen(viewModel: InboxViewModel) {
     val notifications = viewModel.notifications.collectAsLazyPagingItems()
     val refreshState = notifications.loadState.refresh
 
-    Layout(noPadding = true) {
+    Layout {
         Header(
             title = stringResource(id = R.string.inbox),
             enableBack = false

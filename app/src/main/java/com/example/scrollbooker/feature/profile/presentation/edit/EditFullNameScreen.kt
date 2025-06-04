@@ -37,7 +37,7 @@ fun EditFullNameScreen(
         }
     }
 
-    Layout(noPadding = true) {
+    Layout {
         HeaderEdit(
             onBack = onBack,
             title = stringResource(R.string.name),

@@ -14,7 +14,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavHostController
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.BottomSheet
 import com.example.scrollbooker.components.core.Layout
@@ -28,7 +27,7 @@ import com.example.scrollbooker.ui.theme.OnBackground
 @Composable
 fun ProfileScreen(
     viewModel: ProfileSharedViewModel,
-    navController: NavHostController
+    onNavigate: (String) -> Unit
 ) {
     var showBottomSheet by remember { mutableStateOf(false) }
 
@@ -43,7 +42,7 @@ fun ProfileScreen(
                 displayRightIcon = false,
                 onClick = {
                     showBottomSheet = false
-                    //navController.navigate("calendar")
+                    onNavigate(MainRoute.Calendar.route)
                 }
             )
             ItemList(
@@ -52,7 +51,7 @@ fun ProfileScreen(
                 displayRightIcon = false,
                 onClick = {
                     showBottomSheet = false
-                    //navController.navigate("myBusiness")
+                    onNavigate(MainRoute.MyBusiness.route)
                 }
             )
             ItemList(
@@ -61,7 +60,7 @@ fun ProfileScreen(
                 displayRightIcon = false,
                 onClick = {
                     showBottomSheet = false
-                    //navController.navigate("settings")
+                    onNavigate(MainRoute.Settings.route)
                 }
             )
         }
@@ -75,7 +74,7 @@ fun ProfileScreen(
         ) {
             Text(text = viewModel.user?.username ?: "", color = OnBackground)
         }
-        Button(onClick = { navController.navigate(MainRoute.EditProfile.route) }) {
+        Button(onClick = { onNavigate(MainRoute.EditProfile.route) }) {
             Text("Edit Profile")
         }
         Spacer(Modifier.height(BasePadding))

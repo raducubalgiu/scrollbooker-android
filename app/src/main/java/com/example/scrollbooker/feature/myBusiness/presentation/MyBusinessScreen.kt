@@ -10,34 +10,34 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.Header
 import com.example.scrollbooker.components.core.Layout
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 
 @Composable
-fun MyBusinessScreen(navController: NavController) {
-    Layout {
-//        Header(
-//            navController = navController,
-//            title = stringResource(R.string.myBusiness),
-//        )
-
+fun MyBusinessScreen() {
+    Layout(
+        header = {
+            Header(
+                title = stringResource(R.string.myBusiness),
+            )
+        }
+    ) {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Button(onClick = { navController.navigate("Services") }) {
+            Button(onClick = {  }) {
                 Text(text = "Go To Services")
             }
             Spacer(Modifier.height(BasePadding))
-            Button(onClick = { navController.navigate("Products") }) {
+            Button(onClick = {  }) {
                 Text(text = "Go To Products")
             }
             Spacer(Modifier.height(BasePadding))
-            Button(onClick = { navController.navigate("Schedules") }) {
+            Button(onClick = {  }) {
                 Text(text = "Go To Schedules")
             }
         }
