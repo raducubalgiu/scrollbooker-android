@@ -1,6 +1,5 @@
 package com.example.scrollbooker.feature.appointments.presentation.components
 
-import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.SuggestionChipDefaults
@@ -22,16 +20,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.Avatar
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
-import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.feature.appointments.domain.model.Appointment
 import com.example.scrollbooker.ui.theme.Error
@@ -39,8 +34,6 @@ import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
-import com.example.scrollbooker.ui.theme.ScrollBookerTheme
-import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.labelLarge
 import com.example.scrollbooker.ui.theme.titleSmall
@@ -71,7 +64,7 @@ fun AppointmentCard(
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Avatar(url = appointment.user.avatar)
+                    Avatar(url = appointment.user.avatar ?: "")
                     Spacer(modifier = Modifier.width(BasePadding))
 
                     Column {
@@ -82,26 +75,11 @@ fun AppointmentCard(
                                 fontWeight = FontWeight.ExtraBold,
                                 color = OnBackground
                             )
-                            if(!appointment.isCustomer) {
-                                Spacer(Modifier.width(BasePadding))
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_star),
-                                    contentDescription = null,
-                                    tint = Primary
-                                )
-                                Spacer(Modifier.width(SpacingXS))
-                                Text(
-                                    style = bodyLarge,
-                                    text = appointment.user.ratingsAverage.toString(),
-                                    fontWeight = FontWeight.ExtraBold,
-                                    color = OnBackground
-                                )
-                            }
                         }
                         Spacer(Modifier.height(SpacingXXS))
                         Text(
                             style = labelLarge,
-                            text = supportingText,
+                            text = supportingText ?: "",
                             fontWeight = FontWeight.Normal,
                             color = OnSurfaceBG
                         )
@@ -163,14 +141,14 @@ fun AppointmentCard(
     HorizontalDivider()
 }
 
-@Composable
-@Preview(name = "Light", showBackground = true)
-@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
-fun AppointmentCardPreview() {
-    ScrollBookerTheme() {
-        AppointmentCard(
-            appointment = TODO(),
-            onAppointmentDetails = {}
-        )
-    }
-}
+//@Composable
+//@Preview(name = "Light", showBackground = true)
+//@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+//fun AppointmentCardPreview() {
+//    ScrollBookerTheme() {
+//        AppointmentCard(
+//            appointment = TODO(),
+//            onAppointmentDetails = {}
+//        )
+//    }
+//}

@@ -19,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
+import com.example.scrollbooker.feature.appointments.presentation.AppointmentsViewModel
 import com.example.scrollbooker.feature.appointments.presentation.tabs.business.AppointmentsBusinessTab
 import com.example.scrollbooker.feature.appointments.presentation.tabs.client.AppointmentsClientTab
 import com.example.scrollbooker.ui.theme.Background
@@ -28,7 +29,7 @@ import com.example.scrollbooker.ui.theme.bodyLarge
 import kotlinx.coroutines.launch
 
 @Composable
-fun AppointmentsTabs() {
+fun AppointmentsTabs(viewModel: AppointmentsViewModel) {
     val pagerState = rememberPagerState(initialPage = 0) { 2 }
     val selectedTabIndex = pagerState.currentPage
     val tabs = listOf(stringResource(id = R.string.asEmployee), stringResource(id = R.string.asClient))

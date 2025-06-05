@@ -9,6 +9,6 @@ class GetProductsUseCase(
     private val repository: ProductRepository
 ) {
     operator fun invoke(userId: Int): Flow<PagingData<Product>> {
-        return repository.getProducts(userId)
+        return repository.getUserProducts(userId)
     }
 }

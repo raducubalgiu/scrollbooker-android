@@ -1,14 +1,15 @@
 package com.example.scrollbooker.feature.appointments.data.mappers
 
 import com.example.scrollbooker.feature.appointments.data.remote.AppointmentDto
-import com.example.scrollbooker.feature.appointments.data.remote.ProductDto
-import com.example.scrollbooker.feature.appointments.data.remote.UserAppointmentDto
+import com.example.scrollbooker.feature.appointments.data.remote.AppointmentProductDto
+import com.example.scrollbooker.feature.appointments.data.remote.AppointmentUserDto
 import com.example.scrollbooker.feature.appointments.domain.model.Appointment
-import com.example.scrollbooker.feature.appointments.domain.model.Product
-import com.example.scrollbooker.feature.appointments.domain.model.UserAppointment
+import com.example.scrollbooker.feature.appointments.domain.model.AppointmentProduct
+import com.example.scrollbooker.feature.appointments.domain.model.AppointmentUser
 
 fun AppointmentDto.toDomain(): Appointment {
     return Appointment(
+        id = id,
         startDate = startDate,
         endDate = endDate,
         channel = channel,
@@ -19,8 +20,8 @@ fun AppointmentDto.toDomain(): Appointment {
     )
 }
 
-fun ProductDto.toDomain(): Product {
-    return Product(
+fun AppointmentProductDto.toDomain(): AppointmentProduct {
+    return AppointmentProduct(
         id = id,
         name = name,
         price = price,
@@ -30,13 +31,12 @@ fun ProductDto.toDomain(): Product {
     )
 }
 
-fun UserAppointmentDto.toDomain(): UserAppointment {
-    return UserAppointment(
+fun AppointmentUserDto.toDomain(): AppointmentUser {
+    return AppointmentUser(
         id = id,
         avatar = avatar,
         fullName = fullName,
         username = username,
-        ratingsAverage = ratingsAverage,
         profession = profession,
     )
 }

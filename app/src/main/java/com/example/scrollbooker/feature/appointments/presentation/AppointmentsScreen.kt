@@ -11,19 +11,11 @@ import com.example.scrollbooker.feature.appointments.presentation.tabs.client.Ap
 fun AppointmentsScreen(
     viewModel: AppointmentsViewModel
 ) {
-    val isEmployee = true
-    val isBusiness = false
-    val isCustomer = false
-
     Layout(
         headerTitle = stringResource(id = R.string.appointments),
         enableBack = false,
         enablePadding = false
     ) {
-        when {
-            isEmployee -> AppointmentsTabs()
-            isBusiness -> AppointmentsBusinessTab()
-            isCustomer -> AppointmentsClientTab()
-        }
+        AppointmentsTabs(viewModel=viewModel)
     }
 }

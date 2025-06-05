@@ -1,17 +1,18 @@
 package com.example.scrollbooker.feature.appointments.domain.model
 
 data class Appointment(
+    val id: Int,
     val startDate: String,
     val endDate: String,
     val channel: String,
     val status: String,
-    val product: Product,
-    val user: UserAppointment,
+    val product: AppointmentProduct,
+    val user: AppointmentUser,
     val isCustomer: Boolean
 )
 
-data class Product(
-    val id: Int,
+data class AppointmentProduct(
+    val id: Int?,
     val name: String,
     val price: Int,
     val priceWithDiscount: Int,
@@ -19,11 +20,10 @@ data class Product(
     val currency: String
 )
 
-data class UserAppointment(
-    val id: Int,
-    val avatar: String,
+data class AppointmentUser(
+    val id: Int?,
+    val avatar: String?,
     val fullName: String,
-    val username: String,
-    val ratingsAverage: Double,
-    val profession: String
+    val username: String?,
+    val profession: String?
 )

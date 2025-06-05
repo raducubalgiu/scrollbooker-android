@@ -13,7 +13,7 @@ import javax.inject.Inject
 class ProductRepositoryImpl @Inject constructor(
     private val api: ProductsApiService
 ): ProductRepository {
-    override fun getProducts(userId: Int): Flow<PagingData<Product>> {
+    override fun getUserProducts(userId: Int): Flow<PagingData<Product>> {
         return Pager(
             config = PagingConfig(
                 pageSize = 10,

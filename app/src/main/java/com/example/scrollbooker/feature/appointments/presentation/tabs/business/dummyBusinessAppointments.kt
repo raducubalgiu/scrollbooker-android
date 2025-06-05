@@ -1,16 +1,17 @@
 package com.example.scrollbooker.feature.appointments.presentation.tabs.business
 
 import com.example.scrollbooker.feature.appointments.domain.model.Appointment
-import com.example.scrollbooker.feature.appointments.domain.model.Product
-import com.example.scrollbooker.feature.appointments.domain.model.UserAppointment
+import com.example.scrollbooker.feature.appointments.domain.model.AppointmentProduct
+import com.example.scrollbooker.feature.appointments.domain.model.AppointmentUser
 
 val dummyBusinessAppointments = listOf(
     Appointment(
+        id = 1,
         startDate = "2025-05-21T13:00:00",
         endDate = "2025-05-21T14:00:00",
         channel = "scroll_booker",
         status = "finished",
-        product = Product(
+        product = AppointmentProduct(
             id = 1,
             name = "ITP",
             price = 150,
@@ -18,22 +19,22 @@ val dummyBusinessAppointments = listOf(
             discount = 0,
             currency = "RON"
         ),
-        user = UserAppointment(
+        user = AppointmentUser(
             id = 1,
             avatar = "",
             fullName = "Radu Balgiu",
             username = "radu_balgiu",
-            ratingsAverage = 4.5,
             profession = "Creator"
         ),
         isCustomer = true
     ),
     Appointment(
+        id = 2,
         startDate = "2025-05-21T13:00:00",
         endDate = "2025-05-21T14:00:00",
         channel = "scroll_booker",
         status = "in_progress",
-        product = Product(
+        product = AppointmentProduct(
             id = 1,
             name = "Tuns Simplu",
             price = 100,
@@ -41,22 +42,22 @@ val dummyBusinessAppointments = listOf(
             discount = 0,
             currency = "RON"
         ),
-        user = UserAppointment(
+        user = AppointmentUser(
             id = 1,
             avatar = "",
             fullName = "Cristiano Ronaldo",
             username = "cristiano",
-            ratingsAverage = 4.5,
             profession = "Creator"
         ),
         isCustomer = true
     ),
     Appointment(
+        id = 3,
         startDate = "2025-05-22T09:00:00",
         endDate = "2025-05-22T10:00:00",
         channel = "own_client",
         status = "canceled",
-        product = Product(
+        product = AppointmentProduct(
             id = 1,
             name = "Consultatie Stomatologie",
             price = 200,
@@ -64,12 +65,11 @@ val dummyBusinessAppointments = listOf(
             discount = 0,
             currency = "RON"
         ),
-        user = UserAppointment(
+        user = AppointmentUser(
             id = 1,
             avatar = "",
             fullName = "Lionel Messi",
             username = "leo_messi",
-            ratingsAverage = 4.2,
             profession = "Creator"
         ),
         isCustomer = true

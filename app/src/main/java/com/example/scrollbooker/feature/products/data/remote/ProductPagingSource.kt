@@ -4,7 +4,6 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.scrollbooker.feature.products.data.mappers.toDomain
 import com.example.scrollbooker.feature.products.domain.model.Product
-import kotlinx.coroutines.delay
 import timber.log.Timber
 import java.lang.Exception
 
@@ -27,8 +26,6 @@ class ProductPagingSource(
         return try {
             val response = api.getUserProducts(userId, page, limit)
             val products = response.results.map { it.toDomain() }
-
-            Timber.tag("Load Products").e("Product Page: $page, Results Size: ${products.size}")
 
             val totalLoaded = page * limit
             val isLastPage = totalLoaded >= response.count

@@ -2,6 +2,8 @@ package com.example.scrollbooker.feature.appointments.data.remote
 import com.google.gson.annotations.SerializedName
 
 data class AppointmentDto(
+    val id: Int,
+
     @SerializedName("start_date")
     val startDate: String,
 
@@ -10,15 +12,15 @@ data class AppointmentDto(
 
     val channel: String,
     val status: String,
-    val product: ProductDto,
-    val user: UserAppointmentDto,
+    val product: AppointmentProductDto,
+    val user: AppointmentUserDto,
 
     @SerializedName("is_customer")
     val isCustomer: Boolean
 )
 
-data class ProductDto(
-    val id: Int,
+data class AppointmentProductDto(
+    val id: Int?,
     val name: String,
     val price: Int,
 
@@ -29,14 +31,10 @@ data class ProductDto(
     val currency: String
 )
 
-data class UserAppointmentDto(
-    val id: Int,
+data class AppointmentUserDto(
+    val id: Int?,
     val fullName: String,
-    val username: String,
-    val avatar: String,
-
-    @SerializedName("ratings_average")
-    val ratingsAverage: Double,
-
-    val profession: String
+    val username: String?,
+    val avatar: String?,
+    val profession: String?
 )
