@@ -1,7 +1,7 @@
 package com.example.scrollbooker.core.util
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.util.Dimens.BasePadding
@@ -21,7 +22,7 @@ import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
 
 @Composable
-fun EmptyScreen(
+fun MessageScreen(
     message: String,
     icon: ImageVector
 ) {
@@ -41,6 +42,7 @@ fun EmptyScreen(
             Spacer(Modifier.height(BasePadding))
             Text(
                 style = bodyLarge,
+                fontWeight = FontWeight.SemiBold,
                 text = message,
                 color = OnSurfaceBG,
                 textAlign = TextAlign.Center

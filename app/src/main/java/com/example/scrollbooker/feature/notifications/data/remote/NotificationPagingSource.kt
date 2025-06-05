@@ -24,7 +24,7 @@ class NotificationPagingSource(
         val limit = 10
 
         return try {
-            delay(500)
+            delay(300)
             val response = api.getUserNotifications(page, limit)
             val notifications = response.results.map { it.toDomain() }
 

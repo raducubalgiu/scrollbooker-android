@@ -12,16 +12,13 @@ import javax.inject.Inject
 class AppointmentRepositoryImpl @Inject constructor(
     private val api : AppointmentsApiService
 ): AppointmentRepository {
-    override fun getUserAppointments(
-        userId: Int,
-        asCustomer: Boolean
-    ): Flow<PagingData<Appointment>> {
+    override fun getUserAppointments(asCustomer: Boolean): Flow<PagingData<Appointment>> {
         return Pager(
             config = PagingConfig(
                 pageSize = 10,
                 prefetchDistance = 2
             ),
-            pagingSourceFactory = { AppointmentPagingSource(api, userId, asCustomer) }
+            pagingSourceFactory = { AppointmentPagingSource(api, asCustomer) }
         ).flow
     }
 

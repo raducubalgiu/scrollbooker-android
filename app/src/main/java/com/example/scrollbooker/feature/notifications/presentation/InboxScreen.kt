@@ -7,9 +7,9 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.Layout
-import com.example.scrollbooker.core.util.EmptyScreen
 import com.example.scrollbooker.core.util.ErrorScreen
 import com.example.scrollbooker.core.util.LoadingScreen
+import com.example.scrollbooker.core.util.MessageScreen
 import com.example.scrollbooker.feature.notifications.components.NotificationsList
 import timber.log.Timber
 
@@ -33,7 +33,7 @@ fun InboxScreen(viewModel: InboxViewModel) {
             is LoadState.NotLoading -> {
                 Timber.tag("Notifications").e("Notifications count: ${notifications.itemCount}")
                 if(notifications.itemCount == 0) {
-                    EmptyScreen(
+                    MessageScreen(
                         message = "Nu ai nici o notificare",
                         icon = Icons.Outlined.Notifications
                     )

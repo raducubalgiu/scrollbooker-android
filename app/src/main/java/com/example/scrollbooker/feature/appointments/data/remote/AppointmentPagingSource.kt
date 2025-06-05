@@ -4,12 +4,12 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.scrollbooker.feature.appointments.domain.model.Appointment
 import com.example.scrollbooker.feature.appointments.data.mappers.toDomain
+import kotlinx.coroutines.delay
 import timber.log.Timber
 import java.lang.Exception
 
 class AppointmentPagingSource(
     private val api: AppointmentsApiService,
-    private val userId: Int,
     private val asCustomer: Boolean
 ) : PagingSource<Int, Appointment>() {
 
@@ -25,7 +25,9 @@ class AppointmentPagingSource(
         val limit = 10
 
         return try {
-            val response = api.getUserAppointments(userId, page, limit, asCustomer)
+            delay(300)
+
+            val response = api.getUserAppointments(page, limit, asCustomer)
             val appointments = response.results.map { it.toDomain() }
 
             val totalLoaded = page * limit

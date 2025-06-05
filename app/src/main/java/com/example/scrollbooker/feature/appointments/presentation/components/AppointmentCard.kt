@@ -61,9 +61,7 @@ fun AppointmentCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Avatar(url = appointment.user.avatar ?: "")
                     Spacer(modifier = Modifier.width(BasePadding))
 
@@ -76,13 +74,15 @@ fun AppointmentCard(
                                 color = OnBackground
                             )
                         }
-                        Spacer(Modifier.height(SpacingXXS))
-                        Text(
-                            style = labelLarge,
-                            text = supportingText ?: "",
-                            fontWeight = FontWeight.Normal,
-                            color = OnSurfaceBG
-                        )
+                        if(!appointment.user.username.isNullOrEmpty()) {
+                            Spacer(Modifier.height(SpacingXXS))
+                            Text(
+                                style = labelLarge,
+                                text = supportingText ?: "",
+                                fontWeight = FontWeight.Normal,
+                                color = OnSurfaceBG
+                            )
+                        }
                     }
                 }
 
