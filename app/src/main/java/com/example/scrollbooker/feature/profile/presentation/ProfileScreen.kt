@@ -113,7 +113,7 @@ fun ProfileScreen(
                 counter = ratingsCount,
                 label = stringResource(R.string.reviews),
                 onNavigate = {
-                    if(user != null) onNavigate("${MainRoute.UserSocial.route}/${user.id}/${user.username}")
+                    if(user != null) onNavigate("${MainRoute.UserSocial.route}/${0}/${user.id}/${user.username}")
                 }
             )
             VerticalDivider()
@@ -121,7 +121,7 @@ fun ProfileScreen(
                 counter = followersCount,
                 label = stringResource(R.string.followers),
                 onNavigate = {
-                    if(user != null) onNavigate("${MainRoute.UserSocial.route}/${user.id}/${user.username}")
+                    if(user != null) onNavigate("${MainRoute.UserSocial.route}/${1}/${user.id}/${user.username}")
                 }
             )
             VerticalDivider()
@@ -129,7 +129,7 @@ fun ProfileScreen(
                 counter = followingsCount,
                 label = stringResource(R.string.following),
                 onNavigate = {
-                    if(user != null) onNavigate("${MainRoute.UserSocial.route}/${user.id}/${user.username}")
+                    if(user != null) onNavigate("${MainRoute.UserSocial.route}/${2}/${user.id}/${user.username}")
                 }
             )
         }

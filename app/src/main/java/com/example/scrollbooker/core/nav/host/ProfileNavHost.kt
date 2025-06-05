@@ -128,8 +128,9 @@ fun ProfileNavHost(navController: NavHostController) {
         }
 
         composable(
-            route = "${MainRoute.UserSocial.route}/{userId}/{username}",
+            route = "${MainRoute.UserSocial.route}/{initialPage}/{userId}/{username}",
             arguments = listOf(
+                navArgument("initialPage") { type = NavType.IntType },
                 navArgument("userId") { type = NavType.IntType },
                 navArgument("username") { type = NavType.StringType }
             ),
@@ -138,6 +139,7 @@ fun ProfileNavHost(navController: NavHostController) {
             popEnterTransition = slideInFromLeft(),
             popExitTransition = slideOutToRight()
         ) { backStackEntry ->
+            val initialPage = backStackEntry.arguments?.getInt("initialPage") ?: return@composable
             val userId = backStackEntry.arguments?.getInt("userId") ?: return@composable
             val username = backStackEntry.arguments?.getString("username") ?: return@composable
             val viewModel = hiltViewModel<UserSocialViewModel>(backStackEntry)
@@ -145,6 +147,7 @@ fun ProfileNavHost(navController: NavHostController) {
             UserSocialScreen(
                 onBack = { navController.popBackStack() },
                 viewModal = viewModel,
+                initialPage = initialPage,
                 userId = userId,
                 username = username
             )

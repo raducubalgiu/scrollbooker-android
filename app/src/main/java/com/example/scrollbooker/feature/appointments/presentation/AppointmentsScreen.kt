@@ -16,16 +16,16 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun AppointmentsScreen(viewModel: AppointmentsViewModel) {
+    val pagerState = rememberPagerState(initialPage = 0) { 2 }
+    val selectedTabIndex = pagerState.currentPage
+    val tabs = listOf(stringResource(id = R.string.asEmployee), stringResource(id = R.string.asClient))
+    val coroutineScope = rememberCoroutineScope()
+
     Layout(
         headerTitle = stringResource(id = R.string.appointments),
         enableBack = false,
         enablePadding = false
     ) {
-        val pagerState = rememberPagerState(initialPage = 0) { 2 }
-        val selectedTabIndex = pagerState.currentPage
-        val tabs = listOf(stringResource(id = R.string.asEmployee), stringResource(id = R.string.asClient))
-        val coroutineScope = rememberCoroutineScope()
-
         Column(Modifier.fillMaxSize()) {
             Tabs(tabs, selectedTabIndex, onChangeTab = {
                     coroutineScope.launch {
