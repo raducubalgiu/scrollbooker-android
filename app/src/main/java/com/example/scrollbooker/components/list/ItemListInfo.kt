@@ -14,19 +14,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.bodyMedium
+import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun ItemListInfo(
+    modifier: Modifier = Modifier,
     headLine: String,
+    headLineTextStyle: TextStyle = titleMedium,
     supportingText: String,
+    supportingTextStyle: TextStyle = bodyMedium,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
 ) {
     ListItem(
         modifier = Modifier
@@ -35,7 +39,7 @@ fun ItemListInfo(
             .then(modifier),
         headlineContent = {
             Text(
-                style = bodyMedium,
+                style = headLineTextStyle,
                 text = headLine,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -44,7 +48,7 @@ fun ItemListInfo(
         trailingContent = {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    style = bodyMedium,
+                    style = supportingTextStyle,
                     text = supportingText,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,

@@ -16,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
@@ -47,22 +46,24 @@ fun EditInput(
         onValueChange = onValueChange,
         leadingIcon = leadingIcon,
         trailingIcon = {
-            Column(
-                modifier = Modifier
-                    .size(20.dp)
-                    .clip(CircleShape)
-                    .background(Divider)
-                    .clickable(onClick = { if(isEnabled) onValueChange("") }),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-            ) {
-                Icon(
-                    modifier = Modifier.size(15.dp),
-                    painter = painterResource(R.drawable.ic_close),
-                    contentDescription = null,
-                    tint = OnPrimary,
+            if(singleLine) {
+                Column(
+                    modifier = Modifier
+                        .size(20.dp)
+                        .clip(CircleShape)
+                        .background(Divider)
+                        .clickable(onClick = { if(isEnabled) onValueChange("") }),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    Icon(
+                        modifier = Modifier.size(15.dp),
+                        painter = painterResource(R.drawable.ic_close),
+                        contentDescription = null,
+                        tint = OnPrimary,
 
-                )
+                        )
+                }
             }
         },
         label = null,

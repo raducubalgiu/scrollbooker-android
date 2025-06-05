@@ -4,8 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.scrollbooker.core.nav.navigators.myBusinessGraph
 import com.example.scrollbooker.core.nav.navigators.settingsGraph
 import com.example.scrollbooker.core.nav.routes.MainRoute
@@ -13,6 +15,7 @@ import com.example.scrollbooker.core.nav.transitions.slideInFromLeft
 import com.example.scrollbooker.core.nav.transitions.slideInFromRight
 import com.example.scrollbooker.core.nav.transitions.slideOutToLeft
 import com.example.scrollbooker.core.nav.transitions.slideOutToRight
+import com.example.scrollbooker.feature.products.presentation.ProductsViewModel
 import com.example.scrollbooker.feature.profile.presentation.ProfileScreen
 import com.example.scrollbooker.feature.profile.presentation.ProfileSharedViewModel
 import com.example.scrollbooker.feature.profile.presentation.edit.EditBioScreen
@@ -20,6 +23,8 @@ import com.example.scrollbooker.feature.profile.presentation.edit.EditFullNameSc
 import com.example.scrollbooker.feature.profile.presentation.edit.EditGenderScreen
 import com.example.scrollbooker.feature.profile.presentation.edit.EditProfileScreen
 import com.example.scrollbooker.feature.profile.presentation.edit.EditUsernameScreen
+import com.example.scrollbooker.feature.userSocial.presentation.UserSocialScreen
+import com.example.scrollbooker.feature.userSocial.presentation.UserSocialViewModel
 
 @Composable
 fun ProfileNavHost(navController: NavHostController) {
@@ -119,6 +124,29 @@ fun ProfileNavHost(navController: NavHostController) {
             EditGenderScreen(
                 viewModel=viewModel,
                 onBack= { navController.popBackStack() }
+            )
+        }
+
+        composable(
+            route = "${MainRoute.UserSocial.route}/{userId}/{username}",
+            arguments = listOf(
+                navArgument("userId") { type = NavType.IntType },
+                navArgument("username") { type = NavType.StringType }
+            ),
+            enterTransition = slideInFromRight(),
+            exitTransition = slideOutToLeft(),
+            popEnterTransition = slideInFromLeft(),
+            popExitTransition = slideOutToRight()
+        ) { backStackEntry ->
+            val userId = backStackEntry.arguments?.getInt("userId") ?: return@composable
+            val username = backStackEntry.arguments?.getString("username") ?: return@composable
+            val viewModel = hiltViewModel<UserSocialViewModel>(backStackEntry)
+
+            UserSocialScreen(
+                onBack = { navController.popBackStack() },
+                viewModal = viewModel,
+                userId = userId,
+                username = username
             )
         }
 

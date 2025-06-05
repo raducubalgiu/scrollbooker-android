@@ -1,5 +1,6 @@
 package com.example.scrollbooker.core.nav.host
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,6 +13,7 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
@@ -36,6 +38,7 @@ import com.example.scrollbooker.core.nav.BottomBarItem
 import com.example.scrollbooker.core.nav.containers.DefaultTabContainer
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.ui.theme.Background
+import com.example.scrollbooker.ui.theme.Divider
 import kotlinx.coroutines.launch
 
 sealed class MainTab(
@@ -96,26 +99,29 @@ fun MainNavHost() {
     val currentBackStackEntry by currentNavController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry?.destination?.route
 
-
     val scaffoldContent: @Composable () -> Unit = {
         Scaffold(
             bottomBar = {
                 if(currentRoute in bottomBarRoutes) {
-                    NavigationBar(
-                        modifier = Modifier.fillMaxWidth().height(100.dp),
-                        containerColor = if(isFeedTab) Color(0xFF121212) else Background
-                    ) {
-                        Row(modifier = Modifier
-                            .fillMaxSize()
-                            .padding(vertical = 10.dp)
+                    Column(Modifier.height(100.dp)) {
+                        HorizontalDivider(color = if (isFeedTab) Color(0xFF3A3A3A) else Divider, thickness = 1.dp)
+                        NavigationBar(
+                            tonalElevation = 0.dp,
+                            modifier = Modifier.fillMaxWidth(),
+                            containerColor = if(isFeedTab) Color(0xFF121212) else Background
                         ) {
-                            allTabs.forEach { tab ->
-                                BottomBarItem(
-                                    modifier = Modifier.then(Modifier.weight(1f)),
-                                    onNavigate = { currentTab = tab },
-                                    isSelected = currentTab == tab,
-                                    tab = tab
-                                )
+                            Row(modifier = Modifier
+                                .fillMaxSize()
+                                .padding(vertical = 10.dp)
+                            ) {
+                                allTabs.forEach { tab ->
+                                    BottomBarItem(
+                                        modifier = Modifier.then(Modifier.weight(1f)),
+                                        onNavigate = { currentTab = tab },
+                                        isSelected = currentTab == tab,
+                                        tab = tab
+                                    )
+                                }
                             }
                         }
                     }

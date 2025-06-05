@@ -1,5 +1,6 @@
 package com.example.scrollbooker.feature.profile.presentation.edit
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -11,6 +12,8 @@ import com.example.scrollbooker.components.core.Layout
 import com.example.scrollbooker.components.list.ItemListInfo
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.feature.profile.presentation.ProfileSharedViewModel
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.titleMedium
@@ -38,22 +41,25 @@ fun EditProfileScreen(
                 text = stringResource(R.string.aboutYou)
             )
         }
-
+        Spacer(Modifier.padding(vertical = SpacingS))
         ItemListInfo(
             headLine = stringResource(R.string.name),
             supportingText = viewModel.user?.fullName ?: "",
             onClick = { onNavigate(MainRoute.EditFullName.route) }
         )
+        Spacer(Modifier.padding(vertical = SpacingXXS))
         ItemListInfo(
             headLine = stringResource(R.string.username),
             supportingText = viewModel.user?.username ?: "",
             onClick = { onNavigate(MainRoute.EditUsername.route) }
         )
+        Spacer(Modifier.padding(vertical = SpacingXXS))
         ItemListInfo(
             headLine = stringResource(R.string.biography),
             supportingText = viewModel.user?.bio ?: "",
             onClick = { onNavigate(MainRoute.EditBio.route) }
         )
+        Spacer(Modifier.padding(vertical = SpacingXXS))
         ItemListInfo(
             headLine = stringResource(R.string.gender),
             supportingText = "Male",
