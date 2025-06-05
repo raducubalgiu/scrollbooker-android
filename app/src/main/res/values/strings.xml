@@ -67,5 +67,5 @@
     <string name="gender">Gen</string>
     <string name="delete">Șterge</string>
     <string name="aboutYou">Despre tine</string>
-    <string name="dontHaveAppointmentsYet">Încă nu ai efectuat nici o rezervare</string>
+    <string name="dontHaveAppointmentsYet">Nu ai nici o proramare momentan</string>
 </resources>

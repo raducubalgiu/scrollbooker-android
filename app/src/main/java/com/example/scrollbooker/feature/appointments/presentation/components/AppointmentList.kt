@@ -45,13 +45,16 @@ fun AppointmentsList(pagingItems: LazyPagingItems<Appointment>) {
         }
 
         pagingItems.apply {
-            when {
-                loadState.append is LoadState.Loading -> {
+            when (loadState.append) {
+                is LoadState.Loading -> {
                     item { LoadMoreSpinner() }
                 }
-                loadState.append is LoadState.Error -> {
+
+                is LoadState.Error -> {
                     item { Text("Ceva nu a mers cum trebuie") }
                 }
+
+                is LoadState.NotLoading -> Unit
             }
         }
     }

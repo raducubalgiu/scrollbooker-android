@@ -1,20 +1,18 @@
 package com.example.scrollbooker.feature.settings.presentation.support
-
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.Header
+import com.example.scrollbooker.components.core.Layout
 
 @Composable
-fun SupportScreen(navController: NavController) {
-    Column(Modifier.fillMaxSize()) {
-//        Header(
-//            navController = navController,
-//            title = stringResource(R.string.support),
-//        )
+fun SupportScreen(
+    onBack: () -> Unit
+) {
+    Layout(
+        headerTitle = stringResource(R.string.support),
+        onBack = onBack
+    ) {
+        Text("Support Screen")
     }
 }

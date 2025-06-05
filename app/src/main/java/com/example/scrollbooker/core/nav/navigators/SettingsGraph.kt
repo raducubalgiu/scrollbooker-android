@@ -1,4 +1,5 @@
 package com.example.scrollbooker.core.nav.navigators
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -9,6 +10,7 @@ import com.example.scrollbooker.core.nav.transitions.slideInFromRight
 import com.example.scrollbooker.core.nav.transitions.slideOutToLeft
 import com.example.scrollbooker.core.nav.transitions.slideOutToRight
 import com.example.scrollbooker.feature.settings.presentation.SettingsScreen
+import com.example.scrollbooker.feature.settings.presentation.SettingsViewModel
 import com.example.scrollbooker.feature.settings.presentation.account.AccountScreen
 import com.example.scrollbooker.feature.settings.presentation.display.DisplayScreen
 import com.example.scrollbooker.feature.settings.presentation.notifications.NotificationSettings
@@ -29,8 +31,14 @@ fun NavGraphBuilder.settingsGraph(navController: NavController) {
             exitTransition = slideOutToLeft(),
             popEnterTransition = slideInFromLeft(),
             popExitTransition = slideOutToRight()
-        ) {
-            SettingsScreen(navController)
+        ) { backStackKey ->
+            val viewModel = hiltViewModel<SettingsViewModel>(backStackKey)
+
+            SettingsScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() },
+                onNavigate = { navController.navigate(it) }
+            )
         }
 
         composable(
@@ -40,7 +48,9 @@ fun NavGraphBuilder.settingsGraph(navController: NavController) {
             popEnterTransition = slideInFromLeft(),
             popExitTransition = slideOutToRight()
         ) {
-            AccountScreen(navController)
+            AccountScreen(
+                onBack = { navController.popBackStack() }
+            )
         }
 
         composable(
@@ -50,7 +60,9 @@ fun NavGraphBuilder.settingsGraph(navController: NavController) {
             popEnterTransition = slideInFromLeft(),
             popExitTransition = slideOutToRight()
         ) {
-            PrivacyScreen(navController)
+            PrivacyScreen(
+                onBack = { navController.popBackStack() }
+            )
         }
 
         composable(
@@ -60,7 +72,9 @@ fun NavGraphBuilder.settingsGraph(navController: NavController) {
             popEnterTransition = slideInFromLeft(),
             popExitTransition = slideOutToRight()
         ) {
-            SecurityScreen(navController)
+            SecurityScreen(
+                onBack = { navController.popBackStack() }
+            )
         }
 
         composable(
@@ -70,7 +84,9 @@ fun NavGraphBuilder.settingsGraph(navController: NavController) {
             popEnterTransition = slideInFromLeft(),
             popExitTransition = slideOutToRight()
         ) {
-            NotificationSettings(navController)
+            NotificationSettings(
+                onBack = { navController.popBackStack() }
+            )
         }
 
         composable(
@@ -80,7 +96,9 @@ fun NavGraphBuilder.settingsGraph(navController: NavController) {
             popEnterTransition = slideInFromLeft(),
             popExitTransition = slideOutToRight()
         ) {
-            DisplayScreen(navController)
+            DisplayScreen(
+                onBack = { navController.popBackStack() }
+            )
         }
 
         composable(
@@ -90,7 +108,9 @@ fun NavGraphBuilder.settingsGraph(navController: NavController) {
             popEnterTransition = slideInFromLeft(),
             popExitTransition = slideOutToRight()
         ) {
-            ReportProblemScreen(navController)
+            ReportProblemScreen(
+                onBack = { navController.popBackStack() }
+            )
         }
 
         composable(
@@ -100,7 +120,9 @@ fun NavGraphBuilder.settingsGraph(navController: NavController) {
             popEnterTransition = slideInFromLeft(),
             popExitTransition = slideOutToRight()
         ) {
-            SupportScreen(navController)
+            SupportScreen(
+                onBack = { navController.popBackStack() }
+            )
         }
 
         composable(
@@ -110,7 +132,9 @@ fun NavGraphBuilder.settingsGraph(navController: NavController) {
             popEnterTransition = slideInFromLeft(),
             popExitTransition = slideOutToRight()
         ) {
-            TermsAndConditionsScreen(navController)
+            TermsAndConditionsScreen(
+                onBack = { navController.popBackStack() }
+            )
         }
     }
 }

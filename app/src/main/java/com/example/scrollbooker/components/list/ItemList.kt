@@ -14,18 +14,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import com.example.scrollbooker.R
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.SurfaceBG
-import com.example.scrollbooker.ui.theme.labelLarge
-import com.example.scrollbooker.ui.theme.labelMedium
+import com.example.scrollbooker.ui.theme.bodySmall
+import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun ItemList(
     modifier: Modifier = Modifier,
     headLine: String,
+    headLineTextStyle: TextStyle = titleMedium,
     supportingText: String = "",
+    supportingTextStyle: TextStyle = bodySmall,
     leftIcon: Painter? = null,
     displayRightIcon: Boolean = true,
     onClick: () -> Unit
@@ -44,14 +47,14 @@ fun ItemList(
             .then(modifier),
         headlineContent = {
             Text(
-                style = labelLarge,
-                fontWeight = FontWeight.Bold,
+                style = headLineTextStyle,
+                fontWeight = FontWeight.SemiBold,
                 text = headLine
             )},
         supportingContent = {
             if(supportingText.isNotEmpty()) {
                 Text(
-                    style = labelMedium,
+                    style = supportingTextStyle,
                     text = supportingText
                 )
             }

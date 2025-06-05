@@ -2,7 +2,6 @@ package com.example.scrollbooker.feature.appointments.presentation
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -37,7 +36,6 @@ fun AppointmentsScreen(viewModel: AppointmentsViewModel) {
 
             HorizontalPager(
                 state = pagerState,
-                pageSize = PageSize.Fill,
                 beyondViewportPageCount = 0,
                 modifier = Modifier.fillMaxSize()
             ) { page ->
