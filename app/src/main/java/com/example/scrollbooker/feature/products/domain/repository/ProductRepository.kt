@@ -6,4 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface ProductRepository {
     fun getUserProducts(userId: Int): Flow<PagingData<Product>>
+    suspend fun getProduct(productId: Int): Product
 }

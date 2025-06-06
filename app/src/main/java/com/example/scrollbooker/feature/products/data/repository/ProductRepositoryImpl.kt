@@ -3,6 +3,7 @@ package com.example.scrollbooker.feature.products.data.repository
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.example.scrollbooker.feature.products.data.mappers.toDomain
 import com.example.scrollbooker.feature.products.data.remote.ProductPagingSource
 import com.example.scrollbooker.feature.products.domain.model.Product
 import com.example.scrollbooker.feature.products.domain.repository.ProductRepository
@@ -21,5 +22,9 @@ class ProductRepositoryImpl @Inject constructor(
             ),
             pagingSourceFactory = { ProductPagingSource(api, userId) }
         ).flow
+    }
+
+    override suspend fun getProduct(productId: Int): Product {
+        return api.getProduct(productId).toDomain()
     }
 }

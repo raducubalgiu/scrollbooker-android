@@ -71,4 +71,11 @@
     <string name="reviews">Recenzii</string>
     <string name="followers">Urmăritori</string>
     <string name="dontFoundResults">Nu au fost găsite rezultate</string>
+    <string name="price">Preț</string>
+    <string name="priceWithDiscount">Preț cu discount</string>
+    <string name="discount">Discount</string>
+    <string name="currency">Monedă</string>
+    <string name="duration">Durată</string>
+    <string name="service">Serviciu</string>
+    <string name="description">Descriere</string>
 </resources>

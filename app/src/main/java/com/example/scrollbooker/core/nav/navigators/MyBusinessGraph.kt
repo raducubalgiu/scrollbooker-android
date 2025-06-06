@@ -12,7 +12,8 @@ import com.example.scrollbooker.core.nav.transitions.slideInFromLeft
 import com.example.scrollbooker.core.nav.transitions.slideInFromRight
 import com.example.scrollbooker.core.nav.transitions.slideOutToLeft
 import com.example.scrollbooker.core.nav.transitions.slideOutToRight
-import com.example.scrollbooker.feature.calendar.CalendarScreen
+import com.example.scrollbooker.feature.calendar.presentation.CalendarScreen
+import com.example.scrollbooker.feature.calendar.presentation.CalendarViewModel
 import com.example.scrollbooker.feature.myBusiness.presentation.MyBusinessScreen
 import com.example.scrollbooker.feature.products.presentation.AddProductScreen
 import com.example.scrollbooker.feature.products.presentation.ProductsScreen
@@ -33,7 +34,14 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
             exitTransition = slideOutToLeft(),
             popEnterTransition = slideInFromLeft(),
             popExitTransition = slideOutToRight()
-        ) { CalendarScreen(navController) }
+        ) { backStackEntry ->
+            val viewModel = hiltViewModel<CalendarViewModel>(backStackEntry)
+
+            CalendarScreen(
+                viewModel,
+                onBack = { navController.popBackStack() }
+            )
+        }
 
         composable(
             MainRoute.MyBusiness.route,

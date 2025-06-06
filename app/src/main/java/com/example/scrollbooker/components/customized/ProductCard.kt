@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.MainButton
 import com.example.scrollbooker.feature.products.domain.model.ProductCardEnum
@@ -28,6 +29,7 @@ import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
+import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.feature.products.domain.model.Product
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Error
@@ -36,6 +38,7 @@ import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleLarge
+import com.example.scrollbooker.ui.theme.titleMedium
 import java.math.BigDecimal
 
 @Composable
@@ -48,9 +51,11 @@ fun ProductCard(
         Text(
             text = product.name,
             fontWeight = FontWeight.Bold,
-            style = titleLarge,
+            style = titleMedium,
+            fontSize = 20.sp,
             color = OnBackground
         )
+        Spacer(Modifier.height(SpacingXXS))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
                 text = "Femei",
@@ -85,7 +90,8 @@ fun ProductCard(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = "${product.priceWithDiscount} RON",
-                        style = titleLarge,
+                        style = titleMedium,
+                        fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(Modifier.width(SpacingS))
