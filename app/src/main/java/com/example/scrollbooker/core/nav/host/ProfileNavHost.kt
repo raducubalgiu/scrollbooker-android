@@ -15,8 +15,7 @@ import com.example.scrollbooker.core.nav.transitions.slideInFromLeft
 import com.example.scrollbooker.core.nav.transitions.slideInFromRight
 import com.example.scrollbooker.core.nav.transitions.slideOutToLeft
 import com.example.scrollbooker.core.nav.transitions.slideOutToRight
-import com.example.scrollbooker.feature.products.presentation.ProductsViewModel
-import com.example.scrollbooker.feature.profile.presentation.ProfileScreen
+import com.example.scrollbooker.feature.profile.presentation.MyProfileScreen
 import com.example.scrollbooker.feature.profile.presentation.ProfileSharedViewModel
 import com.example.scrollbooker.feature.profile.presentation.edit.EditBioScreen
 import com.example.scrollbooker.feature.profile.presentation.edit.EditFullNameScreen
@@ -30,11 +29,11 @@ import com.example.scrollbooker.feature.userSocial.presentation.UserSocialViewMo
 fun ProfileNavHost(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = MainRoute.Profile.route
+        startDestination = MainRoute.MyProfile.route
     ) {
-        composable(MainRoute.Profile.route) { backStackEntry ->
+        composable(MainRoute.MyProfile.route) { backStackEntry ->
             val viewModel = hiltViewModel<ProfileSharedViewModel>(backStackEntry)
-            ProfileScreen(
+            MyProfileScreen(
                 viewModel = viewModel,
                 onNavigate = { navController.navigate(it) }
             )
@@ -46,7 +45,7 @@ fun ProfileNavHost(navController: NavHostController) {
             popExitTransition = slideOutToRight()
         ) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(MainRoute.Profile.route)
+                navController.getBackStackEntry(MainRoute.MyProfile.route)
             }
             val viewModel = hiltViewModel<ProfileSharedViewModel>(parentEntry)
 
@@ -64,7 +63,7 @@ fun ProfileNavHost(navController: NavHostController) {
             popExitTransition = slideOutToRight()
         ) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(MainRoute.Profile.route)
+                navController.getBackStackEntry(MainRoute.MyProfile.route)
             }
             val viewModel: ProfileSharedViewModel = hiltViewModel(parentEntry)
 
@@ -81,7 +80,7 @@ fun ProfileNavHost(navController: NavHostController) {
             popExitTransition = slideOutToRight()
         ) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(MainRoute.Profile.route)
+                navController.getBackStackEntry(MainRoute.MyProfile.route)
             }
             val viewModel: ProfileSharedViewModel = hiltViewModel(parentEntry)
 
@@ -99,7 +98,7 @@ fun ProfileNavHost(navController: NavHostController) {
             popExitTransition = slideOutToRight()
         ) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(MainRoute.Profile.route)
+                navController.getBackStackEntry(MainRoute.MyProfile.route)
             }
             val viewModel = hiltViewModel<ProfileSharedViewModel>(parentEntry)
 
@@ -117,7 +116,7 @@ fun ProfileNavHost(navController: NavHostController) {
             popExitTransition = slideOutToRight()
         ) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(MainRoute.Profile.route)
+                navController.getBackStackEntry(MainRoute.MyProfile.route)
             }
             val viewModel = hiltViewModel<ProfileSharedViewModel>(parentEntry)
 

@@ -47,7 +47,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
-import com.example.scrollbooker.feature.profile.components.CounterItem
+import com.example.scrollbooker.feature.profile.presentation.components.CounterItem
 import com.example.scrollbooker.feature.profile.presentation.components.ProfileHeader
 import com.example.scrollbooker.feature.profile.presentation.components.ProfileTabs
 import com.example.scrollbooker.ui.theme.OnBackground
@@ -56,7 +56,7 @@ import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
-fun ProfileScreen(
+fun MyProfileScreen(
     viewModel: ProfileSharedViewModel,
     onNavigate: (String) -> Unit
 ) {

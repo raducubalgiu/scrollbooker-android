@@ -50,7 +50,7 @@ sealed class MainTab(
     object Inbox: MainTab(MainRoute.Inbox.route, "Inbox", iconVector = Icons.Default.Notifications)
     object Search: MainTab(MainRoute.Search.route, "Search", iconVector = Icons.Default.Search)
     object Appointments: MainTab(MainRoute.Appointments.route, "Appointments", iconVector = Icons.Default.CalendarMonth)
-    object Profile: MainTab(MainRoute.Profile.route, "Profile", iconVector = Icons.Default.Person)
+    object Profile: MainTab(MainRoute.MyProfile.route, "Profile", iconVector = Icons.Default.Person)
 
     companion object {
         fun fromRoute(route: String): MainTab = when(route) {
