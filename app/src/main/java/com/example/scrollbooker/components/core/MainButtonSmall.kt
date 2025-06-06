@@ -20,6 +20,7 @@ fun MainButtonSmall(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     title: String,
+    enabled: Boolean = true,
     border: BorderStroke = BorderStroke(width = 0.dp, color = Color.Transparent),
     colors: ChipColors = SuggestionChipDefaults.suggestionChipColors(
         containerColor = Primary,
@@ -36,6 +37,7 @@ fun MainButtonSmall(
                 fontWeight = FontWeight.SemiBold
             )
         },
+        enabled = enabled,
         colors = colors,
         shape = ShapeDefaults.ExtraSmall,
         border = border

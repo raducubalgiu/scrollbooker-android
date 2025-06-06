@@ -18,7 +18,12 @@ import com.example.scrollbooker.core.util.MessageScreen
 import com.example.scrollbooker.feature.userSocial.domain.model.UserSocial
 
 @Composable
-fun UserSocialList(pagingItems: LazyPagingItems<UserSocial>) {
+fun UserSocialList(
+    pagingItems: LazyPagingItems<UserSocial>,
+    followedOverrides: Map<Int, Boolean>,
+    followRequestLocks: Set<Int>,
+    onFollow: (Boolean, Int) -> Unit
+) {
     pagingItems.apply {
         when(loadState.refresh) {
             is LoadState.Loading -> LoadingScreen()
@@ -37,9 +42,13 @@ fun UserSocialList(pagingItems: LazyPagingItems<UserSocial>) {
     LazyColumn(Modifier.fillMaxSize()) {
         items(pagingItems.itemCount) { index ->
             pagingItems[index]?.let { userSocial ->
+                val isLocked = followRequestLocks.contains(userSocial.id)
+
                 UserSocialItem(
                     userSocial = userSocial,
-                    onFollow = {}
+                    enabled = !isLocked,
+                    isFollowedOverrides = followedOverrides[userSocial.id],
+                    onFollow = { isFollowed -> onFollow(isFollowed, userSocial.id) }
                 )
             }
         }

@@ -4,8 +4,10 @@ import com.example.scrollbooker.core.util.Constants
 import com.example.scrollbooker.feature.userSocial.data.remote.UserSocialApiService
 import com.example.scrollbooker.feature.userSocial.data.repository.UserSocialRepositoryImpl
 import com.example.scrollbooker.feature.userSocial.domain.repository.UserSocialRepository
+import com.example.scrollbooker.feature.userSocial.domain.useCase.FollowUserUseCase
 import com.example.scrollbooker.feature.userSocial.domain.useCase.GetUserSocialFollowersUseCase
 import com.example.scrollbooker.feature.userSocial.domain.useCase.GetUserSocialFollowingsUseCase
+import com.example.scrollbooker.feature.userSocial.domain.useCase.UnfollowUserUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -51,5 +53,21 @@ object UserSocialModule {
         repository: UserSocialRepository,
     ): GetUserSocialFollowingsUseCase {
         return GetUserSocialFollowingsUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideFollowUserUseCase(
+        repository: UserSocialRepository,
+    ): FollowUserUseCase {
+        return FollowUserUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUnfollowUserUseCase(
+        repository: UserSocialRepository,
+    ): UnfollowUserUseCase {
+        return UnfollowUserUseCase(repository)
     }
 }

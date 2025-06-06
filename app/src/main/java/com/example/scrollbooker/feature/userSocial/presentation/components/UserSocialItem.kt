@@ -2,7 +2,6 @@ package com.example.scrollbooker.feature.userSocial.presentation.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -34,9 +33,13 @@ import com.example.scrollbooker.ui.theme.titleMedium
 @Composable
 fun UserSocialItem(
     modifier: Modifier = Modifier,
+    isFollowedOverrides: Boolean?,
     userSocial: UserSocial,
-    onFollow: () -> Unit
+    enabled: Boolean,
+    onFollow: (Boolean) -> Unit
 ) {
+    val isFollowed = isFollowedOverrides ?: userSocial.isFollow
+
     ListItem(modifier = modifier
         .fillMaxWidth()
         .padding(vertical = SpacingXXS)
@@ -58,12 +61,13 @@ fun UserSocialItem(
         },
         trailingContent = {
             MainButtonSmall(
-                border = BorderStroke(width = 1.dp, color = if(userSocial.isFollow) Divider else Primary),
-                title = stringResource(if(userSocial.isFollow) R.string.following else R.string.follow),
-                onClick = { onFollow },
+                border = BorderStroke(width = 1.dp, color = if(isFollowed) Divider else Primary),
+                title = stringResource(if(isFollowed) R.string.following else R.string.follow),
+                enabled = enabled,
+                onClick = { onFollow(isFollowed) },
                 colors = SuggestionChipDefaults.suggestionChipColors(
-                    containerColor = if(userSocial.isFollow) Color.Transparent else Primary,
-                    labelColor = if(userSocial.isFollow) OnBackground else OnPrimary
+                    containerColor = if(isFollowed) Color.Transparent else Primary,
+                    labelColor = if(isFollowed) OnBackground else OnPrimary
                 )
             )
         },
@@ -89,6 +93,8 @@ fun NotificationItemPreview() {
                 avatar = "",
                 isFollow = true
             ),
+            isFollowedOverrides = true,
+            enabled = true,
             onFollow = {}
         )
     }

@@ -33,4 +33,12 @@ class UserSocialRepositoryImpl @Inject constructor(
             pagingSourceFactory = { UserSocialPagingSource(userId, type = UserSocialEnum.FOLLOWINGS, api) }
         ).flow
     }
+
+    override suspend fun followUser(followeeId: Int) {
+        api.followUser(followeeId)
+    }
+
+    override suspend fun unfollowUser(followeeId: Int) {
+        api.unfollowUser(followeeId)
+    }
 }
