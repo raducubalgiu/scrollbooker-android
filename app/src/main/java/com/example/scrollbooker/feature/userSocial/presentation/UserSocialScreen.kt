@@ -9,9 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.Tabs
 import com.example.scrollbooker.components.core.Layout
+import com.example.scrollbooker.feature.userSocial.presentation.components.UserSocialList
 import kotlinx.coroutines.launch
 
 @Composable
@@ -19,7 +21,6 @@ fun UserSocialScreen(
     viewModal: UserSocialViewModel,
     onBack: () -> Unit,
     initialPage: Int,
-    userId: Int,
     username: String
 ) {
     val pagerState = rememberPagerState(initialPage = initialPage ) { 3 }
@@ -36,7 +37,6 @@ fun UserSocialScreen(
         onBack = onBack,
         enablePadding = false
     ) {
-
         Column {
             Tabs(tabs, selectedTabIndex, onChangeTab = {
                 coroutineScope.launch {
@@ -57,16 +57,13 @@ fun UserSocialScreen(
                         }
                     }
                     1 -> {
-                        //val businessPagingItems = viewModel.businessAppointments().collectAsLazyPagingItems()
-                        Column(Modifier.fillMaxSize()) {
-                            Text("Followers Screen")
-                        }
+                        val userFollowers = viewModal.userFollowers.collectAsLazyPagingItems()
+                        UserSocialList(pagingItems = userFollowers)
                     }
 
                     2 -> {
-                        Column(Modifier.fillMaxSize()) {
-                            Text("Followings Screen")
-                        }
+                        val userFollowings = viewModal.userFollowings.collectAsLazyPagingItems()
+                        UserSocialList(pagingItems = userFollowings)
                     }
                 }
             }

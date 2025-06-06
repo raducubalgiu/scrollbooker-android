@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.notifications.components
+package com.example.scrollbooker.feature.notifications.presentation.components
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

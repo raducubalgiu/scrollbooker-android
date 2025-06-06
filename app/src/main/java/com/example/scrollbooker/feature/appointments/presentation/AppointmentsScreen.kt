@@ -41,11 +41,11 @@ fun AppointmentsScreen(viewModel: AppointmentsViewModel) {
             ) { page ->
                 when(page) {
                     0 -> {
-                        val customerPagingItems = viewModel.customerAppointments().collectAsLazyPagingItems()
+                        val customerPagingItems = viewModel.customerAppointments.collectAsLazyPagingItems()
                         AppointmentsList(pagingItems = customerPagingItems)
                     }
                     1 -> {
-                        val businessPagingItems = viewModel.businessAppointments().collectAsLazyPagingItems()
+                        val businessPagingItems = viewModel.businessAppointments.collectAsLazyPagingItems()
                         AppointmentsList(pagingItems = businessPagingItems)
                     }
                 }

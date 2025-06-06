@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.notifications.components
+package com.example.scrollbooker.feature.notifications.presentation.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

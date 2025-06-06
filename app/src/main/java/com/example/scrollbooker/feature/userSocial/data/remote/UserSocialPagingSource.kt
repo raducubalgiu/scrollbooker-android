@@ -24,7 +24,7 @@ class UserSocialPagingSource(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, UserSocial> {
         val page = params.key ?: 1
-        val limit = 20
+        val limit = 10
 
         return try {
             delay(300)

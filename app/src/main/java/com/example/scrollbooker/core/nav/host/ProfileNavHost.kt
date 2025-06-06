@@ -139,15 +139,14 @@ fun ProfileNavHost(navController: NavHostController) {
             popExitTransition = slideOutToRight()
         ) { backStackEntry ->
             val initialPage = backStackEntry.arguments?.getInt("initialPage") ?: return@composable
-            val userId = backStackEntry.arguments?.getInt("userId") ?: return@composable
             val username = backStackEntry.arguments?.getString("username") ?: return@composable
+
             val viewModel = hiltViewModel<UserSocialViewModel>(backStackEntry)
 
             UserSocialScreen(
                 onBack = { navController.popBackStack() },
                 viewModal = viewModel,
                 initialPage = initialPage,
-                userId = userId,
                 username = username
             )
         }

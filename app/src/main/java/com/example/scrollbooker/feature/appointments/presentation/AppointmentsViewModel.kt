@@ -23,8 +23,8 @@ class AppointmentsViewModel @Inject constructor(
         getUserAppointmentsUseCase(asCustomer = true).cachedIn(viewModelScope)
     }
 
-    fun customerAppointments(): Flow<PagingData<Appointment>> = _customerAppointments
-    fun businessAppointments(): Flow<PagingData<Appointment>> = _businessAppointments
+    val customerAppointments: Flow<PagingData<Appointment>> get() = _customerAppointments
+    val businessAppointments: Flow<PagingData<Appointment>> get() = _businessAppointments
 
     init {
         Timber.tag("Init").e("-> Appointments - View Model Created")

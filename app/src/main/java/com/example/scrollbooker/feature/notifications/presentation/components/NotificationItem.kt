@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.notifications.components
+package com.example.scrollbooker.feature.notifications.presentation.components
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding

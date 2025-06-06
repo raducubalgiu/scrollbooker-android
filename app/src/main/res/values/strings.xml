@@ -70,4 +70,5 @@
     <string name="dontHaveAppointmentsYet">Nu ai nici o proramare momentan</string>
     <string name="reviews">Recenzii</string>
     <string name="followers">Urmăritori</string>
+    <string name="dontFoundResults">Nu au fost găsite rezultate</string>
 </resources>

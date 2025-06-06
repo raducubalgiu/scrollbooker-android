@@ -10,7 +10,7 @@ import com.example.scrollbooker.components.core.Layout
 import com.example.scrollbooker.core.util.ErrorScreen
 import com.example.scrollbooker.core.util.LoadingScreen
 import com.example.scrollbooker.core.util.MessageScreen
-import com.example.scrollbooker.feature.notifications.components.NotificationsList
+import com.example.scrollbooker.feature.notifications.presentation.components.NotificationsList
 import timber.log.Timber
 
 @Composable

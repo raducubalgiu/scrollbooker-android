@@ -1,6 +1,7 @@
 package com.example.scrollbooker.components.core
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.material3.ChipColors
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.SuggestionChipDefaults
@@ -18,7 +19,12 @@ import com.example.scrollbooker.ui.theme.labelLarge
 fun MainButtonSmall(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    title: String
+    title: String,
+    border: BorderStroke = BorderStroke(width = 0.dp, color = Color.Transparent),
+    colors: ChipColors = SuggestionChipDefaults.suggestionChipColors(
+        containerColor = Primary,
+        labelColor = OnPrimary
+    )
 ) {
     SuggestionChip(
         modifier = modifier.then(modifier),
@@ -30,11 +36,8 @@ fun MainButtonSmall(
                 fontWeight = FontWeight.SemiBold
             )
         },
-        colors = SuggestionChipDefaults.suggestionChipColors(
-            containerColor = Primary,
-            labelColor = OnPrimary
-        ),
+        colors = colors,
         shape = ShapeDefaults.ExtraSmall,
-        border = BorderStroke(width = 0.dp, color = Color.Transparent)
+        border = border
     )
 }

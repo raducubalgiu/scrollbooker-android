@@ -6,7 +6,7 @@ import com.example.scrollbooker.feature.userSocial.domain.repository.UserSocialR
 import kotlinx.coroutines.flow.Flow
 
 class GetUserSocialFollowersUseCase(
-    private val repository: UserSocialRepository
+    private val repository: UserSocialRepository,
 ) {
     operator fun invoke(userId: Int): Flow<PagingData<UserSocial>> {
         return repository.getUserFollowers(userId)
