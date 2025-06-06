@@ -110,7 +110,10 @@ fun ProfileScreen(navController: NavController) {
         .fillMaxSize()
         .statusBarsPadding()
     ) {
-        ProfileHeader(onOpenBottomSheet = { showBottomSheet = true })
+//        ProfileHeader(
+//            username = user,
+//            onOpenBottomSheet = { showBottomSheet = true }
+//        )
 
         LazyColumn {
             item {

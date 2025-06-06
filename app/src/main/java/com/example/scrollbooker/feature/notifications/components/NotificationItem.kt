@@ -1,4 +1,5 @@
 package com.example.scrollbooker.feature.notifications.components
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ListItem
@@ -6,12 +7,14 @@ import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.scrollbooker.components.core.Avatar
 import com.example.scrollbooker.components.core.MainButtonSmall
 import com.example.scrollbooker.core.util.Dimens.AvatarSizeS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.ScrollBookerTheme
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
 
@@ -60,4 +63,19 @@ fun NotificationItem(
             containerColor = Background
         )
     )
+}
+
+@Preview(name = "Light", showBackground = true)
+@Preview(name = "Dark", showBackground = true, uiMode = UI_MODE_NIGHT_YES)
+@Composable
+fun NotificationItemPreview() {
+    ScrollBookerTheme() {
+        NotificationItem(
+            fullName = "Joh Doe",
+            message = "a inceput sa te urmareasca",
+            avatar = "",
+            actionModifier = TODO(),
+            actionTitle = "Urmareste",
+        )
+    }
 }

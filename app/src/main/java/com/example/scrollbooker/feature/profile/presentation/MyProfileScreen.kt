@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,10 +15,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.Schedule
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -43,17 +49,26 @@ import com.example.scrollbooker.components.core.VerticalDivider
 import com.example.scrollbooker.components.list.ItemList
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingL
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
+import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.feature.profile.presentation.components.CounterItem
 import com.example.scrollbooker.feature.profile.presentation.components.ProfileHeader
 import com.example.scrollbooker.feature.profile.presentation.components.ProfileTabs
+import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.OnPrimary
+import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
+import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyMedium
+import com.example.scrollbooker.ui.theme.labelLarge
+import com.example.scrollbooker.ui.theme.labelMedium
 import com.example.scrollbooker.ui.theme.titleMedium
+import com.example.scrollbooker.ui.theme.titleSmall
 
 @Composable
 fun MyProfileScreen(
@@ -102,10 +117,15 @@ fun MyProfileScreen(
     )
 
     Column(Modifier.fillMaxSize()) {
-        ProfileHeader(onOpenBottomSheet = { showBottomSheet = true })
+        ProfileHeader(
+            username = user?.username.toString(),
+            onOpenBottomSheet = { showBottomSheet = true }
+        )
         Row(modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 70.dp, vertical = SpacingXXL),
+            .padding(
+                horizontal = 70.dp,
+                vertical = SpacingXXL),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -145,10 +165,10 @@ fun MyProfileScreen(
                         painter = painterResource(R.drawable.ic_logo),
                         contentDescription = null,
                         modifier = Modifier
-                            .size(85.dp)
+                            .size(90.dp)
                             .clip(CircleShape)
                             .background(MaterialTheme.colorScheme.surfaceVariant)
-                            .border(1.dp, Color.Gray, CircleShape)
+                            .border(1.dp, Divider, CircleShape)
                     )
                     Box(modifier = Modifier
                         .size(25.dp)
@@ -162,19 +182,19 @@ fun MyProfileScreen(
                     Text(
                         text = viewModel.user?.fullName ?: "",
                         style = titleMedium,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
+                        fontSize = 17.sp,
+                        fontWeight = FontWeight.SemiBold,
                         color = OnBackground,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
                     Spacer(Modifier.width(10.dp))
-                    Spacer(Modifier.height(SpacingS))
+                    Spacer(Modifier.height(SpacingXXS))
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Spacer(Modifier.width(5.dp))
                         Text(
                             text = viewModel.user?.profession ?: "",
-                            style = bodyMedium,
+                            style = titleSmall,
                             modifier = Modifier.weight(1f, fill = false),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
@@ -194,33 +214,91 @@ fun MyProfileScreen(
                             color = OnBackground
                         )
                     }
-                    Spacer(Modifier.height(SpacingM))
+                    Spacer(Modifier.height(SpacingS))
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             imageVector = Icons.Outlined.Schedule,
-                            contentDescription = null
+                            contentDescription = null,
+                            tint = OnSurfaceBG
                         )
                         Spacer(Modifier.width(7.dp))
                         Text(
-                            text = "Deschis acum",
+                            text = "Inchide la 19:00",
                             style = bodyMedium,
-                            fontWeight = FontWeight.SemiBold
+                            color = OnSurfaceBG
                         )
                         Spacer(Modifier.width(5.dp))
                         Icon(
                             imageVector = Icons.Outlined.KeyboardArrowDown,
-                            contentDescription = null
+                            contentDescription = null,
+                            tint = OnSurfaceBG
                         )
                     }
                 }
             }
         }
-        Spacer(Modifier.height(SpacingM))
-        MainButton(
-            modifier = Modifier.padding(BasePadding),
-            onClick = {},
-            title = stringResource(R.string.follow)
-        )
+        Row(
+            Modifier.fillMaxWidth().padding(vertical = SpacingXXL, horizontal = BasePadding),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Button(
+                modifier = Modifier.weight(5f),
+                onClick = {},
+                shape = RoundedCornerShape(size = 7.5.dp),
+                contentPadding = PaddingValues(
+                    vertical = 15.dp
+                ),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Primary,
+                    contentColor = OnPrimary
+                )
+            ) {
+                Text(text = stringResource(R.string.follow))
+            }
+            Spacer(Modifier.width(SpacingS))
+            Button(
+                modifier = Modifier.weight(5f),
+                onClick = {},
+                shape = RoundedCornerShape(size = 7.5.dp),
+                contentPadding = PaddingValues(
+                    vertical = 16.dp
+                ),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = SurfaceBG,
+                    contentColor = OnSurfaceBG
+                )
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier.clip(CircleShape).background(Color.Green).height(10.dp).width(10.dp)
+                    )
+                    Spacer(Modifier.width(SpacingS))
+                    Text("5 locuri libere")
+                }
+            }
+            Spacer(Modifier.width(SpacingS))
+            Button(
+                modifier = Modifier.weight(1.5f),
+                onClick = {},
+                shape = RoundedCornerShape(size = 7.5.dp),
+                contentPadding = PaddingValues(
+                    vertical = 14.dp
+                ),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = SurfaceBG,
+                    contentColor = OnSurfaceBG
+                )
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowDropDown,
+                    contentDescription = null
+                )
+            }
+        }
+//        MainButton(modifier = Modifier.padding(BasePadding),
+//            onClick = {},
+//            title = stringResource(R.string.follow)
+//        )
         ProfileTabs()
     }
 }

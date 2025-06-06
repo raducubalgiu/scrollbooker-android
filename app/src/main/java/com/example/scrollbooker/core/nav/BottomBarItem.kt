@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
+import com.example.scrollbooker.components.core.CustomBadge
 import com.example.scrollbooker.core.nav.host.MainTab
 import com.example.scrollbooker.core.nav.routes.MainRoute.Appointments
 import com.example.scrollbooker.core.nav.routes.MainRoute.Inbox
@@ -41,8 +42,8 @@ fun BottomBarItem(
         BadgedBox(
             badge = {
                 when(tab.route) {
-                    Inbox.route -> Badge(containerColor = Error) { Text(text = "3") }
-                    Appointments.route -> Badge(containerColor = Error) { Text(text = "10") }
+                    Inbox.route -> CustomBadge(content = 3)
+                    Appointments.route -> CustomBadge(content = 10)
                 }
             }
         ) {

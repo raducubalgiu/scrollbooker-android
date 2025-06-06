@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.components.customized.ProductCard
-import com.example.scrollbooker.core.enums.ProductCardEnum
+import com.example.scrollbooker.feature.products.domain.model.ProductCardEnum
 import com.example.scrollbooker.core.util.ErrorScreen
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.core.util.LoadingScreen

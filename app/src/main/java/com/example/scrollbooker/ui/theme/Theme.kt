@@ -13,11 +13,11 @@ private val LightColorScheme = lightColorScheme(
     primary = Color(0xFFFF6F00),
     onPrimary = Color(0xFFFFFFFF),
 
-    secondary = Color(0xFFFFC107),
+    secondary = Color(0xFF25F4EE),
     onSecondary = Color.Black,
 
-    tertiary = Color(0xFF8E24AA),
-    onTertiary = Color.White,
+    tertiary = Color(0xFF607D8B),
+    onTertiary = Color(0xFFE0E0E0),
 
     background = Color(0xFFFDFDFD),
     onBackground = Color(0xFF1C1B1F),
@@ -33,11 +33,11 @@ private val DarkColorScheme = darkColorScheme(
     primary = Color(0xFFFF6F00),
     onPrimary = Color(0xFFE0E0E0),
 
-    secondary = Color(0xFFFFB300),
-    onSecondary = Color(0xFFE0E0E0),
+    secondary = Color(0xFF25F4EE),
+    onSecondary = Color(0xFF1C1B1F),
 
-    tertiary = Color(0xFF8E24AA),
-    onTertiary = Color(0xFFE0E0E0),
+    tertiary = Color(0xFF607D8B),
+    onTertiary = Color(0xFF1C1B1F),
 
     background = Color(0xFF121212),
     onBackground = Color(0xFFE0E0E0),

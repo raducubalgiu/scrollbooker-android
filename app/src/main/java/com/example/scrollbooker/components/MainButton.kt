@@ -16,8 +16,8 @@ fun MainButton(
     title: String
 ) {
     Button(
-        onClick = onClick,
         modifier = Modifier.fillMaxWidth().then(modifier),
+        onClick = onClick,
         enabled = enabled
     ) {
         Text(

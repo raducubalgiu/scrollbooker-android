@@ -1,0 +1,36 @@
+package com.example.scrollbooker.feature.userSocial.data.repository
+
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import com.example.scrollbooker.feature.userSocial.data.remote.UserSocialApiService
+import com.example.scrollbooker.feature.userSocial.data.remote.UserSocialPagingSource
+import com.example.scrollbooker.feature.userSocial.domain.model.UserSocial
+import com.example.scrollbooker.feature.userSocial.domain.model.UserSocialEnum
+import com.example.scrollbooker.feature.userSocial.domain.repository.UserSocialRepository
+import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
+
+class UserSocialRepositoryImpl @Inject constructor(
+    private val api: UserSocialApiService
+): UserSocialRepository {
+    override fun getUserFollowers(userId: Int): Flow<PagingData<UserSocial>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                prefetchDistance = 2
+            ),
+            pagingSourceFactory = { UserSocialPagingSource(userId, type= UserSocialEnum.FOLLOWERS, api) }
+        ).flow
+    }
+
+    override fun getUserFollowings(userId: Int): Flow<PagingData<UserSocial>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                prefetchDistance = 2
+            ),
+            pagingSourceFactory = { UserSocialPagingSource(userId, type = UserSocialEnum.FOLLOWINGS, api) }
+        ).flow
+    }
+}
