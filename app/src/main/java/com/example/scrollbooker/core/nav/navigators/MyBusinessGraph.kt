@@ -12,8 +12,8 @@ import com.example.scrollbooker.core.nav.transitions.slideInFromLeft
 import com.example.scrollbooker.core.nav.transitions.slideInFromRight
 import com.example.scrollbooker.core.nav.transitions.slideOutToLeft
 import com.example.scrollbooker.core.nav.transitions.slideOutToRight
-import com.example.scrollbooker.feature.myBusiness.myCalendar.presentation.MyCalendarScreen
-import com.example.scrollbooker.feature.myBusiness.myCalendar.presentation.MyCalendarViewModel
+import com.example.scrollbooker.feature.myBusiness.presentation.calendar.MyCalendarScreen
+import com.example.scrollbooker.feature.myBusiness.presentation.calendar.MyCalendarViewModel
 import com.example.scrollbooker.feature.myBusiness.presentation.MyBusinessScreen
 import com.example.scrollbooker.feature.products.presentation.AddProductScreen
 import com.example.scrollbooker.feature.products.presentation.ProductsScreen
