@@ -1,6 +1,6 @@
-package com.example.scrollbooker.feature.myBusiness.services.presentation.components
+package com.example.scrollbooker.feature.services.presentation.components
 
-import com.example.scrollbooker.feature.myBusiness.services.domain.model.Service
+import com.example.scrollbooker.feature.services.domain.model.Service
 
 val dummyServices = listOf(
     Service(

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.myBusiness.calendar.presentation
+package com.example.scrollbooker.feature.myBusiness.myCalendar.presentation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
