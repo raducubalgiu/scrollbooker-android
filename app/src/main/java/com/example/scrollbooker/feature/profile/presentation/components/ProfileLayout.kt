@@ -18,6 +18,7 @@ fun ProfileLayout(
     fullName: String,
     profession: String,
     onNavigateCounters: (String) -> Unit,
+    onOpenScheduleSheet: () -> Unit,
     header: @Composable () -> Unit,
     actions: @Composable () -> Unit
 ) {
@@ -32,7 +33,8 @@ fun ProfileLayout(
         Spacer(Modifier.height(BasePadding))
         ProfileUserInfo(
             fullName = fullName,
-            profession = profession
+            profession = profession,
+            onOpenScheduleSheet = onOpenScheduleSheet
         )
         Column(modifier = Modifier
             .padding(

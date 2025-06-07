@@ -12,7 +12,6 @@ import com.example.scrollbooker.feature.user.domain.useCase.UpdateFullNameUseCas
 import com.example.scrollbooker.feature.user.domain.useCase.UpdateUsernameUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -47,7 +46,6 @@ class ProfileSharedViewModel @Inject constructor(
             try {
                 user = getUserInfoUseCase()
             } catch (e: Exception) {
-                //SnackbarManager.showError("Ceva nu a mers cum trebuie. Încearcă mai târziu")
                 Timber.tag("Profile").e(e, "ERROR: on Loading Profile User Data")
             } finally {
                 isLoading = false
@@ -58,7 +56,6 @@ class ProfileSharedViewModel @Inject constructor(
     fun updateFullName(newFullName: String) {
         viewModelScope.launch {
             _editState.value = FeatureState.Loading
-            delay(500)
 
             updateFullNameUseCase(newFullName)
                 .onSuccess {
@@ -76,7 +73,6 @@ class ProfileSharedViewModel @Inject constructor(
     fun updateUsername(newUsername: String) {
         viewModelScope.launch {
             _editState.value = FeatureState.Loading
-            delay(500)
 
             updateUsernameUseCase(newUsername)
                 .onSuccess {
@@ -94,7 +90,6 @@ class ProfileSharedViewModel @Inject constructor(
     fun updateBio(newBio: String) {
         viewModelScope.launch {
             _editState.value = FeatureState.Loading
-            delay(500)
 
             updateBioUseCase(newBio)
                 .onSuccess {

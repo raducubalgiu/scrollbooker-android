@@ -1,5 +1,4 @@
 package com.example.scrollbooker.components
-
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -29,7 +28,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.SurfaceBG
-import com.example.scrollbooker.ui.theme.titleSmall
+import com.example.scrollbooker.ui.theme.titleMedium
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -77,25 +76,28 @@ fun BottomSheet(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Box {}
+                    Box{ Box(modifier = Modifier.padding(BasePadding)) }
                     Text(
                         text = headerTitle,
-                        style = titleSmall,
+                        style = titleMedium,
                         fontWeight = FontWeight.SemiBold
                     )
-                    Box(
-                        modifier = Modifier
-                            .padding(BasePadding)
-                            .clickable(onClick = {
+                    Box(modifier = Modifier
+                        .clickable(
+                            onClick = {
                                 coroutineScope.launch {
                                     sheetState.hide()
                                     onDismiss()
                                 }
-                            })) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_close),
-                            contentDescription = null
+                            }
                         )
+                    ) {
+                        Box(modifier = Modifier.padding(BasePadding)) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_close),
+                                contentDescription = null
+                            )
+                        }
                     }
                 }
             }

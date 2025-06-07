@@ -3,6 +3,7 @@ package com.example.scrollbooker.feature.profile.presentation.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,7 +48,8 @@ import com.example.scrollbooker.ui.theme.titleSmall
 @Composable
 fun ProfileUserInfo(
     fullName: String,
-    profession: String
+    profession: String,
+    onOpenScheduleSheet: () -> Unit
 ) {
     Column(modifier = Modifier
         .padding(horizontal = SpacingXL)
@@ -110,7 +112,10 @@ fun ProfileUserInfo(
                     )
                 }
                 Spacer(Modifier.height(SpacingS))
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(modifier = Modifier
+                        .clickable(onClick = onOpenScheduleSheet),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Icon(
                         imageVector = Icons.Outlined.Schedule,
                         contentDescription = null,
