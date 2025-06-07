@@ -35,10 +35,7 @@ fun FeedScreen(
             }
     }
 
-    Column(Modifier
-        .fillMaxSize()
-        .background(Color(0xFF121212))
-    ) {
+    Column(Modifier.fillMaxSize().background(Color(0xFF121212))) {
         HorizontalPager(
             state = pagerState,
             pageSize = PageSize.Fill,

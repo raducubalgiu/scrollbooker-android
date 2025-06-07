@@ -6,7 +6,7 @@ import com.example.scrollbooker.feature.products.domain.repository.ProductReposi
 class GetProductUseCase(
     private val repository: ProductRepository
 ) {
-    suspend operator fun invoke(productId: Int): Product {
+    suspend operator fun invoke(productId: Int): Result<Product> {
         return repository.getProduct(productId)
     }
 }

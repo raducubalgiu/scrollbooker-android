@@ -1,22 +1,36 @@
 package com.example.scrollbooker.feature.products.presentation
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
+import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.feature.products.domain.model.Product
+import com.example.scrollbooker.feature.products.domain.useCase.GetProductUseCase
 import com.example.scrollbooker.feature.products.domain.useCase.GetProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
+import kotlin.onFailure
 
 @HiltViewModel
 class ProductsViewModel @Inject constructor(
-    private val getProductsUseCase: GetProductsUseCase
+    private val getProductsUseCase: GetProductsUseCase,
+    //private val getProductUseCase: GetProductUseCase,
+    savedStateHandle: SavedStateHandle
 ): ViewModel() {
+    //private val productId: Int = savedStateHandle["productId"] ?: error("Missing productId")
 
     private val _userId = MutableStateFlow<Int?>(null)
+
+    //private val _productState = MutableStateFlow<FeatureState<Product>>(FeatureState.Loading)
+    //val productState: StateFlow<FeatureState<Product>> = _productState
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val products = _userId
@@ -27,4 +41,20 @@ class ProductsViewModel @Inject constructor(
     fun loadProducts(userId: Int) {
         _userId.value = userId
     }
+
+//    fun getProduct() {
+//        viewModelScope.launch {
+//            _productState.value = FeatureState.Loading
+//
+//            getProductUseCase(productId)
+//                .onSuccess { product ->
+//                    _productState.value = FeatureState.Success(product)
+//                }
+//                .onFailure { error ->
+//                    Timber.tag("Get Product").e("ERROR: on Loading ProductId: $productId, $error")
+//                    _productState.value = FeatureState.Error(error)
+//                }
+//            }
+//        }
+//    }
 }

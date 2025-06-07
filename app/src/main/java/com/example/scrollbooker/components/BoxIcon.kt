@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.util.Dimens.BasePadding
@@ -19,7 +20,7 @@ import com.example.scrollbooker.ui.theme.OnBackground
 fun BoxIcon(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    icon: Painter,
+    icon: ImageVector,
     contentAlignment: Alignment = Alignment.Center,
     iconSize: Dp = 30.dp,
     tint: Color = OnBackground
@@ -30,7 +31,7 @@ fun BoxIcon(
         contentAlignment = contentAlignment
     ) {
         Icon(
-            painter = icon,
+            imageVector = icon,
             contentDescription = null,
             tint = tint,
             modifier = Modifier

@@ -78,4 +78,5 @@
     <string name="duration">Durată</string>
     <string name="service">Serviciu</string>
     <string name="description">Descriere</string>
+    <string name="shareProfile">Distribuie profilul</string>
 </resources>
