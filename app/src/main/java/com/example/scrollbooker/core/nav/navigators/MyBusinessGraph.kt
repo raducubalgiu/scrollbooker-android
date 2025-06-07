@@ -12,14 +12,14 @@ import com.example.scrollbooker.core.nav.transitions.slideInFromLeft
 import com.example.scrollbooker.core.nav.transitions.slideInFromRight
 import com.example.scrollbooker.core.nav.transitions.slideOutToLeft
 import com.example.scrollbooker.core.nav.transitions.slideOutToRight
-import com.example.scrollbooker.feature.myBusiness.presentation.calendar.MyCalendarScreen
-import com.example.scrollbooker.feature.myBusiness.presentation.calendar.MyCalendarViewModel
-import com.example.scrollbooker.feature.myBusiness.presentation.MyBusinessScreen
+import com.example.scrollbooker.feature.myBusiness.calendar.presentation.MyCalendarScreen
+import com.example.scrollbooker.feature.myBusiness.calendar.presentation.MyCalendarViewModel
+import com.example.scrollbooker.feature.myBusiness.MyBusinessScreen
 import com.example.scrollbooker.feature.products.presentation.AddProductScreen
 import com.example.scrollbooker.feature.products.presentation.ProductsScreen
-import com.example.scrollbooker.feature.myBusiness.presentation.schedules.SchedulesScreen
-import com.example.scrollbooker.feature.myBusiness.presentation.services.ServicesScreen
-import com.example.scrollbooker.feature.myBusiness.presentation.services.ServicesViewModel
+import com.example.scrollbooker.feature.myBusiness.schedules.presentation.SchedulesScreen
+import com.example.scrollbooker.feature.myBusiness.services.presentation.ServicesScreen
+import com.example.scrollbooker.feature.myBusiness.services.presentation.ServicesViewModel
 import com.example.scrollbooker.feature.products.presentation.EditProductScreen
 import com.example.scrollbooker.feature.products.presentation.ProductsViewModel
 
