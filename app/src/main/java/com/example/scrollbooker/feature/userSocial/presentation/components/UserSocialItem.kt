@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
@@ -43,10 +44,11 @@ fun UserSocialItem(
     ListItem(modifier = modifier
         .fillMaxWidth()
         .padding(vertical = SpacingXXS)
-        .width(72.dp)
         .then(modifier),
         headlineContent = {
             Text(
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.padding(bottom = SpacingXXS),
                 style = titleMedium,
                 color = OnBackground,
@@ -55,14 +57,18 @@ fun UserSocialItem(
         },
         supportingContent = {
             Text(
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
                 style = bodyMedium,
                 text = userSocial.fullName
             )
         },
         trailingContent = {
             MainButtonSmall(
-                border = BorderStroke(width = 1.dp, color = if(isFollowed) Divider else Primary),
                 title = stringResource(if(isFollowed) R.string.following else R.string.follow),
+                modifier = Modifier
+                    .width(110.dp),
+                border = BorderStroke(width = 1.dp, color = if(isFollowed) Divider else Primary),
                 enabled = enabled,
                 onClick = { onFollow(isFollowed) },
                 colors = SuggestionChipDefaults.suggestionChipColors(

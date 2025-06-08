@@ -7,6 +7,7 @@ import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.scrollbooker.components.core.Avatar
 import com.example.scrollbooker.components.core.MainButtonSmall
@@ -35,10 +36,14 @@ fun NotificationItem(
         .then(modifier),
         headlineContent = {
             Text(
-                modifier = Modifier.padding(bottom = SpacingXXS),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = SpacingXXS),
                 style = titleMedium,
                 color = OnBackground,
-                text = fullName
+                text = fullName,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         },
         supportingContent = {

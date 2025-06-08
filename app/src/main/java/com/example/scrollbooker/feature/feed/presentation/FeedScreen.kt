@@ -28,38 +28,38 @@ fun FeedScreen(
     val coroutineScope = rememberCoroutineScope()
     val isUserSwiping = remember { mutableStateOf(false) }
 
-    LaunchedEffect(pagerState) {
-        snapshotFlow { pagerState.currentPageOffsetFraction }
-            .collect { offset ->
-                isUserSwiping.value = offset != 0f
-            }
-    }
-
-    Column(Modifier.fillMaxSize().background(Color(0xFF121212))) {
-        HorizontalPager(
-            state = pagerState,
-            pageSize = PageSize.Fill,
-            modifier = Modifier.fillMaxSize(),
-            beyondViewportPageCount = 0,
-            key = { it }
-        ) { page ->
-            val shouldVideoPlay = !isUserSwiping.value && pagerState.currentPage == page
-
-            when(page) {
-                0 -> BookNowTab(shouldVideoPlay)
-                1 -> FollowingTab(shouldVideoPlay)
-            }
-        }
-    }
-
-    FeedTabs(
-        selectedTabIndex = selectedTabIndex,
-        onOpenDrawer = onOpenDrawer,
-        onChangeTab = {
-            coroutineScope.launch {
-                pagerState.animateScrollToPage(it)
-            }
-        }
-    )
+//    LaunchedEffect(pagerState) {
+//        snapshotFlow { pagerState.currentPageOffsetFraction }
+//            .collect { offset ->
+//                isUserSwiping.value = offset != 0f
+//            }
+//    }
+//
+//    Column(Modifier.fillMaxSize().background(Color(0xFF121212))) {
+//        HorizontalPager(
+//            state = pagerState,
+//            pageSize = PageSize.Fill,
+//            modifier = Modifier.fillMaxSize(),
+//            beyondViewportPageCount = 0,
+//            key = { it }
+//        ) { page ->
+//            val shouldVideoPlay = !isUserSwiping.value && pagerState.currentPage == page
+//
+//            when(page) {
+//                0 -> BookNowTab(shouldVideoPlay)
+//                1 -> FollowingTab(shouldVideoPlay)
+//            }
+//        }
+//    }
+//
+//    FeedTabs(
+//        selectedTabIndex = selectedTabIndex,
+//        onOpenDrawer = onOpenDrawer,
+//        onChangeTab = {
+//            coroutineScope.launch {
+//                pagerState.animateScrollToPage(it)
+//            }
+//        }
+//    )
 }
 
