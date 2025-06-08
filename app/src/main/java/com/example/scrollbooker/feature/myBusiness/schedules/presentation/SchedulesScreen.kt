@@ -8,8 +8,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.Layout
 import com.example.scrollbooker.components.core.MainButton
@@ -21,16 +19,17 @@ import com.example.scrollbooker.feature.myBusiness.schedules.domain.model.Schedu
 import com.example.scrollbooker.feature.myBusiness.schedules.presentation.components.SchedulesList
 
 @Composable
-fun SchedulesScreen(navController: NavController) {
-    val viewModel: SchedulesViewModel = hiltViewModel()
+fun SchedulesScreen(
+    viewModel: SchedulesViewModel,
+    onBack: () -> Unit
+) {
     val state by viewModel.schedulesState.collectAsState()
     val isSaving by viewModel.isSaving.collectAsState()
 
-    Layout {
-//        Header(
-//            navController = navController,
-//            title = stringResource(R.string.mySchedule),
-//        )
+    Layout(
+        headerTitle = stringResource(R.string.schedule),
+        onBack = onBack
+    ) {
         Column(modifier = Modifier
             .fillMaxSize()
             .padding(vertical = SpacingXL),

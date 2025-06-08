@@ -39,6 +39,7 @@ class AuthRepositoryImpl @Inject constructor(
                 refreshToken = loginInfo.refreshToken,
                 userId = userInfo.id,
                 businessId = userInfo.businessId,
+                businessTypeId = userInfo.businessTypeId,
                 permissions = userPermissions
             )
 

@@ -18,6 +18,7 @@ class AuthDataStore(private val context: Context) {
         val PERMISSIONS = stringSetPreferencesKey("permissions")
         val USER_ID = intPreferencesKey("userId")
         val BUSINESS_ID = intPreferencesKey("businessId")
+        val BUSINESS_TYPE_ID = intPreferencesKey("businessTypeId")
     }
 
     // Store Entire Session
@@ -26,6 +27,7 @@ class AuthDataStore(private val context: Context) {
         refreshToken: String,
         userId: Int,
         businessId: Int?,
+        businessTypeId: Int?,
         permissions: List<String>
     ) {
         context.dataStore.edit { prefs ->
@@ -33,6 +35,7 @@ class AuthDataStore(private val context: Context) {
             prefs[REFRESH_TOKEN] = refreshToken
             prefs[USER_ID] = userId
             prefs[BUSINESS_ID] = businessId ?: prefs.remove(BUSINESS_ID)
+            prefs[BUSINESS_TYPE_ID] = businessTypeId ?: prefs.remove(BUSINESS_TYPE_ID)
             prefs[PERMISSIONS] = permissions.toSet()
         }
     }
@@ -51,6 +54,7 @@ class AuthDataStore(private val context: Context) {
     fun getRefreshToken(): Flow<String?> = context.dataStore.data.map { it[REFRESH_TOKEN] }
     fun getUserId(): Flow<Int?> = context.dataStore.data.map { it[USER_ID] }
     fun getBusinessId(): Flow<Int?> = context.dataStore.data.map { it[BUSINESS_ID] }
+    fun getBusinessTypeId(): Flow<Int?> = context.dataStore.data.map { it[BUSINESS_TYPE_ID] }
     fun getUserPermissions(): Flow<List<String>> = context.dataStore.data
         .map { prefs -> prefs[PERMISSIONS]?.toList() ?: emptyList() }
 

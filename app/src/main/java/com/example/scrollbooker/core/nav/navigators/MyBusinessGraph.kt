@@ -1,5 +1,6 @@
 package com.example.scrollbooker.core.nav.navigators
 
+import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -18,7 +19,9 @@ import com.example.scrollbooker.feature.myBusiness.MyBusinessScreen
 import com.example.scrollbooker.feature.products.presentation.AddProductScreen
 import com.example.scrollbooker.feature.products.presentation.ProductsScreen
 import com.example.scrollbooker.feature.myBusiness.schedules.presentation.SchedulesScreen
-import com.example.scrollbooker.feature.myBusiness.services.presentation.ServicesScreen
+import com.example.scrollbooker.feature.myBusiness.schedules.presentation.SchedulesViewModel
+import com.example.scrollbooker.feature.myBusiness.services.presentation.AttachServicesScreen
+import com.example.scrollbooker.feature.myBusiness.services.presentation.MyServicesScreen
 import com.example.scrollbooker.feature.myBusiness.services.presentation.ServicesViewModel
 import com.example.scrollbooker.feature.products.presentation.EditProductScreen
 import com.example.scrollbooker.feature.products.presentation.ProductsViewModel
@@ -55,7 +58,7 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
         ) }
 
         composable(
-            MainRoute.Services.route,
+            MainRoute.MyServices.route,
             enterTransition = slideInFromRight(),
             exitTransition = slideOutToLeft(),
             popEnterTransition = slideInFromLeft(),
@@ -63,7 +66,26 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
         ) { backStackEntry ->
             val viewModel = hiltViewModel<ServicesViewModel>(backStackEntry)
 
-            ServicesScreen(viewModel, onBack = { navController.popBackStack() })
+            MyServicesScreen(
+                viewModel,
+                onBack = { navController.popBackStack() },
+                onNavigate = { navController.navigate(it) }
+            )
+        }
+
+        composable(
+            MainRoute.AttachServices.route,
+            enterTransition = slideInFromRight(),
+            exitTransition = slideOutToLeft(),
+            popEnterTransition = slideInFromLeft(),
+            popExitTransition = slideOutToRight()
+        ) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(MainRoute.MyServices.route)
+            }
+            val viewModel = hiltViewModel<ServicesViewModel>(parentEntry)
+
+            AttachServicesScreen(viewModel, onBack = { navController.popBackStack() })
         }
 
         composable(
@@ -120,7 +142,14 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
             exitTransition = slideOutToLeft(),
             popEnterTransition = slideInFromLeft(),
             popExitTransition = slideOutToRight()
-        ) { SchedulesScreen(navController = navController) }
+        ) { backStackEntry ->
+            val viewModel = hiltViewModel<SchedulesViewModel>(backStackEntry)
+
+            SchedulesScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() }
+            )
+        }
 
     }
 }

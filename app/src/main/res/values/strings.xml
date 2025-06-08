@@ -79,4 +79,11 @@
     <string name="service">Serviciu</string>
     <string name="description">Descriere</string>
     <string name="shareProfile">Distribuie profilul</string>
+    <string name="scheduleShort">Program</string>
+    <string name="employees">Angajați</string>
+    <string name="employmentRequests">Cereri de angajare</string>
+    <string name="selectOneService">Selectează un serviciu</string>
+    <string name="areYouSureYouWantDeleteService">Ești sigur că dorești să ștergi acest serviciu?</string>
+    <string name="addServices">Adaugă Servicii</string>
+    <string name="noServicesFound">Nu s-au găsit servicii</string>
 </resources>

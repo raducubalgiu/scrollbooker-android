@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import com.example.scrollbooker.components.BottomSheet
+import com.example.scrollbooker.components.MainButton
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
@@ -137,6 +138,10 @@ fun MyProfileScreen(
     ) {
         MyProfileActions(
             onNavigate={ onNavigate(MainRoute.EditProfile.route) }
+        )
+        MainButton(
+            title = "logout",
+            onClick = { viewModel.logout() }
         )
     }
 }
