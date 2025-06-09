@@ -18,13 +18,13 @@ import com.example.scrollbooker.feature.myBusiness.calendar.presentation.MyCalen
 import com.example.scrollbooker.feature.myBusiness.MyBusinessScreen
 import com.example.scrollbooker.feature.products.presentation.AddProductScreen
 import com.example.scrollbooker.feature.products.presentation.ProductsScreen
-import com.example.scrollbooker.feature.myBusiness.schedules.presentation.SchedulesScreen
-import com.example.scrollbooker.feature.myBusiness.schedules.presentation.SchedulesViewModel
 import com.example.scrollbooker.feature.myBusiness.services.presentation.AttachServicesScreen
 import com.example.scrollbooker.feature.myBusiness.services.presentation.MyServicesScreen
 import com.example.scrollbooker.feature.myBusiness.services.presentation.ServicesViewModel
 import com.example.scrollbooker.feature.products.presentation.EditProductScreen
 import com.example.scrollbooker.feature.products.presentation.ProductsViewModel
+import com.example.scrollbooker.feature.schedules.presentation.SchedulesScreen
+import com.example.scrollbooker.feature.schedules.presentation.SchedulesViewModel
 
 fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
     navigation(

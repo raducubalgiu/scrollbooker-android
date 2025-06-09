@@ -59,7 +59,7 @@ fun MyProfileScreen(
         showBottomSheet = showScheduleSheet,
         showHeader = true,
         headerTitle = "Program"
-    ) { UserScheduleSheet() }
+    ) { UserScheduleSheet(onClose = { showScheduleSheet = false }) }
 
     var globalLazyListState = rememberLazyListState()
 
@@ -77,12 +77,14 @@ fun MyProfileScreen(
 
         LazyColumn(
             state = globalLazyListState,
-            modifier = Modifier.fillMaxWidth().weight(1f)
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
         ) {
             item {
                 ProfileInfo(
                     user = user,
-                    onNavigateCounters = onNavigate,
+                    onNavigateCounters = { onNavigate("$it/${user?.id}/${user?.username}") },
                     onShowSchedule = { showScheduleSheet = true },
                 ) {
                     MyProfileActions(

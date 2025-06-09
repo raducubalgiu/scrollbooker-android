@@ -1,6 +1,6 @@
-package com.example.scrollbooker.feature.myBusiness.schedules.domain.repository
+package com.example.scrollbooker.feature.schedules.domain.repository
 
-import com.example.scrollbooker.feature.myBusiness.schedules.domain.model.Schedule
+import com.example.scrollbooker.feature.schedules.domain.model.Schedule
 
 interface ScheduleRepository {
     suspend fun getSchedules(userId: Int): List<Schedule>

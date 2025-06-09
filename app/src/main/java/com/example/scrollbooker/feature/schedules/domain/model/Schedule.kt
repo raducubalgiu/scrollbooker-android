@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.myBusiness.schedules.domain.model
+package com.example.scrollbooker.feature.schedules.domain.model
 
 data class Schedule(
     val id: Int,

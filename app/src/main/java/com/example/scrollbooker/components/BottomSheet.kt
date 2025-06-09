@@ -30,6 +30,8 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.ui.theme.Background
+import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.titleMedium
 import kotlinx.coroutines.launch
@@ -40,6 +42,7 @@ fun BottomSheet(
     modifier: Modifier = Modifier,
     showBottomSheet: Boolean,
     onDismiss: () -> Unit,
+    enableCloseButton: Boolean = false,
     showHeader: Boolean = true,
     headerTitle: String = "",
     content: @Composable () -> Unit
@@ -56,6 +59,7 @@ fun BottomSheet(
 
     val isDarkTheme = isSystemInDarkTheme()
     val containerColor = if(isDarkTheme) SurfaceBG else Background
+    val contentColor = if(isDarkTheme) OnSurfaceBG else OnBackground
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
@@ -96,9 +100,11 @@ fun BottomSheet(
                     Box(modifier = Modifier
                         .clickable(
                             onClick = {
-                                coroutineScope.launch {
-                                    sheetState.hide()
-                                    onDismiss()
+                                if(enableCloseButton) {
+                                    coroutineScope.launch {
+                                        sheetState.hide()
+                                        onDismiss()
+                                    }
                                 }
                             }
                         )
@@ -106,7 +112,8 @@ fun BottomSheet(
                         Box(modifier = Modifier.padding(BasePadding)) {
                             Icon(
                                 imageVector = Icons.Default.Close,
-                                contentDescription = null
+                                contentDescription = null,
+                                tint = if(enableCloseButton) contentColor else Color.Transparent
                             )
                         }
                     }

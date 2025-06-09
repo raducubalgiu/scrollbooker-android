@@ -1,11 +1,11 @@
-package com.example.scrollbooker.feature.myBusiness.schedules.di
+package com.example.scrollbooker.feature.schedules.di
 
 import com.example.scrollbooker.core.util.Constants
-import com.example.scrollbooker.feature.myBusiness.schedules.data.remote.SchedulesApiService
-import com.example.scrollbooker.feature.myBusiness.schedules.data.repository.ScheduleRepositoryImpl
-import com.example.scrollbooker.feature.myBusiness.schedules.domain.repository.ScheduleRepository
-import com.example.scrollbooker.feature.myBusiness.schedules.domain.useCase.GetSchedulesUseCase
-import com.example.scrollbooker.feature.myBusiness.schedules.domain.useCase.UpdateSchedulesUseCase
+import com.example.scrollbooker.feature.schedules.data.remote.SchedulesApiService
+import com.example.scrollbooker.feature.schedules.data.repository.ScheduleRepositoryImpl
+import com.example.scrollbooker.feature.schedules.domain.repository.ScheduleRepository
+import com.example.scrollbooker.feature.schedules.domain.useCase.GetSchedulesUseCase
+import com.example.scrollbooker.feature.schedules.domain.useCase.UpdateSchedulesUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.Module
 import dagger.Provides

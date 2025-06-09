@@ -1,5 +1,4 @@
 package com.example.scrollbooker.components
-
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
@@ -23,7 +22,7 @@ fun MainButton(
     Button(
         modifier = Modifier.fillMaxWidth().then(modifier),
         onClick = onClick,
-        enabled = isEnabled,
+        enabled = isEnabled
     ) {
         if(isLoading) {
             CircularProgressIndicator(

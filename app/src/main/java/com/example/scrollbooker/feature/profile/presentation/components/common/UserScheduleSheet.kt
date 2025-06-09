@@ -1,5 +1,4 @@
 package com.example.scrollbooker.feature.profile.presentation.components.common
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,9 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.example.scrollbooker.R
+import com.example.scrollbooker.components.MainButton
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
-import com.example.scrollbooker.feature.myBusiness.schedules.domain.model.Schedule
+import com.example.scrollbooker.feature.schedules.domain.model.Schedule
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.titleMedium
 
@@ -63,7 +63,7 @@ val schedules = listOf<Schedule>(
 )
 
 @Composable
-fun UserScheduleSheet() {
+fun UserScheduleSheet(onClose: () -> Unit) {
     schedules.forEach { (_, dayOfWeek, startTime, endTime) ->
         val text = if (startTime.isNullOrBlank()) stringResource(R.string.closed) else "$startTime - $endTime"
 
@@ -86,4 +86,16 @@ fun UserScheduleSheet() {
             Text(text)
         }
     }
+
+    MainButton(
+        modifier = Modifier
+            .padding(
+                top = BasePadding,
+                start = BasePadding,
+                end = BasePadding
+            )
+            ,
+        title = "Inchide",
+        onClick = onClose
+    )
 }
