@@ -13,7 +13,7 @@ import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.core.util.Dimens.SpacingXXL
+import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.feature.profile.presentation.components.ProfileActionButton
 
 @Composable
@@ -22,7 +22,11 @@ fun MyProfileActions(
 ) {
     Row(modifier = Modifier
         .fillMaxWidth()
-        .padding(vertical = SpacingXXL, horizontal = BasePadding),
+        .padding(
+            top = SpacingXL,
+            start = BasePadding,
+            end = BasePadding
+        ),
         verticalAlignment = Alignment.CenterVertically
     ) {
         ProfileActionButton(

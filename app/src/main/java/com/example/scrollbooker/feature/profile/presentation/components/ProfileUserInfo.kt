@@ -47,8 +47,8 @@ import com.example.scrollbooker.ui.theme.titleSmall
 
 @Composable
 fun ProfileUserInfo(
-    fullName: String,
-    profession: String,
+    fullName: String?,
+    profession: String?,
     onOpenScheduleSheet: () -> Unit
 ) {
     Column(modifier = Modifier
@@ -77,7 +77,7 @@ fun ProfileUserInfo(
             Spacer(Modifier.width(BasePadding))
             Column {
                 Text(
-                    text = fullName,
+                    text = fullName ?: "",
                     style = titleMedium,
                     fontSize = 17.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -90,7 +90,7 @@ fun ProfileUserInfo(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Spacer(Modifier.width(5.dp))
                     Text(
-                        text = profession,
+                        text = profession ?: "",
                         style = titleSmall,
                         modifier = Modifier.weight(1f, fill = false),
                         maxLines = 1,

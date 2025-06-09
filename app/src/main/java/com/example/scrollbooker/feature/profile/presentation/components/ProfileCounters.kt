@@ -13,14 +13,12 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.VerticalDivider
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
+import com.example.scrollbooker.feature.user.domain.model.Counters
 
 @Composable
 fun ProfileCounters(
-    ratingsCount: Int,
-    followersCount: Int,
-    followingsCount: Int,
+    counters: Counters?,
     onNavigate: (String) -> Unit
-
 ) {
     Row(modifier = Modifier
         .fillMaxWidth()
@@ -32,19 +30,19 @@ fun ProfileCounters(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         CounterItem(
-            counter = ratingsCount,
+            counter = counters?.ratingsCount ?: 0,
             label = stringResource(R.string.reviews),
             onNavigate = { onNavigate("${MainRoute.UserSocial.route}/0") }
         )
         VerticalDivider()
         CounterItem(
-            counter = followersCount,
+            counter = counters?.followersCount ?: 0,
             label = stringResource(R.string.followers),
             onNavigate = { onNavigate("${MainRoute.UserSocial.route}/1") }
         )
         VerticalDivider()
         CounterItem(
-            counter = followingsCount,
+            counter = counters?.followingsCount ?: 0,
             label = stringResource(R.string.following),
             onNavigate = { onNavigate("${MainRoute.UserSocial.route}/2") }
         )

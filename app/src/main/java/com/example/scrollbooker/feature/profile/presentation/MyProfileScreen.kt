@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,10 +19,9 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.BottomSheet
 import com.example.scrollbooker.core.nav.routes.MainRoute
-import com.example.scrollbooker.feature.profile.presentation.components.ProfileCounters
 import com.example.scrollbooker.feature.profile.presentation.components.ProfileHeader
 import com.example.scrollbooker.feature.profile.presentation.components.common.tab.ProfileTabRow
-import com.example.scrollbooker.feature.profile.presentation.components.ProfileUserInfo
+import com.example.scrollbooker.feature.profile.presentation.components.common.ProfileInfo
 import com.example.scrollbooker.feature.profile.presentation.components.common.UserScheduleSheet
 import com.example.scrollbooker.feature.profile.presentation.components.myProfile.MyProfileActions
 import com.example.scrollbooker.feature.profile.presentation.components.myProfile.MyProfileMenuList
@@ -82,29 +80,18 @@ fun MyProfileScreen(
             modifier = Modifier.fillMaxWidth().weight(1f)
         ) {
             item {
-                ProfileCounters(
-                    ratingsCount = user?.counters?.ratingsCount ?: 0,
-                    followersCount = user?.counters?.followersCount ?: 0,
-                    followingsCount = user?.counters?.followingsCount ?: 0,
-                    onNavigate = {  }
-                )
-
-                ProfileUserInfo(
-                    fullName = user?.fullName ?: "",
-                    profession = user?.profession ?: "",
-                    onOpenScheduleSheet = { showScheduleSheet = true }
-                )
-
-                MyProfileActions(
-                    onEditProfile = { onNavigate(MainRoute.EditProfile.route) }
-                )
-            }
-
-            stickyHeader {
-                Surface(tonalElevation = 4.dp) {
-                    ProfileTabRow(pagerState)
+                ProfileInfo(
+                    user = user,
+                    onNavigateCounters = onNavigate,
+                    onShowSchedule = { showScheduleSheet = true },
+                ) {
+                    MyProfileActions(
+                        onEditProfile = { onNavigate(MainRoute.EditProfile.route) }
+                    )
                 }
             }
+
+            stickyHeader { ProfileTabRow(pagerState) }
 
             item {
                 HorizontalPager(
