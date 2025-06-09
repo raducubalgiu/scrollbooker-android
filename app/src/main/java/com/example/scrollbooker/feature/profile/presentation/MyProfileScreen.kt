@@ -56,10 +56,11 @@ fun MyProfileScreen(
 
     BottomSheet(
         onDismiss = { showScheduleSheet = false },
+        enableCloseButton = true,
         showBottomSheet = showScheduleSheet,
         showHeader = true,
         headerTitle = "Program"
-    ) { UserScheduleSheet(onClose = { showScheduleSheet = false }) }
+    ) { UserScheduleSheet() }
 
     var globalLazyListState = rememberLazyListState()
 
