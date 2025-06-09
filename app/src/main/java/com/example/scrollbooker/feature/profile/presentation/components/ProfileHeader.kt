@@ -40,25 +40,8 @@ fun ProfileHeader(
             ),
             contentAlignment = Alignment.Center
         ) {
-//            Icon(
-//                imageVector = Icons.Default.ArrowBackIosNew,
-//                contentDescription = null
-//            )
+
         }
-//        Row(verticalAlignment = Alignment.CenterVertically) {
-//
-//            Row(verticalAlignment = Alignment.CenterVertically) {
-//                Text(
-//                    text = "Deschide maine la 15:00",
-//                    style = titleMedium,
-//                    fontWeight = FontWeight.SemiBold
-//                )
-//                Icon(
-//                    imageVector = Icons.Outlined.KeyboardArrowDown,
-//                    contentDescription = null
-//                )
-//            }
-//        }
         Text(
             style = titleMedium,
             color = OnBackground,

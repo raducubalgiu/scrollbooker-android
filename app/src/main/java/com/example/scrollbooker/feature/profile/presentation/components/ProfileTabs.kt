@@ -105,11 +105,6 @@ fun ProfileTabs() {
                     BadgedBox(
                         badge = {
                             if(index == 1) {
-//                                CustomBadge(
-//                                    content = 10,
-//                                    containerColor = Secondary,
-//                                    contentColor = OnSecondary
-//                                )
                                 Box(Modifier
                                     .offset(x = 15.dp, y = (-12).dp),
                                     contentAlignment = Alignment.TopStart

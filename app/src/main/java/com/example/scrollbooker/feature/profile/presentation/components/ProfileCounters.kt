@@ -24,7 +24,10 @@ fun ProfileCounters(
 ) {
     Row(modifier = Modifier
         .fillMaxWidth()
-        .padding(horizontal = 70.dp, vertical = SpacingXXL),
+        .padding(
+            vertical = SpacingXXL,
+            horizontal = 70.dp
+        ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

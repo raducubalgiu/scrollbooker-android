@@ -1,72 +1,39 @@
 package com.example.scrollbooker.feature.profile.presentation
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
+import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.BottomSheet
-import com.example.scrollbooker.components.MainButton
 import com.example.scrollbooker.core.nav.routes.MainRoute
-import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingM
+import com.example.scrollbooker.feature.profile.presentation.components.ProfileCounters
 import com.example.scrollbooker.feature.profile.presentation.components.ProfileHeader
-import com.example.scrollbooker.feature.profile.presentation.components.ProfileLayout
+import com.example.scrollbooker.feature.profile.presentation.components.common.tab.ProfileTabRow
+import com.example.scrollbooker.feature.profile.presentation.components.ProfileUserInfo
+import com.example.scrollbooker.feature.profile.presentation.components.common.UserScheduleSheet
 import com.example.scrollbooker.feature.profile.presentation.components.myProfile.MyProfileActions
 import com.example.scrollbooker.feature.profile.presentation.components.myProfile.MyProfileMenuList
-import com.example.scrollbooker.ui.theme.titleMedium
+import com.example.scrollbooker.feature.profile.presentation.components.common.tab.ProfileBookmarksTab
+import com.example.scrollbooker.feature.profile.presentation.components.common.tab.ProfileInfoTab
+import com.example.scrollbooker.feature.profile.presentation.components.common.tab.ProfilePostsTab
+import com.example.scrollbooker.feature.profile.presentation.components.common.tab.ProfileProductsTab
+import com.example.scrollbooker.feature.profile.presentation.components.common.tab.ProfileRepostsTab
 
-data class Schedule(
-    val dayOfWeek: String,
-    val startTime: String?,
-    val endTime: String?
-)
-
-val schedules = listOf<Schedule>(
-    Schedule(
-        dayOfWeek = "Luni",
-        startTime = "09:00",
-        endTime = "18:00"
-    ),
-    Schedule(
-        dayOfWeek = "Marti",
-        startTime = "09:00",
-        endTime = "18:00"
-    ),
-    Schedule(
-        dayOfWeek = "Miercuri",
-        startTime = "09:00",
-        endTime = "18:00"
-    ),
-    Schedule(
-        dayOfWeek = "Luni",
-        startTime = "09:00",
-        endTime = "18:00"
-    ),
-    Schedule(
-        dayOfWeek = "Joi",
-        startTime = "09:00",
-        endTime = "18:00"
-    ),
-    Schedule(
-        dayOfWeek = "Sambata",
-        startTime = null,
-        endTime = null
-    ),
-    Schedule(
-        dayOfWeek = "Duminica",
-        startTime = null,
-        endTime = null
-    ),
-)
-
+@SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun MyProfileScreen(
     viewModel: ProfileSharedViewModel,
@@ -75,8 +42,6 @@ fun MyProfileScreen(
     var showMenuSheet by remember { mutableStateOf(false) }
     var showScheduleSheet by remember { mutableStateOf(false) }
     val user = viewModel.user
-    val userId = user?.id
-    val username = viewModel.user?.username ?: ""
 
     BottomSheet(
         onDismiss = { showMenuSheet = false },
@@ -96,52 +61,67 @@ fun MyProfileScreen(
         showBottomSheet = showScheduleSheet,
         showHeader = true,
         headerTitle = "Program"
-    ) {
-        schedules.forEach { (dayOfWeek, startTime, endTime) ->
-            val text = if (startTime.isNullOrBlank()) "Inchis"
-            else "$startTime - $endTime"
+    ) { UserScheduleSheet() }
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        horizontal = BasePadding,
-                        vertical = SpacingM
-                    ),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    style = titleMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    text = dayOfWeek
-                )
-                Text(text)
-            }
-        }
+    var globalLazyListState = rememberLazyListState()
+
+    val tabCount = 5
+    val pagerState = rememberPagerState(initialPage = 0) { tabCount }
+    val lazyListStates = remember {
+        List(tabCount) { LazyListState() }
     }
 
-    ProfileLayout(
-        ratingsCount = user?.counters?.ratingsCount ?: 0,
-        followersCount = user?.counters?.followersCount ?: 0,
-        followingsCount = user?.counters?.followingsCount ?: 0,
-        fullName = user?.fullName ?: "",
-        profession = user?.profession ?: "",
-        onNavigateCounters = { onNavigate("$it/$userId/$username") },
-        onOpenScheduleSheet = { showScheduleSheet = true },
-        header = { 
-            ProfileHeader(
-                username = username,
-                onOpenBottomSheet = { showMenuSheet = true }
-            ) 
+    Column(modifier = Modifier.fillMaxSize()) {
+        ProfileHeader(
+            username = user?.username ?: "",
+            onOpenBottomSheet = { showMenuSheet = true }
+        )
+
+        LazyColumn(
+            state = globalLazyListState,
+            modifier = Modifier.fillMaxWidth().weight(1f)
+        ) {
+            item {
+                ProfileCounters(
+                    ratingsCount = user?.counters?.ratingsCount ?: 0,
+                    followersCount = user?.counters?.followersCount ?: 0,
+                    followingsCount = user?.counters?.followingsCount ?: 0,
+                    onNavigate = {  }
+                )
+
+                ProfileUserInfo(
+                    fullName = user?.fullName ?: "",
+                    profession = user?.profession ?: "",
+                    onOpenScheduleSheet = { showScheduleSheet = true }
+                )
+
+                MyProfileActions(
+                    onEditProfile = { onNavigate(MainRoute.EditProfile.route) }
+                )
+            }
+
+            stickyHeader {
+                Surface(tonalElevation = 4.dp) {
+                    ProfileTabRow(pagerState)
+                }
+            }
+
+            item {
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(LocalConfiguration.current.screenHeightDp.dp)
+                ) { page ->
+                    when(page) {
+                        0 -> ProfilePostsTab(lazyListStates[page])
+                        1 -> ProfileProductsTab(lazyListStates[page])
+                        2 -> ProfileRepostsTab(lazyListStates[page])
+                        3 -> ProfileBookmarksTab(lazyListStates[page])
+                        4 -> ProfileInfoTab(lazyListStates[page])
+                    }
+                }
+            }
         }
-    ) {
-        MyProfileActions(
-            onNavigate={ onNavigate(MainRoute.EditProfile.route) }
-        )
-        MainButton(
-            title = "logout",
-            onClick = { viewModel.logout() }
-        )
     }
 }

@@ -46,11 +46,11 @@ sealed class MainTab(
     val label: String,
     val iconVector: ImageVector
 ) {
-    object Feed: MainTab(MainRoute.Feed.route, "Feed", iconVector = Icons.Default.Home)
+    object Feed: MainTab(MainRoute.Feed.route, "Acasa", iconVector = Icons.Default.Home)
     object Inbox: MainTab(MainRoute.Inbox.route, "Inbox", iconVector = Icons.Default.Notifications)
     object Search: MainTab(MainRoute.Search.route, "Search", iconVector = Icons.Default.Search)
-    object Appointments: MainTab(MainRoute.Appointments.route, "Appointments", iconVector = Icons.Default.CalendarMonth)
-    object Profile: MainTab(MainRoute.MyProfile.route, "Profile", iconVector = Icons.Default.Person)
+    object Appointments: MainTab(MainRoute.Appointments.route, "Comenzi", iconVector = Icons.Default.CalendarMonth)
+    object Profile: MainTab(MainRoute.MyProfile.route, "Profil", iconVector = Icons.Default.Person)
 
     companion object {
         fun fromRoute(route: String): MainTab = when(route) {
@@ -103,7 +103,7 @@ fun MainNavHost() {
         Scaffold(
             bottomBar = {
                 if(currentRoute in bottomBarRoutes) {
-                    Column(Modifier.height(100.dp)) {
+                    Column(Modifier.height(90.dp)) {
                         HorizontalDivider(color = if (isFeedTab) Color(0xFF3A3A3A) else Divider, thickness = 1.dp)
                         NavigationBar(
                             tonalElevation = 0.dp,
@@ -112,7 +112,7 @@ fun MainNavHost() {
                         ) {
                             Row(modifier = Modifier
                                 .fillMaxSize()
-                                .padding(vertical = 10.dp)
+                                .padding(vertical = 5.dp)
                             ) {
                                 allTabs.forEach { tab ->
                                     BottomBarItem(

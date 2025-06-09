@@ -1,78 +1,96 @@
 package com.example.scrollbooker.feature.products.presentation
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import com.example.scrollbooker.core.util.ErrorScreen
+import com.example.scrollbooker.core.util.LoadingScreen
+import com.example.scrollbooker.feature.myBusiness.services.presentation.ServicesViewModel
+import com.example.scrollbooker.ui.theme.Background
+import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.OnSurfaceBG
+import com.example.scrollbooker.ui.theme.bodyLarge
+import kotlinx.coroutines.launch
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.Layout
-import androidx.compose.ui.Modifier
-import androidx.paging.LoadState
-import androidx.paging.compose.collectAsLazyPagingItems
-import com.example.scrollbooker.components.customized.ProductCard
-import com.example.scrollbooker.feature.products.domain.model.ProductCardEnum
-import com.example.scrollbooker.core.util.ErrorScreen
-import com.example.scrollbooker.core.util.LoadMoreSpinner
-import com.example.scrollbooker.core.util.LoadingScreen
+import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.ui.theme.Divider
 
 @Composable
 fun ProductsScreen(
-    viewModel: ProductsViewModel,
-    userId: Int,
+    viewModel: ServicesViewModel,
     onBack: () -> Unit,
     onNavigate: (String) -> Unit
 ) {
-    LaunchedEffect(userId) {
-        viewModel.loadProducts(userId)
-    }
-
-    val state = viewModel.products.collectAsLazyPagingItems()
+    val servicesState by viewModel.servicesState.collectAsState()
 
     Layout(
         headerTitle = stringResource(R.string.myProducts),
         onBack = onBack
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            state.apply {
-                when(loadState.refresh) {
-                    is LoadState.Loading -> LoadingScreen()
-                    is LoadState.Error -> ErrorScreen()
-                    is LoadState.NotLoading -> Unit
-                }
-            }
+        when(servicesState) {
+            is FeatureState.Loading -> LoadingScreen()
+            is FeatureState.Error -> ErrorScreen()
+            is FeatureState.Success -> {
+                val services = (servicesState as FeatureState.Success).data
 
-            LazyColumn(Modifier.weight(1f)) {
-                items(count = state.itemCount) { index ->
-                    val product = state[index]
-                    product?.let { Box(Modifier.fillMaxSize()) {
-                        ProductCard(
-                            product = it,
-                            mode = ProductCardEnum.OWNER,
-                            onNavigate = onNavigate
-                        )
-                    } }
-                }
+                val pagerState = rememberPagerState(initialPage = 0) { services.size }
+                val coroutineScope = rememberCoroutineScope()
+                val selectedTabIndex = pagerState.currentPage
 
-                state.apply {
-                    when (loadState.append) {
-                        is LoadState.Loading -> {
-                            item { LoadMoreSpinner() }
+                Column {
+                    ScrollableTabRow(
+                        containerColor = Background,
+                        contentColor = OnSurfaceBG,
+                        edgePadding = 0.dp,
+                        selectedTabIndex = pagerState.currentPage,
+                    ) {
+                        services.forEachIndexed { index, service ->
+                            val isSelected = selectedTabIndex == index
+
+                            Tab(
+                                selected = isSelected,
+                                onClick = {
+                                    coroutineScope.launch {
+                                        pagerState.animateScrollToPage(index)
+                                    }
+                                },
+                                text = {
+                                    Text(
+                                        text = service.name,
+                                        style = bodyLarge,
+                                        color = if (isSelected) OnBackground else OnSurfaceBG,
+                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                                    )
+                                }
+                            )
                         }
+                    }
+                    HorizontalDivider(color = Divider)
 
-                        is LoadState.Error -> {
-                            item { Text("Eroare la incarcare") }
-                        }
-                        is LoadState.NotLoading -> Unit
+                    HorizontalPager(
+                        state = pagerState,
+                        beyondViewportPageCount = 0,
+                        modifier = Modifier.fillMaxSize()
+                    ) { page ->
+                        val service = services[page]
+
+                        ProductsTab(serviceId = service.id)
                     }
                 }
             }
-//            MainButton(
-//                onClick = { onNavigate(MainRoute.AddProduct.route) },
-//                title = stringResource(id = R.string.createNewProduct)
-//            )
         }
     }
 }

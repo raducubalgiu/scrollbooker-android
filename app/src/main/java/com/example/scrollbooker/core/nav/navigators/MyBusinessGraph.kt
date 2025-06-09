@@ -95,11 +95,10 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
             popEnterTransition = slideInFromLeft(),
             popExitTransition = slideOutToRight()
         ) { backStackEntry ->
-            val viewModel = hiltViewModel<ProductsViewModel>(backStackEntry)
+            val viewModel = hiltViewModel<ServicesViewModel>(backStackEntry)
 
             ProductsScreen(
                 viewModel=viewModel,
-                userId = 3,
                 onNavigate = { navController.navigate(it) },
                 onBack = { navController.popBackStack() }
             )
