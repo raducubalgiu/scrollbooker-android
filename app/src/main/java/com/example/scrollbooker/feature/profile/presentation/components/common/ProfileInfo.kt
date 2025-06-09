@@ -20,13 +20,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.feature.profile.presentation.components.ProfileCounters
 import com.example.scrollbooker.feature.profile.presentation.components.ProfileUserInfo
 import com.example.scrollbooker.feature.user.domain.model.User
-import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
-import com.example.scrollbooker.ui.theme.Secondary
 
 @Composable
 fun ProfileInfo(
@@ -46,7 +45,16 @@ fun ProfileInfo(
         onOpenScheduleSheet = onShowSchedule
     )
 
-    actions()
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(
+            top = SpacingXL,
+            start = BasePadding,
+            end = BasePadding
+        ),
+    ) {
+        actions()
+    }
 
     Column(modifier = Modifier
         .fillMaxSize().padding(BasePadding),

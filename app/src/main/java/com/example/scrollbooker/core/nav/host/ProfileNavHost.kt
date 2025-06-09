@@ -17,6 +17,7 @@ import com.example.scrollbooker.core.nav.transitions.slideOutToLeft
 import com.example.scrollbooker.core.nav.transitions.slideOutToRight
 import com.example.scrollbooker.feature.profile.presentation.MyProfileScreen
 import com.example.scrollbooker.feature.profile.presentation.ProfileSharedViewModel
+import com.example.scrollbooker.feature.profile.presentation.UserProfileScreen
 import com.example.scrollbooker.feature.profile.presentation.edit.EditBioScreen
 import com.example.scrollbooker.feature.profile.presentation.edit.EditFullNameScreen
 import com.example.scrollbooker.feature.profile.presentation.edit.EditGenderScreen
@@ -36,6 +37,19 @@ fun ProfileNavHost(navController: NavHostController) {
             MyProfileScreen(
                 viewModel = viewModel,
                 onNavigate = { navController.navigate(it) }
+            )
+        }
+        composable(MainRoute.UserProfile.route,
+            enterTransition = slideInFromRight(duration = 400),
+            exitTransition = slideOutToLeft(duration = 400),
+            popEnterTransition = slideInFromLeft(duration = 400),
+            popExitTransition = slideOutToRight(duration = 400)
+        ) { backStackEntry ->
+            val viewModel = hiltViewModel<ProfileSharedViewModel>(backStackEntry)
+            UserProfileScreen(
+                viewModel = viewModel,
+                onNavigate = { navController.navigate(it) },
+                onBack = { navController.popBackStack() }
             )
         }
         composable(MainRoute.EditProfile.route,
@@ -147,7 +161,8 @@ fun ProfileNavHost(navController: NavHostController) {
                 onBack = { navController.popBackStack() },
                 viewModal = viewModel,
                 initialPage = initialPage,
-                username = username
+                username = username,
+                onNavigateUserProfile = { navController.navigate(MainRoute.UserProfile.route) }
             )
         }
 

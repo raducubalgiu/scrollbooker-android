@@ -22,7 +22,8 @@ fun UserSocialList(
     pagingItems: LazyPagingItems<UserSocial>,
     followedOverrides: Map<Int, Boolean>,
     followRequestLocks: Set<Int>,
-    onFollow: (Boolean, Int) -> Unit
+    onFollow: (Boolean, Int) -> Unit,
+    onNavigateUserProfile: () -> Unit
 ) {
     pagingItems.apply {
         when(loadState.refresh) {
@@ -48,7 +49,8 @@ fun UserSocialList(
                     userSocial = userSocial,
                     enabled = !isLocked,
                     isFollowedOverrides = followedOverrides[userSocial.id],
-                    onFollow = { isFollowed -> onFollow(isFollowed, userSocial.id) }
+                    onFollow = { isFollowed -> onFollow(isFollowed, userSocial.id) },
+                    onNavigateUserProfile = onNavigateUserProfile
                 )
             }
         }

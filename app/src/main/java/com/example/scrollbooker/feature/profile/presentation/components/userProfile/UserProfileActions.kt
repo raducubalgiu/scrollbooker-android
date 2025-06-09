@@ -23,6 +23,8 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.feature.profile.presentation.components.common.ProfileActionButton
+import com.example.scrollbooker.ui.theme.OnPrimary
+import com.example.scrollbooker.ui.theme.Primary
 
 @Composable
 fun UserProfileActions() {
@@ -31,6 +33,8 @@ fun UserProfileActions() {
     ) {
         ProfileActionButton(
             modifier = Modifier.weight(5f),
+            containerColor = Primary,
+            contentColor = OnPrimary,
             onClick = {}
         ) {
             Text(

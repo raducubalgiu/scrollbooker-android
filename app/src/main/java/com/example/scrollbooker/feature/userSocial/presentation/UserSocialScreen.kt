@@ -23,7 +23,8 @@ fun UserSocialScreen(
     viewModal: UserSocialViewModel,
     onBack: () -> Unit,
     initialPage: Int,
-    username: String
+    username: String,
+    onNavigateUserProfile: () -> Unit
 ) {
     val pagerState = rememberPagerState(initialPage = initialPage ) { 3 }
     val selectedTabIndex = pagerState.currentPage
@@ -68,7 +69,8 @@ fun UserSocialScreen(
                             followRequestLocks = followRequestLocks,
                             onFollow = { isFollowed, userId ->
                                 viewModal.onFollow(isFollowed, userId)
-                            }
+                            },
+                            onNavigateUserProfile = onNavigateUserProfile
                         )
                     }
 
@@ -82,7 +84,8 @@ fun UserSocialScreen(
                             followRequestLocks = followRequestLocks,
                             onFollow = { isFollowed, userId ->
                                 viewModal.onFollow(isFollowed, userId)
-                            }
+                            },
+                            onNavigateUserProfile = onNavigateUserProfile
                         )
                     }
                 }
