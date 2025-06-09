@@ -14,7 +14,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
-import com.example.scrollbooker.feature.profile.presentation.components.ProfileActionButton
+import com.example.scrollbooker.feature.profile.presentation.components.common.ProfileActionButton
 
 @Composable
 fun MyProfileActions(

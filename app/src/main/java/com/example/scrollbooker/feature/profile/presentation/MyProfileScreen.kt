@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -67,7 +68,7 @@ fun MyProfileScreen(
     val tabCount = 5
     val pagerState = rememberPagerState(initialPage = 0) { tabCount }
     val lazyListStates = remember {
-        List(tabCount) { LazyListState() }
+        List(tabCount) { LazyGridState() }
     }
 
     Column(modifier = Modifier.fillMaxSize()) {

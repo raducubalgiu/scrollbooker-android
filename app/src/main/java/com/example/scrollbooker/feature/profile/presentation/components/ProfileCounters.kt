@@ -13,6 +13,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.VerticalDivider
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
+import com.example.scrollbooker.feature.profile.presentation.components.common.CounterItem
 import com.example.scrollbooker.feature.user.domain.model.Counters
 
 @Composable

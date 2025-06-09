@@ -22,7 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.feature.profile.presentation.components.ProfileActionButton
+import com.example.scrollbooker.feature.profile.presentation.components.common.ProfileActionButton
 
 @Composable
 fun UserProfileActions() {
