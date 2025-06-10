@@ -9,13 +9,12 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.nav.transitions.slideEnterTransition
 import com.example.scrollbooker.core.nav.transitions.slideExitTransition
-import com.example.scrollbooker.feature.myBusiness.calendar.presentation.MyCalendarScreen
-import com.example.scrollbooker.feature.myBusiness.calendar.presentation.MyCalendarViewModel
 import com.example.scrollbooker.feature.myBusiness.MyBusinessScreen
 import com.example.scrollbooker.feature.myBusiness.employeeDismissal.presentation.EmployeesDismissalScreen
 import com.example.scrollbooker.feature.myBusiness.employeeDismissal.presentation.EmployeesDismissalViewModel
@@ -38,6 +37,7 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
         route = MainRoute.MyBusinessNavigator.route,
         startDestination = MainRoute.MyBusiness.route,
     ) {
+
         composable(
             MainRoute.MyBusiness.route,
             enterTransition = {
@@ -116,18 +116,18 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
             EmploymentRequestsScreen(
                 viewModel,
                 onBack = { navController.popBackStack() },
+                onNavigateSelectEmployee = { navController.navigate(MainRoute.EmploymentRequestsFlow.route) }
             )
         }
 
-        composable(MainRoute.MyCalendar.route,
+        navigation(
+            route = MainRoute.EmploymentRequestsFlow.route,
+            startDestination = MainRoute.EmploymentSelectEmployee.route,
             enterTransition = slideEnterTransition(),
-            popExitTransition = slideExitTransition()
-        ) { backStackEntry ->
-            val viewModel = hiltViewModel<MyCalendarViewModel>(backStackEntry)
-
-            MyCalendarScreen(
-                viewModel,
-                onBack = { navController.popBackStack() }
+            popExitTransition = slideExitTransition(),
+        ) {
+            employmentRequestNavGraph(
+                navController = navController
             )
         }
 

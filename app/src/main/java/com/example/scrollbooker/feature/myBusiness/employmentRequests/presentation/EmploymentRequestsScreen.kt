@@ -22,7 +22,8 @@ import com.example.scrollbooker.core.util.MessageScreen
 @Composable
 fun EmploymentRequestsScreen(
     viewModel: EmploymentRequestsViewModel,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onNavigateSelectEmployee: () -> Unit
 ) {
     Layout(
         headerTitle = stringResource(R.string.employmentRequests),
@@ -43,11 +44,11 @@ fun EmploymentRequestsScreen(
                             icon = Icons.Outlined.CollectionsBookmark,
                             message = stringResource(R.string.notFoundEmploymentRequests),
                         )
-                    }
-
-                    LazyColumn(Modifier.weight(1f)) {
-                        items(employmentRequests) { employmentRequest ->
-                            Text(employmentRequest.status)
+                    } else {
+                        LazyColumn(Modifier.weight(1f)) {
+                            items(employmentRequests) { employmentRequest ->
+                                Text(employmentRequest.status)
+                            }
                         }
                     }
                 }
@@ -55,7 +56,7 @@ fun EmploymentRequestsScreen(
 
             MainButton(
                 title = stringResource(R.string.sendAnEmploymentRequest),
-                onClick = {},
+                onClick = onNavigateSelectEmployee,
             )
         }
     }
