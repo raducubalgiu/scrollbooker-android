@@ -94,4 +94,5 @@
     <string name="notFoundEmploymentRequests">Nu au fost găsite cereri de angajare</string>
     <string name="sendTheRequest">Trimite cererea</string>
     <string name="assignJob">Atribuie o funcție</string>
+    <string name="termsAndConditionsAcceptance">Acceptare termeni și condiții</string>
 </resources>
