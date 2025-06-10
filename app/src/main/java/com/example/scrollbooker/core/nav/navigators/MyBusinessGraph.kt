@@ -17,8 +17,8 @@ import com.example.scrollbooker.core.nav.transitions.slideExitTransition
 import com.example.scrollbooker.feature.myBusiness.calendar.presentation.MyCalendarScreen
 import com.example.scrollbooker.feature.myBusiness.calendar.presentation.MyCalendarViewModel
 import com.example.scrollbooker.feature.myBusiness.MyBusinessScreen
-import com.example.scrollbooker.feature.myBusiness.employees.presentation.EmployeesDismissalScreen
-import com.example.scrollbooker.feature.myBusiness.employees.presentation.EmployeesDismissalViewModel
+import com.example.scrollbooker.feature.myBusiness.employeeDismissal.presentation.EmployeesDismissalScreen
+import com.example.scrollbooker.feature.myBusiness.employeeDismissal.presentation.EmployeesDismissalViewModel
 import com.example.scrollbooker.feature.myBusiness.employees.presentation.EmployeesScreen
 import com.example.scrollbooker.feature.myBusiness.employees.presentation.EmployeesViewModel
 import com.example.scrollbooker.feature.products.presentation.AddProductScreen
@@ -80,7 +80,6 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
         ) }
 
         composable(MainRoute.Employees.route,
-            enterTransition = slideEnterTransition(),
             popExitTransition = slideExitTransition()
         ) { backStackEntry ->
             val viewModel = hiltViewModel<EmployeesViewModel>(backStackEntry)

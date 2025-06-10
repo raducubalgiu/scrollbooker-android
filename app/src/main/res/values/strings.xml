@@ -86,4 +86,7 @@
     <string name="areYouSureYouWantDeleteService">Ești sigur că dorești să ștergi acest serviciu?</string>
     <string name="addServices">Adaugă Servicii</string>
     <string name="noServicesFound">Nu s-au găsit servicii</string>
+    <string name="acceptTermsAndConditions">Declar că am ințeles termenii și condițiile aplicației</string>
+    <string name="dismiss">Demite</string>
+    <string name="dismissal">Concediere</string>
 </resources>
