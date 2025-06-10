@@ -1,5 +1,7 @@
 package com.example.scrollbooker.core.nav.host
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -11,10 +13,8 @@ import androidx.navigation.navArgument
 import com.example.scrollbooker.core.nav.navigators.myBusinessGraph
 import com.example.scrollbooker.core.nav.navigators.settingsGraph
 import com.example.scrollbooker.core.nav.routes.MainRoute
-import com.example.scrollbooker.core.nav.transitions.slideInFromLeft
-import com.example.scrollbooker.core.nav.transitions.slideInFromRight
-import com.example.scrollbooker.core.nav.transitions.slideOutToLeft
-import com.example.scrollbooker.core.nav.transitions.slideOutToRight
+import com.example.scrollbooker.core.nav.transitions.slideEnterTransition
+import com.example.scrollbooker.core.nav.transitions.slideExitTransition
 import com.example.scrollbooker.feature.profile.presentation.MyProfileScreen
 import com.example.scrollbooker.feature.profile.presentation.ProfileSharedViewModel
 import com.example.scrollbooker.feature.profile.presentation.UserProfileScreen
@@ -40,10 +40,30 @@ fun ProfileNavHost(navController: NavHostController) {
             )
         }
         composable(MainRoute.UserProfile.route,
-            enterTransition = slideInFromRight(duration = 400),
-            exitTransition = slideOutToLeft(duration = 400),
-            popEnterTransition = slideInFromLeft(duration = 400),
-            popExitTransition = slideOutToRight(duration = 400)
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    tween(300)
+                )
+            },
+            popExitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    tween(300)
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    tween(300)
+                )
+            },
+            popEnterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    tween(300)
+                )
+            }
         ) { backStackEntry ->
             val viewModel = hiltViewModel<ProfileSharedViewModel>(backStackEntry)
             UserProfileScreen(
@@ -53,10 +73,8 @@ fun ProfileNavHost(navController: NavHostController) {
             )
         }
         composable(MainRoute.EditProfile.route,
-            enterTransition = slideInFromRight(),
-            exitTransition = slideOutToLeft(),
-            popEnterTransition = slideInFromLeft(),
-            popExitTransition = slideOutToRight()
+            enterTransition = slideEnterTransition(),
+            popExitTransition = slideExitTransition()
         ) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(MainRoute.MyProfile.route)
@@ -69,12 +87,9 @@ fun ProfileNavHost(navController: NavHostController) {
                 onNavigate = { route -> navController.navigate(route) }
             )
         }
-        composable(
-            MainRoute.EditFullName.route,
-            enterTransition = slideInFromRight(),
-            exitTransition = slideOutToLeft(),
-            popEnterTransition = slideInFromLeft(),
-            popExitTransition = slideOutToRight()
+        composable(MainRoute.EditFullName.route,
+            enterTransition = slideEnterTransition(),
+            popExitTransition = slideExitTransition()
         ) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(MainRoute.MyProfile.route)
@@ -86,12 +101,9 @@ fun ProfileNavHost(navController: NavHostController) {
                 onBack = { navController.popBackStack() }
             )
         }
-        composable(
-            MainRoute.EditUsername.route,
-            enterTransition = slideInFromRight(),
-            exitTransition = slideOutToLeft(),
-            popEnterTransition = slideInFromLeft(),
-            popExitTransition = slideOutToRight()
+        composable(MainRoute.EditUsername.route,
+            enterTransition = slideEnterTransition(),
+            popExitTransition = slideExitTransition()
         ) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(MainRoute.MyProfile.route)
@@ -104,12 +116,9 @@ fun ProfileNavHost(navController: NavHostController) {
             )
         }
 
-        composable(
-            MainRoute.EditBio.route,
-            enterTransition = slideInFromRight(),
-            exitTransition = slideOutToLeft(),
-            popEnterTransition = slideInFromLeft(),
-            popExitTransition = slideOutToRight()
+        composable(MainRoute.EditBio.route,
+            enterTransition = slideEnterTransition(),
+            popExitTransition = slideExitTransition()
         ) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(MainRoute.MyProfile.route)
@@ -122,12 +131,9 @@ fun ProfileNavHost(navController: NavHostController) {
             )
         }
 
-        composable(
-            MainRoute.EditGender.route,
-            enterTransition = slideInFromRight(),
-            exitTransition = slideOutToLeft(),
-            popEnterTransition = slideInFromLeft(),
-            popExitTransition = slideOutToRight()
+        composable(MainRoute.EditGender.route,
+            enterTransition = slideEnterTransition(),
+            popExitTransition = slideExitTransition()
         ) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(MainRoute.MyProfile.route)
@@ -140,17 +146,14 @@ fun ProfileNavHost(navController: NavHostController) {
             )
         }
 
-        composable(
-            route = "${MainRoute.UserSocial.route}/{initialPage}/{userId}/{username}",
+        composable("${MainRoute.UserSocial.route}/{initialPage}/{userId}/{username}",
+            enterTransition = slideEnterTransition(),
+            popExitTransition = slideExitTransition(),
             arguments = listOf(
                 navArgument("initialPage") { type = NavType.IntType },
                 navArgument("userId") { type = NavType.IntType },
                 navArgument("username") { type = NavType.StringType }
-            ),
-            enterTransition = slideInFromRight(),
-            exitTransition = slideOutToLeft(),
-            popEnterTransition = slideInFromLeft(),
-            popExitTransition = slideOutToRight()
+            )
         ) { backStackEntry ->
             val initialPage = backStackEntry.arguments?.getInt("initialPage") ?: return@composable
             val username = backStackEntry.arguments?.getString("username") ?: return@composable

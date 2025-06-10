@@ -84,7 +84,7 @@ fun MyBusinessScreen(
                     modifier = Modifier.weight(0.5f),
                     title = stringResource(R.string.employees),
                     icon = Icons.Outlined.PeopleOutline,
-                    onClick = {}
+                    onClick = { onNavigation(MainRoute.Employees.route) }
                 )
 
                 Spacer(Modifier.width(BasePadding))

@@ -10,10 +10,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.scrollbooker.core.nav.LocalRootNavController
 import com.example.scrollbooker.core.nav.routes.AuthRoute
-import com.example.scrollbooker.core.nav.transitions.slideInFromLeft
-import com.example.scrollbooker.core.nav.transitions.slideInFromRight
-import com.example.scrollbooker.core.nav.transitions.slideOutToLeft
-import com.example.scrollbooker.core.nav.transitions.slideOutToRight
+import com.example.scrollbooker.core.nav.transitions.slideEnterTransition
+import com.example.scrollbooker.core.nav.transitions.slideExitTransition
 import com.example.scrollbooker.feature.auth.presentation.AuthViewModel
 import com.example.scrollbooker.feature.auth.presentation.LoginScreen
 import com.example.scrollbooker.feature.auth.presentation.RegisterScreen
@@ -56,32 +54,23 @@ fun AuthNavHost(viewModel: AuthViewModel) {
             }
 
             // Business Auth OnBoarding
-            composable(
-                route = AuthRoute.BusinessLocation.route,
-                enterTransition = slideInFromRight(),
-                exitTransition = slideOutToLeft(),
-                popEnterTransition = slideInFromLeft(),
-                popExitTransition = slideOutToRight()
+            composable(route = AuthRoute.BusinessLocation.route,
+                enterTransition = slideEnterTransition(),
+                popExitTransition = slideExitTransition()
             ) {
                 CollectBusinessLocationScreen(navController)
             }
 
-            composable(
-                AuthRoute.BusinessServices.route,
-                enterTransition = slideInFromRight(),
-                exitTransition = slideOutToLeft(),
-                popEnterTransition = slideInFromLeft(),
-                popExitTransition = slideOutToRight()
+            composable(AuthRoute.BusinessServices.route,
+                enterTransition = slideEnterTransition(),
+                popExitTransition = slideExitTransition()
             ) {
                 CollectBusinessServicesScreen(navController)
             }
 
-            composable(
-                AuthRoute.BusinessSchedules.route,
-                enterTransition = slideInFromRight(),
-                exitTransition = slideOutToLeft(),
-                popEnterTransition = slideInFromLeft(),
-                popExitTransition = slideOutToRight()
+            composable(AuthRoute.BusinessSchedules.route,
+                enterTransition = slideEnterTransition(),
+                popExitTransition = slideExitTransition()
             ) {
                 CollectBusinessSchedulesScreen(navController)
             }

@@ -4,34 +4,27 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.navigation.NavBackStackEntry
 
-fun slideInFromRight(duration: Int = 300): (AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition) = {
-    slideInHorizontally(
-        initialOffsetX = { fullWidth -> fullWidth },
-        animationSpec = tween(duration)
-    )
+fun slideEnterTransition(
+    direction: AnimatedContentTransitionScope.SlideDirection = AnimatedContentTransitionScope.SlideDirection.Left,
+    duration: Int = 300
+): AnimatedContentTransitionScope<*>.() -> EnterTransition {
+    return {
+        slideIntoContainer(
+            direction,
+            animationSpec = tween(duration)
+        )
+    }
 }
 
-fun slideOutToLeft(duration: Int = 300): (AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition) = {
-    slideOutHorizontally(
-        targetOffsetX = { fullWidth -> -fullWidth },
-        animationSpec = tween(duration)
-    )
-}
-
-fun slideInFromLeft(duration: Int = 300): (AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition) = {
-    slideInHorizontally(
-        initialOffsetX = { fullWidth -> -fullWidth },
-        animationSpec = tween(duration)
-    )
-}
-
-fun slideOutToRight(duration: Int = 300): (AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition) = {
-    slideOutHorizontally(
-        targetOffsetX = { fullWidth -> fullWidth },
-        animationSpec = tween(duration)
-    )
+fun slideExitTransition(
+    direction: AnimatedContentTransitionScope.SlideDirection = AnimatedContentTransitionScope.SlideDirection.Right,
+    duration: Int = 300
+): AnimatedContentTransitionScope<*>.() -> ExitTransition {
+    return {
+        slideOutOfContainer(
+            direction,
+            animationSpec = tween(duration)
+        )
+    }
 }

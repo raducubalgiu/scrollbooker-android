@@ -1,14 +1,14 @@
 package com.example.scrollbooker.core.nav.navigators
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.scrollbooker.core.nav.routes.MainRoute
-import com.example.scrollbooker.core.nav.transitions.slideInFromLeft
-import com.example.scrollbooker.core.nav.transitions.slideInFromRight
-import com.example.scrollbooker.core.nav.transitions.slideOutToLeft
-import com.example.scrollbooker.core.nav.transitions.slideOutToRight
+import com.example.scrollbooker.core.nav.transitions.slideEnterTransition
+import com.example.scrollbooker.core.nav.transitions.slideExitTransition
 import com.example.scrollbooker.feature.settings.presentation.SettingsScreen
 import com.example.scrollbooker.feature.settings.presentation.SettingsViewModel
 import com.example.scrollbooker.feature.settings.presentation.account.AccountScreen
@@ -27,10 +27,30 @@ fun NavGraphBuilder.settingsGraph(navController: NavController) {
     ) {
         composable(
             MainRoute.Settings.route,
-            enterTransition = slideInFromRight(),
-            exitTransition = slideOutToLeft(),
-            popEnterTransition = slideInFromLeft(),
-            popExitTransition = slideOutToRight()
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    tween(300)
+                )
+            },
+            popExitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    tween(300)
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    tween(300)
+                )
+            },
+            popEnterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    tween(300)
+                )
+            }
         ) { backStackKey ->
             val viewModel = hiltViewModel<SettingsViewModel>(backStackKey)
 
@@ -41,96 +61,72 @@ fun NavGraphBuilder.settingsGraph(navController: NavController) {
             )
         }
 
-        composable(
-            MainRoute.Account.route,
-            enterTransition = slideInFromRight(),
-            exitTransition = slideOutToLeft(),
-            popEnterTransition = slideInFromLeft(),
-            popExitTransition = slideOutToRight()
+        composable(MainRoute.Account.route,
+            enterTransition = slideEnterTransition(),
+            popExitTransition = slideExitTransition()
         ) {
             AccountScreen(
                 onBack = { navController.popBackStack() }
             )
         }
 
-        composable(
-            MainRoute.Privacy.route,
-            enterTransition = slideInFromRight(),
-            exitTransition = slideOutToLeft(),
-            popEnterTransition = slideInFromLeft(),
-            popExitTransition = slideOutToRight()
+        composable(MainRoute.Privacy.route,
+            enterTransition = slideEnterTransition(),
+            popExitTransition = slideExitTransition()
         ) {
             PrivacyScreen(
                 onBack = { navController.popBackStack() }
             )
         }
 
-        composable(
-            MainRoute.Security.route,
-            enterTransition = slideInFromRight(),
-            exitTransition = slideOutToLeft(),
-            popEnterTransition = slideInFromLeft(),
-            popExitTransition = slideOutToRight()
+        composable(MainRoute.Security.route,
+            enterTransition = slideEnterTransition(),
+            popExitTransition = slideExitTransition()
         ) {
             SecurityScreen(
                 onBack = { navController.popBackStack() }
             )
         }
 
-        composable(
-            MainRoute.NotificationSettings.route,
-            enterTransition = slideInFromRight(),
-            exitTransition = slideOutToLeft(),
-            popEnterTransition = slideInFromLeft(),
-            popExitTransition = slideOutToRight()
+        composable(MainRoute.NotificationSettings.route,
+            enterTransition = slideEnterTransition(),
+            popExitTransition = slideExitTransition()
         ) {
             NotificationSettings(
                 onBack = { navController.popBackStack() }
             )
         }
 
-        composable(
-            MainRoute.Display.route,
-            enterTransition = slideInFromRight(),
-            exitTransition = slideOutToLeft(),
-            popEnterTransition = slideInFromLeft(),
-            popExitTransition = slideOutToRight()
+        composable(MainRoute.Display.route,
+            enterTransition = slideEnterTransition(),
+            popExitTransition = slideExitTransition()
         ) {
             DisplayScreen(
                 onBack = { navController.popBackStack() }
             )
         }
 
-        composable(
-            MainRoute.ReportProblem.route,
-            enterTransition = slideInFromRight(),
-            exitTransition = slideOutToLeft(),
-            popEnterTransition = slideInFromLeft(),
-            popExitTransition = slideOutToRight()
+        composable(MainRoute.ReportProblem.route,
+            enterTransition = slideEnterTransition(),
+            popExitTransition = slideExitTransition()
         ) {
             ReportProblemScreen(
                 onBack = { navController.popBackStack() }
             )
         }
 
-        composable(
-            MainRoute.Support.route,
-            enterTransition = slideInFromRight(),
-            exitTransition = slideOutToLeft(),
-            popEnterTransition = slideInFromLeft(),
-            popExitTransition = slideOutToRight()
+        composable(MainRoute.Support.route,
+            enterTransition = slideEnterTransition(),
+            popExitTransition = slideExitTransition()
         ) {
             SupportScreen(
                 onBack = { navController.popBackStack() }
             )
         }
 
-        composable(
-            MainRoute.TermsAndConditions.route,
-            enterTransition = slideInFromRight(),
-            exitTransition = slideOutToLeft(),
-            popEnterTransition = slideInFromLeft(),
-            popExitTransition = slideOutToRight()
+        composable(MainRoute.TermsAndConditions.route,
+            enterTransition = slideEnterTransition(),
+            popExitTransition = slideExitTransition()
         ) {
             TermsAndConditionsScreen(
                 onBack = { navController.popBackStack() }

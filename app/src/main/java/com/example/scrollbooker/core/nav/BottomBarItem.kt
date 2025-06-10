@@ -7,8 +7,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
@@ -32,6 +35,7 @@ import com.example.scrollbooker.core.nav.routes.MainRoute.Inbox
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.SurfaceBG
 
@@ -56,7 +60,19 @@ fun BottomBarItem(
         BadgedBox(
             badge = {
                 when(tab.route) {
-                    Inbox.route -> CustomBadge(content = 3)
+                    Inbox.route -> Box(
+                        Modifier
+                            .offset(x = 10.dp, y = (-7.5).dp),
+                        contentAlignment = Alignment.TopStart
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .width(9.dp)
+                                .height(9.dp)
+                                .clip(CircleShape)
+                                .background(Error)
+                        )
+                    }
                     Appointments.route -> CustomBadge(content = 10)
                 }
             }
