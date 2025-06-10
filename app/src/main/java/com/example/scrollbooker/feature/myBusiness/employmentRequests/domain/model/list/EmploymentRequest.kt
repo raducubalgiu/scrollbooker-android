@@ -1,4 +1,5 @@
-package com.example.scrollbooker.feature.myBusiness.employmentRequests.domain.model
+package com.example.scrollbooker.feature.myBusiness.employmentRequests.domain.model.list
+import com.example.scrollbooker.feature.professions.domain.model.Profession
 import com.example.scrollbooker.feature.userSocial.domain.model.UserSocial
 
 data class EmploymentRequest(
@@ -7,9 +8,4 @@ data class EmploymentRequest(
     val employee: UserSocial,
     val employer: UserSocial,
     val profession: Profession
-)
-
-data class Profession(
-    val id: Int,
-    val name: String
 )

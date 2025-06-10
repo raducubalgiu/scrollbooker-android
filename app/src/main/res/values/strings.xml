@@ -92,4 +92,6 @@
     <string name="hireDate">Data angajării</string>
     <string name="sendAnEmploymentRequest">Trimite o cerere de angajare</string>
     <string name="notFoundEmploymentRequests">Nu au fost găsite cereri de angajare</string>
+    <string name="sendTheRequest">Trimite cererea</string>
+    <string name="assignJob">Atribuie o funcție</string>
 </resources>

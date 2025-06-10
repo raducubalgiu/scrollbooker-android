@@ -1,5 +1,6 @@
 package com.example.scrollbooker.feature.myBusiness.employmentRequests.data.remote
 
+import com.example.scrollbooker.feature.professions.data.remote.ProfessionDto
 import com.example.scrollbooker.feature.userSocial.data.remote.UserSocialDto
 
 data class EmploymentRequestDto(
@@ -8,9 +9,4 @@ data class EmploymentRequestDto(
     val employee: UserSocialDto,
     val employer: UserSocialDto,
     val profession: ProfessionDto
-)
-
-data class ProfessionDto(
-    val id: Int,
-    val name: String
 )

@@ -37,7 +37,7 @@ fun Layout(
 
         Column(modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = if(enablePadding) BasePadding else 0.dp)
+            .padding(if(enablePadding) BasePadding else 0.dp)
         ) { content() }
     }
 }

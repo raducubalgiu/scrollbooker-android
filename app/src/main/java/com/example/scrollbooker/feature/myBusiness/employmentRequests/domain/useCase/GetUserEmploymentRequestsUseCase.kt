@@ -1,6 +1,6 @@
 package com.example.scrollbooker.feature.myBusiness.employmentRequests.domain.useCase
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.feature.myBusiness.employmentRequests.domain.model.EmploymentRequest
+import com.example.scrollbooker.feature.myBusiness.employmentRequests.domain.model.list.EmploymentRequest
 import com.example.scrollbooker.feature.myBusiness.employmentRequests.domain.repository.EmploymentRequestRepository
 import com.example.scrollbooker.store.AuthDataStore
 import kotlinx.coroutines.flow.firstOrNull

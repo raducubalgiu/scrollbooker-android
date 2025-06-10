@@ -2,7 +2,7 @@ package com.example.scrollbooker.feature.myBusiness.employmentRequests.data.repo
 
 import com.example.scrollbooker.feature.myBusiness.employmentRequests.data.mappers.toDomain
 import com.example.scrollbooker.feature.myBusiness.employmentRequests.data.remote.EmploymentRequestsApiService
-import com.example.scrollbooker.feature.myBusiness.employmentRequests.domain.model.EmploymentRequest
+import com.example.scrollbooker.feature.myBusiness.employmentRequests.domain.model.list.EmploymentRequest
 import com.example.scrollbooker.feature.myBusiness.employmentRequests.domain.repository.EmploymentRequestRepository
 import javax.inject.Inject
 

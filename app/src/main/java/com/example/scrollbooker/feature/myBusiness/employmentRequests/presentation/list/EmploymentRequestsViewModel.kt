@@ -3,7 +3,7 @@ package com.example.scrollbooker.feature.myBusiness.employmentRequests.presentat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.feature.myBusiness.employmentRequests.domain.model.EmploymentRequest
+import com.example.scrollbooker.feature.myBusiness.employmentRequests.domain.model.list.EmploymentRequest
 import com.example.scrollbooker.feature.myBusiness.employmentRequests.domain.useCase.GetEmploymentRequestsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,8 +18,15 @@ class EmploymentRequestsViewModel @Inject constructor(
     private val _employmentRequests = MutableStateFlow<FeatureState<List<EmploymentRequest>>>(FeatureState.Loading)
     val employmentRequests: StateFlow<FeatureState<List<EmploymentRequest>>> = _employmentRequests
 
+    private val _assignedProfession = MutableStateFlow<String?>(null)
+    val assignedProfession: StateFlow<String?> = _assignedProfession
+
     init {
         loadEmploymentRequests()
+    }
+
+    fun assignProfession(professionId: String) {
+        _assignedProfession.value = professionId
     }
 
     fun loadEmploymentRequests() {

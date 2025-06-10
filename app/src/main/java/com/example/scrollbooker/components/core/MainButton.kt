@@ -17,6 +17,7 @@ import com.example.scrollbooker.ui.theme.bodyMedium
 @Composable
 fun MainButton(
     modifier: Modifier = Modifier,
+    fullWidth: Boolean = true,
     isLoading: Boolean = false,
     onClick: () -> Unit,
     enabled: Boolean = true,
@@ -25,7 +26,7 @@ fun MainButton(
 ) {
     Button(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth().then(modifier),
+        modifier = if(fullWidth) Modifier.fillMaxWidth().then(modifier) else modifier,
         enabled = enabled,
         colors = colors
     ) {
