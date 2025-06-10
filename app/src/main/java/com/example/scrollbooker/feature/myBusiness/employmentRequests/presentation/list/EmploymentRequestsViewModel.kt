@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation
+package com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

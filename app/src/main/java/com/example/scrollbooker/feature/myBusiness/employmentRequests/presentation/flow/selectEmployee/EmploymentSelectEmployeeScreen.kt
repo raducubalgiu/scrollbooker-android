@@ -2,7 +2,7 @@ package com.example.scrollbooker.feature.myBusiness.employmentRequests.presentat
 
 import androidx.compose.runtime.Composable
 import com.example.scrollbooker.components.core.Layout
-import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.EmploymentRequestsViewModel
+import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.list.EmploymentRequestsViewModel
 
 @Composable
 fun EmploymentSelectEmployeeScreen(

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation
+package com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.list
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn

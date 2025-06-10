@@ -13,15 +13,13 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.scrollbooker.core.nav.routes.MainRoute
-import com.example.scrollbooker.core.nav.transitions.slideEnterTransition
-import com.example.scrollbooker.core.nav.transitions.slideExitTransition
 import com.example.scrollbooker.feature.myBusiness.MyBusinessScreen
 import com.example.scrollbooker.feature.myBusiness.employeeDismissal.presentation.EmployeesDismissalScreen
 import com.example.scrollbooker.feature.myBusiness.employeeDismissal.presentation.EmployeesDismissalViewModel
 import com.example.scrollbooker.feature.myBusiness.employees.presentation.EmployeesScreen
 import com.example.scrollbooker.feature.myBusiness.employees.presentation.EmployeesViewModel
-import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.EmploymentRequestsScreen
-import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.EmploymentRequestsViewModel
+import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.list.EmploymentRequestsScreen
+import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.list.EmploymentRequestsViewModel
 import com.example.scrollbooker.feature.products.presentation.AddProductScreen
 import com.example.scrollbooker.feature.products.presentation.ProductsScreen
 import com.example.scrollbooker.feature.myBusiness.services.presentation.AttachServicesScreen
@@ -36,54 +34,52 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
     navigation(
         route = MainRoute.MyBusinessNavigator.route,
         startDestination = MainRoute.MyBusiness.route,
+        enterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Left,
+                animationSpec = tween(
+                    durationMillis = 250,
+                    easing = FastOutSlowInEasing
+                )
+            )
+        },
+        exitTransition = {
+            slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.Left,
+                animationSpec = tween(
+                    durationMillis = 250,
+                    easing = FastOutSlowInEasing
+                )
+            )
+        },
+        popEnterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Right,
+                animationSpec = tween(
+                    durationMillis = 250,
+                    easing = FastOutSlowInEasing
+                )
+            )
+        },
+        popExitTransition = {
+            slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.Right,
+                animationSpec = tween(
+                    durationMillis = 250,
+                    easing = FastOutSlowInEasing
+                )
+            )
+        }
     ) {
 
-        composable(
-            MainRoute.MyBusiness.route,
-            enterTransition = {
-                slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Left,
-                    tween(
-                        250,
-                        easing = FastOutSlowInEasing
-                    )
-                )
-            },
-            popExitTransition = {
-                slideOutOfContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Right,
-                    tween(
-                        250,
-                        easing = FastOutSlowInEasing
-                    )
-                )
-            },
-            exitTransition = {
-                slideOutOfContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Left,
-                    tween(
-                        250,
-                        easing = FastOutSlowInEasing
-                    )
-                )
-            },
-            popEnterTransition = {
-                slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Right,
-                    tween(
-                        250,
-                        easing = FastOutSlowInEasing
-                    )
-                )
-            }
-        ) { MyBusinessScreen(
-            onNavigation = { navController.navigate(it) },
-            onBack = { navController.popBackStack() }
-        ) }
+        composable(MainRoute.MyBusiness.route) {
+            MyBusinessScreen(
+                onNavigation = { navController.navigate(it) },
+                onBack = { navController.popBackStack() }
+            )
+        }
 
-        composable(MainRoute.Employees.route,
-            popExitTransition = slideExitTransition()
-        ) { backStackEntry ->
+        composable(MainRoute.Employees.route) { backStackEntry ->
             val viewModel = hiltViewModel<EmployeesViewModel>(backStackEntry)
 
             EmployeesScreen(
@@ -94,8 +90,6 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
         }
 
         composable("${MainRoute.EmployeesDismissal.route}/{userId}",
-            enterTransition = slideEnterTransition(),
-            popExitTransition = slideExitTransition(),
             arguments = listOf(
                 navArgument("userId") { type = NavType.IntType },
             )
@@ -108,9 +102,7 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
             )
         }
 
-        composable(MainRoute.EmploymentsRequests.route,
-            popExitTransition = slideExitTransition()
-        ) { backStackEntry ->
+        composable(MainRoute.EmploymentsRequests.route) { backStackEntry ->
             val viewModel = hiltViewModel<EmploymentRequestsViewModel>(backStackEntry)
 
             EmploymentRequestsScreen(
@@ -123,18 +115,13 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
         navigation(
             route = MainRoute.EmploymentRequestsFlow.route,
             startDestination = MainRoute.EmploymentSelectEmployee.route,
-            enterTransition = slideEnterTransition(),
-            popExitTransition = slideExitTransition(),
         ) {
             employmentRequestNavGraph(
                 navController = navController
             )
         }
 
-        composable(MainRoute.MyServices.route,
-            enterTransition = slideEnterTransition(),
-            popExitTransition = slideExitTransition()
-        ) { backStackEntry ->
+        composable(MainRoute.MyServices.route) { backStackEntry ->
             val viewModel = hiltViewModel<ServicesViewModel>(backStackEntry)
 
             MyServicesScreen(
@@ -144,10 +131,7 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
             )
         }
 
-        composable(MainRoute.AttachServices.route,
-            enterTransition = slideEnterTransition(),
-            popExitTransition = slideExitTransition()
-        ) { backStackEntry ->
+        composable(MainRoute.AttachServices.route) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(MainRoute.MyServices.route)
             }
@@ -156,10 +140,7 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
             AttachServicesScreen(viewModel, onBack = { navController.popBackStack() })
         }
 
-        composable(MainRoute.Products.route,
-            enterTransition = slideEnterTransition(),
-            popExitTransition = slideExitTransition()
-        ) { backStackEntry ->
+        composable(MainRoute.Products.route) { backStackEntry ->
             val viewModel = hiltViewModel<ServicesViewModel>(backStackEntry)
 
             ProductsScreen(
@@ -170,8 +151,6 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
         }
 
         composable(route = "${MainRoute.EditProduct.route}/{productId}/{productName}",
-            enterTransition = slideEnterTransition(),
-            popExitTransition = slideExitTransition(),
             arguments = listOf(
                 navArgument("productId") { type = NavType.IntType },
                 navArgument("productName") { type = NavType.StringType }
@@ -189,15 +168,12 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
             )
         }
 
-        composable(MainRoute.AddProduct.route,
-            enterTransition = slideEnterTransition(),
-            popExitTransition = slideExitTransition()
-        ) { AddProductScreen(navController = navController) }
+        composable(MainRoute.AddProduct.route) {
+            AddProductScreen(navController = navController)
+        }
 
         composable(
             MainRoute.Schedules.route,
-            enterTransition = slideEnterTransition(),
-            popExitTransition = slideExitTransition()
         ) { backStackEntry ->
             val viewModel = hiltViewModel<SchedulesViewModel>(backStackEntry)
 

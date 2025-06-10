@@ -5,9 +5,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import androidx.navigation.navigation
 import com.example.scrollbooker.core.nav.routes.MainRoute
-import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.EmploymentRequestsViewModel
+import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.list.EmploymentRequestsViewModel
 import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.flow.acceptTerms.EmploymentAcceptTermsScreen
 import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.flow.acceptTerms.EmploymentAcceptTermsViewModel
 import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.flow.assignJob.EmploymentAssignJobScreen
