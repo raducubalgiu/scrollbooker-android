@@ -40,30 +40,8 @@ fun ProfileNavHost(navController: NavHostController) {
             )
         }
         composable(MainRoute.UserProfile.route,
-            enterTransition = {
-                slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Left,
-                    tween(300)
-                )
-            },
-            popExitTransition = {
-                slideOutOfContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Right,
-                    tween(300)
-                )
-            },
-            exitTransition = {
-                slideOutOfContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Left,
-                    tween(300)
-                )
-            },
-            popEnterTransition = {
-                slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Right,
-                    tween(300)
-                )
-            }
+            enterTransition = slideEnterTransition(),
+            popExitTransition = slideExitTransition()
         ) { backStackEntry ->
             val viewModel = hiltViewModel<ProfileSharedViewModel>(backStackEntry)
             UserProfileScreen(
@@ -147,8 +125,30 @@ fun ProfileNavHost(navController: NavHostController) {
         }
 
         composable("${MainRoute.UserSocial.route}/{initialPage}/{userId}/{username}",
-            enterTransition = slideEnterTransition(),
-            popExitTransition = slideExitTransition(),
+            enterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    tween(300)
+                )
+            },
+            popExitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    tween(300)
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    tween(300)
+                )
+            },
+            popEnterTransition = {
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Right,
+                    tween(300)
+                )
+            },
             arguments = listOf(
                 navArgument("initialPage") { type = NavType.IntType },
                 navArgument("userId") { type = NavType.IntType },

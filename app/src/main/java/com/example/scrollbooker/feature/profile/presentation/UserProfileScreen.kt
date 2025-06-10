@@ -1,6 +1,7 @@
 package com.example.scrollbooker.feature.profile.presentation
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,6 +32,7 @@ import com.example.scrollbooker.feature.profile.presentation.components.common.t
 import com.example.scrollbooker.feature.profile.presentation.components.common.tab.ProfileTabRow
 import com.example.scrollbooker.feature.profile.presentation.components.myProfile.MyProfileActions
 import com.example.scrollbooker.feature.profile.presentation.components.userProfile.UserProfileActions
+import com.example.scrollbooker.ui.theme.Background
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
@@ -58,7 +60,10 @@ fun UserProfileScreen(
         List(tabCount) { LazyGridState() }
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .background(Background)
+    ) {
         Header(
             title = user?.username ?: "",
             onBack = onBack
