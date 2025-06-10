@@ -11,7 +11,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.SurfaceBG
@@ -29,7 +28,7 @@ fun PostGrid() {
             modifier = Modifier
                 .size(48.dp)
                 .align(Alignment.Center),
-            tint = Color.DarkGray
+            tint = Divider
         )
     }
 }
