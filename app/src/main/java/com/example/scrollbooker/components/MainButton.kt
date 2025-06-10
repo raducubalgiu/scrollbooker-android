@@ -2,6 +2,8 @@ package com.example.scrollbooker.components
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,12 +19,14 @@ fun MainButton(
     onClick: () -> Unit,
     isEnabled: Boolean = true,
     isLoading: Boolean = false,
-    title: String
+    title: String,
+    colors: ButtonColors = ButtonDefaults.buttonColors()
 ) {
     Button(
         modifier = Modifier.fillMaxWidth().then(modifier),
         onClick = onClick,
-        enabled = isEnabled
+        enabled = isEnabled,
+        colors = colors
     ) {
         if(isLoading) {
             CircularProgressIndicator(

@@ -9,19 +9,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.RectangleShape
 import com.example.scrollbooker.components.Avatar
 import com.example.scrollbooker.components.MainButton
 import com.example.scrollbooker.core.nav.routes.MainRoute
-import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
-import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.feature.myBusiness.employees.domain.model.Employee
+import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.Error
+import com.example.scrollbooker.ui.theme.OnError
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
@@ -55,15 +56,23 @@ fun EmployeeCard(
                 )
             }
         }
-        Spacer(Modifier.height(BasePadding))
+        Spacer(Modifier.height(SpacingXXL))
         Text(
             text = "Data angajarii: ${employee.hireDate}",
             style = bodyLarge,
         )
-        Spacer(Modifier.height(BasePadding))
+        Spacer(Modifier.height(SpacingXXL))
         MainButton(
+            colors = ButtonColors(
+                containerColor = Error,
+                contentColor = OnError,
+                disabledContainerColor = SurfaceBG,
+                disabledContentColor = Divider
+            ),
             title = "Demite",
-            onClick = { onNavigate("${MainRoute.EmployeesDismissal.route}/1") }
+            onClick = {
+                onNavigate("${MainRoute.EmployeesDismissal.route}/1")
+            }
         )
     }
 }

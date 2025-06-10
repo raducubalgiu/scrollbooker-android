@@ -89,4 +89,5 @@
     <string name="acceptTermsAndConditions">Declar că am ințeles termenii și condițiile aplicației</string>
     <string name="dismiss">Demite</string>
     <string name="dismissal">Concediere</string>
+    <string name="hireDate">Data angajării</string>
 </resources>
