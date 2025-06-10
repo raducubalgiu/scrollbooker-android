@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.profile.presentation.components
+package com.example.scrollbooker.feature.profile.presentation.components.common
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.profile.presentation.components
+package com.example.scrollbooker.feature.profile.presentation.components.myProfile
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -22,7 +22,7 @@ import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
-fun ProfileHeader(
+fun MyProfileHeader(
     username: String,
     onOpenBottomSheet: () -> Unit
 ) {

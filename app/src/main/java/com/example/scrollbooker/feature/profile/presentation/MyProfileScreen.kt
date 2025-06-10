@@ -19,7 +19,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.BottomSheet
 import com.example.scrollbooker.core.nav.routes.MainRoute
-import com.example.scrollbooker.feature.profile.presentation.components.ProfileHeader
+import com.example.scrollbooker.feature.profile.presentation.components.myProfile.MyProfileHeader
 import com.example.scrollbooker.feature.profile.presentation.components.common.tab.ProfileTabRow
 import com.example.scrollbooker.feature.profile.presentation.components.common.ProfileInfo
 import com.example.scrollbooker.feature.profile.presentation.components.common.UserScheduleSheet
@@ -71,7 +71,7 @@ fun MyProfileScreen(
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        ProfileHeader(
+        MyProfileHeader(
             username = user?.username ?: "",
             onOpenBottomSheet = { showMenuSheet = true }
         )

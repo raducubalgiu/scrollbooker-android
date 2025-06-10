@@ -21,8 +21,6 @@ import androidx.compose.ui.text.style.TextAlign
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
-import com.example.scrollbooker.feature.profile.presentation.components.ProfileCounters
-import com.example.scrollbooker.feature.profile.presentation.components.ProfileUserInfo
 import com.example.scrollbooker.feature.user.domain.model.User
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
