@@ -1,6 +1,7 @@
 package com.example.scrollbooker.core.nav.navigators
 
 import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,25 +39,37 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Left,
-                    tween(300)
+                    tween(
+                        250,
+                        easing = FastOutSlowInEasing
+                    )
                 )
             },
             popExitTransition = {
                 slideOutOfContainer(
                     AnimatedContentTransitionScope.SlideDirection.Right,
-                    tween(300)
+                    tween(
+                        250,
+                        easing = FastOutSlowInEasing
+                    )
                 )
             },
             exitTransition = {
                 slideOutOfContainer(
                     AnimatedContentTransitionScope.SlideDirection.Left,
-                    tween(300)
+                    tween(
+                        250,
+                        easing = FastOutSlowInEasing
+                    )
                 )
             },
             popEnterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Right,
-                    tween(300)
+                    tween(
+                        250,
+                        easing = FastOutSlowInEasing
+                    )
                 )
             }
         ) { MyBusinessScreen(
