@@ -17,7 +17,8 @@ import com.example.scrollbooker.feature.myBusiness.employees.presentation.compon
 @Composable
 fun EmployeesScreen(
     viewModel: EmployeesViewModel,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onNavigate: (String) -> Unit
 ) {
     Layout(
         headerTitle = stringResource(R.string.employees),
@@ -36,7 +37,7 @@ fun EmployeesScreen(
                 items(employeesState.itemCount) { index ->
                     val employee = employeesState[index]
                     if(employee != null) {
-                        EmployeeCard(employee)
+                        EmployeeCard(employee, onNavigate)
                     }
                 }
             }

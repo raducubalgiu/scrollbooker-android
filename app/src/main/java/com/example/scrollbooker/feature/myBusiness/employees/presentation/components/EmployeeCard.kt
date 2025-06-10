@@ -17,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
 import com.example.scrollbooker.components.Avatar
 import com.example.scrollbooker.components.MainButton
+import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
@@ -28,7 +29,8 @@ import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun EmployeeCard(
-    employee: Employee
+    employee: Employee,
+    onNavigate: (String) -> Unit
 ) {
     Column(modifier = Modifier
         .fillMaxSize()
@@ -61,7 +63,7 @@ fun EmployeeCard(
         Spacer(Modifier.height(BasePadding))
         MainButton(
             title = "Demite",
-            onClick = {}
+            onClick = { onNavigate("${MainRoute.EmployeesDismissal.route}/1") }
         )
     }
 }

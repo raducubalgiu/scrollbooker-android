@@ -17,6 +17,8 @@ import com.example.scrollbooker.core.nav.transitions.slideExitTransition
 import com.example.scrollbooker.feature.myBusiness.calendar.presentation.MyCalendarScreen
 import com.example.scrollbooker.feature.myBusiness.calendar.presentation.MyCalendarViewModel
 import com.example.scrollbooker.feature.myBusiness.MyBusinessScreen
+import com.example.scrollbooker.feature.myBusiness.employees.presentation.EmployeesDismissalScreen
+import com.example.scrollbooker.feature.myBusiness.employees.presentation.EmployeesDismissalViewModel
 import com.example.scrollbooker.feature.myBusiness.employees.presentation.EmployeesScreen
 import com.example.scrollbooker.feature.myBusiness.employees.presentation.EmployeesViewModel
 import com.example.scrollbooker.feature.products.presentation.AddProductScreen
@@ -84,6 +86,22 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
             val viewModel = hiltViewModel<EmployeesViewModel>(backStackEntry)
 
             EmployeesScreen(
+                viewModel,
+                onBack = { navController.popBackStack() },
+                onNavigate = { navController.navigate(it) }
+            )
+        }
+
+        composable("${MainRoute.EmployeesDismissal.route}/{userId}",
+            enterTransition = slideEnterTransition(),
+            popExitTransition = slideExitTransition(),
+            arguments = listOf(
+                navArgument("userId") { type = NavType.IntType },
+            )
+        ) { backStackEntry ->
+            val viewModel = hiltViewModel<EmployeesDismissalViewModel>(backStackEntry)
+
+            EmployeesDismissalScreen(
                 viewModel,
                 onBack = { navController.popBackStack() }
             )

@@ -4,20 +4,13 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.feature.products.domain.model.Product
-import com.example.scrollbooker.feature.products.domain.useCase.GetProductUseCase
 import com.example.scrollbooker.feature.products.domain.useCase.GetProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
-import kotlin.onFailure
 
 @HiltViewModel
 class ProductsViewModel @Inject constructor(

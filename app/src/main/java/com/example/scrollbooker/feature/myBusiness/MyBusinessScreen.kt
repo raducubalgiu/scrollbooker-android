@@ -22,6 +22,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.Layout
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.feature.myBusiness.components.MyBusinessCard
 
 @Composable
 fun MyBusinessScreen(

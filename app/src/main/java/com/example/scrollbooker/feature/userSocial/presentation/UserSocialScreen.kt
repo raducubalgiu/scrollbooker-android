@@ -2,6 +2,7 @@ package com.example.scrollbooker.feature.userSocial.presentation
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Text
@@ -17,6 +18,7 @@ import com.example.scrollbooker.components.core.Layout
 import com.example.scrollbooker.feature.userSocial.presentation.components.UserSocialList
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.getValue
+import com.example.scrollbooker.core.util.Dimens.SpacingS
 
 @Composable
 fun UserSocialScreen(
@@ -63,6 +65,7 @@ fun UserSocialScreen(
                         val userFollowers = viewModal.userFollowers.collectAsLazyPagingItems()
                         val followedOverrides by viewModal.followedOverrides.collectAsState()
                         val followRequestLocks by viewModal.followRequestLocks.collectAsState()
+
                         UserSocialList(
                             pagingItems = userFollowers,
                             followedOverrides = followedOverrides,
@@ -78,6 +81,7 @@ fun UserSocialScreen(
                         val userFollowings = viewModal.userFollowings.collectAsLazyPagingItems()
                         val followedOverrides by viewModal.followedOverrides.collectAsState()
                         val followRequestLocks by viewModal.followRequestLocks.collectAsState()
+
                         UserSocialList(
                             pagingItems = userFollowings,
                             followedOverrides = followedOverrides,
