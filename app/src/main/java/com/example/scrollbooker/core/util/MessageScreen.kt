@@ -26,13 +26,17 @@ import com.example.scrollbooker.ui.theme.bodyMedium
 
 @Composable
 fun MessageScreen(
+    modifier: Modifier = Modifier,
     icon: ImageVector,
     message: String,
     iconSize: Dp = 64.dp,
     contentPadding: PaddingValues = PaddingValues(32.dp),
     textStyle: TextStyle = bodyMedium
 ) {
-    Column(modifier = Modifier.fillMaxSize().padding(contentPadding),
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(contentPadding)
+        .then(modifier),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {

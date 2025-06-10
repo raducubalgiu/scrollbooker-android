@@ -94,7 +94,7 @@ fun MyBusinessScreen(
                     modifier = Modifier.weight(0.5f),
                     title = stringResource(R.string.employmentRequests),
                     icon = Icons.Outlined.Repeat,
-                    onClick = {}
+                    onClick = { onNavigation(MainRoute.EmploymentsRequests.route) }
                 )
             }
         }

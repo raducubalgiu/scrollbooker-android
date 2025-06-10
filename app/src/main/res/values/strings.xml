@@ -90,4 +90,6 @@
     <string name="dismiss">Demite</string>
     <string name="dismissal">Concediere</string>
     <string name="hireDate">Data angajării</string>
+    <string name="sendAnEmploymentRequest">Trimite o cerere de angajare</string>
+    <string name="notFoundEmploymentRequests">Au fost găsite cereri de angajare</string>
 </resources>
