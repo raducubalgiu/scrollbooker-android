@@ -4,19 +4,22 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.feature.schedules.domain.model.Schedule
-import com.example.scrollbooker.feature.schedules.domain.useCase.GetSchedulesUseCase
+import com.example.scrollbooker.feature.schedules.domain.useCase.GetSchedulesByUserIdUseCase
 import com.example.scrollbooker.feature.schedules.domain.useCase.UpdateSchedulesUseCase
+import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class SchedulesViewModel @Inject constructor(
-    private val getSchedulesUseCase: GetSchedulesUseCase,
+    private val authDataStore: AuthDataStore,
+    private val getSchedulesByUserIdUseCase: GetSchedulesByUserIdUseCase,
     private val updateSchedulesUseCase: UpdateSchedulesUseCase
 ): ViewModel() {
     private val _schedulesState =
@@ -33,16 +36,15 @@ class SchedulesViewModel @Inject constructor(
     private fun loadSchedules() {
         viewModelScope.launch {
             _schedulesState.value = FeatureState.Loading
-            delay(300)
 
-            getSchedulesUseCase()
-                .onSuccess { result ->
-                    _schedulesState.value = FeatureState.Success(result)
-                }
-                .onFailure { error ->
-                    _schedulesState.value = FeatureState.Error(error)
-                    Timber.Forest.tag("Schedules").e("ERROR: on Fetching Schedules $error")
-                }
+            val userId = authDataStore.getUserId().firstOrNull()
+
+            if(userId == null) {
+                Timber.tag("Schedules").e("User Id not found in datastore")
+                FeatureState.Error()
+            } else {
+                _schedulesState.value = getSchedulesByUserIdUseCase(userId)
+            }
         }
     }
 
