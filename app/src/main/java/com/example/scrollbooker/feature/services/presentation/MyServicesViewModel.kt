@@ -7,16 +7,20 @@ import com.example.scrollbooker.feature.services.domain.model.Service
 import com.example.scrollbooker.feature.services.domain.useCase.AttachManyServicesUseCase
 import com.example.scrollbooker.feature.services.domain.useCase.DetachServiceUseCase
 import com.example.scrollbooker.feature.services.domain.useCase.GetServicesByBusinessTypeUseCase
-import com.example.scrollbooker.feature.services.domain.useCase.GetServicesUseCase
+import com.example.scrollbooker.feature.services.domain.useCase.GetServicesByUserIdUseCase
+import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class ServicesViewModel @Inject constructor(
-    private val getServicesUseCase: GetServicesUseCase,
+class MyServicesViewModel @Inject constructor(
+    private val authDataStore: AuthDataStore,
+    private val getServicesByUserIdUseCase: GetServicesByUserIdUseCase,
     private val getServicesByBusinessTypeUseCase: GetServicesByBusinessTypeUseCase,
     private val attachManyServicesUseCase: AttachManyServicesUseCase,
     private val detachServiceUseCase: DetachServiceUseCase
@@ -38,15 +42,29 @@ class ServicesViewModel @Inject constructor(
 
     fun loadServices() {
         viewModelScope.launch {
-            _servicesState.value = FeatureState.Loading
-            _servicesState.value = getServicesUseCase()
+            val userId = authDataStore.getUserId().firstOrNull()
+
+            if(userId == null) {
+                Timber.tag("Services").e("ERROR: User Id not found in DataStore")
+                _availableServicesState.value = FeatureState.Error()
+            } else {
+                _servicesState.value = FeatureState.Loading
+                _servicesState.value = getServicesByUserIdUseCase(userId)
+            }
         }
     }
 
     private fun loadAvailableServices() {
         viewModelScope.launch {
-            _availableServicesState.value = FeatureState.Loading
-            _availableServicesState.value = getServicesByBusinessTypeUseCase()
+            val businessTypeId = authDataStore.getBusinessTypeId().firstOrNull()
+
+            if(businessTypeId == null) {
+                Timber.tag("Services").e("ERROR: Business Type Id not found in DataStore")
+                _availableServicesState.value = FeatureState.Error()
+            } else {
+                _availableServicesState.value = FeatureState.Loading
+                _availableServicesState.value = getServicesByBusinessTypeUseCase(businessTypeId)
+            }
         }
     }
 

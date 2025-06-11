@@ -28,7 +28,7 @@ import com.example.scrollbooker.feature.schedules.presentation.SchedulesScreen
 import com.example.scrollbooker.feature.schedules.presentation.SchedulesViewModel
 import com.example.scrollbooker.feature.services.presentation.AttachServicesScreen
 import com.example.scrollbooker.feature.services.presentation.MyServicesScreen
-import com.example.scrollbooker.feature.services.presentation.ServicesViewModel
+import com.example.scrollbooker.feature.services.presentation.MyServicesViewModel
 
 fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
     navigation(
@@ -122,7 +122,7 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
         }
 
         composable(MainRoute.MyServices.route) { backStackEntry ->
-            val viewModel = hiltViewModel<ServicesViewModel>(backStackEntry)
+            val viewModel = hiltViewModel<MyServicesViewModel>(backStackEntry)
 
             MyServicesScreen(
                 viewModel,
@@ -135,13 +135,13 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(MainRoute.MyServices.route)
             }
-            val viewModel = hiltViewModel<ServicesViewModel>(parentEntry)
+            val viewModel = hiltViewModel<MyServicesViewModel>(parentEntry)
 
             AttachServicesScreen(viewModel, onBack = { navController.popBackStack() })
         }
 
         composable(MainRoute.Products.route) { backStackEntry ->
-            val viewModel = hiltViewModel<ServicesViewModel>(backStackEntry)
+            val viewModel = hiltViewModel<MyServicesViewModel>(backStackEntry)
 
             ProductsScreen(
                 viewModel=viewModel,

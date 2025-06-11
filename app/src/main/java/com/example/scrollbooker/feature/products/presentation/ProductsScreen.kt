@@ -25,12 +25,12 @@ import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.Layout
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.feature.services.presentation.ServicesViewModel
+import com.example.scrollbooker.feature.services.presentation.MyServicesViewModel
 import com.example.scrollbooker.ui.theme.Divider
 
 @Composable
 fun ProductsScreen(
-    viewModel: ServicesViewModel,
+    viewModel: MyServicesViewModel,
     onBack: () -> Unit,
     onNavigate: (String) -> Unit
 ) {

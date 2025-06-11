@@ -24,7 +24,7 @@ import com.example.scrollbooker.feature.services.presentation.components.Service
 
 @Composable
 fun MyServicesScreen(
-    viewModel: ServicesViewModel,
+    viewModel: MyServicesViewModel,
     onBack: () -> Unit,
     onNavigate: (String) -> Unit
 ) {
