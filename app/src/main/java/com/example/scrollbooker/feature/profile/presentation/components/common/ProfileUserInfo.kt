@@ -38,11 +38,13 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
+import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
+import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
 import com.example.scrollbooker.ui.theme.titleSmall
@@ -89,13 +91,12 @@ fun ProfileUserInfo(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                Spacer(Modifier.width(10.dp))
-                Spacer(Modifier.height(SpacingXXS))
+                //Spacer(Modifier.width(10.dp))
+                Spacer(Modifier.height(SpacingXS))
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Spacer(Modifier.width(5.dp))
                     Text(
                         text = profession ?: "",
-                        style = titleSmall,
+                        style = titleMedium,
                         modifier = Modifier.weight(1f, fill = false),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
@@ -110,7 +111,7 @@ fun ProfileUserInfo(
                     Text(
                         text = "4.5",
                         style = titleMedium,
-                        fontSize = 17.sp,
+                        fontSize = 19.sp,
                         fontWeight = FontWeight.Bold,
                         color = OnBackground
                     )
@@ -132,8 +133,9 @@ fun ProfileUserInfo(
                     Spacer(Modifier.width(7.dp))
                     Text(
                         text = "Inchide la 19:00",
-                        style = bodyMedium,
-                        color = OnSurfaceBG
+                        style = bodyLarge,
+                        color = OnSurfaceBG,
+                        fontWeight = FontWeight.SemiBold
                     )
                     Spacer(Modifier.width(5.dp))
                     Icon(

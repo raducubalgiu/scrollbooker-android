@@ -2,6 +2,7 @@ package com.example.scrollbooker.components.core.tabs
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
@@ -28,7 +29,8 @@ fun Tabs(
             Box(
                 Modifier
                     .tabIndicatorOffset(tabPositions[selectedTabIndex])
-                    .height(1.5.dp)
+                    .height(3.5.dp)
+                    .padding(horizontal = 40.dp)
                     .background(OnBackground)
             )
         },

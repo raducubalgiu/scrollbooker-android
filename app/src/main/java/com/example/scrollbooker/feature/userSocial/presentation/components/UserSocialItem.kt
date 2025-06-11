@@ -55,7 +55,7 @@ fun UserSocialItem(
                 modifier = Modifier.padding(bottom = SpacingXXS),
                 style = titleMedium,
                 color = OnBackground,
-                text = userSocial.username
+                text = userSocial.fullName
             )
         },
         supportingContent = {
@@ -63,7 +63,7 @@ fun UserSocialItem(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = bodyMedium,
-                text = userSocial.fullName
+                text = "@${userSocial.username}"
             )
         },
         trailingContent = {

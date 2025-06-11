@@ -19,12 +19,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.feature.profile.presentation.components.common.ProfileActionButton
+import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.Primary
+import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun UserProfileActions() {
@@ -38,7 +41,9 @@ fun UserProfileActions() {
             onClick = {}
         ) {
             Text(
-                text = stringResource(R.string.follow)
+                text = stringResource(R.string.follow),
+                style = titleMedium,
+                fontWeight = FontWeight.Bold,
             )
         }
         Spacer(Modifier.width(SpacingS))
@@ -55,7 +60,12 @@ fun UserProfileActions() {
                         .width(10.dp)
                 )
                 Spacer(Modifier.width(SpacingS))
-                Text("5 locuri libere")
+                Text(
+                    text = "5 locuri libere",
+                    style = titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = OnBackground
+                )
             }
         }
         Spacer(Modifier.width(SpacingS))

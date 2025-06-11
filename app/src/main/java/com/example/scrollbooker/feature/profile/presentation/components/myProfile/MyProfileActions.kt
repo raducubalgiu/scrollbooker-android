@@ -8,9 +8,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.feature.profile.presentation.components.common.ProfileActionButton
+import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun MyProfileActions(
@@ -24,7 +27,10 @@ fun MyProfileActions(
             onClick = onEditProfile
         ) {
             Text(
-                text = stringResource(R.string.editProfile)
+                text = stringResource(R.string.editProfile),
+                style = titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = OnBackground
             )
         }
         Spacer(Modifier.width(SpacingS))
@@ -33,7 +39,10 @@ fun MyProfileActions(
             onClick = {}
         ) {
             Text(
-                text = stringResource(R.string.shareProfile)
+                text = stringResource(R.string.shareProfile),
+                style = titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = OnBackground
             )
         }
     }

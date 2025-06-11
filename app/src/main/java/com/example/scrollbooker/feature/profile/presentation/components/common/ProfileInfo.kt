@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
@@ -60,7 +61,9 @@ fun ProfileInfo(
     }
 
     Column(modifier = Modifier
-        .fillMaxSize().padding(BasePadding),
+            .fillMaxSize()
+            .padding(BasePadding
+        ),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -81,13 +84,13 @@ fun ProfileInfo(
             )
             Spacer(Modifier.width(SpacingS))
             Text(
-                text = "@house_of_barbers",
+                text = "House Of Barbers",
                 color = OnBackground,
                 fontWeight = FontWeight.SemiBold
             )
         }
         Spacer(Modifier.height(BasePadding))
-        Text(
+        Text(modifier = Modifier.padding(horizontal = 50.dp),
             text = user?.bio ?: "",
             textAlign = TextAlign.Center
         )
