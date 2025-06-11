@@ -1,6 +1,4 @@
 package com.example.scrollbooker.components.inputs
-
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardActions
@@ -14,11 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
-import com.example.scrollbooker.ui.theme.ScrollBookerTheme
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.labelLarge
@@ -73,15 +69,15 @@ fun Input(
     )
 }
 
-@Preview(showBackground = true)
-@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
-@Composable
-fun InputPreview() {
-    ScrollBookerTheme() {
-        Input(
-            value = "",
-            placeholder = "",
-            onValueChange = {}
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
+//@Composable
+//fun InputPreview() {
+//    ScrollBookerTheme() {
+//        Input(
+//            value = "",
+//            placeholder = "",
+//            onValueChange = {}
+//        )
+//    }
+//}

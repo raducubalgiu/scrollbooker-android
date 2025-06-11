@@ -91,23 +91,23 @@ fun UserSocialItem(
     )
 }
 
-@Preview(name = "Light", showBackground = true)
-@Preview(name = "Dark", showBackground = true, uiMode = UI_MODE_NIGHT_YES)
-@Composable
-fun NotificationItemPreview() {
-    ScrollBookerTheme() {
-        UserSocialItem(
-            userSocial = UserSocial(
-                id = 1,
-                fullName = "John Doe",
-                username = "john_doe",
-                avatar = "",
-                isFollow = true
-            ),
-            isFollowedOverrides = true,
-            enabled = true,
-            onFollow = {},
-            onNavigateUserProfile = {}
-        )
-    }
-}
+//@Preview(name = "Light", showBackground = true)
+//@Preview(name = "Dark", showBackground = true, uiMode = UI_MODE_NIGHT_YES)
+//@Composable
+//fun NotificationItemPreview() {
+//    ScrollBookerTheme() {
+//        UserSocialItem(
+//            userSocial = UserSocial(
+//                id = 1,
+//                fullName = "John Doe",
+//                username = "john_doe",
+//                avatar = "",
+//                isFollow = true
+//            ),
+//            isFollowedOverrides = true,
+//            enabled = true,
+//            onFollow = {},
+//            onNavigateUserProfile = {}
+//        )
+//    }
+//}

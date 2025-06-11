@@ -74,17 +74,17 @@ fun NotificationItem(
     )
 }
 
-@Preview(name = "Light", showBackground = true)
-@Preview(name = "Dark", showBackground = true, uiMode = UI_MODE_NIGHT_YES)
-@Composable
-fun NotificationItemPreview() {
-    ScrollBookerTheme() {
-        NotificationItem(
-            fullName = "Joh Doe",
-            message = "a inceput sa te urmareasca",
-            avatar = "",
-            actionModifier = TODO(),
-            actionTitle = "Urmareste",
-        )
-    }
-}
+//@Preview(name = "Light", showBackground = true)
+//@Preview(name = "Dark", showBackground = true, uiMode = UI_MODE_NIGHT_YES)
+//@Composable
+//fun NotificationItemPreview() {
+//    ScrollBookerTheme() {
+//        NotificationItem(
+//            fullName = "Joh Doe",
+//            message = "a inceput sa te urmareasca",
+//            avatar = "",
+//            actionModifier = TODO(),
+//            actionTitle = "Urmareste",
+//        )
+//    }
+//}
