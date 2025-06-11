@@ -1,4 +1,4 @@
-package com.example.scrollbooker.components
+package com.example.scrollbooker.components.core
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
@@ -19,6 +19,7 @@ fun DialogConfirm(
     onConfirmation: () -> Unit,
     title: String,
     text: String,
+    confirmText: String = stringResource(R.string.delete)
 ) {
     AlertDialog(
         title = {
@@ -41,7 +42,7 @@ fun DialogConfirm(
                 Text(
                     color = Error,
                     fontWeight = FontWeight.ExtraBold,
-                    text = "Sterge"
+                    text = confirmText
                 )
             }
         },

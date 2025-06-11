@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.Layout
-import com.example.scrollbooker.components.core.MainButton
+import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.core.snackbar.SnackbarManager
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.LoadingScreen

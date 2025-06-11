@@ -17,7 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
-import com.example.scrollbooker.components.BottomSheet
+import com.example.scrollbooker.components.core.BottomSheet
 import com.example.scrollbooker.feature.profile.presentation.components.common.tab.ProfileBookmarksTab
 import com.example.scrollbooker.feature.profile.presentation.components.common.tab.ProfileInfoTab
 import com.example.scrollbooker.feature.profile.presentation.components.common.tab.ProfilePostsTab

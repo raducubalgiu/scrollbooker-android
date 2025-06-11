@@ -2,17 +2,13 @@ package com.example.scrollbooker.feature.myBusiness.employmentRequests.presentat
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.ScreenIndicator
 import com.example.scrollbooker.components.core.Layout
-import com.example.scrollbooker.components.core.MainButton
+import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.list.EmploymentRequestsViewModel
 
 @Composable
