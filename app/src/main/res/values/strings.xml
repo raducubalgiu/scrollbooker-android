@@ -102,4 +102,6 @@
     <string name="allMessagesAreComingToOurTeam">Toate mesajele ajung direct la echipa noastră și ne ajută să facem aplicația mai bună.</string>
     <string name="pleaseGiveUseAllTheDetails">Te rugăm să oferi cât mai multe detalii (ex. ce acțiune făceai, ce s-a intamplat, pe ce ecran erai).</string>
     <string name="thankYouForHelp">"Îți mulțumim pentru ajutor!"</string>
+    <string name="minLengthValidationMessage">Acest câmp trebuie să aibă %1$d caractere</string>
+    <string name="maxLengthValidationMessage">Acest câmp este limitat la %1$d caractere</string>
 </resources>

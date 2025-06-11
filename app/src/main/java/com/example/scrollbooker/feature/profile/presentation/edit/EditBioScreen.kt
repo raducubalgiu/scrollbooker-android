@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.headers.HeaderEdit
@@ -15,6 +16,7 @@ import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.components.inputs.EditInput
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.util.checkLength
 import com.example.scrollbooker.feature.profile.presentation.ProfileSharedViewModel
 
 @Composable
@@ -24,9 +26,13 @@ fun EditBioScreen(
 ) {
     var newBio by rememberSaveable { mutableStateOf(viewModel.user?.bio ?: "") }
     val state = viewModel.editState.collectAsState().value
+
+    val checkBio = checkLength(LocalContext.current, newBio, maxLength = 100)
+    val isInputValid = checkBio.isNullOrBlank()
+
     val isLoading = state == FeatureState.Loading
     val isError = state == FeatureState.Error(error = null)
-    val isEnabled = isLoading || newBio != viewModel.user?.bio
+    val isEnabled = newBio != viewModel.user?.bio && isInputValid
 
     if(viewModel.isSaved) {
         LaunchedEffect(state) {
@@ -56,7 +62,9 @@ fun EditBioScreen(
             minLines = 5,
             maxLines = 5,
             isError = isError,
-            isEnabled = !isLoading
+            isEnabled = !isLoading,
+            isInputValid = isInputValid,
+            errorMessage = checkBio.toString()
         )
     }
 }

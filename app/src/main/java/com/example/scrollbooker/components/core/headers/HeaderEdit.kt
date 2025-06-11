@@ -85,7 +85,7 @@ fun HeaderEdit(
         ) {
             TextButton(
                 onClick = onAction,
-                enabled = isEnabled,
+                enabled = isEnabled && !isLoading,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Transparent,
                     contentColor = Primary,

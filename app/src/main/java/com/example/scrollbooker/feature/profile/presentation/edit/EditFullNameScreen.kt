@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.headers.HeaderEdit
@@ -15,6 +16,7 @@ import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.components.inputs.EditInput
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.util.checkLength
 import com.example.scrollbooker.feature.profile.presentation.ProfileSharedViewModel
 
 @Composable
@@ -24,9 +26,13 @@ fun EditFullNameScreen(
 ) {
     var newFullName by rememberSaveable { mutableStateOf(viewModel.user?.fullName ?: "") }
     val state = viewModel.editState.collectAsState().value
+
+    val checkFullName = checkLength(LocalContext.current, newFullName, minLength = 3, maxLength = 30)
+    val isInputValid = checkFullName.isNullOrBlank()
+
     val isLoading = state == FeatureState.Loading
     val isError = state == FeatureState.Error(error = null)
-    val isEnabled = isLoading || newFullName != viewModel.user?.fullName
+    val isEnabled = newFullName != viewModel.user?.fullName && isInputValid
 
     if(viewModel.isSaved) {
         LaunchedEffect(state) {
@@ -52,8 +58,10 @@ fun EditFullNameScreen(
             value = newFullName,
             onValueChange = { newFullName = it },
             placeholder = stringResource(R.string.yourName),
-            isError = isError,
-            isEnabled = !isLoading
+            isError = isError || !isInputValid,
+            isEnabled = !isLoading,
+            isInputValid = isInputValid,
+            errorMessage = checkFullName.toString()
         )
     }
 }
