@@ -15,7 +15,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.util.ErrorScreen
 import com.example.scrollbooker.core.util.LoadingScreen
-import com.example.scrollbooker.feature.myBusiness.services.presentation.ServicesViewModel
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
@@ -26,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.Layout
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.feature.services.presentation.ServicesViewModel
 import com.example.scrollbooker.ui.theme.Divider
 
 @Composable

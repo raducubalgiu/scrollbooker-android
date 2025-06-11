@@ -1,8 +1,8 @@
-package com.example.scrollbooker.feature.myBusiness.services.domain.useCase
+package com.example.scrollbooker.feature.services.domain.useCase
 
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.feature.myBusiness.services.domain.model.Service
-import com.example.scrollbooker.feature.myBusiness.services.domain.repository.ServiceRepository
+import com.example.scrollbooker.feature.services.domain.model.Service
+import com.example.scrollbooker.feature.services.domain.repository.ServiceRepository
 import com.example.scrollbooker.store.AuthDataStore
 import kotlinx.coroutines.flow.firstOrNull
 import timber.log.Timber

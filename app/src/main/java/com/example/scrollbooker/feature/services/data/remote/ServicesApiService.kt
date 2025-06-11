@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.myBusiness.services.data.remote
+package com.example.scrollbooker.feature.services.data.remote
 
 import retrofit2.http.Body
 import retrofit2.http.DELETE

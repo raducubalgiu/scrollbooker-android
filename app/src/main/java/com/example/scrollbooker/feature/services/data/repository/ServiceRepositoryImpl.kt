@@ -1,10 +1,9 @@
-package com.example.scrollbooker.feature.myBusiness.services.data.repository
-
-import com.example.scrollbooker.feature.myBusiness.services.data.mappers.toDomain
-import com.example.scrollbooker.feature.myBusiness.services.data.remote.AttachManyServicesRequest
-import com.example.scrollbooker.feature.myBusiness.services.data.remote.ServicesApiService
-import com.example.scrollbooker.feature.myBusiness.services.domain.model.Service
-import com.example.scrollbooker.feature.myBusiness.services.domain.repository.ServiceRepository
+package com.example.scrollbooker.feature.services.data.repository
+import com.example.scrollbooker.feature.services.data.mappers.toDomain
+import com.example.scrollbooker.feature.services.data.remote.AttachManyServicesRequest
+import com.example.scrollbooker.feature.services.data.remote.ServicesApiService
+import com.example.scrollbooker.feature.services.domain.model.Service
+import com.example.scrollbooker.feature.services.domain.repository.ServiceRepository
 import javax.inject.Inject
 
 class ServiceRepositoryImpl @Inject constructor(
