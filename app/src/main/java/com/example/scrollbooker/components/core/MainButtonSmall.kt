@@ -1,12 +1,13 @@
 package com.example.scrollbooker.components.core
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.ChipColors
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ShapeDefaults
-import androidx.compose.material3.SuggestionChip
-import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -26,28 +27,54 @@ fun MainButtonSmall(
     title: String,
     enabled: Boolean = true,
     border: BorderStroke = BorderStroke(width = 0.dp, color = Color.Transparent),
-    colors: ChipColors = SuggestionChipDefaults.suggestionChipColors(
+    colors: ButtonColors = ButtonDefaults.buttonColors(
         containerColor = Primary,
-        labelColor = OnPrimary
+        contentColor = OnPrimary
     )
 ) {
-    SuggestionChip(
-        modifier = modifier.then(modifier),
+    Button(
+        modifier = Modifier
+            .width(96.dp)
+            .height(32.dp)
+            .then(modifier),
         onClick = onClick,
-        label = {
-            Text(
-                style = labelLarge,
-                text = title,
-                fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth(),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-        },
-        enabled = enabled,
-        colors = colors,
+        contentPadding = PaddingValues(
+            vertical = 6.dp,
+            horizontal = 14.dp
+        ),
         shape = ShapeDefaults.ExtraSmall,
-        border = border
-    )
+        enabled = enabled,
+        border = border,
+        colors = colors
+    ) {
+        Text(
+            style = labelLarge,
+            text = title,
+            fontWeight = FontWeight.SemiBold,
+            textAlign = TextAlign.Center,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
+//    SuggestionChip(
+//        modifier = modifier.then(modifier),
+//        onClick = onClick,
+//        label = {
+//            Column {
+//                Text(
+//                    modifier = Modifier.fillMaxSize().background(Color.Red),
+//                    style = labelLarge,
+//                    text = title,
+//                    fontWeight = FontWeight.SemiBold,
+//                    textAlign = TextAlign.Center,
+//                    maxLines = 1,
+//                    overflow = TextOverflow.Ellipsis
+//                )
+//            }
+//        },
+//        enabled = enabled,
+//        colors = colors,
+//        shape = ShapeDefaults.ExtraSmall,
+//        border = border
+//    )
 }

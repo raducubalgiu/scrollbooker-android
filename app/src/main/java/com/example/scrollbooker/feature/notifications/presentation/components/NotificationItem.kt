@@ -1,5 +1,6 @@
 package com.example.scrollbooker.feature.notifications.presentation.components
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ListItem
@@ -36,29 +37,32 @@ fun NotificationItem(
         .then(modifier),
         headlineContent = {
             Text(
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
-                    .fillMaxWidth()
                     .padding(bottom = SpacingXXS),
                 style = titleMedium,
                 color = OnBackground,
-                text = fullName,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                text = fullName
             )
         },
         supportingContent = {
             Text(
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
                 style = bodyMedium,
                 text = message
             )
         },
         trailingContent = {
             if(showAction) {
-                MainButtonSmall(
-                    modifier = actionModifier,
-                    title = actionTitle,
-                    onClick = { onActionClick }
-                )
+                Column {
+                    MainButtonSmall(
+                        modifier = actionModifier,
+                        title = actionTitle,
+                        onClick = { onActionClick }
+                    )
+                }
             }
         },
         leadingContent = {

@@ -13,8 +13,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.scrollbooker.R
 import com.example.scrollbooker.components.inputs.InputSelect
 import com.example.scrollbooker.components.inputs.Option
 import com.example.scrollbooker.core.util.Dimens.BasePadding
@@ -60,26 +62,26 @@ fun ScheduleRow(
             verticalAlignment = Alignment.CenterVertically
         ) {
             InputSelect(
-                placeholder = "Inchis",
+                placeholder = stringResource(R.string.closed),
                 modifier = Modifier.weight(1f),
                 options = slots,
                 selectedOption = selectedStartTime.toString(),
                 onValueChange = {
                     selectedStartTime = it
-                    onChange(it, selectedStartTime)
+                    onChange(it, selectedEndTime)
                 }
             )
 
             Spacer(Modifier.width(BasePadding))
 
             InputSelect(
-                placeholder = "Inchis",
+                placeholder = stringResource(R.string.closed),
                 modifier = Modifier.weight(1f),
                 options = slots,
                 selectedOption = selectedEndTime.toString(),
                 onValueChange = {
                     selectedEndTime = it
-                    onChange(it, selectedEndTime)
+                    onChange(selectedStartTime, selectedEndTime)
                 }
             )
         }

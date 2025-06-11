@@ -7,9 +7,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
-import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -74,9 +74,9 @@ fun UserSocialItem(
                 border = BorderStroke(width = 1.dp, color = if(isFollowed) Divider else Primary),
                 enabled = enabled,
                 onClick = { onFollow(isFollowed) },
-                colors = SuggestionChipDefaults.suggestionChipColors(
+                colors = ButtonDefaults.buttonColors(
                     containerColor = if(isFollowed) Color.Transparent else Primary,
-                    labelColor = if(isFollowed) OnBackground else OnPrimary
+                    contentColor = if(isFollowed) OnBackground else OnPrimary
                 )
             )
         },
