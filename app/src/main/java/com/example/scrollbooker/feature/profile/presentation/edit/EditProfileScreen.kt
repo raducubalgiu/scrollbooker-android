@@ -62,7 +62,7 @@ fun EditProfileScreen(
         Spacer(Modifier.padding(vertical = SpacingXXS))
         ItemListInfo(
             headLine = stringResource(R.string.gender),
-            supportingText = "Male",
+            supportingText = viewModel.user?.gender ?: "",
             onClick = { onNavigate(MainRoute.EditGender.route) }
         )
     }

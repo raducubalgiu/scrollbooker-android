@@ -9,6 +9,7 @@ import com.example.scrollbooker.feature.user.domain.model.User
 import com.example.scrollbooker.feature.user.domain.useCase.GetUserInfoUseCase
 import com.example.scrollbooker.feature.user.domain.useCase.UpdateBioUseCase
 import com.example.scrollbooker.feature.user.domain.useCase.UpdateFullNameUseCase
+import com.example.scrollbooker.feature.user.domain.useCase.UpdateGenderUseCase
 import com.example.scrollbooker.feature.user.domain.useCase.UpdateUsernameUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,7 +26,8 @@ class ProfileSharedViewModel @Inject constructor(
     private val getUserInfoUseCase: GetUserInfoUseCase,
     private val updateFullNameUseCase: UpdateFullNameUseCase,
     private val updateUsernameUseCase: UpdateUsernameUseCase,
-    private val updateBioUseCase: UpdateBioUseCase
+    private val updateBioUseCase: UpdateBioUseCase,
+    private val updateGenderUseCase: UpdateGenderUseCase
 ): ViewModel() {
 
     var user by mutableStateOf<User?>(null)
@@ -99,6 +101,23 @@ class ProfileSharedViewModel @Inject constructor(
                 }
                 .onFailure { error ->
                     Timber.tag("EditProfile").e(error, "ERROR: on Edit Bio User Data")
+                    _editState.value = FeatureState.Error(error = null)
+                }
+        }
+    }
+
+    fun updateGender(newGender: String) {
+        viewModelScope.launch {
+            _editState.value = FeatureState.Loading
+
+            updateGenderUseCase(newGender)
+                .onSuccess {
+                    user = user?.copy(gender = newGender)
+                    _editState.value = FeatureState.Success(Unit)
+                    isSaved = true
+                }
+                .onFailure { error ->
+                    Timber.tag("EditProfile").e(error, "ERROR: on Edit Gender")
                     _editState.value = FeatureState.Error(error = null)
                 }
         }

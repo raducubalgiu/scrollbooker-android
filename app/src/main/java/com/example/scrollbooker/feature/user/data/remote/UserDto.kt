@@ -21,6 +21,7 @@ data class UserDto(
 
     val bio: String?,
     val profession: String,
+    val gender: String?,
 
     @SerializedName("instant_booking")
     val instantBooking: Boolean,

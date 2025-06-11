@@ -17,3 +17,8 @@ data class UpdateBioRequest(
     val bio: String
 )
 
+@Serializable
+data class UpdateGenderRequest(
+    val gender: String
+)
+

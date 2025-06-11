@@ -5,6 +5,7 @@ import com.example.scrollbooker.feature.user.data.remote.UserApiService
 import com.example.scrollbooker.feature.auth.domain.model.Permission
 import com.example.scrollbooker.feature.user.domain.model.UpdateBioRequest
 import com.example.scrollbooker.feature.user.domain.model.UpdateFullNameRequest
+import com.example.scrollbooker.feature.user.domain.model.UpdateGenderRequest
 import com.example.scrollbooker.feature.user.domain.model.UpdateUsernameRequest
 import com.example.scrollbooker.feature.user.domain.model.User
 import com.example.scrollbooker.feature.user.domain.repository.UserRepository
@@ -33,5 +34,9 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun updateBio(bio: String) {
         return userApiService.updateBio(UpdateBioRequest(bio))
+    }
+
+    override suspend fun updateGender(gender: String) {
+        return userApiService.updateGender(UpdateGenderRequest(gender))
     }
 }

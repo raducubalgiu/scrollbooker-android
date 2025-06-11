@@ -15,6 +15,7 @@ fun UserDto.toDomain(): User {
         businessId = businessId,
         businessTypeId = businessTypeId,
         counters = counters.toDomain(),
+        gender = gender,
         bio = bio,
         profession = profession,
         instantBooking = instantBooking,

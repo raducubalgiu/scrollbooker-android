@@ -6,6 +6,7 @@ data class User(
     val username: String,
     val email: String,
     val avatar: String?,
+    val gender: String?,
     val businessId: Int?,
     val businessTypeId: Int?,
     val counters: Counters,
