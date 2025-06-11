@@ -22,6 +22,7 @@ import com.example.scrollbooker.ui.theme.bodyLarge
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.Layout
 import com.example.scrollbooker.core.util.FeatureState
@@ -29,16 +30,18 @@ import com.example.scrollbooker.feature.services.presentation.MyServicesViewMode
 import com.example.scrollbooker.ui.theme.Divider
 
 @Composable
-fun ProductsScreen(
+fun MyProductsScreen(
     viewModel: MyServicesViewModel,
     onBack: () -> Unit,
     onNavigate: (String) -> Unit
 ) {
+    val myProductsViewModel: MyProductsViewModel = hiltViewModel()
     val servicesState by viewModel.servicesState.collectAsState()
 
     Layout(
         headerTitle = stringResource(R.string.myProducts),
-        onBack = onBack
+        onBack = onBack,
+        enablePadding = false
     ) {
         when(servicesState) {
             is FeatureState.Loading -> LoadingScreen()
@@ -85,9 +88,12 @@ fun ProductsScreen(
                         beyondViewportPageCount = 0,
                         modifier = Modifier.fillMaxSize()
                     ) { page ->
-                        val service = services[page]
+                        val serviceId = services[page].id
 
-                        ProductsTab(serviceId = service.id)
+                        ProductsTab(
+                            myProductsViewModel = myProductsViewModel,
+                            serviceId = serviceId
+                        )
                     }
                 }
             }

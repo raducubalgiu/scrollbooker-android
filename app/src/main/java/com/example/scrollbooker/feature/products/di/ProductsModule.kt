@@ -2,9 +2,9 @@ package com.example.scrollbooker.feature.products.di
 
 import com.example.scrollbooker.core.util.Constants
 import com.example.scrollbooker.feature.products.domain.repository.ProductRepository
-import com.example.scrollbooker.feature.products.domain.useCase.GetProductsUseCase
 import com.example.scrollbooker.feature.products.data.remote.ProductsApiService
 import com.example.scrollbooker.feature.products.data.repository.ProductRepositoryImpl
+import com.example.scrollbooker.feature.products.domain.useCase.GetProductsByUserIdAndServiceIdUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -36,9 +36,9 @@ object ProductsModule {
 
     @Provides
     @Singleton
-    fun provideGetProductsUseCase(
+    fun provideGetProductsByUserIdUseCase(
         repository: ProductRepository,
-    ): GetProductsUseCase {
-        return GetProductsUseCase(repository)
+    ): GetProductsByUserIdAndServiceIdUseCase {
+        return GetProductsByUserIdAndServiceIdUseCase(repository)
     }
 }

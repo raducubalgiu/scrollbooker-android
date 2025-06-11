@@ -11,6 +11,7 @@ import java.lang.Exception
 class ProductPagingSource(
     private val api: ProductsApiService,
     private val userId: Int,
+    private val serviceId: Int
 ) : PagingSource<Int, Product>() {
 
     override fun getRefreshKey(state: PagingState<Int, Product>): Int? {
@@ -26,7 +27,7 @@ class ProductPagingSource(
 
         return try {
             delay(300)
-            val response = api.getUserProducts(userId, page, limit)
+            val response = api.getUserProducts(userId, serviceId, page, limit)
             val products = response.results.map { it.toDomain() }
 
             val totalLoaded = page * limit

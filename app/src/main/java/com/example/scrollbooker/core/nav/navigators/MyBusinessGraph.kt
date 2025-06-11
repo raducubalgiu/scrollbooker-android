@@ -21,9 +21,7 @@ import com.example.scrollbooker.feature.myBusiness.employees.presentation.Employ
 import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.list.EmploymentRequestsScreen
 import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.list.EmploymentRequestsViewModel
 import com.example.scrollbooker.feature.products.presentation.AddProductScreen
-import com.example.scrollbooker.feature.products.presentation.ProductsScreen
-import com.example.scrollbooker.feature.products.presentation.EditProductScreen
-import com.example.scrollbooker.feature.products.presentation.ProductsViewModel
+import com.example.scrollbooker.feature.products.presentation.MyProductsScreen
 import com.example.scrollbooker.feature.schedules.presentation.SchedulesScreen
 import com.example.scrollbooker.feature.schedules.presentation.SchedulesViewModel
 import com.example.scrollbooker.feature.services.presentation.AttachServicesScreen
@@ -143,30 +141,30 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
         composable(MainRoute.Products.route) { backStackEntry ->
             val viewModel = hiltViewModel<MyServicesViewModel>(backStackEntry)
 
-            ProductsScreen(
+            MyProductsScreen(
                 viewModel=viewModel,
                 onNavigate = { navController.navigate(it) },
                 onBack = { navController.popBackStack() }
             )
         }
 
-        composable(route = "${MainRoute.EditProduct.route}/{productId}/{productName}",
-            arguments = listOf(
-                navArgument("productId") { type = NavType.IntType },
-                navArgument("productName") { type = NavType.StringType }
-            )
-        ) { backStackEntry ->
-            val productId = backStackEntry.arguments?.getInt("productId") ?: return@composable
-            val productName = backStackEntry.arguments?.getString("productName") ?: return@composable
-            val viewModel = hiltViewModel<ProductsViewModel>(backStackEntry)
-
-            EditProductScreen(
-                productId=productId,
-                productName=productName,
-                onBack = { navController.popBackStack() },
-                viewModel = viewModel
-            )
-        }
+//        composable(route = "${MainRoute.EditProduct.route}/{productId}/{productName}",
+//            arguments = listOf(
+//                navArgument("productId") { type = NavType.IntType },
+//                navArgument("productName") { type = NavType.StringType }
+//            )
+//        ) { backStackEntry ->
+//            val productId = backStackEntry.arguments?.getInt("productId") ?: return@composable
+//            val productName = backStackEntry.arguments?.getString("productName") ?: return@composable
+//            val viewModel = hiltViewModel<MyProductsViewModel>(backStackEntry)
+//
+//            EditProductScreen(
+//                productId=productId,
+//                productName=productName,
+//                onBack = { navController.popBackStack() },
+//                viewModel = viewModel
+//            )
+//        }
 
         composable(MainRoute.AddProduct.route) {
             AddProductScreen(navController = navController)

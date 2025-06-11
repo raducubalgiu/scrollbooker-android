@@ -35,7 +35,7 @@ fun EditProductScreen(
     productId: Int,
     productName: String,
     onBack: () -> Unit,
-    viewModel: ProductsViewModel
+    viewModel: MyProductsViewModel
 ) {
     val focusManager = LocalFocusManager.current
     val moveFocusDown = focusManager.moveFocus(FocusDirection.Down)

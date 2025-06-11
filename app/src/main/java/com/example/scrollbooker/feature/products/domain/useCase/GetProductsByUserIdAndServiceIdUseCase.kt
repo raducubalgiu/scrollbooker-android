@@ -5,10 +5,10 @@ import com.example.scrollbooker.feature.products.domain.model.Product
 import com.example.scrollbooker.feature.products.domain.repository.ProductRepository
 import kotlinx.coroutines.flow.Flow
 
-class GetProductsUseCase(
+class GetProductsByUserIdAndServiceIdUseCase(
     private val repository: ProductRepository
 ) {
-    operator fun invoke(userId: Int): Flow<PagingData<Product>> {
-        return repository.getUserProducts(userId)
+    operator fun invoke(userId: Int, serviceId: Int): Flow<PagingData<Product>> {
+        return repository.getUserProducts(userId, serviceId)
     }
 }

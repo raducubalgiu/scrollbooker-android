@@ -6,9 +6,10 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ProductsApiService {
-    @GET("users/{userId}/products/")
+    @GET("users/{userId}/services/{serviceId}/products/")
     suspend fun getUserProducts(
         @Path("userId") userId: Int,
+        @Path("serviceId") serviceId: Int,
         @Query("page") page: Int,
         @Query("limit") limit: Int
     ): PaginatedResponseDto<ProductDto>
