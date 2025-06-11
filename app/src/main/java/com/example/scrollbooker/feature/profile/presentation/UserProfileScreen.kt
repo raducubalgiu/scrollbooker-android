@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.example.scrollbooker.components.core.Header
+import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.feature.profile.presentation.components.common.ProfileLayout
 import com.example.scrollbooker.feature.profile.presentation.components.userProfile.UserProfileActions
 import com.example.scrollbooker.ui.theme.Background

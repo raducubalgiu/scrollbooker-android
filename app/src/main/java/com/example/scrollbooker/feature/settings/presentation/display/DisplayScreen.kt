@@ -6,7 +6,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.Layout
+import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.components.inputs.InputRadio
 import com.example.scrollbooker.components.inputs.Option
 

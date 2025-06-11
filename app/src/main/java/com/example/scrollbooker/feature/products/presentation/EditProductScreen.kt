@@ -23,7 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.Layout
+import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.inputs.Input
 import com.example.scrollbooker.components.inputs.InputSelect

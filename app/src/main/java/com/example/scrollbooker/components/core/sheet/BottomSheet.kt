@@ -1,4 +1,4 @@
-package com.example.scrollbooker.components.core
+package com.example.scrollbooker.components.core.sheet
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement

@@ -2,7 +2,6 @@ package com.example.scrollbooker.feature.userSocial.presentation
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Text
@@ -13,12 +12,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.Tabs
-import com.example.scrollbooker.components.core.Layout
+import com.example.scrollbooker.components.core.tabs.Tabs
+import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.feature.userSocial.presentation.components.UserSocialList
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.getValue
-import com.example.scrollbooker.core.util.Dimens.SpacingS
 
 @Composable
 fun UserSocialScreen(

@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.VerticalDivider
+import com.example.scrollbooker.components.core.divider.VerticalDivider
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.feature.user.domain.model.Counters

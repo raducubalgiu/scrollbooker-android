@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.Layout
+import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.list.EmploymentRequestsViewModel
 

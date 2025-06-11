@@ -1,4 +1,4 @@
-package com.example.scrollbooker.components.core
+package com.example.scrollbooker.components.core.avatar
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background

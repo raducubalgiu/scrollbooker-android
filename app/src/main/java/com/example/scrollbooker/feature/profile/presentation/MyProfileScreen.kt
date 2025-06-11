@@ -7,7 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.example.scrollbooker.components.core.BottomSheet
+import com.example.scrollbooker.components.core.sheet.BottomSheet
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.feature.profile.presentation.components.common.ProfileLayout
 import com.example.scrollbooker.feature.profile.presentation.components.myProfile.MyProfileActions

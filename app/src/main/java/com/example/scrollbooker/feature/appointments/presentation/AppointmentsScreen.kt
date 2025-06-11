@@ -9,8 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.Tabs
-import com.example.scrollbooker.components.core.Layout
+import com.example.scrollbooker.components.core.tabs.Tabs
+import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.feature.appointments.presentation.components.AppointmentsList
 import kotlinx.coroutines.launch
 

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.components.core
+package com.example.scrollbooker.components.core.dialog
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text

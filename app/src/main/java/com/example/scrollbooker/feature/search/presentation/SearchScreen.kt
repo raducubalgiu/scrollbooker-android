@@ -4,7 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.example.scrollbooker.components.core.Layout
+import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.components.inputs.SearchBar
 import com.example.scrollbooker.components.typography.TitleLarge
 

@@ -14,7 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.example.scrollbooker.components.core.Avatar
+import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.util.Dimens.SpacingM

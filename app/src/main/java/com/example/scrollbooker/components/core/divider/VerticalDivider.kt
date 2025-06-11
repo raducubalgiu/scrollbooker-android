@@ -1,4 +1,4 @@
-package com.example.scrollbooker.components.core
+package com.example.scrollbooker.components.core.divider
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

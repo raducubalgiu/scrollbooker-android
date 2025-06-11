@@ -1,4 +1,4 @@
-package com.example.scrollbooker.components.core
+package com.example.scrollbooker.components.core.layout
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.theme.Background
 

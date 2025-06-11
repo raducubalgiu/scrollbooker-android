@@ -13,8 +13,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.example.scrollbooker.components.core.DialogConfirm
-import com.example.scrollbooker.components.core.Layout
+import com.example.scrollbooker.components.core.dialog.DialogConfirm
+import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.snackbar.SnackbarManager

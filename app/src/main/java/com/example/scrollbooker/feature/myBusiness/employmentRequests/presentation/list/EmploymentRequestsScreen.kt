@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.Layout
+import com.example.scrollbooker.components.core.layout.Layout
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.example.scrollbooker.components.core.buttons.MainButton

@@ -6,7 +6,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.Layout
+import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.core.util.ErrorScreen
 import com.example.scrollbooker.core.util.LoadingScreen
 import com.example.scrollbooker.core.util.MessageScreen

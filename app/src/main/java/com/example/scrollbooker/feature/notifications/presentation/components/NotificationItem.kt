@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.scrollbooker.components.core.Avatar
+import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.components.core.buttons.MainButtonSmall
 import com.example.scrollbooker.core.util.Dimens.AvatarSizeS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS

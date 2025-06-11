@@ -24,7 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.Layout
+import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.feature.services.presentation.MyServicesViewModel
 import com.example.scrollbooker.ui.theme.Divider

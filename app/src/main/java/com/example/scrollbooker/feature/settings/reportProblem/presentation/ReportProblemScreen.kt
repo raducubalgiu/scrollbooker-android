@@ -12,8 +12,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.HeaderEdit
-import com.example.scrollbooker.components.core.Layout
+import com.example.scrollbooker.components.core.headers.HeaderEdit
+import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.components.inputs.EditInput
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
