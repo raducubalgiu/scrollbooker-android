@@ -55,8 +55,7 @@ fun MyServicesScreen(
         }
 
         Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(vertical = BasePadding),
+            .fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             when(servicesState) {

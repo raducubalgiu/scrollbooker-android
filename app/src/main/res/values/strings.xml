@@ -95,4 +95,11 @@
     <string name="sendTheRequest">Trimite cererea</string>
     <string name="assignJob">Atribuie o funcție</string>
     <string name="termsAndConditionsAcceptance">Acceptare termeni și condiții</string>
+    <string name="applicationTheme">Tema aplicației</string>
+    <string name="deviceSettings">Setările dispozitivului</string>
+    <string name="report">Raportează</string>
+    <string name="tellUsWhatWentWrong">Spune-ne ce nu a funcționat corect sau ce ar trebui îmbunătățit.</string>
+    <string name="allMessagesAreComingToOurTeam">Toate mesajele ajung direct la echipa noastră și ne ajută să facem aplicația mai bună.</string>
+    <string name="pleaseGiveUseAllTheDetails">Te rugăm să oferi cât mai multe detalii (ex. ce acțiune făceai, ce s-a intamplat, pe ce ecran erai).</string>
+    <string name="thankYouForHelp">"Îți mulțumim pentru ajutor!"</string>
 </resources>

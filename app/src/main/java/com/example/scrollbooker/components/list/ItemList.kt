@@ -16,17 +16,18 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import com.example.scrollbooker.R
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.SurfaceBG
+import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodySmall
-import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun ItemList(
     modifier: Modifier = Modifier,
     headLine: String,
-    headLineTextStyle: TextStyle = titleMedium,
+    headLineTextStyle: TextStyle = bodyLarge,
     supportingText: String = "",
     supportingTextStyle: TextStyle = bodySmall,
     leftIcon: Painter? = null,
@@ -48,8 +49,10 @@ fun ItemList(
         headlineContent = {
             Text(
                 style = headLineTextStyle,
-                fontWeight = FontWeight.SemiBold,
-                text = headLine
+                text = headLine,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                fontWeight = FontWeight.SemiBold
             )},
         supportingContent = {
             if(supportingText.isNotEmpty()) {

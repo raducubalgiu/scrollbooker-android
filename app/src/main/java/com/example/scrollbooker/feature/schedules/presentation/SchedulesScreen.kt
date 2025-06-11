@@ -31,8 +31,7 @@ fun SchedulesScreen(
         onBack = onBack
     ) {
         Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(vertical = SpacingXL),
+            .fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
             Column {

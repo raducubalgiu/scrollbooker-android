@@ -21,14 +21,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.SurfaceBG
+import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodySmall
 import com.example.scrollbooker.ui.theme.titleMedium
 
@@ -54,9 +57,9 @@ fun MyBusinessCard(
     ) {
         Text(
             text = title,
-            color = OnSurfaceBG,
-            style = titleMedium,
-            fontSize = 14.sp
+            color = OnBackground,
+            style = bodyLarge,
+            fontWeight = FontWeight.SemiBold
         )
         Column(modifier = Modifier
             .fillMaxSize()
@@ -82,7 +85,8 @@ fun MyBusinessCard(
             Text(
                 style = bodySmall,
                 text = stringResource(R.string.seeMore),
-                color = OnSurfaceBG
+                color = OnSurfaceBG,
+                fontWeight = FontWeight.SemiBold
             )
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
