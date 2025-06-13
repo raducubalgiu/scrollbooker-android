@@ -38,7 +38,7 @@ fun UserSocialScreen(
     Layout(
         headerTitle = username,
         onBack = onBack,
-        enablePadding = false
+        enablePaddingH = false
     ) {
         Column {
             Tabs(tabs, selectedTabIndex, onChangeTab = {

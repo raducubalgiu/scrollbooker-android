@@ -18,7 +18,6 @@ import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.components.core.buttons.MainButton
-import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.list.EmploymentRequestsViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,17 +27,22 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.ErrorScreen
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.LoadingScreen
+import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.flow.EmploymentRequestViewModel
+import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.list.EmploymentRequestsViewModel
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
 
 @Composable
 fun EmploymentAcceptTermsScreen(
-    globalViewModel: EmploymentRequestsViewModel,
+    employmentRequestsViewModel: EmploymentRequestsViewModel,
+    globalViewModel: EmploymentRequestViewModel,
     localViewModel: EmploymentAcceptTermsViewModel,
     onSubmit: () -> Unit,
     onBack: () -> Unit
 ) {
+    val createState by employmentRequestsViewModel.createRequestState.collectAsState()
     val consentState by localViewModel.consentState.collectAsState()
+    val consentId by globalViewModel.consentId.collectAsState()
     val scrollState = rememberScrollState()
     var agreed by remember { mutableStateOf(false) }
 
@@ -76,7 +80,17 @@ fun EmploymentAcceptTermsScreen(
                 ) {
                     Checkbox(
                         checked = agreed,
-                        onCheckedChange = { agreed = it }
+                        onCheckedChange = {
+                            agreed = it
+
+                            val consent = (consentState as FeatureState.Success).data
+
+                            if(it) {
+                                globalViewModel.assignConsent(consent.id)
+                            } else {
+                                globalViewModel.assignConsent(null)
+                            }
+                        }
                     )
                     Text(
                         text = stringResource(R.string.acceptTermsAndConditions),
@@ -85,9 +99,10 @@ fun EmploymentAcceptTermsScreen(
                     )
                 }
                 MainButton(
+                    isLoading = createState is FeatureState.Loading,
+                    enabled = consentId != null && agreed && createState != FeatureState.Loading,
                     title = stringResource(R.string.sendTheRequest),
-                    onClick = {},
-                    enabled = agreed
+                    onClick = onSubmit,
                 )
             }
         }

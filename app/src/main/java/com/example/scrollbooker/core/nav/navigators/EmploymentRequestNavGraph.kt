@@ -6,6 +6,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.example.scrollbooker.core.nav.routes.MainRoute
+import com.example.scrollbooker.feature.myBusiness.employmentRequests.data.mappers.toDto
+import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.flow.EmploymentRequestViewModel
 import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.list.EmploymentRequestsViewModel
 import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.flow.acceptTerms.EmploymentAcceptTermsScreen
 import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.flow.acceptTerms.EmploymentAcceptTermsViewModel
@@ -21,11 +23,11 @@ fun NavGraphBuilder.employmentRequestNavGraph(
         val parentEntry = remember(backStackEntry) {
             navController.getBackStackEntry(MainRoute.EmploymentSelectEmployee.route)
         }
-        val employmentRequestsViewModel: EmploymentRequestsViewModel = hiltViewModel(parentEntry)
+        val employmentRequestViewModel: EmploymentRequestViewModel = hiltViewModel(parentEntry)
         val employmentSelectEmployeeViewModel: EmploymentSelectEmployeeViewModel = hiltViewModel()
 
         EmploymentSelectEmployeeScreen(
-            globalViewModel = employmentRequestsViewModel,
+            globalViewModel = employmentRequestViewModel,
             localViewModel = employmentSelectEmployeeViewModel,
             onNext = { navController.navigate(MainRoute.EmploymentAssignJob.route) },
             onBack = { navController.popBackStack() }
@@ -36,11 +38,11 @@ fun NavGraphBuilder.employmentRequestNavGraph(
         val parentEntry = remember(backStackEntry) {
             navController.getBackStackEntry(MainRoute.EmploymentSelectEmployee.route)
         }
-        val employmentRequestsViewModel: EmploymentRequestsViewModel = hiltViewModel(parentEntry)
+        val employmentRequestViewModel: EmploymentRequestViewModel = hiltViewModel(parentEntry)
         val employmentAssignJobViewModel: EmploymentAssignJobViewModel = hiltViewModel()
 
         EmploymentAssignJobScreen(
-            globalViewModel = employmentRequestsViewModel,
+            globalViewModel = employmentRequestViewModel,
             localViewModel = employmentAssignJobViewModel,
             onNext = { navController.navigate(MainRoute.EmploymentAcceptTerms.route) },
             onBack = { navController.popBackStack() }
@@ -51,14 +53,19 @@ fun NavGraphBuilder.employmentRequestNavGraph(
         val parentEntry = remember(backStackEntry) {
             navController.getBackStackEntry(MainRoute.EmploymentSelectEmployee.route)
         }
-        val employmentRequestsViewModel: EmploymentRequestsViewModel = hiltViewModel(parentEntry)
+        val employmentRequestViewModel: EmploymentRequestViewModel = hiltViewModel(parentEntry)
         val employmentAcceptTermsViewModel: EmploymentAcceptTermsViewModel = hiltViewModel()
+        val employmentRequestsViewModel: EmploymentRequestsViewModel = hiltViewModel()
 
         EmploymentAcceptTermsScreen(
-            globalViewModel = employmentRequestsViewModel,
+            employmentRequestsViewModel = employmentRequestsViewModel,
+            globalViewModel = employmentRequestViewModel,
             localViewModel = employmentAcceptTermsViewModel,
             onSubmit = {
+                val request = employmentRequestViewModel.buildEmploymentRequest()
+                employmentRequestsViewModel.createEmploymentRequest(request.toDto())
 
+                navController.popBackStack(MainRoute.EmploymentsRequests.route, inclusive = false)
             },
             onBack = { navController.popBackStack() }
         )

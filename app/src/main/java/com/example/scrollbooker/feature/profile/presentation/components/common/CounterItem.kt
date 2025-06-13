@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.core.util.Dimens.SpacingS
@@ -39,9 +38,9 @@ fun CounterItem(
     ) {
         Text(
             style = titleMedium,
-            text = "${counter}",
+            text = "$counter",
             fontSize = 19.sp,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.ExtraBold,
             color = OnBackground
         )
         Spacer(Modifier.height(SpacingS))

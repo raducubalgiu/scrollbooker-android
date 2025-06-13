@@ -28,7 +28,7 @@ fun EditProfileScreen(
     Layout(
         headerTitle = stringResource(R.string.editProfile),
         onBack = onBack,
-        enablePadding = false
+        enablePaddingH = false
     ) {
         Column(Modifier.padding(
             top = BasePadding,

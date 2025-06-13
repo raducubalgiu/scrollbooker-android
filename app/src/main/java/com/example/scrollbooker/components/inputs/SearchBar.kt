@@ -33,7 +33,7 @@ fun SearchBar(
     placeholder: String,
     containerColor: Color = SurfaceBG,
     contentColor: Color = OnSurfaceBG,
-    onSearch: () -> Unit,
+    onSearch: (() -> Unit)? = null,
     onClick: (() -> Unit)? = null,
 ) {
     val interactionSource = remember {

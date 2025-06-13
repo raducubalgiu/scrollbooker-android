@@ -1,6 +1,7 @@
 package com.example.scrollbooker.feature.profile.presentation.edit
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,6 +33,13 @@ fun EditGenderScreen(
     val state = viewModel.editState.collectAsState().value
     val isLoading = state == FeatureState.Loading
     val isEnabled = isLoading || newGender != viewModel.user?.gender
+
+    if(viewModel.isSaved) {
+        LaunchedEffect(state) {
+            onBack()
+            viewModel.isSaved = false
+        }
+    }
 
     Layout(
         header = {

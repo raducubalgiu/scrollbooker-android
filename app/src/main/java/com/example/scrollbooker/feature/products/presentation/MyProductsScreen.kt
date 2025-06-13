@@ -41,7 +41,7 @@ fun MyProductsScreen(
     Layout(
         headerTitle = stringResource(R.string.myProducts),
         onBack = onBack,
-        enablePadding = false
+        enablePaddingH = false
     ) {
         when(servicesState) {
             is FeatureState.Loading -> LoadingScreen()

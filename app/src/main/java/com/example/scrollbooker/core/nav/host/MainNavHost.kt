@@ -145,13 +145,7 @@ fun MainNavHost() {
                                 content = { InboxNavHost(navController = it) }
                             )
                         }
-                        is MainTab.Search -> {
-                            DefaultTabContainer(
-                                navController = navControllers[MainTab.Search]!!,
-                                innerPadding = innerPadding,
-                                content = { SearchNavHost(navController = it) }
-                            )
-                        }
+                        is MainTab.Search -> SearchNavHost(navController = navControllers[MainTab.Search]!!)
                         is MainTab.Appointments -> {
                             DefaultTabContainer(
                                 navController = navControllers[MainTab.Appointments]!!,

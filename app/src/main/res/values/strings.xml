@@ -104,4 +104,6 @@
     <string name="thankYouForHelp">"Îți mulțumim pentru ajutor!"</string>
     <string name="minLengthValidationMessage">Acest câmp trebuie să aibă %1$d caractere</string>
     <string name="maxLengthValidationMessage">Acest câmp este limitat la %1$d caractere</string>
+    <string name="searchEmployee">Caută angajat</string>
+    <string name="selectEmployee">Selectează angajat</string>
 </resources>

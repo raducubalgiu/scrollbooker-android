@@ -30,7 +30,7 @@ fun SettingsScreen(
     Layout(
         headerTitle = stringResource(R.string.settings),
         onBack = onBack,
-        enablePadding = false
+        enablePaddingH = false
     ) {
         Column(modifier = Modifier.padding(BasePadding)) {
             Text(

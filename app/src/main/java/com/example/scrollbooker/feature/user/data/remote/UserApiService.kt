@@ -5,9 +5,11 @@ import com.example.scrollbooker.feature.user.domain.model.UpdateBioRequest
 import com.example.scrollbooker.feature.user.domain.model.UpdateFullNameRequest
 import com.example.scrollbooker.feature.user.domain.model.UpdateGenderRequest
 import com.example.scrollbooker.feature.user.domain.model.UpdateUsernameRequest
+import com.example.scrollbooker.feature.userSocial.data.remote.UserSocialDto
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
+import retrofit2.http.Query
 
 interface UserApiService {
     @GET("auth/user-info/")
@@ -35,4 +37,9 @@ interface UserApiService {
     suspend fun updateGender(
         @Body request: UpdateGenderRequest
     )
+
+    @GET("users/search")
+    suspend fun searchUsersClients(
+        @Query("q") q: String
+    ): List<UserSocialDto>
 }

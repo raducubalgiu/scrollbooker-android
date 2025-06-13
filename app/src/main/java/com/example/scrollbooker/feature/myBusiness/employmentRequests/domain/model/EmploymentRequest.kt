@@ -1,4 +1,5 @@
-package com.example.scrollbooker.feature.myBusiness.employmentRequests.domain.model.list
+package com.example.scrollbooker.feature.myBusiness.employmentRequests.domain.model
+
 import com.example.scrollbooker.feature.professions.domain.model.Profession
 import com.example.scrollbooker.feature.userSocial.domain.model.UserSocial
 

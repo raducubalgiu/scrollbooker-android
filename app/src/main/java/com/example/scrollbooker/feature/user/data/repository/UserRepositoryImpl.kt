@@ -9,6 +9,8 @@ import com.example.scrollbooker.feature.user.domain.model.UpdateGenderRequest
 import com.example.scrollbooker.feature.user.domain.model.UpdateUsernameRequest
 import com.example.scrollbooker.feature.user.domain.model.User
 import com.example.scrollbooker.feature.user.domain.repository.UserRepository
+import com.example.scrollbooker.feature.userSocial.data.mappers.toDomain
+import com.example.scrollbooker.feature.userSocial.domain.model.UserSocial
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
@@ -38,5 +40,9 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun updateGender(gender: String) {
         return userApiService.updateGender(UpdateGenderRequest(gender))
+    }
+
+    override suspend fun searchUsersClients(q: String): List<UserSocial> {
+        return userApiService.searchUsersClients(q).map { it.toDomain() }
     }
 }

@@ -2,6 +2,7 @@ package com.example.scrollbooker.feature.feed.presentation
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
@@ -27,6 +28,11 @@ fun FeedScreen(
     val selectedTabIndex = pagerState.currentPage
     val coroutineScope = rememberCoroutineScope()
     val isUserSwiping = remember { mutableStateOf(false) }
+
+    Column( modifier = Modifier
+        .fillMaxSize()
+        .background(Color(0xFF121212))
+    ) {  }
 
 //    LaunchedEffect(pagerState) {
 //        snapshotFlow { pagerState.currentPageOffsetFraction }

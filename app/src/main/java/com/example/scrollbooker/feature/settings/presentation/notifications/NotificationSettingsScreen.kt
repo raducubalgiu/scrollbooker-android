@@ -19,7 +19,7 @@ fun NotificationSettings(
     Layout(
         headerTitle = stringResource(R.string.notifications),
         onBack = onBack,
-        enablePadding = false
+        enablePaddingH = false
     ) {
         Column(Modifier.padding(vertical = BasePadding)) {
             ItemSwitch(

@@ -10,16 +10,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.OnSurfaceBG
+import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
 
@@ -55,7 +57,13 @@ fun InputRadio(
                 RadioButton(
                     modifier = Modifier.scale(1.3f).padding(end = BasePadding),
                     selected = (option.value == value),
-                    onClick = null
+                    onClick = null,
+                    colors = RadioButtonColors(
+                        selectedColor = Primary,
+                        unselectedColor = Divider,
+                        disabledSelectedColor = Divider,
+                        disabledUnselectedColor = Divider
+                    )
                 )
             }
         }

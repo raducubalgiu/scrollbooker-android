@@ -21,7 +21,7 @@ fun InboxScreen(viewModel: InboxViewModel) {
     Layout(
         headerTitle = stringResource(id = R.string.inbox),
         enableBack = false,
-        enablePadding = false
+        enablePaddingH = false
     ) {
         when(refreshState) {
             is LoadState.Loading -> { LoadingScreen() }

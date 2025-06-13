@@ -2,6 +2,7 @@ package com.example.scrollbooker.feature.user.domain.repository
 
 import com.example.scrollbooker.feature.auth.domain.model.Permission
 import com.example.scrollbooker.feature.user.domain.model.User
+import com.example.scrollbooker.feature.userSocial.domain.model.UserSocial
 
 interface UserRepository {
     suspend fun getUserInfo(): User
@@ -10,4 +11,5 @@ interface UserRepository {
     suspend fun updateUsername(username: String)
     suspend fun updateBio(bio: String)
     suspend fun updateGender(gender: String)
+    suspend fun searchUsersClients(q: String): List<UserSocial>
 }

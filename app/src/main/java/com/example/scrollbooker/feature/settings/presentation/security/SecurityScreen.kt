@@ -11,7 +11,7 @@ fun SecurityScreen(
 ) {
     Layout(
         headerTitle = stringResource(R.string.security),
-        enablePadding = false,
+        enablePaddingH = false,
         onBack = onBack
     ) {
         Text("Security Screen")

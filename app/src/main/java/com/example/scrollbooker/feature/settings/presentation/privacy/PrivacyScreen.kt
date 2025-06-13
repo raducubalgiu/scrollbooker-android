@@ -19,7 +19,7 @@ fun PrivacyScreen(
     Layout(
         headerTitle = stringResource(R.string.privacy),
         onBack = onBack,
-        enablePadding = false
+        enablePaddingH = false
     ) {
         Text("Privacy Screen")
     }

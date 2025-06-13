@@ -18,26 +18,24 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.ErrorScreen
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.LoadingScreen
-import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.list.EmploymentRequestsViewModel
+import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.flow.EmploymentRequestViewModel
 
 @Composable
 fun EmploymentAssignJobScreen(
-    globalViewModel: EmploymentRequestsViewModel,
+    globalViewModel: EmploymentRequestViewModel,
     localViewModel: EmploymentAssignJobViewModel,
     onNext: () -> Unit,
     onBack: () -> Unit
 ) {
     val professionsState by localViewModel.professionsState.collectAsState()
-    val assignedProfession by globalViewModel.assignedProfession.collectAsState()
+    val professionId by globalViewModel.professionId.collectAsState()
 
     Layout(
         headerTitle = stringResource(R.string.assignJob),
-        onBack = onBack,
-        enablePadding = false
+        onBack = onBack
     ) {
         Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(vertical = BasePadding),
+            .fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column {
@@ -49,18 +47,17 @@ fun EmploymentAssignJobScreen(
                         val options = professions.map { Option(value = it.id.toString(), name = it.name) }
 
                         InputRadio(
-                            value = assignedProfession.toString(),
+                            value = professionId.toString(),
                             options = options,
-                            onValueChange = { globalViewModel.assignProfession(it) }
+                            onValueChange = { globalViewModel.assignProfession(it.toInt()) }
                         )
                     }
                 }
             }
             MainButton(
-                modifier = Modifier.padding(horizontal = BasePadding),
                 title = stringResource(R.string.nextStep),
                 onClick = onNext,
-                enabled = assignedProfession != null
+                enabled = professionId != null
             )
         }
     }

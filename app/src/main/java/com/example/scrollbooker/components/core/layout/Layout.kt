@@ -17,7 +17,8 @@ fun Layout(
     headerTitle: String = "",
     onBack: (() -> Unit)? = null,
     enableBack: Boolean = true,
-    enablePadding: Boolean = true,
+    enablePaddingV: Boolean = true,
+    enablePaddingH: Boolean = true,
     header: (@Composable () -> Unit)? = null,
     content: @Composable () -> Unit,
 ) {
@@ -38,7 +39,10 @@ fun Layout(
 
         Column(modifier = Modifier
             .fillMaxSize()
-            .padding(if(enablePadding) BasePadding else 0.dp)
+            .padding(
+                vertical = if(enablePaddingV) BasePadding else 0.dp,
+                horizontal = if(enablePaddingH) BasePadding else 0.dp
+            )
         ) { content() }
     }
 }

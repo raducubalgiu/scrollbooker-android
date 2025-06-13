@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.BadgedBox
@@ -26,10 +27,9 @@ import com.example.scrollbooker.components.core.badge.CustomBadge
 import com.example.scrollbooker.core.nav.host.MainTab
 import com.example.scrollbooker.core.nav.routes.MainRoute.Appointments
 import com.example.scrollbooker.core.nav.routes.MainRoute.Inbox
-import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
-import com.example.scrollbooker.ui.theme.SurfaceBG
+import com.example.scrollbooker.ui.theme.Primary
 
 @Composable
 fun BottomBarItem(
@@ -71,17 +71,12 @@ fun BottomBarItem(
         ) {
             Box {
                 if(tab.route == MainTab.Search.route) {
-                    Box(Modifier
-                        .clip(CircleShape)
-                        .background(SurfaceBG)
-                        .padding(SpacingM)
-                    ) {
-                        Icon(
-                            imageVector = tab.iconVector,
-                            contentDescription = null,
-                            tint = OnBackground,
-                        )
-                    }
+                    Icon(
+                        modifier = Modifier.size(40.dp),
+                        imageVector = tab.iconVector,
+                        contentDescription = null,
+                        tint = if (isSelected) Primary else Color.Gray,
+                    )
                 } else {
                     Icon(
                         imageVector = tab.iconVector,
@@ -93,6 +88,7 @@ fun BottomBarItem(
         }
         Text(
             text = if(tab.route == MainTab.Search.route) "" else tab.label,
+            color = if(isSelected) OnBackground else Color.Gray,
             fontSize = 12.sp
         )
     }

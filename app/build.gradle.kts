@@ -105,4 +105,7 @@ dependencies {
 
     implementation(libs.threetenabp)
 
+    // Google Map
+    implementation(libs.maps.compose)
+
 }
