@@ -29,8 +29,7 @@ fun Tabs(
             Box(
                 Modifier
                     .tabIndicatorOffset(tabPositions[selectedTabIndex])
-                    .height(3.5.dp)
-                    .padding(horizontal = 40.dp)
+                    .height(1.5.dp)
                     .background(OnBackground)
             )
         },

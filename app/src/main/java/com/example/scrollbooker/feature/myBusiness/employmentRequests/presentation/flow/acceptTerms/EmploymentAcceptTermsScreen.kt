@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -23,6 +24,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.ErrorScreen
 import com.example.scrollbooker.core.util.FeatureState
@@ -47,15 +49,15 @@ fun EmploymentAcceptTermsScreen(
     var agreed by remember { mutableStateOf(false) }
 
     Layout(
-        headerTitle = stringResource(R.string.acceptTermsAndConditions),
+        headerTitle = stringResource(R.string.termsAndConditions),
         onBack = onBack
     ) {
         Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(top = BasePadding),
+            .fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column(modifier = Modifier
+                .clip(shape = ShapeDefaults.Small)
                 .fillMaxWidth()
                 .weight(1f)
                 .background(SurfaceBG)

@@ -14,11 +14,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -32,6 +34,7 @@ import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
+import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.bodySmall
 import com.example.scrollbooker.ui.theme.titleMedium
 
@@ -45,14 +48,14 @@ fun MyBusinessCard(
     val interactionSource = remember { MutableInteractionSource() }
 
     Column(modifier = Modifier
+        .clip(shape = ShapeDefaults.Small)
         .background(SurfaceBG)
+        .padding(horizontal = SpacingM, vertical = SpacingM)
         .clickable(
             onClick = onClick,
             interactionSource = interactionSource,
             indication = null
         )
-        .padding(horizontal = SpacingM, vertical = SpacingM)
-        //.clip(shape = ShapeDefaults.Medium)
         .then(modifier)
     ) {
         Text(
@@ -83,7 +86,7 @@ fun MyBusinessCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                style = bodySmall,
+                style = bodyMedium,
                 text = stringResource(R.string.seeMore),
                 color = OnSurfaceBG,
                 fontWeight = FontWeight.SemiBold

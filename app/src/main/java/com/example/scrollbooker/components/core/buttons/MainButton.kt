@@ -38,7 +38,7 @@ fun MainButton(
     ) {
         if(isLoading) {
             CircularProgressIndicator(
-                modifier = Modifier.size(25.dp),
+                modifier = Modifier.size(17.dp),
                 strokeWidth = 4.dp,
                 color = Divider
             )
