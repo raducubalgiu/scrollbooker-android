@@ -1,22 +1,18 @@
 package com.example.scrollbooker.feature.profile.presentation.components.userProfile
-
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.outlined.CalendarToday
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -24,24 +20,28 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.feature.profile.presentation.components.common.ProfileActionButton
+import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnPrimary
+import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
+import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
-fun UserProfileActions() {
+fun UserProfileActions(isFollow: Boolean) {
     Row(modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
         ProfileActionButton(
             modifier = Modifier.weight(5f),
-            containerColor = Primary,
+            containerColor = if(isFollow) SurfaceBG else Primary,
             contentColor = OnPrimary,
-            onClick = {}
+            onClick = { }
         ) {
             Text(
-                text = stringResource(R.string.follow),
+                text = if(isFollow) stringResource(R.string.following) else stringResource(R.string.follow),
+                color = if(isFollow) OnSurfaceBG else OnPrimary,
                 style = titleMedium,
                 fontWeight = FontWeight.Bold,
             )
@@ -52,16 +52,13 @@ fun UserProfileActions() {
             onClick = {}
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .background(Color.Green)
-                        .height(10.dp)
-                        .width(10.dp)
+                Icon(
+                    imageVector = Icons.Outlined.CalendarToday,
+                    contentDescription = null
                 )
                 Spacer(Modifier.width(SpacingS))
                 Text(
-                    text = "5 locuri libere",
+                    text = "Calendar",
                     style = titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = OnBackground

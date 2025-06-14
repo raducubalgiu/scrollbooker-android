@@ -14,10 +14,9 @@ fun DefaultTabContainer(
     innerPadding: PaddingValues,
     content: @Composable (NavHostController) -> Unit
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding)
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .padding(top = innerPadding.calculateTopPadding())
     ) {
         content(navController)
     }

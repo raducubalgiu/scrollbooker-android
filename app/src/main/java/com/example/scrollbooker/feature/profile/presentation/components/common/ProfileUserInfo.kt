@@ -56,6 +56,7 @@ fun ProfileUserInfo(
     onOpenScheduleSheet: () -> Unit
 ) {
     val isBusinessOrEmployee = user.businessId != null
+    val isOpenNow = user.openingHours.openNow
     val interactionSource = remember { MutableInteractionSource() }
 
     Column(modifier = Modifier
@@ -77,7 +78,7 @@ fun ProfileUserInfo(
                 Box(modifier = Modifier
                     .size(25.dp)
                     .clip(CircleShape)
-                    .background(Color.Green)
+                    .background(if(isOpenNow) Color.Green else Color(0xFFCCCCCC))
                     .border(3.dp, Color.White, CircleShape)
                 )
             }
@@ -110,7 +111,7 @@ fun ProfileUserInfo(
                         )
                         Spacer(Modifier.width(5.dp))
                         Text(
-                            text = "4.5",
+                            text = user.counters.ratingsAverage.toString(),
                             style = titleMedium,
                             fontSize = 19.sp,
                             fontWeight = FontWeight.Bold,
@@ -119,7 +120,7 @@ fun ProfileUserInfo(
                     }
                 }
                 if(isBusinessOrEmployee) {
-                    Spacer(Modifier.height(SpacingS))
+                    Spacer(Modifier.height(SpacingXS))
                     Row(modifier = Modifier
                         .clickable(
                             onClick = onOpenScheduleSheet,
@@ -133,9 +134,9 @@ fun ProfileUserInfo(
                             contentDescription = null,
                             tint = OnSurfaceBG
                         )
-                        Spacer(Modifier.width(7.dp))
+                        Spacer(Modifier.width(5.dp))
                         Text(
-                            text = formatOpeningHours(user.openingHours),
+                            text = formatOpeningHours(user.openingHours).toString(),
                             style = bodyLarge,
                             color = OnSurfaceBG,
                             fontWeight = FontWeight.SemiBold

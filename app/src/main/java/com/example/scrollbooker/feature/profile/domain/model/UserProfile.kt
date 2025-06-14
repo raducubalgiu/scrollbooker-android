@@ -12,7 +12,8 @@ data class UserProfile(
     val businessTypeId: Int?,
     val counters: UserCounters,
     val profession: String,
-    val openingHours: OpeningHours
+    val openingHours: OpeningHours,
+    val isFollow: Boolean
 )
 
 data class OpeningHours(

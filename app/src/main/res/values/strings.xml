@@ -107,4 +107,11 @@
     <string name="searchEmployee">Caută angajat</string>
     <string name="selectEmployee">Selectează angajat</string>
     <string name="noProductsFound">Nu au fost găsite produse</string>
+    <string name="monday">Luni</string>
+    <string name="tuesday">Marți</string>
+    <string name="wednesday">Miercuri</string>
+    <string name="thursday">Joi</string>
+    <string name="friday">Vineri</string>
+    <string name="saturday">Sâmbătă</string>
+    <string name="sunday">Duminică</string>
 </resources>

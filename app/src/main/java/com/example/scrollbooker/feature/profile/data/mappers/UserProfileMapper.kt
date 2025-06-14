@@ -18,7 +18,8 @@ fun UserProfileDto.toDomain(): UserProfile {
         businessTypeId = businessTypeId,
         counters = counters.toDomain(),
         profession = profession,
-        openingHours = openingHours.toDomain()
+        openingHours = openingHours.toDomain(),
+        isFollow = isFollow
     )
 }
 

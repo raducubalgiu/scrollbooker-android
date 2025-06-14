@@ -36,7 +36,7 @@ fun UserProfileScreen(
                     user = user,
                     onNavigate = onNavigate
                 ) {
-                    UserProfileActions()
+                    UserProfileActions(isFollow = user.isFollow)
                 }
             }
         }

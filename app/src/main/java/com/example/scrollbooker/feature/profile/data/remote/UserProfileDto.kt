@@ -23,7 +23,10 @@ data class UserProfileDto (
     val profession: String,
 
     @SerializedName("opening_hours")
-    val openingHours: OpeningHoursDto
+    val openingHours: OpeningHoursDto,
+
+    @SerializedName("is_follow")
+    val isFollow: Boolean
 )
 
 data class OpeningHoursDto(
