@@ -54,12 +54,12 @@ fun EditProfileScreen(
             supportingText = user?.fullName ?: "",
             onClick = { onNavigate(MainRoute.EditFullName.route) }
         )
-//        Spacer(Modifier.padding(vertical = SpacingXXS))
-//        ItemListInfo(
-//            headLine = stringResource(R.string.username),
-//            supportingText = viewModel.user?.username ?: "",
-//            onClick = { onNavigate(MainRoute.EditUsername.route) }
-//        )
+        Spacer(Modifier.padding(vertical = SpacingXXS))
+        ItemListInfo(
+            headLine = stringResource(R.string.username),
+            supportingText = user?.username ?: "",
+            onClick = { onNavigate(MainRoute.EditUsername.route) }
+        )
 //        Spacer(Modifier.padding(vertical = SpacingXXS))
 //        ItemListInfo(
 //            headLine = stringResource(R.string.biography),

@@ -3,6 +3,7 @@ package com.example.scrollbooker.feature.profile.data.repository
 import com.example.scrollbooker.feature.profile.data.mappers.toDomain
 import com.example.scrollbooker.feature.profile.data.remote.UserProfileApiService
 import com.example.scrollbooker.feature.profile.domain.model.UpdateFullNameRequest
+import com.example.scrollbooker.feature.profile.domain.model.UpdateUsernameRequest
 import com.example.scrollbooker.feature.profile.domain.model.UserProfile
 import com.example.scrollbooker.feature.profile.domain.repository.UserProfileRepository
 import javax.inject.Inject
@@ -19,10 +20,10 @@ class UserProfileRepositoryImpl @Inject constructor(
             fullname = fullName
         ))
     }
-//
-//    override suspend fun updateUsername(username: String) {
-//        return userApiService.updateUsername(UpdateUsernameRequest(username))
-//    }
+
+    override suspend fun updateUsername(username: String) {
+        return apiService.updateUsername(UpdateUsernameRequest(username))
+    }
 //
 //    override suspend fun updateBio(bio: String) {
 //        return userApiService.updateBio(UpdateBioRequest(bio))

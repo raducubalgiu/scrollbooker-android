@@ -6,7 +6,7 @@ import javax.inject.Inject
 class UpdateUsernameUseCase @Inject constructor(
     private val userRepository: UserProfileRepository
 ) {
-//    suspend operator fun invoke(username: String): Result<Unit> = runCatching {
-//        userRepository.updateUsername(username)
-//    }
+    suspend operator fun invoke(username: String): Result<Unit> = runCatching {
+        userRepository.updateUsername(username)
+    }
 }

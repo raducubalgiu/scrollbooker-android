@@ -1,6 +1,7 @@
 package com.example.scrollbooker.feature.profile.data.remote
 
 import com.example.scrollbooker.feature.profile.domain.model.UpdateFullNameRequest
+import com.example.scrollbooker.feature.profile.domain.model.UpdateUsernameRequest
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
@@ -15,5 +16,10 @@ interface UserProfileApiService {
     @PATCH("users/user-info/fullname")
     suspend fun updateFullName(
         @Body request: UpdateFullNameRequest
+    )
+
+    @PATCH("users/user-info/username")
+    suspend fun updateUsername(
+        @Body request: UpdateUsernameRequest
     )
 }

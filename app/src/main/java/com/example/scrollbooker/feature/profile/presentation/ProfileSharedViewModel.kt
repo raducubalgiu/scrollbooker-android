@@ -72,23 +72,28 @@ class ProfileSharedViewModel @Inject constructor(
                 }
         }
     }
-//
-//    fun updateUsername(newUsername: String) {
-//        viewModelScope.launch {
-//            _editState.value = FeatureState.Loading
-//
-//            updateUsernameUseCase(newUsername)
-//                .onSuccess {
-//                    user = user?.copy(username = newUsername)
-//                    _editState.value = FeatureState.Success(Unit)
-//                    isSaved = true
-//                }
-//                .onFailure { error ->
-//                    Timber.tag("EditProfile").e(error, "ERROR: on Edit Username User Data")
-//                    _editState.value = FeatureState.Error(error = null)
-//                }
-//        }
-//    }
+
+    fun updateUsername(newUsername: String) {
+        viewModelScope.launch {
+            _editState.value = FeatureState.Loading
+
+            updateUsernameUseCase(newUsername)
+                .onSuccess {
+                    _editState.value = FeatureState.Success(Unit)
+
+                    val currentProfile = (_userProfileState.value as? FeatureState.Success)?.data
+                    if(currentProfile != null) {
+                        val updatedProfile = currentProfile.copy(username = newUsername)
+                        _userProfileState.value = FeatureState.Success(updatedProfile)
+                    }
+                    isSaved = true
+                }
+                .onFailure { error ->
+                    Timber.tag("EditProfile").e(error, "ERROR: on Edit FullName User Data")
+                    _editState.value = FeatureState.Error(error = null)
+                }
+        }
+    }
 //
 //    fun updateBio(newBio: String) {
 //        viewModelScope.launch {
