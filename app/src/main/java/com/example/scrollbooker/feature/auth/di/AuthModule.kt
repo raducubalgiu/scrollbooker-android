@@ -10,9 +10,9 @@ import com.example.scrollbooker.store.AuthDataStore
 import com.example.scrollbooker.feature.auth.data.remote.auth.AuthApiService
 import com.example.scrollbooker.feature.auth.data.repository.AuthRepositoryImpl
 import com.example.scrollbooker.feature.auth.domain.repository.AuthRepository
-import com.example.scrollbooker.feature.auth.domain.usecase.GetLoginUseCase
 import com.example.scrollbooker.feature.auth.domain.usecase.GetUserInfoUseCase
 import com.example.scrollbooker.feature.auth.domain.usecase.GetUserPermissionsUseCase
+import com.example.scrollbooker.feature.auth.domain.usecase.LoginAndSaveSessionUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -66,26 +66,33 @@ object AuthModule {
 
     @Provides
     @Singleton
-    fun provideGetLoginInfoUseCase(authApi: AuthApiService): GetLoginUseCase {
-        return GetLoginUseCase(authApi)
+    fun provideAuthRepository(
+        apiService: AuthApiService,
+        tokenProvider: TokenProvider,
+        authDataStore: AuthDataStore
+    ): AuthRepository {
+        return AuthRepositoryImpl(
+            apiService,
+            tokenProvider,
+            authDataStore
+        )
     }
 
     @Provides
     @Singleton
-    fun provideAuthRepository(
-        authApiService: AuthApiService,
+    fun provideLoginAndSaveSessionUseCase(
         tokenProvider: TokenProvider,
         authDataStore: AuthDataStore,
-        getLoginUseCase: GetLoginUseCase,
+        repository: AuthRepository,
         getUserInfoUseCase: GetUserInfoUseCase,
-        getUserPermissionsUseCase: GetUserPermissionsUseCase
-    ): AuthRepository =
-        AuthRepositoryImpl(
-            authApi = authApiService,
+        getUserPermissionsUseCase: GetUserPermissionsUseCase,
+    ): LoginAndSaveSessionUseCase {
+        return LoginAndSaveSessionUseCase(
             tokenProvider = tokenProvider,
             authDataStore = authDataStore,
-            getLoginInfoUseCase = getLoginUseCase,
+            repository = repository,
             getUserInfoUseCase = getUserInfoUseCase,
             getUserPermissionsUseCase = getUserPermissionsUseCase
         )
+    }
 }
