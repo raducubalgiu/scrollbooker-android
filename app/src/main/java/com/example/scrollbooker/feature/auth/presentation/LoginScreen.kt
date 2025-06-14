@@ -26,7 +26,7 @@ fun LoginScreen(
     rootNavController: NavHostController,
     viewModel: AuthViewModel = hiltViewModel(),
 ) {
-    val loginState by viewModel.loginState.collectAsState()
+    val authState by viewModel.authState.collectAsState()
 
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -60,7 +60,7 @@ fun LoginScreen(
             placeholder = "Username"
         )
 
-        when(loginState) {
+        when(authState) {
             is FeatureState.Loading -> {
                 CircularProgressIndicator()
             }

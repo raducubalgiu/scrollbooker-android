@@ -7,7 +7,7 @@ import com.example.scrollbooker.core.network.tokenProvider.TokenProvider
 import com.example.scrollbooker.core.network.tokenProvider.TokenProviderImpl
 import com.example.scrollbooker.core.util.Constants
 import com.example.scrollbooker.store.AuthDataStore
-import com.example.scrollbooker.feature.auth.data.remote.AuthApiService
+import com.example.scrollbooker.feature.auth.data.remote.auth.AuthApiService
 import com.example.scrollbooker.feature.auth.data.repository.AuthRepositoryImpl
 import com.example.scrollbooker.feature.auth.domain.repository.AuthRepository
 import com.example.scrollbooker.feature.auth.domain.usecase.GetLoginUseCase

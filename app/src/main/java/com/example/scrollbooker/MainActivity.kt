@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
         val viewModel by viewModels<AuthViewModel>()
 
         splashScreen.setKeepOnScreenCondition {
-            viewModel.loginState.value is FeatureState.Loading
+            viewModel.authState.value is FeatureState.Loading
         }
 
         super.onCreate(savedInstanceState)

@@ -1,7 +1,7 @@
 package com.example.scrollbooker.feature.auth.di
 
 import com.example.scrollbooker.core.util.Constants.BASE_URL
-import com.example.scrollbooker.feature.auth.data.remote.UserInfoApiService
+import com.example.scrollbooker.feature.auth.data.remote.userInfo.UserInfoApiService
 import com.example.scrollbooker.feature.auth.data.repository.UserInfoRepositoryImpl
 import com.example.scrollbooker.feature.auth.domain.repository.UserInfoRepository
 import com.example.scrollbooker.feature.auth.domain.usecase.GetUserInfoUseCase

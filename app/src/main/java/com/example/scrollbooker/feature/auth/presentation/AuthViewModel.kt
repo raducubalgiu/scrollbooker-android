@@ -16,8 +16,8 @@ import javax.inject.Inject
 class AuthViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ): ViewModel() {
-    private val _loginState = MutableStateFlow<FeatureState<Unit>>(FeatureState.Loading)
-    val loginState: StateFlow<FeatureState<Unit>> = _loginState.asStateFlow()
+    private val _authState = MutableStateFlow<FeatureState<Unit>>(FeatureState.Loading)
+    val authState: StateFlow<FeatureState<Unit>> = _authState.asStateFlow()
 
     init {
         checkIsLoggedIn()
@@ -25,27 +25,27 @@ class AuthViewModel @Inject constructor(
 
     fun checkIsLoggedIn() {
         viewModelScope.launch {
-            _loginState.value = FeatureState.Loading
+            _authState.value = FeatureState.Loading
 
             val isLoggedIn = authRepository.isLoggedIn()
 
             if(isLoggedIn) {
-                _loginState.value = FeatureState.Success(Unit)
+                _authState.value = FeatureState.Success(Unit)
             } else {
-                _loginState.value = FeatureState.Error()
+                _authState.value = FeatureState.Error()
             }
         }
     }
 
     fun login(username: String, password: String) {
         viewModelScope.launch {
-            _loginState.value = FeatureState.Loading
+            _authState.value = FeatureState.Loading
 
             val result = authRepository.loginAndSaveUserSession(
                 LoginRequest(username = username, password = password)
             )
 
-            _loginState.value = result.fold(
+            _authState.value = result.fold(
                 onSuccess = { FeatureState.Success(Unit) },
                 onFailure = {
                     Timber.tag("Login").e(it, "ERROR: Login Failed")

@@ -1,7 +1,7 @@
 package com.example.scrollbooker.feature.auth.domain.usecase
 
-import com.example.scrollbooker.feature.auth.data.remote.AuthApiService
-import com.example.scrollbooker.feature.auth.data.remote.AuthDto
+import com.example.scrollbooker.feature.auth.data.remote.auth.AuthApiService
+import com.example.scrollbooker.feature.auth.data.remote.auth.AuthDto
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import javax.inject.Inject

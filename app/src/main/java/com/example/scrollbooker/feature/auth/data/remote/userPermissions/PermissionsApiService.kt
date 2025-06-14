@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.auth.data.remote
+package com.example.scrollbooker.feature.auth.data.remote.userPermissions
 
 import retrofit2.http.GET
 

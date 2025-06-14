@@ -1,7 +1,7 @@
 package com.example.scrollbooker.feature.auth.di
 
 import com.example.scrollbooker.core.util.Constants.BASE_URL
-import com.example.scrollbooker.feature.auth.data.remote.PermissionsApiService
+import com.example.scrollbooker.feature.auth.data.remote.userPermissions.PermissionsApiService
 import com.example.scrollbooker.feature.auth.data.repository.PermissionRepositoryImpl
 import com.example.scrollbooker.feature.auth.domain.repository.PermissionRepository
 import com.example.scrollbooker.feature.auth.domain.usecase.GetUserPermissionsUseCase

@@ -1,6 +1,6 @@
 package com.example.scrollbooker.feature.auth.data.repository
 import com.example.scrollbooker.feature.auth.data.mappers.toDomain
-import com.example.scrollbooker.feature.auth.data.remote.PermissionsApiService
+import com.example.scrollbooker.feature.auth.data.remote.userPermissions.PermissionsApiService
 import com.example.scrollbooker.feature.auth.domain.model.Permission
 import com.example.scrollbooker.feature.auth.domain.repository.PermissionRepository
 import javax.inject.Inject

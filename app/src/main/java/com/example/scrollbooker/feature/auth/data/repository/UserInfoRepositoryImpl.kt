@@ -1,7 +1,7 @@
 package com.example.scrollbooker.feature.auth.data.repository
 
 import com.example.scrollbooker.feature.auth.data.mappers.toDomain
-import com.example.scrollbooker.feature.auth.data.remote.UserInfoApiService
+import com.example.scrollbooker.feature.auth.data.remote.userInfo.UserInfoApiService
 import com.example.scrollbooker.feature.auth.domain.model.UserInfo
 import com.example.scrollbooker.feature.auth.domain.repository.UserInfoRepository
 import javax.inject.Inject

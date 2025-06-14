@@ -1,7 +1,7 @@
 package com.example.scrollbooker.core.network.authenticator
 
-import com.example.scrollbooker.feature.auth.data.remote.AuthApiService
-import com.example.scrollbooker.feature.auth.data.remote.AuthDto
+import com.example.scrollbooker.feature.auth.data.remote.auth.AuthApiService
+import com.example.scrollbooker.feature.auth.data.remote.auth.AuthDto
 import com.example.scrollbooker.store.AuthDataStore
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
