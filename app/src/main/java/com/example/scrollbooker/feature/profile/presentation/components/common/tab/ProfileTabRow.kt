@@ -90,7 +90,7 @@ fun ProfileTabRow(
                                             .width(9.dp)
                                             .height(9.dp)
                                             .clip(CircleShape)
-                                            .background(Error)
+                                            .background(Color.Green)
                                     )
                                 }
                             }

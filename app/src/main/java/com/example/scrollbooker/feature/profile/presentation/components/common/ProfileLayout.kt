@@ -36,7 +36,6 @@ fun ProfileLayout(
 ) {
     var showScheduleSheet by remember { mutableStateOf(false) }
     var globalLazyListState = rememberLazyListState()
-    val isBusinessOrEmployee = user.businessId != null
 
     val tabCount = 5
     val pagerState = rememberPagerState(initialPage = 0) { tabCount }

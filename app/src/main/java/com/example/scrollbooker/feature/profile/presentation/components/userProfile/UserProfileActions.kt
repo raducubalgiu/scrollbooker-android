@@ -1,5 +1,4 @@
 package com.example.scrollbooker.feature.profile.presentation.components.userProfile
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,14 +12,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.feature.profile.presentation.components.common.ProfileActionButton
-import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
@@ -29,7 +26,10 @@ import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
-fun UserProfileActions(isFollow: Boolean) {
+fun UserProfileActions(
+    isFollow: Boolean,
+    onNavigateToCalendar: () -> Unit
+) {
     Row(modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -49,7 +49,7 @@ fun UserProfileActions(isFollow: Boolean) {
         Spacer(Modifier.width(SpacingS))
         ProfileActionButton(
             modifier = Modifier.weight(5f),
-            onClick = {}
+            onClick = onNavigateToCalendar
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(

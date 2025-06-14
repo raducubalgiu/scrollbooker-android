@@ -13,6 +13,8 @@ import androidx.navigation.navArgument
 import com.example.scrollbooker.core.nav.navigators.myBusinessGraph
 import com.example.scrollbooker.core.nav.navigators.settingsGraph
 import com.example.scrollbooker.core.nav.routes.MainRoute
+import com.example.scrollbooker.feature.calendar.presentation.CalendarScreen
+import com.example.scrollbooker.feature.calendar.presentation.CalendarViewModel
 import com.example.scrollbooker.feature.profile.presentation.MyProfileScreen
 import com.example.scrollbooker.feature.profile.presentation.ProfileSharedViewModel
 import com.example.scrollbooker.feature.profile.presentation.ProfileViewModel
@@ -165,6 +167,16 @@ fun ProfileNavHost(navController: NavHostController) {
                 onNavigateUserProfile = { navController.navigate("${MainRoute.UserProfile.route}/$it") }
             )
         }
+
+        composable(MainRoute.Calendar.route) { backStackEntry ->
+            val viewModel = hiltViewModel<CalendarViewModel>(backStackEntry)
+
+            CalendarScreen(
+                viewModel=viewModel,
+                onBack= { navController.popBackStack() }
+            )
+        }
+
         myBusinessGraph(navController)
         settingsGraph(navController)
     }

@@ -17,7 +17,7 @@ class GetUserProfileUseCase @Inject constructor(
         }
 
         return try {
-            delay(500)
+            delay(200)
             val response = repository.getUserProfile(userId)
             FeatureState.Success(response)
         } catch (e: Exception) {

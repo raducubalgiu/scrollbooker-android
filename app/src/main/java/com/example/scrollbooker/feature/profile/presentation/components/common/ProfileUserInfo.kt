@@ -47,6 +47,7 @@ import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge
+import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
@@ -137,7 +138,7 @@ fun ProfileUserInfo(
                         Spacer(Modifier.width(5.dp))
                         Text(
                             text = formatOpeningHours(user.openingHours).toString(),
-                            style = bodyLarge,
+                            style = bodyMedium,
                             color = OnSurfaceBG,
                             fontWeight = FontWeight.SemiBold
                         )

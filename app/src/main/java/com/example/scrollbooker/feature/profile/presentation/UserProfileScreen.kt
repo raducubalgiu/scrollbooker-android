@@ -6,6 +6,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.example.scrollbooker.components.core.headers.Header
+import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.util.ErrorScreen
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.LoadingScreen
@@ -36,7 +37,10 @@ fun UserProfileScreen(
                     user = user,
                     onNavigate = onNavigate
                 ) {
-                    UserProfileActions(isFollow = user.isFollow)
+                    UserProfileActions(
+                        isFollow = user.isFollow,
+                        onNavigateToCalendar = { onNavigate(MainRoute.Calendar.route) }
+                    )
                 }
             }
         }
