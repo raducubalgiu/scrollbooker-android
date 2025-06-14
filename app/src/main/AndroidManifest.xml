@@ -19,7 +19,7 @@
         android:theme="@style/Theme.ScrollBooker.Splash"
         tools:targetApi="31">
         <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCT1c5UEx4LAE5gJlfpDal4awledxonA3Y"/>
+            android:value="${MAPS_API_KEY}"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

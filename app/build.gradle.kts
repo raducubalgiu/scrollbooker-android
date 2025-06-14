@@ -6,6 +6,8 @@ plugins {
     id("com.google.dagger.hilt.android")
 }
 
+val apiKey: String = project.findProperty("MAPS_API_KEY")?.toString() ?: ""
+
 android {
     namespace = "com.example.scrollbooker"
     compileSdk = 35
@@ -18,6 +20,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders["MAPS_API_KEY"] = apiKey
     }
 
     buildTypes {
