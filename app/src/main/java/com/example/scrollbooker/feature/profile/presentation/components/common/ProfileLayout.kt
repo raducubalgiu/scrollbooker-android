@@ -18,20 +18,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.sheet.BottomSheet
+import com.example.scrollbooker.feature.profile.domain.model.UserProfile
 import com.example.scrollbooker.feature.profile.presentation.components.common.tab.ProfileBookmarksTab
 import com.example.scrollbooker.feature.profile.presentation.components.common.tab.ProfileInfoTab
 import com.example.scrollbooker.feature.profile.presentation.components.common.tab.ProfilePostsTab
 import com.example.scrollbooker.feature.profile.presentation.components.common.tab.ProfileProductsTab
 import com.example.scrollbooker.feature.profile.presentation.components.common.tab.ProfileRepostsTab
 import com.example.scrollbooker.feature.profile.presentation.components.common.tab.ProfileTabRow
-import com.example.scrollbooker.feature.user.domain.model.User
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun ProfileLayout(
-    user: User?,
+    user: UserProfile,
     onNavigate: (String) -> Unit,
-    actions: @Composable () -> Unit
+    actions: @Composable (() -> Unit)
 ) {
     var showScheduleSheet by remember { mutableStateOf(false) }
     var globalLazyListState = rememberLazyListState()
@@ -60,7 +60,7 @@ fun ProfileLayout(
             item {
                 ProfileInfo(
                     user = user,
-                    onNavigateCounters = { onNavigate("$it/${user?.id}/${user?.username}") },
+                    onNavigateCounters = { onNavigate("$it/${user.id}/${user.username}") },
                     onShowSchedule = { showScheduleSheet = true },
                 ) {
                     actions()

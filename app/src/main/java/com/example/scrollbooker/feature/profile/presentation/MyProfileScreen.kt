@@ -2,6 +2,7 @@ package com.example.scrollbooker.feature.profile.presentation
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -9,6 +10,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.example.scrollbooker.components.core.sheet.BottomSheet
 import com.example.scrollbooker.core.nav.routes.MainRoute
+import com.example.scrollbooker.core.util.ErrorScreen
+import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.util.LoadingScreen
 import com.example.scrollbooker.feature.profile.presentation.components.common.ProfileLayout
 import com.example.scrollbooker.feature.profile.presentation.components.myProfile.MyProfileActions
 import com.example.scrollbooker.feature.profile.presentation.components.myProfile.MyProfileHeader
@@ -20,7 +24,7 @@ fun MyProfileScreen(
     onNavigate: (String) -> Unit
 ) {
     var showMenuSheet by remember { mutableStateOf(false) }
-    val user = viewModel.user
+    val userProfileState by viewModel.userProfileState.collectAsState()
 
     BottomSheet(
         onDismiss = { showMenuSheet = false },
@@ -36,18 +40,26 @@ fun MyProfileScreen(
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        MyProfileHeader(
-            username = user?.username ?: "",
-            onOpenBottomSheet = { showMenuSheet = true }
-        )
+        when(userProfileState) {
+            is FeatureState.Error -> ErrorScreen()
+            is FeatureState.Loading -> LoadingScreen()
+            is FeatureState.Success-> {
+                val user = (userProfileState as FeatureState.Success).data
 
-        ProfileLayout(
-            user = user,
-            onNavigate = onNavigate
-        ) {
-            MyProfileActions(
-                onEditProfile = { onNavigate(MainRoute.EditProfile.route) }
-            )
+                MyProfileHeader(
+                    username = user.username,
+                    onOpenBottomSheet = { showMenuSheet = true }
+                )
+
+                ProfileLayout(
+                    user = user,
+                    onNavigate = onNavigate
+                ) {
+                    MyProfileActions(
+                        onEditProfile = { onNavigate(MainRoute.EditProfile.route) }
+                    )
+                }
+            }
         }
     }
 }

@@ -24,47 +24,47 @@ fun EditBioScreen(
     viewModel: ProfileSharedViewModel,
     onBack: () -> Unit
 ) {
-    var newBio by rememberSaveable { mutableStateOf(viewModel.user?.bio ?: "") }
-    val state = viewModel.editState.collectAsState().value
-
-    val checkBio = checkLength(LocalContext.current, newBio, maxLength = 100)
-    val isInputValid = checkBio.isNullOrBlank()
-
-    val isLoading = state == FeatureState.Loading
-    val isError = state == FeatureState.Error(error = null)
-    val isEnabled = newBio != viewModel.user?.bio && isInputValid
-
-    if(viewModel.isSaved) {
-        LaunchedEffect(state) {
-            onBack()
-            viewModel.isSaved = false
-        }
-    }
-
-    Layout(
-        header = {
-            HeaderEdit(
-                onBack = onBack,
-                title = stringResource(R.string.biography),
-                modifier = Modifier.padding(horizontal = BasePadding),
-                onAction = { viewModel.updateBio(newBio) },
-                actionTitle = stringResource(R.string.save),
-                isLoading = isLoading,
-                isEnabled = isEnabled
-            )
-        }
-    ) {
-        EditInput(
-            value = newBio,
-            onValueChange = { newBio = it },
-            placeholder = stringResource(R.string.yourBio),
-            singleLine = false,
-            minLines = 5,
-            maxLines = 5,
-            isError = isError,
-            isEnabled = !isLoading,
-            isInputValid = isInputValid,
-            errorMessage = checkBio.toString()
-        )
-    }
+//    var newBio by rememberSaveable { mutableStateOf(viewModel.user?.bio ?: "") }
+//    val state = viewModel.editState.collectAsState().value
+//
+//    val checkBio = checkLength(LocalContext.current, newBio, maxLength = 100)
+//    val isInputValid = checkBio.isNullOrBlank()
+//
+//    val isLoading = state == FeatureState.Loading
+//    val isError = state == FeatureState.Error(error = null)
+//    val isEnabled = newBio != viewModel.user?.bio && isInputValid
+//
+//    if(viewModel.isSaved) {
+//        LaunchedEffect(state) {
+//            onBack()
+//            viewModel.isSaved = false
+//        }
+//    }
+//
+//    Layout(
+//        header = {
+//            HeaderEdit(
+//                onBack = onBack,
+//                title = stringResource(R.string.biography),
+//                modifier = Modifier.padding(horizontal = BasePadding),
+//                onAction = { viewModel.updateBio(newBio) },
+//                actionTitle = stringResource(R.string.save),
+//                isLoading = isLoading,
+//                isEnabled = isEnabled
+//            )
+//        }
+//    ) {
+//        EditInput(
+//            value = newBio,
+//            onValueChange = { newBio = it },
+//            placeholder = stringResource(R.string.yourBio),
+//            singleLine = false,
+//            minLines = 5,
+//            maxLines = 5,
+//            isError = isError,
+//            isEnabled = !isLoading,
+//            isInputValid = isInputValid,
+//            errorMessage = checkBio.toString()
+//        )
+//    }
 }

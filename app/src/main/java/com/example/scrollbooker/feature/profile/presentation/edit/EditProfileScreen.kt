@@ -25,49 +25,49 @@ fun EditProfileScreen(
     onNavigate: (String) -> Unit,
     viewModel: ProfileSharedViewModel
 ) {
-    Layout(
-        headerTitle = stringResource(R.string.editProfile),
-        onBack = onBack,
-        enablePaddingH = false
-    ) {
-        Column(Modifier.padding(
-            top = BasePadding,
-            start = BasePadding,
-            end = BasePadding
-        )) {
-            Text(
-                style = titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = OnSurfaceBG,
-                text = stringResource(R.string.aboutYou)
-            )
-        }
-        Spacer(Modifier.padding(vertical = SpacingS))
-        ItemListInfo(
-            headLine = stringResource(R.string.name),
-            supportingText = viewModel.user?.fullName ?: "",
-            onClick = { onNavigate(MainRoute.EditFullName.route) }
-        )
-        Spacer(Modifier.padding(vertical = SpacingXXS))
-        ItemListInfo(
-            headLine = stringResource(R.string.username),
-            supportingText = viewModel.user?.username ?: "",
-            onClick = { onNavigate(MainRoute.EditUsername.route) }
-        )
-        Spacer(Modifier.padding(vertical = SpacingXXS))
-        ItemListInfo(
-            headLine = stringResource(R.string.biography),
-            supportingText = viewModel.user?.bio ?: "",
-            onClick = { onNavigate(MainRoute.EditBio.route) }
-        )
-        Spacer(Modifier.padding(vertical = SpacingXXS))
-        ItemListInfo(
-            headLine = stringResource(R.string.gender),
-            supportingText = viewModel.user?.gender ?: "",
-            onClick = { onNavigate(MainRoute.EditGender.route) }
-        )
-        Button(onClick = { viewModel.logout() }) {
-            Text("Logout")
-        }
-    }
+//    Layout(
+//        headerTitle = stringResource(R.string.editProfile),
+//        onBack = onBack,
+//        enablePaddingH = false
+//    ) {
+//        Column(Modifier.padding(
+//            top = BasePadding,
+//            start = BasePadding,
+//            end = BasePadding
+//        )) {
+//            Text(
+//                style = titleMedium,
+//                fontWeight = FontWeight.Bold,
+//                color = OnSurfaceBG,
+//                text = stringResource(R.string.aboutYou)
+//            )
+//        }
+//        Spacer(Modifier.padding(vertical = SpacingS))
+//        ItemListInfo(
+//            headLine = stringResource(R.string.name),
+//            supportingText = viewModel.user?.fullName ?: "",
+//            onClick = { onNavigate(MainRoute.EditFullName.route) }
+//        )
+//        Spacer(Modifier.padding(vertical = SpacingXXS))
+//        ItemListInfo(
+//            headLine = stringResource(R.string.username),
+//            supportingText = viewModel.user?.username ?: "",
+//            onClick = { onNavigate(MainRoute.EditUsername.route) }
+//        )
+//        Spacer(Modifier.padding(vertical = SpacingXXS))
+//        ItemListInfo(
+//            headLine = stringResource(R.string.biography),
+//            supportingText = viewModel.user?.bio ?: "",
+//            onClick = { onNavigate(MainRoute.EditBio.route) }
+//        )
+//        Spacer(Modifier.padding(vertical = SpacingXXS))
+//        ItemListInfo(
+//            headLine = stringResource(R.string.gender),
+//            supportingText = viewModel.user?.gender ?: "",
+//            onClick = { onNavigate(MainRoute.EditGender.route) }
+//        )
+//        Button(onClick = { viewModel.logout() }) {
+//            Text("Logout")
+//        }
+//    }
 }

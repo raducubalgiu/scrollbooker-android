@@ -25,41 +25,41 @@ fun EditUsernameScreen(
     viewModel: ProfileSharedViewModel,
     onBack: () -> Unit
 ) {
-    var newUsername by rememberSaveable { mutableStateOf(viewModel.user?.username ?: "") }
-    val state = viewModel.editState.collectAsState().value
-    val isLoading = state == FeatureState.Loading
-    val isEnabled = isLoading || newUsername != viewModel.user?.username
-
-    if(viewModel.isSaved) {
-        LaunchedEffect(state) {
-            onBack()
-            viewModel.isSaved = false
-        }
-    }
-
-    Layout(
-        header = {
-            HeaderEdit(
-                onBack = onBack,
-                title = stringResource(R.string.username),
-                modifier = Modifier.padding(horizontal = BasePadding),
-                onAction = { viewModel.updateUsername(newUsername) },
-                actionTitle = stringResource(R.string.save),
-                isLoading = isLoading,
-                isEnabled = isEnabled
-            )
-        }
-    ) {
-        EditInput(
-            value = newUsername,
-            onValueChange = { newUsername = it },
-            placeholder = stringResource(R.string.username),
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Default.AlternateEmail,
-                    contentDescription = null
-                )
-            }
-        )
-    }
+//    var newUsername by rememberSaveable { mutableStateOf(viewModel.user?.username ?: "") }
+//    val state = viewModel.editState.collectAsState().value
+//    val isLoading = state == FeatureState.Loading
+//    val isEnabled = isLoading || newUsername != viewModel.user?.username
+//
+//    if(viewModel.isSaved) {
+//        LaunchedEffect(state) {
+//            onBack()
+//            viewModel.isSaved = false
+//        }
+//    }
+//
+//    Layout(
+//        header = {
+//            HeaderEdit(
+//                onBack = onBack,
+//                title = stringResource(R.string.username),
+//                modifier = Modifier.padding(horizontal = BasePadding),
+//                onAction = { viewModel.updateUsername(newUsername) },
+//                actionTitle = stringResource(R.string.save),
+//                isLoading = isLoading,
+//                isEnabled = isEnabled
+//            )
+//        }
+//    ) {
+//        EditInput(
+//            value = newUsername,
+//            onValueChange = { newUsername = it },
+//            placeholder = stringResource(R.string.username),
+//            leadingIcon = {
+//                Icon(
+//                    imageVector = Icons.Default.AlternateEmail,
+//                    contentDescription = null
+//                )
+//            }
+//        )
+//    }
 }

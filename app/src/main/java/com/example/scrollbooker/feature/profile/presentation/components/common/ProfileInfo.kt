@@ -25,27 +25,27 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
-import com.example.scrollbooker.feature.user.domain.model.User
+import com.example.scrollbooker.feature.profile.domain.model.UserProfile
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
 
 @Composable
 fun ProfileInfo(
-    user: User?,
+    user: UserProfile,
     onNavigateCounters: (String) -> Unit,
     onShowSchedule: () -> Unit,
-    actions: @Composable () -> Unit
+    actions: @Composable (() -> Unit)
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
     ProfileCounters(
-        counters=user?.counters,
+        counters =user.counters,
         onNavigate = onNavigateCounters
     )
 
     ProfileUserInfo(
-        fullName = user?.fullName,
-        profession = user?.profession,
+        fullName = user.fullName,
+        profession = user.profession,
         onOpenScheduleSheet = onShowSchedule
     )
 
@@ -91,7 +91,7 @@ fun ProfileInfo(
         }
         Spacer(Modifier.height(BasePadding))
         Text(modifier = Modifier.padding(horizontal = 50.dp),
-            text = user?.bio ?: "",
+            text = user.bio ?: "",
             textAlign = TextAlign.Center
         )
     }

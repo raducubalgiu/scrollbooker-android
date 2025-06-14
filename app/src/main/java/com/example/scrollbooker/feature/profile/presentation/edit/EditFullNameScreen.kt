@@ -24,44 +24,44 @@ fun EditFullNameScreen(
     viewModel: ProfileSharedViewModel,
     onBack: () -> Unit
 ) {
-    var newFullName by rememberSaveable { mutableStateOf(viewModel.user?.fullName ?: "") }
-    val state = viewModel.editState.collectAsState().value
-
-    val checkFullName = checkLength(LocalContext.current, newFullName, minLength = 3, maxLength = 30)
-    val isInputValid = checkFullName.isNullOrBlank()
-
-    val isLoading = state == FeatureState.Loading
-    val isError = state == FeatureState.Error(error = null)
-    val isEnabled = newFullName != viewModel.user?.fullName && isInputValid
-
-    if(viewModel.isSaved) {
-        LaunchedEffect(state) {
-            onBack()
-            viewModel.isSaved = false
-        }
-    }
-
-    Layout(
-        header = {
-            HeaderEdit(
-                onBack = onBack,
-                title = stringResource(R.string.name),
-                modifier = Modifier.padding(horizontal = BasePadding),
-                onAction = { viewModel.updateFullName(newFullName) },
-                actionTitle = stringResource(R.string.save),
-                isLoading = isLoading,
-                isEnabled = isEnabled
-            )
-        }
-    ) {
-        EditInput(
-            value = newFullName,
-            onValueChange = { newFullName = it },
-            placeholder = stringResource(R.string.yourName),
-            isError = isError || !isInputValid,
-            isEnabled = !isLoading,
-            isInputValid = isInputValid,
-            errorMessage = checkFullName.toString()
-        )
-    }
+//    var newFullName by rememberSaveable { mutableStateOf(viewModel.user?.fullName ?: "") }
+//    val state = viewModel.editState.collectAsState().value
+//
+//    val checkFullName = checkLength(LocalContext.current, newFullName, minLength = 3, maxLength = 30)
+//    val isInputValid = checkFullName.isNullOrBlank()
+//
+//    val isLoading = state == FeatureState.Loading
+//    val isError = state == FeatureState.Error(error = null)
+//    val isEnabled = newFullName != viewModel.user?.fullName && isInputValid
+//
+//    if(viewModel.isSaved) {
+//        LaunchedEffect(state) {
+//            onBack()
+//            viewModel.isSaved = false
+//        }
+//    }
+//
+//    Layout(
+//        header = {
+//            HeaderEdit(
+//                onBack = onBack,
+//                title = stringResource(R.string.name),
+//                modifier = Modifier.padding(horizontal = BasePadding),
+//                onAction = { viewModel.updateFullName(newFullName) },
+//                actionTitle = stringResource(R.string.save),
+//                isLoading = isLoading,
+//                isEnabled = isEnabled
+//            )
+//        }
+//    ) {
+//        EditInput(
+//            value = newFullName,
+//            onValueChange = { newFullName = it },
+//            placeholder = stringResource(R.string.yourName),
+//            isError = isError || !isInputValid,
+//            isEnabled = !isLoading,
+//            isInputValid = isInputValid,
+//            errorMessage = checkFullName.toString()
+//        )
+//    }
 }

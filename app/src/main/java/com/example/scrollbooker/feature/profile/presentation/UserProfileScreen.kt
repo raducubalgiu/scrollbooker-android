@@ -18,19 +18,19 @@ fun UserProfileScreen(
     onNavigate: (String) -> Unit,
     onBack: () -> Unit
 ) {
-    val user = viewModel.user
+    //val user = viewModel.user
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .background(Background)
-    ) {
-        Header(
-            title = user?.username ?: "",
-            onBack = onBack
-        )
-
-        ProfileLayout(user, onNavigate) {
-            UserProfileActions()
-        }
-    }
+//    Column(modifier = Modifier
+//        .fillMaxSize()
+//        .background(Background)
+//    ) {
+//        Header(
+//            title = user?.username ?: "",
+//            onBack = onBack
+//        )
+//
+//        ProfileLayout(user, onNavigate) {
+//            UserProfileActions()
+//        }
+//    }
 }
