@@ -24,6 +24,7 @@ import com.example.scrollbooker.feature.profile.presentation.components.common.t
 import com.example.scrollbooker.feature.profile.presentation.components.common.tab.ProfilePostsTab
 import com.example.scrollbooker.feature.profile.presentation.components.common.tab.ProfileProductsTab
 import com.example.scrollbooker.feature.profile.presentation.components.common.tab.ProfileRepostsTab
+import com.example.scrollbooker.feature.profile.presentation.components.common.tab.ProfileTab
 import com.example.scrollbooker.feature.profile.presentation.components.common.tab.ProfileTabRow
 
 @SuppressLint("ConfigurationScreenWidthHeight")
@@ -35,9 +36,11 @@ fun ProfileLayout(
 ) {
     var showScheduleSheet by remember { mutableStateOf(false) }
     var globalLazyListState = rememberLazyListState()
+    val isBusinessOrEmployee = user.businessId != null
 
     val tabCount = 5
     val pagerState = rememberPagerState(initialPage = 0) { tabCount }
+
     val lazyListStates = remember {
         List(tabCount) { LazyGridState() }
     }
@@ -58,13 +61,16 @@ fun ProfileLayout(
                 .weight(1f)
         ) {
             item {
-                ProfileInfo(
-                    user = user,
-                    onNavigateCounters = { onNavigate("$it/${user.id}/${user.username}") },
-                    onShowSchedule = { showScheduleSheet = true },
-                ) {
-                    actions()
-                }
+                ProfileCounters(
+                    counters =user.counters,
+                    onNavigate = { onNavigate("$it/${user.id}/${user.username}") }
+                )
+
+                ProfileUserInfo(
+                    user= user,
+                    actions = actions,
+                    onOpenScheduleSheet = { showScheduleSheet = true },
+                )
             }
 
             stickyHeader { ProfileTabRow(pagerState) }

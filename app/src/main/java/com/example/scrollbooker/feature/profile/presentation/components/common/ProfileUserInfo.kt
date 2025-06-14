@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
+import androidx.compose.material.icons.outlined.Repeat
 import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -31,6 +32,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,22 +41,21 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
-import com.example.scrollbooker.core.util.Dimens.SpacingXXS
+import com.example.scrollbooker.feature.profile.domain.model.UserProfile
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge
-import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
-import com.example.scrollbooker.ui.theme.titleSmall
 
 @Composable
 fun ProfileUserInfo(
-    fullName: String?,
-    profession: String?,
+    user: UserProfile,
+    actions: @Composable () -> Unit,
     onOpenScheduleSheet: () -> Unit
 ) {
+    val isBusinessOrEmployee = user.businessId != null
     val interactionSource = remember { MutableInteractionSource() }
 
     Column(modifier = Modifier
@@ -83,7 +84,7 @@ fun ProfileUserInfo(
             Spacer(Modifier.width(BasePadding))
             Column {
                 Text(
-                    text = fullName ?: "",
+                    text = user.fullName,
                     style = titleMedium,
                     fontSize = 17.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -91,60 +92,117 @@ fun ProfileUserInfo(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                //Spacer(Modifier.width(10.dp))
                 Spacer(Modifier.height(SpacingXS))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = profession ?: "",
+                        text = user.profession,
                         style = titleMedium,
                         modifier = Modifier.weight(1f, fill = false),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
-                    Spacer(Modifier.width(5.dp))
-                    Icon(
-                        imageVector = Icons.Filled.Star,
-                        contentDescription = null,
-                        tint = Primary
-                    )
-                    Spacer(Modifier.width(5.dp))
-                    Text(
-                        text = "4.5",
-                        style = titleMedium,
-                        fontSize = 19.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = OnBackground
-                    )
+                    if(isBusinessOrEmployee) {
+                        Spacer(Modifier.width(5.dp))
+                        Icon(
+                            imageVector = Icons.Filled.Star,
+                            contentDescription = null,
+                            tint = Primary
+                        )
+                        Spacer(Modifier.width(5.dp))
+                        Text(
+                            text = "4.5",
+                            style = titleMedium,
+                            fontSize = 19.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = OnBackground
+                        )
+                    }
                 }
-                Spacer(Modifier.height(SpacingS))
-                Row(modifier = Modifier
+                if(isBusinessOrEmployee) {
+                    Spacer(Modifier.height(SpacingS))
+                    Row(modifier = Modifier
                         .clickable(
                             onClick = onOpenScheduleSheet,
                             interactionSource = interactionSource,
                             indication = null
                         ),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Schedule,
-                        contentDescription = null,
-                        tint = OnSurfaceBG
-                    )
-                    Spacer(Modifier.width(7.dp))
-                    Text(
-                        text = "Inchide la 19:00",
-                        style = bodyLarge,
-                        color = OnSurfaceBG,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    Spacer(Modifier.width(5.dp))
-                    Icon(
-                        imageVector = Icons.Outlined.KeyboardArrowDown,
-                        contentDescription = null,
-                        tint = OnSurfaceBG
-                    )
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Schedule,
+                            contentDescription = null,
+                            tint = OnSurfaceBG
+                        )
+                        Spacer(Modifier.width(7.dp))
+                        Text(
+                            text = formatOpeningHours(user.openingHours),
+                            style = bodyLarge,
+                            color = OnSurfaceBG,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Spacer(Modifier.width(5.dp))
+                        Icon(
+                            imageVector = Icons.Outlined.KeyboardArrowDown,
+                            contentDescription = null,
+                            tint = OnSurfaceBG
+                        )
+                    }
                 }
             }
         }
     }
+
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(
+            top = BasePadding,
+            start = BasePadding,
+            end = BasePadding
+        ),
+    ) {
+        actions()
+    }
+
+    if(isBusinessOrEmployee) {
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = BasePadding)
+            .clickable(
+                onClick = {},
+                interactionSource = interactionSource,
+                indication = null
+            ),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.Repeat,
+                contentDescription = null,
+                tint = Primary
+            )
+            Spacer(Modifier.width(SpacingS))
+            Text(
+                text = "House Of Barbers",
+                color = OnBackground,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
+    }
+
+    user.bio?.isEmpty()?.let {
+        if(!it) {
+            Spacer(Modifier.height(BasePadding))
+            Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 50.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = user.bio,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+    }
+
+    Spacer(Modifier.height(BasePadding))
 }

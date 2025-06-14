@@ -14,6 +14,8 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.feature.myBusiness.MyBusinessScreen
+import com.example.scrollbooker.feature.myBusiness.calendar.presentation.MyCalendarScreen
+import com.example.scrollbooker.feature.myBusiness.calendar.presentation.MyCalendarViewModel
 import com.example.scrollbooker.feature.myBusiness.employeeDismissal.presentation.EmployeesDismissalScreen
 import com.example.scrollbooker.feature.myBusiness.employeeDismissal.presentation.EmployeesDismissalViewModel
 import com.example.scrollbooker.feature.myBusiness.employees.presentation.EmployeesScreen
@@ -116,6 +118,15 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
         ) {
             employmentRequestNavGraph(
                 navController = navController
+            )
+        }
+
+        composable(MainRoute.MyCalendar.route) { backStackEntry ->
+            val viewModel = hiltViewModel<MyCalendarViewModel>(backStackEntry)
+
+            MyCalendarScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() }
             )
         }
 

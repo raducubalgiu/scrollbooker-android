@@ -8,14 +8,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.sheet.BottomSheet
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.util.ErrorScreen
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.LoadingScreen
-import com.example.scrollbooker.feature.auth.presentation.AuthViewModel
 import com.example.scrollbooker.feature.profile.presentation.components.common.ProfileLayout
 import com.example.scrollbooker.feature.profile.presentation.components.myProfile.MyProfileActions
 import com.example.scrollbooker.feature.profile.presentation.components.myProfile.MyProfileHeader
@@ -26,7 +23,6 @@ fun MyProfileScreen(
     viewModel: ProfileSharedViewModel,
     onNavigate: (String) -> Unit
 ) {
-    val authViewModel: AuthViewModel = hiltViewModel()
     var showMenuSheet by remember { mutableStateOf(false) }
     val userProfileState by viewModel.userProfileState.collectAsState()
 

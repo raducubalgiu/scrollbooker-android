@@ -24,7 +24,7 @@ fun UserSocialScreen(
     onBack: () -> Unit,
     initialPage: Int,
     username: String,
-    onNavigateUserProfile: () -> Unit
+    onNavigateUserProfile: (Int) -> Unit
 ) {
     val pagerState = rememberPagerState(initialPage = initialPage ) { 3 }
     val selectedTabIndex = pagerState.currentPage

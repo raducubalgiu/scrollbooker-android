@@ -26,7 +26,7 @@ fun UserSocialList(
     followedOverrides: Map<Int, Boolean>,
     followRequestLocks: Set<Int>,
     onFollow: (Boolean, Int) -> Unit,
-    onNavigateUserProfile: () -> Unit
+    onNavigateUserProfile: (Int) -> Unit
 ) {
     pagingItems.apply {
         when(loadState.refresh) {

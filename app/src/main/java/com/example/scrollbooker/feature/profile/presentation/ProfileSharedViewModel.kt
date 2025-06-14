@@ -39,6 +39,7 @@ class ProfileSharedViewModel @Inject constructor(
     var isSaved by mutableStateOf(false)
 
     init {
+        Timber.tag("Init Profile")
         loadUserProfile()
     }
 
