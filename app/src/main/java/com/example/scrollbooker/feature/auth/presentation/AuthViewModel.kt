@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.feature.auth.domain.model.LoginRequest
 import com.example.scrollbooker.feature.auth.domain.repository.AuthRepository
+import com.example.scrollbooker.feature.auth.domain.usecase.IsLoggedInUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val isLoggedInUseCase: IsLoggedInUseCase
 ): ViewModel() {
     private val _authState = MutableStateFlow<FeatureState<Unit>>(FeatureState.Loading)
     val authState: StateFlow<FeatureState<Unit>> = _authState.asStateFlow()
@@ -26,14 +28,7 @@ class AuthViewModel @Inject constructor(
     fun checkIsLoggedIn() {
         viewModelScope.launch {
             _authState.value = FeatureState.Loading
-
-            val isLoggedIn = authRepository.isLoggedIn()
-
-            if(isLoggedIn) {
-                _authState.value = FeatureState.Success(Unit)
-            } else {
-                _authState.value = FeatureState.Error()
-            }
+            _authState.value = isLoggedInUseCase()
         }
     }
 
