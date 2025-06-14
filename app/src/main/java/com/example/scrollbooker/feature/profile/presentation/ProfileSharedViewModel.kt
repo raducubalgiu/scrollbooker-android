@@ -89,7 +89,7 @@ class ProfileSharedViewModel @Inject constructor(
                     isSaved = true
                 }
                 .onFailure { error ->
-                    Timber.tag("EditProfile").e(error, "ERROR: on Edit FullName User Data")
+                    Timber.tag("EditProfile").e(error, "ERROR: on Edit Username User Data")
                     _editState.value = FeatureState.Error(error = null)
                 }
         }
@@ -111,32 +111,31 @@ class ProfileSharedViewModel @Inject constructor(
                     isSaved = true
                 }
                 .onFailure { error ->
-                    Timber.tag("EditProfile").e(error, "ERROR: on Edit FullName User Data")
+                    Timber.tag("EditProfile").e(error, "ERROR: on Edit Bio User Data")
                     _editState.value = FeatureState.Error(error = null)
                 }
         }
     }
-//
-//    fun updateGender(newGender: String) {
-//        viewModelScope.launch {
-//            _editState.value = FeatureState.Loading
-//
-//            updateGenderUseCase(newGender)
-//                .onSuccess {
-//                    user = user?.copy(gender = newGender)
-//                    _editState.value = FeatureState.Success(Unit)
-//                    isSaved = true
-//                }
-//                .onFailure { error ->
-//                    Timber.tag("EditProfile").e(error, "ERROR: on Edit Gender")
-//                    _editState.value = FeatureState.Error(error = null)
-//                }
-//        }
-//    }
 
-    fun logout() {
+    fun updateGender(newGender: String) {
         viewModelScope.launch {
-            authDataStore.clearUserSession()
+            _editState.value = FeatureState.Loading
+
+            updateGenderUseCase(newGender)
+                .onSuccess {
+                    _editState.value = FeatureState.Success(Unit)
+
+                    val currentProfile = (_userProfileState.value as? FeatureState.Success)?.data
+                    if(currentProfile != null) {
+                        val updatedProfile = currentProfile.copy(gender = newGender)
+                        _userProfileState.value = FeatureState.Success(updatedProfile)
+                    }
+                    isSaved = true
+                }
+                .onFailure { error ->
+                    Timber.tag("EditProfile").e(error, "ERROR: on Edit Gender User Data")
+                    _editState.value = FeatureState.Error(error = null)
+                }
         }
     }
 }

@@ -2,6 +2,7 @@ package com.example.scrollbooker.feature.profile.data.remote
 
 import com.example.scrollbooker.feature.profile.domain.model.UpdateBioRequest
 import com.example.scrollbooker.feature.profile.domain.model.UpdateFullNameRequest
+import com.example.scrollbooker.feature.profile.domain.model.UpdateGenderRequest
 import com.example.scrollbooker.feature.profile.domain.model.UpdateUsernameRequest
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -27,5 +28,10 @@ interface UserProfileApiService {
     @PATCH("users/user-info/bio")
     suspend fun updateBio(
         @Body request: UpdateBioRequest
+    )
+
+    @PATCH("users/user-info/gender")
+    suspend fun updateGender(
+        @Body request: UpdateGenderRequest
     )
 }

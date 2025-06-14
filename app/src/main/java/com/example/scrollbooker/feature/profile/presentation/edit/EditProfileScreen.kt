@@ -66,14 +66,14 @@ fun EditProfileScreen(
             supportingText = user?.bio ?: "",
             onClick = { onNavigate(MainRoute.EditBio.route) }
         )
-//        Spacer(Modifier.padding(vertical = SpacingXXS))
-//        ItemListInfo(
-//            headLine = stringResource(R.string.gender),
-//            supportingText = viewModel.user?.gender ?: "",
-//            onClick = { onNavigate(MainRoute.EditGender.route) }
-//        )
-//        Button(onClick = { viewModel.logout() }) {
-//            Text("Logout")
-//        }
+        Spacer(Modifier.padding(vertical = SpacingXXS))
+        ItemListInfo(
+            headLine = stringResource(R.string.gender),
+            supportingText = user?.gender ?: "",
+            onClick = { onNavigate(MainRoute.EditGender.route) }
+        )
+        Button(onClick = {  }) {
+            Text("Logout")
+        }
     }
 }
