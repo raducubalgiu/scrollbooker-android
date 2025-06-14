@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -50,22 +51,27 @@ class ProfileSharedViewModel @Inject constructor(
         }
     }
 
-//    fun updateFullName(newFullName: String) {
-//        viewModelScope.launch {
-//            _editState.value = FeatureState.Loading
-//
-//            updateFullNameUseCase(newFullName)
-//                .onSuccess {
-//                    user = user?.copy(fullName = newFullName)
-//                    _editState.value = FeatureState.Success(Unit)
-//                    isSaved = true
-//                }
-//                .onFailure { error ->
-//                    Timber.tag("EditProfile").e(error, "ERROR: on Edit FullName User Data")
-//                    _editState.value = FeatureState.Error(error = null)
-//                }
-//        }
-//    }
+    fun updateFullName(newFullName: String) {
+        viewModelScope.launch {
+            _editState.value = FeatureState.Loading
+
+            updateFullNameUseCase(newFullName)
+                .onSuccess {
+                    _editState.value = FeatureState.Success(Unit)
+
+                    val currentProfile = (_userProfileState.value as? FeatureState.Success)?.data
+                    if(currentProfile != null) {
+                        val updatedProfile = currentProfile.copy(fullName = newFullName)
+                        _userProfileState.value = FeatureState.Success(updatedProfile)
+                    }
+                    isSaved = true
+                }
+                .onFailure { error ->
+                    Timber.tag("EditProfile").e(error, "ERROR: on Edit FullName User Data")
+                    _editState.value = FeatureState.Error(error = null)
+                }
+        }
+    }
 //
 //    fun updateUsername(newUsername: String) {
 //        viewModelScope.launch {

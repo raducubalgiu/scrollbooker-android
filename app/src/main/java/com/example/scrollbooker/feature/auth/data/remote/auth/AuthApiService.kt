@@ -1,5 +1,4 @@
 package com.example.scrollbooker.feature.auth.data.remote.auth
-import com.example.scrollbooker.feature.auth.domain.model.LoginResponse
 import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.Multipart
@@ -12,7 +11,7 @@ interface AuthApiService {
     suspend fun login(
         @Part("username") username: RequestBody,
         @Part("password") password: RequestBody,
-    ): LoginResponse
+    ): AuthDto.LoginResponseDto
 
     @POST("auth/refresh")
     suspend fun refresh(@Body request: AuthDto.RefreshRequestDto): AuthDto.LoginResponseDto

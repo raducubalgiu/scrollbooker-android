@@ -5,6 +5,7 @@ import com.example.scrollbooker.feature.profile.data.remote.UserProfileApiServic
 import com.example.scrollbooker.feature.profile.data.repository.UserProfileRepositoryImpl
 import com.example.scrollbooker.feature.profile.domain.repository.UserProfileRepository
 import com.example.scrollbooker.feature.profile.domain.usecase.GetUserProfileUseCase
+import com.example.scrollbooker.feature.profile.domain.usecase.UpdateFullNameUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -40,5 +41,13 @@ object UserProfileModule {
         repository: UserProfileRepository
     ): GetUserProfileUseCase {
         return GetUserProfileUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUpdateFullNameUseCase(
+        repository: UserProfileRepository
+    ): UpdateFullNameUseCase {
+        return UpdateFullNameUseCase(repository)
     }
 }

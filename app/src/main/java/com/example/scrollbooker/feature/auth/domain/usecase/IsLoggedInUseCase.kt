@@ -25,7 +25,6 @@ class IsLoggedInUseCase @Inject constructor(
             if(isTokenValid(accessToken)) {
                 FeatureState.Success(Unit)
             } else {
-                // If Refresh Token is Valid - attempt to refresh
                 if(isTokenValid(refreshToken) && !refreshToken.isNullOrBlank()) {
                     return try {
                         val response = apiService.refresh(AuthDto.RefreshRequestDto(refreshToken))
@@ -40,7 +39,6 @@ class IsLoggedInUseCase @Inject constructor(
 
                         FeatureState.Error(e)
                     }
-                    // Logout User
                 } else {
                     authDataStore.clearUserSession()
                     tokenProvider.clearTokens()

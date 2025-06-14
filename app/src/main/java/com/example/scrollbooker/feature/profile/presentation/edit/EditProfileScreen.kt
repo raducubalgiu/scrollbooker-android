@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -15,6 +17,7 @@ import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
+import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.feature.profile.presentation.ProfileSharedViewModel
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.titleMedium
@@ -25,29 +28,32 @@ fun EditProfileScreen(
     onNavigate: (String) -> Unit,
     viewModel: ProfileSharedViewModel
 ) {
-//    Layout(
-//        headerTitle = stringResource(R.string.editProfile),
-//        onBack = onBack,
-//        enablePaddingH = false
-//    ) {
-//        Column(Modifier.padding(
-//            top = BasePadding,
-//            start = BasePadding,
-//            end = BasePadding
-//        )) {
-//            Text(
-//                style = titleMedium,
-//                fontWeight = FontWeight.Bold,
-//                color = OnSurfaceBG,
-//                text = stringResource(R.string.aboutYou)
-//            )
-//        }
-//        Spacer(Modifier.padding(vertical = SpacingS))
-//        ItemListInfo(
-//            headLine = stringResource(R.string.name),
-//            supportingText = viewModel.user?.fullName ?: "",
-//            onClick = { onNavigate(MainRoute.EditFullName.route) }
-//        )
+    val userState by viewModel.userProfileState.collectAsState()
+    val user = (userState as? FeatureState.Success)?.data
+
+    Layout(
+        headerTitle = stringResource(R.string.editProfile),
+        onBack = onBack,
+        enablePaddingH = false
+    ) {
+        Column(Modifier.padding(
+            top = BasePadding,
+            start = BasePadding,
+            end = BasePadding
+        )) {
+            Text(
+                style = titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = OnSurfaceBG,
+                text = stringResource(R.string.aboutYou)
+            )
+        }
+        Spacer(Modifier.padding(vertical = SpacingS))
+        ItemListInfo(
+            headLine = stringResource(R.string.name),
+            supportingText = user?.fullName ?: "",
+            onClick = { onNavigate(MainRoute.EditFullName.route) }
+        )
 //        Spacer(Modifier.padding(vertical = SpacingXXS))
 //        ItemListInfo(
 //            headLine = stringResource(R.string.username),
@@ -69,5 +75,5 @@ fun EditProfileScreen(
 //        Button(onClick = { viewModel.logout() }) {
 //            Text("Logout")
 //        }
-//    }
+    }
 }
