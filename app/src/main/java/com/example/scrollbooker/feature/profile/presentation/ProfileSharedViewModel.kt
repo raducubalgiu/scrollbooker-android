@@ -7,27 +7,22 @@ import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.feature.profile.domain.model.UserProfile
 import com.example.scrollbooker.feature.profile.domain.usecase.GetUserProfileUseCase
-import com.example.scrollbooker.feature.user.domain.model.User
-import com.example.scrollbooker.feature.user.domain.useCase.GetUserInfoUseCase
-import com.example.scrollbooker.feature.user.domain.useCase.UpdateBioUseCase
-import com.example.scrollbooker.feature.user.domain.useCase.UpdateFullNameUseCase
-import com.example.scrollbooker.feature.user.domain.useCase.UpdateGenderUseCase
-import com.example.scrollbooker.feature.user.domain.useCase.UpdateUsernameUseCase
+import com.example.scrollbooker.feature.profile.domain.usecase.UpdateBioUseCase
+import com.example.scrollbooker.feature.profile.domain.usecase.UpdateFullNameUseCase
+import com.example.scrollbooker.feature.profile.domain.usecase.UpdateGenderUseCase
+import com.example.scrollbooker.feature.profile.domain.usecase.UpdateUsernameUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
-import kotlin.onSuccess
 
 @HiltViewModel
 class ProfileSharedViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
     private val getUserProfileUseCase: GetUserProfileUseCase,
-    private val getUserInfoUseCase: GetUserInfoUseCase,
     private val updateFullNameUseCase: UpdateFullNameUseCase,
     private val updateUsernameUseCase: UpdateUsernameUseCase,
     private val updateBioUseCase: UpdateBioUseCase,

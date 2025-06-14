@@ -12,5 +12,31 @@ class UserProfileRepositoryImpl @Inject constructor(
     override suspend fun getUserProfile(userId: Int): UserProfile {
         return apiService.getUserProfile(userId).toDomain()
     }
+//
+//    override suspend fun getUserPermissions(): List<Permission> {
+//        return userApiService.getUserPermissions().toDomain()
+//    }
+//
+//    override suspend fun updateFullName(fullName: String) {
+//        return userApiService.updateUserFullName(UpdateFullNameRequest(
+//            fullname = fullName
+//        ))
+//    }
+//
+//    override suspend fun updateUsername(username: String) {
+//        return userApiService.updateUsername(UpdateUsernameRequest(username))
+//    }
+//
+//    override suspend fun updateBio(bio: String) {
+//        return userApiService.updateBio(UpdateBioRequest(bio))
+//    }
+//
+//    override suspend fun updateGender(gender: String) {
+//        return userApiService.updateGender(UpdateGenderRequest(gender))
+//    }
+//
+//    override suspend fun searchUsersClients(q: String): List<UserSocial> {
+//        return userApiService.searchUsersClients(q).map { it.toDomain() }
+//    }
 
 }

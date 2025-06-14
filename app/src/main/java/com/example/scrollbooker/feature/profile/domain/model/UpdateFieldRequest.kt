@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.user.domain.model
+package com.example.scrollbooker.feature.profile.domain.model
 
 import kotlinx.serialization.Serializable
 

@@ -1,10 +1,10 @@
 package com.example.scrollbooker.feature.auth.domain.usecase
-import com.example.scrollbooker.feature.user.data.remote.UserApiService
+import com.example.scrollbooker.feature.auth.data.remote.AuthApiService
 import timber.log.Timber
 import javax.inject.Inject
 
 class GetUserPermissionsUseCase @Inject constructor(
-    private val userApi: UserApiService
+    private val userApi: AuthApiService
 ) {
     suspend operator fun invoke(): List<String> {
         try {

@@ -3,7 +3,7 @@ package com.example.scrollbooker.feature.myBusiness.employmentRequests.presentat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.feature.user.domain.useCase.SearchUsersClientsUseCase
+import com.example.scrollbooker.feature.profile.domain.usecase.SearchUsersClientsUseCase
 import com.example.scrollbooker.feature.userSocial.domain.model.UserSocial
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
@@ -49,6 +49,6 @@ class EmploymentSelectEmployeeViewModel @Inject constructor(
 
     private suspend fun performSearch(query: String) {
         _searchUsersClientsState.value = FeatureState.Loading
-        _searchUsersClientsState.value = searchUsersClientsUseCase(query)
+        //_searchUsersClientsState.value = searchUsersClientsUseCase(query)
     }
 }
