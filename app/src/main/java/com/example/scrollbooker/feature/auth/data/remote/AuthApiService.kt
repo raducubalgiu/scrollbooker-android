@@ -15,9 +15,6 @@ interface AuthApiService {
         @Part("password") password: RequestBody,
     ): AuthDto.LoginResponseDto
 
-    @GET("auth/user-permissions/")
-    suspend fun getUserPermissions(): List<PermissionDto>
-
     @POST("auth/refresh")
     suspend fun refresh(@Body request: AuthDto.RefreshRequestDto): AuthDto.LoginResponseDto
 }

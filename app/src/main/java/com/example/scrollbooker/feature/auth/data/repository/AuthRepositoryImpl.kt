@@ -1,12 +1,10 @@
 package com.example.scrollbooker.feature.auth.data.repository
 import com.example.scrollbooker.core.network.tokenProvider.TokenProvider
 import com.example.scrollbooker.core.network.util.decodeJwtExpiry
-import com.example.scrollbooker.feature.auth.data.mappers.toDomain
 import com.example.scrollbooker.feature.auth.data.remote.AuthApiService
 import com.example.scrollbooker.feature.auth.data.remote.AuthDto
 import com.example.scrollbooker.feature.auth.domain.model.LoginRequest
 import com.example.scrollbooker.feature.auth.domain.model.LoginResponse
-import com.example.scrollbooker.feature.auth.domain.model.UserInfo
 import com.example.scrollbooker.feature.auth.domain.repository.AuthRepository
 import com.example.scrollbooker.feature.auth.domain.usecase.GetLoginUseCase
 import com.example.scrollbooker.feature.auth.domain.usecase.GetUserInfoUseCase
