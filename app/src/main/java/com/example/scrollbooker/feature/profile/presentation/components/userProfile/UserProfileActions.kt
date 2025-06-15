@@ -41,7 +41,7 @@ fun UserProfileActions(
         ) {
             Text(
                 text = if(isFollow) stringResource(R.string.following) else stringResource(R.string.follow),
-                color = if(isFollow) OnSurfaceBG else OnPrimary,
+                color = if(isFollow) OnBackground else OnPrimary,
                 style = titleMedium,
                 fontWeight = FontWeight.Bold,
             )

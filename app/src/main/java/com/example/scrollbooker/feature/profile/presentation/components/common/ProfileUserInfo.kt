@@ -46,7 +46,6 @@ import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
-import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
 
@@ -76,12 +75,14 @@ fun ProfileUserInfo(
                         .background(MaterialTheme.colorScheme.surfaceVariant)
                         .border(1.dp, Divider, CircleShape)
                 )
-                Box(modifier = Modifier
-                    .size(25.dp)
-                    .clip(CircleShape)
-                    .background(if(isOpenNow) Color.Green else Color(0xFFCCCCCC))
-                    .border(3.dp, Color.White, CircleShape)
-                )
+                if(isBusinessOrEmployee) {
+                    Box(modifier = Modifier
+                        .size(25.dp)
+                        .clip(CircleShape)
+                        .background(if(isOpenNow) Color.Green else Color(0xFFCCCCCC))
+                        .border(3.dp, Color.White, CircleShape)
+                    )
+                }
             }
             Spacer(Modifier.width(BasePadding))
             Column {
@@ -181,6 +182,16 @@ fun ProfileUserInfo(
                 imageVector = Icons.Outlined.Repeat,
                 contentDescription = null,
                 tint = Primary
+            )
+            Spacer(Modifier.width(SpacingS))
+            Image(
+                painter = painterResource(R.drawable.ic_logo),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(25.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .border(1.dp, Divider, CircleShape)
             )
             Spacer(Modifier.width(SpacingS))
             Text(
