@@ -20,7 +20,6 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.feature.profile.presentation.components.common.ProfileActionButton
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnPrimary
-import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.titleMedium

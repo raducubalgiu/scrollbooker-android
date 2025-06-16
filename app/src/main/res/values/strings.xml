@@ -116,4 +116,10 @@
     <string name="sunday">Duminică</string>
     <string name="profession">Profesie</string>
     <string name="myProfession">Profesia mea</string>
+    <string name="addComment">Adaugă un comentariu</string>
+    <string name="rating_1">Nu mi-a plăcut deloc</string>
+    <string name="rating_2">Nu prea mi-a plăcut</string>
+    <string name="rating_3">A fost ok</string>
+    <string name="rating_4">Mi-a plăcut</string>
+    <string name="rating_5">Mi-a plăcut foarte mult</string>
 </resources>
