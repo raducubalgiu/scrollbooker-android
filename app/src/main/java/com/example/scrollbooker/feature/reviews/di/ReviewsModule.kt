@@ -4,6 +4,7 @@ import com.example.scrollbooker.core.util.Constants
 import com.example.scrollbooker.feature.reviews.data.remote.ReviewsApiService
 import com.example.scrollbooker.feature.reviews.data.repository.ReviewRepositoryImpl
 import com.example.scrollbooker.feature.reviews.domain.repository.ReviewRepository
+import com.example.scrollbooker.feature.reviews.domain.useCase.GetReviewsSummaryUseCase
 import com.example.scrollbooker.feature.reviews.domain.useCase.GetReviewsUseCase
 import dagger.Module
 import dagger.Provides
@@ -40,5 +41,13 @@ object ReviewsModule {
         repository: ReviewRepository,
     ): GetReviewsUseCase {
         return GetReviewsUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetReviewsSummaryUseCase(
+        repository: ReviewRepository,
+    ): GetReviewsSummaryUseCase {
+        return GetReviewsSummaryUseCase(repository)
     }
 }

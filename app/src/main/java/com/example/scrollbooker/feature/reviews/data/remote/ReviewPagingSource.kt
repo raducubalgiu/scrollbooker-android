@@ -10,7 +10,8 @@ import java.lang.Exception
 
 class ReviewPagingSource(
     private val api: ReviewsApiService,
-    private val userId: Int
+    private val userId: Int,
+    private val ratings: Set<Int>?
 ) : PagingSource<Int, Review>() {
 
     override fun getRefreshKey(state: PagingState<Int, Review>): Int? {
@@ -26,7 +27,12 @@ class ReviewPagingSource(
 
         return try {
             delay(300)
-            val response = api.getReviews(userId, page, limit)
+            val response = api.getReviews(
+                userId,
+                page,
+                limit,
+                ratings = ratings?.toList()
+            )
             val reviews = response.results.map { it.toDomain() }
 
             val totalLoaded = (page - 1) * limit + response.results.size

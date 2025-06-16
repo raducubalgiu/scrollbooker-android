@@ -17,10 +17,6 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,6 +28,7 @@ import com.example.scrollbooker.components.customized.RatingsStars
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.feature.reviews.domain.model.ReviewsSummary
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Primary
@@ -39,20 +36,15 @@ import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.headlineMedium
 
-data class RatingBreakdown(
-    val rating: Int,
-    val count: Int
-)
-
 @SuppressLint("DefaultLocale")
 @Composable
-fun ReviewsSummary(
-    averageRating: Float,
-    totalReviews: Int,
-    breakdown: List<RatingBreakdown>,
+fun ReviewsSummarySection(
+    summary: ReviewsSummary,
+    onRatingClick: (Int) -> Unit,
+    selectedRatings: Set<Int>,
     modifier: Modifier = Modifier
 ) {
-    val maxCount = breakdown.maxOfOrNull { it.count } ?: 1
+    val maxCount = summary.breakdown.maxOfOrNull { it.count } ?: 1
 
     Column(
         modifier = modifier
@@ -70,33 +62,33 @@ fun ReviewsSummary(
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = String.format("%.1f", averageRating),
+                    text = String.format("%.1f", summary.averageRating),
                     style = headlineMedium,
                     fontWeight = FontWeight.SemiBold
                 )
                 Spacer(modifier = Modifier.width(4.dp))
-                Text(text = "($totalReviews)", style = bodyMedium)
+                Text(text = "(${summary.totalReviews})", style = bodyMedium)
             }
 
             Spacer(Modifier.height(SpacingS))
 
             RatingsStars(
-                rating = averageRating
+                rating = summary.averageRating
             )
         }
 
-        breakdown.sortedByDescending { it.rating }.forEach { item ->
+        summary.breakdown.sortedByDescending { it.rating }.forEach { item ->
             val percent = item.count / maxCount.toFloat()
             Row(modifier = Modifier.padding(horizontal = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column {
-                    var checked by remember { mutableStateOf(false) }
-
                     Checkbox(
-                        checked = checked,
-                        onCheckedChange = { checked = !checked },
+                        checked = item.rating in selectedRatings,
+                        onCheckedChange = {
+                            onRatingClick(item.rating)
+                        },
                         colors = CheckboxColors(
                             checkedCheckmarkColor = Color.White,
                             uncheckedCheckmarkColor = Color.Transparent,

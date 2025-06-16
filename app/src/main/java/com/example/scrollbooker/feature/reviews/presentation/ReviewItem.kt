@@ -30,7 +30,6 @@ import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
-import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.feature.reviews.domain.model.Review
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Error

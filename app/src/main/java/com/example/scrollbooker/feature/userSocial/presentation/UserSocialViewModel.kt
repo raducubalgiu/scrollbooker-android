@@ -1,11 +1,19 @@
 package com.example.scrollbooker.feature.userSocial.presentation
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.feature.reviews.domain.model.Review
+import com.example.scrollbooker.feature.reviews.domain.model.ReviewsSummary
+import com.example.scrollbooker.feature.reviews.domain.useCase.GetReviewsSummaryUseCase
 import com.example.scrollbooker.feature.reviews.domain.useCase.GetReviewsUseCase
 import com.example.scrollbooker.feature.userSocial.domain.model.UserSocial
 import com.example.scrollbooker.feature.userSocial.domain.useCase.FollowUserUseCase
@@ -13,9 +21,13 @@ import com.example.scrollbooker.feature.userSocial.domain.useCase.GetUserSocialF
 import com.example.scrollbooker.feature.userSocial.domain.useCase.GetUserSocialFollowingsUseCase
 import com.example.scrollbooker.feature.userSocial.domain.useCase.UnfollowUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -27,15 +39,28 @@ class UserSocialViewModel @Inject constructor(
     private val getUserSocialFollowingsUseCase: GetUserSocialFollowingsUseCase,
     private val getUserSocialFollowersUseCase: GetUserSocialFollowersUseCase,
     private val getReviewsUseCase: GetReviewsUseCase,
+    private val getReviewsSummaryUseCase: GetReviewsSummaryUseCase,
     private val followUserUseCase: FollowUserUseCase,
     private val unfollowUserUseCase: UnfollowUserUseCase,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
     private val userId: Int = savedStateHandle["userId"] ?: error("Missing userId")
 
-    private val _userReviews: Flow<PagingData<Review>> by lazy {
-        getReviewsUseCase(userId).cachedIn(viewModelScope)
-    }
+    private val filtersTrigger = MutableStateFlow(Unit)
+
+    private var _selectedRatings = mutableStateOf(setOf<Int>())
+    val selectedRatings: State<Set<Int>> get() = _selectedRatings
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val userReviews: Flow<PagingData<Review>> =
+        combine(filtersTrigger, snapshotFlow { _selectedRatings.value }) { _, ratings ->
+            ratings
+        }.flatMapLatest { ratings ->
+            getReviewsUseCase(userId, ratings.ifEmpty { null })
+        }.cachedIn(viewModelScope)
+
+    private val _userReviewsSummary = MutableStateFlow<FeatureState<ReviewsSummary>>(FeatureState.Loading)
+    val userReviewsSummary: StateFlow<FeatureState<ReviewsSummary>> = _userReviewsSummary
 
     private val _userFollowers: Flow<PagingData<UserSocial>> by lazy {
         getUserSocialFollowersUseCase(userId).cachedIn(viewModelScope)
@@ -45,7 +70,7 @@ class UserSocialViewModel @Inject constructor(
         getUserSocialFollowingsUseCase(userId).cachedIn(viewModelScope)
     }
 
-    val userReviews: Flow<PagingData<Review>> get() = _userReviews
+    //val userReviews: Flow<PagingData<Review>> get() = _userReviews
     val userFollowers: Flow<PagingData<UserSocial>> get() = _userFollowers
     val userFollowings: Flow<PagingData<UserSocial>> get() = _userFollowings
 
@@ -54,6 +79,13 @@ class UserSocialViewModel @Inject constructor(
 
     private val _followRequestLocks = MutableStateFlow<Set<Int>>(emptySet())
     val followRequestLocks = _followRequestLocks.asStateFlow()
+
+    fun loadUserReviews() {
+        viewModelScope.launch {
+            _userReviewsSummary.value = FeatureState.Loading
+            _userReviewsSummary.value = getReviewsSummaryUseCase(userId)
+        }
+    }
 
     fun onFollow(isFollow: Boolean, userId: Int) {
         if(_followRequestLocks.value.contains(userId)) {
@@ -78,5 +110,17 @@ class UserSocialViewModel @Inject constructor(
                 _followRequestLocks.update { it - userId }
             }
         }
+    }
+
+    fun toggleRatingFilter(rating: Int) {
+        Timber.d("CLICK!! $rating")
+        _selectedRatings.value =
+            if(rating in _selectedRatings.value) {
+                _selectedRatings.value - rating
+            } else {
+                _selectedRatings.value + rating
+            }
+
+        filtersTrigger.value = Unit
     }
 }

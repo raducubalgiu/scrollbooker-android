@@ -7,6 +7,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -18,8 +19,10 @@ import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.feature.userSocial.presentation.components.UserSocialList
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import com.example.scrollbooker.feature.reviews.presentation.ReviewsList
-import timber.log.Timber
 
 @Composable
 fun UserSocialScreen(
@@ -37,6 +40,15 @@ fun UserSocialScreen(
         stringResource(id = R.string.following)
     )
     val coroutineScope = rememberCoroutineScope()
+
+    var didLoadSummary by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(pagerState.currentPage) {
+        if(pagerState.currentPage == 0 && !didLoadSummary) {
+            viewModal.loadUserReviews()
+            didLoadSummary = true
+        }
+    }
 
     Layout(
         headerTitle = username,
@@ -59,7 +71,15 @@ fun UserSocialScreen(
                 when(page) {
                     0 -> {
                         val pagingItems = viewModal.userReviews.collectAsLazyPagingItems()
-                        ReviewsList(pagingItems)
+                        val summaryState by viewModal.userReviewsSummary.collectAsState()
+                        val selectedRatings by viewModal.selectedRatings
+
+                        ReviewsList(
+                            pagingItems,
+                            summaryState,
+                            onRatingClick = { viewModal.toggleRatingFilter(it) },
+                            selectedRatings = selectedRatings
+                        )
                     }
                     1 -> {
                         val userFollowers = viewModal.userFollowers.collectAsLazyPagingItems()
