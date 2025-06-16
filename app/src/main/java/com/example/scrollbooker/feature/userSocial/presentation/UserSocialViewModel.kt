@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.example.scrollbooker.feature.reviews.domain.model.Review
+import com.example.scrollbooker.feature.reviews.domain.useCase.GetReviewsUseCase
 import com.example.scrollbooker.feature.userSocial.domain.model.UserSocial
 import com.example.scrollbooker.feature.userSocial.domain.useCase.FollowUserUseCase
 import com.example.scrollbooker.feature.userSocial.domain.useCase.GetUserSocialFollowersUseCase
@@ -24,11 +26,16 @@ import javax.inject.Inject
 class UserSocialViewModel @Inject constructor(
     private val getUserSocialFollowingsUseCase: GetUserSocialFollowingsUseCase,
     private val getUserSocialFollowersUseCase: GetUserSocialFollowersUseCase,
+    private val getReviewsUseCase: GetReviewsUseCase,
     private val followUserUseCase: FollowUserUseCase,
     private val unfollowUserUseCase: UnfollowUserUseCase,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
     private val userId: Int = savedStateHandle["userId"] ?: error("Missing userId")
+
+    private val _userReviews: Flow<PagingData<Review>> by lazy {
+        getReviewsUseCase(userId).cachedIn(viewModelScope)
+    }
 
     private val _userFollowers: Flow<PagingData<UserSocial>> by lazy {
         getUserSocialFollowersUseCase(userId).cachedIn(viewModelScope)
@@ -38,6 +45,7 @@ class UserSocialViewModel @Inject constructor(
         getUserSocialFollowingsUseCase(userId).cachedIn(viewModelScope)
     }
 
+    val userReviews: Flow<PagingData<Review>> get() = _userReviews
     val userFollowers: Flow<PagingData<UserSocial>> get() = _userFollowers
     val userFollowings: Flow<PagingData<UserSocial>> get() = _userFollowings
 
@@ -70,9 +78,5 @@ class UserSocialViewModel @Inject constructor(
                 _followRequestLocks.update { it - userId }
             }
         }
-    }
-
-    fun resetOverrides() {
-        _followedOverrides.value = emptyMap()
     }
 }

@@ -22,6 +22,7 @@ import com.example.scrollbooker.feature.profile.presentation.UserProfileScreen
 import com.example.scrollbooker.feature.profile.presentation.edit.EditBioScreen
 import com.example.scrollbooker.feature.profile.presentation.edit.EditFullNameScreen
 import com.example.scrollbooker.feature.profile.presentation.edit.EditGenderScreen
+import com.example.scrollbooker.feature.profile.presentation.edit.EditProfessionScreen
 import com.example.scrollbooker.feature.profile.presentation.edit.EditProfileScreen
 import com.example.scrollbooker.feature.profile.presentation.edit.EditUsernameScreen
 import com.example.scrollbooker.feature.userSocial.presentation.UserSocialScreen
@@ -119,6 +120,18 @@ fun ProfileNavHost(navController: NavHostController) {
 
             EditUsernameScreen(
                 viewModel = viewModel,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(MainRoute.EditProfession.route) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(MainRoute.MyProfile.route)
+            }
+            val viewModel = hiltViewModel<ProfileSharedViewModel>(parentEntry)
+
+            EditProfessionScreen(
+                viewModel=viewModel,
                 onBack = { navController.popBackStack() }
             )
         }

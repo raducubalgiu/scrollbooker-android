@@ -1,4 +1,4 @@
-package com.example.scrollbooker.components.inputs
+package com.example.scrollbooker.components.core.inputs
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState

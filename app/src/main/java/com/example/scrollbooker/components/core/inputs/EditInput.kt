@@ -1,4 +1,4 @@
-package com.example.scrollbooker.components.inputs
+package com.example.scrollbooker.components.core.inputs
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

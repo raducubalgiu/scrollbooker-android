@@ -13,7 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.Layout
-import com.example.scrollbooker.components.list.ItemList
+import com.example.scrollbooker.components.core.list.ItemList
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
@@ -30,7 +30,6 @@ fun SettingsScreen(
     Layout(
         headerTitle = stringResource(R.string.settings),
         onBack = onBack,
-        enablePaddingH = false
     ) {
         Column(modifier = Modifier.padding(BasePadding)) {
             Text(
@@ -41,7 +40,10 @@ fun SettingsScreen(
             )
         }
 
-        Column(Modifier.fillMaxWidth().background(SurfaceBG)) {
+        Column(Modifier
+            .fillMaxWidth()
+            .background(SurfaceBG)
+        ) {
             ItemList(
                 headLine = stringResource(R.string.account),
                 leftIcon = painterResource(R.drawable.ic_person),

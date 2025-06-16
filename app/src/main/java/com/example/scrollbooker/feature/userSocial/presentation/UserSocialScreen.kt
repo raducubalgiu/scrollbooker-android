@@ -2,6 +2,7 @@ package com.example.scrollbooker.feature.userSocial.presentation
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Text
@@ -17,6 +18,8 @@ import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.feature.userSocial.presentation.components.UserSocialList
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.getValue
+import com.example.scrollbooker.feature.reviews.presentation.ReviewsList
+import timber.log.Timber
 
 @Composable
 fun UserSocialScreen(
@@ -38,7 +41,8 @@ fun UserSocialScreen(
     Layout(
         headerTitle = username,
         onBack = onBack,
-        enablePaddingH = false
+        enablePaddingH = false,
+        enablePaddingV = false
     ) {
         Column {
             Tabs(tabs, selectedTabIndex, onChangeTab = {
@@ -54,10 +58,8 @@ fun UserSocialScreen(
             ) { page ->
                 when(page) {
                     0 -> {
-                        //val customerPagingItems = viewModel.customerAppointments().collectAsLazyPagingItems()
-                        Column(Modifier.fillMaxSize()) {
-                            Text("Reviews Screen")
-                        }
+                        val pagingItems = viewModal.userReviews.collectAsLazyPagingItems()
+                        ReviewsList(pagingItems)
                     }
                     1 -> {
                         val userFollowers = viewModal.userFollowers.collectAsLazyPagingItems()

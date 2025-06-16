@@ -12,8 +12,8 @@ import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.headers.HeaderEdit
 import com.example.scrollbooker.components.core.layout.Layout
-import com.example.scrollbooker.components.inputs.InputRadio
-import com.example.scrollbooker.components.inputs.Option
+import com.example.scrollbooker.components.core.inputs.InputRadio
+import com.example.scrollbooker.components.core.inputs.Option
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.feature.profile.presentation.ProfileSharedViewModel

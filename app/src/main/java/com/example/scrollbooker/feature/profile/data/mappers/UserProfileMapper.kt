@@ -1,7 +1,9 @@
 package com.example.scrollbooker.feature.profile.data.mappers
+import com.example.scrollbooker.feature.profile.data.remote.BusinessOwnerDto
 import com.example.scrollbooker.feature.profile.data.remote.OpeningHoursDto
 import com.example.scrollbooker.feature.profile.data.remote.UserCountersDto
 import com.example.scrollbooker.feature.profile.data.remote.UserProfileDto
+import com.example.scrollbooker.feature.profile.domain.model.BusinessOwner
 import com.example.scrollbooker.feature.profile.domain.model.OpeningHours
 import com.example.scrollbooker.feature.profile.domain.model.UserCounters
 import com.example.scrollbooker.feature.profile.domain.model.UserProfile
@@ -19,7 +21,8 @@ fun UserProfileDto.toDomain(): UserProfile {
         counters = counters.toDomain(),
         profession = profession,
         openingHours = openingHours.toDomain(),
-        isFollow = isFollow
+        isFollow = isFollow,
+        businessOwner = businessOwner?.toDomain()
     )
 }
 
@@ -41,5 +44,15 @@ fun OpeningHoursDto.toDomain(): OpeningHours {
         closingTime = closingTime,
         nextOpenDay = nextOpenDay,
         nextOpenTime = nextOpenTime
+    )
+}
+
+fun BusinessOwnerDto.toDomain(): BusinessOwner {
+    return BusinessOwner(
+        id = id,
+        fullName = fullName,
+        username = username,
+        avatar = avatar,
+        isFollow = isFollow
     )
 }

@@ -53,7 +53,8 @@ import com.example.scrollbooker.ui.theme.titleMedium
 fun ProfileUserInfo(
     user: UserProfile,
     actions: @Composable () -> Unit,
-    onOpenScheduleSheet: () -> Unit
+    onOpenScheduleSheet: () -> Unit,
+    onNavigateToBusinessOwner: (Int?) -> Unit
 ) {
     val isBusinessOrEmployee = user.businessId != null
     val isOpenNow = user.openingHours.openNow
@@ -166,12 +167,16 @@ fun ProfileUserInfo(
         actions()
     }
 
-    if(isBusinessOrEmployee) {
+    if(isBusinessOrEmployee && user.businessOwner?.id != user.id) {
         Row(modifier = Modifier
             .fillMaxWidth()
             .padding(top = BasePadding)
             .clickable(
-                onClick = {},
+                onClick = {
+                    if(user.businessOwner?.id != null) {
+                        onNavigateToBusinessOwner(user.businessOwner.id)
+                    }
+                },
                 interactionSource = interactionSource,
                 indication = null
             ),
@@ -195,26 +200,28 @@ fun ProfileUserInfo(
             )
             Spacer(Modifier.width(SpacingS))
             Text(
-                text = "House Of Barbers",
+                text = user.businessOwner?.fullName ?: "",
                 color = OnBackground,
                 fontWeight = FontWeight.SemiBold
             )
         }
     }
 
-    user.bio?.isEmpty()?.let {
-        if(!it) {
-            Spacer(Modifier.height(BasePadding))
-            Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 50.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = user.bio,
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(
+            top = BasePadding,
+            start = 50.dp,
+            end = 50.dp,
+            bottom = 0.dp
+        ),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = user.bio ?: "",
+            textAlign = TextAlign.Center
+        )
     }
 
     Spacer(Modifier.height(BasePadding))

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.userSocial.presentation.components
+package com.example.scrollbooker.feature.reviews.presentation
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,15 +15,11 @@ import com.example.scrollbooker.core.util.ErrorScreen
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.core.util.LoadingScreen
 import com.example.scrollbooker.core.util.MessageScreen
-import com.example.scrollbooker.feature.userSocial.domain.model.UserSocial
+import com.example.scrollbooker.feature.reviews.domain.model.Review
 
 @Composable
-fun UserSocialList(
-    pagingItems: LazyPagingItems<UserSocial>,
-    followedOverrides: Map<Int, Boolean>,
-    followRequestLocks: Set<Int>,
-    onFollow: (Boolean, Int) -> Unit,
-    onNavigateUserProfile: (Int) -> Unit
+fun ReviewsList(
+    pagingItems: LazyPagingItems<Review>
 ) {
     pagingItems.apply {
         when(loadState.refresh) {
@@ -42,17 +38,7 @@ fun UserSocialList(
 
     LazyColumn(Modifier.fillMaxSize()) {
         items(pagingItems.itemCount) { index ->
-            pagingItems[index]?.let { userSocial ->
-                val isLocked = followRequestLocks.contains(userSocial.id)
-
-                UserSocialItem(
-                    userSocial = userSocial,
-                    enabled = !isLocked,
-                    isFollowedOverrides = followedOverrides[userSocial.id],
-                    onFollow = { isFollowed -> onFollow(isFollowed, userSocial.id) },
-                    onNavigateUserProfile = onNavigateUserProfile
-                )
-            }
+            pagingItems[index]?.let { ReviewItem(it) }
         }
 
         pagingItems.apply {

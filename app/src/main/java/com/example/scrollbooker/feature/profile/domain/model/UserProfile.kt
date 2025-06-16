@@ -1,4 +1,5 @@
 package com.example.scrollbooker.feature.profile.domain.model
+import com.example.scrollbooker.feature.userSocial.domain.model.UserSocial
 import java.math.BigDecimal
 
 data class UserProfile(
@@ -13,6 +14,15 @@ data class UserProfile(
     val counters: UserCounters,
     val profession: String,
     val openingHours: OpeningHours,
+    val isFollow: Boolean,
+    val businessOwner: BusinessOwner?
+)
+
+data class BusinessOwner(
+    val id: Int,
+    val fullName: String,
+    val username: String,
+    val avatar: String?,
     val isFollow: Boolean
 )
 

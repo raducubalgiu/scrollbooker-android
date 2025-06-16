@@ -15,7 +15,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.inputs.Input
+import com.example.scrollbooker.components.core.inputs.Input
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.feature.auth.presentation.components.AuthScreen

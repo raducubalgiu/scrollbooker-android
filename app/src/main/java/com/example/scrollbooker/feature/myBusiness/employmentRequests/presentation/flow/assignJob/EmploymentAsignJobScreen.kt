@@ -3,7 +3,6 @@ package com.example.scrollbooker.feature.myBusiness.employmentRequests.presentat
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -12,9 +11,8 @@ import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.components.core.buttons.MainButton
-import com.example.scrollbooker.components.inputs.InputRadio
-import com.example.scrollbooker.components.inputs.Option
-import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.components.core.inputs.InputRadio
+import com.example.scrollbooker.components.core.inputs.Option
 import com.example.scrollbooker.core.util.ErrorScreen
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.LoadingScreen

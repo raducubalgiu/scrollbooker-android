@@ -1,4 +1,4 @@
-package com.example.scrollbooker.components.inputs
+package com.example.scrollbooker.components.core.inputs
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -11,12 +11,10 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonColors
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
@@ -41,7 +39,6 @@ fun InputRadio(
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .clip(shape = ShapeDefaults.Small)
                     .height(56.dp)
                     .background(SurfaceBG)
                     .selectable(

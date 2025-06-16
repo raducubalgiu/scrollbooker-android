@@ -12,7 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.Layout
-import com.example.scrollbooker.components.list.ItemListInfo
+import com.example.scrollbooker.components.core.list.ItemListInfo
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
@@ -71,6 +71,11 @@ fun EditProfileScreen(
             headLine = stringResource(R.string.gender),
             supportingText = user?.gender ?: "",
             onClick = { onNavigate(MainRoute.EditGender.route) }
+        )
+        ItemListInfo(
+            headLine = stringResource(R.string.profession),
+            supportingText = user?.profession ?: "",
+            onClick = { onNavigate(MainRoute.EditProfession.route) }
         )
         Button(onClick = {  }) {
             Text("Logout")

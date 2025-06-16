@@ -25,9 +25,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.components.core.buttons.MainButton
-import com.example.scrollbooker.components.inputs.Input
-import com.example.scrollbooker.components.inputs.InputSelect
-import com.example.scrollbooker.components.inputs.Option
+import com.example.scrollbooker.components.core.inputs.Input
+import com.example.scrollbooker.components.core.inputs.InputSelect
+import com.example.scrollbooker.components.core.inputs.Option
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 
 @Composable

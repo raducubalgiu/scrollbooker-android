@@ -13,7 +13,7 @@ import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.headers.HeaderEdit
 import com.example.scrollbooker.components.core.layout.Layout
-import com.example.scrollbooker.components.inputs.EditInput
+import com.example.scrollbooker.components.core.inputs.EditInput
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.checkLength

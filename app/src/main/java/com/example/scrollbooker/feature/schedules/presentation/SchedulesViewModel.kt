@@ -78,7 +78,7 @@ class SchedulesViewModel @Inject constructor(
                     Timber.Forest.tag("Schedules").e("ERROR: on Updating Schedules $error")
                 }
 
-            delay(500)
+            delay(300)
             _isSaving.value = false
         }
     }

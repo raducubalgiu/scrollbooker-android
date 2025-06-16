@@ -17,8 +17,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.inputs.InputSelect
-import com.example.scrollbooker.components.inputs.Option
+import com.example.scrollbooker.components.core.inputs.InputSelect
+import com.example.scrollbooker.components.core.inputs.Option
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.generateTimeSlots
 import com.example.scrollbooker.feature.schedules.domain.model.Schedule

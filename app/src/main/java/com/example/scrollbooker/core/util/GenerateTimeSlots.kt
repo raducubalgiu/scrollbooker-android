@@ -1,6 +1,6 @@
 package com.example.scrollbooker.core.util
 
-import com.example.scrollbooker.components.inputs.Option
+import com.example.scrollbooker.components.core.inputs.Option
 import org.threeten.bp.LocalTime
 import org.threeten.bp.format.DateTimeFormatter
 

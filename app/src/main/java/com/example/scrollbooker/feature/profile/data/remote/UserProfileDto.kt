@@ -1,4 +1,5 @@
 package com.example.scrollbooker.feature.profile.data.remote
+import com.example.scrollbooker.feature.userSocial.domain.model.UserSocial
 import com.google.gson.annotations.SerializedName
 import java.math.BigDecimal
 
@@ -24,6 +25,21 @@ data class UserProfileDto (
 
     @SerializedName("opening_hours")
     val openingHours: OpeningHoursDto,
+
+    @SerializedName("is_follow")
+    val isFollow: Boolean,
+
+    @SerializedName("business_owner")
+    val businessOwner: BusinessOwnerDto?
+)
+
+data class BusinessOwnerDto(
+    val id: Int,
+
+    @SerializedName("fullname")
+    val fullName: String,
+    val username: String,
+    val avatar: String?,
 
     @SerializedName("is_follow")
     val isFollow: Boolean

@@ -30,19 +30,19 @@ fun ProfileCounters(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         CounterItem(
-            counter = counters?.ratingsCount ?: 0,
+            counter = counters.ratingsCount,
             label = stringResource(R.string.reviews),
             onNavigate = { onNavigate("${MainRoute.UserSocial.route}/0") }
         )
         VerticalDivider()
         CounterItem(
-            counter = counters?.followersCount ?: 0,
+            counter = counters.followersCount,
             label = stringResource(R.string.followers),
             onNavigate = { onNavigate("${MainRoute.UserSocial.route}/1") }
         )
         VerticalDivider()
         CounterItem(
-            counter = counters?.followingsCount ?: 0,
+            counter = counters.followingsCount,
             label = stringResource(R.string.following),
             onNavigate = { onNavigate("${MainRoute.UserSocial.route}/2") }
         )

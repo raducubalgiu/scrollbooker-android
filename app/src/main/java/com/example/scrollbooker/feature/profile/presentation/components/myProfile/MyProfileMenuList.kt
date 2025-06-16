@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.list.ItemList
+import com.example.scrollbooker.components.core.list.ItemList
 import com.example.scrollbooker.core.nav.routes.MainRoute
 
 @Composable

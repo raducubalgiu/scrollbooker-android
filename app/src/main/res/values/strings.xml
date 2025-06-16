@@ -114,4 +114,6 @@
     <string name="friday">Vineri</string>
     <string name="saturday">Sâmbătă</string>
     <string name="sunday">Duminică</string>
+    <string name="profession">Profesie</string>
+    <string name="myProfession">Profesia mea</string>
 </resources>
