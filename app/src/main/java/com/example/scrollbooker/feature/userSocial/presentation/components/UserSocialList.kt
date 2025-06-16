@@ -1,6 +1,13 @@
 package com.example.scrollbooker.feature.userSocial.presentation.components
 
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Book
@@ -67,6 +74,18 @@ fun UserSocialList(
 
                 is LoadState.NotLoading -> Unit
             }
+        }
+
+        item {
+            Spacer(modifier = Modifier
+                .fillMaxSize()
+                .height(
+                    WindowInsets.safeContent
+                        .only(WindowInsetsSides.Bottom)
+                        .asPaddingValues()
+                        .calculateBottomPadding()
+                )
+            )
         }
     }
 }
