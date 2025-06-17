@@ -1,13 +1,7 @@
 package com.example.scrollbooker.feature.userSocial.presentation
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable

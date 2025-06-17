@@ -6,7 +6,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface PostApiService {
-    @GET("/users/{userId}/posts/")
+    @GET("users/{userId}/posts/")
     suspend fun getUserPosts(
         @Path("userId") userId: Int,
         @Query("page") page: Int,

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.feature.bookmarks.posts.domain.useCase.GetUserBookmarkedPostsUseCase
 import com.example.scrollbooker.feature.posts.domain.model.Post
 import com.example.scrollbooker.feature.posts.domain.useCase.GetUserPostsUseCase
 import com.example.scrollbooker.feature.profile.domain.model.UserProfile
@@ -36,7 +37,8 @@ class ProfileSharedViewModel @Inject constructor(
     private val updateUsernameUseCase: UpdateUsernameUseCase,
     private val updateBioUseCase: UpdateBioUseCase,
     private val updateGenderUseCase: UpdateGenderUseCase,
-    private val getUserPostsUseCase: GetUserPostsUseCase
+    private val getUserPostsUseCase: GetUserPostsUseCase,
+    private val getUserBookmarkedPostsUseCase: GetUserBookmarkedPostsUseCase
 ): ViewModel() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -46,6 +48,11 @@ class ProfileSharedViewModel @Inject constructor(
             getUserPostsUseCase(userId)
         }
         .cachedIn(viewModelScope)
+
+    private val _userBookmarkedPosts: Flow<PagingData<Post>> by lazy {
+        getUserBookmarkedPostsUseCase().cachedIn(viewModelScope)
+    }
+    val userBookmarkedPosts: Flow<PagingData<Post>> get() = _userBookmarkedPosts
 
     private val _userProfileState = MutableStateFlow<FeatureState<UserProfile>>(FeatureState.Loading)
     val userProfileState: StateFlow<FeatureState<UserProfile>> = _userProfileState
