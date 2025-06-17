@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.components.core.sheet.BottomSheet
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.util.ErrorScreen
@@ -25,6 +26,7 @@ fun MyProfileScreen(
 ) {
     var showMenuSheet by remember { mutableStateOf(false) }
     val userProfileState by viewModel.userProfileState.collectAsState()
+    val userPosts = viewModel.userPosts.collectAsLazyPagingItems()
 
     BottomSheet(
         onDismiss = { showMenuSheet = false },
@@ -53,7 +55,8 @@ fun MyProfileScreen(
 
                 ProfileLayout(
                     user = user,
-                    onNavigate = onNavigate
+                    onNavigate = onNavigate,
+                    userPosts = userPosts
                 ) {
                     MyProfileActions(
                         onEditProfile = { onNavigate(MainRoute.EditProfile.route) }

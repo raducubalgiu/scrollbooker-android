@@ -1,9 +1,7 @@
 package com.example.scrollbooker.feature.userSocial.presentation
 
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -65,13 +63,11 @@ class UserSocialViewModel @Inject constructor(
     private val _userFollowers: Flow<PagingData<UserSocial>> by lazy {
         getUserSocialFollowersUseCase(userId).cachedIn(viewModelScope)
     }
+    val userFollowers: Flow<PagingData<UserSocial>> get() = _userFollowers
 
     private val _userFollowings: Flow<PagingData<UserSocial>> by lazy {
         getUserSocialFollowingsUseCase(userId).cachedIn(viewModelScope)
     }
-
-    //val userReviews: Flow<PagingData<Review>> get() = _userReviews
-    val userFollowers: Flow<PagingData<UserSocial>> get() = _userFollowers
     val userFollowings: Flow<PagingData<UserSocial>> get() = _userFollowings
 
     private val _followedOverrides = MutableStateFlow<Map<Int, Boolean>>(emptyMap())

@@ -12,5 +12,7 @@ data class UserSocialDto(
     val avatar: String?,
 
     @SerializedName("is_follow")
-    val isFollow: Boolean
+    val isFollow: Boolean,
+
+    val profession: String?
 )

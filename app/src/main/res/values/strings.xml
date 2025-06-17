@@ -122,4 +122,5 @@
     <string name="rating_3">A fost ok</string>
     <string name="rating_4">Mi-a plăcut</string>
     <string name="rating_5">Mi-a plăcut foarte mult</string>
+    <string name="notFoundPosts">Nu au fost găsite postări</string>
 </resources>

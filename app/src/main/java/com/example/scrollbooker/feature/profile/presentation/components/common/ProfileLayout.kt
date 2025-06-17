@@ -17,8 +17,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.components.core.sheet.BottomSheet
 import com.example.scrollbooker.core.nav.routes.MainRoute
+import com.example.scrollbooker.feature.posts.domain.model.Post
 import com.example.scrollbooker.feature.profile.domain.model.UserProfile
 import com.example.scrollbooker.feature.profile.presentation.components.common.tab.ProfileBookmarksTab
 import com.example.scrollbooker.feature.profile.presentation.components.common.tab.ProfileInfoTab
@@ -32,6 +34,7 @@ import com.example.scrollbooker.feature.profile.presentation.components.common.t
 fun ProfileLayout(
     user: UserProfile,
     onNavigate: (String) -> Unit,
+    userPosts: LazyPagingItems<Post>,
     actions: @Composable (() -> Unit)
 ) {
     var showScheduleSheet by remember { mutableStateOf(false) }
@@ -83,7 +86,7 @@ fun ProfileLayout(
                         .height(LocalConfiguration.current.screenHeightDp.dp)
                 ) { page ->
                     when(page) {
-                        0 -> ProfilePostsTab(lazyListStates[page])
+                        0 -> ProfilePostsTab(posts = userPosts, lazyListState = lazyListStates[page])
                         1 -> ProfileProductsTab(lazyListStates[page])
                         2 -> ProfileRepostsTab(lazyListStates[page])
                         3 -> ProfileBookmarksTab(lazyListStates[page])

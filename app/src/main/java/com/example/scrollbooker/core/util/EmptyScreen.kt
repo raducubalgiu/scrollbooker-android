@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -22,10 +23,12 @@ import com.example.scrollbooker.ui.theme.bodyLarge
 
 @Composable
 fun EmptyScreen(
+    modifier: Modifier = Modifier,
+    fillMaxSize: Boolean = true,
     message: String,
     icon: ImageVector
 ) {
-    Column(modifier = Modifier.fillMaxSize(),
+    Column(modifier = if(fillMaxSize) modifier.fillMaxSize() else modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
