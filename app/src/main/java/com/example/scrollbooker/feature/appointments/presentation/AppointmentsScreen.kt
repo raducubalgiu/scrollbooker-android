@@ -24,7 +24,8 @@ fun AppointmentsScreen(viewModel: AppointmentsViewModel) {
     Layout(
         headerTitle = stringResource(id = R.string.appointments),
         enableBack = false,
-        enablePaddingH = false
+        enablePaddingH = false,
+        enablePaddingV = false
     ) {
         Column(Modifier.fillMaxSize()) {
             Tabs(tabs, selectedTabIndex, onChangeTab = {

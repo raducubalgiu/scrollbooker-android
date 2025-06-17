@@ -54,8 +54,9 @@ fun ReviewsSummarySection(
             .padding(bottom = SpacingM),
     ) {
         Column(modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = BasePadding
+            .fillMaxWidth()
+            .padding(
+                top = BasePadding
             ),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
@@ -78,7 +79,8 @@ fun ReviewsSummarySection(
         }
 
         summary.breakdown.sortedByDescending { it.rating }.forEach { item ->
-            val percent = item.count / maxCount.toFloat()
+            val progress = if(maxCount > 0) item.count / maxCount.toFloat() else 0f
+
             Row(modifier = Modifier.padding(horizontal = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -118,7 +120,7 @@ fun ReviewsSummarySection(
                     modifier = Modifier
                         .height(5.dp)
                         .weight(1f),
-                    progress = { percent },
+                    progress = { progress },
                     color = Primary,
                     trackColor = Color.Gray.copy(alpha = 0.4f)
                 )

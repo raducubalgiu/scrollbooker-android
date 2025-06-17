@@ -1,5 +1,6 @@
 package com.example.scrollbooker.feature.reviews.presentation
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -38,33 +39,34 @@ fun ReviewsList(
         .fillMaxSize()
         .background(SurfaceBG)
     ) {
-        item {
-            when(summaryState) {
-                is FeatureState.Success -> {
-                    val summary = summaryState.data
-                    ReviewsSummarySection(
-                        summary,
-                        onRatingClick,
-                        selectedRatings
-                    )
+        pagingItems.apply {
+            when(loadState.refresh) {
+                is LoadState.Loading -> {
+                    item { LoadingScreen() }
                 }
-                is FeatureState.Loading -> Unit
-                is FeatureState.Error -> Unit
-            }
-        }
+                is LoadState.Error -> {
+                    item { ErrorScreen() }
+                }
+                is LoadState.NotLoading -> {
+                    if(summaryState is FeatureState.Success) {
+                        val summary = summaryState.data
 
-        item {
-            pagingItems.apply {
-                when(loadState.refresh) {
-                    is LoadState.Loading -> LoadingScreen()
-                    is LoadState.Error -> ErrorScreen()
-                    is LoadState.NotLoading -> {
-                        if(pagingItems.itemCount == 0) {
-                            MessageScreen(
-                                message = stringResource(R.string.dontFoundResults),
-                                icon = Icons.Outlined.Book
-                            )
+                        item {
+                            if(summary.totalReviews > 0) {
+                                ReviewsSummarySection(
+                                    summary,
+                                    onRatingClick,
+                                    selectedRatings
+                                )
+                            }
                         }
+                    }
+
+                    if(pagingItems.itemCount == 0) {
+                        item { MessageScreen(
+                            message = stringResource(R.string.dontFoundResults),
+                            icon = Icons.Outlined.Book
+                        ) }
                     }
                 }
             }
