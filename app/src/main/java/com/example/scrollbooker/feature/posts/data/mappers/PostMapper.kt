@@ -80,7 +80,7 @@ fun PostCountersDto.toDomain(): PostCounters {
     return PostCounters(
         commentCount = commentCount,
         likeCount = likeCount,
-        saveCount = saveCount,
+        bookmarkCount = bookmarkCount,
         shareCount = shareCount
     )
 }

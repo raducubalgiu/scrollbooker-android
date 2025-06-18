@@ -56,7 +56,7 @@ data class PostProduct(
 data class PostCounters(
     val commentCount: Int,
     val likeCount: Int,
-    val saveCount: Int,
+    val bookmarkCount: Int,
     val shareCount: Int
 )
 
