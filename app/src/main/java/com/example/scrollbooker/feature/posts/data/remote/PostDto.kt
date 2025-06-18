@@ -13,9 +13,14 @@ data class PostDto(
     val product: PostProductDto,
     val counters: PostCountersDto,
 
+    @SerializedName("is_repost")
+    val isRepost: Boolean,
+
+    @SerializedName("media_files")
+    val mediaFiles: List<PostMediaFileDto>,
+
     val mentions: List<UserSocialDto>,
     val hashtags: List<HashtagDto>,
-
     val bookable: Boolean,
 
     @SerializedName("instant_booking")
@@ -26,6 +31,23 @@ data class PostDto(
 
     @SerializedName("created_at")
     val createdAt: String
+)
+
+data class PostMediaFileDto(
+    val id: Int,
+    val url: String,
+    val type: String,
+
+    @SerializedName("thumbnail_url")
+    val thumbnailUrl: String,
+
+    val duration: Float,
+
+    @SerializedName("post_id")
+    val postId: Int,
+
+    @SerializedName("order_index")
+    val orderIndex: Int
 )
 
 data class HashtagDto(

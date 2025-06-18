@@ -8,6 +8,8 @@ data class Post(
     val description: String?,
     val user: UserSocialDto,
     val product: PostProduct,
+    val isRepost: Boolean,
+    val mediaFiles: List<PostMediaFile>,
     val counters: PostCounters,
     val mentions: List<UserSocialDto>,
     val hashtags: List<Hashtag>,
@@ -15,6 +17,16 @@ data class Post(
     val instantBooking: Boolean,
     val lastMinute: LastMinute,
     val createdAt: String
+)
+
+data class PostMediaFile(
+    val id: Int,
+    val url: String,
+    val type: String,
+    val thumbnailUrl: String,
+    val duration: Float,
+    val postId: Int,
+    val orderIndex: Int
 )
 
 data class Hashtag(

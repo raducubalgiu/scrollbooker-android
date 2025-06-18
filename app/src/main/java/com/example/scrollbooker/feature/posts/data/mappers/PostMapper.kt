@@ -4,12 +4,14 @@ import com.example.scrollbooker.feature.posts.data.remote.HashtagDto
 import com.example.scrollbooker.feature.posts.data.remote.LastMinuteDto
 import com.example.scrollbooker.feature.posts.data.remote.PostCountersDto
 import com.example.scrollbooker.feature.posts.data.remote.PostDto
+import com.example.scrollbooker.feature.posts.data.remote.PostMediaFileDto
 import com.example.scrollbooker.feature.posts.data.remote.PostProductDto
 import com.example.scrollbooker.feature.posts.domain.model.FixedSlots
 import com.example.scrollbooker.feature.posts.domain.model.Hashtag
 import com.example.scrollbooker.feature.posts.domain.model.LastMinute
 import com.example.scrollbooker.feature.posts.domain.model.Post
 import com.example.scrollbooker.feature.posts.domain.model.PostCounters
+import com.example.scrollbooker.feature.posts.domain.model.PostMediaFile
 import com.example.scrollbooker.feature.posts.domain.model.PostProduct
 
 fun PostDto.toDomain(): Post {
@@ -18,6 +20,8 @@ fun PostDto.toDomain(): Post {
         description = description,
         user = user,
         product = product.toDomain(),
+        isRepost = isRepost,
+        mediaFiles = mediaFiles.map { it.toDomain() },
         counters = counters.toDomain(),
         mentions = mentions,
         hashtags = hashtags.map { it.toDomain() },
@@ -25,6 +29,18 @@ fun PostDto.toDomain(): Post {
         instantBooking = instantBooking,
         lastMinute = lastMinute.toDomain(),
         createdAt = createdAt,
+    )
+}
+
+fun PostMediaFileDto.toDomain(): PostMediaFile {
+    return PostMediaFile(
+        id = id,
+        url = url,
+        type = type,
+        thumbnailUrl = thumbnailUrl,
+        duration = duration,
+        postId = postId,
+        orderIndex = orderIndex
     )
 }
 
