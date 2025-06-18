@@ -6,6 +6,7 @@ import com.example.scrollbooker.feature.posts.data.remote.PostCountersDto
 import com.example.scrollbooker.feature.posts.data.remote.PostDto
 import com.example.scrollbooker.feature.posts.data.remote.PostMediaFileDto
 import com.example.scrollbooker.feature.posts.data.remote.PostProductDto
+import com.example.scrollbooker.feature.posts.data.remote.UserPostActionsDto
 import com.example.scrollbooker.feature.posts.domain.model.FixedSlots
 import com.example.scrollbooker.feature.posts.domain.model.Hashtag
 import com.example.scrollbooker.feature.posts.domain.model.LastMinute
@@ -13,6 +14,7 @@ import com.example.scrollbooker.feature.posts.domain.model.Post
 import com.example.scrollbooker.feature.posts.domain.model.PostCounters
 import com.example.scrollbooker.feature.posts.domain.model.PostMediaFile
 import com.example.scrollbooker.feature.posts.domain.model.PostProduct
+import com.example.scrollbooker.feature.posts.domain.model.UserPostActions
 
 fun PostDto.toDomain(): Post {
     return Post(
@@ -20,7 +22,7 @@ fun PostDto.toDomain(): Post {
         description = description,
         user = user,
         product = product.toDomain(),
-        isRepost = isRepost,
+        userActions = userActions.toDomain(),
         mediaFiles = mediaFiles.map { it.toDomain() },
         counters = counters.toDomain(),
         mentions = mentions,
@@ -29,6 +31,14 @@ fun PostDto.toDomain(): Post {
         instantBooking = instantBooking,
         lastMinute = lastMinute.toDomain(),
         createdAt = createdAt,
+    )
+}
+
+fun UserPostActionsDto.toDomain(): UserPostActions {
+    return UserPostActions(
+        isLiked = isLiked,
+        isBookmarked = isBookmarked,
+        isReposted = isReposted
     )
 }
 

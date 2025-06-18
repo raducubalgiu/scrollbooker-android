@@ -13,8 +13,8 @@ data class PostDto(
     val product: PostProductDto,
     val counters: PostCountersDto,
 
-    @SerializedName("is_repost")
-    val isRepost: Boolean,
+    @SerializedName("user_actions")
+    val userActions: UserPostActionsDto,
 
     @SerializedName("media_files")
     val mediaFiles: List<PostMediaFileDto>,
@@ -31,6 +31,17 @@ data class PostDto(
 
     @SerializedName("created_at")
     val createdAt: String
+)
+
+data class UserPostActionsDto(
+    @SerializedName("is_liked")
+    val isLiked: Boolean,
+
+    @SerializedName("is_bookmarked")
+    val isBookmarked: Boolean,
+
+    @SerializedName("is_reposted")
+    val isReposted: Boolean
 )
 
 data class PostMediaFileDto(

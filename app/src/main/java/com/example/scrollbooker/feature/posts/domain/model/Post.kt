@@ -8,7 +8,7 @@ data class Post(
     val description: String?,
     val user: UserSocialDto,
     val product: PostProduct,
-    val isRepost: Boolean,
+    val userActions: UserPostActions,
     val mediaFiles: List<PostMediaFile>,
     val counters: PostCounters,
     val mentions: List<UserSocialDto>,
@@ -17,6 +17,12 @@ data class Post(
     val instantBooking: Boolean,
     val lastMinute: LastMinute,
     val createdAt: String
+)
+
+data class UserPostActions(
+    val isLiked: Boolean,
+    val isBookmarked: Boolean,
+    val isReposted: Boolean
 )
 
 data class PostMediaFile(
