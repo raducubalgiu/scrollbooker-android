@@ -35,7 +35,7 @@ fun ProfileBookmarksTab(
                 posts.loadState.refresh is LoadState.Error -> ErrorScreen()
                 posts.itemCount == 0 -> EmptyScreen(
                     fillMaxSize = false,
-                    message = stringResource(R.string.notFoundPosts),
+                    message = stringResource(R.string.notFoundBookmarks),
                     icon = Icons.Outlined.Videocam
                 )
 

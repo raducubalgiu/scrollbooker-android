@@ -36,6 +36,7 @@ fun ProfileLayout(
     onNavigate: (String) -> Unit,
     userPosts: LazyPagingItems<Post>,
     userBookmarkedPosts: LazyPagingItems<Post>?,
+    userReposts: LazyPagingItems<Post>?,
     actions: @Composable (() -> Unit)
 ) {
     var showScheduleSheet by remember { mutableStateOf(false) }
@@ -89,7 +90,7 @@ fun ProfileLayout(
                     when(page) {
                         0 -> ProfilePostsTab(posts = userPosts, lazyListState = lazyListStates[page])
                         1 -> ProfileProductsTab(lazyListStates[page])
-                        2 -> ProfileRepostsTab(lazyListStates[page])
+                        2 -> ProfileRepostsTab(posts = userReposts, lazyListStates[page])
                         3 -> ProfileBookmarksTab(posts = userBookmarkedPosts, lazyListState =lazyListStates[page])
                         4 -> ProfileInfoTab(lazyListStates[page])
                     }

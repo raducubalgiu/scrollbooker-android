@@ -28,6 +28,7 @@ fun MyProfileScreen(
     val userProfileState by viewModel.userProfileState.collectAsState()
     val userPosts = viewModel.userPosts.collectAsLazyPagingItems()
     val userBookmarkedPosts = viewModel.userBookmarkedPosts.collectAsLazyPagingItems()
+    val userReposts = viewModel.userReposts.collectAsLazyPagingItems()
 
     BottomSheet(
         onDismiss = { showMenuSheet = false },
@@ -58,7 +59,8 @@ fun MyProfileScreen(
                     user = user,
                     onNavigate = onNavigate,
                     userPosts = userPosts,
-                    userBookmarkedPosts = userBookmarkedPosts
+                    userBookmarkedPosts = userBookmarkedPosts,
+                    userReposts = userReposts
                 ) {
                     MyProfileActions(
                         onEditProfile = { onNavigate(MainRoute.EditProfile.route) }

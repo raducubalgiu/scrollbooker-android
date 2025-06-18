@@ -16,6 +16,7 @@ import com.example.scrollbooker.feature.profile.domain.usecase.UpdateBioUseCase
 import com.example.scrollbooker.feature.profile.domain.usecase.UpdateFullNameUseCase
 import com.example.scrollbooker.feature.profile.domain.usecase.UpdateGenderUseCase
 import com.example.scrollbooker.feature.profile.domain.usecase.UpdateUsernameUseCase
+import com.example.scrollbooker.feature.reposts.domain.useCase.GetUserRepostsUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -38,7 +39,8 @@ class ProfileSharedViewModel @Inject constructor(
     private val updateBioUseCase: UpdateBioUseCase,
     private val updateGenderUseCase: UpdateGenderUseCase,
     private val getUserPostsUseCase: GetUserPostsUseCase,
-    private val getUserBookmarkedPostsUseCase: GetUserBookmarkedPostsUseCase
+    private val getUserBookmarkedPostsUseCase: GetUserBookmarkedPostsUseCase,
+    private val getUserRepostsUseCase: GetUserRepostsUseCase
 ): ViewModel() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -53,6 +55,11 @@ class ProfileSharedViewModel @Inject constructor(
         getUserBookmarkedPostsUseCase().cachedIn(viewModelScope)
     }
     val userBookmarkedPosts: Flow<PagingData<Post>> get() = _userBookmarkedPosts
+
+    private val _userReposts: Flow<PagingData<Post>> by lazy {
+        getUserRepostsUseCase().cachedIn(viewModelScope)
+    }
+    val userReposts: Flow<PagingData<Post>> get() = _userReposts
 
     private val _userProfileState = MutableStateFlow<FeatureState<UserProfile>>(FeatureState.Loading)
     val userProfileState: StateFlow<FeatureState<UserProfile>> = _userProfileState
