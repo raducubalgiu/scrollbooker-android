@@ -12,14 +12,14 @@ import com.example.scrollbooker.core.nav.LocalRootNavController
 import com.example.scrollbooker.core.nav.routes.AuthRoute
 import com.example.scrollbooker.core.nav.transitions.slideEnterTransition
 import com.example.scrollbooker.core.nav.transitions.slideExitTransition
-import com.example.scrollbooker.feature.auth.presentation.AuthViewModel
-import com.example.scrollbooker.feature.auth.presentation.LoginScreen
-import com.example.scrollbooker.feature.auth.presentation.RegisterScreen
-import com.example.scrollbooker.feature.auth.presentation.components.collectBusinessDetails.CollectBusinessLocationScreen
-import com.example.scrollbooker.feature.auth.presentation.components.collectBusinessDetails.CollectBusinessSchedulesScreen
-import com.example.scrollbooker.feature.auth.presentation.components.collectBusinessDetails.CollectBusinessServicesScreen
-import com.example.scrollbooker.feature.auth.presentation.components.collectClientDetails.CollectBirthDateScreen
-import com.example.scrollbooker.feature.auth.presentation.components.collectClientDetails.CollectUsernameScreen
+import com.example.scrollbooker.screens.auth.presentation.AuthViewModel
+import com.example.scrollbooker.screens.auth.presentation.LoginScreen
+import com.example.scrollbooker.screens.auth.presentation.RegisterScreen
+import com.example.scrollbooker.screens.auth.presentation.components.collectBusinessDetails.CollectBusinessLocationScreen
+import com.example.scrollbooker.screens.auth.presentation.components.collectBusinessDetails.CollectBusinessSchedulesScreen
+import com.example.scrollbooker.screens.auth.presentation.components.collectBusinessDetails.CollectBusinessServicesScreen
+import com.example.scrollbooker.screens.auth.presentation.components.collectClientDetails.CollectBirthDateScreen
+import com.example.scrollbooker.screens.auth.presentation.components.collectClientDetails.CollectUsernameScreen
 
 @Composable
 fun AuthNavHost(viewModel: AuthViewModel) {

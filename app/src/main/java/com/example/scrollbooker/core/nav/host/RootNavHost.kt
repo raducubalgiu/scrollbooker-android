@@ -7,7 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.navigation.NavHostController
 import com.example.scrollbooker.core.nav.routes.GlobalRoute
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.feature.auth.presentation.AuthViewModel
+import com.example.scrollbooker.screens.auth.presentation.AuthViewModel
 
 @Composable
 fun RootNavHost(

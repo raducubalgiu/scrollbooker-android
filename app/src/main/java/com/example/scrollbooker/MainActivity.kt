@@ -16,13 +16,13 @@ import androidx.navigation.compose.rememberNavController
 import com.example.scrollbooker.core.nav.LocalRootNavController
 import com.example.scrollbooker.core.nav.host.RootNavHost
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.feature.auth.presentation.AuthViewModel
 import com.example.scrollbooker.store.theme.ThemeViewModel
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.ScrollBookerTheme
 import com.jakewharton.threetenabp.AndroidThreeTen
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.compose.runtime.getValue
+import com.example.scrollbooker.screens.auth.presentation.AuthViewModel
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
