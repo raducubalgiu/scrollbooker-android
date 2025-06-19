@@ -1,7 +1,7 @@
-package com.example.scrollbooker.feature.settings.reportProblem.domain.useCase
+package com.example.scrollbooker.screens.profile.settings.reportProblem.domain.useCase
 
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.feature.settings.reportProblem.domain.repository.ReportProblemRepository
+import com.example.scrollbooker.screens.profile.settings.reportProblem.domain.repository.ReportProblemRepository
 import com.example.scrollbooker.store.AuthDataStore
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull

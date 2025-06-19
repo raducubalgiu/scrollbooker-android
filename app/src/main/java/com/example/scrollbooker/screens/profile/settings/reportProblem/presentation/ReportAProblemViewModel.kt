@@ -1,9 +1,9 @@
-package com.example.scrollbooker.feature.settings.reportProblem.presentation
+package com.example.scrollbooker.screens.profile.settings.reportProblem.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.feature.settings.reportProblem.domain.useCase.SendProblemUseCase
+import com.example.scrollbooker.screens.profile.settings.reportProblem.domain.useCase.SendProblemUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch

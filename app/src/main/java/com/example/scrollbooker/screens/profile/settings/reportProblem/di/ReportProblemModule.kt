@@ -1,9 +1,9 @@
-package com.example.scrollbooker.feature.settings.reportProblem.di
+package com.example.scrollbooker.screens.profile.settings.reportProblem.di
 
 import com.example.scrollbooker.core.util.Constants
-import com.example.scrollbooker.feature.settings.reportProblem.data.remote.ReportProblemApiService
-import com.example.scrollbooker.feature.settings.reportProblem.data.repository.ReportProblemRepositoryImpl
-import com.example.scrollbooker.feature.settings.reportProblem.domain.repository.ReportProblemRepository
+import com.example.scrollbooker.screens.profile.settings.reportProblem.data.remote.ReportProblemApiService
+import com.example.scrollbooker.screens.profile.settings.reportProblem.data.repository.ReportProblemRepositoryImpl
+import com.example.scrollbooker.screens.profile.settings.reportProblem.domain.repository.ReportProblemRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

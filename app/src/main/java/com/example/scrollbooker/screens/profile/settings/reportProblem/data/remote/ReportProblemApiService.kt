@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.settings.reportProblem.data.remote
+package com.example.scrollbooker.screens.profile.settings.reportProblem.data.remote
 import retrofit2.http.Body
 import retrofit2.http.POST
 

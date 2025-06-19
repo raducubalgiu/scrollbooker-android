@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.settings.reportProblem.presentation
+package com.example.scrollbooker.screens.profile.settings.reportProblem.presentation
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding

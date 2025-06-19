@@ -14,11 +14,11 @@ import com.example.scrollbooker.screens.profile.settings.account.AccountScreen
 import com.example.scrollbooker.screens.profile.settings.display.DisplayScreen
 import com.example.scrollbooker.screens.profile.settings.notifications.NotificationSettings
 import com.example.scrollbooker.screens.profile.settings.privacy.PrivacyScreen
-import com.example.scrollbooker.feature.settings.reportProblem.presentation.ReportProblemScreen
+import com.example.scrollbooker.screens.profile.settings.reportProblem.presentation.ReportProblemScreen
 import com.example.scrollbooker.screens.profile.settings.security.SecurityScreen
 import com.example.scrollbooker.screens.profile.settings.support.SupportScreen
 import com.example.scrollbooker.screens.profile.settings.terms.TermsAndConditionsScreen
-import com.example.scrollbooker.feature.settings.reportProblem.presentation.ReportAProblemViewModel
+import com.example.scrollbooker.screens.profile.settings.reportProblem.presentation.ReportAProblemViewModel
 
 fun NavGraphBuilder.settingsGraph(navController: NavHostController) {
     navigation(
