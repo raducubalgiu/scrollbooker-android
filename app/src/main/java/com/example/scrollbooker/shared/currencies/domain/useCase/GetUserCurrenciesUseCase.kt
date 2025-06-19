@@ -1,21 +1,23 @@
 package com.example.scrollbooker.shared.currencies.domain.useCase
-
-import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.shared.currencies.domain.model.Currency
+import com.example.scrollbooker.shared.currencies.data.remote.CurrencyDto
 import com.example.scrollbooker.shared.currencies.domain.repository.CurrencyRepository
+import com.example.scrollbooker.store.AuthDataStore
+import kotlinx.coroutines.flow.firstOrNull
 import timber.log.Timber
 import javax.inject.Inject
 
 class GetUserCurrenciesUseCase @Inject constructor(
+    private val authDataStore: AuthDataStore,
     private val repository: CurrencyRepository
 ) {
-    suspend operator fun invoke(userId: Int): FeatureState<List<Currency>> {
-        return try {
-            val response = repository.getUserCurrencies(userId)
-            FeatureState.Success(response)
-        } catch (e: Exception) {
-            Timber.tag("Currencies").e("ERROR: on Fetching All Currencies: $e")
-            FeatureState.Error(e)
+    suspend operator fun invoke(): Result<List<CurrencyDto>> {
+        val userId = authDataStore.getUserId().firstOrNull()
+
+        if(userId == null) {
+            Timber.tag("User Currencies").e("User Id not found in Data Store")
+            throw IllegalStateException("User Id not found")
         }
+
+        return repository.getUserCurrencies(userId)
     }
 }

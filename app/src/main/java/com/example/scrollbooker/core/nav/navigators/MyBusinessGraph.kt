@@ -25,6 +25,8 @@ import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentati
 import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.list.EmploymentRequestsViewModel
 import com.example.scrollbooker.feature.myBusiness.products.presentation.AddProductScreen
 import com.example.scrollbooker.feature.myBusiness.products.presentation.MyProductsScreen
+import com.example.scrollbooker.screens.profile.myBusiness.myCurrencies.MyCurrenciesScreen
+import com.example.scrollbooker.screens.profile.myBusiness.myCurrencies.MyCurrenciesViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.SchedulesScreen
 import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.SchedulesViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.myServices.AttachServicesScreen
@@ -129,6 +131,15 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
             val viewModel = hiltViewModel<MyCalendarViewModel>(backStackEntry)
 
             MyCalendarScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(MainRoute.MyCurrencies.route) { backStackEntry ->
+            val viewModel = hiltViewModel<MyCurrenciesViewModel>(backStackEntry)
+
+            MyCurrenciesScreen(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() }
             )

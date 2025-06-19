@@ -8,9 +8,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Book
 import androidx.compose.material.icons.outlined.CalendarToday
-import androidx.compose.material.icons.outlined.Euro
 import androidx.compose.material.icons.outlined.LocationOn
-import androidx.compose.material.icons.outlined.MonetizationOn
 import androidx.compose.material.icons.outlined.Payment
 import androidx.compose.material.icons.outlined.PeopleOutline
 import androidx.compose.material.icons.outlined.Repeat
@@ -29,7 +27,6 @@ import com.example.scrollbooker.feature.myBusiness.components.MyBusinessCard
 import androidx.compose.runtime.getValue
 import com.example.scrollbooker.core.enums.PermissionEnum
 import com.example.scrollbooker.core.enums.has
-import timber.log.Timber
 
 data class BusinessCard(
     val title: String,
@@ -87,7 +84,7 @@ fun MyBusinessScreen(
             title = stringResource(R.string.paymentMethods),
             description = stringResource(R.string.paymentMethodsDetails),
             icon = Icons.Outlined.Payment,
-            route = MainRoute.MyCalendar.route,
+            route = MainRoute.MyCurrencies.route,
             permission = PermissionEnum.MY_CURRENCIES_VIEW
         ),
         BusinessCard(

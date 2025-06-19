@@ -30,6 +30,7 @@ sealed class MainRoute(val route: String) {
     object MyCalendar: MainRoute(route = "myCalendar")
     object MyBusiness: MainRoute(route = "myBusiness")
     object MyServices: MainRoute(route = "myServices")
+    object MyCurrencies: MainRoute(route = "myCurrencies")
     object AttachServices: MainRoute(route = "attachServices")
     object Products: MainRoute(route = "products")
     object AddProduct: MainRoute(route = "addProduct")
