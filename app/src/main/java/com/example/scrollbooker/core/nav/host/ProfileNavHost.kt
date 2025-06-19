@@ -15,16 +15,16 @@ import com.example.scrollbooker.core.nav.navigators.settingsGraph
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.screens.calendar.CalendarScreen
 import com.example.scrollbooker.screens.calendar.CalendarViewModel
-import com.example.scrollbooker.feature.profile.presentation.MyProfileScreen
-import com.example.scrollbooker.feature.profile.presentation.ProfileSharedViewModel
-import com.example.scrollbooker.feature.profile.presentation.ProfileViewModel
-import com.example.scrollbooker.feature.profile.presentation.UserProfileScreen
-import com.example.scrollbooker.feature.profile.presentation.edit.EditBioScreen
-import com.example.scrollbooker.feature.profile.presentation.edit.EditFullNameScreen
-import com.example.scrollbooker.feature.profile.presentation.edit.EditGenderScreen
-import com.example.scrollbooker.feature.profile.presentation.edit.EditProfessionScreen
-import com.example.scrollbooker.feature.profile.presentation.edit.EditProfileScreen
-import com.example.scrollbooker.feature.profile.presentation.edit.EditUsernameScreen
+import com.example.scrollbooker.screens.profile.myProfile.MyProfileScreen
+import com.example.scrollbooker.screens.profile.myProfile.ProfileSharedViewModel
+import com.example.scrollbooker.screens.profile.userProfile.ProfileViewModel
+import com.example.scrollbooker.screens.profile.userProfile.UserProfileScreen
+import com.example.scrollbooker.screens.profile.edit.EditBioScreen
+import com.example.scrollbooker.screens.profile.edit.EditFullNameScreen
+import com.example.scrollbooker.screens.profile.edit.EditGenderScreen
+import com.example.scrollbooker.screens.profile.edit.EditProfessionScreen
+import com.example.scrollbooker.screens.profile.edit.EditProfileScreen
+import com.example.scrollbooker.screens.profile.edit.EditUsernameScreen
 import com.example.scrollbooker.feature.userSocial.presentation.UserSocialScreen
 import com.example.scrollbooker.feature.userSocial.presentation.UserSocialViewModel
 

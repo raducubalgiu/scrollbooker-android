@@ -3,8 +3,8 @@ package com.example.scrollbooker.feature.myBusiness.employmentRequests.presentat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.feature.profile.domain.usecase.SearchUsersClientsUseCase
 import com.example.scrollbooker.feature.userSocial.domain.model.UserSocial
+import com.example.scrollbooker.shared.userProfile.domain.usecase.SearchUsersClientsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
