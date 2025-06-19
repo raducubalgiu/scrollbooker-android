@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.settings.presentation.privacy
+package com.example.scrollbooker.screens.profile.settings.privacy
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize

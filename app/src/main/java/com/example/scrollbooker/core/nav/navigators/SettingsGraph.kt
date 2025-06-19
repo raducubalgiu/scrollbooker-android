@@ -8,17 +8,16 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.example.scrollbooker.core.nav.routes.MainRoute
-import com.example.scrollbooker.feature.myBusiness.employees.presentation.EmployeesViewModel
-import com.example.scrollbooker.feature.settings.presentation.SettingsScreen
-import com.example.scrollbooker.feature.settings.presentation.SettingsViewModel
-import com.example.scrollbooker.feature.settings.presentation.account.AccountScreen
-import com.example.scrollbooker.feature.settings.presentation.display.DisplayScreen
-import com.example.scrollbooker.feature.settings.presentation.notifications.NotificationSettings
-import com.example.scrollbooker.feature.settings.presentation.privacy.PrivacyScreen
+import com.example.scrollbooker.screens.profile.settings.SettingsScreen
+import com.example.scrollbooker.screens.profile.settings.SettingsViewModel
+import com.example.scrollbooker.screens.profile.settings.account.AccountScreen
+import com.example.scrollbooker.screens.profile.settings.display.DisplayScreen
+import com.example.scrollbooker.screens.profile.settings.notifications.NotificationSettings
+import com.example.scrollbooker.screens.profile.settings.privacy.PrivacyScreen
 import com.example.scrollbooker.feature.settings.reportProblem.presentation.ReportProblemScreen
-import com.example.scrollbooker.feature.settings.presentation.security.SecurityScreen
-import com.example.scrollbooker.feature.settings.presentation.support.SupportScreen
-import com.example.scrollbooker.feature.settings.presentation.terms.TermsAndConditionsScreen
+import com.example.scrollbooker.screens.profile.settings.security.SecurityScreen
+import com.example.scrollbooker.screens.profile.settings.support.SupportScreen
+import com.example.scrollbooker.screens.profile.settings.terms.TermsAndConditionsScreen
 import com.example.scrollbooker.feature.settings.reportProblem.presentation.ReportAProblemViewModel
 
 fun NavGraphBuilder.settingsGraph(navController: NavHostController) {

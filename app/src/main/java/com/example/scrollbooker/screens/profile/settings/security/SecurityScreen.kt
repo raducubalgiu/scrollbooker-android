@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.settings.presentation.security
+package com.example.scrollbooker.screens.profile.settings.security
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource

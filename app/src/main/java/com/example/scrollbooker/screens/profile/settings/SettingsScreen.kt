@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.settings.presentation
+package com.example.scrollbooker.screens.profile.settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

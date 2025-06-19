@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.settings.presentation.notifications
+package com.example.scrollbooker.screens.profile.settings.notifications
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider

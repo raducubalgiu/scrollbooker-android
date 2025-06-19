@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.settings.presentation.support
+package com.example.scrollbooker.screens.profile.settings.terms
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
@@ -6,13 +6,13 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.Layout
 
 @Composable
-fun SupportScreen(
+fun TermsAndConditionsScreen(
     onBack: () -> Unit
 ) {
     Layout(
-        headerTitle = stringResource(R.string.support),
+        headerTitle = stringResource(R.string.termsAndConditions),
         onBack = onBack
     ) {
-        Text("Support Screen")
+        Text("Terms and Conditions")
     }
 }
