@@ -1,9 +1,9 @@
-package com.example.scrollbooker.feature.posts.data.remote
+package com.example.scrollbooker.shared.posts.data.remote
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.example.scrollbooker.feature.posts.data.mappers.toDomain
-import com.example.scrollbooker.feature.posts.domain.model.Post
+import com.example.scrollbooker.shared.posts.data.mappers.toDomain
+import com.example.scrollbooker.shared.posts.domain.model.Post
 import kotlinx.coroutines.delay
 import timber.log.Timber
 import java.lang.Exception

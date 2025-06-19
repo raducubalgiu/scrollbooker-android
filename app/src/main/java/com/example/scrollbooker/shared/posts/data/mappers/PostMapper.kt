@@ -1,20 +1,20 @@
-package com.example.scrollbooker.feature.posts.data.mappers
-import com.example.scrollbooker.feature.posts.data.remote.FixedSlotsDto
-import com.example.scrollbooker.feature.posts.data.remote.HashtagDto
-import com.example.scrollbooker.feature.posts.data.remote.LastMinuteDto
-import com.example.scrollbooker.feature.posts.data.remote.PostCountersDto
-import com.example.scrollbooker.feature.posts.data.remote.PostDto
-import com.example.scrollbooker.feature.posts.data.remote.PostMediaFileDto
-import com.example.scrollbooker.feature.posts.data.remote.PostProductDto
-import com.example.scrollbooker.feature.posts.data.remote.UserPostActionsDto
-import com.example.scrollbooker.feature.posts.domain.model.FixedSlots
-import com.example.scrollbooker.feature.posts.domain.model.Hashtag
-import com.example.scrollbooker.feature.posts.domain.model.LastMinute
-import com.example.scrollbooker.feature.posts.domain.model.Post
-import com.example.scrollbooker.feature.posts.domain.model.PostCounters
-import com.example.scrollbooker.feature.posts.domain.model.PostMediaFile
-import com.example.scrollbooker.feature.posts.domain.model.PostProduct
-import com.example.scrollbooker.feature.posts.domain.model.UserPostActions
+package com.example.scrollbooker.shared.posts.data.mappers
+import com.example.scrollbooker.shared.posts.data.remote.FixedSlotsDto
+import com.example.scrollbooker.shared.posts.data.remote.HashtagDto
+import com.example.scrollbooker.shared.posts.data.remote.LastMinuteDto
+import com.example.scrollbooker.shared.posts.data.remote.PostCountersDto
+import com.example.scrollbooker.shared.posts.data.remote.PostDto
+import com.example.scrollbooker.shared.posts.data.remote.PostMediaFileDto
+import com.example.scrollbooker.shared.posts.data.remote.PostProductDto
+import com.example.scrollbooker.shared.posts.data.remote.UserPostActionsDto
+import com.example.scrollbooker.shared.posts.domain.model.FixedSlots
+import com.example.scrollbooker.shared.posts.domain.model.Hashtag
+import com.example.scrollbooker.shared.posts.domain.model.LastMinute
+import com.example.scrollbooker.shared.posts.domain.model.Post
+import com.example.scrollbooker.shared.posts.domain.model.PostCounters
+import com.example.scrollbooker.shared.posts.domain.model.PostMediaFile
+import com.example.scrollbooker.shared.posts.domain.model.PostProduct
+import com.example.scrollbooker.shared.posts.domain.model.UserPostActions
 
 fun PostDto.toDomain(): Post {
     return Post(

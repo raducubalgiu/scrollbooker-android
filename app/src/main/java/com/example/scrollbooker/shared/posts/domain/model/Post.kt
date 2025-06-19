@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.posts.domain.model
+package com.example.scrollbooker.shared.posts.domain.model
 
 import com.example.scrollbooker.feature.userSocial.data.remote.UserSocialDto
 import java.math.BigDecimal

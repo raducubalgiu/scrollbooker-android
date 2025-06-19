@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.posts.data.remote
+package com.example.scrollbooker.shared.posts.data.remote
 
 import com.example.scrollbooker.feature.userSocial.data.remote.UserSocialDto
 import com.google.gson.annotations.SerializedName

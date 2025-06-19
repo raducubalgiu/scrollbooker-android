@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.posts.data.remote
+package com.example.scrollbooker.shared.posts.data.remote
 
 import com.example.scrollbooker.core.util.PaginatedResponseDto
 import retrofit2.http.GET

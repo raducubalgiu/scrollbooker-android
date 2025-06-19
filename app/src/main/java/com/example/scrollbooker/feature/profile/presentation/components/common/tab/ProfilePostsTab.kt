@@ -21,7 +21,7 @@ import com.example.scrollbooker.core.util.EmptyScreen
 import com.example.scrollbooker.core.util.ErrorScreen
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.core.util.LoadingScreen
-import com.example.scrollbooker.feature.posts.domain.model.Post
+import com.example.scrollbooker.shared.posts.domain.model.Post
 
 @Composable
 fun ProfilePostsTab(

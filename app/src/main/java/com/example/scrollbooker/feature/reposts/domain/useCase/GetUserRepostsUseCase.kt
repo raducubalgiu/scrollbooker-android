@@ -1,7 +1,7 @@
 package com.example.scrollbooker.feature.reposts.domain.useCase
 
 import androidx.paging.PagingData
-import com.example.scrollbooker.feature.posts.domain.model.Post
+import com.example.scrollbooker.shared.posts.domain.model.Post
 import com.example.scrollbooker.feature.reposts.domain.repository.RepostsRepository
 import kotlinx.coroutines.flow.Flow
 

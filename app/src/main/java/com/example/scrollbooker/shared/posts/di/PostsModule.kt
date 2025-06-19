@@ -1,10 +1,10 @@
-package com.example.scrollbooker.feature.posts.di
+package com.example.scrollbooker.shared.posts.di
 
 import com.example.scrollbooker.core.util.Constants
-import com.example.scrollbooker.feature.posts.data.remote.PostApiService
-import com.example.scrollbooker.feature.posts.data.repository.PostRepositoryImpl
-import com.example.scrollbooker.feature.posts.domain.repository.PostRepository
-import com.example.scrollbooker.feature.posts.domain.useCase.GetUserPostsUseCase
+import com.example.scrollbooker.shared.posts.data.remote.PostApiService
+import com.example.scrollbooker.shared.posts.data.repository.PostRepositoryImpl
+import com.example.scrollbooker.shared.posts.domain.repository.PostRepository
+import com.example.scrollbooker.shared.posts.domain.useCase.GetUserPostsUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
