@@ -22,11 +22,11 @@ import com.example.scrollbooker.components.core.sheet.BottomSheet
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.shared.posts.domain.model.Post
 import com.example.scrollbooker.feature.profile.domain.model.UserProfile
-import com.example.scrollbooker.feature.profile.presentation.components.common.tab.ProfileBookmarksTab
-import com.example.scrollbooker.feature.profile.presentation.components.common.tab.ProfileInfoTab
-import com.example.scrollbooker.feature.profile.presentation.components.common.tab.ProfilePostsTab
-import com.example.scrollbooker.feature.profile.presentation.components.common.tab.ProfileProductsTab
-import com.example.scrollbooker.feature.profile.presentation.components.common.tab.ProfileRepostsTab
+import com.example.scrollbooker.feature.profile.presentation.components.common.tab.bookmarks.ProfileBookmarksTab
+import com.example.scrollbooker.feature.profile.presentation.components.common.tab.info.ProfileInfoTab
+import com.example.scrollbooker.feature.profile.presentation.components.common.tab.posts.ProfilePostsTab
+import com.example.scrollbooker.feature.profile.presentation.components.common.tab.products.ProfileProductsTab
+import com.example.scrollbooker.feature.profile.presentation.components.common.tab.reposts.ProfileRepostsTab
 import com.example.scrollbooker.feature.profile.presentation.components.common.tab.ProfileTabRow
 
 @SuppressLint("ConfigurationScreenWidthHeight")

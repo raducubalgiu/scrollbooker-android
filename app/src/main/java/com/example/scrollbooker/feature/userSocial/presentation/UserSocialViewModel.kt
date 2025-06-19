@@ -9,15 +9,15 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.feature.reviews.domain.model.Review
-import com.example.scrollbooker.feature.reviews.domain.model.ReviewsSummary
-import com.example.scrollbooker.feature.reviews.domain.useCase.GetReviewsSummaryUseCase
-import com.example.scrollbooker.feature.reviews.domain.useCase.GetReviewsUseCase
 import com.example.scrollbooker.feature.userSocial.domain.model.UserSocial
 import com.example.scrollbooker.feature.userSocial.domain.useCase.FollowUserUseCase
 import com.example.scrollbooker.feature.userSocial.domain.useCase.GetUserSocialFollowersUseCase
 import com.example.scrollbooker.feature.userSocial.domain.useCase.GetUserSocialFollowingsUseCase
 import com.example.scrollbooker.feature.userSocial.domain.useCase.UnfollowUserUseCase
+import com.example.scrollbooker.shared.reviews.domain.model.Review
+import com.example.scrollbooker.shared.reviews.domain.model.ReviewsSummary
+import com.example.scrollbooker.shared.reviews.domain.useCase.GetReviewsSummaryUseCase
+import com.example.scrollbooker.shared.reviews.domain.useCase.GetReviewsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -109,7 +109,6 @@ class UserSocialViewModel @Inject constructor(
     }
 
     fun toggleRatingFilter(rating: Int) {
-        Timber.d("CLICK!! $rating")
         _selectedRatings.value =
             if(rating in _selectedRatings.value) {
                 _selectedRatings.value - rating
