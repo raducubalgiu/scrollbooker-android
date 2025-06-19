@@ -1,7 +1,7 @@
-package com.example.scrollbooker.feature.professions.domain.useCase
+package com.example.scrollbooker.shared.professions.domain.useCase
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.feature.professions.domain.model.Profession
-import com.example.scrollbooker.feature.professions.domain.repository.ProfessionRepository
+import com.example.scrollbooker.shared.professions.domain.model.Profession
+import com.example.scrollbooker.shared.professions.domain.repository.ProfessionRepository
 import timber.log.Timber
 
 class GetProfessionsByBusinessTypeUseCase(

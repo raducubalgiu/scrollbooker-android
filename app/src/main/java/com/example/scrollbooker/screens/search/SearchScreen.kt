@@ -29,8 +29,6 @@ fun SearchScreen(viewModel: SearchViewModel) {
     val isDarkTheme = isSystemInDarkTheme()
     val mapStyleOptionsKey = if(isDarkTheme) "dark" else "light"
 
-    Timber.d("IS SYSTEM IN DARK MODE!!! $isDarkTheme")
-
     val mapStyleOptions = remember(mapStyleOptionsKey) {
         MapStyleOptions.loadRawResourceStyle(
             context,

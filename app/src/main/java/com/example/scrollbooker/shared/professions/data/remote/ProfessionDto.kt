@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.professions.data.remote
+package com.example.scrollbooker.shared.professions.data.remote
 
 import com.google.gson.annotations.SerializedName
 

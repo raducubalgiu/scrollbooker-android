@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.professions.domain.model
+package com.example.scrollbooker.shared.professions.domain.model
 
 data class Profession(
     val id: Int,

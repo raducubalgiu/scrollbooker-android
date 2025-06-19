@@ -1,10 +1,10 @@
-package com.example.scrollbooker.feature.professions.di
+package com.example.scrollbooker.shared.professions.di
 
 import com.example.scrollbooker.core.util.Constants
-import com.example.scrollbooker.feature.professions.data.remote.ProfessionsApiService
-import com.example.scrollbooker.feature.professions.data.repository.ProfessionRepositoryImpl
-import com.example.scrollbooker.feature.professions.domain.repository.ProfessionRepository
-import com.example.scrollbooker.feature.professions.domain.useCase.GetProfessionsByBusinessTypeUseCase
+import com.example.scrollbooker.shared.professions.data.remote.ProfessionsApiService
+import com.example.scrollbooker.shared.professions.data.repository.ProfessionRepositoryImpl
+import com.example.scrollbooker.shared.professions.domain.repository.ProfessionRepository
+import com.example.scrollbooker.shared.professions.domain.useCase.GetProfessionsByBusinessTypeUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
