@@ -10,6 +10,8 @@ import androidx.compose.material.icons.outlined.Book
 import androidx.compose.material.icons.outlined.CalendarToday
 import androidx.compose.material.icons.outlined.Euro
 import androidx.compose.material.icons.outlined.LocationOn
+import androidx.compose.material.icons.outlined.MonetizationOn
+import androidx.compose.material.icons.outlined.Payment
 import androidx.compose.material.icons.outlined.PeopleOutline
 import androidx.compose.material.icons.outlined.Repeat
 import androidx.compose.material.icons.outlined.Schedule
@@ -44,8 +46,6 @@ fun MyBusinessScreen(
     onBack: () -> Unit
 ) {
     val permissions by viewModel.permissions.collectAsState()
-
-    Timber.d("PERMISSIONS!!! $permissions")
 
     val pages = listOf(
         BusinessCard(
@@ -84,9 +84,9 @@ fun MyBusinessScreen(
             permission = PermissionEnum.MY_CALENDAR_VIEW
         ),
         BusinessCard(
-            title = stringResource(R.string.currency),
-            description = stringResource(R.string.servicesDetails),
-            icon = Icons.Outlined.Euro,
+            title = stringResource(R.string.paymentMethods),
+            description = stringResource(R.string.paymentMethodsDetails),
+            icon = Icons.Outlined.Payment,
             route = MainRoute.MyCalendar.route,
             permission = PermissionEnum.MY_CURRENCIES_VIEW
         ),

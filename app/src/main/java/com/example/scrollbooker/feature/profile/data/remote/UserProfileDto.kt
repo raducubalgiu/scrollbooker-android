@@ -1,5 +1,4 @@
 package com.example.scrollbooker.feature.profile.data.remote
-import com.example.scrollbooker.feature.userSocial.domain.model.UserSocial
 import com.google.gson.annotations.SerializedName
 import java.math.BigDecimal
 

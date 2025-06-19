@@ -129,4 +129,6 @@
     <string name="userScheduleDetails">Detalii despre programul meu</string>
     <string name="userProductsDetails">Detalii despre produsele mele</string>
     <string name="servicesDetails">Detalii despre serviciile mele</string>
+    <string name="paymentMethods">Modalități de plată</string>
+    <string name="paymentMethodsDetails">Alege valutele acceptate pentru plată</string>
 </resources>
