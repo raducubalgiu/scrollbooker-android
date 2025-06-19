@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.notifications.data.remote
+package com.example.scrollbooker.shared.notifications.data.remote
 
 import com.google.gson.annotations.SerializedName
 

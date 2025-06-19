@@ -1,9 +1,9 @@
-package com.example.scrollbooker.feature.notifications.data.mappers
+package com.example.scrollbooker.shared.notifications.data.mappers
 
-import com.example.scrollbooker.feature.notifications.data.remote.NotificationDto
-import com.example.scrollbooker.feature.notifications.data.remote.SenderDto
-import com.example.scrollbooker.feature.notifications.domain.model.Notification
-import com.example.scrollbooker.feature.notifications.domain.model.Sender
+import com.example.scrollbooker.shared.notifications.data.remote.NotificationDto
+import com.example.scrollbooker.shared.notifications.data.remote.SenderDto
+import com.example.scrollbooker.shared.notifications.domain.model.Notification
+import com.example.scrollbooker.shared.notifications.domain.model.Sender
 
 fun NotificationDto.toDomain(): Notification {
     return Notification(

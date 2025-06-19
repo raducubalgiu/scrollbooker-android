@@ -1,7 +1,7 @@
-package com.example.scrollbooker.feature.notifications.domain.repository
+package com.example.scrollbooker.shared.notifications.domain.repository
 
 import androidx.paging.PagingData
-import com.example.scrollbooker.feature.notifications.domain.model.Notification
+import com.example.scrollbooker.shared.notifications.domain.model.Notification
 import kotlinx.coroutines.flow.Flow
 
 interface NotificationRepository {

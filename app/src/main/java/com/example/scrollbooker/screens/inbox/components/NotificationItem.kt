@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.notifications.presentation.components
+package com.example.scrollbooker.screens.inbox.components
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth

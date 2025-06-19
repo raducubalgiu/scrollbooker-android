@@ -1,9 +1,9 @@
-package com.example.scrollbooker.feature.notifications.data.remote
+package com.example.scrollbooker.shared.notifications.data.remote
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.example.scrollbooker.feature.notifications.data.mappers.toDomain
-import com.example.scrollbooker.feature.notifications.domain.model.Notification
+import com.example.scrollbooker.shared.notifications.data.mappers.toDomain
+import com.example.scrollbooker.shared.notifications.domain.model.Notification
 import kotlinx.coroutines.delay
 import timber.log.Timber
 import java.lang.Exception

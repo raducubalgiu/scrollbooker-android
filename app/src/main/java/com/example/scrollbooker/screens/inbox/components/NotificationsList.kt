@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.notifications.presentation.components
+package com.example.scrollbooker.screens.inbox.components
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -7,7 +7,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.LoadMoreSpinner
-import com.example.scrollbooker.feature.notifications.domain.model.Notification
+import com.example.scrollbooker.shared.notifications.domain.model.Notification
 import timber.log.Timber
 
 @Composable

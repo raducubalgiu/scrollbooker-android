@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.notifications.domain.model
+package com.example.scrollbooker.shared.notifications.domain.model
 
 data class Notification(
     val id: Int,

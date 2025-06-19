@@ -1,10 +1,10 @@
-package com.example.scrollbooker.feature.notifications.di
+package com.example.scrollbooker.shared.notifications.di
 
 import com.example.scrollbooker.core.util.Constants
-import com.example.scrollbooker.feature.notifications.data.remote.NotificationsApiService
-import com.example.scrollbooker.feature.notifications.data.repository.NotificationRepositoryImpl
-import com.example.scrollbooker.feature.notifications.domain.repository.NotificationRepository
-import com.example.scrollbooker.feature.notifications.domain.useCase.GetNotificationsUseCase
+import com.example.scrollbooker.shared.notifications.data.remote.NotificationsApiService
+import com.example.scrollbooker.shared.notifications.data.repository.NotificationRepositoryImpl
+import com.example.scrollbooker.shared.notifications.domain.repository.NotificationRepository
+import com.example.scrollbooker.shared.notifications.domain.useCase.GetNotificationsUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

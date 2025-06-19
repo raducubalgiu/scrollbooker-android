@@ -1,8 +1,8 @@
-package com.example.scrollbooker.feature.notifications.domain.useCase
+package com.example.scrollbooker.shared.notifications.domain.useCase
 
 import androidx.paging.PagingData
-import com.example.scrollbooker.feature.notifications.domain.model.Notification
-import com.example.scrollbooker.feature.notifications.domain.repository.NotificationRepository
+import com.example.scrollbooker.shared.notifications.domain.model.Notification
+import com.example.scrollbooker.shared.notifications.domain.repository.NotificationRepository
 import kotlinx.coroutines.flow.Flow
 
 class GetNotificationsUseCase(

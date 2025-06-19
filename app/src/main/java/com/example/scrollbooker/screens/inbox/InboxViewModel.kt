@@ -1,11 +1,11 @@
-package com.example.scrollbooker.feature.notifications.presentation
+package com.example.scrollbooker.screens.inbox
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.example.scrollbooker.feature.notifications.domain.model.Notification
-import com.example.scrollbooker.feature.notifications.domain.useCase.GetNotificationsUseCase
+import com.example.scrollbooker.shared.notifications.domain.model.Notification
+import com.example.scrollbooker.shared.notifications.domain.useCase.GetNotificationsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import timber.log.Timber

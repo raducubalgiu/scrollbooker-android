@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.notifications.presentation
+package com.example.scrollbooker.screens.inbox
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.runtime.Composable
@@ -10,7 +10,7 @@ import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.core.util.ErrorScreen
 import com.example.scrollbooker.core.util.LoadingScreen
 import com.example.scrollbooker.core.util.MessageScreen
-import com.example.scrollbooker.feature.notifications.presentation.components.NotificationsList
+import com.example.scrollbooker.screens.inbox.components.NotificationsList
 import timber.log.Timber
 
 @Composable

@@ -6,8 +6,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.scrollbooker.core.nav.routes.MainRoute
-import com.example.scrollbooker.feature.notifications.presentation.InboxScreen
-import com.example.scrollbooker.feature.notifications.presentation.InboxViewModel
+import com.example.scrollbooker.screens.inbox.InboxScreen
+import com.example.scrollbooker.screens.inbox.InboxViewModel
 
 @Composable
 fun InboxNavHost(navController: NavHostController) {
