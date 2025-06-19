@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.reposts.domain.repository
+package com.example.scrollbooker.shared.reposts.domain.repository
 
 import androidx.paging.PagingData
 import com.example.scrollbooker.shared.posts.domain.model.Post

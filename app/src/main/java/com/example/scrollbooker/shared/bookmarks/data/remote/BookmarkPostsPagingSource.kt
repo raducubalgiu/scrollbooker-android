@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.bookmarks.posts.data.remote
+package com.example.scrollbooker.shared.bookmarks.data.remote
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState

@@ -1,10 +1,10 @@
-package com.example.scrollbooker.feature.bookmarks.posts.di
+package com.example.scrollbooker.shared.bookmarks.di
 
 import com.example.scrollbooker.core.util.Constants
-import com.example.scrollbooker.feature.bookmarks.posts.data.remote.BookmarkPostsApiService
-import com.example.scrollbooker.feature.bookmarks.posts.data.repository.BookmarkPostRepositoryImpl
-import com.example.scrollbooker.feature.bookmarks.posts.domain.repository.BookmarkPostRepository
-import com.example.scrollbooker.feature.bookmarks.posts.domain.useCase.GetUserBookmarkedPostsUseCase
+import com.example.scrollbooker.shared.bookmarks.data.remote.BookmarkPostsApiService
+import com.example.scrollbooker.shared.bookmarks.data.repository.BookmarkPostRepositoryImpl
+import com.example.scrollbooker.shared.bookmarks.domain.repository.BookmarkPostRepository
+import com.example.scrollbooker.shared.bookmarks.domain.useCase.GetUserBookmarkedPostsUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

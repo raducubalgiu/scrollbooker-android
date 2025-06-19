@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.reposts.data.remote
+package com.example.scrollbooker.shared.reposts.data.remote
 
 import com.example.scrollbooker.core.util.PaginatedResponseDto
 import com.example.scrollbooker.shared.posts.data.remote.PostDto

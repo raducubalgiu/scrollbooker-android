@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.reposts.data.remote
+package com.example.scrollbooker.shared.reposts.data.remote
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState

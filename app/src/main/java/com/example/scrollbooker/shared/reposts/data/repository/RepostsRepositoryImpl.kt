@@ -1,12 +1,12 @@
-package com.example.scrollbooker.feature.reposts.data.repository
+package com.example.scrollbooker.shared.reposts.data.repository
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.example.scrollbooker.shared.posts.domain.model.Post
-import com.example.scrollbooker.feature.reposts.data.remote.RepostsApiService
-import com.example.scrollbooker.feature.reposts.data.remote.RepostsPagingSource
-import com.example.scrollbooker.feature.reposts.domain.repository.RepostsRepository
+import com.example.scrollbooker.shared.reposts.data.remote.RepostsApiService
+import com.example.scrollbooker.shared.reposts.data.remote.RepostsPagingSource
+import com.example.scrollbooker.shared.reposts.domain.repository.RepostsRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

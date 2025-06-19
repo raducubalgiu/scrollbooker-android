@@ -1,11 +1,11 @@
-package com.example.scrollbooker.feature.bookmarks.posts.data.repository
+package com.example.scrollbooker.shared.bookmarks.data.repository
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.example.scrollbooker.feature.bookmarks.posts.data.remote.BookmarkPostsApiService
-import com.example.scrollbooker.feature.bookmarks.posts.data.remote.BookmarkPostsPagingSource
-import com.example.scrollbooker.feature.bookmarks.posts.domain.repository.BookmarkPostRepository
+import com.example.scrollbooker.shared.bookmarks.data.remote.BookmarkPostsApiService
+import com.example.scrollbooker.shared.bookmarks.data.remote.BookmarkPostsPagingSource
+import com.example.scrollbooker.shared.bookmarks.domain.repository.BookmarkPostRepository
 import com.example.scrollbooker.shared.posts.domain.model.Post
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
