@@ -8,9 +8,9 @@ import androidx.navigation.compose.composable
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.nav.transitions.slideEnterTransition
 import com.example.scrollbooker.core.nav.transitions.slideExitTransition
-import com.example.scrollbooker.feature.appointments.presentation.AppointmentDetailsScreen
-import com.example.scrollbooker.feature.appointments.presentation.AppointmentsScreen
-import com.example.scrollbooker.feature.appointments.presentation.AppointmentsViewModel
+import com.example.scrollbooker.screens.appointments.AppointmentDetailsScreen
+import com.example.scrollbooker.screens.appointments.AppointmentsScreen
+import com.example.scrollbooker.screens.appointments.AppointmentsViewModel
 
 @Composable
 fun AppointmentsNavHost(navController: NavHostController) {

@@ -14,7 +14,7 @@ import com.example.scrollbooker.core.snackbar.SnackbarManager
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.LoadingScreen
 import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.components.SchedulesList
-import com.example.scrollbooker.shared.schedules.domain.model.Schedule
+import com.example.scrollbooker.shared.schedule.domain.model.Schedule
 
 @Composable
 fun SchedulesScreen(

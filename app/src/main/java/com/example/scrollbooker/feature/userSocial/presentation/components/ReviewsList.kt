@@ -23,8 +23,8 @@ import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.core.util.LoadingScreen
 import com.example.scrollbooker.core.util.MessageScreen
-import com.example.scrollbooker.shared.reviews.domain.model.Review
-import com.example.scrollbooker.shared.reviews.domain.model.ReviewsSummary
+import com.example.scrollbooker.shared.review.domain.model.Review
+import com.example.scrollbooker.shared.review.domain.model.ReviewsSummary
 import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable

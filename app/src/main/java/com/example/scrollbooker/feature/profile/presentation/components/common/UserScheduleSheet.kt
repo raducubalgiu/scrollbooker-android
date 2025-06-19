@@ -23,7 +23,7 @@ import com.example.scrollbooker.core.util.ErrorScreen
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.formatTime
 import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.SchedulesViewModel
-import com.example.scrollbooker.shared.schedules.domain.model.Schedule
+import com.example.scrollbooker.shared.schedule.domain.model.Schedule
 
 @Composable
 fun UserScheduleSheet() {

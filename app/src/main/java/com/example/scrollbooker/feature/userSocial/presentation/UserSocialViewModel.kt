@@ -14,10 +14,10 @@ import com.example.scrollbooker.feature.userSocial.domain.useCase.FollowUserUseC
 import com.example.scrollbooker.feature.userSocial.domain.useCase.GetUserSocialFollowersUseCase
 import com.example.scrollbooker.feature.userSocial.domain.useCase.GetUserSocialFollowingsUseCase
 import com.example.scrollbooker.feature.userSocial.domain.useCase.UnfollowUserUseCase
-import com.example.scrollbooker.shared.reviews.domain.model.Review
-import com.example.scrollbooker.shared.reviews.domain.model.ReviewsSummary
-import com.example.scrollbooker.shared.reviews.domain.useCase.GetReviewsSummaryUseCase
-import com.example.scrollbooker.shared.reviews.domain.useCase.GetReviewsUseCase
+import com.example.scrollbooker.shared.review.domain.model.Review
+import com.example.scrollbooker.shared.review.domain.model.ReviewsSummary
+import com.example.scrollbooker.shared.review.domain.useCase.GetReviewsSummaryUseCase
+import com.example.scrollbooker.shared.review.domain.useCase.GetReviewsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow

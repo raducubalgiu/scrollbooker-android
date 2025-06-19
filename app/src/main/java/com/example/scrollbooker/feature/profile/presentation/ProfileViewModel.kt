@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.shared.posts.domain.model.Post
-import com.example.scrollbooker.shared.posts.domain.useCase.GetUserPostsUseCase
+import com.example.scrollbooker.shared.post.domain.model.Post
+import com.example.scrollbooker.shared.post.domain.useCase.GetUserPostsUseCase
 import com.example.scrollbooker.feature.profile.domain.model.UserProfile
 import com.example.scrollbooker.feature.profile.domain.usecase.GetUserProfileUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel

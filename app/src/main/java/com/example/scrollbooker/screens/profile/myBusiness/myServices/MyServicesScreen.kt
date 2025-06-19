@@ -19,8 +19,7 @@ import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.snackbar.SnackbarManager
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.shared.services.domain.model.Service
-import com.example.scrollbooker.screens.profile.myBusiness.myServices.MyServicesViewModel
+import com.example.scrollbooker.shared.service.domain.model.Service
 import com.example.scrollbooker.screens.profile.myBusiness.myServices.components.ServicesList
 
 @Composable

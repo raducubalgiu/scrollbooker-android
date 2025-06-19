@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.components.core.sheet.BottomSheet
 import com.example.scrollbooker.core.nav.routes.MainRoute
-import com.example.scrollbooker.shared.posts.domain.model.Post
+import com.example.scrollbooker.shared.post.domain.model.Post
 import com.example.scrollbooker.feature.profile.domain.model.UserProfile
 import com.example.scrollbooker.feature.profile.presentation.components.common.tab.bookmarks.ProfileBookmarksTab
 import com.example.scrollbooker.feature.profile.presentation.components.common.tab.info.ProfileInfoTab
