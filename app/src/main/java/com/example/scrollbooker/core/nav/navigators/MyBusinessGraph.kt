@@ -21,8 +21,8 @@ import com.example.scrollbooker.feature.myBusiness.employeeDismissal.presentatio
 import com.example.scrollbooker.feature.myBusiness.employeeDismissal.presentation.EmployeesDismissalViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.myEmployees.EmployeesScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myEmployees.EmployeesViewModel
-import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.list.EmploymentRequestsScreen
-import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.list.EmploymentRequestsViewModel
+import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.list.EmploymentRequestsScreen
+import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.list.EmploymentRequestsViewModel
 import com.example.scrollbooker.feature.myBusiness.products.presentation.AddProductScreen
 import com.example.scrollbooker.feature.myBusiness.products.presentation.MyProductsScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myCurrencies.MyCurrenciesScreen

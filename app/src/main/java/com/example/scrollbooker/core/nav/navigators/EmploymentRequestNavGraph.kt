@@ -6,15 +6,15 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.example.scrollbooker.core.nav.routes.MainRoute
-import com.example.scrollbooker.feature.myBusiness.employmentRequests.data.mappers.toDto
-import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.flow.EmploymentRequestViewModel
-import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.list.EmploymentRequestsViewModel
-import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.flow.acceptTerms.EmploymentAcceptTermsScreen
-import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.flow.acceptTerms.EmploymentAcceptTermsViewModel
-import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.flow.assignJob.EmploymentAssignJobScreen
-import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.flow.assignJob.EmploymentAssignJobViewModel
-import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.flow.selectEmployee.EmploymentSelectEmployeeScreen
-import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.flow.selectEmployee.EmploymentSelectEmployeeViewModel
+import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.flow.EmploymentRequestViewModel
+import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.list.EmploymentRequestsViewModel
+import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.flow.acceptTerms.EmploymentAcceptTermsScreen
+import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.flow.acceptTerms.EmploymentAcceptTermsViewModel
+import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.flow.assignJob.EmploymentAssignJobScreen
+import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.flow.assignJob.EmploymentAssignJobViewModel
+import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.flow.selectEmployee.EmploymentSelectEmployeeScreen
+import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.flow.selectEmployee.EmploymentSelectEmployeeViewModel
+import com.example.scrollbooker.shared.employmentRequest.data.mappers.toDto
 
 fun NavGraphBuilder.employmentRequestNavGraph(
     navController: NavHostController
