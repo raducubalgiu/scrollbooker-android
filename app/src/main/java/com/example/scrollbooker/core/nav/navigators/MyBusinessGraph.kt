@@ -25,8 +25,8 @@ import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentati
 import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.list.EmploymentRequestsViewModel
 import com.example.scrollbooker.feature.myBusiness.products.presentation.AddProductScreen
 import com.example.scrollbooker.feature.myBusiness.products.presentation.MyProductsScreen
-import com.example.scrollbooker.feature.schedules.presentation.SchedulesScreen
-import com.example.scrollbooker.feature.schedules.presentation.SchedulesViewModel
+import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.SchedulesScreen
+import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.SchedulesViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.myServices.AttachServicesScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myServices.MyServicesScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myServices.MyServicesViewModel

@@ -1,11 +1,11 @@
-package com.example.scrollbooker.feature.schedules.presentation
+package com.example.scrollbooker.screens.profile.myBusiness.mySchedules
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.feature.schedules.domain.model.Schedule
-import com.example.scrollbooker.feature.schedules.domain.useCase.GetSchedulesByUserIdUseCase
-import com.example.scrollbooker.feature.schedules.domain.useCase.UpdateSchedulesUseCase
+import com.example.scrollbooker.shared.schedules.domain.model.Schedule
+import com.example.scrollbooker.shared.schedules.domain.useCase.GetSchedulesByUserIdUseCase
+import com.example.scrollbooker.shared.schedules.domain.useCase.UpdateSchedulesUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay

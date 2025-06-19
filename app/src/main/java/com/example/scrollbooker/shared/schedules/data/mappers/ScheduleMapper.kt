@@ -1,7 +1,7 @@
-package com.example.scrollbooker.feature.schedules.data.mappers
+package com.example.scrollbooker.shared.schedules.data.mappers
 
-import com.example.scrollbooker.feature.schedules.data.remote.ScheduleDto
-import com.example.scrollbooker.feature.schedules.domain.model.Schedule
+import com.example.scrollbooker.shared.schedules.data.remote.ScheduleDto
+import com.example.scrollbooker.shared.schedules.domain.model.Schedule
 
 fun ScheduleDto.toDomain(): Schedule {
     return Schedule(

@@ -1,7 +1,7 @@
-package com.example.scrollbooker.feature.schedules.domain.useCase
+package com.example.scrollbooker.shared.schedules.domain.useCase
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.feature.schedules.domain.model.Schedule
-import com.example.scrollbooker.feature.schedules.domain.repository.ScheduleRepository
+import com.example.scrollbooker.shared.schedules.domain.model.Schedule
+import com.example.scrollbooker.shared.schedules.domain.repository.ScheduleRepository
 import timber.log.Timber
 import javax.inject.Inject
 

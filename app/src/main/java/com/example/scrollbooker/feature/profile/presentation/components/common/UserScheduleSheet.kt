@@ -16,14 +16,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
-import com.example.scrollbooker.feature.schedules.presentation.SchedulesViewModel
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.titleMedium
 import androidx.compose.runtime.getValue
 import com.example.scrollbooker.core.util.ErrorScreen
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.formatTime
-import com.example.scrollbooker.feature.schedules.domain.model.Schedule
+import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.SchedulesViewModel
+import com.example.scrollbooker.shared.schedules.domain.model.Schedule
 
 @Composable
 fun UserScheduleSheet() {

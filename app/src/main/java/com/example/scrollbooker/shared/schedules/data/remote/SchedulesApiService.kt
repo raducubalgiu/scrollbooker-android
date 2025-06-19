@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.schedules.data.remote
+package com.example.scrollbooker.shared.schedules.data.remote
 
 import retrofit2.http.Body
 import retrofit2.http.GET

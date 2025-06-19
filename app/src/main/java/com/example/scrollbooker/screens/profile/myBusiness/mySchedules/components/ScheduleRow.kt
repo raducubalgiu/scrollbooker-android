@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.schedules.presentation.components
+package com.example.scrollbooker.screens.profile.myBusiness.mySchedules.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,7 +21,7 @@ import com.example.scrollbooker.components.core.inputs.InputSelect
 import com.example.scrollbooker.components.core.inputs.Option
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.generateTimeSlots
-import com.example.scrollbooker.feature.schedules.domain.model.Schedule
+import com.example.scrollbooker.shared.schedules.domain.model.Schedule
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.titleMedium
 

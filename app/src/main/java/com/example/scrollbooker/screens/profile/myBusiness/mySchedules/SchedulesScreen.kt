@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.schedules.presentation
+package com.example.scrollbooker.screens.profile.myBusiness.mySchedules
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,8 +13,8 @@ import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.core.snackbar.SnackbarManager
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.LoadingScreen
-import com.example.scrollbooker.feature.schedules.domain.model.Schedule
-import com.example.scrollbooker.feature.schedules.presentation.components.SchedulesList
+import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.components.SchedulesList
+import com.example.scrollbooker.shared.schedules.domain.model.Schedule
 
 @Composable
 fun SchedulesScreen(

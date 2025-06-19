@@ -1,9 +1,9 @@
-package com.example.scrollbooker.feature.schedules.data.repository
-import com.example.scrollbooker.feature.schedules.data.mappers.toDomain
-import com.example.scrollbooker.feature.schedules.data.mappers.toDto
-import com.example.scrollbooker.feature.schedules.data.remote.SchedulesApiService
-import com.example.scrollbooker.feature.schedules.domain.model.Schedule
-import com.example.scrollbooker.feature.schedules.domain.repository.ScheduleRepository
+package com.example.scrollbooker.shared.schedules.data.repository
+import com.example.scrollbooker.shared.schedules.data.mappers.toDomain
+import com.example.scrollbooker.shared.schedules.data.mappers.toDto
+import com.example.scrollbooker.shared.schedules.data.remote.SchedulesApiService
+import com.example.scrollbooker.shared.schedules.domain.model.Schedule
+import com.example.scrollbooker.shared.schedules.domain.repository.ScheduleRepository
 import javax.inject.Inject
 
 class ScheduleRepositoryImpl @Inject constructor(

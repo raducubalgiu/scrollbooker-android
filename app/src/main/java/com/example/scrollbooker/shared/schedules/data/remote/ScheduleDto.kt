@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.schedules.data.remote
+package com.example.scrollbooker.shared.schedules.data.remote
 
 import com.google.gson.annotations.SerializedName
 
