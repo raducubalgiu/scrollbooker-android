@@ -1,27 +1,25 @@
-package com.example.scrollbooker.feature.services.domain.useCase
+package com.example.scrollbooker.shared.services.domain.useCase
 
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.feature.services.domain.repository.ServiceRepository
+import com.example.scrollbooker.shared.services.domain.repository.ServiceRepository
 import com.example.scrollbooker.store.AuthDataStore
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
 import timber.log.Timber
 import javax.inject.Inject
 
-class AttachManyServicesUseCase @Inject constructor(
+class DetachServiceUseCase @Inject constructor(
     private val authDataStore: AuthDataStore,
     private val repository: ServiceRepository
-){
-    suspend operator fun invoke(serviceIds: List<Int>): FeatureState<Unit> {
+) {
+    suspend operator fun invoke(serviceId: Int): FeatureState<Unit> {
         return try {
-            delay(300)
             val businessId = authDataStore.getBusinessId().firstOrNull()
 
             if(businessId == null) {
                 Timber.Forest.tag("Services").e("ERROR: Business Id Not Found in DataStore")
                 FeatureState.Error()
             } else {
-                repository.attachManyService(businessId, serviceIds)
+                repository.detachService(businessId, serviceId)
                 FeatureState.Success(Unit)
             }
         } catch (error: Exception) {

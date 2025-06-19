@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.services.presentation
+package com.example.scrollbooker.screens.profile.myBusiness.myServices
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize

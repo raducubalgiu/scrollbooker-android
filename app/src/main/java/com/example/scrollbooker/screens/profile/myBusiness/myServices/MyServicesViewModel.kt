@@ -1,13 +1,13 @@
-package com.example.scrollbooker.feature.services.presentation
+package com.example.scrollbooker.screens.profile.myBusiness.myServices
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.feature.services.domain.model.Service
-import com.example.scrollbooker.feature.services.domain.useCase.AttachManyServicesUseCase
-import com.example.scrollbooker.feature.services.domain.useCase.DetachServiceUseCase
-import com.example.scrollbooker.feature.services.domain.useCase.GetServicesByBusinessTypeUseCase
-import com.example.scrollbooker.feature.services.domain.useCase.GetServicesByUserIdUseCase
+import com.example.scrollbooker.shared.services.domain.model.Service
+import com.example.scrollbooker.shared.services.domain.useCase.AttachManyServicesUseCase
+import com.example.scrollbooker.shared.services.domain.useCase.DetachServiceUseCase
+import com.example.scrollbooker.shared.services.domain.useCase.GetServicesByBusinessTypeUseCase
+import com.example.scrollbooker.shared.services.domain.useCase.GetServicesByUserIdUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +29,8 @@ class MyServicesViewModel @Inject constructor(
     private val _servicesState = MutableStateFlow<FeatureState<List<Service>>>(FeatureState.Loading)
     val servicesState: StateFlow<FeatureState<List<Service>>> = _servicesState
 
-    private val _availableServicesState = MutableStateFlow<FeatureState<List<Service>>>(FeatureState.Loading)
+    private val _availableServicesState =
+        MutableStateFlow<FeatureState<List<Service>>>(FeatureState.Loading)
     val availableServicesState: StateFlow<FeatureState<List<Service>>> = _availableServicesState
 
     private val _actionState = MutableStateFlow<FeatureState<Unit>>(FeatureState.Success(Unit))
@@ -45,7 +46,7 @@ class MyServicesViewModel @Inject constructor(
             val userId = authDataStore.getUserId().firstOrNull()
 
             if(userId == null) {
-                Timber.tag("Services").e("ERROR: User Id not found in DataStore")
+                Timber.Forest.tag("Services").e("ERROR: User Id not found in DataStore")
                 _availableServicesState.value = FeatureState.Error()
             } else {
                 _servicesState.value = FeatureState.Loading
@@ -59,7 +60,7 @@ class MyServicesViewModel @Inject constructor(
             val businessTypeId = authDataStore.getBusinessTypeId().firstOrNull()
 
             if(businessTypeId == null) {
-                Timber.tag("Services").e("ERROR: Business Type Id not found in DataStore")
+                Timber.Forest.tag("Services").e("ERROR: Business Type Id not found in DataStore")
                 _availableServicesState.value = FeatureState.Error()
             } else {
                 _availableServicesState.value = FeatureState.Loading

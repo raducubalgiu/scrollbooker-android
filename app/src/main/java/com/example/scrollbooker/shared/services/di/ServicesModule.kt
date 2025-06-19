@@ -1,13 +1,13 @@
-package com.example.scrollbooker.feature.services.di
+package com.example.scrollbooker.shared.services.di
 
 import com.example.scrollbooker.core.util.Constants
-import com.example.scrollbooker.feature.services.data.remote.ServicesApiService
-import com.example.scrollbooker.feature.services.data.repository.ServiceRepositoryImpl
-import com.example.scrollbooker.feature.services.domain.repository.ServiceRepository
-import com.example.scrollbooker.feature.services.domain.useCase.AttachManyServicesUseCase
-import com.example.scrollbooker.feature.services.domain.useCase.DetachServiceUseCase
-import com.example.scrollbooker.feature.services.domain.useCase.GetServicesByBusinessTypeUseCase
-import com.example.scrollbooker.feature.services.domain.useCase.GetServicesByUserIdUseCase
+import com.example.scrollbooker.shared.services.data.remote.ServicesApiService
+import com.example.scrollbooker.shared.services.data.repository.ServiceRepositoryImpl
+import com.example.scrollbooker.shared.services.domain.repository.ServiceRepository
+import com.example.scrollbooker.shared.services.domain.useCase.AttachManyServicesUseCase
+import com.example.scrollbooker.shared.services.domain.useCase.DetachServiceUseCase
+import com.example.scrollbooker.shared.services.domain.useCase.GetServicesByBusinessTypeUseCase
+import com.example.scrollbooker.shared.services.domain.useCase.GetServicesByUserIdUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.Module
 import dagger.Provides

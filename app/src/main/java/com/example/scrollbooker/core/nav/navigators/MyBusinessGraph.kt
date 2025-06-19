@@ -27,9 +27,9 @@ import com.example.scrollbooker.feature.myBusiness.products.presentation.AddProd
 import com.example.scrollbooker.feature.myBusiness.products.presentation.MyProductsScreen
 import com.example.scrollbooker.feature.schedules.presentation.SchedulesScreen
 import com.example.scrollbooker.feature.schedules.presentation.SchedulesViewModel
-import com.example.scrollbooker.feature.services.presentation.AttachServicesScreen
-import com.example.scrollbooker.feature.services.presentation.MyServicesScreen
-import com.example.scrollbooker.feature.services.presentation.MyServicesViewModel
+import com.example.scrollbooker.screens.profile.myBusiness.myServices.AttachServicesScreen
+import com.example.scrollbooker.screens.profile.myBusiness.myServices.MyServicesScreen
+import com.example.scrollbooker.screens.profile.myBusiness.myServices.MyServicesViewModel
 
 fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
     navigation(

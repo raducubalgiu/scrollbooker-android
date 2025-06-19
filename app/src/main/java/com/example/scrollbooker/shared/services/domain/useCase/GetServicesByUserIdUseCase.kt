@@ -1,8 +1,8 @@
-package com.example.scrollbooker.feature.services.domain.useCase
+package com.example.scrollbooker.shared.services.domain.useCase
 
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.feature.services.domain.model.Service
-import com.example.scrollbooker.feature.services.domain.repository.ServiceRepository
+import com.example.scrollbooker.shared.services.domain.model.Service
+import com.example.scrollbooker.shared.services.domain.repository.ServiceRepository
 import timber.log.Timber
 import javax.inject.Inject
 

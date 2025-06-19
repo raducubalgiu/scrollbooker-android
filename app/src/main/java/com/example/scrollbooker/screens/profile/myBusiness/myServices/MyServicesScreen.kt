@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.services.presentation
+package com.example.scrollbooker.screens.profile.myBusiness.myServices
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,8 +19,9 @@ import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.snackbar.SnackbarManager
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.feature.services.domain.model.Service
-import com.example.scrollbooker.feature.services.presentation.components.ServicesList
+import com.example.scrollbooker.shared.services.domain.model.Service
+import com.example.scrollbooker.screens.profile.myBusiness.myServices.MyServicesViewModel
+import com.example.scrollbooker.screens.profile.myBusiness.myServices.components.ServicesList
 
 @Composable
 fun MyServicesScreen(

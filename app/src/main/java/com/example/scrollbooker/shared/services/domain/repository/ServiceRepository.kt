@@ -1,6 +1,6 @@
-package com.example.scrollbooker.feature.services.domain.repository
+package com.example.scrollbooker.shared.services.domain.repository
 
-import com.example.scrollbooker.feature.services.domain.model.Service
+import com.example.scrollbooker.shared.services.domain.model.Service
 
 interface ServiceRepository {
     suspend fun getServices(userId: Int): List<Service>
