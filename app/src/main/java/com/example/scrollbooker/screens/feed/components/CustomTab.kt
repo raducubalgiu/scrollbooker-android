@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.feed.presentation.components
+package com.example.scrollbooker.screens.feed.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

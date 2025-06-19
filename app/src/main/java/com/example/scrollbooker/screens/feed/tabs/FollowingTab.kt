@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.feed.presentation.tabs
+package com.example.scrollbooker.screens.feed.tabs
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background

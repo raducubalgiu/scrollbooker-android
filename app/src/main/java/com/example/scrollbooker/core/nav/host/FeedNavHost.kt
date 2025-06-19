@@ -5,8 +5,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.scrollbooker.core.nav.routes.MainRoute
-import com.example.scrollbooker.feature.feed.presentation.FeedScreen
-import com.example.scrollbooker.feature.feed.presentation.FeedViewModel
+import com.example.scrollbooker.screens.feed.FeedScreen
+import com.example.scrollbooker.screens.feed.FeedViewModel
 
 @Composable
 fun FeedNavHost(

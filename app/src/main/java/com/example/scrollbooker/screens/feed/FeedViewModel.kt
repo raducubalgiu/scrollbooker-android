@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.feed.presentation
+package com.example.scrollbooker.screens.feed
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
