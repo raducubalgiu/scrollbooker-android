@@ -1,10 +1,10 @@
-package com.example.scrollbooker.feature.consents.di
+package com.example.scrollbooker.shared.consents.di
 
 import com.example.scrollbooker.core.util.Constants
-import com.example.scrollbooker.feature.consents.data.remote.ConsentsApiService
-import com.example.scrollbooker.feature.consents.data.repository.ConsentRepositoryImpl
-import com.example.scrollbooker.feature.consents.domain.repository.ConsentRepository
-import com.example.scrollbooker.feature.consents.domain.useCase.GetConsentsByNameUseCase
+import com.example.scrollbooker.shared.consents.data.remote.ConsentsApiService
+import com.example.scrollbooker.shared.consents.data.repository.ConsentRepositoryImpl
+import com.example.scrollbooker.shared.consents.domain.repository.ConsentRepository
+import com.example.scrollbooker.shared.consents.domain.useCase.GetConsentsByNameUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

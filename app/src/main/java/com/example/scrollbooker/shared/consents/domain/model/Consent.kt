@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.consents.domain.model
+package com.example.scrollbooker.shared.consents.domain.model
 
 data class Consent(
     val id: Int,

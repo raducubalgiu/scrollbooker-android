@@ -1,8 +1,8 @@
-package com.example.scrollbooker.feature.consents.domain.useCase
+package com.example.scrollbooker.shared.consents.domain.useCase
 
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.feature.consents.domain.model.Consent
-import com.example.scrollbooker.feature.consents.domain.repository.ConsentRepository
+import com.example.scrollbooker.shared.consents.domain.model.Consent
+import com.example.scrollbooker.shared.consents.domain.repository.ConsentRepository
 import timber.log.Timber
 
 class GetConsentsByNameUseCase(

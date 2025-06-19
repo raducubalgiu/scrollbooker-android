@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.consents.data.remote
+package com.example.scrollbooker.shared.consents.data.remote
 
 import retrofit2.http.GET
 import retrofit2.http.Path

@@ -1,7 +1,7 @@
-package com.example.scrollbooker.feature.consents.data.mappers
+package com.example.scrollbooker.shared.consents.data.mappers
 
-import com.example.scrollbooker.feature.consents.data.remote.ConsentDto
-import com.example.scrollbooker.feature.consents.domain.model.Consent
+import com.example.scrollbooker.shared.consents.data.remote.ConsentDto
+import com.example.scrollbooker.shared.consents.domain.model.Consent
 
 fun ConsentDto.toDomain(): Consent {
     return Consent(
