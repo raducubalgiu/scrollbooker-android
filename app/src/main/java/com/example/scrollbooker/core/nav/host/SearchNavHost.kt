@@ -6,8 +6,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.scrollbooker.core.nav.routes.MainRoute
-import com.example.scrollbooker.feature.search.presentation.SearchScreen
-import com.example.scrollbooker.feature.search.presentation.SearchViewModel
+import com.example.scrollbooker.screens.search.SearchScreen
+import com.example.scrollbooker.screens.search.SearchViewModel
 
 @Composable
 fun SearchNavHost(navController: NavHostController) {

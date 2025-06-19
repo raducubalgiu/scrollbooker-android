@@ -1,5 +1,4 @@
-package com.example.scrollbooker.feature.search.presentation
-import androidx.compose.foundation.background
+package com.example.scrollbooker.screens.search
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,7 +10,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.example.scrollbooker.R
-import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.screens.search.SearchViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
