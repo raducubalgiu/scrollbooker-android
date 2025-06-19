@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.products.presentation
+package com.example.scrollbooker.feature.myBusiness.products.presentation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

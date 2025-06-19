@@ -1,9 +1,9 @@
-package com.example.scrollbooker.feature.products.data.remote
+package com.example.scrollbooker.feature.myBusiness.products.data.remote
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.example.scrollbooker.feature.products.data.mappers.toDomain
-import com.example.scrollbooker.feature.products.domain.model.Product
+import com.example.scrollbooker.feature.myBusiness.products.data.mappers.toDomain
+import com.example.scrollbooker.feature.myBusiness.products.domain.model.Product
 import kotlinx.coroutines.delay
 import timber.log.Timber
 import java.lang.Exception

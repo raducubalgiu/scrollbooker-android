@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.products.domain.model
+package com.example.scrollbooker.feature.myBusiness.products.domain.model
 
 import java.math.BigDecimal
 

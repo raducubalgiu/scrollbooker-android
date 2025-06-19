@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.products.presentation
+package com.example.scrollbooker.feature.myBusiness.products.presentation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController

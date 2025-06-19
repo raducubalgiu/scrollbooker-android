@@ -1,13 +1,13 @@
-package com.example.scrollbooker.feature.products.data.repository
+package com.example.scrollbooker.feature.myBusiness.products.data.repository
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.example.scrollbooker.feature.products.data.mappers.toDomain
-import com.example.scrollbooker.feature.products.data.remote.ProductPagingSource
-import com.example.scrollbooker.feature.products.domain.model.Product
-import com.example.scrollbooker.feature.products.domain.repository.ProductRepository
-import com.example.scrollbooker.feature.products.data.remote.ProductsApiService
+import com.example.scrollbooker.feature.myBusiness.products.domain.model.Product
+import com.example.scrollbooker.feature.myBusiness.products.data.mappers.toDomain
+import com.example.scrollbooker.feature.myBusiness.products.data.remote.ProductPagingSource
+import com.example.scrollbooker.feature.myBusiness.products.data.remote.ProductsApiService
+import com.example.scrollbooker.feature.myBusiness.products.domain.repository.ProductRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

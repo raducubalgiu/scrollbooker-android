@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.products.presentation
+package com.example.scrollbooker.feature.myBusiness.products.presentation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,7 +20,7 @@ import com.example.scrollbooker.core.util.EmptyScreen
 import com.example.scrollbooker.core.util.ErrorScreen
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.core.util.LoadingScreen
-import com.example.scrollbooker.feature.products.domain.model.ProductCardEnum
+import com.example.scrollbooker.feature.myBusiness.products.domain.model.ProductCardEnum
 
 @Composable
 fun ProductsTab(

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.products.data.remote
+package com.example.scrollbooker.feature.myBusiness.products.data.remote
 
 import com.google.gson.annotations.SerializedName
 import java.math.BigDecimal

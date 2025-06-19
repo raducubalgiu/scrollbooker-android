@@ -125,4 +125,8 @@
     <string name="notFoundPosts">Nu au fost găsite postări</string>
     <string name="notFoundBookmarks">Încă nu ai salvat nici o postare</string>
     <string name="notFoundReposts">Încă nu ai repostat nimic</string>
+    <string name="businessLocationDetails">Detalii despre locația business-ului meu</string>
+    <string name="userScheduleDetails">Detalii despre programul meu</string>
+    <string name="userProductsDetails">Detalii despre produsele mele</string>
+    <string name="servicesDetails">Detalii despre serviciile mele</string>
 </resources>

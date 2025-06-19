@@ -14,6 +14,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.feature.myBusiness.MyBusinessScreen
+import com.example.scrollbooker.feature.myBusiness.MyBusinessViewModel
 import com.example.scrollbooker.feature.myBusiness.calendar.presentation.MyCalendarScreen
 import com.example.scrollbooker.feature.myBusiness.calendar.presentation.MyCalendarViewModel
 import com.example.scrollbooker.feature.myBusiness.employeeDismissal.presentation.EmployeesDismissalScreen
@@ -22,8 +23,8 @@ import com.example.scrollbooker.feature.myBusiness.employees.presentation.Employ
 import com.example.scrollbooker.feature.myBusiness.employees.presentation.EmployeesViewModel
 import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.list.EmploymentRequestsScreen
 import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.list.EmploymentRequestsViewModel
-import com.example.scrollbooker.feature.products.presentation.AddProductScreen
-import com.example.scrollbooker.feature.products.presentation.MyProductsScreen
+import com.example.scrollbooker.feature.myBusiness.products.presentation.AddProductScreen
+import com.example.scrollbooker.feature.myBusiness.products.presentation.MyProductsScreen
 import com.example.scrollbooker.feature.schedules.presentation.SchedulesScreen
 import com.example.scrollbooker.feature.schedules.presentation.SchedulesViewModel
 import com.example.scrollbooker.feature.services.presentation.AttachServicesScreen
@@ -73,7 +74,10 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
     ) {
 
         composable(MainRoute.MyBusiness.route) {
+            val viewModel = hiltViewModel<MyBusinessViewModel>()
+
             MyBusinessScreen(
+                viewModel = viewModel,
                 onNavigation = { navController.navigate(it) },
                 onBack = { navController.popBackStack() }
             )

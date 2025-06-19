@@ -3,54 +3,42 @@ package com.example.scrollbooker.feature.myBusiness.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.scrollbooker.R
-import com.example.scrollbooker.core.util.Dimens.SpacingM
-import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.ui.theme.Divider
+import androidx.compose.ui.text.style.TextOverflow
+import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
-import com.example.scrollbooker.ui.theme.bodySmall
-import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun MyBusinessCard(
     modifier: Modifier = Modifier,
     title: String,
+    description: String,
     icon: ImageVector,
     onClick: () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
     Column(modifier = Modifier
-        .clip(shape = ShapeDefaults.Small)
+        .clip(shape = ShapeDefaults.Medium)
         .background(SurfaceBG)
-        .padding(horizontal = SpacingM, vertical = SpacingM)
         .clickable(
             onClick = onClick,
             interactionSource = interactionSource,
@@ -58,43 +46,36 @@ fun MyBusinessCard(
         )
         .then(modifier)
     ) {
-        Text(
-            text = title,
-            color = OnBackground,
-            style = bodyLarge,
-            fontWeight = FontWeight.SemiBold
-        )
         Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(vertical = 25.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
+            .padding(BasePadding)
         ) {
-            Icon(modifier = Modifier.size(40.dp),
+            Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = Divider,
+                tint = OnSurfaceBG
             )
-        }
-        HorizontalDivider(
-            modifier = Modifier.padding(bottom = SpacingS),
-            color = Divider
-        )
-        Row(modifier = Modifier
-            .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+
+            Spacer(Modifier.height(SpacingXL))
+
             Text(
-                style = bodyMedium,
-                text = stringResource(R.string.seeMore),
-                color = OnSurfaceBG,
-                fontWeight = FontWeight.SemiBold
+                text = title,
+                color = OnBackground,
+                style = bodyLarge,
+                fontWeight = FontWeight.ExtraBold,
+                minLines = 1,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                contentDescription = null,
-                tint = Divider
+
+            Spacer(Modifier.height(BasePadding))
+
+            Text(
+                text = description,
+                color = Color.Gray,
+                style = bodyMedium,
+                minLines = 3,
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }
