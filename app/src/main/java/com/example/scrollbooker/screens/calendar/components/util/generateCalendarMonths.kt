@@ -1,9 +1,8 @@
-package com.example.scrollbooker.feature.calendar.presentation.components.util
+package com.example.scrollbooker.screens.calendar.components.util
 
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.LocalDate
 import org.threeten.bp.YearMonth
-import timber.log.Timber
 
 data class CalendarMonth(
     val name: String,

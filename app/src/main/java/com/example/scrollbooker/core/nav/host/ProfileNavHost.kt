@@ -13,8 +13,8 @@ import androidx.navigation.navArgument
 import com.example.scrollbooker.core.nav.navigators.myBusinessGraph
 import com.example.scrollbooker.core.nav.navigators.settingsGraph
 import com.example.scrollbooker.core.nav.routes.MainRoute
-import com.example.scrollbooker.feature.calendar.presentation.CalendarScreen
-import com.example.scrollbooker.feature.calendar.presentation.CalendarViewModel
+import com.example.scrollbooker.screens.calendar.CalendarScreen
+import com.example.scrollbooker.screens.calendar.CalendarViewModel
 import com.example.scrollbooker.feature.profile.presentation.MyProfileScreen
 import com.example.scrollbooker.feature.profile.presentation.ProfileSharedViewModel
 import com.example.scrollbooker.feature.profile.presentation.ProfileViewModel

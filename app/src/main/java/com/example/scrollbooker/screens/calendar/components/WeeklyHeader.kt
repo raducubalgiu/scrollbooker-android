@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.calendar.presentation.components
+package com.example.scrollbooker.screens.calendar.components
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background

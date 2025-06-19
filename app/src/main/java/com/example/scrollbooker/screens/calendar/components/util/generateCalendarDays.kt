@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.calendar.presentation.components.util
+package com.example.scrollbooker.screens.calendar.components.util
 
 import org.threeten.bp.LocalDate
 

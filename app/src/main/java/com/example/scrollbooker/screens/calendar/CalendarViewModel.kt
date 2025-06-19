@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.calendar.presentation
+package com.example.scrollbooker.screens.calendar
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel

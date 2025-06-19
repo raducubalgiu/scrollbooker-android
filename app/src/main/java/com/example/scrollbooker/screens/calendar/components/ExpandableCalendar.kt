@@ -1,6 +1,5 @@
-package com.example.scrollbooker.feature.calendar.presentation.components
+package com.example.scrollbooker.screens.calendar.components
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,7 +16,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -30,22 +28,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
-import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
-import com.example.scrollbooker.feature.calendar.presentation.components.util.generateCalendarMonths
-import com.example.scrollbooker.feature.calendar.presentation.components.util.getWeeksInMonth
-import com.example.scrollbooker.feature.calendar.presentation.components.util.toYearMonth
-import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.screens.calendar.components.util.generateCalendarMonths
+import com.example.scrollbooker.screens.calendar.components.util.getWeeksInMonth
+import com.example.scrollbooker.screens.calendar.components.util.toYearMonth
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.Primary
-import com.example.scrollbooker.ui.theme.headlineSmall
 import com.example.scrollbooker.ui.theme.labelLarge
-import com.example.scrollbooker.ui.theme.labelMedium
 import com.example.scrollbooker.ui.theme.labelSmall
 import com.example.scrollbooker.ui.theme.titleLarge
-import com.example.scrollbooker.ui.theme.titleMedium
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 
