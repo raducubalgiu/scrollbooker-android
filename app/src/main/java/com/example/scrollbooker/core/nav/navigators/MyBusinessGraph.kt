@@ -15,12 +15,12 @@ import androidx.navigation.navigation
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.feature.myBusiness.MyBusinessScreen
 import com.example.scrollbooker.feature.myBusiness.MyBusinessViewModel
-import com.example.scrollbooker.feature.myBusiness.calendar.presentation.MyCalendarScreen
-import com.example.scrollbooker.feature.myBusiness.calendar.presentation.MyCalendarViewModel
+import com.example.scrollbooker.screens.profile.myBusiness.myCalendar.MyCalendarScreen
+import com.example.scrollbooker.screens.profile.myBusiness.myCalendar.MyCalendarViewModel
 import com.example.scrollbooker.feature.myBusiness.employeeDismissal.presentation.EmployeesDismissalScreen
 import com.example.scrollbooker.feature.myBusiness.employeeDismissal.presentation.EmployeesDismissalViewModel
-import com.example.scrollbooker.feature.myBusiness.employees.presentation.EmployeesScreen
-import com.example.scrollbooker.feature.myBusiness.employees.presentation.EmployeesViewModel
+import com.example.scrollbooker.screens.profile.myBusiness.myEmployees.EmployeesScreen
+import com.example.scrollbooker.screens.profile.myBusiness.myEmployees.EmployeesViewModel
 import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.list.EmploymentRequestsScreen
 import com.example.scrollbooker.feature.myBusiness.employmentRequests.presentation.list.EmploymentRequestsViewModel
 import com.example.scrollbooker.feature.myBusiness.products.presentation.AddProductScreen
