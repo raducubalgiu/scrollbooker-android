@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.myBusiness.products.presentation
+package com.example.scrollbooker.screens.profile.myBusiness.myProducts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.pager.HorizontalPager

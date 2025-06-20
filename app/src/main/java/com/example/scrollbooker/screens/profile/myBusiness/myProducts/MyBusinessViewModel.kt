@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.myBusiness
+package com.example.scrollbooker.screens.profile.myBusiness.myProducts
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

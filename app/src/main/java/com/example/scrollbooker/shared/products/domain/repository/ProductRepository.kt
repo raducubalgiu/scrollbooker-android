@@ -1,7 +1,7 @@
-package com.example.scrollbooker.feature.myBusiness.products.domain.repository
+package com.example.scrollbooker.shared.products.domain.repository
 
 import androidx.paging.PagingData
-import com.example.scrollbooker.feature.myBusiness.products.domain.model.Product
+import com.example.scrollbooker.shared.products.domain.model.Product
 import kotlinx.coroutines.flow.Flow
 
 interface ProductRepository {

@@ -1,10 +1,10 @@
-package com.example.scrollbooker.feature.myBusiness.products.di
+package com.example.scrollbooker.shared.products.di
 
 import com.example.scrollbooker.core.util.Constants
-import com.example.scrollbooker.feature.myBusiness.products.data.remote.ProductsApiService
-import com.example.scrollbooker.feature.myBusiness.products.data.repository.ProductRepositoryImpl
-import com.example.scrollbooker.feature.myBusiness.products.domain.repository.ProductRepository
-import com.example.scrollbooker.feature.myBusiness.products.domain.useCase.GetProductsByUserIdAndServiceIdUseCase
+import com.example.scrollbooker.shared.products.data.remote.ProductsApiService
+import com.example.scrollbooker.shared.products.data.repository.ProductRepositoryImpl
+import com.example.scrollbooker.shared.products.domain.repository.ProductRepository
+import com.example.scrollbooker.shared.products.domain.useCase.GetProductsByUserIdAndServiceIdUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

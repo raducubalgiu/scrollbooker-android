@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.myBusiness
+package com.example.scrollbooker.screens.profile.myBusiness.myProducts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize

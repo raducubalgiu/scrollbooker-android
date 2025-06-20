@@ -1,4 +1,5 @@
 package com.example.scrollbooker.components.core.inputs
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxColors
@@ -19,6 +20,7 @@ import com.example.scrollbooker.ui.theme.titleMedium
 @Composable
 fun InputCheckbox(
     modifier: Modifier = Modifier,
+    background: Color = SurfaceBG,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     isEnabled: Boolean = true,
@@ -30,6 +32,7 @@ fun InputCheckbox(
     ListItem(
         modifier = Modifier
             .fillMaxWidth()
+            .background(background)
             .then(modifier),
         headlineContent = {
             Text(
@@ -67,7 +70,7 @@ fun InputCheckbox(
             )
         },
         colors = ListItemDefaults.colors(
-            containerColor = SurfaceBG
+            containerColor = background
         )
 
     )

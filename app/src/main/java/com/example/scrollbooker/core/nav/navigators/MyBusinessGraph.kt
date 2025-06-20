@@ -13,8 +13,8 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.scrollbooker.core.nav.routes.MainRoute
-import com.example.scrollbooker.feature.myBusiness.MyBusinessScreen
-import com.example.scrollbooker.feature.myBusiness.MyBusinessViewModel
+import com.example.scrollbooker.screens.profile.myBusiness.myProducts.MyBusinessScreen
+import com.example.scrollbooker.screens.profile.myBusiness.myProducts.MyBusinessViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.myCalendar.MyCalendarScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myCalendar.MyCalendarViewModel
 import com.example.scrollbooker.feature.myBusiness.employeeDismissal.presentation.EmployeesDismissalScreen
@@ -23,8 +23,8 @@ import com.example.scrollbooker.screens.profile.myBusiness.myEmployees.Employees
 import com.example.scrollbooker.screens.profile.myBusiness.myEmployees.EmployeesViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.list.EmploymentRequestsScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.list.EmploymentRequestsViewModel
-import com.example.scrollbooker.feature.myBusiness.products.presentation.AddProductScreen
-import com.example.scrollbooker.feature.myBusiness.products.presentation.MyProductsScreen
+import com.example.scrollbooker.screens.profile.myBusiness.myProducts.AddProductScreen
+import com.example.scrollbooker.screens.profile.myBusiness.myProducts.MyProductsScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myCurrencies.MyCurrenciesScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myCurrencies.MyCurrenciesViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.SchedulesScreen
