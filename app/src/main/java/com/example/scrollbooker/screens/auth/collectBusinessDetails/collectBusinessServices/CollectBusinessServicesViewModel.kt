@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.auth.presentation.components.collectBusinessDetails.collectBusinessServices
+package com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessServices
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel

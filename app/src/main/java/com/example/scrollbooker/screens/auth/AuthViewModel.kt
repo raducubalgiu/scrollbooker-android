@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.auth.presentation
+package com.example.scrollbooker.screens.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState

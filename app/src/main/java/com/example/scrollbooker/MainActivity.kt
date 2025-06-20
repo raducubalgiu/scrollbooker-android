@@ -22,7 +22,7 @@ import com.example.scrollbooker.ui.theme.ScrollBookerTheme
 import com.jakewharton.threetenabp.AndroidThreeTen
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.compose.runtime.getValue
-import com.example.scrollbooker.screens.auth.presentation.AuthViewModel
+import com.example.scrollbooker.screens.auth.AuthViewModel
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

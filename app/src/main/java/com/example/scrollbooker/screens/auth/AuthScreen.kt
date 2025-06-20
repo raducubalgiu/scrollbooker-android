@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.auth.presentation.components
+package com.example.scrollbooker.screens.auth
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

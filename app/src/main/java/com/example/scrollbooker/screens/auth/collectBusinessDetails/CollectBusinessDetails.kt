@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.auth.presentation.components.collectBusinessDetails
+package com.example.scrollbooker.screens.auth.collectBusinessDetails
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -28,6 +28,7 @@ import com.example.scrollbooker.ui.theme.headlineLarge
 fun CollectBusinessDetails(
     isFirstScreen: Boolean = false,
     isLastScreen: Boolean = false,
+    headerTitle: String = "",
     headLine: String,
     subHeadLine: String,
     onBack: () -> Unit,
@@ -35,8 +36,10 @@ fun CollectBusinessDetails(
     content: @Composable () -> Unit,
 ) {
     Layout(
+        headerTitle = headerTitle,
         onBack = onBack,
-        enablePaddingH = false
+        enablePaddingH = false,
+        enableBack = !isFirstScreen
     ) {
         Column(Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween

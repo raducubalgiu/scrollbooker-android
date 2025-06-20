@@ -6,7 +6,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,20 +15,20 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.scrollbooker.core.nav.LocalRootNavController
 import com.example.scrollbooker.core.nav.routes.AuthRoute
-import com.example.scrollbooker.screens.auth.presentation.AuthViewModel
-import com.example.scrollbooker.screens.auth.presentation.LoginScreen
-import com.example.scrollbooker.screens.auth.presentation.RegisterScreen
-import com.example.scrollbooker.screens.auth.presentation.components.collectBusinessDetails.collectBusinessLocation.CollectBusinessLocationScreen
-import com.example.scrollbooker.screens.auth.presentation.components.collectBusinessDetails.collectBusinessSchedules.CollectBusinessSchedulesScreen
-import com.example.scrollbooker.screens.auth.presentation.components.collectBusinessDetails.collectBusinessServices.CollectBusinessServicesScreen
-import com.example.scrollbooker.screens.auth.presentation.components.collectBusinessDetails.collectBusinessType.CollectBusinessTypeScreen
-import com.example.scrollbooker.screens.auth.presentation.components.collectClientDetails.CollectBirthDateScreen
-import com.example.scrollbooker.screens.auth.presentation.components.collectClientDetails.CollectUsernameScreen
+import com.example.scrollbooker.screens.auth.AuthViewModel
+import com.example.scrollbooker.screens.auth.LoginScreen
+import com.example.scrollbooker.screens.auth.RegisterScreen
+import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessLocation.CollectBusinessLocationScreen
+import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessSchedules.CollectBusinessSchedulesScreen
+import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessServices.CollectBusinessServicesScreen
+import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessType.CollectBusinessTypeScreen
+import com.example.scrollbooker.screens.auth.collectClientDetails.CollectBirthDateScreen
+import com.example.scrollbooker.screens.auth.collectClientDetails.CollectUsernameScreen
 import androidx.navigation.compose.navigation
-import com.example.scrollbooker.screens.auth.presentation.components.collectBusinessDetails.collectBusinessLocation.CollectBusinessLocationViewModel
-import com.example.scrollbooker.screens.auth.presentation.components.collectBusinessDetails.collectBusinessSchedules.CollectBusinessSchedulesViewModel
-import com.example.scrollbooker.screens.auth.presentation.components.collectBusinessDetails.collectBusinessServices.CollectBusinessServicesViewModel
-import com.example.scrollbooker.screens.auth.presentation.components.collectBusinessDetails.collectBusinessType.CollectBusinessTypeViewModel
+import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessLocation.CollectBusinessLocationViewModel
+import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessSchedules.CollectBusinessSchedulesViewModel
+import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessServices.CollectBusinessServicesViewModel
+import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessType.CollectBusinessTypeViewModel
 import com.example.scrollbooker.ui.theme.Background
 
 @Composable

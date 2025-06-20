@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.auth.presentation
+package com.example.scrollbooker.screens.auth
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -13,7 +13,6 @@ import androidx.navigation.NavController
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.inputs.Input
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.screens.auth.presentation.components.AuthScreen
 
 @Composable
 fun RegisterScreen(
