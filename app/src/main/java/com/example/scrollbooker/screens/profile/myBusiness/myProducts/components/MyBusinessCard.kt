@@ -1,4 +1,4 @@
-package com.example.scrollbooker.feature.myBusiness.components
+package com.example.scrollbooker.screens.profile.myBusiness.myProducts.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

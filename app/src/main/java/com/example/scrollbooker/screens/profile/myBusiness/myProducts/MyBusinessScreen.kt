@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.core.nav.routes.MainRoute
-import com.example.scrollbooker.feature.myBusiness.components.MyBusinessCard
+import com.example.scrollbooker.screens.profile.myBusiness.myProducts.components.MyBusinessCard
 import androidx.compose.runtime.getValue
 import com.example.scrollbooker.core.enums.PermissionEnum
 import com.example.scrollbooker.core.enums.has
