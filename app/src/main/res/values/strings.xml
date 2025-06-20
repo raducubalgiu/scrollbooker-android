@@ -131,6 +131,6 @@
     <string name="servicesDetails">Detalii despre serviciile mele</string>
     <string name="paymentMethods">Modalități de plată</string>
     <string name="paymentMethodsDetails">Alege valutele acceptate pentru plată</string>
-    <string name="collectBusinessTypeHeadline">Ce tip de business administrezi?</string>
-    <string name="collectBusinessTypeSubHeadline">Alege categoria care descrie cel mai bine activitatea ta. Acest pas ne ajută să personalizăm serviciile potrivite și setările potrivite pentru afacerea ta</string>
+    <string name="collectBusinessTypeHeadline">Ce business ai?</string>
+    <string name="collectBusinessTypeSubHeadline">Alege categoria care descrie cel mai bine activitatea ta.</string>
 </resources>

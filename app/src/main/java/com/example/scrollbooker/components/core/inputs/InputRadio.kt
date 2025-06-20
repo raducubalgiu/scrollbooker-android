@@ -16,17 +16,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
 
 @Composable
 fun InputRadio(
+    background: Color = SurfaceBG,
     modifier: Modifier = Modifier,
     options: List<Option>,
     value: String,
@@ -40,7 +44,7 @@ fun InputRadio(
                 Modifier
                     .fillMaxWidth()
                     .height(56.dp)
-                    .background(SurfaceBG)
+                    .background(background)
                     .selectable(
                         selected = (option.value == value),
                         onClick = { onValueChange(option.value.toString()) },
@@ -50,13 +54,13 @@ fun InputRadio(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    modifier = Modifier.padding(start = BasePadding),
+                    modifier = Modifier.padding(start = SpacingXXL),
                     text = option.name,
                     style = bodyLarge,
-                    fontWeight = FontWeight.SemiBold
+                    color = OnBackground
                 )
                 RadioButton(
-                    modifier = Modifier.scale(1.3f).padding(end = BasePadding),
+                    modifier = Modifier.scale(1.3f).padding(end = SpacingXXL),
                     selected = (option.value == value),
                     onClick = null,
                     colors = RadioButtonColors(

@@ -3,9 +3,11 @@ package com.example.scrollbooker.core.nav.host
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -28,12 +30,17 @@ import com.example.scrollbooker.screens.auth.presentation.components.collectBusi
 import com.example.scrollbooker.screens.auth.presentation.components.collectBusinessDetails.collectBusinessSchedules.CollectBusinessSchedulesViewModel
 import com.example.scrollbooker.screens.auth.presentation.components.collectBusinessDetails.collectBusinessServices.CollectBusinessServicesViewModel
 import com.example.scrollbooker.screens.auth.presentation.components.collectBusinessDetails.collectBusinessType.CollectBusinessTypeViewModel
+import com.example.scrollbooker.ui.theme.Background
 
 @Composable
 fun AuthNavHost(viewModel: AuthViewModel) {
     val navController = rememberNavController()
 
-    Box(modifier = Modifier.fillMaxSize().safeDrawingPadding()) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(Background)
+        .statusBarsPadding()
+    ) {
         NavHost(
             navController = navController,
             startDestination = AuthRoute.Login.route
