@@ -1,19 +1,23 @@
-package com.example.scrollbooker.screens.auth.presentation.components.collectBusinessDetails
+package com.example.scrollbooker.screens.auth.presentation.components.collectBusinessDetails.collectBusinessSchedules
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
 import com.example.scrollbooker.R
+import com.example.scrollbooker.screens.auth.presentation.components.collectBusinessDetails.CollectBusinessDetails
 
 @Composable
-fun CollectBusinessSchedulesScreen(navController: NavController) {
+fun CollectBusinessSchedulesScreen(
+    viewModel: CollectBusinessSchedulesViewModel,
+    onBack: () -> Unit,
+    onNext: () -> Unit
+) {
     CollectBusinessDetails(
         isLastScreen = true,
         headLine = stringResource(id = R.string.schedule),
         subHeadLine = stringResource(id = R.string.addYourBusinessSchedule),
-        onBack = { navController.popBackStack() },
-        onNext = {},
+        onBack = onBack,
+        onNext = onNext,
     ) {
         Text(text = "Business Schedules Screen")
     }

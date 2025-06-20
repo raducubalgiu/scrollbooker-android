@@ -15,6 +15,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.scrollbooker.R
+import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.inputs.Input
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.FeatureState
@@ -25,6 +26,7 @@ fun LoginScreen(
     authNavController: NavController,
     rootNavController: NavHostController,
     viewModel: AuthViewModel = hiltViewModel(),
+    onNavigateBusinessType: () -> Unit
 ) {
     val authState by viewModel.authState.collectAsState()
 
@@ -67,5 +69,10 @@ fun LoginScreen(
 
             else -> {}
         }
+
+        MainButton(
+            title = "Navigte to Business Types",
+            onClick = onNavigateBusinessType
+        )
     }
 }
