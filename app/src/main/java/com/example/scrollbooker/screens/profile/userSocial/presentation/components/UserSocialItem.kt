@@ -20,7 +20,7 @@ import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.components.core.buttons.MainButtonSmall
 import com.example.scrollbooker.core.util.Dimens.AvatarSizeS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
-import com.example.scrollbooker.screens.profile.userSocial.domain.model.UserSocial
+import com.example.scrollbooker.shared.user.userSocial.domain.model.UserSocial
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground

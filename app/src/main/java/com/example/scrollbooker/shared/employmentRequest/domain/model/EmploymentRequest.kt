@@ -1,7 +1,6 @@
 package com.example.scrollbooker.shared.employmentRequest.domain.model
-
-import com.example.scrollbooker.screens.profile.userSocial.domain.model.UserSocial
 import com.example.scrollbooker.shared.profession.domain.model.Profession
+import com.example.scrollbooker.shared.user.userSocial.domain.model.UserSocial
 
 data class EmploymentRequest(
     val id: Int,

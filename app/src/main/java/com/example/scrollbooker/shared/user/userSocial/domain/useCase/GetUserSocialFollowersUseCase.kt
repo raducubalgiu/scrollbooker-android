@@ -1,8 +1,8 @@
-package com.example.scrollbooker.screens.profile.userSocial.domain.useCase
+package com.example.scrollbooker.shared.user.userSocial.domain.useCase
 
 import androidx.paging.PagingData
-import com.example.scrollbooker.screens.profile.userSocial.domain.model.UserSocial
-import com.example.scrollbooker.screens.profile.userSocial.domain.repository.UserSocialRepository
+import com.example.scrollbooker.shared.user.userSocial.domain.model.UserSocial
+import com.example.scrollbooker.shared.user.userSocial.domain.repository.UserSocialRepository
 import kotlinx.coroutines.flow.Flow
 
 class GetUserSocialFollowersUseCase(

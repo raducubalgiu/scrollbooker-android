@@ -1,13 +1,13 @@
-package com.example.scrollbooker.screens.profile.userSocial.di
+package com.example.scrollbooker.shared.user.userSocial.di
 
 import com.example.scrollbooker.core.util.Constants
-import com.example.scrollbooker.screens.profile.userSocial.data.remote.UserSocialApiService
-import com.example.scrollbooker.screens.profile.userSocial.data.repository.UserSocialRepositoryImpl
-import com.example.scrollbooker.screens.profile.userSocial.domain.repository.UserSocialRepository
-import com.example.scrollbooker.screens.profile.userSocial.domain.useCase.FollowUserUseCase
-import com.example.scrollbooker.screens.profile.userSocial.domain.useCase.GetUserSocialFollowersUseCase
-import com.example.scrollbooker.screens.profile.userSocial.domain.useCase.GetUserSocialFollowingsUseCase
-import com.example.scrollbooker.screens.profile.userSocial.domain.useCase.UnfollowUserUseCase
+import com.example.scrollbooker.shared.user.userSocial.data.remote.UserSocialApiService
+import com.example.scrollbooker.shared.user.userSocial.data.repository.UserSocialRepositoryImpl
+import com.example.scrollbooker.shared.user.userSocial.domain.repository.UserSocialRepository
+import com.example.scrollbooker.shared.user.userSocial.domain.useCase.FollowUserUseCase
+import com.example.scrollbooker.shared.user.userSocial.domain.useCase.GetUserSocialFollowersUseCase
+import com.example.scrollbooker.shared.user.userSocial.domain.useCase.GetUserSocialFollowingsUseCase
+import com.example.scrollbooker.shared.user.userSocial.domain.useCase.UnfollowUserUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.profile.userSocial.domain.model
+package com.example.scrollbooker.shared.user.userSocial.domain.model
 
 data class UserSocial(
     val id: Int,

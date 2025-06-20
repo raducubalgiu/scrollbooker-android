@@ -1,6 +1,6 @@
-package com.example.scrollbooker.screens.profile.userSocial.domain.useCase
+package com.example.scrollbooker.shared.user.userSocial.domain.useCase
 
-import com.example.scrollbooker.screens.profile.userSocial.domain.repository.UserSocialRepository
+import com.example.scrollbooker.shared.user.userSocial.domain.repository.UserSocialRepository
 
 class FollowUserUseCase(
     private val repository: UserSocialRepository

@@ -1,7 +1,7 @@
-package com.example.scrollbooker.screens.profile.userSocial.domain.repository
+package com.example.scrollbooker.shared.user.userSocial.domain.repository
 
 import androidx.paging.PagingData
-import com.example.scrollbooker.screens.profile.userSocial.domain.model.UserSocial
+import com.example.scrollbooker.shared.user.userSocial.domain.model.UserSocial
 import kotlinx.coroutines.flow.Flow
 
 interface UserSocialRepository {

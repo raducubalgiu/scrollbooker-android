@@ -1,10 +1,10 @@
-package com.example.scrollbooker.screens.profile.userSocial.data.remote
+package com.example.scrollbooker.shared.user.userSocial.data.remote
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.example.scrollbooker.screens.profile.userSocial.data.mappers.toDomain
-import com.example.scrollbooker.screens.profile.userSocial.domain.model.UserSocial
-import com.example.scrollbooker.screens.profile.userSocial.domain.model.UserSocialEnum
+import com.example.scrollbooker.shared.user.userSocial.data.mappers.toDomain
+import com.example.scrollbooker.shared.user.userSocial.domain.model.UserSocial
+import com.example.scrollbooker.shared.user.userSocial.domain.model.UserSocialEnum
 import kotlinx.coroutines.delay
 import timber.log.Timber
 import java.lang.Exception

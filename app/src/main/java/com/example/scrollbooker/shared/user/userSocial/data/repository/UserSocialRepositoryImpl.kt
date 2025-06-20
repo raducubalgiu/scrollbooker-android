@@ -1,13 +1,13 @@
-package com.example.scrollbooker.screens.profile.userSocial.data.repository
+package com.example.scrollbooker.shared.user.userSocial.data.repository
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.example.scrollbooker.screens.profile.userSocial.data.remote.UserSocialApiService
-import com.example.scrollbooker.screens.profile.userSocial.data.remote.UserSocialPagingSource
-import com.example.scrollbooker.screens.profile.userSocial.domain.model.UserSocial
-import com.example.scrollbooker.screens.profile.userSocial.domain.model.UserSocialEnum
-import com.example.scrollbooker.screens.profile.userSocial.domain.repository.UserSocialRepository
+import com.example.scrollbooker.shared.user.userSocial.data.remote.UserSocialApiService
+import com.example.scrollbooker.shared.user.userSocial.data.remote.UserSocialPagingSource
+import com.example.scrollbooker.shared.user.userSocial.domain.model.UserSocial
+import com.example.scrollbooker.shared.user.userSocial.domain.model.UserSocialEnum
+import com.example.scrollbooker.shared.user.userSocial.domain.repository.UserSocialRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

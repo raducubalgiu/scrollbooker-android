@@ -1,7 +1,6 @@
 package com.example.scrollbooker.shared.employmentRequest.data.remote
-
-import com.example.scrollbooker.screens.profile.userSocial.data.remote.UserSocialDto
 import com.example.scrollbooker.shared.profession.data.remote.ProfessionDto
+import com.example.scrollbooker.shared.user.userSocial.data.remote.UserSocialDto
 
 data class EmploymentRequestDto(
     val id: Int,
