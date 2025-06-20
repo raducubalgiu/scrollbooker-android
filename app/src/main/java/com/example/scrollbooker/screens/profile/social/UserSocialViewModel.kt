@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.profile.userSocial.presentation
+package com.example.scrollbooker.screens.profile.social
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf

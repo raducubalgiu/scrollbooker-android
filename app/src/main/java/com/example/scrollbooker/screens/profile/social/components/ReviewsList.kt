@@ -1,5 +1,5 @@
-package com.example.scrollbooker.screens.profile.userSocial.presentation.components
-
+package com.example.scrollbooker.screens.profile.social.components
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -19,47 +19,60 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.ErrorScreen
+import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.core.util.LoadingScreen
 import com.example.scrollbooker.core.util.MessageScreen
-import com.example.scrollbooker.shared.user.userSocial.domain.model.UserSocial
+import com.example.scrollbooker.shared.review.domain.model.Review
+import com.example.scrollbooker.shared.review.domain.model.ReviewsSummary
+import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable
-fun UserSocialList(
-    pagingItems: LazyPagingItems<UserSocial>,
-    followedOverrides: Map<Int, Boolean>,
-    followRequestLocks: Set<Int>,
-    onFollow: (Boolean, Int) -> Unit,
-    onNavigateUserProfile: (Int) -> Unit
+fun ReviewsList(
+    pagingItems: LazyPagingItems<Review>,
+    summaryState: FeatureState<ReviewsSummary>,
+    onRatingClick: (Int) -> Unit,
+    selectedRatings: Set<Int>
 ) {
-    pagingItems.apply {
-        when(loadState.refresh) {
-            is LoadState.Loading -> LoadingScreen()
-            is LoadState.Error -> ErrorScreen()
-            is LoadState.NotLoading -> {
-                if(pagingItems.itemCount == 0) {
-                    MessageScreen(
-                        message = stringResource(R.string.dontFoundResults),
-                        icon = Icons.Outlined.Book
-                    )
+    LazyColumn(modifier = Modifier
+        .fillMaxSize()
+        .background(SurfaceBG)
+    ) {
+        pagingItems.apply {
+            when(loadState.refresh) {
+                is LoadState.Loading -> {
+                    item { LoadingScreen() }
+                }
+                is LoadState.Error -> {
+                    item { ErrorScreen() }
+                }
+                is LoadState.NotLoading -> {
+                    if(summaryState is FeatureState.Success) {
+                        val summary = summaryState.data
+
+                        item {
+                            if(summary.totalReviews > 0) {
+                                ReviewsSummarySection(
+                                    summary,
+                                    onRatingClick,
+                                    selectedRatings
+                                )
+                            }
+                        }
+                    }
+
+                    if(pagingItems.itemCount == 0) {
+                        item { MessageScreen(
+                            message = stringResource(R.string.dontFoundResults),
+                            icon = Icons.Outlined.Book
+                        ) }
+                    }
                 }
             }
         }
-    }
 
-    LazyColumn(Modifier.fillMaxSize()) {
         items(pagingItems.itemCount) { index ->
-            pagingItems[index]?.let { userSocial ->
-                val isLocked = followRequestLocks.contains(userSocial.id)
-
-                UserSocialItem(
-                    userSocial = userSocial,
-                    enabled = !isLocked,
-                    isFollowedOverrides = followedOverrides[userSocial.id],
-                    onFollow = { isFollowed -> onFollow(isFollowed, userSocial.id) },
-                    onNavigateUserProfile = onNavigateUserProfile
-                )
-            }
+            pagingItems[index]?.let { ReviewItem(it) }
         }
 
         pagingItems.apply {

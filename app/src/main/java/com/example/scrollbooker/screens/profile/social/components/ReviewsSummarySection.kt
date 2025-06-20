@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.profile.userSocial.presentation.components
+package com.example.scrollbooker.screens.profile.social.components
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background

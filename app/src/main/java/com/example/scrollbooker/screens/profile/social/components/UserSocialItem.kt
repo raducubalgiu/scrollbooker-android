@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.profile.userSocial.presentation.components
+package com.example.scrollbooker.screens.profile.social.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable

@@ -25,8 +25,8 @@ import com.example.scrollbooker.screens.profile.edit.EditGenderScreen
 import com.example.scrollbooker.screens.profile.edit.EditProfessionScreen
 import com.example.scrollbooker.screens.profile.edit.EditProfileScreen
 import com.example.scrollbooker.screens.profile.edit.EditUsernameScreen
-import com.example.scrollbooker.screens.profile.userSocial.presentation.UserSocialScreen
-import com.example.scrollbooker.screens.profile.userSocial.presentation.UserSocialViewModel
+import com.example.scrollbooker.screens.profile.social.UserSocialScreen
+import com.example.scrollbooker.screens.profile.social.UserSocialViewModel
 
 @Composable
 fun ProfileNavHost(navController: NavHostController) {

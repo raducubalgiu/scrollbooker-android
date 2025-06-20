@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.profile.userSocial.presentation
+package com.example.scrollbooker.screens.profile.social
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,8 +19,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import com.example.scrollbooker.screens.profile.userSocial.presentation.components.ReviewsList
-import com.example.scrollbooker.screens.profile.userSocial.presentation.components.UserSocialList
+import com.example.scrollbooker.screens.profile.social.components.ReviewsList
+import com.example.scrollbooker.screens.profile.social.components.UserSocialList
 
 @Composable
 fun UserSocialScreen(
