@@ -29,13 +29,13 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.ErrorScreen
 import com.example.scrollbooker.core.util.LoadingScreen
-import com.example.scrollbooker.screens.auth.collectBusinessDetails.CollectBusinessDetails
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.components.core.inputs.SearchBar
+import com.example.scrollbooker.components.core.layout.FormLayout
 import com.example.scrollbooker.core.nav.routes.AuthRoute
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
@@ -50,11 +50,12 @@ fun CollectBusinessTypeScreen(
     var selectedBusinessTypeId by remember { mutableStateOf<Int?>(null) }
     var selectedBusinessName by remember { mutableStateOf("") }
 
-        CollectBusinessDetails(
+    FormLayout(
         enableBack = false,
         isEnabled = selectedBusinessTypeId != null,
         headLine = stringResource(id = R.string.collectBusinessTypeHeadline),
         subHeadLine = stringResource(id = R.string.collectBusinessTypeSubHeadline),
+        buttonTitle = stringResource(R.string.nextStep),
         onBack = onBack,
         onNext = { onNext("${AuthRoute.CollectBusinessLocation.route}/${selectedBusinessTypeId}/${selectedBusinessName}") },
     ) {

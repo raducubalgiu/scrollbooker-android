@@ -1,6 +1,9 @@
 package com.example.scrollbooker.components.core.inputs
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.ListItem
@@ -10,12 +13,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import com.example.scrollbooker.core.util.Dimens.SpacingM
+import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.SurfaceBG
+import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodySmall
-import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun InputCheckbox(
@@ -25,7 +32,7 @@ fun InputCheckbox(
     onCheckedChange: (Boolean) -> Unit,
     isEnabled: Boolean = true,
     headLine: String,
-    headLineTextStyle: TextStyle = titleMedium,
+    headLineTextStyle: TextStyle = bodyLarge,
     supportingText: String = "",
     supportingTextStyle: TextStyle = bodySmall,
 ) {
@@ -33,16 +40,19 @@ fun InputCheckbox(
         modifier = Modifier
             .fillMaxWidth()
             .background(background)
+            .clickable(onClick = { onCheckedChange(checked) })
             .then(modifier),
         headlineContent = {
             Text(
+                modifier = Modifier.padding(start = SpacingM),
                 style = headLineTextStyle,
-                fontWeight = FontWeight.SemiBold,
-                text = headLine
+                text = headLine,
+                color = OnBackground
             )},
         supportingContent = {
             if(supportingText.isNotEmpty()) {
                 Text(
+                    modifier = Modifier.padding(start = SpacingM),
                     style = supportingTextStyle,
                     text = supportingText
                 )
@@ -50,8 +60,9 @@ fun InputCheckbox(
         },
         trailingContent = {
             Checkbox(
+                modifier = Modifier.padding(end = SpacingM).height(70.dp),
                 checked = checked,
-                onCheckedChange = onCheckedChange,
+                onCheckedChange = null,
                 enabled = isEnabled,
                 colors = CheckboxColors(
                     checkedCheckmarkColor = Color.White,

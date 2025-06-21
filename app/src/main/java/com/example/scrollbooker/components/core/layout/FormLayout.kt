@@ -1,4 +1,5 @@
-package com.example.scrollbooker.screens.auth.collectBusinessDetails
+package com.example.scrollbooker.components.core.layout
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,11 +12,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
-import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
@@ -25,13 +23,13 @@ import com.example.scrollbooker.ui.theme.headlineLarge
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CollectBusinessDetails(
+fun FormLayout(
     enableBack: Boolean = true,
-    isLastScreen: Boolean = false,
     isEnabled: Boolean = true,
     headerTitle: String = "",
     headLine: String,
     subHeadLine: String,
+    buttonTitle: String,
     onBack: () -> Unit,
     onNext: () -> Unit,
     content: @Composable () -> Unit,
@@ -66,8 +64,11 @@ fun CollectBusinessDetails(
             }
             Column(Modifier.fillMaxWidth()) {
                 MainButton(
-                    modifier = Modifier.padding(vertical = BasePadding, horizontal = SpacingXXL),
-                    title = if (!isLastScreen) stringResource(R.string.nextStep) else "Finish",
+                    modifier = Modifier.padding(
+                        vertical = BasePadding,
+                        horizontal = SpacingXXL
+                    ),
+                    title = buttonTitle,
                     onClick = onNext,
                     enabled = isEnabled
                 )
