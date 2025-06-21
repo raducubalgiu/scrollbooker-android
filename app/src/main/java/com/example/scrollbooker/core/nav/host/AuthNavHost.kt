@@ -8,12 +8,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.scrollbooker.core.nav.LocalRootNavController
 import com.example.scrollbooker.core.nav.routes.AuthRoute
 import com.example.scrollbooker.screens.auth.AuthViewModel
 import com.example.scrollbooker.screens.auth.LoginScreen
@@ -30,10 +30,27 @@ import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusin
 import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessServices.CollectBusinessServicesViewModel
 import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessType.CollectBusinessTypeViewModel
 import com.example.scrollbooker.ui.theme.Background
+import androidx.compose.runtime.getValue
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
+import com.example.scrollbooker.core.util.FeatureState
 
 @Composable
 fun AuthNavHost(viewModel: AuthViewModel) {
     val navController = rememberNavController()
+
+    val authState by viewModel.authState.collectAsState()
+
+    val startDestination = when(val state = authState) {
+        is FeatureState.Success -> {
+            if(state.data.isValidated) {
+                AuthRoute.Login.route
+            } else {
+                AuthRoute.CollectBusinessType.route
+            }
+        }
+        else -> AuthRoute.Login.route
+    }
 
     Box(modifier = Modifier
         .fillMaxSize()
@@ -42,19 +59,20 @@ fun AuthNavHost(viewModel: AuthViewModel) {
     ) {
         NavHost(
             navController = navController,
-            startDestination = AuthRoute.Login.route
+            startDestination = startDestination
         ) {
             composable(AuthRoute.Login.route) {
                 LoginScreen(
-                    authNavController = navController,
-                    rootNavController = LocalRootNavController.current,
                     viewModel = viewModel,
-                    onNavigateBusinessType = { navController.navigate(AuthRoute.CollectBusinessType.route) }
+                    onNavigate = { navController.navigate(it) }
                 )
             }
 
             composable(AuthRoute.Register.route) {
-                RegisterScreen(navController)
+                RegisterScreen(
+                    viewModel=viewModel,
+                    onNavigate = { navController.navigate(it) }
+                )
             }
 
             composable(AuthRoute.Username.route) {
@@ -64,86 +82,134 @@ fun AuthNavHost(viewModel: AuthViewModel) {
                 CollectBirthDateScreen(navController)
             }
 
-            navigation(
-                route = AuthRoute.CollectBusinessNavigator.route,
-                startDestination = AuthRoute.CollectBusinessType.route,
-                enterTransition = {
-                    slideIntoContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Left,
-                        animationSpec = tween(
-                            durationMillis = 250,
-                            easing = FastOutSlowInEasing
-                        )
-                    )
-                },
-                exitTransition = {
-                    slideOutOfContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Left,
-                        animationSpec = tween(
-                            durationMillis = 250,
-                            easing = FastOutSlowInEasing
-                        )
-                    )
-                },
-                popEnterTransition = {
-                    slideIntoContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Right,
-                        animationSpec = tween(
-                            durationMillis = 250,
-                            easing = FastOutSlowInEasing
-                        )
-                    )
-                },
-                popExitTransition = {
-                    slideOutOfContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Right,
-                        animationSpec = tween(
-                            durationMillis = 250,
-                            easing = FastOutSlowInEasing
-                        )
-                    )
-                }
-            ) {
-                composable(route = AuthRoute.CollectBusinessType.route) { backStackEntry ->
-                    val viewModel: CollectBusinessTypeViewModel = hiltViewModel(backStackEntry)
+            composable(route = AuthRoute.CollectBusinessType.route) { backStackEntry ->
+                val viewModel: CollectBusinessTypeViewModel = hiltViewModel(backStackEntry)
 
-                    CollectBusinessTypeScreen(
-                        viewModel = viewModel,
-                        onBack = { navController.popBackStack() },
-                        onNext = { navController.navigate(AuthRoute.CollectBusinessLocation.route) }
-                    )
-                }
-
-                composable(route = AuthRoute.CollectBusinessLocation.route) { backStackEntry ->
-                    val viewModel: CollectBusinessLocationViewModel = hiltViewModel(backStackEntry)
-
-                    CollectBusinessLocationScreen(
-                        viewModel = viewModel,
-                        onBack = { navController.popBackStack() },
-                        onNext = { navController.navigate(AuthRoute.CollectBusinessServices.route) }
-                    )
-                }
-
-                composable(AuthRoute.CollectBusinessServices.route) { backStackEntry ->
-                    val viewModel: CollectBusinessServicesViewModel = hiltViewModel(backStackEntry)
-
-                    CollectBusinessServicesScreen(
-                        viewModel = viewModel,
-                        onBack = { navController.popBackStack() },
-                        onNext = { navController.navigate(AuthRoute.CollectBusinessSchedules.route) }
-                    )
-                }
-
-                composable(AuthRoute.CollectBusinessSchedules.route) { backStackEntry ->
-                    val viewModel: CollectBusinessSchedulesViewModel = hiltViewModel(backStackEntry)
-
-                    CollectBusinessSchedulesScreen(
-                        viewModel = viewModel,
-                        onBack = { navController.popBackStack() },
-                        onNext = {  }
-                    )
-                }
+                CollectBusinessTypeScreen(
+                    viewModel = viewModel,
+                    onBack = { navController.popBackStack() },
+                    onNext = { navController.navigate(it) }
+                )
             }
+
+            composable(
+                route = "${AuthRoute.CollectBusinessLocation.route}/{businessTypeId}/{businessTypeName}",
+                arguments = listOf(
+                    navArgument("businessTypeId") { type = NavType.IntType },
+                    navArgument("businessTypeName") { type = NavType.StringType }
+                )
+            ) { backStackEntry ->
+                val viewModel: CollectBusinessLocationViewModel = hiltViewModel(backStackEntry)
+                val businessTypeName = backStackEntry.arguments?.getString("businessTypeName")
+
+                CollectBusinessLocationScreen(
+                    viewModel = viewModel,
+                    businessTypeName = businessTypeName,
+                    onBack = { navController.popBackStack() },
+                    onNext = { navController.navigate(AuthRoute.CollectBusinessServices.route) }
+                )
+            }
+
+            composable(AuthRoute.CollectBusinessServices.route) { backStackEntry ->
+                val viewModel: CollectBusinessServicesViewModel = hiltViewModel(backStackEntry)
+
+                CollectBusinessServicesScreen(
+                    viewModel = viewModel,
+                    onBack = { navController.popBackStack() },
+                    onNext = { navController.navigate(AuthRoute.CollectBusinessSchedules.route) }
+                )
+            }
+
+            composable(AuthRoute.CollectBusinessSchedules.route) { backStackEntry ->
+                val viewModel: CollectBusinessSchedulesViewModel = hiltViewModel(backStackEntry)
+
+                CollectBusinessSchedulesScreen(
+                    viewModel = viewModel,
+                    onBack = { navController.popBackStack() },
+                    onNext = {  }
+                )
+            }
+
+//            navigation(
+//                route = AuthRoute.CollectBusinessNavigator.route,
+//                startDestination = startDestination,
+//                enterTransition = {
+//                    slideIntoContainer(
+//                        AnimatedContentTransitionScope.SlideDirection.Left,
+//                        animationSpec = tween(
+//                            durationMillis = 250,
+//                            easing = FastOutSlowInEasing
+//                        )
+//                    )
+//                },
+//                exitTransition = {
+//                    slideOutOfContainer(
+//                        AnimatedContentTransitionScope.SlideDirection.Left,
+//                        animationSpec = tween(
+//                            durationMillis = 250,
+//                            easing = FastOutSlowInEasing
+//                        )
+//                    )
+//                },
+//                popEnterTransition = {
+//                    slideIntoContainer(
+//                        AnimatedContentTransitionScope.SlideDirection.Right,
+//                        animationSpec = tween(
+//                            durationMillis = 250,
+//                            easing = FastOutSlowInEasing
+//                        )
+//                    )
+//                },
+//                popExitTransition = {
+//                    slideOutOfContainer(
+//                        AnimatedContentTransitionScope.SlideDirection.Right,
+//                        animationSpec = tween(
+//                            durationMillis = 250,
+//                            easing = FastOutSlowInEasing
+//                        )
+//                    )
+//                }
+//            ) {
+//                composable(route = AuthRoute.CollectBusinessType.route) { backStackEntry ->
+//                    val viewModel: CollectBusinessTypeViewModel = hiltViewModel(backStackEntry)
+//
+//                    CollectBusinessTypeScreen(
+//                        viewModel = viewModel,
+//                        onBack = { navController.popBackStack() },
+//                        onNext = { navController.navigate(AuthRoute.CollectBusinessLocation.route) }
+//                    )
+//                }
+//
+//                composable(route = AuthRoute.CollectBusinessLocation.route) { backStackEntry ->
+//                    val viewModel: CollectBusinessLocationViewModel = hiltViewModel(backStackEntry)
+//
+//                    CollectBusinessLocationScreen(
+//                        viewModel = viewModel,
+//                        onBack = { navController.popBackStack() },
+//                        onNext = { navController.navigate(AuthRoute.CollectBusinessServices.route) }
+//                    )
+//                }
+//
+//                composable(AuthRoute.CollectBusinessServices.route) { backStackEntry ->
+//                    val viewModel: CollectBusinessServicesViewModel = hiltViewModel(backStackEntry)
+//
+//                    CollectBusinessServicesScreen(
+//                        viewModel = viewModel,
+//                        onBack = { navController.popBackStack() },
+//                        onNext = { navController.navigate(AuthRoute.CollectBusinessSchedules.route) }
+//                    )
+//                }
+//
+//                composable(AuthRoute.CollectBusinessSchedules.route) { backStackEntry ->
+//                    val viewModel: CollectBusinessSchedulesViewModel = hiltViewModel(backStackEntry)
+//
+//                    CollectBusinessSchedulesScreen(
+//                        viewModel = viewModel,
+//                        onBack = { navController.popBackStack() },
+//                        onNext = {  }
+//                    )
+//                }
+//            }
         }
     }
 }

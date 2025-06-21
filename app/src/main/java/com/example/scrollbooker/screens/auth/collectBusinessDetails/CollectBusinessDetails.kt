@@ -26,8 +26,9 @@ import com.example.scrollbooker.ui.theme.headlineLarge
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CollectBusinessDetails(
-    isFirstScreen: Boolean = false,
+    enableBack: Boolean = true,
     isLastScreen: Boolean = false,
+    isEnabled: Boolean = true,
     headerTitle: String = "",
     headLine: String,
     subHeadLine: String,
@@ -39,7 +40,7 @@ fun CollectBusinessDetails(
         headerTitle = headerTitle,
         onBack = onBack,
         enablePaddingH = false,
-        enableBack = !isFirstScreen
+        enableBack = enableBack
     ) {
         Column(Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
@@ -67,7 +68,8 @@ fun CollectBusinessDetails(
                 MainButton(
                     modifier = Modifier.padding(vertical = BasePadding, horizontal = SpacingXXL),
                     title = if (!isLastScreen) stringResource(R.string.nextStep) else "Finish",
-                    onClick = onNext
+                    onClick = onNext,
+                    enabled = isEnabled
                 )
             }
         }

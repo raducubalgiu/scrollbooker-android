@@ -85,7 +85,7 @@ fun ProfileLayout(
                     state = pagerState,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(LocalConfiguration.current.screenHeightDp.dp)
+                        .height(LocalConfiguration.current.screenHeightDp.dp - 150.dp)
                 ) { page ->
                     when(page) {
                         0 -> ProfilePostsTab(

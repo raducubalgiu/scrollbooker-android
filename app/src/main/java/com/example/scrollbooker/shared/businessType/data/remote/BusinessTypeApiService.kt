@@ -6,7 +6,10 @@ import retrofit2.http.Query
 
 interface BusinessTypeApiService {
     @GET("/business-types")
-    suspend fun getAllBusinessTypes(
+    suspend fun getAllBusinessTypes(): List<BusinessTypeDto>
+
+    @GET("/business-types")
+    suspend fun getAllPaginatedBusinessTypes(
         @Query("page") page: Int,
         @Query("limit") limit: Int
     ): PaginatedResponseDto<BusinessTypeDto>

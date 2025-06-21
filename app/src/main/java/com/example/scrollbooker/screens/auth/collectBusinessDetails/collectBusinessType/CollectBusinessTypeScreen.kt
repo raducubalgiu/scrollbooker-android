@@ -13,6 +13,10 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -31,21 +35,28 @@ import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge
+import com.example.scrollbooker.components.core.inputs.SearchBar
+import com.example.scrollbooker.core.nav.routes.AuthRoute
+import com.example.scrollbooker.core.util.Dimens.SpacingXL
+import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 
 @Composable
 fun CollectBusinessTypeScreen(
     viewModel: CollectBusinessTypeViewModel,
     onBack: () -> Unit,
-    onNext: () -> Unit
+    onNext: (String) -> Unit
 ) {
     val pagingItems = viewModel.businessTypes.collectAsLazyPagingItems()
+    var selectedBusinessTypeId by remember { mutableStateOf<Int?>(null) }
+    var selectedBusinessName by remember { mutableStateOf("") }
 
-    CollectBusinessDetails(
-        isFirstScreen = false,
+        CollectBusinessDetails(
+        enableBack = false,
+        isEnabled = selectedBusinessTypeId != null,
         headLine = stringResource(id = R.string.collectBusinessTypeHeadline),
         subHeadLine = stringResource(id = R.string.collectBusinessTypeSubHeadline),
         onBack = onBack,
-        onNext = onNext,
+        onNext = { onNext("${AuthRoute.CollectBusinessLocation.route}/${selectedBusinessTypeId}/${selectedBusinessName}") },
     ) {
         pagingItems.apply {
             when(loadState.refresh) {
@@ -60,6 +71,21 @@ fun CollectBusinessTypeScreen(
         }
 
         LazyColumn(Modifier.fillMaxSize()) {
+            item {
+                Box(Modifier.padding(
+                    start = SpacingXL,
+                    end = SpacingXXL,
+                    top = SpacingXXS,
+                    bottom = SpacingXXS
+                )) {
+                    SearchBar(
+                        value = "",
+                        onValueChange = {},
+                        placeholder = "Cauta categorie"
+                    )
+                }
+            }
+
             items(pagingItems.itemCount) { index ->
                 pagingItems[index]?.let { businessType ->
                     Row(
@@ -68,8 +94,12 @@ fun CollectBusinessTypeScreen(
                             .height(70.dp)
                             .background(Background)
                             .selectable(
-                                selected = false,
-                                onClick = {  },
+                                selected = selectedBusinessTypeId == businessType.id,
+                                onClick = {
+                                    selectedBusinessTypeId = businessType.id
+                                    selectedBusinessName = businessType.name
+
+                                },
                                 role = Role.RadioButton
                             ),
                         verticalAlignment = Alignment.CenterVertically,
@@ -83,7 +113,7 @@ fun CollectBusinessTypeScreen(
                         )
                         RadioButton(
                             modifier = Modifier.scale(1.3f).padding(end = SpacingXXL),
-                            selected = false,
+                            selected = selectedBusinessTypeId == businessType.id,
                             onClick = null,
                             colors = RadioButtonColors(
                                 selectedColor = Primary,

@@ -9,16 +9,16 @@ import com.example.scrollbooker.screens.auth.collectBusinessDetails.CollectBusin
 @Composable
 fun CollectBusinessLocationScreen(
     viewModel: CollectBusinessLocationViewModel,
+    businessTypeName: String?,
     onBack: () -> Unit,
     onNext: () -> Unit
 ) {
     CollectBusinessDetails(
-        isFirstScreen = true,
         headLine = stringResource(id = R.string.location),
         subHeadLine = stringResource(id = R.string.addYourBusinessLocation),
         onBack = onBack,
         onNext = onNext,
     ) {
-        Text(text = "Business Location Screen")
+        Text(text = businessTypeName ?: "")
     }
 }

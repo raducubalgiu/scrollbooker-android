@@ -35,7 +35,7 @@ fun FeedScreen(
     val coroutineScope = rememberCoroutineScope()
     val isUserSwiping = remember { mutableStateOf(false) }
 
-    Column( modifier = Modifier
+    Box( modifier = Modifier
         .fillMaxSize()
         .background(Color(0xFF121212))
     ) {

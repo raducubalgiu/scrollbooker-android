@@ -12,20 +12,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.inputs.Input
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.FeatureState
 
 @Composable
 fun LoginScreen(
-    authNavController: NavController,
-    rootNavController: NavHostController,
     viewModel: AuthViewModel = hiltViewModel(),
-    onNavigateBusinessType: () -> Unit
+    onNavigate: (String) -> Unit
 ) {
     val authState by viewModel.authState.collectAsState()
 
@@ -33,16 +28,10 @@ fun LoginScreen(
     var password by remember { mutableStateOf("") }
 
     AuthScreen(
-        navController = authNavController,
+        onNavigate = onNavigate,
         type = stringResource(R.string.login),
         onSubmit = {
             viewModel.login(username, password)
-
-//            if(loginState is FeatureState.Success) {
-//                rootNavController.navigate(GlobalRoute.MAIN) {
-//                    popUpTo(0) { inclusive = true }
-//                }
-//            }
         }
     ) {
         Input(
@@ -68,10 +57,5 @@ fun LoginScreen(
 
             else -> {}
         }
-
-        MainButton(
-            title = "Navigte to Business Types",
-            onClick = onNavigateBusinessType
-        )
     }
 }

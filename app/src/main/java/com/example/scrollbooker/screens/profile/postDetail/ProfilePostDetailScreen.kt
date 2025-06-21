@@ -3,7 +3,6 @@ import androidx.annotation.OptIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,7 +15,6 @@ import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
-import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -33,14 +31,10 @@ import androidx.media3.common.util.UnstableApi
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.components.Video
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingL
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.screens.profile.myProfile.ProfileSharedViewModel
-import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.labelLarge
-import timber.log.Timber
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -61,7 +55,10 @@ fun ProfilePostDetailScreen(
         }
     }
 
-    Box(Modifier.fillMaxSize()) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(Color(0xFF121212))
+    ) {
         VerticalPager(
             state = pagerState,
             modifier = Modifier

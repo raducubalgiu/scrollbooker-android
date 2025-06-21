@@ -3,6 +3,7 @@ package com.example.scrollbooker.screens.auth.domain.usecase
 import com.example.scrollbooker.core.network.tokenProvider.TokenProvider
 import com.example.scrollbooker.core.network.util.decodeJwtExpiry
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.screens.auth.AuthStateDto
 import com.example.scrollbooker.screens.auth.data.remote.auth.AuthApiService
 import com.example.scrollbooker.screens.auth.data.remote.auth.AuthDto
 import com.example.scrollbooker.store.AuthDataStore
@@ -15,7 +16,7 @@ class IsLoggedInUseCase @Inject constructor(
     private val tokenProvider: TokenProvider,
     private val authDataStore: AuthDataStore,
 ) {
-    suspend operator fun invoke(): FeatureState<Unit> {
+    suspend operator fun invoke(): FeatureState<AuthStateDto> {
         return try {
             val accessToken = authDataStore.getAccessToken().firstOrNull()
             val refreshToken = authDataStore.getRefreshToken().firstOrNull()
@@ -23,7 +24,7 @@ class IsLoggedInUseCase @Inject constructor(
             tokenProvider.updateTokens(accessToken.toString(), refreshToken)
 
             if(isTokenValid(accessToken)) {
-                FeatureState.Success(Unit)
+                FeatureState.Success(AuthStateDto(isValidated = false))
             } else {
                 if(isTokenValid(refreshToken) && !refreshToken.isNullOrBlank()) {
                     return try {
@@ -31,7 +32,7 @@ class IsLoggedInUseCase @Inject constructor(
                         authDataStore.refreshTokens(response.accessToken, response.refreshToken)
                         tokenProvider.updateTokens(response.accessToken, response.refreshToken)
 
-                        FeatureState.Success(Unit)
+                        FeatureState.Success(AuthStateDto(isValidated = false))
                     } catch (e: Exception) {
                         Timber.tag("Refresh Token").e(e, "ERROR: on attempting to refresh token")
                         authDataStore.clearUserSession()

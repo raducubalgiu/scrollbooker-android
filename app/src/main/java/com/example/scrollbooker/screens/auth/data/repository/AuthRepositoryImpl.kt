@@ -2,6 +2,7 @@ package com.example.scrollbooker.screens.auth.data.repository
 import com.example.scrollbooker.core.network.tokenProvider.TokenProvider
 import com.example.scrollbooker.screens.auth.data.mappers.toDoman
 import com.example.scrollbooker.screens.auth.data.remote.auth.AuthApiService
+import com.example.scrollbooker.screens.auth.data.remote.auth.AuthDto
 import com.example.scrollbooker.screens.auth.domain.model.LoginResponse
 import com.example.scrollbooker.screens.auth.domain.repository.AuthRepository
 import com.example.scrollbooker.store.AuthDataStore
@@ -19,6 +20,17 @@ class AuthRepositoryImpl @Inject constructor(
         val passwordPart = password.toRequestBody("text/plain".toMediaType())
 
         return authApi.login(usernamePart, passwordPart).toDoman()
+    }
+
+    override suspend fun register(
+        email: String,
+        username: String,
+        password: String,
+        roleName: String,
+        isValidated: Boolean,
+    ) {
+        val request = AuthDto.RegisterDto(email, username, password, roleName, isValidated)
+        return authApi.register(request)
     }
 
     override suspend fun logout() {

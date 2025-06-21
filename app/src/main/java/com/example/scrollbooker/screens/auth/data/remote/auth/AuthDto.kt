@@ -17,6 +17,18 @@ object AuthDto {
         val businessId: Int
     )
 
+    data class RegisterDto(
+        val email: String,
+        val username: String,
+        val password: String,
+
+        @SerializedName("role_name")
+        val roleName: String,
+
+        @SerializedName("is_validated")
+        val isValidated: Boolean
+    )
+
     data class RefreshRequestDto(
         @SerializedName("refresh_token")
         val refreshToken: String

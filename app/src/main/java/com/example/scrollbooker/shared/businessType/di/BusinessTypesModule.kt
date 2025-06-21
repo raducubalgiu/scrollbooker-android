@@ -2,9 +2,9 @@ package com.example.scrollbooker.shared.businessType.di
 
 import com.example.scrollbooker.core.util.Constants
 import com.example.scrollbooker.shared.businessType.data.remote.BusinessTypeApiService
-import com.example.scrollbooker.shared.businessType.data.repository.BusinessTypeRepository
-import com.example.scrollbooker.shared.businessType.domain.repository.BusinessTypeRepositoryImpl
-import com.example.scrollbooker.shared.businessType.domain.useCase.GetAllBusinessTypesUseCase
+import com.example.scrollbooker.shared.businessType.domain.repository.BusinessTypeRepository
+import com.example.scrollbooker.shared.businessType.data.repository.BusinessTypeRepositoryImpl
+import com.example.scrollbooker.shared.businessType.domain.useCase.GetAllPaginatedBusinessTypesUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,10 +19,10 @@ import javax.inject.Singleton
 object BusinessTypesModule {
     @Provides
     @Singleton
-    fun provideBusinessTypeApiService(): BusinessTypeApiService {
+    fun provideBusinessTypeApiService(okHttpClient: OkHttpClient): BusinessTypeApiService {
         return Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
-            //.client(okHttpClient)
+            .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(BusinessTypeApiService::class.java)
@@ -36,9 +36,9 @@ object BusinessTypesModule {
 
     @Provides
     @Singleton
-    fun provideGetAllBusinessTypesUseCase(
+    fun provideGetAllPaginatedBusinessTypesUseCase(
         repository: BusinessTypeRepository,
-    ): GetAllBusinessTypesUseCase {
-        return GetAllBusinessTypesUseCase(repository)
+    ): GetAllPaginatedBusinessTypesUseCase {
+        return GetAllPaginatedBusinessTypesUseCase(repository)
     }
 }

@@ -47,6 +47,7 @@ import com.example.scrollbooker.screens.profile.myProfile.ProfileSharedViewModel
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 sealed class MainTab(
     val route: String,

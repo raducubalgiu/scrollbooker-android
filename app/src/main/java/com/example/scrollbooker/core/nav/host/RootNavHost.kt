@@ -16,8 +16,14 @@ fun RootNavHost(
 ) {
     val authState by viewModel.authState.collectAsState()
 
-    val startDestination = when(authState) {
-        is FeatureState.Success -> GlobalRoute.MAIN
+    val startDestination = when(val state = authState) {
+        is FeatureState.Success -> {
+            if(state.data.isValidated) {
+                GlobalRoute.MAIN
+            } else {
+                GlobalRoute.AUTH
+            }
+        }
         is FeatureState.Error -> GlobalRoute.AUTH
         else -> null
     }

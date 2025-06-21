@@ -13,6 +13,9 @@ interface AuthApiService {
         @Part("password") password: RequestBody,
     ): AuthDto.LoginResponseDto
 
+    @POST("auth/register")
+    suspend fun register(@Body request: AuthDto.RegisterDto)
+
     @POST("auth/refresh")
     suspend fun refresh(@Body request: AuthDto.RefreshRequestDto): AuthDto.LoginResponseDto
 }

@@ -23,7 +23,7 @@ class BusinessTypePagingSource(
         val limit = 10
 
         return try {
-            val response = api.getAllBusinessTypes(page, limit)
+            val response = api.getAllPaginatedBusinessTypes(page, limit)
             val businessTypes = response.results.map { it.toDomain() }
 
             val totalLoaded = page * limit

@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.core.nav.routes.AuthRoute
@@ -28,8 +27,8 @@ import com.example.scrollbooker.ui.theme.headlineLarge
 
 @Composable
 fun AuthScreen(
-    navController: NavController,
     type: String,
+    onNavigate: (String) -> Unit,
     onSubmit: () -> Unit,
     content: @Composable () -> Unit,
 ) {
@@ -85,9 +84,10 @@ fun AuthScreen(
                     text = "${footerText}?"
                 )
                 TextButton(onClick = {
-                    navController.navigate(route =
+                    onNavigate(
                         if(isLogin) AuthRoute.Register.route
-                        else AuthRoute.Login.route)
+                        else AuthRoute.Login.route
+                    )
                 }) {
                     Text(
                         style = bodyLarge,

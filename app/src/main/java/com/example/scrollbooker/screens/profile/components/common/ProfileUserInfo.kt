@@ -207,21 +207,23 @@ fun ProfileUserInfo(
         }
     }
 
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .padding(
-            top = BasePadding,
-            start = 50.dp,
-            end = 50.dp,
-            bottom = 0.dp
-        ),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = user.bio ?: "",
-            textAlign = TextAlign.Center
-        )
+    if(user.bio?.isNotEmpty() == true) {
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                top = BasePadding,
+                start = 50.dp,
+                end = 50.dp,
+                bottom = 0.dp
+            ),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = user.bio ?: "",
+                textAlign = TextAlign.Center
+            )
+        }
     }
 
     Spacer(Modifier.height(BasePadding))
