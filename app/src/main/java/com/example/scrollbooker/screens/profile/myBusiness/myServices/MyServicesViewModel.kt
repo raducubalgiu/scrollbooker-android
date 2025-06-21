@@ -7,12 +7,14 @@ import com.example.scrollbooker.shared.service.domain.model.Service
 import com.example.scrollbooker.shared.service.domain.useCase.AttachManyServicesUseCase
 import com.example.scrollbooker.shared.service.domain.useCase.DetachServiceUseCase
 import com.example.scrollbooker.shared.service.domain.useCase.GetServicesByBusinessTypeUseCase
-import com.example.scrollbooker.shared.service.domain.useCase.GetServicesByUserIdUseCase
+import com.example.scrollbooker.shared.service.domain.useCase.GetServicesByBusinessIdUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -20,72 +22,63 @@ import javax.inject.Inject
 @HiltViewModel
 class MyServicesViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
-    private val getServicesByUserIdUseCase: GetServicesByUserIdUseCase,
+    private val getServicesByBusinessIdUseCase: GetServicesByBusinessIdUseCase,
     private val getServicesByBusinessTypeUseCase: GetServicesByBusinessTypeUseCase,
     private val attachManyServicesUseCase: AttachManyServicesUseCase,
     private val detachServiceUseCase: DetachServiceUseCase
 ): ViewModel() {
 
-    private val _servicesState = MutableStateFlow<FeatureState<List<Service>>>(FeatureState.Loading)
-    val servicesState: StateFlow<FeatureState<List<Service>>> = _servicesState
+    private val _state = MutableStateFlow<FeatureState<List<Service>>>(FeatureState.Loading)
+    val state: StateFlow<FeatureState<List<Service>>> = _state
 
-    private val _availableServicesState =
-        MutableStateFlow<FeatureState<List<Service>>>(FeatureState.Loading)
-    val availableServicesState: StateFlow<FeatureState<List<Service>>> = _availableServicesState
-
-    private val _actionState = MutableStateFlow<FeatureState<Unit>>(FeatureState.Success(Unit))
-    val actionState: StateFlow<FeatureState<Unit>> = _actionState
+    private val _selectedServiceIds = MutableStateFlow<Set<Int>>(emptySet())
+    val selectedServiceIds: StateFlow<Set<Int>> = _selectedServiceIds.asStateFlow()
 
     init {
-        loadServices()
-        loadAvailableServices()
+        fetchServices()
     }
 
-    fun loadServices() {
+    fun fetchServices() {
         viewModelScope.launch {
-            val userId = authDataStore.getUserId().firstOrNull()
-
-            if(userId == null) {
-                Timber.Forest.tag("Services").e("ERROR: User Id not found in DataStore")
-                _availableServicesState.value = FeatureState.Error()
-            } else {
-                _servicesState.value = FeatureState.Loading
-                _servicesState.value = getServicesByUserIdUseCase(userId)
-            }
-        }
-    }
-
-    private fun loadAvailableServices() {
-        viewModelScope.launch {
+            _state.value = FeatureState.Loading
+            val businessId = authDataStore.getBusinessId().firstOrNull()
             val businessTypeId = authDataStore.getBusinessTypeId().firstOrNull()
 
+            if(businessId == null) {
+                throw IllegalStateException("Business Id not found in data store")
+            }
+
             if(businessTypeId == null) {
-                Timber.Forest.tag("Services").e("ERROR: Business Type Id not found in DataStore")
-                _availableServicesState.value = FeatureState.Error()
+                throw IllegalStateException("BusinessType Id not found in data store")
+            }
+
+            val user = getServicesByBusinessIdUseCase(businessId)
+            val all = getServicesByBusinessTypeUseCase(businessTypeId)
+
+            if(all.isSuccess && user.isSuccess) {
+                val selectedIds = user.getOrThrow().map { it.id }.toSet()
+                _selectedServiceIds.value = selectedIds
+
+                val combined = all.getOrThrow().map {
+                    Service(
+                        id = it.id,
+                        name = it.name,
+                        businessDomainId = it.businessDomainId
+                    )
+                }
+
+                _state.value = FeatureState.Success(combined)
             } else {
-                _availableServicesState.value = FeatureState.Loading
-                _availableServicesState.value = getServicesByBusinessTypeUseCase(businessTypeId)
+                val error = all.exceptionOrNull() ?: user.exceptionOrNull()
+                Timber.tag("Services").e("ERROR: on Fetching Services $error")
+                _state.value = FeatureState.Error(error ?: Exception("Unexpected Error"))
             }
         }
     }
 
-    fun attachManyServices(serviceIds: List<Int>) {
-        viewModelScope.launch {
-            _actionState.value = FeatureState.Loading
-            _actionState.value = attachManyServicesUseCase(serviceIds)
-
-            loadServices()
-            loadAvailableServices()
-        }
-    }
-
-    fun detachServices(serviceId: Int) {
-        viewModelScope.launch {
-            _actionState.value = FeatureState.Loading
-            _actionState.value = detachServiceUseCase(serviceId)
-
-            loadServices()
-            loadAvailableServices()
+    fun toggleService(serviceId: Int) {
+        _selectedServiceIds.update { current ->
+            if(serviceId in current) current - serviceId else current + serviceId
         }
     }
 }

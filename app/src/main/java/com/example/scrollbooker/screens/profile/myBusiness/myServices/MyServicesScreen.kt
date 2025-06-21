@@ -1,85 +1,117 @@
-package com.example.scrollbooker.screens.profile.myBusiness.myServices
+package com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessServices
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.res.stringResource
-import com.example.scrollbooker.R
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.example.scrollbooker.components.core.dialog.DialogConfirm
-import com.example.scrollbooker.components.core.layout.Layout
-import com.example.scrollbooker.components.core.buttons.MainButton
-import com.example.scrollbooker.core.nav.routes.MainRoute
-import com.example.scrollbooker.core.snackbar.SnackbarManager
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import com.example.scrollbooker.R
+import com.example.scrollbooker.components.core.layout.FormLayout
+import com.example.scrollbooker.core.util.Dimens.SpacingXXL
+import com.example.scrollbooker.core.util.ErrorScreen
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.shared.service.domain.model.Service
-import com.example.scrollbooker.screens.profile.myBusiness.myServices.components.ServicesList
+import com.example.scrollbooker.core.util.LoadingScreen
+import com.example.scrollbooker.screens.profile.myBusiness.myServices.MyServicesViewModel
+import com.example.scrollbooker.ui.theme.Background
+import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.Primary
+import com.example.scrollbooker.ui.theme.bodyLarge
 
 @Composable
 fun MyServicesScreen(
     viewModel: MyServicesViewModel,
     onBack: () -> Unit,
-    onNavigate: (String) -> Unit
+    onNextOrSave: () -> Unit
 ) {
-    val servicesState by viewModel.servicesState.collectAsState()
-    var selectedServiceId by remember { mutableStateOf("") }
-    var isOpen by remember { mutableStateOf(false) }
+    val state by viewModel.state.collectAsState()
+    val selectedIds by viewModel.selectedServiceIds.collectAsState()
 
-    Layout(
-        headerTitle = stringResource(R.string.myServices),
-        onBack = onBack
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .statusBarsPadding()
     ) {
-        if(isOpen) {
-            DialogConfirm(
-                title = "",
-                text = stringResource(R.string.areYouSureYouWantDeleteService),
-                onDismissRequest = {
-                    selectedServiceId = ""
-                    isOpen = false
-                },
-                onConfirmation = {
-                    viewModel.detachServices(selectedServiceId.toInt())
-                    isOpen = false
-                }
-            )
-        }
-
-        Column(modifier = Modifier
-            .fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween
+        FormLayout(
+            headLine = stringResource(id = R.string.services),
+            subHeadLine = stringResource(id = R.string.addYourBusinessServices),
+            buttonTitle = stringResource(id = R.string.nextStep),
+            onBack = onBack,
+            onNext = onNextOrSave,
         ) {
-            when(servicesState) {
-                is FeatureState.Loading -> CircularProgressIndicator()
-                is FeatureState.Error -> SnackbarManager.showToast(stringResource(id = R.string.somethingWentWrong))
+            when (val result = state) {
+                is FeatureState.Loading -> LoadingScreen()
+                is FeatureState.Error -> ErrorScreen()
                 is FeatureState.Success -> {
-                    val services = (servicesState as FeatureState.Success<List<Service>>).data
-
-                    if(services.isEmpty()) {
-                        Text(text = "No Services available")
-                    } else {
-                        ServicesList(
-                            services=services,
-                            selectedServiceId = selectedServiceId,
-                            onSelect = {
-                                selectedServiceId = it
-                                isOpen = true
+                    LazyColumn {
+                        itemsIndexed(result.data) { index, service ->
+                            Row(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(70.dp)
+                                    .background(Background)
+                                    .clickable { viewModel.toggleService(service.id) },
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    modifier = Modifier.padding(start = SpacingXXL),
+                                    text = service.name,
+                                    style = bodyLarge,
+                                    color = OnBackground
+                                )
+                                Checkbox(
+                                    modifier = Modifier.padding(end = SpacingXXL),
+                                    checked = service.id in selectedIds,
+                                    onCheckedChange = null,
+                                    colors = CheckboxColors(
+                                        checkedCheckmarkColor = Color.White,
+                                        uncheckedCheckmarkColor = Color.Transparent,
+                                        checkedBoxColor = Primary,
+                                        uncheckedBoxColor = Color.Transparent,
+                                        disabledCheckedBoxColor = Divider,
+                                        disabledUncheckedBoxColor = Divider,
+                                        disabledIndeterminateBoxColor = Divider,
+                                        checkedBorderColor = Primary,
+                                        uncheckedBorderColor = Color.Gray,
+                                        disabledBorderColor = Divider,
+                                        disabledUncheckedBorderColor = Divider,
+                                        disabledIndeterminateBorderColor = Divider
+                                    )
+                                )
                             }
-                        )
+
+                            if(index < result.data.lastIndex) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = SpacingXXL)
+                                        .height(0.55.dp)
+                                        .background(Divider.copy(alpha = 0.5f))
+                                )
+                            }
+                        }
                     }
                 }
             }
-
-            MainButton(
-                title = stringResource(R.string.add),
-                onClick = { onNavigate(MainRoute.AttachServices.route) }
-            )
         }
     }
 }

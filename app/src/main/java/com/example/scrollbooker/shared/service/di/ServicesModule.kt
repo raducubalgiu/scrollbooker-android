@@ -7,7 +7,7 @@ import com.example.scrollbooker.shared.service.domain.repository.ServiceReposito
 import com.example.scrollbooker.shared.service.domain.useCase.AttachManyServicesUseCase
 import com.example.scrollbooker.shared.service.domain.useCase.DetachServiceUseCase
 import com.example.scrollbooker.shared.service.domain.useCase.GetServicesByBusinessTypeUseCase
-import com.example.scrollbooker.shared.service.domain.useCase.GetServicesByUserIdUseCase
+import com.example.scrollbooker.shared.service.domain.useCase.GetServicesByBusinessIdUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.Module
 import dagger.Provides
@@ -41,15 +41,15 @@ object ServicesModule {
 
     @Provides
     @Singleton
-    fun provideGetServicesUseCase(
+    fun provideGetServicesByBusinessIdUseCase(
         repository: ServiceRepository
-    ): GetServicesByUserIdUseCase {
-        return GetServicesByUserIdUseCase(repository)
+    ): GetServicesByBusinessIdUseCase {
+        return GetServicesByBusinessIdUseCase(repository)
     }
 
     @Provides
     @Singleton
-    fun provideGetServicesByBusinessTypeUseCase(
+    fun provideGetServicesByBusinessTypeIdUseCase(
         repository: ServiceRepository,
     ): GetServicesByBusinessTypeUseCase {
         return GetServicesByBusinessTypeUseCase(repository)

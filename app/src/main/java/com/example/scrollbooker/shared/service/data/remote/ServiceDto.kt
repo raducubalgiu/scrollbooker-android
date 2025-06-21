@@ -7,5 +7,5 @@ data class ServiceDto(
     val name: String,
 
     @SerializedName("business_domain_id")
-    val businessDomainId: Int
+    val businessDomainId: Int,
 )

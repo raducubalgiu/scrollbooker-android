@@ -40,7 +40,7 @@ class AuthViewModel @Inject constructor(
     fun login(username: String, password: String) {
         viewModelScope.launch {
             _authState.value = FeatureState.Loading
-            //_authState.value = loginAndSaveSessionUseCase(username, password)
+            _authState.value = loginAndSaveSessionUseCase(username, password)
         }
     }
 

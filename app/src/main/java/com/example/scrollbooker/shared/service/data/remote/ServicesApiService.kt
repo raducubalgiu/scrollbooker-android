@@ -7,13 +7,13 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface ServicesApiService {
-    @GET("users/{userId}/services")
-    suspend fun getServices(
-        @Path("userId") userId: Int
+    @GET("businesses/{businessId}/services")
+    suspend fun getServicesByBusinessId(
+        @Path("businessId") businessId: Int
     ): List<ServiceDto>
 
     @GET("business-types/{businessTypeId}/services")
-    suspend fun getServicesByBusinessType(
+    suspend fun getServicesByBusinessTypeId(
         @Path("businessTypeId") businessTypeId: Int
     ): List<ServiceDto>
 

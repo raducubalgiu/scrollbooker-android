@@ -19,6 +19,7 @@ import com.example.scrollbooker.screens.profile.myBusiness.myCalendar.MyCalendar
 import com.example.scrollbooker.screens.profile.myBusiness.myCalendar.MyCalendarViewModel
 import com.example.scrollbooker.feature.myBusiness.employeeDismissal.presentation.EmployeesDismissalScreen
 import com.example.scrollbooker.feature.myBusiness.employeeDismissal.presentation.EmployeesDismissalViewModel
+import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessServices.MyServicesScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myEmployees.EmployeesScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myEmployees.EmployeesViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.list.EmploymentRequestsScreen
@@ -30,7 +31,6 @@ import com.example.scrollbooker.screens.profile.myBusiness.myCurrencies.MyCurren
 import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.SchedulesScreen
 import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.SchedulesViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.myServices.AttachServicesScreen
-import com.example.scrollbooker.screens.profile.myBusiness.myServices.MyServicesScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myServices.MyServicesViewModel
 
 fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
@@ -151,7 +151,7 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
             MyServicesScreen(
                 viewModel,
                 onBack = { navController.popBackStack() },
-                onNavigate = { navController.navigate(it) }
+                onNextOrSave = {  }
             )
         }
 
