@@ -19,7 +19,7 @@
     <string name="location">Locație</string>
     <string name="addYourBusinessLocation">Adaugă Locația Business-ului tău</string>
     <string name="services">Servicii</string>
-    <string name="addYourBusinessServices">Adaugă Serviciile Business-ului tău</string>
+    <string name="addYourBusinessServices">Adaugă serviciile pe care le desfășori la locație</string>
     <string name="schedule">Programul de lucru</string>
     <string name="addYourBusinessSchedule">Adaugă programul de lucru pentru Business-ului tău</string>
     <string name="forOthers">Pentru alții</string>
@@ -133,4 +133,5 @@
     <string name="paymentMethodsDetails">Alege valutele acceptate pentru plată</string>
     <string name="collectBusinessTypeHeadline">Ce business ai?</string>
     <string name="collectBusinessTypeSubHeadline">Alege categoria care descrie cel mai bine activitatea ta.</string>
+    <string name="scheduleSubheaderDescription">Adaugă intervalele orare în care locația ta este deschisă pentru clienți</string>
 </resources>

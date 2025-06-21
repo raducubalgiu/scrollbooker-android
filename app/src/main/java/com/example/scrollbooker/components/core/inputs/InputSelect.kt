@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.style.TextOverflow
 import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable
@@ -50,7 +51,13 @@ fun InputSelect(
         }
     ) {
         ListItem(
-            headlineContent = { Text(selected?.name ?: placeholder) },
+            headlineContent = {
+                Text(
+                    text = selected?.name ?: placeholder,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            },
             trailingContent = {
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowUp,
