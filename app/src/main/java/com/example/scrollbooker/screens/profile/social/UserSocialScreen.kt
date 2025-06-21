@@ -2,6 +2,7 @@ package com.example.scrollbooker.screens.profile.social
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
@@ -49,6 +50,7 @@ fun UserSocialScreen(
     }
 
     Layout(
+        modifier = Modifier.statusBarsPadding(),
         headerTitle = username,
         onBack = onBack,
         enablePaddingH = false,

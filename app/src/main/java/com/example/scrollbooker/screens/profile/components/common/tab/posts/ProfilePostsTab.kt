@@ -26,7 +26,8 @@ import com.example.scrollbooker.shared.post.domain.model.Post
 @Composable
 fun ProfilePostsTab(
     posts: LazyPagingItems<Post>,
-    lazyListState: LazyGridState
+    lazyListState: LazyGridState,
+    onNavigate: (String) -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         when {
@@ -50,7 +51,10 @@ fun ProfilePostsTab(
                     items(posts.itemCount) { index ->
                         val post = posts[index]
                         if(post != null) {
-                            PostGrid()
+                            PostGrid(
+                                post = post,
+                                onNavigateToPost = onNavigate
+                            )
                         }
                     }
 

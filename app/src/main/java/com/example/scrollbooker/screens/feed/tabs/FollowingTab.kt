@@ -40,9 +40,9 @@ fun FollowingTab(shouldVideoPlay: Boolean) {
             flingBehavior = flingBehavior
         ) { page ->
             Box(Modifier.fillMaxSize()) {
-                Video(
-                    shouldVideoPlay=shouldVideoPlay
-                )
+//                Video(
+//                    shouldVideoPlay=shouldVideoPlay
+//                )
             }
         }
     }

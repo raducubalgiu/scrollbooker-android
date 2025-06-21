@@ -31,12 +31,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.scrollbooker.core.nav.BottomBarItem
 import com.example.scrollbooker.core.nav.containers.DefaultTabContainer
 import com.example.scrollbooker.core.nav.routes.MainRoute
+import com.example.scrollbooker.screens.feed.FeedScreen
+import com.example.scrollbooker.screens.feed.FeedViewModel
+import com.example.scrollbooker.screens.profile.myProfile.MyProfileScreen
+import com.example.scrollbooker.screens.profile.myProfile.ProfileSharedViewModel
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import kotlinx.coroutines.launch
@@ -155,6 +162,7 @@ fun MainNavHost() {
                         }
                         is MainTab.Profile -> {
                             DefaultTabContainer(
+                                enablePadding = false,
                                 navController = navControllers[MainTab.Profile]!!,
                                 innerPadding = innerPadding,
                                 content = { ProfileNavHost(navController = it) }

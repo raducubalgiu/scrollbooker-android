@@ -88,10 +88,22 @@ fun ProfileLayout(
                         .height(LocalConfiguration.current.screenHeightDp.dp)
                 ) { page ->
                     when(page) {
-                        0 -> ProfilePostsTab(posts = userPosts, lazyListState = lazyListStates[page])
+                        0 -> ProfilePostsTab(
+                            posts = userPosts,
+                            lazyListState = lazyListStates[page],
+                            onNavigate = onNavigate
+                        )
                         1 -> ProfileProductsTab(lazyListStates[page])
-                        2 -> ProfileRepostsTab(posts = userReposts, lazyListStates[page])
-                        3 -> ProfileBookmarksTab(posts = userBookmarkedPosts, lazyListState =lazyListStates[page])
+                        2 -> ProfileRepostsTab(
+                            posts = userReposts,
+                            lazyListState = lazyListStates[page],
+                            onNavigate = onNavigate
+                        )
+                        3 -> ProfileBookmarksTab(
+                            posts = userBookmarkedPosts,
+                            lazyListState =lazyListStates[page],
+                            onNavigate = onNavigate
+                        )
                         4 -> ProfileInfoTab(lazyListStates[page])
                     }
                 }

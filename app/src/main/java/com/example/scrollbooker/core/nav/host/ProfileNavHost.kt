@@ -1,6 +1,7 @@
 package com.example.scrollbooker.core.nav.host
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -25,6 +26,7 @@ import com.example.scrollbooker.screens.profile.edit.EditGenderScreen
 import com.example.scrollbooker.screens.profile.edit.EditProfessionScreen
 import com.example.scrollbooker.screens.profile.edit.EditProfileScreen
 import com.example.scrollbooker.screens.profile.edit.EditUsernameScreen
+import com.example.scrollbooker.screens.profile.postDetail.ProfilePostDetailScreen
 import com.example.scrollbooker.screens.profile.social.UserSocialScreen
 import com.example.scrollbooker.screens.profile.social.UserSocialViewModel
 
@@ -38,7 +40,7 @@ fun ProfileNavHost(navController: NavHostController) {
                 AnimatedContentTransitionScope.SlideDirection.Left,
                 animationSpec = tween(
                     durationMillis = 250,
-                    easing = FastOutSlowInEasing
+                    easing = LinearOutSlowInEasing
                 )
             )
         },
@@ -47,7 +49,7 @@ fun ProfileNavHost(navController: NavHostController) {
                 AnimatedContentTransitionScope.SlideDirection.Left,
                 animationSpec = tween(
                     durationMillis = 250,
-                    easing = FastOutSlowInEasing
+                    easing = LinearOutSlowInEasing
                 )
             )
         },
@@ -56,7 +58,7 @@ fun ProfileNavHost(navController: NavHostController) {
                 AnimatedContentTransitionScope.SlideDirection.Right,
                 animationSpec = tween(
                     durationMillis = 250,
-                    easing = FastOutSlowInEasing
+                    easing = LinearOutSlowInEasing
                 )
             )
         },
@@ -65,7 +67,7 @@ fun ProfileNavHost(navController: NavHostController) {
                 AnimatedContentTransitionScope.SlideDirection.Right,
                 animationSpec = tween(
                     durationMillis = 250,
-                    easing = FastOutSlowInEasing
+                    easing = LinearOutSlowInEasing
                 )
             )
         }
@@ -75,6 +77,18 @@ fun ProfileNavHost(navController: NavHostController) {
             MyProfileScreen(
                 viewModel = viewModel,
                 onNavigate = { navController.navigate(it) }
+            )
+        }
+        composable("${MainRoute.ProfilePostDetail.route}/{postId}",
+            arguments = listOf(navArgument("postId") { type = NavType.IntType }
+        )) { backStackEntry ->
+            val postId = backStackEntry.arguments?.getInt("postId")
+            val viewModel = hiltViewModel<ProfileSharedViewModel>(backStackEntry)
+
+            ProfilePostDetailScreen(
+                postId = postId,
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() }
             )
         }
         composable("${MainRoute.UserProfile.route}/{userId}",

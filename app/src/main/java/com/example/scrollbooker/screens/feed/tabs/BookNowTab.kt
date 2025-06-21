@@ -72,128 +72,128 @@ fun BookNowTab(shouldVideoPlay: Boolean) {
     )
 
     Box(Modifier.fillMaxSize()) {
-        VerticalPager(
-            state = state,
-            modifier = Modifier
-                .height(screenHeight - 100.dp),
-            beyondViewportPageCount = 1,
-            flingBehavior = flingBehavior
-        ) { page ->
-            Box(Modifier.fillMaxSize()) {
-                Video(
-                    shouldVideoPlay=shouldVideoPlay
-                )
-                Box(modifier = Modifier
-                    .fillMaxSize()
-                    .padding(
-                        vertical = SpacingS,
-                        horizontal = BasePadding
-                    )
-                ) {
-                    Column(modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.Bottom
-                    ) {
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.Bottom
-                        ) {
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text("Left")
-                            }
-                            Column(modifier = Modifier) {
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                ) {
-
-                                    Spacer(Modifier.height(SpacingXS))
-                                    Icon(
-                                        imageVector = Icons.Default.Favorite,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(35.dp),
-                                        tint = Error
-
-                                    )
-                                    Spacer(Modifier.height(SpacingXS))
-                                    Text(
-                                        text = "1,730",
-                                        style = titleMedium
-                                    )
-                                }
-                                Spacer(Modifier.height(BasePadding))
-                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                    Icon(
-                                        imageVector = Icons.Default.ChatBubbleOutline,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(35.dp)
-                                        )
-                                    Spacer(Modifier.height(SpacingXS))
-                                    Text(
-                                        text = "0",
-                                        style = titleMedium
-                                    )
-                                }
-                                Spacer(Modifier.height(BasePadding))
-                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                    Icon(
-                                        imageVector = Icons.Default.BookmarkBorder,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(35.dp)
-                                    )
-                                    Spacer(Modifier.height(SpacingXS))
-                                    Text(
-                                        text = "200",
-                                        style = titleMedium
-                                    )
-                                }
-                                Spacer(Modifier.height(BasePadding))
-                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                    Icon(
-                                        imageVector = Icons.Default.Share,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(35.dp)
-                                    )
-                                }
-                                Spacer(Modifier.height(BasePadding))
-                            }
-                        }
-
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ){
-                            Button(
-                                modifier = Modifier.weight(0.5f),
-                                onClick = {},
-                                shape = MaterialTheme.shapes.small,
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Primary.copy(alpha = 0.9f),
-                                    contentColor = OnPrimary
-                                )
-                            ) {
-                                Text(
-                                    text = "Rezerva Instant",
-                                    style = titleMedium
-                                )
-                            }
-                            Spacer(Modifier.width(SpacingM))
-                            Button(
-                                modifier = Modifier.weight(0.5f),
-                                onClick = {},
-                                shape = MaterialTheme.shapes.small,
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color.White.copy(alpha = 0.1f),
-                                    contentColor = OnBackground
-                                )
-                            ) {
-                                Text(
-                                    text = "Liber: Luni 14:00",
-                                    style = titleMedium
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        }
+//        VerticalPager(
+//            state = state,
+//            modifier = Modifier
+//                .height(screenHeight - 100.dp),
+//            beyondViewportPageCount = 1,
+//            flingBehavior = flingBehavior
+//        ) { page ->
+//            Box(Modifier.fillMaxSize()) {
+//                Video(
+//                    shouldVideoPlay=shouldVideoPlay
+//                )
+//                Box(modifier = Modifier
+//                    .fillMaxSize()
+//                    .padding(
+//                        vertical = SpacingS,
+//                        horizontal = BasePadding
+//                    )
+//                ) {
+//                    Column(modifier = Modifier.fillMaxSize(),
+//                        verticalArrangement = Arrangement.Bottom
+//                    ) {
+//                        Row(
+//                            horizontalArrangement = Arrangement.SpaceBetween,
+//                            verticalAlignment = Alignment.Bottom
+//                        ) {
+//                            Column(modifier = Modifier.weight(1f)) {
+//                                Text("Left")
+//                            }
+//                            Column(modifier = Modifier) {
+//                                Column(
+//                                    horizontalAlignment = Alignment.CenterHorizontally,
+//                                ) {
+//
+//                                    Spacer(Modifier.height(SpacingXS))
+//                                    Icon(
+//                                        imageVector = Icons.Default.Favorite,
+//                                        contentDescription = null,
+//                                        modifier = Modifier.size(35.dp),
+//                                        tint = Error
+//
+//                                    )
+//                                    Spacer(Modifier.height(SpacingXS))
+//                                    Text(
+//                                        text = "1,730",
+//                                        style = titleMedium
+//                                    )
+//                                }
+//                                Spacer(Modifier.height(BasePadding))
+//                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+//                                    Icon(
+//                                        imageVector = Icons.Default.ChatBubbleOutline,
+//                                        contentDescription = null,
+//                                        modifier = Modifier.size(35.dp)
+//                                        )
+//                                    Spacer(Modifier.height(SpacingXS))
+//                                    Text(
+//                                        text = "0",
+//                                        style = titleMedium
+//                                    )
+//                                }
+//                                Spacer(Modifier.height(BasePadding))
+//                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+//                                    Icon(
+//                                        imageVector = Icons.Default.BookmarkBorder,
+//                                        contentDescription = null,
+//                                        modifier = Modifier.size(35.dp)
+//                                    )
+//                                    Spacer(Modifier.height(SpacingXS))
+//                                    Text(
+//                                        text = "200",
+//                                        style = titleMedium
+//                                    )
+//                                }
+//                                Spacer(Modifier.height(BasePadding))
+//                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+//                                    Icon(
+//                                        imageVector = Icons.Default.Share,
+//                                        contentDescription = null,
+//                                        modifier = Modifier.size(35.dp)
+//                                    )
+//                                }
+//                                Spacer(Modifier.height(BasePadding))
+//                            }
+//                        }
+//
+//                        Row(
+//                            verticalAlignment = Alignment.CenterVertically,
+//                            horizontalArrangement = Arrangement.SpaceBetween
+//                        ){
+//                            Button(
+//                                modifier = Modifier.weight(0.5f),
+//                                onClick = {},
+//                                shape = MaterialTheme.shapes.small,
+//                                colors = ButtonDefaults.buttonColors(
+//                                    containerColor = Primary.copy(alpha = 0.9f),
+//                                    contentColor = OnPrimary
+//                                )
+//                            ) {
+//                                Text(
+//                                    text = "Rezerva Instant",
+//                                    style = titleMedium
+//                                )
+//                            }
+//                            Spacer(Modifier.width(SpacingM))
+//                            Button(
+//                                modifier = Modifier.weight(0.5f),
+//                                onClick = {},
+//                                shape = MaterialTheme.shapes.small,
+//                                colors = ButtonDefaults.buttonColors(
+//                                    containerColor = Color.White.copy(alpha = 0.1f),
+//                                    contentColor = OnBackground
+//                                )
+//                            ) {
+//                                Text(
+//                                    text = "Liber: Luni 14:00",
+//                                    style = titleMedium
+//                                )
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
     }
 }

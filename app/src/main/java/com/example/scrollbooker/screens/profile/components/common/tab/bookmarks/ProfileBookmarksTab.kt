@@ -17,6 +17,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.customized.PostGrid
+import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.util.EmptyScreen
 import com.example.scrollbooker.core.util.ErrorScreen
 import com.example.scrollbooker.core.util.LoadMoreSpinner
@@ -26,7 +27,8 @@ import com.example.scrollbooker.shared.post.domain.model.Post
 @Composable
 fun ProfileBookmarksTab(
     posts: LazyPagingItems<Post>?,
-    lazyListState: LazyGridState
+    lazyListState: LazyGridState,
+    onNavigate: (String) -> Unit
 ) {
     if(posts != null) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -51,7 +53,10 @@ fun ProfileBookmarksTab(
                         items(posts.itemCount) { index ->
                             val post = posts[index]
                             if(post != null) {
-                                PostGrid()
+                                PostGrid(
+                                    post,
+                                    onNavigateToPost = { onNavigate(MainRoute.ProfilePostDetail.route) }
+                                )
                             }
                         }
 

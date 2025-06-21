@@ -1,8 +1,7 @@
 package com.example.scrollbooker.components
 
 import android.annotation.SuppressLint
-import android.net.Uri
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,44 +18,46 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
-import com.example.scrollbooker.R
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @OptIn(UnstableApi::class)
 @Composable
 fun Video(
-    shouldVideoPlay: Boolean
+    url: String,
+    playWhenReady: Boolean,
 ) {
     val context = LocalContext.current
-    val videoUri = Uri.parse("android.resource://${context.packageName}/${R.raw.haircut}")
 
-    val exoPlayer = remember {
+    val exoPlayer = remember(url) {
         ExoPlayer.Builder(context).build().apply {
-            setMediaItem(MediaItem.fromUri(videoUri))
+            setMediaItem(MediaItem.fromUri(url))
+            repeatMode = Player.REPEAT_MODE_ALL
+            volume = 1f
             prepare()
-            this.playWhenReady = false
-            repeatMode = Player.REPEAT_MODE_ONE
         }
     }
 
-    LaunchedEffect(shouldVideoPlay) {
-        exoPlayer.playWhenReady = false
+    DisposableEffect(Unit) {
+        onDispose {
+            exoPlayer.release()
+        }
     }
 
+    LaunchedEffect(playWhenReady) {
+        exoPlayer.playWhenReady = playWhenReady
+    }
     AndroidView(
         factory = {
             PlayerView(context).apply {
                 player = exoPlayer
                 useController = false
-                controllerAutoShow = false
-                layoutParams = FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
                 resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                layoutParams = FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                )
             }
         },
         modifier = Modifier.fillMaxSize()
     )
-
-    DisposableEffect(Unit) {
-        onDispose { exoPlayer.release() }
-    }
 }
