@@ -23,7 +23,6 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.compose.runtime.getValue
 import com.example.scrollbooker.screens.auth.AuthViewModel
-import com.google.android.libraries.places.api.Places
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

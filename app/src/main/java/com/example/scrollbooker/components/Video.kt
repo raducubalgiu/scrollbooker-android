@@ -46,18 +46,19 @@ fun Video(
     LaunchedEffect(playWhenReady) {
         exoPlayer.playWhenReady = playWhenReady
     }
+
     AndroidView(
+        modifier = Modifier.fillMaxSize(),
         factory = {
             PlayerView(context).apply {
                 player = exoPlayer
                 useController = false
-                resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
                 layoutParams = FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT
                 )
             }
-        },
-        modifier = Modifier.fillMaxSize()
+        }
     )
 }

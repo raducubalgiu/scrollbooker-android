@@ -24,7 +24,7 @@ class IsLoggedInUseCase @Inject constructor(
             tokenProvider.updateTokens(accessToken.toString(), refreshToken)
 
             if(isTokenValid(accessToken)) {
-                FeatureState.Success(AuthStateDto(isValidated = false))
+                FeatureState.Success(AuthStateDto(isValidated = true))
             } else {
                 if(isTokenValid(refreshToken) && !refreshToken.isNullOrBlank()) {
                     return try {
@@ -32,7 +32,7 @@ class IsLoggedInUseCase @Inject constructor(
                         authDataStore.refreshTokens(response.accessToken, response.refreshToken)
                         tokenProvider.updateTokens(response.accessToken, response.refreshToken)
 
-                        FeatureState.Success(AuthStateDto(isValidated = false))
+                        FeatureState.Success(AuthStateDto(isValidated = true))
                     } catch (e: Exception) {
                         Timber.tag("Refresh Token").e(e, "ERROR: on attempting to refresh token")
                         authDataStore.clearUserSession()

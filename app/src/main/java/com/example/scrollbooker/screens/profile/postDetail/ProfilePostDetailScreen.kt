@@ -46,7 +46,7 @@ fun ProfilePostDetailScreen(
     val userPosts = viewModel.userPosts.collectAsLazyPagingItems()
     val pagerState = rememberPagerState(
         initialPage = 0
-    ) { 2 }
+    ) { userPosts.itemCount }
 
     LaunchedEffect(userPosts.itemSnapshotList.items, postId) {
         val index = userPosts.itemSnapshotList.items.indexOfFirst { it.id == postId }

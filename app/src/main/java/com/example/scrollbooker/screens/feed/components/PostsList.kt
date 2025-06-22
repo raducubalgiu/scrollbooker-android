@@ -1,0 +1,31 @@
+package com.example.scrollbooker.screens.feed.components
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import com.example.scrollbooker.core.util.ErrorScreen
+import com.example.scrollbooker.core.util.LoadingScreen
+import com.example.scrollbooker.shared.post.domain.model.Post
+
+@Composable
+fun PostsList(
+    posts: LazyPagingItems<Post>,
+    isVisibleTab: Boolean,
+    modifier: Modifier = Modifier
+) {
+    val pagerState = rememberPagerState(initialPage = 0) { posts.itemCount }
+
+    posts.apply {
+        when(loadState.refresh) {
+            is LoadState.Loading -> LoadingScreen()
+            is LoadState.Error -> ErrorScreen()
+            is LoadState.NotLoading -> PostPager(
+                posts = posts,
+                pagerState = pagerState,
+                isVisibleTab = isVisibleTab,
+                modifier = modifier
+            )
+        }
+    }
+}

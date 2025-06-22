@@ -19,19 +19,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.inputs.SearchBar
 import com.example.scrollbooker.components.core.layout.FormLayout
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
-import com.google.android.libraries.places.api.model.AutocompletePrediction
-import com.google.android.libraries.places.api.model.AutocompleteSessionToken
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
 fun MyBusinessLocationScreen(
@@ -40,10 +33,10 @@ fun MyBusinessLocationScreen(
     onNextOrSave: () -> Unit,
 ) {
     var query by remember { mutableStateOf("") }
-    var predictions by remember { mutableStateOf<List<AutocompletePrediction>>(emptyList()) }
-
-    val debounceScope = rememberCoroutineScope()
-    var debounceJob by remember { mutableStateOf<Job?>(null) }
+//    var predictions by remember { mutableStateOf<List<AutocompletePrediction>>(emptyList()) }
+//
+//    val debounceScope = rememberCoroutineScope()
+//    var debounceJob by remember { mutableStateOf<Job?>(null) }
 
     FormLayout(
         headLine = stringResource(id = R.string.location),
@@ -65,21 +58,21 @@ fun MyBusinessLocationScreen(
                 onValueChange = {
                     query = it
 
-                    debounceJob?.cancel()
-
-                    debounceJob = debounceScope.launch {
-                        delay(400)
-                        if(query.length > 2) {
-                                val token = AutocompleteSessionToken.newInstance()
-                                val request = FindAutocompletePredictionsRequest.builder()
-                                    .setSessionToken(token)
-                                    .setQuery(query)
-                                    .build()
-
-                        } else {
-                            predictions = emptyList()
-                        }
-                    }
+//                    debounceJob?.cancel()
+//
+//                    debounceJob = debounceScope.launch {
+//                        delay(400)
+//                        if(query.length > 2) {
+//                                val token = AutocompleteSessionToken.newInstance()
+//                                val request = FindAutocompletePredictionsRequest.builder()
+//                                    .setSessionToken(token)
+//                                    .setQuery(query)
+//                                    .build()
+//
+//                        } else {
+//                            predictions = emptyList()
+//                        }
+//                    }
                 },
                 placeholder = "Cauta"
             )

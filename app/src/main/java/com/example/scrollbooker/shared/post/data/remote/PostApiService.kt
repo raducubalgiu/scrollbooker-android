@@ -6,6 +6,18 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface PostApiService {
+    @GET("posts/book-now")
+    suspend fun getBookNowPosts(
+        @Query("page") page: Int,
+        @Query("limit") limit: Int
+    ): PaginatedResponseDto<PostDto>
+
+    @GET("posts/following")
+    suspend fun getFollowingPosts(
+        @Query("page") page: Int,
+        @Query("limit") limit: Int
+    ): PaginatedResponseDto<PostDto>
+
     @GET("users/{userId}/posts/")
     suspend fun getUserPosts(
         @Path("userId") userId: Int,
