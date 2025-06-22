@@ -14,12 +14,8 @@ import com.example.scrollbooker.core.nav.routes.AuthRoute
 import com.example.scrollbooker.screens.auth.AuthViewModel
 import com.example.scrollbooker.screens.auth.LoginScreen
 import com.example.scrollbooker.screens.auth.RegisterScreen
-import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessLocation.CollectBusinessLocationScreen
-import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessSchedules.CollectBusinessSchedulesScreen
 import com.example.scrollbooker.screens.auth.collectClientDetails.CollectBirthDateScreen
 import com.example.scrollbooker.screens.auth.collectClientDetails.CollectUsernameScreen
-import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessLocation.CollectBusinessLocationViewModel
-import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessSchedules.CollectBusinessSchedulesViewModel
 import com.example.scrollbooker.ui.theme.Background
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavType
@@ -28,10 +24,11 @@ import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessServices.MyServicesScreen
 import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessType.CollectBusinessTypeScreen
 import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessType.CollectBusinessTypeViewModel
+import com.example.scrollbooker.screens.profile.myBusiness.myBusinessLocation.MyBusinessLocationScreen
+import com.example.scrollbooker.screens.profile.myBusiness.myBusinessLocation.MyBusinessLocationViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.SchedulesScreen
-import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.SchedulesViewModel
+import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.MySchedulesViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.myServices.MyServicesViewModel
-import com.example.scrollbooker.shared.schedule.domain.model.Schedule
 
 @Composable
 fun AuthNavHost(viewModel: AuthViewModel) {
@@ -76,6 +73,7 @@ fun AuthNavHost(viewModel: AuthViewModel) {
             composable(AuthRoute.Username.route) {
                 CollectUsernameScreen(navController)
             }
+
             composable(AuthRoute.BirthDate.route) {
                 CollectBirthDateScreen(navController)
             }
@@ -97,14 +95,13 @@ fun AuthNavHost(viewModel: AuthViewModel) {
                     navArgument("businessTypeName") { type = NavType.StringType }
                 )
             ) { backStackEntry ->
-                val viewModel: CollectBusinessLocationViewModel = hiltViewModel(backStackEntry)
-                val businessTypeName = backStackEntry.arguments?.getString("businessTypeName")
+                val viewModel: MyBusinessLocationViewModel = hiltViewModel(backStackEntry)
+                //val businessTypeName = backStackEntry.arguments?.getString("businessTypeName")
 
-                CollectBusinessLocationScreen(
+                MyBusinessLocationScreen(
                     viewModel = viewModel,
-                    businessTypeName = businessTypeName,
                     onBack = { navController.popBackStack() },
-                    onNext = { navController.navigate(AuthRoute.CollectBusinessServices.route) }
+                    onNextOrSave = { navController.navigate(AuthRoute.CollectBusinessServices.route) }
                 )
             }
 
@@ -119,7 +116,7 @@ fun AuthNavHost(viewModel: AuthViewModel) {
             }
 
             composable(AuthRoute.CollectBusinessSchedules.route) { backStackEntry ->
-                val viewModel: SchedulesViewModel = hiltViewModel(backStackEntry)
+                val viewModel: MySchedulesViewModel = hiltViewModel(backStackEntry)
 
                 SchedulesScreen(
                     viewModel = viewModel,

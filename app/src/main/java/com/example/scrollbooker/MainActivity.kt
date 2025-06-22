@@ -23,6 +23,7 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.compose.runtime.getValue
 import com.example.scrollbooker.screens.auth.AuthViewModel
+import com.google.android.libraries.places.api.Places
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -43,7 +44,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             val rootNavController = rememberNavController()
             val themePreferenceEnum by themeViewModel.themePreferences.collectAsState()
-
             CompositionLocalProvider(LocalRootNavController provides rootNavController) {
                 ScrollBookerTheme(themePreferenceEnum) {
                     Surface(Modifier.fillMaxSize().background(Background)) {

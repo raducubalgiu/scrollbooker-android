@@ -111,4 +111,7 @@ dependencies {
     // Google Map
     implementation(libs.maps.compose)
 
+    // Google Places
+    implementation(libs.places)
+
 }

@@ -29,7 +29,7 @@ import com.example.scrollbooker.screens.profile.myBusiness.myProducts.MyProducts
 import com.example.scrollbooker.screens.profile.myBusiness.myCurrencies.MyCurrenciesScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myCurrencies.MyCurrenciesViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.SchedulesScreen
-import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.SchedulesViewModel
+import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.MySchedulesViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.myServices.AttachServicesScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myServices.MyServicesViewModel
 
@@ -199,7 +199,7 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
         composable(
             MainRoute.Schedules.route,
         ) { backStackEntry ->
-            val viewModel = hiltViewModel<SchedulesViewModel>(backStackEntry)
+            val viewModel = hiltViewModel<MySchedulesViewModel>(backStackEntry)
 
             SchedulesScreen(
                 viewModel = viewModel,

@@ -19,7 +19,7 @@ import com.example.scrollbooker.shared.schedule.domain.model.Schedule
 
 @Composable
 fun SchedulesScreen(
-    viewModel: SchedulesViewModel,
+    viewModel: MySchedulesViewModel,
     onBack: () -> Unit
 ) {
     val state by viewModel.schedulesState.collectAsState()

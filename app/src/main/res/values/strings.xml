@@ -17,7 +17,7 @@
     <string name="username">Utilizator</string>
     <string name="addUniqueUsername">Introdu un nume de utilizator unic</string>
     <string name="location">Locație</string>
-    <string name="addYourBusinessLocation">Adaugă Locația Business-ului tău</string>
+    <string name="addYourBusinessLocation">Adaugă adresa locației unde vei primi clienții </string>
     <string name="services">Servicii</string>
     <string name="addYourBusinessServices">Adaugă serviciile pe care le desfășori la locație</string>
     <string name="schedule">Programul de lucru</string>

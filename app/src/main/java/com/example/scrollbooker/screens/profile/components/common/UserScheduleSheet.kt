@@ -22,12 +22,12 @@ import androidx.compose.runtime.getValue
 import com.example.scrollbooker.core.util.ErrorScreen
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.formatTime
-import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.SchedulesViewModel
+import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.MySchedulesViewModel
 import com.example.scrollbooker.shared.schedule.domain.model.Schedule
 
 @Composable
 fun UserScheduleSheet() {
-    val viewModel: SchedulesViewModel = hiltViewModel()
+    val viewModel: MySchedulesViewModel = hiltViewModel()
     val state by viewModel.schedulesState.collectAsState()
 
     when(state) {

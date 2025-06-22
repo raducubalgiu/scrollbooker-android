@@ -17,7 +17,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class SchedulesViewModel @Inject constructor(
+class MySchedulesViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
     private val getSchedulesByUserIdUseCase: GetSchedulesByUserIdUseCase,
     private val updateSchedulesUseCase: UpdateSchedulesUseCase
