@@ -24,24 +24,26 @@ import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
-import com.example.scrollbooker.ui.theme.Error
 
 @Composable
 fun PostActionButton(
     isAction: Boolean,
+    tint: Color = Color.White,
     counter: Int,
     icon: ImageVector,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null
 ) {
     var count by remember { mutableIntStateOf(counter) }
 
     Box(modifier = Modifier
         .width(65.dp)
-        .clickable {},
+        .clickable { onClick?.invoke() },
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -53,7 +55,7 @@ fun PostActionButton(
                     .size(35.dp),
                 imageVector = icon,
                 contentDescription = null,
-                tint = if(isAction) Error else Color.White
+                tint = tint
             )
             Spacer(Modifier.height(SpacingXXS))
             Text(
@@ -68,7 +70,8 @@ fun PostActionButton(
                         color = Color.Black.copy(alpha = 0.8f),
                         offset = Offset(2f, 2f),
                         blurRadius = 4f
-                    )
+                    ),
+                    textAlign = TextAlign.Center
                 )
             )
         }

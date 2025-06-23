@@ -1,7 +1,6 @@
 package com.example.scrollbooker.core.nav.host
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -40,7 +39,7 @@ fun ProfileNavHost(navController: NavHostController) {
                 AnimatedContentTransitionScope.SlideDirection.Left,
                 animationSpec = tween(
                     durationMillis = 250,
-                    easing = LinearOutSlowInEasing
+                    easing = FastOutSlowInEasing
                 )
             )
         },
@@ -49,7 +48,7 @@ fun ProfileNavHost(navController: NavHostController) {
                 AnimatedContentTransitionScope.SlideDirection.Left,
                 animationSpec = tween(
                     durationMillis = 250,
-                    easing = LinearOutSlowInEasing
+                    easing = FastOutSlowInEasing
                 )
             )
         },
@@ -58,7 +57,7 @@ fun ProfileNavHost(navController: NavHostController) {
                 AnimatedContentTransitionScope.SlideDirection.Right,
                 animationSpec = tween(
                     durationMillis = 250,
-                    easing = LinearOutSlowInEasing
+                    easing = FastOutSlowInEasing
                 )
             )
         },
@@ -67,7 +66,7 @@ fun ProfileNavHost(navController: NavHostController) {
                 AnimatedContentTransitionScope.SlideDirection.Right,
                 animationSpec = tween(
                     durationMillis = 250,
-                    easing = LinearOutSlowInEasing
+                    easing = FastOutSlowInEasing
                 )
             )
         }

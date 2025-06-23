@@ -99,9 +99,8 @@ fun FeedTabs(
                         modifier = Modifier.scale(animatedScale),
                         text = title,
                         color = if (isSelected) Color.White else Color.Gray,
-                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                        fontWeight = FontWeight.Bold,
                         style = TextStyle(
-                            fontWeight = FontWeight.Normal,
                             fontSize = 16.sp,
                             lineHeight = 24.sp,
                             letterSpacing = 0.5.sp,
