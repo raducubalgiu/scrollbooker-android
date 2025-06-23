@@ -3,9 +3,9 @@ package com.example.scrollbooker.shared.auth.domain.useCase
 import com.example.scrollbooker.core.network.tokenProvider.TokenProvider
 import com.example.scrollbooker.core.network.util.decodeJwtExpiry
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.screens.auth.AuthStateDto
 import com.example.scrollbooker.shared.auth.data.remote.AuthApiService
 import com.example.scrollbooker.shared.auth.data.remote.AuthDto
+import com.example.scrollbooker.shared.auth.domain.model.AuthState
 import com.example.scrollbooker.store.AuthDataStore
 import kotlinx.coroutines.flow.firstOrNull
 import timber.log.Timber
@@ -16,15 +16,26 @@ class IsLoggedInUseCase @Inject constructor(
     private val tokenProvider: TokenProvider,
     private val authDataStore: AuthDataStore,
 ) {
-    suspend operator fun invoke(): FeatureState<AuthStateDto> {
+    suspend operator fun invoke(): FeatureState<AuthState> {
         return try {
             val accessToken = authDataStore.getAccessToken().firstOrNull()
             val refreshToken = authDataStore.getRefreshToken().firstOrNull()
+            val isValidated = authDataStore.getIsValidated().firstOrNull()
+
+            if(isValidated == null) {
+                throw IllegalStateException("Is Validated Not found in DataStore")
+            }
+
+            val registrationStep = if(isValidated) null
+                else authDataStore.getRegistrationStep().firstOrNull()
 
             tokenProvider.updateTokens(accessToken.toString(), refreshToken)
 
             if(isTokenValid(accessToken)) {
-                FeatureState.Success(AuthStateDto(isValidated = true))
+                FeatureState.Success(AuthState(
+                    isValidated,
+                    registrationStep = registrationStep
+                ))
             } else {
                 if(isTokenValid(refreshToken) && !refreshToken.isNullOrBlank()) {
                     return try {
@@ -32,7 +43,10 @@ class IsLoggedInUseCase @Inject constructor(
                         authDataStore.refreshTokens(response.accessToken, response.refreshToken)
                         tokenProvider.updateTokens(response.accessToken, response.refreshToken)
 
-                        FeatureState.Success(AuthStateDto(isValidated = true))
+                        FeatureState.Success(AuthState(
+                            isValidated,
+                            registrationStep = registrationStep
+                        ))
                     } catch (e: Exception) {
                         Timber.tag("Refresh Token").e(e, "ERROR: on attempting to refresh token")
                         authDataStore.clearUserSession()

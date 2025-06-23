@@ -1,5 +1,4 @@
 package com.example.scrollbooker.shared.user.userInfo.data.remote
-
 import com.google.gson.annotations.SerializedName
 
 data class UserInfoDto(
@@ -9,5 +8,11 @@ data class UserInfoDto(
     val businessId: Int,
 
     @SerializedName("business_type_id")
-    val businessTypeId: Int
+    val businessTypeId: Int,
+
+    @SerializedName("is_validated")
+    val isValidated: Boolean,
+
+    @SerializedName("registration_step")
+    val registrationStep: String?
 )
