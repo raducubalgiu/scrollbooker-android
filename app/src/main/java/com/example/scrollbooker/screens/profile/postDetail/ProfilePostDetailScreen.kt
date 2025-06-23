@@ -33,6 +33,7 @@ import com.example.scrollbooker.components.Video
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.screens.feed.components.PostPager
 import com.example.scrollbooker.screens.profile.myProfile.ProfileSharedViewModel
 import com.example.scrollbooker.ui.theme.labelLarge
 
@@ -59,28 +60,33 @@ fun ProfilePostDetailScreen(
         .fillMaxSize()
         .background(Color(0xFF121212))
     ) {
-        VerticalPager(
-            state = pagerState,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = 80.dp),
-            beyondViewportPageCount = 1
-        ) { page ->
-            if(page < userPosts.itemCount) {
-                val post = userPosts[page]
-                if(post != null) {
-                    Box(modifier = Modifier
-                        .fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Video(
-                            url = post.mediaFiles.first().url,
-                            playWhenReady = pagerState.currentPage == page,
-                        )
-                    }
-                }
-            }
-        }
+//        VerticalPager(
+//            state = pagerState,
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .padding(bottom = 80.dp),
+//            beyondViewportPageCount = 1
+//        ) { page ->
+//            if(page < userPosts.itemCount) {
+//                val post = userPosts[page]
+//                if(post != null) {
+//                    Box(modifier = Modifier
+//                        .fillMaxSize(),
+//                        contentAlignment = Alignment.Center
+//                    ) {
+//                        Video(
+//                            url = post.mediaFiles.first().url,
+//                            playWhenReady = pagerState.currentPage == page,
+//                        )
+//                    }
+//                }
+//            }
+//        }
+        PostPager(
+            posts = userPosts,
+            pagerState = pagerState,
+            isVisibleTab = true,
+        )
 
         Box(modifier = Modifier
             .fillMaxWidth()
