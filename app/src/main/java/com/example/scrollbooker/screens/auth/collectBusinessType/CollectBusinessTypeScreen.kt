@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessType
+package com.example.scrollbooker.screens.auth.collectBusinessType
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

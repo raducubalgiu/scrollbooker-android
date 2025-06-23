@@ -22,8 +22,8 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessServices.MyServicesScreen
-import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessType.CollectBusinessTypeScreen
-import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessType.CollectBusinessTypeViewModel
+import com.example.scrollbooker.screens.auth.collectBusinessType.CollectBusinessTypeScreen
+import com.example.scrollbooker.screens.auth.collectBusinessType.CollectBusinessTypeViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.myBusinessLocation.MyBusinessLocationScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myBusinessLocation.MyBusinessLocationViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.SchedulesScreen
