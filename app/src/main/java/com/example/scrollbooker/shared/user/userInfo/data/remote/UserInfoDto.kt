@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.auth.data.remote.userInfo
+package com.example.scrollbooker.shared.user.userInfo.data.remote
 
 import com.google.gson.annotations.SerializedName
 

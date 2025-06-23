@@ -1,6 +1,7 @@
-package com.example.scrollbooker.screens.auth.domain.usecase
-import com.example.scrollbooker.screens.auth.domain.model.UserInfo
-import com.example.scrollbooker.screens.auth.domain.repository.UserInfoRepository
+package com.example.scrollbooker.shared.user.userInfo.domain.useCase
+
+import com.example.scrollbooker.shared.user.userInfo.domain.model.UserInfo
+import com.example.scrollbooker.shared.user.userInfo.domain.repository.UserInfoRepository
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -11,7 +12,7 @@ class GetUserInfoUseCase @Inject constructor(
         return try {
             repository.getUserInfo()
         } catch (e: Exception) {
-            Timber.tag("User Info").e(e, "ERROR: on Fetching User Info")
+            Timber.Forest.tag("User Info").e(e, "ERROR: on Fetching User Info")
             throw e
         }
     }

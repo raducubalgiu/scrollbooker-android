@@ -9,7 +9,7 @@ import com.example.scrollbooker.core.util.Constants
 import com.example.scrollbooker.screens.auth.data.remote.auth.AuthApiService
 import com.example.scrollbooker.screens.auth.data.repository.AuthRepositoryImpl
 import com.example.scrollbooker.screens.auth.domain.repository.AuthRepository
-import com.example.scrollbooker.screens.auth.domain.usecase.GetUserInfoUseCase
+import com.example.scrollbooker.shared.user.userInfo.domain.useCase.GetUserInfoUseCase
 import com.example.scrollbooker.screens.auth.domain.usecase.GetUserPermissionsUseCase
 import com.example.scrollbooker.screens.auth.domain.usecase.LoginAndSaveSessionUseCase
 import com.example.scrollbooker.store.AuthDataStore

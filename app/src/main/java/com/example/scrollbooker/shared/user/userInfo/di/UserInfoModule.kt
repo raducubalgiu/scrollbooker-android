@@ -1,10 +1,10 @@
-package com.example.scrollbooker.screens.auth.di
+package com.example.scrollbooker.shared.user.userInfo.di
 
-import com.example.scrollbooker.core.util.Constants.BASE_URL
-import com.example.scrollbooker.screens.auth.data.remote.userInfo.UserInfoApiService
-import com.example.scrollbooker.screens.auth.data.repository.UserInfoRepositoryImpl
-import com.example.scrollbooker.screens.auth.domain.repository.UserInfoRepository
-import com.example.scrollbooker.screens.auth.domain.usecase.GetUserInfoUseCase
+import com.example.scrollbooker.core.util.Constants
+import com.example.scrollbooker.shared.user.userInfo.data.remote.UserInfoApiService
+import com.example.scrollbooker.shared.user.userInfo.data.repository.UserInfoRepositoryImpl
+import com.example.scrollbooker.shared.user.userInfo.domain.repository.UserInfoRepository
+import com.example.scrollbooker.shared.user.userInfo.domain.useCase.GetUserInfoUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,7 +21,7 @@ object UserInfoModule {
     @Singleton
     fun provideUserInfoApiService(okHttpClient: OkHttpClient): UserInfoApiService {
         return Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(Constants.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
