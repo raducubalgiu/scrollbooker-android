@@ -5,7 +5,6 @@ import androidx.compose.ui.Modifier
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.core.util.ErrorScreen
-import com.example.scrollbooker.core.util.LoadingScreen
 import com.example.scrollbooker.shared.post.domain.model.Post
 
 @Composable
@@ -18,7 +17,7 @@ fun PostsList(
 
     posts.apply {
         when(loadState.refresh) {
-            is LoadState.Loading -> LoadingScreen()
+            is LoadState.Loading -> Unit
             is LoadState.Error -> ErrorScreen()
             is LoadState.NotLoading -> PostPager(
                 posts = posts,

@@ -118,41 +118,41 @@ fun PostVideoItem(
                 }
             )
 
-//            if(!isLocallyPlaying) {
-//                Box(modifier = Modifier.fillMaxSize(),
-//                    contentAlignment = Alignment.BottomCenter
-//                ) {
-//                    Column {
-//                        Slider(
-//                            modifier = Modifier
-//                                .height(2.dp)
-//                                .padding(horizontal = BasePadding),
-//                            value = currentPosition.toFloat(),
-//                            valueRange = 0f..duration.toFloat(),
-//                            onValueChange = { newValue ->
-//                                currentPosition = newValue.toLong()
-//                                isUserDragging = false
-//                            },
-//                            onValueChangeFinished = {
-//                                exoPlayer.seekTo(currentPosition)
-//                                isUserDragging = false
-//                            },
-//                            colors = SliderColors(
-//                                thumbColor = Error,
-//                                activeTrackColor = Primary,
-//                                activeTickColor = Color.Yellow,
-//                                inactiveTrackColor = SurfaceBG,
-//                                inactiveTickColor = SurfaceBG,
-//                                disabledThumbColor = Divider,
-//                                disabledActiveTrackColor = Divider,
-//                                disabledActiveTickColor = Divider,
-//                                disabledInactiveTrackColor = Divider,
-//                                disabledInactiveTickColor = Divider
-//                            )
-//                        )
-//                    }
-//                }
-//            }
+            if(!isLocallyPlaying) {
+                Box(modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.BottomCenter
+                ) {
+                    Column {
+                        Slider(
+                            modifier = Modifier
+                                .height(1.dp)
+                                .padding(horizontal = BasePadding),
+                            value = currentPosition.toFloat(),
+                            valueRange = 0f..duration.toFloat(),
+                            onValueChange = { newValue ->
+                                currentPosition = newValue.toLong()
+                                isUserDragging = false
+                            },
+                            onValueChangeFinished = {
+                                exoPlayer.seekTo(currentPosition)
+                                isUserDragging = false
+                            },
+                            colors = SliderColors(
+                                thumbColor = Error,
+                                activeTrackColor = Primary,
+                                activeTickColor = Color.Yellow,
+                                inactiveTrackColor = SurfaceBG,
+                                inactiveTickColor = SurfaceBG,
+                                disabledThumbColor = Divider,
+                                disabledActiveTrackColor = Divider,
+                                disabledActiveTickColor = Divider,
+                                disabledInactiveTrackColor = Divider,
+                                disabledInactiveTickColor = Divider
+                            )
+                        )
+                    }
+                }
+            }
         }
     }
 

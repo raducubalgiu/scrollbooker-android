@@ -87,7 +87,7 @@ fun FeedTabs(
                 val isSelected = selectedTabIndex == index
 
                 val animatedScale by animateFloatAsState(
-                    targetValue = if(isSelected) 1.2f else 1f,
+                    targetValue = if(isSelected) 1.1f else 1f,
                     animationSpec = tween(durationMillis = 300)
                 )
 
