@@ -1,12 +1,12 @@
-package com.example.scrollbooker.shared.userProfile.data.repository
-import com.example.scrollbooker.shared.userProfile.data.mappers.toDomain
-import com.example.scrollbooker.shared.userProfile.data.remote.UserProfileApiService
-import com.example.scrollbooker.shared.userProfile.domain.model.UpdateBioRequest
-import com.example.scrollbooker.shared.userProfile.domain.model.UpdateFullNameRequest
-import com.example.scrollbooker.shared.userProfile.domain.model.UpdateGenderRequest
-import com.example.scrollbooker.shared.userProfile.domain.model.UpdateUsernameRequest
-import com.example.scrollbooker.shared.userProfile.domain.model.UserProfile
-import com.example.scrollbooker.shared.userProfile.domain.repository.UserProfileRepository
+package com.example.scrollbooker.shared.user.userProfile.data.repository
+import com.example.scrollbooker.shared.user.userProfile.data.mappers.toDomain
+import com.example.scrollbooker.shared.user.userProfile.data.remote.UserProfileApiService
+import com.example.scrollbooker.shared.user.userProfile.domain.model.UpdateBioRequest
+import com.example.scrollbooker.shared.user.userProfile.domain.model.UpdateFullNameRequest
+import com.example.scrollbooker.shared.user.userProfile.domain.model.UpdateGenderRequest
+import com.example.scrollbooker.shared.user.userProfile.domain.model.UpdateUsernameRequest
+import com.example.scrollbooker.shared.user.userProfile.domain.model.UserProfile
+import com.example.scrollbooker.shared.user.userProfile.domain.repository.UserProfileRepository
 import javax.inject.Inject
 
 class UserProfileRepositoryImpl @Inject constructor(

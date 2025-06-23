@@ -1,12 +1,13 @@
-package com.example.scrollbooker.shared.userProfile.data.mappers
-import com.example.scrollbooker.shared.userProfile.data.remote.BusinessOwnerDto
-import com.example.scrollbooker.shared.userProfile.data.remote.OpeningHoursDto
-import com.example.scrollbooker.shared.userProfile.data.remote.UserCountersDto
-import com.example.scrollbooker.shared.userProfile.data.remote.UserProfileDto
-import com.example.scrollbooker.shared.userProfile.domain.model.BusinessOwner
-import com.example.scrollbooker.shared.userProfile.domain.model.OpeningHours
-import com.example.scrollbooker.shared.userProfile.domain.model.UserCounters
-import com.example.scrollbooker.shared.userProfile.domain.model.UserProfile
+package com.example.scrollbooker.shared.user.userProfile.data.mappers
+
+import com.example.scrollbooker.shared.user.userProfile.data.remote.BusinessOwnerDto
+import com.example.scrollbooker.shared.user.userProfile.data.remote.OpeningHoursDto
+import com.example.scrollbooker.shared.user.userProfile.data.remote.UserCountersDto
+import com.example.scrollbooker.shared.user.userProfile.data.remote.UserProfileDto
+import com.example.scrollbooker.shared.user.userProfile.domain.model.BusinessOwner
+import com.example.scrollbooker.shared.user.userProfile.domain.model.OpeningHours
+import com.example.scrollbooker.shared.user.userProfile.domain.model.UserCounters
+import com.example.scrollbooker.shared.user.userProfile.domain.model.UserProfile
 
 fun UserProfileDto.toDomain(): UserProfile {
     return UserProfile(

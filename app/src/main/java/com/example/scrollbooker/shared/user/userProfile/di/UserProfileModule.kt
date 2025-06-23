@@ -1,11 +1,11 @@
-package com.example.scrollbooker.shared.userProfile.di
+package com.example.scrollbooker.shared.user.userProfile.di
 
 import com.example.scrollbooker.core.util.Constants.BASE_URL
-import com.example.scrollbooker.shared.userProfile.data.remote.UserProfileApiService
-import com.example.scrollbooker.shared.userProfile.data.repository.UserProfileRepositoryImpl
-import com.example.scrollbooker.shared.userProfile.domain.repository.UserProfileRepository
-import com.example.scrollbooker.shared.userProfile.domain.usecase.GetUserProfileUseCase
-import com.example.scrollbooker.shared.userProfile.domain.usecase.UpdateFullNameUseCase
+import com.example.scrollbooker.shared.user.userProfile.data.remote.UserProfileApiService
+import com.example.scrollbooker.shared.user.userProfile.data.repository.UserProfileRepositoryImpl
+import com.example.scrollbooker.shared.user.userProfile.domain.repository.UserProfileRepository
+import com.example.scrollbooker.shared.user.userProfile.domain.usecase.GetUserProfileUseCase
+import com.example.scrollbooker.shared.user.userProfile.domain.usecase.UpdateFullNameUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

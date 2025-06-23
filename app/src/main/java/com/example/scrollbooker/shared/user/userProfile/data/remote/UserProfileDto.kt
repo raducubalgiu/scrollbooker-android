@@ -1,4 +1,4 @@
-package com.example.scrollbooker.shared.userProfile.data.remote
+package com.example.scrollbooker.shared.user.userProfile.data.remote
 import com.google.gson.annotations.SerializedName
 import java.math.BigDecimal
 

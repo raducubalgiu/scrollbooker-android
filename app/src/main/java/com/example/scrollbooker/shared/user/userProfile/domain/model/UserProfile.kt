@@ -1,4 +1,4 @@
-package com.example.scrollbooker.shared.userProfile.domain.model
+package com.example.scrollbooker.shared.user.userProfile.domain.model
 import java.math.BigDecimal
 
 data class UserProfile(

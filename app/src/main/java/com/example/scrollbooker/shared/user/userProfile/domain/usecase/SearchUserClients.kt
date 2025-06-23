@@ -1,6 +1,6 @@
-package com.example.scrollbooker.shared.userProfile.domain.usecase
+package com.example.scrollbooker.shared.user.userProfile.domain.usecase
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.shared.userProfile.domain.repository.UserProfileRepository
+import com.example.scrollbooker.shared.user.userProfile.domain.repository.UserProfileRepository
 import timber.log.Timber
 import javax.inject.Inject
 

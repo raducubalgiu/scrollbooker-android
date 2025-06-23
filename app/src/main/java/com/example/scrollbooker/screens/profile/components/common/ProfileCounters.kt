@@ -13,7 +13,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.divider.VerticalDivider
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
-import com.example.scrollbooker.shared.userProfile.domain.model.UserCounters
+import com.example.scrollbooker.shared.user.userProfile.domain.model.UserCounters
 
 @Composable
 fun ProfileCounters(

@@ -1,10 +1,8 @@
-package com.example.scrollbooker.shared.userProfile.data.remote
-
-
-import com.example.scrollbooker.shared.userProfile.domain.model.UpdateBioRequest
-import com.example.scrollbooker.shared.userProfile.domain.model.UpdateFullNameRequest
-import com.example.scrollbooker.shared.userProfile.domain.model.UpdateGenderRequest
-import com.example.scrollbooker.shared.userProfile.domain.model.UpdateUsernameRequest
+package com.example.scrollbooker.shared.user.userProfile.data.remote
+import com.example.scrollbooker.shared.user.userProfile.domain.model.UpdateBioRequest
+import com.example.scrollbooker.shared.user.userProfile.domain.model.UpdateFullNameRequest
+import com.example.scrollbooker.shared.user.userProfile.domain.model.UpdateGenderRequest
+import com.example.scrollbooker.shared.user.userProfile.domain.model.UpdateUsernameRequest
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH

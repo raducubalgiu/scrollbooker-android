@@ -1,5 +1,6 @@
-package com.example.scrollbooker.shared.userProfile.domain.repository
-import com.example.scrollbooker.shared.userProfile.domain.model.UserProfile
+package com.example.scrollbooker.shared.user.userProfile.domain.repository
+
+import com.example.scrollbooker.shared.user.userProfile.domain.model.UserProfile
 
 interface UserProfileRepository {
     suspend fun getUserProfile(userId: Int): UserProfile

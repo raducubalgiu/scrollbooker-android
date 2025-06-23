@@ -27,7 +27,7 @@ import com.example.scrollbooker.screens.profile.components.common.tab.posts.Prof
 import com.example.scrollbooker.screens.profile.components.common.tab.products.ProfileProductsTab
 import com.example.scrollbooker.screens.profile.components.common.tab.reposts.ProfileRepostsTab
 import com.example.scrollbooker.shared.post.domain.model.Post
-import com.example.scrollbooker.shared.userProfile.domain.model.UserProfile
+import com.example.scrollbooker.shared.user.userProfile.domain.model.UserProfile
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable

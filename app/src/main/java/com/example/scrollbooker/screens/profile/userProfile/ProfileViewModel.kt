@@ -8,8 +8,8 @@ import androidx.paging.cachedIn
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.shared.post.domain.model.Post
 import com.example.scrollbooker.shared.post.domain.useCase.GetUserPostsUseCase
-import com.example.scrollbooker.shared.userProfile.domain.model.UserProfile
-import com.example.scrollbooker.shared.userProfile.domain.usecase.GetUserProfileUseCase
+import com.example.scrollbooker.shared.user.userProfile.domain.model.UserProfile
+import com.example.scrollbooker.shared.user.userProfile.domain.usecase.GetUserProfileUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

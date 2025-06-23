@@ -1,5 +1,5 @@
-package com.example.scrollbooker.shared.userProfile.domain.usecase
-import com.example.scrollbooker.shared.userProfile.domain.repository.UserProfileRepository
+package com.example.scrollbooker.shared.user.userProfile.domain.usecase
+import com.example.scrollbooker.shared.user.userProfile.domain.repository.UserProfileRepository
 import javax.inject.Inject
 
 class UpdateUsernameUseCase @Inject constructor(
