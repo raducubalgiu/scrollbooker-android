@@ -18,8 +18,6 @@ import com.example.scrollbooker.screens.auth.collectClientDetails.CollectBirthDa
 import com.example.scrollbooker.screens.auth.collectClientDetails.CollectUsernameScreen
 import com.example.scrollbooker.ui.theme.Background
 import androidx.compose.runtime.getValue
-import androidx.navigation.NavType
-import androidx.navigation.navArgument
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessServices.MyServicesScreen
 import com.example.scrollbooker.screens.auth.collectBusinessType.CollectBusinessTypeScreen
@@ -38,10 +36,13 @@ fun AuthNavHost(viewModel: AuthViewModel) {
 
     val startDestination = when(val state = authState) {
         is FeatureState.Success -> {
-            if(state.data.isValidated) {
-                AuthRoute.Login.route
+            val isValidated = state.data.isValidated
+            val registrationStep = state.data.registrationStep?.key
+
+            if(!isValidated && registrationStep != null) {
+                registrationStep
             } else {
-                AuthRoute.CollectBusinessType.route
+                AuthRoute.Login.route
             }
         }
         else -> AuthRoute.Login.route
@@ -83,24 +84,18 @@ fun AuthNavHost(viewModel: AuthViewModel) {
 
                 CollectBusinessTypeScreen(
                     viewModel = viewModel,
-                    onBack = { navController.popBackStack() },
                     onNext = { navController.navigate(it) },
                 )
             }
 
             composable(
-                route = "${AuthRoute.CollectBusinessLocation.route}/{businessTypeId}/{businessTypeName}",
-                arguments = listOf(
-                    navArgument("businessTypeId") { type = NavType.IntType },
-                    navArgument("businessTypeName") { type = NavType.StringType }
-                )
+                route = AuthRoute.CollectBusinessLocation.route,
             ) { backStackEntry ->
                 val viewModel: MyBusinessLocationViewModel = hiltViewModel(backStackEntry)
-                //val businessTypeName = backStackEntry.arguments?.getString("businessTypeName")
 
                 MyBusinessLocationScreen(
                     viewModel = viewModel,
-                    onBack = { navController.popBackStack() },
+                    onBack = { navController.navigate(AuthRoute.CollectBusinessType.route) },
                     onNextOrSave = { navController.navigate(AuthRoute.CollectBusinessServices.route) }
                 )
             }
@@ -110,7 +105,7 @@ fun AuthNavHost(viewModel: AuthViewModel) {
 
                 MyServicesScreen(
                     viewModel = viewModel,
-                    onBack = { navController.popBackStack() },
+                    onBack = { navController.navigate(AuthRoute.CollectBusinessLocation.route) },
                     onNextOrSave = { navController.navigate(AuthRoute.CollectBusinessSchedules.route) },
                 )
             }
@@ -120,7 +115,7 @@ fun AuthNavHost(viewModel: AuthViewModel) {
 
                 SchedulesScreen(
                     viewModel = viewModel,
-                    onBack = { navController.popBackStack() },
+                    onBack = { navController.navigate(AuthRoute.CollectBusinessServices.route) },
                 )
             }
         }

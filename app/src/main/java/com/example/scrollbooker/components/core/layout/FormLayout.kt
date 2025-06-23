@@ -30,7 +30,7 @@ fun FormLayout(
     headLine: String,
     subHeadLine: String,
     buttonTitle: String,
-    onBack: () -> Unit,
+    onBack: (() -> Unit)? = null,
     onNext: () -> Unit,
     content: @Composable () -> Unit,
 ) {

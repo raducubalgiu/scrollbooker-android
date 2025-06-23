@@ -43,7 +43,6 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 @Composable
 fun CollectBusinessTypeScreen(
     viewModel: CollectBusinessTypeViewModel,
-    onBack: () -> Unit,
     onNext: (String) -> Unit
 ) {
     val pagingItems = viewModel.businessTypes.collectAsLazyPagingItems()
@@ -56,8 +55,7 @@ fun CollectBusinessTypeScreen(
         headLine = stringResource(id = R.string.collectBusinessTypeHeadline),
         subHeadLine = stringResource(id = R.string.collectBusinessTypeSubHeadline),
         buttonTitle = stringResource(R.string.nextStep),
-        onBack = onBack,
-        onNext = { onNext("${AuthRoute.CollectBusinessLocation.route}/${selectedBusinessTypeId}/${selectedBusinessName}") },
+        onNext = { onNext(AuthRoute.CollectBusinessLocation.route) },
     ) {
         pagingItems.apply {
             when(loadState.refresh) {
