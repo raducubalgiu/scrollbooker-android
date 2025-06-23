@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.auth.di
+package com.example.scrollbooker.shared.auth.di
 
 import android.content.Context
 import com.example.scrollbooker.core.network.authenticator.TokenAuthenticator
@@ -6,12 +6,12 @@ import com.example.scrollbooker.core.network.interceptor.AuthInterceptor
 import com.example.scrollbooker.core.network.tokenProvider.TokenProvider
 import com.example.scrollbooker.core.network.tokenProvider.TokenProviderImpl
 import com.example.scrollbooker.core.util.Constants
-import com.example.scrollbooker.screens.auth.data.remote.auth.AuthApiService
-import com.example.scrollbooker.screens.auth.data.repository.AuthRepositoryImpl
-import com.example.scrollbooker.screens.auth.domain.repository.AuthRepository
+import com.example.scrollbooker.shared.auth.domain.repository.AuthRepository
+import com.example.scrollbooker.shared.auth.domain.useCase.LoginAndSaveSessionUseCase
+import com.example.scrollbooker.shared.auth.data.remote.AuthApiService
+import com.example.scrollbooker.shared.auth.data.repository.AuthRepositoryImpl
 import com.example.scrollbooker.shared.user.userInfo.domain.useCase.GetUserInfoUseCase
 import com.example.scrollbooker.shared.user.userPermissions.domain.useCase.GetUserPermissionsUseCase
-import com.example.scrollbooker.screens.auth.domain.usecase.LoginAndSaveSessionUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.Module
 import dagger.Provides

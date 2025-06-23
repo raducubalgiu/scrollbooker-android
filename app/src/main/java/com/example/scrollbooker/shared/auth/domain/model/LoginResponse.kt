@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.auth.domain.model
+package com.example.scrollbooker.shared.auth.domain.model
 
 data class LoginResponse(
     val accessToken: String,

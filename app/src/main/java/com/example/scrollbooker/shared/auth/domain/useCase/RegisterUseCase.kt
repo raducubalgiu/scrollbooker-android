@@ -1,7 +1,7 @@
-package com.example.scrollbooker.screens.auth.domain.usecase
+package com.example.scrollbooker.shared.auth.domain.useCase
 
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.screens.auth.domain.repository.AuthRepository
+import com.example.scrollbooker.shared.auth.domain.repository.AuthRepository
 import timber.log.Timber
 import javax.inject.Inject
 

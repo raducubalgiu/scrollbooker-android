@@ -1,10 +1,11 @@
-package com.example.scrollbooker.screens.auth.data.repository
+package com.example.scrollbooker.shared.auth.data.repository
+
 import com.example.scrollbooker.core.network.tokenProvider.TokenProvider
-import com.example.scrollbooker.screens.auth.data.mappers.toDoman
-import com.example.scrollbooker.screens.auth.data.remote.auth.AuthApiService
-import com.example.scrollbooker.screens.auth.data.remote.auth.AuthDto
-import com.example.scrollbooker.screens.auth.domain.model.LoginResponse
-import com.example.scrollbooker.screens.auth.domain.repository.AuthRepository
+import com.example.scrollbooker.shared.auth.domain.model.LoginResponse
+import com.example.scrollbooker.shared.auth.domain.repository.AuthRepository
+import com.example.scrollbooker.shared.auth.data.mappers.toDoman
+import com.example.scrollbooker.shared.auth.data.remote.AuthApiService
+import com.example.scrollbooker.shared.auth.data.remote.AuthDto
 import com.example.scrollbooker.store.AuthDataStore
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody

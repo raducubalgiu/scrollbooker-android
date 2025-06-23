@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.auth.data.remote.auth
+package com.example.scrollbooker.shared.auth.data.remote
 import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.Multipart

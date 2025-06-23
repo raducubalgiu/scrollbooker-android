@@ -1,7 +1,7 @@
-package com.example.scrollbooker.screens.auth.data.mappers
+package com.example.scrollbooker.shared.auth.data.mappers
 
-import com.example.scrollbooker.screens.auth.data.remote.auth.AuthDto
-import com.example.scrollbooker.screens.auth.domain.model.LoginResponse
+import com.example.scrollbooker.shared.auth.data.remote.AuthDto
+import com.example.scrollbooker.shared.auth.domain.model.LoginResponse
 
 fun AuthDto.LoginResponseDto.toDoman(): LoginResponse {
     return LoginResponse(

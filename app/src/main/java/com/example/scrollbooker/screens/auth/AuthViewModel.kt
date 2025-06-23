@@ -2,9 +2,9 @@ package com.example.scrollbooker.screens.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.screens.auth.domain.usecase.IsLoggedInUseCase
-import com.example.scrollbooker.screens.auth.domain.usecase.LoginAndSaveSessionUseCase
-import com.example.scrollbooker.screens.auth.domain.usecase.RegisterUseCase
+import com.example.scrollbooker.shared.auth.domain.useCase.IsLoggedInUseCase
+import com.example.scrollbooker.shared.auth.domain.useCase.LoginAndSaveSessionUseCase
+import com.example.scrollbooker.shared.auth.domain.useCase.RegisterUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

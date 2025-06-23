@@ -1,8 +1,8 @@
-package com.example.scrollbooker.screens.auth.domain.usecase
+package com.example.scrollbooker.shared.auth.domain.useCase
 import com.example.scrollbooker.core.network.tokenProvider.TokenProvider
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.screens.auth.AuthStateDto
-import com.example.scrollbooker.screens.auth.domain.repository.AuthRepository
+import com.example.scrollbooker.shared.auth.domain.repository.AuthRepository
 import com.example.scrollbooker.shared.user.userInfo.domain.useCase.GetUserInfoUseCase
 import com.example.scrollbooker.shared.user.userPermissions.domain.useCase.GetUserPermissionsUseCase
 import com.example.scrollbooker.store.AuthDataStore

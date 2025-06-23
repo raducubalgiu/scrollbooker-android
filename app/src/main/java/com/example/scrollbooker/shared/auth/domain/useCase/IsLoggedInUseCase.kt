@@ -1,11 +1,11 @@
-package com.example.scrollbooker.screens.auth.domain.usecase
+package com.example.scrollbooker.shared.auth.domain.useCase
 
 import com.example.scrollbooker.core.network.tokenProvider.TokenProvider
 import com.example.scrollbooker.core.network.util.decodeJwtExpiry
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.screens.auth.AuthStateDto
-import com.example.scrollbooker.screens.auth.data.remote.auth.AuthApiService
-import com.example.scrollbooker.screens.auth.data.remote.auth.AuthDto
+import com.example.scrollbooker.shared.auth.data.remote.AuthApiService
+import com.example.scrollbooker.shared.auth.data.remote.AuthDto
 import com.example.scrollbooker.store.AuthDataStore
 import kotlinx.coroutines.flow.firstOrNull
 import timber.log.Timber
