@@ -1,10 +1,10 @@
-package com.example.scrollbooker.screens.auth.di
+package com.example.scrollbooker.shared.user.userPermissions.di
 
-import com.example.scrollbooker.core.util.Constants.BASE_URL
-import com.example.scrollbooker.screens.auth.data.remote.userPermissions.PermissionsApiService
-import com.example.scrollbooker.screens.auth.data.repository.PermissionRepositoryImpl
-import com.example.scrollbooker.screens.auth.domain.repository.PermissionRepository
-import com.example.scrollbooker.screens.auth.domain.usecase.GetUserPermissionsUseCase
+import com.example.scrollbooker.core.util.Constants
+import com.example.scrollbooker.shared.user.userPermissions.domain.repository.PermissionRepository
+import com.example.scrollbooker.shared.user.userPermissions.domain.useCase.GetUserPermissionsUseCase
+import com.example.scrollbooker.shared.user.userPermissions.data.remote.PermissionsApiService
+import com.example.scrollbooker.shared.user.userPermissions.data.repository.PermissionRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,7 +21,7 @@ object PermissionsModule {
     @Singleton
     fun providePermissionsApiService(okHttpClient: OkHttpClient): PermissionsApiService {
         return Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(Constants.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

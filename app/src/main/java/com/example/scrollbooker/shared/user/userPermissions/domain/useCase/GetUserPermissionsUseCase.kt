@@ -1,5 +1,6 @@
-package com.example.scrollbooker.screens.auth.domain.usecase
-import com.example.scrollbooker.screens.auth.domain.repository.PermissionRepository
+package com.example.scrollbooker.shared.user.userPermissions.domain.useCase
+
+import com.example.scrollbooker.shared.user.userPermissions.domain.repository.PermissionRepository
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -11,7 +12,7 @@ class GetUserPermissionsUseCase @Inject constructor(
             repository.getUserPermissions().map { it.code }
 
         } catch (e: Exception) {
-            Timber.tag("Permissions").e(e, "ERROR: on Fetching User Permissions")
+            Timber.Forest.tag("Permissions").e(e, "ERROR: on Fetching User Permissions")
             throw e
         }
     }

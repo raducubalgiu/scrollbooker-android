@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.auth.data.remote.userPermissions
+package com.example.scrollbooker.shared.user.userPermissions.data.remote
 
 import retrofit2.http.GET
 

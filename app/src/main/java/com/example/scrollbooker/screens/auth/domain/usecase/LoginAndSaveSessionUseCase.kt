@@ -4,6 +4,7 @@ import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.screens.auth.AuthStateDto
 import com.example.scrollbooker.screens.auth.domain.repository.AuthRepository
 import com.example.scrollbooker.shared.user.userInfo.domain.useCase.GetUserInfoUseCase
+import com.example.scrollbooker.shared.user.userPermissions.domain.useCase.GetUserPermissionsUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import timber.log.Timber
 import javax.inject.Inject
