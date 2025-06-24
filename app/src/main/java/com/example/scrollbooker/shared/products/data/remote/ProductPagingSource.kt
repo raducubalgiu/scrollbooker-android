@@ -4,7 +4,6 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.scrollbooker.shared.products.data.mappers.toDomain
 import com.example.scrollbooker.shared.products.domain.model.Product
-import kotlinx.coroutines.delay
 import timber.log.Timber
 import java.lang.Exception
 
@@ -26,7 +25,6 @@ class ProductPagingSource(
         val limit = 10
 
         return try {
-            delay(300)
             val response = api.getUserProducts(userId, serviceId, page, limit)
             val products = response.results.map { it.toDomain() }
 

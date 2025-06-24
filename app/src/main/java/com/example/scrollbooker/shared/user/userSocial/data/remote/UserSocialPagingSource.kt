@@ -5,7 +5,6 @@ import androidx.paging.PagingState
 import com.example.scrollbooker.shared.user.userSocial.data.mappers.toDomain
 import com.example.scrollbooker.shared.user.userSocial.domain.model.UserSocial
 import com.example.scrollbooker.shared.user.userSocial.domain.model.UserSocialEnum
-import kotlinx.coroutines.delay
 import timber.log.Timber
 import java.lang.Exception
 
@@ -27,8 +26,6 @@ class UserSocialPagingSource(
         val limit = 10
 
         return try {
-            delay(300)
-
             val response = when(type) {
                 UserSocialEnum.FOLLOWERS -> api.getUserFollowers(userId, page, limit)
                 UserSocialEnum.FOLLOWINGS -> api.getUserFollowings(userId, page, limit)

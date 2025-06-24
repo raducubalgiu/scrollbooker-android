@@ -4,7 +4,6 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.scrollbooker.shared.post.data.mappers.toDomain
 import com.example.scrollbooker.shared.post.domain.model.Post
-import kotlinx.coroutines.delay
 import timber.log.Timber
 import java.lang.Exception
 
@@ -24,8 +23,6 @@ class BookmarkPostsPagingSource(
         val limit = 10
 
         return try {
-            delay(300)
-
             val response = api.getUserBookmarkedPosts(page, limit)
             val posts = response.results.map { it.toDomain() }
 

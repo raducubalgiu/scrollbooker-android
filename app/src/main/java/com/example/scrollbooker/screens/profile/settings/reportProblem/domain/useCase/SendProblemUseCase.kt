@@ -3,7 +3,6 @@ package com.example.scrollbooker.screens.profile.settings.reportProblem.domain.u
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.screens.profile.settings.reportProblem.domain.repository.ReportProblemRepository
 import com.example.scrollbooker.store.AuthDataStore
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
 import timber.log.Timber
 import javax.inject.Inject
@@ -14,7 +13,6 @@ class SendProblemUseCase @Inject constructor(
 ){
     suspend operator fun invoke(text: String): FeatureState<Unit> {
         return try {
-            delay(300)
             val userId = authDataStore.getUserId().firstOrNull()
 
             if(userId == null) {

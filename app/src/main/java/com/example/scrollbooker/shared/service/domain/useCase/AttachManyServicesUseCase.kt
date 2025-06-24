@@ -3,7 +3,6 @@ package com.example.scrollbooker.shared.service.domain.useCase
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.shared.service.domain.repository.ServiceRepository
 import com.example.scrollbooker.store.AuthDataStore
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
 import timber.log.Timber
 import javax.inject.Inject
@@ -14,7 +13,6 @@ class AttachManyServicesUseCase @Inject constructor(
 ){
     suspend operator fun invoke(serviceIds: List<Int>): FeatureState<Unit> {
         return try {
-            delay(300)
             val businessId = authDataStore.getBusinessId().firstOrNull()
 
             if(businessId == null) {

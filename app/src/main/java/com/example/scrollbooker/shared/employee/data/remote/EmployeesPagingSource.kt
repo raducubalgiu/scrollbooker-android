@@ -4,7 +4,6 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.scrollbooker.shared.employee.data.mappers.toDomain
 import com.example.scrollbooker.shared.employee.domain.model.Employee
-import kotlinx.coroutines.delay
 import timber.log.Timber
 import java.lang.Exception
 
@@ -25,7 +24,6 @@ class EmployeesPagingSource(
         val limit = 10
 
         return try {
-            delay(300)
             val response = api.getEmployees(businessId, page, limit)
             val employees = response.results.map { it.toDomain() }
 

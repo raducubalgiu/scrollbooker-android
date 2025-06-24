@@ -3,7 +3,6 @@ package com.example.scrollbooker.shared.user.userProfile.domain.usecase
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.shared.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.shared.user.userProfile.domain.repository.UserProfileRepository
-import kotlinx.coroutines.delay
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -17,7 +16,6 @@ class GetUserProfileUseCase @Inject constructor(
         }
 
         return try {
-            delay(200)
             val response = repository.getUserProfile(userId)
             FeatureState.Success(response)
         } catch (e: Exception) {

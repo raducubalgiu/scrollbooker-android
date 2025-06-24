@@ -8,7 +8,6 @@ import com.example.scrollbooker.shared.schedule.domain.useCase.GetSchedulesByUse
 import com.example.scrollbooker.shared.schedule.domain.useCase.UpdateSchedulesUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
@@ -77,8 +76,6 @@ class MySchedulesViewModel @Inject constructor(
                     _schedulesState.value = FeatureState.Error(error)
                     Timber.Forest.tag("Schedules").e("ERROR: on Updating Schedules $error")
                 }
-
-            delay(300)
             _isSaving.value = false
         }
     }
