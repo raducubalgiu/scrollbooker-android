@@ -1,6 +1,8 @@
 package com.example.scrollbooker.components.customized.post.common
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,6 +19,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -37,11 +40,19 @@ fun PostPager(
     posts: LazyPagingItems<Post>,
     pagerState: PagerState,
     isVisibleTab: Boolean,
+    paddingBottom: Dp = 90.dp,
     modifier: Modifier = Modifier
 ) {
     val coroutineScope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var sheetContent by remember { mutableStateOf<PostSheetsContent>(PostSheetsContent.None) }
+
+    val title = when(sheetContent) {
+        is PostSheetsContent.CalendarSheet -> stringResource(R.string.calendar)
+        is PostSheetsContent.ReviewsSheet -> stringResource(R.string.reviews)
+        is PostSheetsContent.CommentsSheet -> stringResource(R.string.comments)
+        is PostSheetsContent.None -> ""
+    }
 
     if(sheetContent != PostSheetsContent.None) {
         ModalBottomSheet(
@@ -51,26 +62,24 @@ fun PostPager(
             sheetState = sheetState,
             modifier = Modifier.fillMaxWidth().then(modifier)
         ) {
-            val title = when(sheetContent) {
-                is PostSheetsContent.CalendarSheet -> stringResource(R.string.calendar)
-                is PostSheetsContent.ReviewsSheet -> stringResource(R.string.reviews)
-                is PostSheetsContent.CommentsSheet -> stringResource(R.string.comments)
-                is PostSheetsContent.None -> ""
-            }
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.8f)
+            ) {
+                SheetHeader(
+                    title = title,
+                    onClose = {
+                        sheetContent = PostSheetsContent.None
+                        coroutineScope.launch { sheetState.hide() }
+                    }
+                )
 
-            SheetHeader(
-                title = title,
-                onClose = {
-                    sheetContent = PostSheetsContent.None
-                    coroutineScope.launch { sheetState.hide() }
+                when (val content = sheetContent) {
+                    is PostSheetsContent.ReviewsSheet -> ReviewsListSheet(content.postId)
+                    is PostSheetsContent.CommentsSheet -> CommentsListSheet(content.postId)
+                    is PostSheetsContent.CalendarSheet -> Unit
+                    PostSheetsContent.None -> Unit
                 }
-            )
-
-            when (val content = sheetContent) {
-                is PostSheetsContent.ReviewsSheet -> ReviewsListSheet(content.postId)
-                is PostSheetsContent.CommentsSheet -> CommentsListSheet(content.postId)
-                is PostSheetsContent.CalendarSheet -> Unit
-                PostSheetsContent.None -> Unit
             }
         }
     }
@@ -80,7 +89,7 @@ fun PostPager(
         beyondViewportPageCount = 1,
         modifier = modifier
             .fillMaxSize()
-            .padding(bottom = 90.dp)
+            .padding(bottom = paddingBottom)
     ) { page ->
         when(posts.loadState.append) {
             is LoadState.Error -> "Something went wrong"
