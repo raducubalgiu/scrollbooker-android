@@ -1,8 +1,7 @@
-package com.example.scrollbooker.screens.feed.components
+package com.example.scrollbooker.components.customized.post.common
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -11,19 +10,16 @@ import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.sheet.BottomSheet
-import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.shared.post.domain.model.Post
 
@@ -36,7 +32,6 @@ fun PostPager(
     isVisibleTab: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val screenHeight = LocalConfiguration.current.screenHeightDp.dp - 90.dp
     var showReviewsSheet by remember { mutableStateOf(false) }
     var showCommentsSheet by remember { mutableStateOf(false) }
 
@@ -72,27 +67,14 @@ fun PostPager(
             is LoadState.Loading -> LoadMoreSpinner()
             is LoadState.NotLoading -> {
                 val post = posts[page]
+
                 if(post != null) {
-                    Box(Modifier.fillMaxSize()) {
-                        var videoHeightFraction by remember { mutableFloatStateOf(1f) }
-                        val videoHeight = screenHeight * videoHeightFraction
-
-                        PostVideoItem(
-                            post = post,
-                            playWhenReady = pagerState.currentPage == page && isVisibleTab,
-                            videoHeight = videoHeight,
-                            modifier = modifier,
-                        )
-
-                        PostOverlay(
-                            userActions = post.userActions,
-                            counters = post.counters,
-                            onShowComments = { showCommentsSheet = true },
-                            onOpenReviews = { showReviewsSheet = true }
-                        )
-
-                        Spacer(Modifier.height(BasePadding))
-                    }
+                    PostItem(
+                        post = post,
+                        playWhenReady = pagerState.currentPage == page && isVisibleTab,
+                        onOpenReviews = { showReviewsSheet = true },
+                        onOpenComments = { showCommentsSheet = true }
+                    )
                 }
             }
         }

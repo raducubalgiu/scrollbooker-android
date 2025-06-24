@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.feed.components
+package com.example.scrollbooker.components.customized.post.common
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,7 +38,7 @@ fun PostOverlay(
     userActions: UserPostActions,
     counters: PostCounters,
     onOpenReviews: () -> Unit,
-    onShowComments: () -> Unit
+    onOpenComments: () -> Unit
 ) {
     Box(modifier = Modifier
         .fillMaxSize(),
@@ -98,7 +98,7 @@ fun PostOverlay(
                     isAction = false,
                     counter = counters.commentCount,
                     icon = Icons.Default.ModeComment,
-                    onClick = onShowComments
+                    onClick = onOpenComments
                 )
                 PostActionButton(
                     isAction = userActions.isBookmarked,

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.feed.components
+package com.example.scrollbooker.components.customized.post.videoItem
 import android.annotation.SuppressLint
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -6,7 +6,6 @@ import androidx.annotation.OptIn
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -20,7 +19,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
@@ -28,7 +26,6 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
-import com.example.scrollbooker.shared.post.domain.model.Post
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -36,20 +33,18 @@ import kotlinx.coroutines.launch
 @SuppressLint("ConfigurationScreenWidthHeight")
 @OptIn(UnstableApi::class)
 @Composable
-fun PostVideoItem(
-    post: Post,
-    videoHeight: Dp,
+fun PostVideo(
+    url: String?,
     playWhenReady: Boolean,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    val url = post.mediaFiles.first().url
 
     val latestGlobalPlayState by rememberUpdatedState(playWhenReady)
 
     val exoPlayer = remember(url) {
         ExoPlayer.Builder(context).build().apply {
-            setMediaItem(MediaItem.fromUri(url))
+            setMediaItem(MediaItem.fromUri(url ?: ""))
             repeatMode = Player.REPEAT_MODE_ALL
             volume = 1f
             prepare()
@@ -82,9 +77,7 @@ fun PostVideoItem(
     ) {
         if(isPlayerReady) {
             AndroidView(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .height(videoHeight),
+                modifier = modifier.fillMaxWidth(),
                 factory = {
                     PlayerView(context).apply {
                         player = exoPlayer

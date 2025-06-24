@@ -33,10 +33,9 @@ fun MainButtonSmall(
     )
 ) {
     Button(
-        modifier = Modifier
+        modifier = modifier
             .width(96.dp)
-            .height(32.dp)
-            .then(modifier),
+            .height(32.dp),
         onClick = onClick,
         contentPadding = PaddingValues(
             vertical = 6.dp,
