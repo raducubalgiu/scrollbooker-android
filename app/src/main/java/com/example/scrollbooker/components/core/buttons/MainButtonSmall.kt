@@ -45,7 +45,7 @@ fun MainButtonSmall(
         shape = ShapeDefaults.ExtraSmall,
         enabled = enabled,
         border = border,
-        colors = colors
+        colors = colors,
     ) {
         Text(
             style = labelLarge,
@@ -56,25 +56,4 @@ fun MainButtonSmall(
             overflow = TextOverflow.Ellipsis
         )
     }
-//    SuggestionChip(
-//        modifier = modifier.then(modifier),
-//        onClick = onClick,
-//        label = {
-//            Column {
-//                Text(
-//                    modifier = Modifier.fillMaxSize().background(Color.Red),
-//                    style = labelLarge,
-//                    text = title,
-//                    fontWeight = FontWeight.SemiBold,
-//                    textAlign = TextAlign.Center,
-//                    maxLines = 1,
-//                    overflow = TextOverflow.Ellipsis
-//                )
-//            }
-//        },
-//        enabled = enabled,
-//        colors = colors,
-//        shape = ShapeDefaults.ExtraSmall,
-//        border = border
-//    )
 }
