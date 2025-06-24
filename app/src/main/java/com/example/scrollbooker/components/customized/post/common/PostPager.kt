@@ -1,17 +1,19 @@
 package com.example.scrollbooker.components.customized.post.common
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -19,9 +21,14 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.sheet.BottomSheet
+import com.example.scrollbooker.components.core.sheet.SheetHeader
+import com.example.scrollbooker.components.customized.post.common.sheets.CommentsListSheet
+import com.example.scrollbooker.components.customized.post.common.sheets.PostSheetsContent
+import com.example.scrollbooker.components.customized.post.common.sheets.ReviewsListSheet
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.shared.post.domain.model.Post
+import com.example.scrollbooker.ui.theme.Background
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ConfigurationScreenWidthHeight")
@@ -32,27 +39,40 @@ fun PostPager(
     isVisibleTab: Boolean,
     modifier: Modifier = Modifier
 ) {
-    var showReviewsSheet by remember { mutableStateOf(false) }
-    var showCommentsSheet by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var sheetContent by remember { mutableStateOf<PostSheetsContent>(PostSheetsContent.None) }
 
-    BottomSheet(
-        onDismiss = { showReviewsSheet = false },
-        showBottomSheet = showReviewsSheet,
-        showHeader = true,
-        enableCloseButton = true,
-        headerTitle = stringResource(R.string.reviews)
-    ) {
-        Box(Modifier.height(500.dp))
-    }
+    if(sheetContent != PostSheetsContent.None) {
+        ModalBottomSheet(
+            dragHandle = null,
+            onDismissRequest = { sheetContent = PostSheetsContent.None },
+            containerColor = Background,
+            sheetState = sheetState,
+            modifier = Modifier.fillMaxWidth().then(modifier)
+        ) {
+            val title = when(sheetContent) {
+                is PostSheetsContent.CalendarSheet -> stringResource(R.string.calendar)
+                is PostSheetsContent.ReviewsSheet -> stringResource(R.string.reviews)
+                is PostSheetsContent.CommentsSheet -> stringResource(R.string.comments)
+                is PostSheetsContent.None -> ""
+            }
 
-    BottomSheet(
-        onDismiss = { showCommentsSheet = false },
-        showBottomSheet = showCommentsSheet,
-        showHeader = true,
-        enableCloseButton = true,
-        headerTitle = stringResource(R.string.comments)
-    ) {
-        Box(Modifier.height(500.dp))
+            SheetHeader(
+                title = title,
+                onClose = {
+                    sheetContent = PostSheetsContent.None
+                    coroutineScope.launch { sheetState.hide() }
+                }
+            )
+
+            when (val content = sheetContent) {
+                is PostSheetsContent.ReviewsSheet -> ReviewsListSheet(content.postId)
+                is PostSheetsContent.CommentsSheet -> CommentsListSheet(content.postId)
+                is PostSheetsContent.CalendarSheet -> Unit
+                PostSheetsContent.None -> Unit
+            }
+        }
     }
 
     VerticalPager(
@@ -72,8 +92,18 @@ fun PostPager(
                     PostItem(
                         post = post,
                         playWhenReady = pagerState.currentPage == page && isVisibleTab,
-                        onOpenReviews = { showReviewsSheet = true },
-                        onOpenComments = { showCommentsSheet = true }
+                        onOpenReviews = {
+                            sheetContent = PostSheetsContent.ReviewsSheet(post.id)
+                            coroutineScope.launch {
+                                sheetState.show()
+                            }
+                        },
+                        onOpenComments = {
+                            sheetContent = PostSheetsContent.CommentsSheet(post.id)
+                            coroutineScope.launch {
+                                sheetState.show()
+                            }
+                        }
                     )
                 }
             }
