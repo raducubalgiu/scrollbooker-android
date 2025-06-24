@@ -135,4 +135,5 @@
     <string name="collectBusinessTypeSubHeadline">Alege categoria care descrie cel mai bine activitatea ta.</string>
     <string name="scheduleSubheaderDescription">Adaugă intervalele orare în care locația ta este deschisă pentru clienți</string>
     <string name="comments">Comentarii</string>
+    <string name="notFoundComments">Încă nu au fost găsite comentarii</string>
 </resources>

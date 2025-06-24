@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -36,9 +35,16 @@ fun BottomBarItem(
     modifier: Modifier = Modifier,
     onNavigate: () -> Unit,
     isSelected: Boolean,
+    isFeedTab: Boolean,
     tab: MainTab
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+
+    val contentColor = when {
+        isFeedTab && isSelected -> Color(0xFFFDFDFD)
+        isSelected -> OnBackground
+        else -> Color.Gray
+    }
 
     Column(modifier = modifier
         .clickable(
@@ -81,14 +87,14 @@ fun BottomBarItem(
                     Icon(
                         imageVector = tab.iconVector,
                         contentDescription = null,
-                        tint = if (isSelected) OnBackground else Color.Gray,
+                        tint = contentColor,
                     )
                 }
             }
         }
         Text(
             text = if(tab.route == MainTab.Search.route) "" else tab.label,
-            color = if(isSelected) OnBackground else Color.Gray,
+            color = contentColor,
             fontSize = 12.sp
         )
     }

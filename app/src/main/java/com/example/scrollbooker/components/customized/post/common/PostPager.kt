@@ -1,7 +1,8 @@
 package com.example.scrollbooker.components.customized.post.common
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,12 +26,12 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.sheet.SheetHeader
-import com.example.scrollbooker.components.customized.post.common.sheets.CommentsListSheet
-import com.example.scrollbooker.components.customized.post.common.sheets.PostSheetsContent
-import com.example.scrollbooker.components.customized.post.common.sheets.ReviewsListSheet
+import com.example.scrollbooker.components.customized.post.comments.CommentsSheet
+import com.example.scrollbooker.components.customized.post.reviews.ReviewsListSheet
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.shared.post.domain.model.Post
 import com.example.scrollbooker.ui.theme.Background
+import com.example.scrollbooker.ui.theme.SurfaceBG
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -44,8 +45,10 @@ fun PostPager(
     modifier: Modifier = Modifier
 ) {
     val coroutineScope = rememberCoroutineScope()
+
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var sheetContent by remember { mutableStateOf<PostSheetsContent>(PostSheetsContent.None) }
+    val isDarkTheme = isSystemInDarkTheme()
 
     val title = when(sheetContent) {
         is PostSheetsContent.CalendarSheet -> stringResource(R.string.calendar)
@@ -58,11 +61,11 @@ fun PostPager(
         ModalBottomSheet(
             dragHandle = null,
             onDismissRequest = { sheetContent = PostSheetsContent.None },
-            containerColor = Background,
+            containerColor = if(isDarkTheme) SurfaceBG else Background,
             sheetState = sheetState,
             modifier = Modifier.fillMaxWidth().then(modifier)
         ) {
-            Box(modifier = Modifier
+            Column(modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(0.8f)
             ) {
@@ -76,7 +79,7 @@ fun PostPager(
 
                 when (val content = sheetContent) {
                     is PostSheetsContent.ReviewsSheet -> ReviewsListSheet(content.postId)
-                    is PostSheetsContent.CommentsSheet -> CommentsListSheet(content.postId)
+                    is PostSheetsContent.CommentsSheet -> CommentsSheet(content.postId)
                     is PostSheetsContent.CalendarSheet -> Unit
                     PostSheetsContent.None -> Unit
                 }
@@ -110,7 +113,7 @@ fun PostPager(
                         onOpenComments = {
                             sheetContent = PostSheetsContent.CommentsSheet(post.id)
                             coroutineScope.launch {
-                                sheetState.show()
+                                sheetState.hide()
                             }
                         }
                     )

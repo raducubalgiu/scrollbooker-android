@@ -107,16 +107,19 @@ fun MainNavHost() {
     val currentBackStackEntry by currentNavController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry?.destination?.route
 
+    val dividerColor = if (isFeedTab) Color(0xFF3A3A3A) else Divider
+    val containerColor = if(isFeedTab) Color(0xFF121212) else Background
+
     val scaffoldContent: @Composable () -> Unit = {
         Scaffold(
             bottomBar = {
                 if(currentRoute in bottomBarRoutes) {
                     Column(Modifier.height(90.dp)) {
-                        HorizontalDivider(color = if (isFeedTab) Color(0xFF3A3A3A) else Divider, thickness = 1.dp)
+                        HorizontalDivider(color = dividerColor, thickness = 1.dp)
                         NavigationBar(
                             tonalElevation = 0.dp,
                             modifier = Modifier.fillMaxWidth(),
-                            containerColor = if(isFeedTab) Color(0xFF121212) else Background
+                            containerColor = containerColor
                         ) {
                             Row(modifier = Modifier
                                 .fillMaxSize()
@@ -127,6 +130,7 @@ fun MainNavHost() {
                                         modifier = Modifier.then(Modifier.weight(1f)),
                                         onNavigate = { currentTab = tab },
                                         isSelected = currentTab == tab,
+                                        isFeedTab = isFeedTab,
                                         tab = tab
                                     )
                                 }

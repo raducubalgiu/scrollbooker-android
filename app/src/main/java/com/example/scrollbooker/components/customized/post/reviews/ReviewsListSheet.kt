@@ -1,4 +1,4 @@
-package com.example.scrollbooker.components.customized.post.common.sheets
+package com.example.scrollbooker.components.customized.post.reviews
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height

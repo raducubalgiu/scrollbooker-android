@@ -50,7 +50,7 @@ fun PostOverlay(
             Column {
                 Box(modifier = Modifier.size(64.dp), contentAlignment = Alignment.BottomCenter) {
                     Avatar(
-                        url = "https://pub-9d4b97556d604c479db5052a8a8852e8.r2.dev/frizerie-1-cover.jpg",
+                        url = "https://media.scrollbooker.ro/frizerie-1-cover.jpg",
                         size = 55.dp
                     )
 
@@ -83,7 +83,7 @@ fun PostOverlay(
 
                 PostActionButton(
                     isAction = false,
-                    counter = 100,
+                    counter = 120,
                     icon = Icons.Default.RateReview,
                     tint = Color(0xFFF3BA2F),
                     onClick = onOpenReviews
