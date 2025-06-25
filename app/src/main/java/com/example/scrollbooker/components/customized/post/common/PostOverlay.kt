@@ -40,8 +40,7 @@ fun PostOverlay(
     onOpenReviews: () -> Unit,
     onOpenComments: () -> Unit
 ) {
-    Box(modifier = Modifier
-        .fillMaxSize(),
+    Box(modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.BottomCenter
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {

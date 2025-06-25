@@ -1,7 +1,9 @@
 package com.example.scrollbooker.shared.comment.data.remote
 
 import com.example.scrollbooker.core.util.PaginatedResponseDto
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -12,4 +14,22 @@ interface CommentsApiService {
         @Query("page") page: Int,
         @Query("limit") limit: Int
     ): PaginatedResponseDto<CommentDto>
+
+    @POST("posts/{postId}/comments")
+    suspend fun createComment(
+        @Path("postId") postId: Int,
+        @Body request: CreateCommentDto
+    ): CommentDto
+
+    @POST("posts/{postId}/comments/{commentId}/likes")
+    suspend fun likeComment(
+        @Path("postId") postId: Int,
+        @Path("commentId") commentId: Int
+    )
+
+    @POST("posts/{postId}/comments/{commentId}/likes")
+    suspend fun unlikeComment(
+        @Path("postId") postId: Int,
+        @Path("commentId") commentId: Int
+    )
 }

@@ -4,7 +4,10 @@ import com.example.scrollbooker.core.util.Constants
 import com.example.scrollbooker.shared.comment.data.remote.CommentsApiService
 import com.example.scrollbooker.shared.comment.data.repository.CommentRepositoryImpl
 import com.example.scrollbooker.shared.comment.domain.repository.CommentRepository
+import com.example.scrollbooker.shared.comment.domain.useCase.CreateCommentUseCase
 import com.example.scrollbooker.shared.comment.domain.useCase.GetPaginatedPostCommentsUseCase
+import com.example.scrollbooker.shared.comment.domain.useCase.LikeCommentUseCase
+import com.example.scrollbooker.shared.comment.domain.useCase.UnLikeCommentUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -40,5 +43,29 @@ object CommentsModule {
         repository: CommentRepository,
     ): GetPaginatedPostCommentsUseCase {
         return GetPaginatedPostCommentsUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCreateCommentUseCase(
+        repository: CommentRepository,
+    ): CreateCommentUseCase {
+        return CreateCommentUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLikeCommentUseCase(
+        repository: CommentRepository,
+    ): LikeCommentUseCase {
+        return LikeCommentUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUnLikeCommentUseCase(
+        repository: CommentRepository,
+    ): UnLikeCommentUseCase {
+        return UnLikeCommentUseCase(repository)
     }
 }

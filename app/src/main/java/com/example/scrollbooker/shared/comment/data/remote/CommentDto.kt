@@ -2,7 +2,6 @@ package com.example.scrollbooker.shared.comment.data.remote
 
 import com.example.scrollbooker.shared.user.userSocial.data.remote.UserSocialDto
 import com.google.gson.annotations.SerializedName
-import org.threeten.bp.Instant
 
 data class CommentDto(
     val id: Int,

@@ -7,27 +7,28 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.sheet.SheetHeader
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.components.customized.post.comments.CommentsSheet
+import com.example.scrollbooker.components.customized.post.comments.CommentsViewModel
 import com.example.scrollbooker.components.customized.post.reviews.ReviewsListSheet
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.shared.post.domain.model.Post
@@ -46,17 +47,11 @@ fun PostPager(
     modifier: Modifier = Modifier
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val viewModel: CommentsViewModel = hiltViewModel()
 
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
     var sheetContent by remember { mutableStateOf<PostSheetsContent>(PostSheetsContent.None) }
     val isDarkTheme = isSystemInDarkTheme()
-
-    val title = when(sheetContent) {
-        is PostSheetsContent.CalendarSheet -> stringResource(R.string.calendar)
-        is PostSheetsContent.ReviewsSheet -> stringResource(R.string.reviews)
-        is PostSheetsContent.CommentsSheet -> stringResource(R.string.comments)
-        is PostSheetsContent.None -> ""
-    }
 
     if(sheetContent != PostSheetsContent.None) {
         ModalBottomSheet(
@@ -64,25 +59,46 @@ fun PostPager(
             onDismissRequest = { sheetContent = PostSheetsContent.None },
             containerColor = if(isDarkTheme) SurfaceBG else Background,
             sheetState = sheetState,
-            modifier = Modifier.fillMaxWidth().then(modifier)
+            modifier = Modifier
+                .fillMaxWidth()
+                .statusBarsPadding()
         ) {
             Column(modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.8f)
+                .statusBarsPadding()
+                .fillMaxHeight(1f)
             ) {
-                SheetHeader(
-                    title = title,
-                    onClose = {
-                        sheetContent = PostSheetsContent.None
-                        coroutineScope.launch { sheetState.hide() }
-                    }
-                )
-
                 when (val content = sheetContent) {
-                    is PostSheetsContent.ReviewsSheet -> ReviewsListSheet(content.postId)
-                    is PostSheetsContent.CommentsSheet -> CommentsSheet(content.postId)
+                    is PostSheetsContent.ReviewsSheet -> {
+                        ReviewsListSheet(
+                            postId = content.postId
+                        )
+                    }
+                    is PostSheetsContent.CommentsSheet -> {
+                        viewModel.setPostId(newPostId = content.postId)
+
+                        val comments = viewModel.commentsState.collectAsLazyPagingItems()
+                        val newComments by viewModel.newComments.collectAsState()
+
+                        CommentsSheet(
+                            comments = comments,
+                            newComments = newComments,
+                            isSheetVisible = sheetState.isVisible,
+                            onCreateComment = {
+                                viewModel.createComment(
+                                    postId = content.postId,
+                                    text =  it.text,
+                                    parentId = it.parentId
+                                )
+                            },
+                            onClose = {
+                                sheetContent = PostSheetsContent.None
+                                coroutineScope.launch { sheetState.hide() }
+                            },
+                            onLike = { viewModel.toggleLikeComment(it) }
+                        )
+                    }
                     is PostSheetsContent.CalendarSheet -> Unit
-                    PostSheetsContent.None -> Unit
+                    is PostSheetsContent.None -> Unit
                 }
             }
         }
