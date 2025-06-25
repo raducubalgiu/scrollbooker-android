@@ -1,7 +1,8 @@
-package com.example.scrollbooker.screens.profile.myBusiness.myProducts
+package com.example.scrollbooker.screens.profile.myBusiness
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -27,6 +28,7 @@ import com.example.scrollbooker.screens.profile.myBusiness.myProducts.components
 import androidx.compose.runtime.getValue
 import com.example.scrollbooker.core.enums.PermissionEnum
 import com.example.scrollbooker.core.enums.has
+import com.example.scrollbooker.screens.profile.myBusiness.MyBusinessViewModel
 
 data class BusinessCard(
     val title: String,
@@ -106,6 +108,7 @@ fun MyBusinessScreen(
     val visiblePages = pages.filter { permissions.has(it.permission) }
 
     Layout(
+        modifier = Modifier.statusBarsPadding(),
         headerTitle = stringResource(R.string.myBusiness),
         onBack = onBack
     ) {

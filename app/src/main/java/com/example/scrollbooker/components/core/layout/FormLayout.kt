@@ -24,6 +24,7 @@ import com.example.scrollbooker.ui.theme.headlineLarge
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormLayout(
+    modifier: Modifier = Modifier,
     enableBack: Boolean = true,
     isEnabled: Boolean = true,
     headerTitle: String = "",
@@ -35,6 +36,7 @@ fun FormLayout(
     content: @Composable () -> Unit,
 ) {
     Layout(
+        modifier = modifier,
         headerTitle = headerTitle,
         onBack = onBack,
         enablePaddingH = false,

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.profile.myBusiness.myProducts
+package com.example.scrollbooker.screens.profile.myBusiness
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,6 +16,6 @@ class MyBusinessViewModel @Inject constructor(
     private val authDataStore: AuthDataStore
 ): ViewModel() {
     val permissions: StateFlow<List<PermissionEnum>> = authDataStore.getUserPermissions()
-        .map { rawList -> PermissionEnum.fromKeys(rawList) }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+        .map { rawList -> PermissionEnum.Companion.fromKeys(rawList) }
+        .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5_000), emptyList())
 }

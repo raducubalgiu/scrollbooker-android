@@ -6,7 +6,6 @@ import com.example.scrollbooker.shared.auth.domain.model.AuthState
 import com.example.scrollbooker.shared.auth.domain.useCase.IsLoggedInUseCase
 import com.example.scrollbooker.shared.auth.domain.useCase.LoginAndSaveSessionUseCase
 import com.example.scrollbooker.shared.auth.domain.useCase.RegisterUseCase
-import com.example.scrollbooker.shared.user.userInfo.domain.model.UserInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

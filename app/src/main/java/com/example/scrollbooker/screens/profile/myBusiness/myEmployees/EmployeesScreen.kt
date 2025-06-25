@@ -2,6 +2,7 @@ package com.example.scrollbooker.screens.profile.myBusiness.myEmployees
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -21,6 +22,7 @@ fun EmployeesScreen(
     onNavigate: (String) -> Unit
 ) {
     Layout(
+        modifier = Modifier.statusBarsPadding(),
         headerTitle = stringResource(R.string.employees),
         onBack = onBack
     ) {
