@@ -3,7 +3,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.paging.LoadState
 import com.example.scrollbooker.R
-import com.example.scrollbooker.core.util.ErrorScreen
+import com.example.scrollbooker.components.core.layout.ErrorScreen
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.components.core.sheet.SheetHeader
 import com.example.scrollbooker.shared.comment.data.remote.LikeCommentDto

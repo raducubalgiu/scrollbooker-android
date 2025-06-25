@@ -14,7 +14,7 @@ import com.example.scrollbooker.core.snackbar.SnackbarManager
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.core.util.LoadingScreen
+import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.components.SchedulesList
 import com.example.scrollbooker.shared.schedule.domain.model.Schedule
 

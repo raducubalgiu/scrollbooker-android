@@ -18,10 +18,10 @@ import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.customized.PostGrid
 import com.example.scrollbooker.core.nav.routes.MainRoute
-import com.example.scrollbooker.core.util.EmptyScreen
-import com.example.scrollbooker.core.util.ErrorScreen
+import com.example.scrollbooker.components.core.layout.EmptyScreen
+import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.LoadMoreSpinner
-import com.example.scrollbooker.core.util.LoadingScreen
+import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.shared.post.domain.model.Post
 
 @Composable

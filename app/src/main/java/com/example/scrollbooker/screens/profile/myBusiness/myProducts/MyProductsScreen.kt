@@ -1,33 +1,6 @@
 package com.example.scrollbooker.screens.profile.myBusiness.myProducts
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.ScrollableTabRow
-import androidx.compose.material3.Tab
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import com.example.scrollbooker.core.util.ErrorScreen
-import com.example.scrollbooker.core.util.LoadingScreen
-import com.example.scrollbooker.ui.theme.Background
-import com.example.scrollbooker.ui.theme.OnBackground
-import com.example.scrollbooker.ui.theme.OnSurfaceBG
-import com.example.scrollbooker.ui.theme.bodyLarge
-import kotlinx.coroutines.launch
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.layout.Layout
-import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.screens.profile.myBusiness.myServices.MyServicesViewModel
-import com.example.scrollbooker.ui.theme.Divider
 
 @Composable
 fun MyProductsScreen(

@@ -12,9 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.components.core.sheet.BottomSheet
 import com.example.scrollbooker.core.nav.routes.MainRoute
-import com.example.scrollbooker.core.util.ErrorScreen
+import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.core.util.LoadingScreen
+import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.screens.profile.components.common.ProfileLayout
 import com.example.scrollbooker.screens.profile.components.myProfile.MyProfileActions
 import com.example.scrollbooker.screens.profile.components.myProfile.MyProfileHeader

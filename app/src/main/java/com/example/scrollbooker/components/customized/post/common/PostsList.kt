@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import com.example.scrollbooker.core.util.ErrorScreen
+import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.shared.post.domain.model.Post
 
 @Composable

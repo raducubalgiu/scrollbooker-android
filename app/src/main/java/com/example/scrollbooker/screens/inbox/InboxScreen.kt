@@ -7,9 +7,9 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.Layout
-import com.example.scrollbooker.core.util.ErrorScreen
-import com.example.scrollbooker.core.util.LoadingScreen
-import com.example.scrollbooker.core.util.MessageScreen
+import com.example.scrollbooker.components.core.layout.ErrorScreen
+import com.example.scrollbooker.components.core.layout.LoadingScreen
+import com.example.scrollbooker.components.core.layout.MessageScreen
 import com.example.scrollbooker.screens.inbox.components.NotificationsList
 import timber.log.Timber
 

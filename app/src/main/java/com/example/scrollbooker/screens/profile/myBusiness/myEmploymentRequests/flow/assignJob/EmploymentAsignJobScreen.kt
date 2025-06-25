@@ -13,9 +13,9 @@ import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.inputs.InputRadio
 import com.example.scrollbooker.components.core.inputs.Option
-import com.example.scrollbooker.core.util.ErrorScreen
+import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.core.util.LoadingScreen
+import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.flow.EmploymentRequestViewModel
 
 @Composable

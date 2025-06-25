@@ -26,9 +26,9 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.FormLayout
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
-import com.example.scrollbooker.core.util.ErrorScreen
+import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.core.util.LoadingScreen
+import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myServices.MyServicesViewModel
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider

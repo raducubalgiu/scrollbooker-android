@@ -18,9 +18,9 @@ import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.customized.listItems.SelectableUserItem
 import com.example.scrollbooker.components.core.inputs.SearchBar
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.core.util.ErrorScreen
+import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.core.util.LoadingScreen
+import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.flow.EmploymentRequestViewModel
 import kotlinx.coroutines.FlowPreview
 

@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,6 +30,7 @@ import com.example.scrollbooker.screens.profile.components.common.tab.reposts.Pr
 import com.example.scrollbooker.shared.post.domain.model.Post
 import com.example.scrollbooker.shared.user.userProfile.domain.model.UserProfile
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun ProfileLayout(

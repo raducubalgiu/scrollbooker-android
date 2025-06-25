@@ -18,11 +18,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
-import com.example.scrollbooker.core.util.ErrorScreen
+import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.LoadMoreSpinner
-import com.example.scrollbooker.core.util.LoadingScreen
-import com.example.scrollbooker.core.util.MessageScreen
+import com.example.scrollbooker.components.core.layout.LoadingScreen
+import com.example.scrollbooker.components.core.layout.MessageScreen
 import com.example.scrollbooker.shared.review.domain.model.Review
 import com.example.scrollbooker.shared.review.domain.model.ReviewsSummary
 import com.example.scrollbooker.ui.theme.SurfaceBG

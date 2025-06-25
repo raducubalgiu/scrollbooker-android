@@ -1,4 +1,4 @@
-package com.example.scrollbooker.core.util
+package com.example.scrollbooker.components.core.layout
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
