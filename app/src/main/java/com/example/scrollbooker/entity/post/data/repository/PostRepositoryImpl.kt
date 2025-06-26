@@ -35,4 +35,20 @@ class PostRepositoryImpl @Inject constructor(
             pagingSourceFactory = { PostPagingSource(apiService, userId) }
         ).flow
     }
+
+    override suspend fun likePost(postId: Int) {
+        return apiService.likePost(postId)
+    }
+
+    override suspend fun unLikePost(postId: Int) {
+        return apiService.unLikePost(postId)
+    }
+
+    override suspend fun bookmarkPost(postId: Int) {
+        return apiService.bookmarkPost(postId)
+    }
+
+    override suspend fun unBookmarkPost(postId: Int) {
+        return apiService.unBookmarkPost(postId)
+    }
 }

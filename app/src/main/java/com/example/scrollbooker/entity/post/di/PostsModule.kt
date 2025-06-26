@@ -4,9 +4,13 @@ import com.example.scrollbooker.core.util.Constants
 import com.example.scrollbooker.entity.post.data.remote.PostApiService
 import com.example.scrollbooker.entity.post.data.repository.PostRepositoryImpl
 import com.example.scrollbooker.entity.post.domain.repository.PostRepository
+import com.example.scrollbooker.entity.post.domain.useCase.BookmarkPostUseCase
 import com.example.scrollbooker.entity.post.domain.useCase.GetBookNowPostsUseCase
 import com.example.scrollbooker.entity.post.domain.useCase.GetFollowingPostsUseCase
 import com.example.scrollbooker.entity.post.domain.useCase.GetUserPostsUseCase
+import com.example.scrollbooker.entity.post.domain.useCase.LikePostUseCase
+import com.example.scrollbooker.entity.post.domain.useCase.UnBookmarkPostUseCase
+import com.example.scrollbooker.entity.post.domain.useCase.UnLikePostUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -58,5 +62,37 @@ object PostsModule {
         repository: PostRepository,
     ): GetFollowingPostsUseCase {
         return GetFollowingPostsUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLikePostUseCase(
+        repository: PostRepository,
+    ): LikePostUseCase {
+        return LikePostUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUnLikePostUseCase(
+        repository: PostRepository,
+    ): UnLikePostUseCase {
+        return UnLikePostUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideBookmarkPostUseCase(
+        repository: PostRepository,
+    ): BookmarkPostUseCase {
+        return BookmarkPostUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUnBookmarkPostUseCase(
+        repository: PostRepository,
+    ): UnBookmarkPostUseCase {
+        return UnBookmarkPostUseCase(repository)
     }
 }

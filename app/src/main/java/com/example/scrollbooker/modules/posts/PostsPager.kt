@@ -47,10 +47,11 @@ fun PostsPager(
     paddingBottom: Dp = 90.dp,
     modifier: Modifier = Modifier
 ) {
-    val coroutineScope = rememberCoroutineScope()
+    val pagerViewModel: PostsPagerViewModel = hiltViewModel()
     val commentsViewModel: CommentsViewModel = hiltViewModel()
     val reviewsViewModel: ReviewsViewModel = hiltViewModel()
 
+    val coroutineScope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
     var sheetContent by remember { mutableStateOf<PostSheetsContent>(PostSheetsContent.None) }
     val isDarkTheme = isSystemInDarkTheme()
@@ -102,6 +103,13 @@ fun PostsPager(
         }
     }
 
+    fun handleOpenSheet(targetSheet: PostSheetsContent) {
+        sheetContent = targetSheet
+        coroutineScope.launch {
+            sheetState.show()
+        }
+    }
+
     VerticalPager(
         state = pagerState,
         beyondViewportPageCount = 1,
@@ -117,20 +125,11 @@ fun PostsPager(
 
                 if(post != null) {
                     PostItem(
+                        viewModel = pagerViewModel,
                         post = post,
                         playWhenReady = pagerState.currentPage == page && isVisibleTab,
-                        onOpenReviews = {
-                            sheetContent = PostSheetsContent.ReviewsSheet(post.user.id)
-                            coroutineScope.launch {
-                                sheetState.show()
-                            }
-                        },
-                        onOpenComments = {
-                            sheetContent = PostSheetsContent.CommentsSheet(post.id)
-                            coroutineScope.launch {
-                                sheetState.hide()
-                            }
-                        }
+                        onOpenReviews = { handleOpenSheet(PostSheetsContent.ReviewsSheet(post.user.id)) },
+                        onOpenComments = { handleOpenSheet(PostSheetsContent.CommentsSheet(post.id)) }
                     )
                 }
             }

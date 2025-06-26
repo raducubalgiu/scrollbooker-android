@@ -31,18 +31,20 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 
 @Composable
 fun PostActionButton(
-    isAction: Boolean,
+    isEnabled: Boolean = true,
     tint: Color = Color.White,
     counter: Int,
     icon: ImageVector,
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null
 ) {
-    var count by remember { mutableIntStateOf(counter) }
-
     Box(modifier = Modifier
         .width(65.dp)
-        .clickable { onClick?.invoke() },
+        .clickable {
+            if(isEnabled) {
+                onClick?.invoke()
+            }
+        },
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -59,7 +61,7 @@ fun PostActionButton(
             Spacer(Modifier.height(SpacingXXS))
             Text(
                 color = Color.White,
-                text = formatCounters(count),
+                text = formatCounters(counter),
                 style = TextStyle(
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 16.sp,

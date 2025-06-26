@@ -27,16 +27,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.entity.post.domain.model.PostCounters
 import com.example.scrollbooker.entity.post.domain.model.UserPostActions
+import com.example.scrollbooker.modules.posts.PostInteractionState
+import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.Primary
 
 @Composable
 fun PostOverlay(
-    userActions: UserPostActions,
+    interactionState: PostInteractionState,
     counters: PostCounters,
+    onLike: () -> Unit,
+    onBookmark: () -> Unit,
     onOpenReviews: () -> Unit,
     onOpenComments: () -> Unit
 ) {
@@ -81,7 +86,6 @@ fun PostOverlay(
                 Spacer(Modifier.height(SpacingXXL))
 
                 PostActionButton(
-                    isAction = false,
                     counter = 120,
                     icon = Icons.Default.RateReview,
                     tint = Color(0xFFF3BA2F),
@@ -89,23 +93,25 @@ fun PostOverlay(
                 )
 
                 PostActionButton(
-                    isAction = userActions.isLiked,
-                    counter = counters.likeCount,
+                    isEnabled = !interactionState.isLiking,
+                    counter = interactionState.likeCount,
                     icon = Icons.Default.Favorite,
+                    tint = if(interactionState.isLiked) Error else Color.White,
+                    onClick = onLike
                 )
                 PostActionButton(
-                    isAction = false,
                     counter = counters.commentCount,
                     icon = Icons.Default.ModeComment,
                     onClick = onOpenComments
                 )
                 PostActionButton(
-                    isAction = userActions.isBookmarked,
-                    counter = counters.bookmarkCount,
+                    isEnabled = !interactionState.isBookmarking,
+                    counter = interactionState.bookmarkCount,
                     icon = Icons.Default.Bookmark,
+                    tint = if(interactionState.isBookmarked) Primary else Color.White,
+                    onClick = onBookmark
                 )
                 PostActionButton(
-                    isAction = false,
                     counter = counters.shareCount,
                     icon = Icons.Default.Share,
                 )
