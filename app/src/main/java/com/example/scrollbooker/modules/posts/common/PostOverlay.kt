@@ -66,7 +66,6 @@ fun PostOverlay(
                 modifier = Modifier
                     .padding(start = BasePadding)
                     .weight(1f)
-                    .background(Color.Yellow)
             ) {
                 Text("Hello World")
             }
@@ -104,20 +103,13 @@ fun PostOverlay(
                         Text(
                             text = "4.5",
                             color = Color.White,
-                            fontWeight = FontWeight.SemiBold,
+                            fontWeight = FontWeight.ExtraBold,
                             style = bodySmall,
                         )
                     }
                 }
 
                 Spacer(Modifier.height(SpacingXL))
-
-//                PostActionButton(
-//                    counter = 120,
-//                    icon = Icons.Default.RateReview,
-//                    tint = Color(0xFFF3BA2F),
-//                    onClick = onOpenReviews
-//                )
 
                 PostActionButton(
                     isEnabled = !interactionState.isLiking,
@@ -126,6 +118,15 @@ fun PostOverlay(
                     tint = if(interactionState.isLiked) Error else Color.White,
                     onClick = onLike
                 )
+
+                PostActionButton(
+                    counter = 120,
+                    icon = painterResource(R.drawable.ic_clipboard_check_solid),
+                    //tint = Color(0xFFF3BA2F),
+                    tint = Color.White,
+                    onClick = onOpenReviews
+                )
+
                 PostActionButton(
                     counter = counters.commentCount,
                     icon = painterResource(R.drawable.ic_comment_solid),
@@ -135,7 +136,7 @@ fun PostOverlay(
                     isEnabled = !interactionState.isBookmarking,
                     counter = interactionState.bookmarkCount,
                     icon = painterResource(R.drawable.ic_bookmark_solid),
-                    tint = if(interactionState.isBookmarked) Color.Yellow else Color.White,
+                    tint = if(interactionState.isBookmarked) Color(0xFFF3BA2F) else Color.White,
                     onClick = onBookmark
                 )
                 PostActionButton(

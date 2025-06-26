@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
@@ -68,7 +70,7 @@ fun DeletableItem(
 
             Icon(
                 modifier = Modifier.padding(end = BasePadding),
-                painter = painterResource(R.drawable.ic_close),
+                imageVector = Icons.Default.Close,
                 contentDescription = null,
                 tint = Error
             )

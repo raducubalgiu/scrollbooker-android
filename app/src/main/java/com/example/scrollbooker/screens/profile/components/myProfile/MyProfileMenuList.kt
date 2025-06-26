@@ -19,13 +19,13 @@ fun MyProfileMenuList(
     )
     ItemList(
         headLine = stringResource(id = R.string.myBusiness),
-        leftIcon = painterResource(R.drawable.ic_business),
+        leftIcon = painterResource(R.drawable.ic_business_solid),
         displayRightIcon = false,
         onClick = { onNavigate(MainRoute.MyBusiness.route) }
     )
     ItemList(
         headLine = stringResource(id = R.string.settings),
-        leftIcon = painterResource(R.drawable.ic_settings),
+        leftIcon = painterResource(R.drawable.ic_settings_solid),
         displayRightIcon = false,
         onClick = { onNavigate(MainRoute.Settings.route) }
     )

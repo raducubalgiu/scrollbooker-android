@@ -10,9 +10,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.ui.theme.Primary
+import com.example.scrollbooker.R
 
 @Composable
 fun RatingsStars(
@@ -25,7 +27,9 @@ fun RatingsStars(
     Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
         for (i in 1..maxRating) {
             Icon(
-                imageVector = if(i <= rating) Icons.Default.Star else Icons.Default.StarOutline,
+                painter = painterResource(id =
+                    if(i <= rating) R.drawable.ic_star_solid
+                    else R.drawable.ic_star_outline),
                 contentDescription = null,
                 modifier = Modifier.size(starSize),
                 tint = tint

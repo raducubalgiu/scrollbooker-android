@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -61,7 +63,7 @@ fun HeaderEdit(
         ) {
             if(enableBack) {
                 Icon(
-                    painter = painterResource(R.drawable.ic_prev),
+                    imageVector = Icons.Default.ArrowBackIosNew,
                     tint = OnBackground,
                     contentDescription = null
                 )

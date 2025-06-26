@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemColors
@@ -57,7 +59,7 @@ fun ItemListInfo(
                 )
                 Spacer(Modifier.width(SpacingS))
                 Icon(
-                    painter = painterResource(R.drawable.ic_next),
+                    imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
                     contentDescription = null
                 )
             }

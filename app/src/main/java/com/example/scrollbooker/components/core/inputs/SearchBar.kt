@@ -56,7 +56,7 @@ fun SearchBar(
 
         leadingIcon = {
             Icon(
-                painter = painterResource(R.drawable.ic_search),
+                painter = painterResource(R.drawable.ic_search_solid),
                 contentDescription = null
             )
         },

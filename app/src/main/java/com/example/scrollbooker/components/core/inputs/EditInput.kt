@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -69,7 +70,7 @@ fun EditInput(
                 ) {
                     Icon(
                         modifier = Modifier.size(15.dp),
-                        painter = painterResource(R.drawable.ic_close),
+                        imageVector = Icons.Default.ArrowBackIosNew,
                         contentDescription = null,
                         tint = OnPrimary,
 

@@ -98,7 +98,7 @@ fun AppDrawer() {
                     },
                     trailingContent = {
                         Icon(
-                            painter = painterResource(R.drawable.ic_search),
+                            painter = painterResource(R.drawable.ic_search_solid),
                             contentDescription = null
                         )
                     },
@@ -135,45 +135,7 @@ fun AppDrawer() {
                     },
                     trailingContent = {
                         Icon(
-                            painter = painterResource(R.drawable.ic_search),
-                            contentDescription = null
-                        )
-                    },
-                    colors = ListItemColors(
-                        containerColor = Color(0xFF121212),
-                        headlineColor = Color(0xFFAAAAAA),
-                        leadingIconColor = Background,
-                        overlineColor = Color(0xFFAAAAAA),
-                        supportingTextColor = Color.Transparent,
-                        trailingIconColor = Divider,
-                        disabledHeadlineColor = Color(0xFFAAAAAA),
-                        disabledLeadingIconColor = Color(0xFFAAAAAA),
-                        disabledTrailingIconColor = Color(0xFFAAAAAA)
-                    ),
-                )
-
-                ListItem(
-                    modifier = Modifier
-                        .border(
-                            width = 1.dp,
-                            color = Color(0xFF121212)
-                        )
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = ripple(),
-                            onClick = {},
-                        ),
-                    headlineContent = {
-                        Text(
-                            style = bodyLarge,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            text = "Frizerie",
-                        )
-                    },
-                    trailingContent = {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_search),
+                            painter = painterResource(R.drawable.ic_search_solid),
                             contentDescription = null
                         )
                     },
@@ -211,7 +173,45 @@ fun AppDrawer() {
                     },
                     trailingContent = {
                         Icon(
-                            painter = painterResource(R.drawable.ic_search),
+                            painter = painterResource(R.drawable.ic_search_solid),
+                            contentDescription = null
+                        )
+                    },
+                    colors = ListItemColors(
+                        containerColor = Color(0xFF121212),
+                        headlineColor = Color(0xFFAAAAAA),
+                        leadingIconColor = Background,
+                        overlineColor = Color(0xFFAAAAAA),
+                        supportingTextColor = Color.Transparent,
+                        trailingIconColor = Divider,
+                        disabledHeadlineColor = Color(0xFFAAAAAA),
+                        disabledLeadingIconColor = Color(0xFFAAAAAA),
+                        disabledTrailingIconColor = Color(0xFFAAAAAA)
+                    ),
+                )
+
+                ListItem(
+                    modifier = Modifier
+                        .border(
+                            width = 1.dp,
+                            color = Color(0xFF121212)
+                        )
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = ripple(),
+                            onClick = {},
+                        ),
+                    headlineContent = {
+                        Text(
+                            style = bodyLarge,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            text = "Frizerie",
+                        )
+                    },
+                    trailingContent = {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_search_solid),
                             contentDescription = null
                         )
                     },

@@ -4,6 +4,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
+import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
@@ -73,7 +76,7 @@ fun ItemList(
         trailingContent = {
             if(displayRightIcon) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_next),
+                    imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
                     contentDescription = null,
                 )
             }

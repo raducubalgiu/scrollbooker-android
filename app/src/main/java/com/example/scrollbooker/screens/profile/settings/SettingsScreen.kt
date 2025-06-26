@@ -46,65 +46,65 @@ fun SettingsScreen(
         ) {
             ItemList(
                 headLine = stringResource(R.string.account),
-                leftIcon = painterResource(R.drawable.ic_person),
+                leftIcon = painterResource(R.drawable.ic_person_solid),
                 onClick = { onNavigate(MainRoute.Account.route) }
             )
 
-            Spacer(Modifier.height(SpacingS))
-
-            ItemList(
-                headLine = stringResource(R.string.privacy),
-                leftIcon = painterResource(R.drawable.ic_privacy),
-                onClick = { onNavigate(MainRoute.Privacy.route) }
-            )
-
-            Spacer(Modifier.height(SpacingS))
-
-            ItemList(
-                headLine = stringResource(R.string.security),
-                leftIcon = painterResource(R.drawable.ic_security),
-                onClick = { onNavigate(MainRoute.Security.route) }
-            )
-
-            Spacer(Modifier.height(SpacingS))
-
-            ItemList(
-                headLine = stringResource(R.string.notifications),
-                leftIcon = painterResource(R.drawable.ic_notifications),
-                onClick = { onNavigate(MainRoute.NotificationSettings.route) }
-            )
-
-            Spacer(Modifier.height(SpacingS))
-
-            ItemList(
-                headLine = stringResource(R.string.display),
-                leftIcon = painterResource(R.drawable.ic_theme),
-                onClick = { onNavigate(MainRoute.Display.route) }
-            )
-
-            Spacer(Modifier.height(SpacingS))
-
-            ItemList(
-                headLine = stringResource(R.string.reportProblem),
-                leftIcon = painterResource(R.drawable.ic_report),
-                onClick = { onNavigate(MainRoute.ReportProblem.route) }
-            )
-
-            Spacer(Modifier.height(SpacingS))
-
-            ItemList(
-                headLine = stringResource(R.string.support),
-                leftIcon = painterResource(R.drawable.ic_support),
-                onClick = { onNavigate(MainRoute.Support.route) }
-            )
-
-            Spacer(Modifier.height(SpacingS))
-
-            ItemList(
-                headLine = stringResource(R.string.termsAndConditions),
-                leftIcon = painterResource(R.drawable.ic_info),
-                onClick = { onNavigate(MainRoute.TermsAndConditions.route) }
-            )
+//            Spacer(Modifier.height(SpacingS))
+//
+//            ItemList(
+//                headLine = stringResource(R.string.privacy),
+//                leftIcon = painterResource(R.drawable.ic_privacy),
+//                onClick = { onNavigate(MainRoute.Privacy.route) }
+//            )
+//
+//            Spacer(Modifier.height(SpacingS))
+//
+//            ItemList(
+//                headLine = stringResource(R.string.security),
+//                leftIcon = painterResource(R.drawable.ic_security),
+//                onClick = { onNavigate(MainRoute.Security.route) }
+//            )
+//
+//            Spacer(Modifier.height(SpacingS))
+//
+//            ItemList(
+//                headLine = stringResource(R.string.notifications),
+//                leftIcon = painterResource(R.drawable.ic_notifications),
+//                onClick = { onNavigate(MainRoute.NotificationSettings.route) }
+//            )
+//
+//            Spacer(Modifier.height(SpacingS))
+//
+//            ItemList(
+//                headLine = stringResource(R.string.display),
+//                leftIcon = painterResource(R.drawable.ic_theme),
+//                onClick = { onNavigate(MainRoute.Display.route) }
+//            )
+//
+//            Spacer(Modifier.height(SpacingS))
+//
+//            ItemList(
+//                headLine = stringResource(R.string.reportProblem),
+//                leftIcon = painterResource(R.drawable.ic_report),
+//                onClick = { onNavigate(MainRoute.ReportProblem.route) }
+//            )
+//
+//            Spacer(Modifier.height(SpacingS))
+//
+//            ItemList(
+//                headLine = stringResource(R.string.support),
+//                leftIcon = painterResource(R.drawable.ic_support),
+//                onClick = { onNavigate(MainRoute.Support.route) }
+//            )
+//
+//            Spacer(Modifier.height(SpacingS))
+//
+//            ItemList(
+//                headLine = stringResource(R.string.termsAndConditions),
+//                leftIcon = painterResource(R.drawable.ic_info),
+//                onClick = { onNavigate(MainRoute.TermsAndConditions.route) }
+//            )
         }
     }
 }

@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -54,7 +56,7 @@ fun Header(
         ) {
             if(enableBack) {
                 Icon(
-                    painter = painterResource(R.drawable.ic_prev),
+                    imageVector = Icons.Default.ArrowBackIosNew,
                     tint = OnBackground,
                     contentDescription = null
                 )

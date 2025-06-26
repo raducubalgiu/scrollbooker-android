@@ -37,6 +37,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
+import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
@@ -67,14 +68,9 @@ fun ProfileUserInfo(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(contentAlignment = Alignment.BottomEnd) {
-                Image(
-                    painter = painterResource(R.drawable.ic_logo),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(90.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
-                        .border(1.dp, Divider, CircleShape)
+                Avatar(
+                    url = "",
+                    size = 90.dp
                 )
                 if(isBusinessOrEmployee) {
                     Box(modifier = Modifier
@@ -189,14 +185,9 @@ fun ProfileUserInfo(
                 tint = Primary
             )
             Spacer(Modifier.width(SpacingS))
-            Image(
-                painter = painterResource(R.drawable.ic_logo),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(25.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
-                    .border(1.dp, Divider, CircleShape)
+            Avatar(
+                url = "",
+                size = 25.dp
             )
             Spacer(Modifier.width(SpacingS))
             Text(
