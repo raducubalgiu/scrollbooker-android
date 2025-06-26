@@ -20,7 +20,7 @@ import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.components.core.layout.LoadingScreen
-import com.example.scrollbooker.shared.products.domain.model.ProductCardEnum
+import com.example.scrollbooker.entity.products.domain.model.ProductCardEnum
 
 @Composable
 fun ProductsTab(

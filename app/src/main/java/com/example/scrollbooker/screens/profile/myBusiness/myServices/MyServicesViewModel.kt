@@ -3,11 +3,11 @@ package com.example.scrollbooker.screens.profile.myBusiness.myServices
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.shared.service.domain.model.Service
-import com.example.scrollbooker.shared.service.domain.useCase.AttachManyServicesUseCase
-import com.example.scrollbooker.shared.service.domain.useCase.DetachServiceUseCase
-import com.example.scrollbooker.shared.service.domain.useCase.GetServicesByBusinessTypeUseCase
-import com.example.scrollbooker.shared.service.domain.useCase.GetServicesByBusinessIdUseCase
+import com.example.scrollbooker.entity.service.domain.model.Service
+import com.example.scrollbooker.entity.service.domain.useCase.AttachManyServicesUseCase
+import com.example.scrollbooker.entity.service.domain.useCase.DetachServiceUseCase
+import com.example.scrollbooker.entity.service.domain.useCase.GetServicesByBusinessTypeUseCase
+import com.example.scrollbooker.entity.service.domain.useCase.GetServicesByBusinessIdUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

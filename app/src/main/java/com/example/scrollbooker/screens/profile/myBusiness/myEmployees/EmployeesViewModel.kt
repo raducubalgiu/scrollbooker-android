@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.example.scrollbooker.shared.employee.domain.model.Employee
-import com.example.scrollbooker.shared.employee.domain.useCase.GetEmployeesUseCase
+import com.example.scrollbooker.entity.employee.domain.model.Employee
+import com.example.scrollbooker.entity.employee.domain.useCase.GetEmployeesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

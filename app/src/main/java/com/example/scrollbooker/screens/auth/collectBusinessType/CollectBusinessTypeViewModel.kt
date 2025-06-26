@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.example.scrollbooker.shared.businessType.domain.model.BusinessType
-import com.example.scrollbooker.shared.businessType.domain.useCase.GetAllPaginatedBusinessTypesUseCase
+import com.example.scrollbooker.entity.businessType.domain.model.BusinessType
+import com.example.scrollbooker.entity.businessType.domain.useCase.GetAllPaginatedBusinessTypesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

@@ -7,7 +7,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.LoadMoreSpinner
-import com.example.scrollbooker.shared.notification.domain.model.Notification
+import com.example.scrollbooker.entity.notification.domain.model.Notification
 import timber.log.Timber
 
 @Composable

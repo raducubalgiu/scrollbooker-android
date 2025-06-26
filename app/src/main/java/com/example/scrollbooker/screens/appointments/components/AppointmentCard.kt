@@ -28,7 +28,7 @@ import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
-import com.example.scrollbooker.shared.appointment.domain.model.Appointment
+import com.example.scrollbooker.entity.appointment.domain.model.Appointment
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnPrimary

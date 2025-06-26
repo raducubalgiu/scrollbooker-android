@@ -7,7 +7,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.example.scrollbooker.shared.user.userInfo.domain.model.RegistrationStepEnum
+import com.example.scrollbooker.entity.user.userInfo.domain.model.RegistrationStepEnum
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

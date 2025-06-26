@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.example.scrollbooker.shared.post.domain.model.Post
-import com.example.scrollbooker.shared.post.domain.useCase.GetBookNowPostsUseCase
-import com.example.scrollbooker.shared.post.domain.useCase.GetFollowingPostsUseCase
+import com.example.scrollbooker.entity.post.domain.model.Post
+import com.example.scrollbooker.entity.post.domain.useCase.GetBookNowPostsUseCase
+import com.example.scrollbooker.entity.post.domain.useCase.GetFollowingPostsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import timber.log.Timber

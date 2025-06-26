@@ -3,8 +3,8 @@ package com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.shared.profession.domain.model.Profession
-import com.example.scrollbooker.shared.profession.domain.useCase.GetProfessionsByBusinessTypeUseCase
+import com.example.scrollbooker.entity.profession.domain.model.Profession
+import com.example.scrollbooker.entity.profession.domain.useCase.GetProfessionsByBusinessTypeUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

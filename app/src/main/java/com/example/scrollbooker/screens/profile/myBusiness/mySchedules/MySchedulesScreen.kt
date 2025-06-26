@@ -16,7 +16,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.components.SchedulesList
-import com.example.scrollbooker.shared.schedule.domain.model.Schedule
+import com.example.scrollbooker.entity.schedule.domain.model.Schedule
 
 @Composable
 fun SchedulesScreen(

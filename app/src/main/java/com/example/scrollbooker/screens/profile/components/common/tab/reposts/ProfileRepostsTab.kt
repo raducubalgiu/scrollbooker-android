@@ -22,7 +22,7 @@ import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.components.core.layout.LoadingScreen
-import com.example.scrollbooker.shared.post.domain.model.Post
+import com.example.scrollbooker.entity.post.domain.model.Post
 
 @Composable
 fun ProfileRepostsTab(

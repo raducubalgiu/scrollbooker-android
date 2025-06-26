@@ -29,8 +29,8 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
-import com.example.scrollbooker.shared.products.domain.model.Product
-import com.example.scrollbooker.shared.products.domain.model.ProductCardEnum
+import com.example.scrollbooker.entity.products.domain.model.Product
+import com.example.scrollbooker.entity.products.domain.model.ProductCardEnum
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground

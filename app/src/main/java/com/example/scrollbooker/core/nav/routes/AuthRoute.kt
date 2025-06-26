@@ -1,6 +1,6 @@
 package com.example.scrollbooker.core.nav.routes
 
-import com.example.scrollbooker.shared.user.userInfo.domain.model.RegistrationStepEnum
+import com.example.scrollbooker.entity.user.userInfo.domain.model.RegistrationStepEnum
 
 sealed class AuthRoute(val route: String) {
     object Login: AuthRoute(route = "login")

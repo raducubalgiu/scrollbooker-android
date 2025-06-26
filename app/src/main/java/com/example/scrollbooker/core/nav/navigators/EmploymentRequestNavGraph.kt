@@ -14,7 +14,7 @@ import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.
 import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.flow.assignJob.EmploymentAssignJobViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.flow.selectEmployee.EmploymentSelectEmployeeScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.flow.selectEmployee.EmploymentSelectEmployeeViewModel
-import com.example.scrollbooker.shared.employmentRequest.data.mappers.toDto
+import com.example.scrollbooker.entity.employmentRequest.data.mappers.toDto
 
 fun NavGraphBuilder.employmentRequestNavGraph(
     navController: NavHostController

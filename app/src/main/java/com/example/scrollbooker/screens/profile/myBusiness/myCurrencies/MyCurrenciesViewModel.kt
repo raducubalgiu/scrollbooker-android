@@ -3,8 +3,8 @@ package com.example.scrollbooker.screens.profile.myBusiness.myCurrencies
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.shared.currency.domain.useCase.GetAllCurrenciesUseCase
-import com.example.scrollbooker.shared.currency.domain.useCase.GetUserCurrenciesUseCase
+import com.example.scrollbooker.entity.currency.domain.useCase.GetAllCurrenciesUseCase
+import com.example.scrollbooker.entity.currency.domain.useCase.GetUserCurrenciesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

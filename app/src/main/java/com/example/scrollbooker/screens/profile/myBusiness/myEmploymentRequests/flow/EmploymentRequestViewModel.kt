@@ -1,7 +1,7 @@
 package com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.flow
 
 import androidx.lifecycle.ViewModel
-import com.example.scrollbooker.shared.employmentRequest.domain.model.EmploymentRequestCreate
+import com.example.scrollbooker.entity.employmentRequest.domain.model.EmploymentRequestCreate
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject

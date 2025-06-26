@@ -15,7 +15,7 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.core.layout.MessageScreen
-import com.example.scrollbooker.shared.appointment.domain.model.Appointment
+import com.example.scrollbooker.entity.appointment.domain.model.Appointment
 
 @Composable
 fun AppointmentsList(pagingItems: LazyPagingItems<Appointment>) {

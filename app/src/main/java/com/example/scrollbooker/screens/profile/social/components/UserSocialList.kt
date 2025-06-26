@@ -22,7 +22,7 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.core.layout.MessageScreen
-import com.example.scrollbooker.shared.user.userSocial.domain.model.UserSocial
+import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
 
 @Composable
 fun UserSocialList(

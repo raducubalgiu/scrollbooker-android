@@ -29,8 +29,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
-import com.example.scrollbooker.shared.post.domain.model.PostCounters
-import com.example.scrollbooker.shared.post.domain.model.UserPostActions
+import com.example.scrollbooker.entity.post.domain.model.PostCounters
+import com.example.scrollbooker.entity.post.domain.model.UserPostActions
 import com.example.scrollbooker.ui.theme.Primary
 
 @Composable

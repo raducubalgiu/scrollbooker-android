@@ -3,8 +3,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.example.scrollbooker.shared.appointment.domain.model.Appointment
-import com.example.scrollbooker.shared.appointment.domain.useCase.GetUserAppointmentsUseCase
+import com.example.scrollbooker.entity.appointment.domain.model.Appointment
+import com.example.scrollbooker.entity.appointment.domain.useCase.GetUserAppointmentsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import timber.log.Timber

@@ -28,7 +28,7 @@ import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.formatTime
 import com.example.scrollbooker.core.util.translateDayOfWeek
 import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.MySchedulesViewModel
-import com.example.scrollbooker.shared.schedule.domain.model.Schedule
+import com.example.scrollbooker.entity.schedule.domain.model.Schedule
 
 @Composable
 fun UserScheduleSheet() {

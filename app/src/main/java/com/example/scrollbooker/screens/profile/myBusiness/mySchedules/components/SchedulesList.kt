@@ -6,7 +6,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.shared.schedule.domain.model.Schedule
+import com.example.scrollbooker.entity.schedule.domain.model.Schedule
 
 @Composable
 fun SchedulesList(schedules: List<Schedule>, onScheduleChange: (Schedule) -> Unit) {

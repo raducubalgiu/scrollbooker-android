@@ -3,8 +3,8 @@ package com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.shared.consent.domain.model.Consent
-import com.example.scrollbooker.shared.consent.domain.useCase.GetConsentsByNameUseCase
+import com.example.scrollbooker.entity.consent.domain.model.Consent
+import com.example.scrollbooker.entity.consent.domain.useCase.GetConsentsByNameUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

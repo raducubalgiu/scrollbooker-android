@@ -1,7 +1,7 @@
 package com.example.scrollbooker.components.customized.post.common
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import com.example.scrollbooker.shared.post.domain.model.Post
+import com.example.scrollbooker.entity.post.domain.model.Post
 
 @Composable
 fun PostItem(

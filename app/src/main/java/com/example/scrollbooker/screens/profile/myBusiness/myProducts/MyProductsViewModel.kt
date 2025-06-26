@@ -3,8 +3,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.example.scrollbooker.shared.products.domain.model.Product
-import com.example.scrollbooker.shared.products.domain.useCase.GetProductsByUserIdAndServiceIdUseCase
+import com.example.scrollbooker.entity.products.domain.model.Product
+import com.example.scrollbooker.entity.products.domain.useCase.GetProductsByUserIdAndServiceIdUseCase
 
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel

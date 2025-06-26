@@ -27,8 +27,8 @@ import com.example.scrollbooker.screens.profile.components.common.tab.info.Profi
 import com.example.scrollbooker.screens.profile.components.common.tab.posts.ProfilePostsTab
 import com.example.scrollbooker.screens.profile.components.common.tab.products.ProfileProductsTab
 import com.example.scrollbooker.screens.profile.components.common.tab.reposts.ProfileRepostsTab
-import com.example.scrollbooker.shared.post.domain.model.Post
-import com.example.scrollbooker.shared.user.userProfile.domain.model.UserProfile
+import com.example.scrollbooker.entity.post.domain.model.Post
+import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ConfigurationScreenWidthHeight")

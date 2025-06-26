@@ -6,9 +6,9 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.components.core.sheet.SheetHeader
-import com.example.scrollbooker.shared.comment.data.remote.LikeCommentDto
-import com.example.scrollbooker.shared.comment.domain.model.Comment
-import com.example.scrollbooker.shared.comment.domain.model.CreateComment
+import com.example.scrollbooker.entity.comment.data.remote.LikeCommentDto
+import com.example.scrollbooker.entity.comment.domain.model.Comment
+import com.example.scrollbooker.entity.comment.domain.model.CreateComment
 
 @Composable
 fun CommentsSheet(

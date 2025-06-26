@@ -3,10 +3,10 @@ package com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.shared.employmentRequest.data.remote.EmploymentRequestCreateDto
-import com.example.scrollbooker.shared.employmentRequest.domain.model.EmploymentRequest
-import com.example.scrollbooker.shared.employmentRequest.domain.useCase.CreateEmploymentRequestUseCase
-import com.example.scrollbooker.shared.employmentRequest.domain.useCase.GetEmploymentRequestsUseCase
+import com.example.scrollbooker.entity.employmentRequest.data.remote.EmploymentRequestCreateDto
+import com.example.scrollbooker.entity.employmentRequest.domain.model.EmploymentRequest
+import com.example.scrollbooker.entity.employmentRequest.domain.useCase.CreateEmploymentRequestUseCase
+import com.example.scrollbooker.entity.employmentRequest.domain.useCase.GetEmploymentRequestsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

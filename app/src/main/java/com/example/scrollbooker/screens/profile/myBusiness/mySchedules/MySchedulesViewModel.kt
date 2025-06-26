@@ -3,9 +3,9 @@ package com.example.scrollbooker.screens.profile.myBusiness.mySchedules
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.shared.schedule.domain.model.Schedule
-import com.example.scrollbooker.shared.schedule.domain.useCase.GetSchedulesByUserIdUseCase
-import com.example.scrollbooker.shared.schedule.domain.useCase.UpdateSchedulesUseCase
+import com.example.scrollbooker.entity.schedule.domain.model.Schedule
+import com.example.scrollbooker.entity.schedule.domain.useCase.GetSchedulesByUserIdUseCase
+import com.example.scrollbooker.entity.schedule.domain.useCase.UpdateSchedulesUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

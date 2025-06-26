@@ -22,15 +22,14 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.sheet.SheetHeader
 import com.example.scrollbooker.components.core.tabs.Tabs
-import com.example.scrollbooker.components.customized.post.comments.CommentItemShimmer
-import com.example.scrollbooker.components.modules.reviews.summary.ReviewSummaryShimmer
-import com.example.scrollbooker.components.modules.reviews.list.ReviewItem
-import com.example.scrollbooker.components.modules.reviews.list.ReviewItemShimmer
-import com.example.scrollbooker.components.modules.reviews.summary.ReviewsSummarySection
+import com.example.scrollbooker.modules.reviews.summary.ReviewSummaryShimmer
+import com.example.scrollbooker.modules.reviews.list.ReviewItem
+import com.example.scrollbooker.modules.reviews.list.ReviewItemShimmer
+import com.example.scrollbooker.modules.reviews.summary.ReviewsSummarySection
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.LoadMoreSpinner
-import com.example.scrollbooker.shared.review.domain.model.Review
-import com.example.scrollbooker.shared.review.domain.model.ReviewsSummary
+import com.example.scrollbooker.entity.review.domain.model.Review
+import com.example.scrollbooker.entity.review.domain.model.ReviewsSummary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ConfigurationScreenWidthHeight")
