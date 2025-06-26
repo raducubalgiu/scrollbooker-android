@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.components.core.badge.CustomBadge
@@ -79,13 +80,14 @@ fun BottomBarItem(
                 if(tab.route == MainTab.Search.route) {
                     Icon(
                         modifier = Modifier.size(40.dp),
-                        imageVector = tab.iconVector,
+                        painter = painterResource(tab.painter),
                         contentDescription = null,
                         tint = if (isSelected) Primary else Color.Gray,
                     )
                 } else {
                     Icon(
-                        imageVector = tab.iconVector,
+                        modifier = Modifier.size(25.dp),
+                        painter = painterResource(tab.painter),
                         contentDescription = null,
                         tint = contentColor,
                     )

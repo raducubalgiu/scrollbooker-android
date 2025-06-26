@@ -20,12 +20,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 
@@ -34,7 +36,7 @@ fun PostActionButton(
     isEnabled: Boolean = true,
     tint: Color = Color.White,
     counter: Int,
-    icon: ImageVector,
+    icon: Painter,
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null
 ) {
@@ -48,13 +50,13 @@ fun PostActionButton(
         contentAlignment = Alignment.Center
     ) {
         Column(
-            modifier = modifier.padding(vertical = SpacingS),
+            modifier = modifier.padding(top = BasePadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Icon(
                 modifier = Modifier
                     .size(35.dp),
-                imageVector = icon,
+                painter = icon,
                 contentDescription = null,
                 tint = tint
             )

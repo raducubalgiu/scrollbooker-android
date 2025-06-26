@@ -29,7 +29,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -37,6 +39,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.scrollbooker.R
 import com.example.scrollbooker.core.nav.BottomBarItem
 import com.example.scrollbooker.core.nav.containers.DefaultTabContainer
 import com.example.scrollbooker.core.nav.routes.MainRoute
@@ -52,13 +55,28 @@ import timber.log.Timber
 sealed class MainTab(
     val route: String,
     val label: String,
-    val iconVector: ImageVector
+    val painter: Int
 ) {
-    object Feed: MainTab(MainRoute.Feed.route, "Acasa", iconVector = Icons.Default.Home)
-    object Inbox: MainTab(MainRoute.Inbox.route, "Inbox", iconVector = Icons.Default.Notifications)
-    object Search: MainTab(MainRoute.Search.route, "Search", iconVector = Icons.Default.Search)
-    object Appointments: MainTab(MainRoute.Appointments.route, "Comenzi", iconVector = Icons.Default.CalendarMonth)
-    object Profile: MainTab(MainRoute.MyProfile.route, "Profil", iconVector = Icons.Default.Person)
+    object Feed: MainTab(
+        MainRoute.Feed.route, "Acasa",
+        painter = R.drawable.ic_home_solid
+    )
+    object Inbox: MainTab(
+        MainRoute.Inbox.route, "Inbox",
+        painter = R.drawable.ic_notifications_solid
+    )
+    object Search: MainTab(
+        MainRoute.Search.route, "Search",
+        painter = R.drawable.ic_search_solid
+    )
+    object Appointments: MainTab(
+        MainRoute.Appointments.route, "Comenzi",
+        painter = R.drawable.ic_clipboard_solid
+    )
+    object Profile: MainTab(
+        MainRoute.MyProfile.route, "Profil",
+        painter = R.drawable.ic_person_solid
+    )
 
     companion object {
         fun fromRoute(route: String): MainTab = when(route) {

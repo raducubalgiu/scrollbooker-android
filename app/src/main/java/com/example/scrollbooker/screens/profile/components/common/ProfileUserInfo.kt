@@ -108,7 +108,7 @@ fun ProfileUserInfo(
                     if(isBusinessOrEmployee) {
                         Spacer(Modifier.width(5.dp))
                         Icon(
-                            imageVector = Icons.Filled.Star,
+                            painter = painterResource(R.drawable.ic_star_solid),
                             contentDescription = null,
                             tint = Primary
                         )
