@@ -72,7 +72,6 @@ fun PostsPager(
                 .statusBarsPadding()
         ) {
             Column(modifier = Modifier
-                .statusBarsPadding()
                 .fillMaxHeight(1f)) {
                 when (val content = sheetContent) {
                     is PostSheetsContent.ReviewsSheet -> {
