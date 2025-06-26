@@ -1,4 +1,4 @@
-package com.example.scrollbooker.components.customized.post.common
+package com.example.scrollbooker.modules.post.common
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.components.customized.post.common
+package com.example.scrollbooker.modules.post.common
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -27,12 +27,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.example.scrollbooker.components.customized.post.comments.CommentsSheet
-import com.example.scrollbooker.components.customized.post.comments.CommentsViewModel
-import com.example.scrollbooker.components.customized.post.reviews.ReviewsListSheet
 import com.example.scrollbooker.modules.reviews.ReviewsViewModel
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.entity.post.domain.model.Post
+import com.example.scrollbooker.modules.post.comments.CommentsSheet
+import com.example.scrollbooker.modules.post.comments.CommentsViewModel
+import com.example.scrollbooker.modules.post.reviews.ReviewsListSheet
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import kotlinx.coroutines.launch

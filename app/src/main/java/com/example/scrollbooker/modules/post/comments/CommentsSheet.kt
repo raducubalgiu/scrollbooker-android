@@ -1,4 +1,4 @@
-package com.example.scrollbooker.components.customized.post.comments
+package com.example.scrollbooker.modules.post.comments
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.paging.LoadState

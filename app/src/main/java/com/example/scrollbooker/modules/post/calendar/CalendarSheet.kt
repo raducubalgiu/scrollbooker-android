@@ -1,4 +1,4 @@
-package com.example.scrollbooker.components.customized.post.calendar
+package com.example.scrollbooker.modules.post.calendar
 
 import androidx.compose.runtime.Composable
 

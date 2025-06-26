@@ -17,8 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.screens.feed.components.FeedTabs
-import com.example.scrollbooker.components.customized.post.common.PostsList
 import kotlinx.coroutines.launch
+import com.example.scrollbooker.modules.post.common.PostsList
 
 @Composable
 fun FeedScreen(

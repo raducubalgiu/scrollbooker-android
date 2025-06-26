@@ -1,4 +1,4 @@
-package com.example.scrollbooker.components.customized.post.common
+package com.example.scrollbooker.modules.post.common
 
 sealed class PostSheetsContent {
     data class ReviewsSheet(val userId: Int): PostSheetsContent()

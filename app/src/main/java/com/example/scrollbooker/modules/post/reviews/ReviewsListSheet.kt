@@ -1,4 +1,4 @@
-package com.example.scrollbooker.components.customized.post.reviews
+package com.example.scrollbooker.modules.post.reviews
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

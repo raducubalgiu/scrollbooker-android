@@ -1,4 +1,4 @@
-package com.example.scrollbooker.components.customized.post.videoItem
+package com.example.scrollbooker.modules.post.videoItem
 import android.annotation.SuppressLint
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -21,14 +20,10 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
-import com.example.scrollbooker.components.customized.post.common.VideoViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
+import com.example.scrollbooker.modules.post.common.VideoViewModel
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @OptIn(UnstableApi::class)
