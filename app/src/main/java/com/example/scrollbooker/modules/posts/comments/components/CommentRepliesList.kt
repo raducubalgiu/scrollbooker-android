@@ -1,4 +1,4 @@
-package com.example.scrollbooker.modules.post.comments
+package com.example.scrollbooker.modules.posts.comments.components
 
 //import androidx.compose.runtime.Composable
 //import androidx.compose.ui.Modifier

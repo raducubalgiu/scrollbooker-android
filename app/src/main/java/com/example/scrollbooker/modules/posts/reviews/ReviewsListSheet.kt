@@ -1,4 +1,4 @@
-package com.example.scrollbooker.modules.post.reviews
+package com.example.scrollbooker.modules.posts.reviews
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,7 +19,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.ErrorScreen
@@ -31,7 +30,6 @@ import com.example.scrollbooker.modules.reviews.list.ReviewItemShimmer
 import com.example.scrollbooker.modules.reviews.summary.ReviewsSummarySection
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.LoadMoreSpinner
-import com.example.scrollbooker.entity.review.domain.model.Review
 import com.example.scrollbooker.entity.review.domain.model.ReviewsSummary
 import com.example.scrollbooker.modules.reviews.ReviewsViewModel
 

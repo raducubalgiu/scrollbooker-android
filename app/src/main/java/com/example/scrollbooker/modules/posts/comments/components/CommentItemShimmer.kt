@@ -1,4 +1,4 @@
-package com.example.scrollbooker.modules.post.comments
+package com.example.scrollbooker.modules.posts.comments.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

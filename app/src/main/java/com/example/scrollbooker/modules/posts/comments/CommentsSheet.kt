@@ -1,4 +1,4 @@
-package com.example.scrollbooker.modules.post.comments
+package com.example.scrollbooker.modules.posts.comments
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -8,6 +8,8 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.components.core.sheet.SheetHeader
+import com.example.scrollbooker.modules.posts.comments.components.CommentItemShimmer
+import com.example.scrollbooker.modules.posts.comments.components.CommentsList
 
 @Composable
 fun CommentsSheet(
@@ -39,7 +41,7 @@ fun CommentsSheet(
                 onCreateComment = {
                     viewModel.createComment(
                         postId = postId,
-                        text =  it.text,
+                        text = it.text,
                         parentId = it.parentId
                     )
                 }

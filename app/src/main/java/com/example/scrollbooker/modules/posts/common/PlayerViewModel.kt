@@ -1,4 +1,4 @@
-package com.example.scrollbooker.modules.post.common
+package com.example.scrollbooker.modules.posts.common
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.media3.common.MediaItem

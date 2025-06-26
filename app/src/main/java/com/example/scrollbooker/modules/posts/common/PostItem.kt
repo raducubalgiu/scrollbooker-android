@@ -1,4 +1,4 @@
-package com.example.scrollbooker.modules.post.common
+package com.example.scrollbooker.modules.posts.common
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import com.example.scrollbooker.entity.post.domain.model.Post

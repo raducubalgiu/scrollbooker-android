@@ -1,4 +1,4 @@
-package com.example.scrollbooker.modules.post.videoItem
+package com.example.scrollbooker.modules.posts.videoItem
 import android.annotation.SuppressLint
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -23,7 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
-import com.example.scrollbooker.modules.post.common.VideoViewModel
+import com.example.scrollbooker.modules.posts.common.VideoViewModel
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @OptIn(UnstableApi::class)

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.modules.post.comments
+package com.example.scrollbooker.modules.posts.comments.components
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState

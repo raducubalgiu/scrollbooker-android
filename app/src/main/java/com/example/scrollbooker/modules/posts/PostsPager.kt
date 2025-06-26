@@ -1,4 +1,4 @@
-package com.example.scrollbooker.modules.post.common
+package com.example.scrollbooker.modules.posts
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -28,9 +28,11 @@ import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.modules.reviews.ReviewsViewModel
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.entity.post.domain.model.Post
-import com.example.scrollbooker.modules.post.comments.CommentsSheet
-import com.example.scrollbooker.modules.post.comments.CommentsViewModel
-import com.example.scrollbooker.modules.post.reviews.ReviewsListSheet
+import com.example.scrollbooker.modules.posts.comments.CommentsSheet
+import com.example.scrollbooker.modules.posts.comments.CommentsViewModel
+import com.example.scrollbooker.modules.posts.common.PostItem
+import com.example.scrollbooker.modules.posts.common.PostSheetsContent
+import com.example.scrollbooker.modules.posts.reviews.ReviewsListSheet
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import kotlinx.coroutines.launch
@@ -38,7 +40,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
-fun PostPager(
+fun PostsPager(
     posts: LazyPagingItems<Post>,
     pagerState: PagerState,
     isVisibleTab: Boolean,

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.modules.post.common
+package com.example.scrollbooker.modules.posts.common
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
