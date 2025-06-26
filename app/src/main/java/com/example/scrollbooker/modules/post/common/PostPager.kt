@@ -68,21 +68,15 @@ fun PostPager(
                     is PostSheetsContent.ReviewsSheet -> {
                         reviewsViewModel.setUserId(userId = content.userId)
 
-                        val reviewsSummary by reviewsViewModel.userReviewsSummary.collectAsState()
-                        val reviews = reviewsViewModel.userReviews.collectAsLazyPagingItems()
-                        val selectedRatings = reviewsViewModel.selectedRatings.value
-
                         ReviewsListSheet(
-                            reviewsSummary = reviewsSummary,
-                            reviews = reviews,
+                            viewModel = reviewsViewModel,
                             onClose = {
                                 sheetContent = PostSheetsContent.None
                                 coroutineScope.launch { sheetState.hide() }
                             },
                             onRatingClick = {
                                 reviewsViewModel.toggleRatings(it)
-                            },
-                            selectedRatings = selectedRatings
+                            }
                         )
                     }
                     is PostSheetsContent.CommentsSheet -> {

@@ -11,6 +11,8 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -18,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.sheet.SheetHeader
@@ -30,17 +33,20 @@ import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.entity.review.domain.model.Review
 import com.example.scrollbooker.entity.review.domain.model.ReviewsSummary
+import com.example.scrollbooker.modules.reviews.ReviewsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun ReviewsListSheet(
-    reviewsSummary: FeatureState<ReviewsSummary>,
-    reviews: LazyPagingItems<Review>,
+    viewModel: ReviewsViewModel,
     onClose: () -> Unit,
-    selectedRatings: Set<Int>,
     onRatingClick: (Int) -> Unit
 ) {
+    val reviewsSummary by viewModel.userReviewsSummary.collectAsState()
+    val reviews = viewModel.userReviews.collectAsLazyPagingItems()
+    val selectedRatings = viewModel.selectedRatings.value
+
     val tabs = listOf("Recenzii standard", "Recenzii video")
     val pagerState = rememberPagerState(initialPage = 0 ) { 2 }
 
@@ -56,7 +62,7 @@ fun ReviewsListSheet(
                     is FeatureState.Error -> ErrorScreen()
                     is FeatureState.Loading -> ReviewSummaryShimmer()
                     is FeatureState.Success -> {
-                        val summary = reviewsSummary.data
+                        val summary = (reviewsSummary as FeatureState.Success<ReviewsSummary>).data
 
                         ReviewsSummarySection(
                             summary = summary,
