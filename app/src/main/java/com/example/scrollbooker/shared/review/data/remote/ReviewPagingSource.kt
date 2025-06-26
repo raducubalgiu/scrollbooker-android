@@ -4,6 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.scrollbooker.shared.review.data.mappers.toDomain
 import com.example.scrollbooker.shared.review.domain.model.Review
+import kotlinx.coroutines.delay
 import timber.log.Timber
 import java.lang.Exception
 
@@ -25,6 +26,7 @@ class ReviewPagingSource(
         val limit = 10
 
         return try {
+            delay(500)
             val response = api.getReviews(
                 userId,
                 page,

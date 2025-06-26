@@ -8,6 +8,7 @@ import com.example.scrollbooker.shared.user.userSocial.data.remote.UserSocialPag
 import com.example.scrollbooker.shared.user.userSocial.domain.model.UserSocial
 import com.example.scrollbooker.shared.user.userSocial.domain.model.UserSocialEnum
 import com.example.scrollbooker.shared.user.userSocial.domain.repository.UserSocialRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.profile.social.components
+package com.example.scrollbooker.components.modules.reviews.list
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -30,6 +30,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
+import com.example.scrollbooker.shared.review.data.remote.ReviewLabel
 import com.example.scrollbooker.shared.review.domain.model.Review
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Error

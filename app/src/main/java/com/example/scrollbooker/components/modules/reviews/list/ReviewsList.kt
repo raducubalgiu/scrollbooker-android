@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.profile.social.components
+package com.example.scrollbooker.components.modules.reviews.list
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -21,8 +21,9 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.LoadMoreSpinner
-import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.core.layout.MessageScreen
+import com.example.scrollbooker.components.modules.reviews.summary.ReviewSummaryShimmer
+import com.example.scrollbooker.components.modules.reviews.summary.ReviewsSummarySection
 import com.example.scrollbooker.shared.review.domain.model.Review
 import com.example.scrollbooker.shared.review.domain.model.ReviewsSummary
 import com.example.scrollbooker.ui.theme.SurfaceBG
@@ -41,7 +42,7 @@ fun ReviewsList(
         pagingItems.apply {
             when(loadState.refresh) {
                 is LoadState.Loading -> {
-                    item { LoadingScreen() }
+                    item { ReviewSummaryShimmer() }
                 }
                 is LoadState.Error -> {
                     item { ErrorScreen() }

@@ -20,7 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import com.example.scrollbooker.screens.profile.social.components.ReviewsList
+import com.example.scrollbooker.components.modules.reviews.list.ReviewsList
 import com.example.scrollbooker.screens.profile.social.components.UserSocialList
 
 @Composable

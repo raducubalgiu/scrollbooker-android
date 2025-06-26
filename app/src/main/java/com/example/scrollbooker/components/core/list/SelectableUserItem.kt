@@ -1,4 +1,4 @@
-package com.example.scrollbooker.components.customized.listItems
+package com.example.scrollbooker.components.core.list
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box

@@ -30,6 +30,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.components.customized.post.comments.CommentsSheet
 import com.example.scrollbooker.components.customized.post.comments.CommentsViewModel
 import com.example.scrollbooker.components.customized.post.reviews.ReviewsListSheet
+import com.example.scrollbooker.components.modules.reviews.ReviewsViewModel
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.shared.post.domain.model.Post
 import com.example.scrollbooker.ui.theme.Background
@@ -47,7 +48,8 @@ fun PostPager(
     modifier: Modifier = Modifier
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val viewModel: CommentsViewModel = hiltViewModel()
+    val commentsViewModel: CommentsViewModel = hiltViewModel()
+    val reviewsViewModel: ReviewsViewModel = hiltViewModel()
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
     var sheetContent by remember { mutableStateOf<PostSheetsContent>(PostSheetsContent.None) }
@@ -59,32 +61,42 @@ fun PostPager(
             onDismissRequest = { sheetContent = PostSheetsContent.None },
             containerColor = if(isDarkTheme) SurfaceBG else Background,
             sheetState = sheetState,
-            modifier = Modifier
-                .fillMaxWidth()
-                .statusBarsPadding()
+            modifier = Modifier.fillMaxWidth().statusBarsPadding()
         ) {
-            Column(modifier = Modifier
-                .statusBarsPadding()
-                .fillMaxHeight(1f)
-            ) {
+            Column(modifier = Modifier.statusBarsPadding().fillMaxHeight(1f)) {
                 when (val content = sheetContent) {
                     is PostSheetsContent.ReviewsSheet -> {
+                        reviewsViewModel.setUserId(userId = content.userId)
+
+                        val reviewsSummary by reviewsViewModel.userReviewsSummary.collectAsState()
+                        val reviews = reviewsViewModel.userReviews.collectAsLazyPagingItems()
+                        val selectedRatings = reviewsViewModel.selectedRatings.value
+
                         ReviewsListSheet(
-                            postId = content.postId
+                            reviewsSummary = reviewsSummary,
+                            reviews = reviews,
+                            onClose = {
+                                sheetContent = PostSheetsContent.None
+                                coroutineScope.launch { sheetState.hide() }
+                            },
+                            onRatingClick = {
+                                reviewsViewModel.toggleRatings(it)
+                            },
+                            selectedRatings = selectedRatings
                         )
                     }
                     is PostSheetsContent.CommentsSheet -> {
-                        viewModel.setPostId(newPostId = content.postId)
+                        commentsViewModel.setPostId(newPostId = content.postId)
 
-                        val comments = viewModel.commentsState.collectAsLazyPagingItems()
-                        val newComments by viewModel.newComments.collectAsState()
+                        val comments = commentsViewModel.commentsState.collectAsLazyPagingItems()
+                        val newComments by commentsViewModel.newComments.collectAsState()
 
                         CommentsSheet(
                             comments = comments,
                             newComments = newComments,
                             isSheetVisible = sheetState.isVisible,
                             onCreateComment = {
-                                viewModel.createComment(
+                                commentsViewModel.createComment(
                                     postId = content.postId,
                                     text =  it.text,
                                     parentId = it.parentId
@@ -94,7 +106,7 @@ fun PostPager(
                                 sheetContent = PostSheetsContent.None
                                 coroutineScope.launch { sheetState.hide() }
                             },
-                            onLike = { viewModel.toggleLikeComment(it) }
+                            onLike = { commentsViewModel.toggleLikeComment(it) }
                         )
                     }
                     is PostSheetsContent.CalendarSheet -> Unit
@@ -122,7 +134,7 @@ fun PostPager(
                         post = post,
                         playWhenReady = pagerState.currentPage == page && isVisibleTab,
                         onOpenReviews = {
-                            sheetContent = PostSheetsContent.ReviewsSheet(post.id)
+                            sheetContent = PostSheetsContent.ReviewsSheet(post.user.id)
                             coroutineScope.launch {
                                 sheetState.show()
                             }

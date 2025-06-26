@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.profile.social.components
+package com.example.scrollbooker.shared.review.data.remote
 
 import androidx.annotation.StringRes
 import com.example.scrollbooker.R

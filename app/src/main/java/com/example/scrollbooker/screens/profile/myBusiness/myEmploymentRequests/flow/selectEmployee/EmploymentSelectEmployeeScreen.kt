@@ -15,7 +15,7 @@ import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.components.core.buttons.MainButton
-import com.example.scrollbooker.components.customized.listItems.SelectableUserItem
+import com.example.scrollbooker.components.core.list.SelectableUserItem
 import com.example.scrollbooker.components.core.inputs.SearchBar
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.components.core.layout.ErrorScreen
