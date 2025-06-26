@@ -14,7 +14,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.modules.reviews.ReviewsViewModel
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.entity.post.domain.model.Post
@@ -55,25 +53,31 @@ fun PostPager(
     var sheetContent by remember { mutableStateOf<PostSheetsContent>(PostSheetsContent.None) }
     val isDarkTheme = isSystemInDarkTheme()
 
+    fun handleClose() {
+        sheetContent = PostSheetsContent.None
+        coroutineScope.launch { sheetState.hide() }
+    }
+
     if(sheetContent != PostSheetsContent.None) {
         ModalBottomSheet(
             dragHandle = null,
             onDismissRequest = { sheetContent = PostSheetsContent.None },
             containerColor = if(isDarkTheme) SurfaceBG else Background,
             sheetState = sheetState,
-            modifier = Modifier.fillMaxWidth().statusBarsPadding()
+            modifier = Modifier
+                .fillMaxWidth()
+                .statusBarsPadding()
         ) {
-            Column(modifier = Modifier.statusBarsPadding().fillMaxHeight(1f)) {
+            Column(modifier = Modifier
+                .statusBarsPadding()
+                .fillMaxHeight(1f)) {
                 when (val content = sheetContent) {
                     is PostSheetsContent.ReviewsSheet -> {
                         reviewsViewModel.setUserId(userId = content.userId)
 
                         ReviewsListSheet(
                             viewModel = reviewsViewModel,
-                            onClose = {
-                                sheetContent = PostSheetsContent.None
-                                coroutineScope.launch { sheetState.hide() }
-                            },
+                            onClose = { handleClose() },
                             onRatingClick = {
                                 reviewsViewModel.toggleRatings(it)
                             }
@@ -82,25 +86,11 @@ fun PostPager(
                     is PostSheetsContent.CommentsSheet -> {
                         commentsViewModel.setPostId(newPostId = content.postId)
 
-                        val comments = commentsViewModel.commentsState.collectAsLazyPagingItems()
-                        val newComments by commentsViewModel.newComments.collectAsState()
-
                         CommentsSheet(
-                            comments = comments,
-                            newComments = newComments,
+                            viewModel = commentsViewModel,
+                            postId = content.postId,
                             isSheetVisible = sheetState.isVisible,
-                            onCreateComment = {
-                                commentsViewModel.createComment(
-                                    postId = content.postId,
-                                    text =  it.text,
-                                    parentId = it.parentId
-                                )
-                            },
-                            onClose = {
-                                sheetContent = PostSheetsContent.None
-                                coroutineScope.launch { sheetState.hide() }
-                            },
-                            onLike = { commentsViewModel.toggleLikeComment(it) }
+                            onClose = { handleClose() }
                         )
                     }
                     is PostSheetsContent.CalendarSheet -> Unit
