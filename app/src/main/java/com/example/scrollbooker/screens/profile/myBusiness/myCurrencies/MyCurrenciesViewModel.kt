@@ -20,7 +20,7 @@ class MyCurrenciesViewModel @Inject constructor(
     private val _state = MutableStateFlow<FeatureState<List<CurrencyUiModel>>>(FeatureState.Loading)
     val state: StateFlow<FeatureState<List<CurrencyUiModel>>> = _state
 
-    private var initialSelectedIds: Set<Int> = emptySet()
+    private var selectedCurrencyIds: Set<Int> = emptySet()
 
     fun fetchCurrencies() {
         viewModelScope.launch {
@@ -31,7 +31,7 @@ class MyCurrenciesViewModel @Inject constructor(
 
             if(all.isSuccess && user.isSuccess) {
                 val selectedIds = user.getOrThrow().map { it.id }.toSet()
-                initialSelectedIds = selectedIds
+                selectedCurrencyIds = selectedIds
 
                 val combined = all.getOrThrow().map {
                     CurrencyUiModel(
@@ -47,6 +47,22 @@ class MyCurrenciesViewModel @Inject constructor(
                 Timber.tag("Currencies").e("ERROR: on Fetching Currencies $error")
                 _state.value = FeatureState.Error(error ?: Exception("Unexpected Error"))
             }
+        }
+    }
+
+    fun toggleCurrency(currencyId: Int) {
+        val updatedSelected = selectedCurrencyIds.toMutableSet().apply {
+            if(contains(currencyId)) remove(currencyId) else add(currencyId)
+        }
+        selectedCurrencyIds = updatedSelected
+
+        val currentState = _state.value
+
+        if(currentState is FeatureState.Success) {
+            val updatedList = currentState.data.map {
+                it.copy(isSelected = it.id in selectedCurrencyIds)
+            }
+            _state.value = FeatureState.Success(updatedList)
         }
     }
 }

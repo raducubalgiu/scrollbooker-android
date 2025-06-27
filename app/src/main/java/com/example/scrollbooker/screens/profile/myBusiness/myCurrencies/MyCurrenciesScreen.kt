@@ -1,32 +1,30 @@
 package com.example.scrollbooker.screens.profile.myBusiness.myCurrencies
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Text
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.inputs.InputCheckbox
-import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.components.core.layout.ErrorScreen
-import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.components.core.layout.FormLayout
 import com.example.scrollbooker.components.core.layout.LoadingScreen
-import com.example.scrollbooker.ui.theme.OnBackground
-import com.example.scrollbooker.ui.theme.bodyLarge
-import com.example.scrollbooker.ui.theme.headlineLarge
+import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.ui.theme.Divider
 
 @Composable
 fun MyCurrenciesScreen(
@@ -39,25 +37,16 @@ fun MyCurrenciesScreen(
         viewModel.fetchCurrencies()
     }
 
-    Layout(
+    FormLayout(
         modifier = Modifier.statusBarsPadding(),
+        isEnabled = true,
         headerTitle = "",
-        onBack = onBack
+        headLine = stringResource(R.string.acceptedCurrencies),
+        subHeadLine = stringResource(R.string.chooseDesiredCurrencies),
+        buttonTitle = stringResource(R.string.save),
+        onBack = onBack,
+        onNext = {}
     ) {
-        Text(
-            style = headlineLarge,
-            color = OnBackground,
-            fontWeight = FontWeight.ExtraBold,
-            text = stringResource(R.string.paymentMethods)
-        )
-        Text(
-            text = "Alege valutele prin care clientii",
-            style = bodyLarge,
-            color = Color.Gray
-        )
-
-        Spacer(Modifier.height(SpacingXXL))
-
         when (val result = state) {
             is FeatureState.Loading -> LoadingScreen()
             is FeatureState.Error -> ErrorScreen()
@@ -67,18 +56,24 @@ fun MyCurrenciesScreen(
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
                     LazyColumn(modifier = Modifier.weight(1f)) {
-                        items(result.data) { currency ->
+                        itemsIndexed(result.data) { index, currency ->
                             InputCheckbox(
                                 checked = currency.isSelected,
-                                onCheckedChange = {},
+                                onCheckedChange = { viewModel.toggleCurrency(currency.id) },
                                 headLine = currency.name
                             )
+
+                            if(index < result.data.lastIndex) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = SpacingXXL)
+                                        .height(0.55.dp)
+                                        .background(Divider.copy(alpha = 0.5f))
+                                )
+                            }
                         }
                     }
-                    MainButton(
-                        title = stringResource(R.string.save),
-                        onClick = {}
-                    )
                 }
             }
         }
