@@ -19,14 +19,10 @@ object AuthDto {
 
     data class RegisterDto(
         val email: String,
-        val username: String,
         val password: String,
 
         @SerializedName("role_name")
-        val roleName: String,
-
-        @SerializedName("is_validated")
-        val isValidated: Boolean
+        val roleName: RoleNameEnum,
     )
 
     data class RefreshRequestDto(

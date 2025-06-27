@@ -7,7 +7,7 @@ import androidx.navigation.NavController
 import com.example.scrollbooker.R
 
 @Composable
-fun CollectBirthDateScreen(navController: NavController) {
+fun CollectClientBirthDateScreen() {
     CollectClientDetails(
         headLine = stringResource(id = R.string.dateOfBirth),
         subHeadLine = "Some description for date of birth",

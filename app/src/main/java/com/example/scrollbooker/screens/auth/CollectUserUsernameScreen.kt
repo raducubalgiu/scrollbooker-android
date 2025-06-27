@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.auth.collectClientDetails
+package com.example.scrollbooker.screens.auth
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -14,18 +14,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.inputs.Input
-import com.example.scrollbooker.core.nav.routes.AuthRoute
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.screens.auth.collectClientDetails.CollectClientDetails
 
 @Composable
-fun CollectUsernameScreen(navController: NavController) {
+fun CollectUserUsernameScreen() {
     CollectClientDetails(
         headLine = stringResource(id = R.string.username),
         subHeadLine = stringResource(id = R.string.addUniqueUsername),
         screenSize = 3,
         selectedScreen = 0,
-        onOmit = { navController.navigate(AuthRoute.BirthDate.route) },
-        onNext = { navController.navigate(AuthRoute.BirthDate.route) },
+        onOmit = { },
+        onNext = { },
     ) {
         var username by remember { mutableStateOf("") }
 

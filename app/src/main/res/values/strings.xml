@@ -138,4 +138,6 @@
     <string name="notFoundComments">Încă nu au fost găsite comentarii</string>
     <string name="chooseDesiredCurrencies">Alege in ce valute dorești să primești plăți din partea clienților</string>
     <string name="acceptedCurrencies">Valute acceptate pentru plăți</string>
+    <string name="password">Parolă</string>
+    <string name="email">Email</string>
 </resources>

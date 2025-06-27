@@ -1,6 +1,7 @@
 package com.example.scrollbooker.entity.auth.domain.useCase
 
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.entity.auth.data.remote.RoleNameEnum
 import com.example.scrollbooker.entity.auth.domain.repository.AuthRepository
 import timber.log.Timber
 import javax.inject.Inject
@@ -10,13 +11,11 @@ class RegisterUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(
         email: String,
-        username: String,
         password: String,
-        roleName: String,
-        isValidated: Boolean
+        roleName: RoleNameEnum,
     ): FeatureState<Unit> {
         return try {
-            repository.register(email, username, password, roleName, isValidated)
+            repository.register(email, password, roleName)
             FeatureState.Success(Unit)
         } catch (e: Exception) {
             Timber.tag("Register").e(e, "ERROR: on Register User")

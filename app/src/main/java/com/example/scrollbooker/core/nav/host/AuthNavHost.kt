@@ -14,14 +14,16 @@ import com.example.scrollbooker.core.nav.routes.AuthRoute
 import com.example.scrollbooker.screens.auth.AuthViewModel
 import com.example.scrollbooker.screens.auth.LoginScreen
 import com.example.scrollbooker.screens.auth.RegisterScreen
-import com.example.scrollbooker.screens.auth.collectClientDetails.CollectBirthDateScreen
-import com.example.scrollbooker.screens.auth.collectClientDetails.CollectUsernameScreen
 import com.example.scrollbooker.ui.theme.Background
 import androidx.compose.runtime.getValue
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.screens.auth.CollectEmailVerificationScreen
+import com.example.scrollbooker.screens.auth.CollectUserUsernameScreen
 import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessServices.MyServicesScreen
 import com.example.scrollbooker.screens.auth.collectBusinessType.CollectBusinessTypeScreen
 import com.example.scrollbooker.screens.auth.collectBusinessType.CollectBusinessTypeViewModel
+import com.example.scrollbooker.screens.auth.collectClientDetails.CollectClientBirthDateScreen
+import com.example.scrollbooker.screens.auth.collectClientDetails.CollectClientGenderScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myBusinessLocation.MyBusinessLocationScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myBusinessLocation.MyBusinessLocationViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.SchedulesScreen
@@ -71,12 +73,20 @@ fun AuthNavHost(viewModel: AuthViewModel) {
                 )
             }
 
-            composable(AuthRoute.Username.route) {
-                CollectUsernameScreen(navController)
+            composable(AuthRoute.CollectEmailVerification.route) {
+                CollectEmailVerificationScreen()
             }
 
-            composable(AuthRoute.BirthDate.route) {
-                CollectBirthDateScreen(navController)
+            composable(AuthRoute.CollectUserUsername.route) {
+                CollectUserUsernameScreen()
+            }
+
+            composable(AuthRoute.CollectClientBirthDate.route) {
+                CollectClientBirthDateScreen()
+            }
+
+            composable(AuthRoute.CollectClientGender.route) {
+                CollectClientGenderScreen()
             }
 
             composable(route = AuthRoute.CollectBusinessType.route) { backStackEntry ->

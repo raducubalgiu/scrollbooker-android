@@ -2,6 +2,7 @@ package com.example.scrollbooker.screens.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.entity.auth.data.remote.RoleNameEnum
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.auth.domain.useCase.IsLoggedInUseCase
 import com.example.scrollbooker.entity.auth.domain.useCase.LoginAndSaveSessionUseCase
@@ -43,19 +44,14 @@ class AuthViewModel @Inject constructor(
 
     fun register(
         email: String,
-        username: String,
         password: String,
-        roleName: String,
-        isValidated: Boolean
     ) {
         viewModelScope.launch {
             _registerState.value = FeatureState.Loading
             _registerState.value = registerUseCase(
                 email,
-                username,
                 password,
-                roleName,
-                isValidated
+                roleName = RoleNameEnum.CLIENT
             )
         }
     }

@@ -28,6 +28,7 @@ import com.example.scrollbooker.ui.theme.headlineLarge
 @Composable
 fun AuthScreen(
     type: String,
+    isEnabled: Boolean = true,
     onNavigate: (String) -> Unit,
     onSubmit: () -> Unit,
     content: @Composable () -> Unit,
@@ -68,6 +69,7 @@ fun AuthScreen(
             Spacer(Modifier.height(BasePadding))
 
             MainButton(
+                enabled = isEnabled,
                 title = stringResource(id = R.string.login),
                 onClick = onSubmit
             )
@@ -83,12 +85,14 @@ fun AuthScreen(
                     color = OnBackground,
                     text = "${footerText}?"
                 )
-                TextButton(onClick = {
-                    onNavigate(
-                        if(isLogin) AuthRoute.Register.route
-                        else AuthRoute.Login.route
-                    )
-                }) {
+                TextButton(
+                    onClick = {
+                        onNavigate(
+                            if(isLogin) AuthRoute.Register.route
+                            else AuthRoute.Login.route
+                        )
+                    }
+                ) {
                     Text(
                         style = bodyLarge,
                         fontWeight = FontWeight.Bold,
