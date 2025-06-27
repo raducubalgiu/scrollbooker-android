@@ -4,7 +4,9 @@ import com.example.scrollbooker.entity.user.userInfo.domain.model.RegistrationSt
 
 sealed class AuthRoute(val route: String) {
     object Login: AuthRoute(route = "login")
-    object Register: AuthRoute(route = "register")
+
+    object RegisterClient: AuthRoute(route = "registerClient")
+    object RegisterBusiness: AuthRoute(route = "registerBusiness")
 
     object CollectEmailVerification: AuthRoute(route = RegistrationStepEnum.COLLECT_EMAIL_VERIFICATION.key)
     object CollectUserUsername: AuthRoute(route = RegistrationStepEnum.COLLECT_USER_USERNAME.key)

@@ -19,7 +19,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.FeatureState
 
 @Composable
-fun RegisterScreen(
+fun RegisterClientScreen(
     viewModel: AuthViewModel,
     onNavigate: (String) -> Unit
 ) {

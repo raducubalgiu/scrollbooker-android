@@ -13,12 +13,13 @@ import androidx.navigation.compose.rememberNavController
 import com.example.scrollbooker.core.nav.routes.AuthRoute
 import com.example.scrollbooker.screens.auth.AuthViewModel
 import com.example.scrollbooker.screens.auth.LoginScreen
-import com.example.scrollbooker.screens.auth.RegisterScreen
 import com.example.scrollbooker.ui.theme.Background
 import androidx.compose.runtime.getValue
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.screens.auth.CollectEmailVerificationScreen
 import com.example.scrollbooker.screens.auth.CollectUserUsernameScreen
+import com.example.scrollbooker.screens.auth.RegisterBusinessScreen
+import com.example.scrollbooker.screens.auth.RegisterClientScreen
 import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessServices.MyServicesScreen
 import com.example.scrollbooker.screens.auth.collectBusinessType.CollectBusinessTypeScreen
 import com.example.scrollbooker.screens.auth.collectBusinessType.CollectBusinessTypeViewModel
@@ -33,7 +34,6 @@ import com.example.scrollbooker.screens.profile.myBusiness.myServices.MyServices
 @Composable
 fun AuthNavHost(viewModel: AuthViewModel) {
     val navController = rememberNavController()
-
     val authState by viewModel.authState.collectAsState()
 
     val startDestination = when(val state = authState) {
@@ -66,8 +66,15 @@ fun AuthNavHost(viewModel: AuthViewModel) {
                 )
             }
 
-            composable(AuthRoute.Register.route) {
-                RegisterScreen(
+            composable(AuthRoute.RegisterClient.route) {
+                RegisterClientScreen(
+                    viewModel=viewModel,
+                    onNavigate = { navController.navigate(it) }
+                )
+            }
+
+            composable(AuthRoute.RegisterBusiness.route) {
+                RegisterBusinessScreen(
                     viewModel=viewModel,
                     onNavigate = { navController.navigate(it) }
                 )
