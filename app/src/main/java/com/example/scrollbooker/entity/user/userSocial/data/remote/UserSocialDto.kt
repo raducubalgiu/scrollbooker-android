@@ -14,5 +14,8 @@ data class UserSocialDto(
     @SerializedName("is_follow")
     val isFollow: Boolean,
 
-    val profession: String?
+    val profession: String?,
+
+    @SerializedName("is_business_or_employee")
+    val isBusinessOrEmployee: Boolean?,
 )

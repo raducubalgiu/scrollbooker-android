@@ -16,12 +16,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
-import com.example.scrollbooker.core.util.Dimens.AvatarSizeS
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyMedium
 
@@ -30,27 +27,26 @@ fun AvatarWithRating(
     modifier: Modifier = Modifier,
     url: String =  "https://media.scrollbooker.ro/frizerie-1-cover.jpg",
     rating: String,
-    size: Dp = AvatarSizeS,
-    style: TextStyle = bodyMedium
 ) {
+
     Box(modifier = modifier
-        .size(size),
+        .size(65.dp),
         contentAlignment = Alignment.BottomCenter)
     {
         Avatar(
             url = url,
-            size = size
+            size = 65.dp
         )
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .offset(y = 18.dp)
+                .offset(y = 15.dp)
                 .background(
                     color = Color.Black.copy(alpha = 0.7f),
                     shape = RoundedCornerShape(15.dp)
                 )
-                .padding(horizontal = 6.dp, vertical = 6.dp)
+                .padding(horizontal = 6.dp, vertical = 8.dp)
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_star_solid),
@@ -63,7 +59,7 @@ fun AvatarWithRating(
                 text = rating,
                 color = Color.White,
                 fontWeight = FontWeight.ExtraBold,
-                style = style,
+                style = bodyMedium,
             )
         }
     }

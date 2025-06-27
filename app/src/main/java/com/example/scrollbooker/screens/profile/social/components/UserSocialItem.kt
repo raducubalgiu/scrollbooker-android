@@ -17,8 +17,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.Avatar
+import com.example.scrollbooker.components.core.avatar.AvatarWithRating
 import com.example.scrollbooker.components.core.buttons.MainButtonSmall
-import com.example.scrollbooker.core.util.Dimens.AvatarSizeS
+import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
 import com.example.scrollbooker.ui.theme.Background
@@ -39,11 +40,13 @@ fun UserSocialItem(
     onNavigateUserProfile: (Int) -> Unit
 ) {
     val isFollowed = isFollowedOverrides ?: userSocial.isFollow
+    val isBusinessOrEmployee = userSocial.isBusinessOrEmployee == true
+    val displayProfession = isBusinessOrEmployee && userSocial.profession != null
 
     ListItem(modifier = modifier
         .fillMaxWidth()
         .clickable(onClick = { onNavigateUserProfile(userSocial.id) })
-        .padding(vertical = SpacingXXS)
+        .padding(vertical = SpacingS)
         .then(modifier),
         headlineContent = {
             Text(
@@ -60,7 +63,8 @@ fun UserSocialItem(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = bodyMedium,
-                text = "@${userSocial.username}"
+                text = if(displayProfession) userSocial.profession
+                    else "@${userSocial.username}"
             )
         },
         trailingContent = {
@@ -77,7 +81,11 @@ fun UserSocialItem(
             )
         },
         leadingContent = {
-            Avatar(url = userSocial.avatar ?: "", size = AvatarSizeS)
+            if(isBusinessOrEmployee) {
+                AvatarWithRating(rating = "4.5")
+            } else {
+                Avatar(url = userSocial.avatar ?: "", size = 65.dp)
+            }
         },
         colors = ListItemDefaults.colors(
             containerColor = Background

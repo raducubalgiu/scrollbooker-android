@@ -16,7 +16,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.AvatarWithRating
-import com.example.scrollbooker.core.util.Dimens.AvatarSizeM
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.entity.post.domain.model.PostCounters
@@ -53,8 +52,7 @@ fun PostOverlay(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 AvatarWithRating(
-                    rating = "4.5",
-                    size = AvatarSizeM
+                    rating = "4.5"
                 )
 
                 Spacer(Modifier.height(SpacingXL))

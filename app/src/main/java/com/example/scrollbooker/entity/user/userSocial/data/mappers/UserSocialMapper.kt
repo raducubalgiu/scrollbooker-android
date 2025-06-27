@@ -10,6 +10,7 @@ fun UserSocialDto.toDomain(): UserSocial {
         username = username,
         avatar = avatar,
         isFollow = isFollow,
-        profession = profession
+        profession = profession,
+        isBusinessOrEmployee = isBusinessOrEmployee
     )
 }
