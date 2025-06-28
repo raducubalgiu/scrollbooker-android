@@ -1,17 +1,18 @@
 package com.example.scrollbooker.screens.auth
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import com.example.scrollbooker.components.core.layout.FormLayout
 
 @Composable
-fun CollectEmailVerificationScreen(modifier: Modifier = Modifier) {
+fun CollectEmailVerificationScreen(
+    onNext: () -> Unit
+) {
     FormLayout(
         headerTitle = "Email Verification",
         headLine = "",
         subHeadLine = "",
-        buttonTitle = "",
-        onBack = {},
-        onNext = {}
+        buttonTitle = "Verify",
+        enableBack = false,
+        onNext = onNext
     ) {}
 }

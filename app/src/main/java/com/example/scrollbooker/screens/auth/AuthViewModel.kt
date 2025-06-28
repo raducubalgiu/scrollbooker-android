@@ -5,8 +5,9 @@ import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.auth.data.remote.RoleNameEnum
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.auth.domain.useCase.IsLoggedInUseCase
-import com.example.scrollbooker.entity.auth.domain.useCase.LoginAndSaveSessionUseCase
+import com.example.scrollbooker.entity.auth.domain.useCase.LoginUseCase
 import com.example.scrollbooker.entity.auth.domain.useCase.RegisterUseCase
+import com.example.scrollbooker.entity.user.userEmailVerify.domain.useCase.VerifyUserEmailUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,15 +17,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val loginAndSaveSessionUseCase: LoginAndSaveSessionUseCase,
+    private val loginUseCase: LoginUseCase,
     private val registerUseCase: RegisterUseCase,
-    private val isLoggedInUseCase: IsLoggedInUseCase
+    private val isLoggedInUseCase: IsLoggedInUseCase,
+    private val verifyUserEmailUseCase: VerifyUserEmailUseCase
 ): ViewModel() {
     private val _authState = MutableStateFlow<FeatureState<AuthState>>(FeatureState.Loading)
     val authState: StateFlow<FeatureState<AuthState>> = _authState.asStateFlow()
 
-    private val _registerState = MutableStateFlow<FeatureState<Unit>>(FeatureState.Loading)
-    val registerState: StateFlow<FeatureState<Unit>> = _registerState
+    private val _verifyEmailState = MutableStateFlow<FeatureState<Unit>>(FeatureState.Loading)
+    val verifyEmailState: StateFlow<FeatureState<Unit>> = _verifyEmailState.asStateFlow()
 
     init { checkIsLoggedIn() }
 
@@ -38,7 +40,7 @@ class AuthViewModel @Inject constructor(
     fun login(username: String, password: String) {
         viewModelScope.launch {
             _authState.value = FeatureState.Loading
-            _authState.value = loginAndSaveSessionUseCase(username, password)
+            _authState.value = loginUseCase(username, password)
         }
     }
 
@@ -56,11 +58,16 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+    fun verifyEmail() {
+        viewModelScope.launch {
+            _verifyEmailState.value = FeatureState.Loading
+            _verifyEmailState.value = verifyUserEmailUseCase()
+        }
+    }
+
     fun logout() {
         viewModelScope.launch {
-            //authRepository.logout()
-            //checkIsLoggedIn()
-            _authState.value = FeatureState.Error()
+
         }
     }
 }

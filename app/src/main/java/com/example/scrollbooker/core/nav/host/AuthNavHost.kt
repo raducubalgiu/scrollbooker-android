@@ -67,9 +67,9 @@ fun AuthNavHost(viewModel: AuthViewModel) {
                     viewModel = viewModel,
                     type = AuthTypeEnum.LOGIN,
                     onNavigate = { navController.navigate(it) },
-                    onSubmit = { email, password ->
+                    onSubmit = { _, username, password ->
                         viewModel.login(
-                            email,
+                            username,
                             password
                         )
                     }
@@ -81,7 +81,7 @@ fun AuthNavHost(viewModel: AuthViewModel) {
                     viewModel = viewModel,
                     type = AuthTypeEnum.REGISTER,
                     onNavigate = { navController.navigate(it) },
-                    onSubmit = { email, password ->
+                    onSubmit = { email, _, password ->
                         viewModel.register(
                             email,
                             password
@@ -98,7 +98,12 @@ fun AuthNavHost(viewModel: AuthViewModel) {
             }
 
             composable(AuthRoute.CollectEmailVerification.route) {
-                CollectEmailVerificationScreen()
+                CollectEmailVerificationScreen(
+                    onNext = {
+                        viewModel.verifyEmail()
+                        navController.navigate(AuthRoute.CollectUserUsername.route)
+                    },
+                )
             }
 
             composable(AuthRoute.CollectUserUsername.route) {

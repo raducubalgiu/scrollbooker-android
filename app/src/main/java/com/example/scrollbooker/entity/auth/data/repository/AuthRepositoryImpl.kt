@@ -7,7 +7,6 @@ import com.example.scrollbooker.entity.auth.data.mappers.toDoman
 import com.example.scrollbooker.entity.auth.data.remote.AuthApiService
 import com.example.scrollbooker.entity.auth.data.remote.AuthDto
 import com.example.scrollbooker.entity.auth.data.remote.RoleNameEnum
-import com.example.scrollbooker.entity.auth.domain.model.RegisterResponse
 import com.example.scrollbooker.store.AuthDataStore
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -29,9 +28,9 @@ class AuthRepositoryImpl @Inject constructor(
         email: String,
         password: String,
         roleName: RoleNameEnum,
-    ): RegisterResponse {
+    ): LoginResponse {
         val request = AuthDto.RegisterDto(email, password, roleName)
-        return authApi.register(request)
+        return authApi.register(request).toDoman()
     }
 
     override suspend fun logout() {

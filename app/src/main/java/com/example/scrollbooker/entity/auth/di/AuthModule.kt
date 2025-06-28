@@ -7,9 +7,12 @@ import com.example.scrollbooker.core.network.tokenProvider.TokenProvider
 import com.example.scrollbooker.core.network.tokenProvider.TokenProviderImpl
 import com.example.scrollbooker.core.util.Constants
 import com.example.scrollbooker.entity.auth.domain.repository.AuthRepository
-import com.example.scrollbooker.entity.auth.domain.useCase.LoginAndSaveSessionUseCase
 import com.example.scrollbooker.entity.auth.data.remote.AuthApiService
 import com.example.scrollbooker.entity.auth.data.repository.AuthRepositoryImpl
+import com.example.scrollbooker.entity.auth.domain.useCase.LoginUseCase
+import com.example.scrollbooker.entity.auth.domain.useCase.RegisterUseCase
+import com.example.scrollbooker.entity.auth.domain.useCase.SaveSessionUseCase
+import com.example.scrollbooker.entity.user.userEmailVerify.domain.useCase.VerifyUserEmailUseCase
 import com.example.scrollbooker.entity.user.userInfo.domain.useCase.GetUserInfoUseCase
 import com.example.scrollbooker.entity.user.userPermissions.domain.useCase.GetUserPermissionsUseCase
 import com.example.scrollbooker.store.AuthDataStore
@@ -80,17 +83,39 @@ object AuthModule {
 
     @Provides
     @Singleton
-    fun provideLoginAndSaveSessionUseCase(
+    fun provideLoginUseCase(
+        repository: AuthRepository,
+        saveSessionUseCase: SaveSessionUseCase
+    ): LoginUseCase {
+        return LoginUseCase(
+            repository = repository,
+            saveSessionUseCase = saveSessionUseCase
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideRegisterUseCase(
+        repository: AuthRepository,
+        saveSessionUseCase: SaveSessionUseCase
+    ): RegisterUseCase {
+        return RegisterUseCase(
+            repository = repository,
+            saveSessionUseCase = saveSessionUseCase
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideSaveSessionUseCase(
         tokenProvider: TokenProvider,
         authDataStore: AuthDataStore,
-        repository: AuthRepository,
         getUserInfoUseCase: GetUserInfoUseCase,
         getUserPermissionsUseCase: GetUserPermissionsUseCase,
-    ): LoginAndSaveSessionUseCase {
-        return LoginAndSaveSessionUseCase(
+    ): SaveSessionUseCase {
+        return SaveSessionUseCase(
             tokenProvider = tokenProvider,
             authDataStore = authDataStore,
-            repository = repository,
             getUserInfoUseCase = getUserInfoUseCase,
             getUserPermissionsUseCase = getUserPermissionsUseCase
         )

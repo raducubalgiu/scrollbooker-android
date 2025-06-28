@@ -1,5 +1,4 @@
 package com.example.scrollbooker.entity.auth.data.remote
-import com.example.scrollbooker.entity.auth.domain.model.RegisterResponse
 import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.Multipart
@@ -15,7 +14,7 @@ interface AuthApiService {
     ): AuthDto.LoginResponseDto
 
     @POST("auth/register")
-    suspend fun register(@Body request: AuthDto.RegisterDto): RegisterResponse
+    suspend fun register(@Body request: AuthDto.RegisterDto): AuthDto.LoginResponseDto
 
     @POST("auth/refresh")
     suspend fun refresh(@Body request: AuthDto.RefreshRequestDto): AuthDto.LoginResponseDto

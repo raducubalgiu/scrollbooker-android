@@ -50,6 +50,12 @@ class AuthDataStore(private val context: Context) {
         }
     }
 
+    suspend fun updateRegistrationStep(registrationStep: RegistrationStepEnum) {
+        context.dataStore.edit { prefs ->
+            prefs[REGISTRATION_STEP] = registrationStep.key
+        }
+    }
+
     suspend fun refreshTokens(
         accessToken: String,
         refreshToken: String
