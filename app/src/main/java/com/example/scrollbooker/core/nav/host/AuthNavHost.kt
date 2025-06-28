@@ -12,14 +12,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.scrollbooker.core.nav.routes.AuthRoute
 import com.example.scrollbooker.screens.auth.AuthViewModel
-import com.example.scrollbooker.screens.auth.LoginScreen
 import com.example.scrollbooker.ui.theme.Background
 import androidx.compose.runtime.getValue
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.screens.auth.AuthScreen
 import com.example.scrollbooker.screens.auth.CollectEmailVerificationScreen
 import com.example.scrollbooker.screens.auth.CollectUserUsernameScreen
-import com.example.scrollbooker.screens.auth.RegisterBusinessScreen
-import com.example.scrollbooker.screens.auth.RegisterClientScreen
 import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessServices.MyServicesScreen
 import com.example.scrollbooker.screens.auth.collectBusinessType.CollectBusinessTypeScreen
 import com.example.scrollbooker.screens.auth.collectBusinessType.CollectBusinessTypeViewModel
@@ -30,6 +28,11 @@ import com.example.scrollbooker.screens.profile.myBusiness.myBusinessLocation.My
 import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.SchedulesScreen
 import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.MySchedulesViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.myServices.MyServicesViewModel
+
+enum class AuthTypeEnum {
+    LOGIN,
+    REGISTER
+}
 
 @Composable
 fun AuthNavHost(viewModel: AuthViewModel) {
@@ -60,24 +63,38 @@ fun AuthNavHost(viewModel: AuthViewModel) {
             startDestination = startDestination
         ) {
             composable(AuthRoute.Login.route) {
-                LoginScreen(
+                AuthScreen(
                     viewModel = viewModel,
-                    onNavigate = { navController.navigate(it) }
+                    type = AuthTypeEnum.LOGIN,
+                    onNavigate = { navController.navigate(it) },
+                    onSubmit = { email, password ->
+                        viewModel.login(
+                            email,
+                            password
+                        )
+                    }
                 )
             }
 
             composable(AuthRoute.RegisterClient.route) {
-                RegisterClientScreen(
-                    viewModel=viewModel,
-                    onNavigate = { navController.navigate(it) }
+                AuthScreen(
+                    viewModel = viewModel,
+                    type = AuthTypeEnum.REGISTER,
+                    onNavigate = { navController.navigate(it) },
+                    onSubmit = { email, password ->
+                        viewModel.register(
+                            email,
+                            password
+                        )
+                    }
                 )
             }
 
             composable(AuthRoute.RegisterBusiness.route) {
-                RegisterBusinessScreen(
-                    viewModel=viewModel,
-                    onNavigate = { navController.navigate(it) }
-                )
+//                RegisterBusinessScreen(
+//                    viewModel=viewModel,
+//                    onNavigate = { navController.navigate(it) }
+//                )
             }
 
             composable(AuthRoute.CollectEmailVerification.route) {

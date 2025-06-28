@@ -47,8 +47,8 @@ class AuthViewModel @Inject constructor(
         password: String,
     ) {
         viewModelScope.launch {
-            _registerState.value = FeatureState.Loading
-            _registerState.value = registerUseCase(
+            _authState.value = FeatureState.Loading
+            _authState.value = registerUseCase(
                 email,
                 password,
                 roleName = RoleNameEnum.CLIENT

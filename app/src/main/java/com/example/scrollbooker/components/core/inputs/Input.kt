@@ -26,6 +26,7 @@ fun Input(
     onValueChange: (String) -> Unit,
     label: String = "",
     placeholder: String = "",
+    isError: Boolean = false,
     enabled: Boolean = true,
     inputColor: Color = SurfaceBG,
     keyboardOptions: KeyboardOptions = KeyboardOptions(
@@ -58,8 +59,10 @@ fun Input(
             unfocusedTextColor = OnSurfaceBG,
             disabledContainerColor = SurfaceBG,
             disabledTextColor = Divider,
-            disabledIndicatorColor = Color.Transparent
+            disabledIndicatorColor = Color.Transparent,
+            errorContainerColor = SurfaceBG
         ),
+        isError = isError,
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
         enabled = enabled,

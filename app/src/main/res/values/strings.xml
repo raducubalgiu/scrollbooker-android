@@ -140,4 +140,8 @@
     <string name="acceptedCurrencies">Valute acceptate pentru plăți</string>
     <string name="password">Parolă</string>
     <string name="email">Email</string>
+    <string name="passwordShouldContainMinimumEightCharacters">Parola trebuie să conțină minim 8 caractere</string>
+    <string name="passwordShouldContainMaximumTwentyCharacters">Parola trebuie să conțină maxim 20 de caractere</string>
+    <string name="passwordShouldContainAtLeastOneBigLetter">Parola trebuie sa conțină cel puțin o literă mare</string>
+    <string name="passwordShouldContainAtLeastOneDigit">Parola trebuie sa conțină cel puțin o cifră</string>
 </resources>

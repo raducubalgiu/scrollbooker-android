@@ -28,8 +28,6 @@ class LoginAndSaveSessionUseCase @Inject constructor(
             val userInfo = getUserInfoUseCase()
             val userPermissions = getUserPermissionsUseCase()
 
-            Timber.tag("Login USER INFO").e("USER INFO: $userInfo")
-
             authDataStore.storeUserSession(
                 accessToken = loginResponse.accessToken,
                 refreshToken = loginResponse.refreshToken,
