@@ -111,11 +111,17 @@ fun AuthNavHost(viewModel: AuthViewModel) {
             }
 
             composable(AuthRoute.CollectClientBirthDate.route) {
-                CollectClientBirthDateScreen()
+                CollectClientBirthDateScreen(
+                    onBack = {},
+                    onNext = { navController.navigate(AuthRoute.CollectClientGender.route) }
+                )
             }
 
             composable(AuthRoute.CollectClientGender.route) {
-                CollectClientGenderScreen()
+                CollectClientGenderScreen(
+                    onBack = { navController.navigate(AuthRoute.CollectClientBirthDate.route) },
+                    onNext = {}
+                )
             }
 
             composable(route = AuthRoute.CollectBusinessType.route) { backStackEntry ->

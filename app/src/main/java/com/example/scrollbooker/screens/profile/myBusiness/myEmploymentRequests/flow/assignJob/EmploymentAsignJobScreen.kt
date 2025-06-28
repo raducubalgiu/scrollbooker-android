@@ -44,11 +44,11 @@ fun EmploymentAssignJobScreen(
                         val professions = (professionsState as FeatureState.Success).data
                         val options = professions.map { Option(value = it.id.toString(), name = it.name) }
 
-                        InputRadio(
-                            value = professionId.toString(),
-                            options = options,
-                            onValueChange = { globalViewModel.assignProfession(it.toInt()) }
-                        )
+//                        InputRadio(
+//                            value = professionId.toString(),
+//                            options = options,
+//                            onValueChange = { globalViewModel.assignProfession(it.toInt()) }
+//                        )
                     }
                 }
             }

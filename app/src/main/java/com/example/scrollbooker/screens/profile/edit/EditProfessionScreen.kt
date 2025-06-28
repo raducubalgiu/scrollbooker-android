@@ -50,10 +50,10 @@ fun EditProfessionScreen(
 
         Spacer(Modifier.height(SpacingXXL))
 
-        InputRadio(
-            options = options,
-            value = "frizer",
-            onValueChange = {}
-        )
+//        InputRadio(
+//            options = options,
+//            value = "frizer",
+//            onValueChange = {}
+//        )
     }
 }

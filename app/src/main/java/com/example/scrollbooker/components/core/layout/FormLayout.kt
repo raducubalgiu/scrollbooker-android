@@ -26,18 +26,19 @@ import com.example.scrollbooker.ui.theme.headlineLarge
 fun FormLayout(
     modifier: Modifier = Modifier,
     enableBack: Boolean = true,
+    enableBottomAction: Boolean = true,
     isEnabled: Boolean = true,
-    headerTitle: String = "",
     headLine: String,
     subHeadLine: String,
-    buttonTitle: String,
+    headerTitle: String? = "",
+    buttonTitle: String? = "",
     onBack: (() -> Unit)? = null,
-    onNext: () -> Unit,
+    onNext: (() -> Unit)? = null,
     content: @Composable () -> Unit,
 ) {
     Layout(
         modifier = modifier,
-        headerTitle = headerTitle,
+        headerTitle = headerTitle ?: "",
         onBack = onBack,
         enablePaddingH = false,
         enableBack = enableBack
@@ -64,16 +65,18 @@ fun FormLayout(
                 Spacer(Modifier.height(BasePadding))
                 content()
             }
-            Column(Modifier.fillMaxWidth()) {
-                MainButton(
-                    modifier = Modifier.padding(
-                        vertical = BasePadding,
-                        horizontal = SpacingXXL
-                    ),
-                    title = buttonTitle,
-                    onClick = onNext,
-                    enabled = isEnabled
-                )
+            if(enableBottomAction) {
+                Column(Modifier.fillMaxWidth()) {
+                    MainButton(
+                        modifier = Modifier.padding(
+                            vertical = BasePadding,
+                            horizontal = SpacingXXL
+                        ),
+                        title = buttonTitle ?: "",
+                        onClick = { onNext?.invoke() },
+                        enabled = isEnabled
+                    )
+                }
             }
         }
     }

@@ -58,10 +58,10 @@ fun EditGenderScreen(
         },
         onBack = onBack,
     ) {
-        InputRadio(
-            options = options,
-            value = newGender,
-            onValueChange = { newGender = it }
-        )
+//        InputRadio(
+//            options = options,
+//            value = newGender,
+//            onValueChange = { newGender = it }
+//        )
     }
 }
