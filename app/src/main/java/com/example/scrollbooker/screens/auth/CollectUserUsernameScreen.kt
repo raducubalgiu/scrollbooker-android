@@ -40,7 +40,8 @@ import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable
 fun CollectUserUsernameScreen(
-    viewModel: CollectUserUsernameViewModel
+    viewModel: CollectUserUsernameViewModel,
+    onSubmit: (String) -> Unit
 ) {
     FormLayout(
         enableBack = false,
@@ -54,11 +55,12 @@ fun CollectUserUsernameScreen(
         val isSaving by viewModel.isSaving.collectAsState()
         var username by remember { mutableStateOf("") }
 
-        val isSubmittedEnabled = when(val state = searchState) {
-            is FeatureState.Success<*> -> {
+        val isSubmittedEnabled = when {
+            searchState is FeatureState.Success<*> -> {
                 val response = (searchState as FeatureState.Success).data
                 response.available && username == response.username
             }
+            isSaving is FeatureState.Loading -> false
             else -> false
         }
 
@@ -124,8 +126,9 @@ fun CollectUserUsernameScreen(
             Spacer(Modifier.height(BasePadding))
 
             MainButton(
+                isLoading = isSaving is FeatureState.Loading,
                 enabled = isSubmittedEnabled && username.length >= 3,
-                onClick = {  },
+                onClick = { onSubmit(username) },
                 title = stringResource(R.string.save),
             )
         }

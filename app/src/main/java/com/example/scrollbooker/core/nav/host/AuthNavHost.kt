@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -109,8 +110,18 @@ fun AuthNavHost(viewModel: AuthViewModel) {
 
             composable(AuthRoute.CollectUserUsername.route) { backStackEntry ->
                 val viewModel: CollectUserUsernameViewModel = hiltViewModel()
+                val shouldNavigate by viewModel.navigateToNextStep.collectAsState()
 
-                CollectUserUsernameScreen(viewModel = viewModel)
+                LaunchedEffect(shouldNavigate) {
+                    if(shouldNavigate) {
+                        navController.navigate(AuthRoute.CollectClientBirthDate.route)
+                    }
+                }
+
+                CollectUserUsernameScreen(
+                    viewModel = viewModel,
+                    onSubmit = { viewModel.collectUserUsername(newUsername = it) }
+                )
             }
 
             composable(AuthRoute.CollectClientBirthDate.route) {

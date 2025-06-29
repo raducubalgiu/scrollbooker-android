@@ -4,9 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
+import com.example.scrollbooker.entity.user.userInfo.domain.model.RegistrationStepEnum
 import com.example.scrollbooker.entity.user.userProfile.domain.model.SearchUsernameResponse
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.SearchUsernameUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateUsernameUseCase
+import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -18,6 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CollectUserUsernameViewModel @Inject constructor(
+    private val authDataStore: AuthDataStore,
     private val updateUsernameUseCase: UpdateUsernameUseCase,
     private val searchUsernameUseCase: SearchUsernameUseCase
 ): ViewModel() {
@@ -29,6 +32,9 @@ class CollectUserUsernameViewModel @Inject constructor(
 
     private val _currentUsername = MutableStateFlow("")
     val currentUsername: StateFlow<String> = _currentUsername
+
+    private val _navigateToNextStep = MutableStateFlow(false)
+    val navigateToNextStep: StateFlow<Boolean> = _navigateToNextStep
 
     private var debounceJob: Job? = null
 
@@ -59,6 +65,7 @@ class CollectUserUsernameViewModel @Inject constructor(
     fun collectUserUsername(newUsername: String) {
         viewModelScope.launch {
             _isSaving.value = FeatureState.Loading
+            delay(500)
 
             updateUsernameUseCase(username = newUsername)
                 .onFailure { e ->
@@ -66,7 +73,9 @@ class CollectUserUsernameViewModel @Inject constructor(
                     Timber.tag("Update username").e("ERROR: on updating Username $e")
                 }
                 .onSuccess {
+                    authDataStore.updateRegistrationStep(RegistrationStepEnum.COLLECT_CLIENT_BIRTHDATE)
                     _isSaving.value = FeatureState.Success(Unit)
+                    _navigateToNextStep.value = true
                 }
         }
     }
