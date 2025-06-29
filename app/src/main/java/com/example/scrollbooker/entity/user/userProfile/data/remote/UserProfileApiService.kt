@@ -1,4 +1,5 @@
 package com.example.scrollbooker.entity.user.userProfile.data.remote
+import com.example.scrollbooker.entity.user.userProfile.domain.model.SearchUsernameResponse
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateBioRequest
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateFullNameRequest
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateGenderRequest
@@ -7,6 +8,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface UserProfileApiService {
     @GET("users/{userId}/user-profile")
@@ -33,4 +35,9 @@ interface UserProfileApiService {
     suspend fun updateGender(
         @Body request: UpdateGenderRequest
     )
+
+    @GET("users/available-username")
+    suspend fun searchUsername(
+        @Query("username") username: String
+    ): SearchUsernameResponse
 }

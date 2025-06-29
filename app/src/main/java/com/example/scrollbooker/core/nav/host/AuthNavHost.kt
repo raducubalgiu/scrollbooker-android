@@ -18,6 +18,7 @@ import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.screens.auth.AuthScreen
 import com.example.scrollbooker.screens.auth.CollectEmailVerificationScreen
 import com.example.scrollbooker.screens.auth.CollectUserUsernameScreen
+import com.example.scrollbooker.screens.auth.CollectUserUsernameViewModel
 import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessServices.MyServicesScreen
 import com.example.scrollbooker.screens.auth.collectBusinessType.CollectBusinessTypeScreen
 import com.example.scrollbooker.screens.auth.collectBusinessType.CollectBusinessTypeViewModel
@@ -106,8 +107,10 @@ fun AuthNavHost(viewModel: AuthViewModel) {
                 )
             }
 
-            composable(AuthRoute.CollectUserUsername.route) {
-                CollectUserUsernameScreen()
+            composable(AuthRoute.CollectUserUsername.route) { backStackEntry ->
+                val viewModel: CollectUserUsernameViewModel = hiltViewModel()
+
+                CollectUserUsernameScreen(viewModel = viewModel)
             }
 
             composable(AuthRoute.CollectClientBirthDate.route) {

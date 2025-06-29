@@ -1,6 +1,7 @@
 package com.example.scrollbooker.entity.user.userProfile.data.repository
 import com.example.scrollbooker.entity.user.userProfile.data.mappers.toDomain
 import com.example.scrollbooker.entity.user.userProfile.data.remote.UserProfileApiService
+import com.example.scrollbooker.entity.user.userProfile.domain.model.SearchUsernameResponse
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateBioRequest
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateFullNameRequest
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateGenderRequest
@@ -32,6 +33,10 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     override suspend fun updateGender(gender: String) {
         return apiService.updateGender(UpdateGenderRequest(gender))
+    }
+
+    override suspend fun searchUsername(username: String): SearchUsernameResponse {
+        return apiService.searchUsername(username)
     }
 //
 //    override suspend fun searchUsersClients(q: String): List<UserSocial> {

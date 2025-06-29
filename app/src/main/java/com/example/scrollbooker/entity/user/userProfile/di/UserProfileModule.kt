@@ -5,6 +5,7 @@ import com.example.scrollbooker.entity.user.userProfile.data.remote.UserProfileA
 import com.example.scrollbooker.entity.user.userProfile.data.repository.UserProfileRepositoryImpl
 import com.example.scrollbooker.entity.user.userProfile.domain.repository.UserProfileRepository
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserProfileUseCase
+import com.example.scrollbooker.entity.user.userProfile.domain.usecase.SearchUsernameUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateFullNameUseCase
 import dagger.Module
 import dagger.Provides
@@ -49,5 +50,13 @@ object UserProfileModule {
         repository: UserProfileRepository
     ): UpdateFullNameUseCase {
         return UpdateFullNameUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun searchUsernameUseCase(
+        repository: UserProfileRepository
+    ): SearchUsernameUseCase {
+        return SearchUsernameUseCase(repository)
     }
 }
