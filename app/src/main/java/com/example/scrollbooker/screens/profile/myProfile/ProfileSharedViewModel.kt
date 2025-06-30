@@ -153,21 +153,21 @@ class ProfileSharedViewModel @Inject constructor(
         viewModelScope.launch {
             _editState.value = FeatureState.Loading
 
-            updateGenderUseCase(newGender)
-                .onSuccess {
-                    _editState.value = FeatureState.Success(Unit)
-
-                    val currentProfile = (_userProfileState.value as? FeatureState.Success)?.data
-                    if(currentProfile != null) {
-                        val updatedProfile = currentProfile.copy(gender = newGender)
-                        _userProfileState.value = FeatureState.Success(updatedProfile)
-                    }
-                    isSaved = true
-                }
-                .onFailure { error ->
-                    Timber.tag("EditProfile").e(error, "ERROR: on Edit Gender User Data")
-                    _editState.value = FeatureState.Error(error = null)
-                }
+//            updateGenderUseCase(newGender)
+//                .onSuccess {
+//                    _editState.value = FeatureState.Success(Unit)
+//
+//                    val currentProfile = (_userProfileState.value as? FeatureState.Success)?.data
+//                    if(currentProfile != null) {
+//                        val updatedProfile = currentProfile.copy(gender = newGender)
+//                        _userProfileState.value = FeatureState.Success(updatedProfile)
+//                    }
+//                    isSaved = true
+//                }
+//                .onFailure { error ->
+//                    Timber.tag("EditProfile").e(error, "ERROR: on Edit Gender User Data")
+//                    _editState.value = FeatureState.Error(error = null)
+//                }
         }
     }
 }

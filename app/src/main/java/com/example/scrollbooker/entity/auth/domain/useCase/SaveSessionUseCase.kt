@@ -32,10 +32,9 @@ class SaveSessionUseCase @Inject constructor(
                 userId = userInfo.id,
                 businessId = userInfo.businessId,
                 businessTypeId = userInfo.businessTypeId,
-                permissions = userPermissions,
-                isValidated = userInfo.isValidated,
-                registrationStep = userInfo.registrationStep
+                permissions = userPermissions
             )
+
             FeatureState.Success(
                 AuthState(
                     isValidated = userInfo.isValidated,

@@ -1,4 +1,5 @@
 package com.example.scrollbooker.entity.user.userProfile.data.repository
+import com.example.scrollbooker.core.enums.GenderTypeEnum
 import com.example.scrollbooker.entity.user.userProfile.data.mappers.toDomain
 import com.example.scrollbooker.entity.user.userProfile.data.remote.UserProfileApiService
 import com.example.scrollbooker.entity.user.userProfile.domain.model.SearchUsernameResponse
@@ -36,7 +37,7 @@ class UserProfileRepositoryImpl @Inject constructor(
         return apiService.updateBirthDate(UpdateBirthDateRequest(birthdate))
     }
 
-    override suspend fun updateGender(gender: String?) {
+    override suspend fun updateGender(gender: String) {
         return apiService.updateGender(UpdateGenderRequest(gender))
     }
 

@@ -3,9 +3,7 @@ package com.example.scrollbooker.screens.auth.collectClientDetails
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.entity.user.userInfo.domain.model.RegistrationStepEnum
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateBirthDateUseCase
-import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +18,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CollectClientBirthDateViewModel @Inject constructor(
-    private val authDataStore: AuthDataStore,
     private val updateBirthDateUseCase: UpdateBirthDateUseCase
 ): ViewModel() {
     val selectedDay = MutableStateFlow<String?>(null)
@@ -74,7 +71,6 @@ class CollectClientBirthDateViewModel @Inject constructor(
                     Timber.tag("Update birthdate").e("ERROR: on updating Birthdate $e")
                 }
                 .onSuccess {
-                    authDataStore.updateRegistrationStep(RegistrationStepEnum.COLLECT_CLIENT_GENDER)
                     _isSaving.value = FeatureState.Success(Unit)
                     _navigateToNextStep.value = true
                 }

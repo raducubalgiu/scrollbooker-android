@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
-import com.example.scrollbooker.entity.user.userInfo.domain.model.RegistrationStepEnum
 import com.example.scrollbooker.entity.user.userProfile.domain.model.SearchUsernameResponse
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.SearchUsernameUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateUsernameUseCase
@@ -73,7 +72,6 @@ class CollectUserUsernameViewModel @Inject constructor(
                     Timber.tag("Update username").e("ERROR: on updating Username $e")
                 }
                 .onSuccess {
-                    authDataStore.updateRegistrationStep(RegistrationStepEnum.COLLECT_CLIENT_BIRTHDATE)
                     _isSaving.value = FeatureState.Success(Unit)
                     _navigateToNextStep.value = true
                 }

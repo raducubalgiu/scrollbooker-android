@@ -8,5 +8,8 @@ enum class GenderTypeEnum(val key: String) {
     companion object {
         fun fromKey(key: String): GenderTypeEnum? =
             GenderTypeEnum.entries.find { it.key == key }
+
+        fun fromKeys(keys: List<String>): List<GenderTypeEnum> =
+            keys.mapNotNull { GenderTypeEnum.Companion.fromKey(it) }
     }
 }

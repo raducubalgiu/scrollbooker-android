@@ -2,6 +2,7 @@ package com.example.scrollbooker.screens.profile.edit
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -10,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.components.core.list.ItemListInfo
@@ -18,6 +20,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.screens.auth.AuthViewModel
 import com.example.scrollbooker.screens.profile.myProfile.ProfileSharedViewModel
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.titleMedium
@@ -28,10 +31,12 @@ fun EditProfileScreen(
     onNavigate: (String) -> Unit,
     viewModel: ProfileSharedViewModel
 ) {
+    val authViewModel: AuthViewModel = hiltViewModel()
     val userState by viewModel.userProfileState.collectAsState()
     val user = (userState as? FeatureState.Success)?.data
 
     Layout(
+        modifier = Modifier.statusBarsPadding(),
         headerTitle = stringResource(R.string.editProfile),
         onBack = onBack,
         enablePaddingH = false
@@ -77,7 +82,7 @@ fun EditProfileScreen(
             supportingText = user?.profession ?: "",
             onClick = { onNavigate(MainRoute.EditProfession.route) }
         )
-        Button(onClick = {  }) {
+        Button(onClick = { authViewModel.logout() }) {
             Text("Logout")
         }
     }

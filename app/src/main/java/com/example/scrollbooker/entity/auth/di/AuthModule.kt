@@ -9,6 +9,7 @@ import com.example.scrollbooker.core.util.Constants
 import com.example.scrollbooker.entity.auth.domain.repository.AuthRepository
 import com.example.scrollbooker.entity.auth.data.remote.AuthApiService
 import com.example.scrollbooker.entity.auth.data.repository.AuthRepositoryImpl
+import com.example.scrollbooker.entity.auth.domain.useCase.IsLoggedInUseCase
 import com.example.scrollbooker.entity.auth.domain.useCase.LoginUseCase
 import com.example.scrollbooker.entity.auth.domain.useCase.RegisterUseCase
 import com.example.scrollbooker.entity.auth.domain.useCase.SaveSessionUseCase
@@ -102,6 +103,22 @@ object AuthModule {
         return RegisterUseCase(
             repository = repository,
             saveSessionUseCase = saveSessionUseCase
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideIsLoggedInUseCase(
+        apiService: AuthApiService,
+        tokenProvider: TokenProvider,
+        authDataStore: AuthDataStore,
+        getUserInfoUseCase: GetUserInfoUseCase
+    ): IsLoggedInUseCase {
+        return IsLoggedInUseCase(
+            apiService = apiService,
+            tokenProvider = tokenProvider,
+            authDataStore = authDataStore,
+            getUserInfoUseCase = getUserInfoUseCase
         )
     }
 

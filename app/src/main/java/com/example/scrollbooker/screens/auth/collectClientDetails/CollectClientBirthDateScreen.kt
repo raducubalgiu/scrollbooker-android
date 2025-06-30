@@ -38,7 +38,6 @@ import java.util.Locale
 @Composable
 fun CollectClientBirthDateScreen(
     viewModel: CollectClientBirthDateViewModel,
-    onBack: () -> Unit,
     onNext: () -> Unit
 ) {
     val isSaving by viewModel.isSaving.collectAsState()
@@ -55,7 +54,7 @@ fun CollectClientBirthDateScreen(
         buttonTitle = stringResource(R.string.nextStep),
         isEnabled = isEnabled || !isLoading,
         isLoading = isLoading,
-        onBack = onBack,
+        enableBack = false,
         onNext = onNext,
     ) {
         val currentYear = LocalDate.now().year

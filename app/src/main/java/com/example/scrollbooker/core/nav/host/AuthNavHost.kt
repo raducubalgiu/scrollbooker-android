@@ -16,6 +16,8 @@ import com.example.scrollbooker.screens.auth.AuthViewModel
 import com.example.scrollbooker.ui.theme.Background
 import androidx.compose.runtime.getValue
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.entity.auth.domain.model.AuthState
+import com.example.scrollbooker.entity.user.userInfo.domain.model.RegistrationStepEnum
 import com.example.scrollbooker.screens.auth.AuthScreen
 import com.example.scrollbooker.screens.auth.CollectEmailVerificationScreen
 import com.example.scrollbooker.screens.auth.CollectUserUsernameScreen
@@ -26,6 +28,7 @@ import com.example.scrollbooker.screens.auth.collectBusinessType.CollectBusiness
 import com.example.scrollbooker.screens.auth.collectClientDetails.CollectClientBirthDateScreen
 import com.example.scrollbooker.screens.auth.collectClientDetails.CollectClientBirthDateViewModel
 import com.example.scrollbooker.screens.auth.collectClientDetails.CollectClientGenderScreen
+import com.example.scrollbooker.screens.auth.collectClientDetails.CollectClientGenderViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.myBusinessLocation.MyBusinessLocationScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myBusinessLocation.MyBusinessLocationViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.SchedulesScreen
@@ -38,9 +41,9 @@ enum class AuthTypeEnum {
 }
 
 @Composable
-fun AuthNavHost(viewModel: AuthViewModel) {
+fun AuthNavHost(authViewModel: AuthViewModel) {
     val navController = rememberNavController()
-    val authState by viewModel.authState.collectAsState()
+    val authState by authViewModel.authState.collectAsState()
 
     val startDestination = when(val state = authState) {
         is FeatureState.Success -> {
@@ -67,11 +70,11 @@ fun AuthNavHost(viewModel: AuthViewModel) {
         ) {
             composable(AuthRoute.Login.route) {
                 AuthScreen(
-                    viewModel = viewModel,
+                    viewModel = authViewModel,
                     type = AuthTypeEnum.LOGIN,
                     onNavigate = { navController.navigate(it) },
                     onSubmit = { _, username, password ->
-                        viewModel.login(
+                        authViewModel.login(
                             username,
                             password
                         )
@@ -81,11 +84,11 @@ fun AuthNavHost(viewModel: AuthViewModel) {
 
             composable(AuthRoute.RegisterClient.route) {
                 AuthScreen(
-                    viewModel = viewModel,
+                    viewModel = authViewModel,
                     type = AuthTypeEnum.REGISTER,
                     onNavigate = { navController.navigate(it) },
                     onSubmit = { email, _, password ->
-                        viewModel.register(
+                        authViewModel.register(
                             email,
                             password
                         )
@@ -103,19 +106,24 @@ fun AuthNavHost(viewModel: AuthViewModel) {
             composable(AuthRoute.CollectEmailVerification.route) {
                 CollectEmailVerificationScreen(
                     onNext = {
-                        viewModel.verifyEmail()
+                        authViewModel.verifyEmail()
                         navController.navigate(AuthRoute.CollectUserUsername.route)
                     },
                 )
             }
 
             composable(AuthRoute.CollectUserUsername.route) { backStackEntry ->
-                val viewModel: CollectUserUsernameViewModel = hiltViewModel()
+                val viewModel: CollectUserUsernameViewModel = hiltViewModel(backStackEntry)
                 val shouldNavigate by viewModel.navigateToNextStep.collectAsState()
 
                 LaunchedEffect(shouldNavigate) {
                     if(shouldNavigate) {
-                        navController.navigate(AuthRoute.CollectClientBirthDate.route)
+                        authViewModel.updateAuthState(
+                            AuthState(
+                                isValidated = false,
+                                registrationStep = RegistrationStepEnum.COLLECT_CLIENT_BIRTHDATE
+                            )
+                        )
                     }
                 }
 
@@ -126,28 +134,57 @@ fun AuthNavHost(viewModel: AuthViewModel) {
             }
 
             composable(AuthRoute.CollectClientBirthDate.route) { backStackEntry ->
-                val viewModel: CollectClientBirthDateViewModel = hiltViewModel()
+                val viewModel: CollectClientBirthDateViewModel = hiltViewModel(backStackEntry)
                 val shouldNavigate by viewModel.navigateToNextStep.collectAsState()
 
                 LaunchedEffect(shouldNavigate) {
                     if(shouldNavigate) {
-                        navController.navigate(AuthRoute.CollectClientGender.route)
+                        authViewModel.updateAuthState(
+                            AuthState(
+                                isValidated = false,
+                                registrationStep = RegistrationStepEnum.COLLECT_CLIENT_GENDER
+                            )
+                        )
                     }
                 }
 
                 CollectClientBirthDateScreen(
                     viewModel = viewModel,
-                    onBack = {},
                     onNext = {
                         viewModel.collectUserBirthDate()
                     }
                 )
             }
 
-            composable(AuthRoute.CollectClientGender.route) {
+            composable(AuthRoute.CollectClientGender.route) { backStackEntry ->
+                val viewModel: CollectClientGenderViewModel = hiltViewModel(backStackEntry)
+                val shouldNavigate by viewModel.navigateToNextStep.collectAsState()
+
+                LaunchedEffect(shouldNavigate) {
+                    if(shouldNavigate) {
+                        authViewModel.updateAuthState(
+                            AuthState(
+                                isValidated = true,
+                                registrationStep = null
+                            )
+                        )
+                    }
+                }
+
                 CollectClientGenderScreen(
-                    onBack = { navController.navigate(AuthRoute.CollectClientBirthDate.route) },
-                    onNext = {}
+                    viewModel = viewModel,
+                    onNext = {
+                        viewModel.collectUserGender(it)
+
+                        if(shouldNavigate) {
+                            authViewModel.updateAuthState(
+                                AuthState(
+                                    isValidated = true,
+                                    registrationStep = null
+                                )
+                            )
+                        }
+                    }
                 )
             }
 

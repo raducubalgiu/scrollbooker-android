@@ -8,7 +8,6 @@ import com.example.scrollbooker.entity.auth.domain.useCase.IsLoggedInUseCase
 import com.example.scrollbooker.entity.auth.domain.useCase.LoginUseCase
 import com.example.scrollbooker.entity.auth.domain.useCase.RegisterUseCase
 import com.example.scrollbooker.entity.user.userEmailVerify.domain.useCase.VerifyUserEmailUseCase
-import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateUsernameUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,8 +22,7 @@ class AuthViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
     private val registerUseCase: RegisterUseCase,
     private val isLoggedInUseCase: IsLoggedInUseCase,
-    private val verifyUserEmailUseCase: VerifyUserEmailUseCase,
-    private val updateUsernameUseCase: UpdateUsernameUseCase
+    private val verifyUserEmailUseCase: VerifyUserEmailUseCase
 ): ViewModel() {
     private val _authState = MutableStateFlow<FeatureState<AuthState>>(FeatureState.Loading)
     val authState: StateFlow<FeatureState<AuthState>> = _authState.asStateFlow()
@@ -69,9 +67,19 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+    fun updateAuthState(authState: AuthState) {
+        _authState.value = FeatureState.Success(authState)
+    }
+
     fun logout() {
         viewModelScope.launch {
-
+            authDataStore.clearUserSession()
+            _authState.value = FeatureState.Success(
+                AuthState(
+                    isValidated = false,
+                    registrationStep = null
+                )
+            )
         }
     }
 }

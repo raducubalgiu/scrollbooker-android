@@ -37,9 +37,8 @@ object UserEmailVerifyModule {
     @Provides
     @Singleton
     fun provideUserEmailEmailVerifyUseCase(
-        authDataStore: AuthDataStore,
         repository: UserEmailVerifyRepository,
     ): VerifyUserEmailUseCase {
-        return VerifyUserEmailUseCase(authDataStore, repository)
+        return VerifyUserEmailUseCase(repository)
     }
 }
