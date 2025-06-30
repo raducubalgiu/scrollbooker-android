@@ -59,7 +59,7 @@ class CollectClientBirthDateViewModel @Inject constructor(
 
         viewModelScope.launch {
             _isSaving.value = FeatureState.Loading
-            delay(500)
+            delay(300)
 
             val birthdate = if(day != null && month != null && year != null) {
                LocalDate.of(year, month, day).toString()

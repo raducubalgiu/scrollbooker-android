@@ -26,7 +26,7 @@ class CollectClientGenderViewModel @Inject constructor(
     fun collectUserGender(gender: GenderTypeEnum) {
         viewModelScope.launch {
             _isSaving.value = FeatureState.Loading
-            delay(500)
+            delay(300)
 
             updateGenderUseCase(gender.key)
                 .onFailure { e ->

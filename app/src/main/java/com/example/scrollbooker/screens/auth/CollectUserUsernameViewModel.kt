@@ -7,7 +7,6 @@ import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.user.userProfile.domain.model.SearchUsernameResponse
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.SearchUsernameUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateUsernameUseCase
-import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -19,7 +18,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CollectUserUsernameViewModel @Inject constructor(
-    private val authDataStore: AuthDataStore,
     private val updateUsernameUseCase: UpdateUsernameUseCase,
     private val searchUsernameUseCase: SearchUsernameUseCase
 ): ViewModel() {
@@ -64,7 +62,7 @@ class CollectUserUsernameViewModel @Inject constructor(
     fun collectUserUsername(newUsername: String) {
         viewModelScope.launch {
             _isSaving.value = FeatureState.Loading
-            delay(500)
+            delay(300)
 
             updateUsernameUseCase(username = newUsername)
                 .onFailure { e ->
