@@ -3,6 +3,7 @@ import com.example.scrollbooker.entity.user.userProfile.data.mappers.toDomain
 import com.example.scrollbooker.entity.user.userProfile.data.remote.UserProfileApiService
 import com.example.scrollbooker.entity.user.userProfile.domain.model.SearchUsernameResponse
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateBioRequest
+import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateBirthDateRequest
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateFullNameRequest
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateGenderRequest
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateUsernameRequest
@@ -31,7 +32,11 @@ class UserProfileRepositoryImpl @Inject constructor(
         return apiService.updateBio(UpdateBioRequest(bio))
     }
 
-    override suspend fun updateGender(gender: String) {
+    override suspend fun updateBirthDate(birthdate: String?) {
+        return apiService.updateBirthDate(UpdateBirthDateRequest(birthdate))
+    }
+
+    override suspend fun updateGender(gender: String?) {
         return apiService.updateGender(UpdateGenderRequest(gender))
     }
 

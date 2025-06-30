@@ -6,6 +6,7 @@ import com.example.scrollbooker.entity.user.userProfile.data.repository.UserProf
 import com.example.scrollbooker.entity.user.userProfile.domain.repository.UserProfileRepository
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserProfileUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.SearchUsernameUseCase
+import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateBirthDateUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateFullNameUseCase
 import dagger.Module
 import dagger.Provides
@@ -50,6 +51,14 @@ object UserProfileModule {
         repository: UserProfileRepository
     ): UpdateFullNameUseCase {
         return UpdateFullNameUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUpdateBirthDateUseCase(
+        repository: UserProfileRepository
+    ): UpdateBirthDateUseCase {
+        return UpdateBirthDateUseCase(repository)
     }
 
     @Provides

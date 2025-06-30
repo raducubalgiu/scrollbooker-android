@@ -1,0 +1,83 @@
+package com.example.scrollbooker.screens.auth.collectClientDetails
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.entity.user.userInfo.domain.model.RegistrationStepEnum
+import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateBirthDateUseCase
+import com.example.scrollbooker.store.AuthDataStore
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import org.threeten.bp.LocalDate
+import timber.log.Timber
+import javax.inject.Inject
+
+@HiltViewModel
+class CollectClientBirthDateViewModel @Inject constructor(
+    private val authDataStore: AuthDataStore,
+    private val updateBirthDateUseCase: UpdateBirthDateUseCase
+): ViewModel() {
+    val selectedDay = MutableStateFlow<String?>(null)
+    val selectedMonth = MutableStateFlow<String?>(null)
+    val selectedYear = MutableStateFlow<String?>(null)
+
+    private val _isSaving = MutableStateFlow<FeatureState<Unit>?>(null)
+    val isSaving: StateFlow<FeatureState<Unit>?> = _isSaving
+
+    private val _navigateToNextStep = MutableStateFlow(false)
+    val navigateToNextStep: StateFlow<Boolean> = _navigateToNextStep
+
+    val isBirthDateValid: StateFlow<Boolean> = combine(
+        selectedDay, selectedMonth, selectedYear
+    ) { day, month, year ->
+        !day.isNullOrBlank() && !month.isNullOrBlank() && !year.isNullOrBlank()
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5_000),
+        false
+    )
+
+    fun setSelectedDay(newDay: String?) {
+        selectedDay.value = newDay
+    }
+
+    fun setSelectedMonth(newMonth: String?) {
+        selectedMonth.value = newMonth
+    }
+
+    fun setSelectedYear(newYear: String?) {
+        selectedYear.value = newYear
+    }
+
+    fun collectUserBirthDate() {
+        val day = selectedDay.value?.toIntOrNull()
+        val month = selectedMonth.value?.toIntOrNull()
+        val year = selectedYear.value?.toIntOrNull()
+
+        viewModelScope.launch {
+            _isSaving.value = FeatureState.Loading
+            delay(500)
+
+            val birthdate = if(day != null && month != null && year != null) {
+               LocalDate.of(year, month, day).toString()
+            } else null
+
+            updateBirthDateUseCase(birthdate = birthdate)
+                .onFailure { e ->
+                    _isSaving.value = FeatureState.Error(e)
+                    Timber.tag("Update birthdate").e("ERROR: on updating Birthdate $e")
+                }
+                .onSuccess {
+                    authDataStore.updateRegistrationStep(RegistrationStepEnum.COLLECT_CLIENT_GENDER)
+                    _isSaving.value = FeatureState.Success(Unit)
+                    _navigateToNextStep.value = true
+                }
+        }
+    }
+}

@@ -24,6 +24,7 @@ import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusin
 import com.example.scrollbooker.screens.auth.collectBusinessType.CollectBusinessTypeScreen
 import com.example.scrollbooker.screens.auth.collectBusinessType.CollectBusinessTypeViewModel
 import com.example.scrollbooker.screens.auth.collectClientDetails.CollectClientBirthDateScreen
+import com.example.scrollbooker.screens.auth.collectClientDetails.CollectClientBirthDateViewModel
 import com.example.scrollbooker.screens.auth.collectClientDetails.CollectClientGenderScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myBusinessLocation.MyBusinessLocationScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myBusinessLocation.MyBusinessLocationViewModel
@@ -124,10 +125,22 @@ fun AuthNavHost(viewModel: AuthViewModel) {
                 )
             }
 
-            composable(AuthRoute.CollectClientBirthDate.route) {
+            composable(AuthRoute.CollectClientBirthDate.route) { backStackEntry ->
+                val viewModel: CollectClientBirthDateViewModel = hiltViewModel()
+                val shouldNavigate by viewModel.navigateToNextStep.collectAsState()
+
+                LaunchedEffect(shouldNavigate) {
+                    if(shouldNavigate) {
+                        navController.navigate(AuthRoute.CollectClientGender.route)
+                    }
+                }
+
                 CollectClientBirthDateScreen(
+                    viewModel = viewModel,
                     onBack = {},
-                    onNext = { navController.navigate(AuthRoute.CollectClientGender.route) }
+                    onNext = {
+                        viewModel.collectUserBirthDate()
+                    }
                 )
             }
 

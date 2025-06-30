@@ -64,6 +64,9 @@ fun CollectUserUsernameScreen(
             else -> false
         }
 
+        val isEnabled = isSubmittedEnabled && username.length >= 3
+        val isLoading = isSaving is FeatureState.Loading
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -126,8 +129,8 @@ fun CollectUserUsernameScreen(
             Spacer(Modifier.height(BasePadding))
 
             MainButton(
-                isLoading = isSaving is FeatureState.Loading,
-                enabled = isSubmittedEnabled && username.length >= 3,
+                isLoading = isLoading,
+                enabled = isEnabled && !isLoading,
                 onClick = { onSubmit(username) },
                 title = stringResource(R.string.save),
             )

@@ -13,12 +13,17 @@ data class UpdateUsernameRequest(
 )
 
 @Serializable
+data class UpdateBirthDateRequest(
+    val birthdate: String?
+)
+
+@Serializable
 data class UpdateBioRequest(
     val bio: String
 )
 
 @Serializable
 data class UpdateGenderRequest(
-    val gender: String
+    val gender: String?
 )
 

@@ -7,7 +7,8 @@ interface UserProfileRepository {
     suspend fun updateFullName(fullName: String)
     suspend fun updateUsername(username: String)
     suspend fun updateBio(bio: String)
-    suspend fun updateGender(gender: String)
+    suspend fun updateBirthDate(birthdate: String?)
+    suspend fun updateGender(gender: String?)
     suspend fun searchUsername(username: String): SearchUsernameResponse
 //    suspend fun searchUsersClients(q: String): List<UserSocial>
 }

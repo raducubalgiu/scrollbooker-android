@@ -28,6 +28,7 @@ fun FormLayout(
     enableBack: Boolean = true,
     enableBottomAction: Boolean = true,
     isEnabled: Boolean = true,
+    isLoading: Boolean = false,
     headLine: String,
     subHeadLine: String,
     headerTitle: String? = "",
@@ -74,7 +75,8 @@ fun FormLayout(
                         ),
                         title = buttonTitle ?: "",
                         onClick = { onNext?.invoke() },
-                        enabled = isEnabled
+                        enabled = isEnabled,
+                        isLoading = isLoading
                     )
                 }
             }

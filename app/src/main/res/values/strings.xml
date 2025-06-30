@@ -150,5 +150,7 @@
     <string name="addUniqueUsername">Introdu un nume de utilizator unic</string>
     <string name="chooseUsernameDescription">Alege un nume unic pentru profilul tău. Poți alege orice variantă disponibilă</string>,
     <string name="preferNotToSay">Prefer să nu spun</string>
-
+    <string name="day">Ziua</string>
+    <string name="month">Luna</string>
+    <string name="year">Anul</string>
 </resources>
