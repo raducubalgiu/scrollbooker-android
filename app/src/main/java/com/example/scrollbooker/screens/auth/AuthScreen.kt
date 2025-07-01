@@ -2,7 +2,6 @@ package com.example.scrollbooker.screens.auth
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,7 +18,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -41,6 +39,7 @@ import com.example.scrollbooker.core.nav.host.AuthTypeEnum
 import com.example.scrollbooker.core.nav.routes.AuthRoute
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.checkEmail
 import com.example.scrollbooker.core.util.checkPassword
@@ -84,7 +83,11 @@ fun AuthScreen(
         else -> email.isNotEmpty() && password.isNotEmpty()
     }
 
-    Column(Modifier.fillMaxSize().background(Background)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Background)
+    ) {
         if(type == AuthTypeEnum.REGISTER_BUSINESS) {
             Header(
                 onBack = onBack
@@ -98,8 +101,8 @@ fun AuthScreen(
                 .padding(
                     top = 50.dp,
                     bottom = BasePadding,
-                    start = BasePadding,
-                    end = BasePadding
+                    start = SpacingXL,
+                    end = SpacingXL
                 ),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
@@ -168,15 +171,13 @@ fun AuthScreen(
                     )
                 )
 
-                Spacer(Modifier.height(SpacingS))
-
                 if(wasSubmitted && !isValidPassword) {
+                    Spacer(Modifier.height(SpacingS))
                     PasswordRequirement(password)
                 }
 
-                Spacer(Modifier.height(BasePadding))
-
                 MainButton(
+                    modifier = Modifier.padding(vertical = BasePadding),
                     isLoading = isLoading,
                     enabled = !isLoading && isEnabled,
                     title = if(type == AuthTypeEnum.LOGIN) stringResource(id = R.string.login)
@@ -188,8 +189,6 @@ fun AuthScreen(
                         }
                     }
                 )
-
-                Spacer(Modifier.height(BasePadding))
 
                 if(type != AuthTypeEnum.REGISTER_BUSINESS) {
                     AuthFooter(type, onNavigate = {
