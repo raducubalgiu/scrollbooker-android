@@ -12,6 +12,12 @@ fun MyProfileMenuList(
     onNavigate: (String) -> Unit
 ) {
     ItemList(
+        headLine = "Creaza o postare",
+        leftIcon = painterResource(R.drawable.ic_camera_solid),
+        displayRightIcon = false,
+        onClick = {  }
+    )
+    ItemList(
         headLine = stringResource(id = R.string.calendar),
         leftIcon = painterResource(R.drawable.ic_calendar),
         displayRightIcon = false,

@@ -1,4 +1,7 @@
 package com.example.scrollbooker.core.nav.host
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,10 +37,12 @@ import com.example.scrollbooker.screens.profile.myBusiness.myBusinessLocation.My
 import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.SchedulesScreen
 import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.MySchedulesViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.myServices.MyServicesViewModel
+import timber.log.Timber
 
 enum class AuthTypeEnum {
     LOGIN,
-    REGISTER
+    REGISTER,
+    REGISTER_BUSINESS
 }
 
 @Composable
@@ -96,11 +101,57 @@ fun AuthNavHost(authViewModel: AuthViewModel) {
                 )
             }
 
-            composable(AuthRoute.RegisterBusiness.route) {
-//                RegisterBusinessScreen(
-//                    viewModel=viewModel,
-//                    onNavigate = { navController.navigate(it) }
-//                )
+            composable(
+                AuthRoute.RegisterBusiness.route,
+                enterTransition = {
+                    slideIntoContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Left,
+                        animationSpec = tween(
+                            durationMillis = 250,
+                            easing = FastOutSlowInEasing
+                        )
+                    )
+                },
+                exitTransition = {
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Left,
+                        animationSpec = tween(
+                            durationMillis = 250,
+                            easing = FastOutSlowInEasing
+                        )
+                    )
+                },
+                popEnterTransition = {
+                    slideIntoContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Right,
+                        animationSpec = tween(
+                            durationMillis = 250,
+                            easing = FastOutSlowInEasing
+                        )
+                    )
+                },
+                popExitTransition = {
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Right,
+                        animationSpec = tween(
+                            durationMillis = 250,
+                            easing = FastOutSlowInEasing
+                        )
+                    )
+                }
+            ) {
+                AuthScreen(
+                    viewModel = authViewModel,
+                    type = AuthTypeEnum.REGISTER_BUSINESS,
+                    onBack = { navController.popBackStack() },
+                    onNavigate = { navController.navigate(it) },
+                    onSubmit = { email, _, password ->
+                        authViewModel.register(
+                            email,
+                            password
+                        )
+                    }
+                )
             }
 
             composable(AuthRoute.CollectEmailVerification.route) {

@@ -67,6 +67,7 @@ class CollectUserUsernameViewModel @Inject constructor(
             updateUsernameUseCase(username = newUsername)
                 .onFailure { e ->
                     _isSaving.value = FeatureState.Error(e)
+                    _navigateToNextStep.value = false
                     Timber.tag("Update username").e("ERROR: on updating Username $e")
                 }
                 .onSuccess {

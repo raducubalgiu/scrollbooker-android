@@ -68,6 +68,7 @@ class CollectClientBirthDateViewModel @Inject constructor(
             updateBirthDateUseCase(birthdate = birthdate)
                 .onFailure { e ->
                     _isSaving.value = FeatureState.Error(e)
+                    _navigateToNextStep.value = false
                     Timber.tag("Update birthdate").e("ERROR: on updating Birthdate $e")
                 }
                 .onSuccess {

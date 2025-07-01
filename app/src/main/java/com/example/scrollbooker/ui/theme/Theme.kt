@@ -9,8 +9,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import com.example.scrollbooker.store.util.ThemePreferenceEnum
-import com.example.scrollbooker.ui.theme.DarkColorScheme
-import com.example.scrollbooker.ui.theme.LightColorScheme
 
 private val LightColorScheme = lightColorScheme(
     primary = Color(0xFFFF6F00),

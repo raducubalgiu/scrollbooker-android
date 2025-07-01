@@ -155,4 +155,6 @@
     <string name="year">Anul</string>
     <string name="male">Bărbați</string>
     <string name="female">Femei</string>
+    <string name="registerBusiness">Înregistrare business</string>
+    <string name="registerBusinessDescription">Creează un cont pentru a-ți înregistra afacerea și a incepe procesul de configurare</string>
 </resources>

@@ -31,6 +31,7 @@ class CollectClientGenderViewModel @Inject constructor(
             updateGenderUseCase(gender.key)
                 .onFailure { e ->
                     _isSaving.value = FeatureState.Error(e)
+                    _navigateToNextStep.value = false
                     Timber.tag("Update Gender").e("ERROR: on updating User Gender $e")
                 }
                 .onSuccess {

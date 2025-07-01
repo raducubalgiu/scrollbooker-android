@@ -44,15 +44,15 @@ fun CollectClientBirthDateScreen(
     val selectedDay by viewModel.selectedDay.collectAsState()
     val selectedMonth by viewModel.selectedMonth.collectAsState()
     val selectedYear by viewModel.selectedYear.collectAsState()
-    val isEnabled by viewModel.isBirthDateValid.collectAsState()
 
+    val isEnabled by viewModel.isBirthDateValid.collectAsState()
     val isLoading = isSaving is FeatureState.Loading
 
     FormLayout(
         headLine = stringResource(R.string.dateOfBirth),
         subHeadLine = stringResource(R.string.dateOfBirthLabelDescription),
         buttonTitle = stringResource(R.string.nextStep),
-        isEnabled = isEnabled || !isLoading,
+        isEnabled = isEnabled && !isLoading,
         isLoading = isLoading,
         enableBack = false,
         onNext = onNext,

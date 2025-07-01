@@ -21,13 +21,19 @@ fun AuthHeader(
         style = headlineLarge,
         color = OnBackground,
         fontWeight = FontWeight.ExtraBold,
-        text = if(type == AuthTypeEnum.LOGIN) stringResource(R.string.login)
-        else stringResource(R.string.register)
+        text = when(type) {
+            AuthTypeEnum.LOGIN -> stringResource(R.string.login)
+            AuthTypeEnum.REGISTER -> stringResource(R.string.register)
+            AuthTypeEnum.REGISTER_BUSINESS -> "Inregistrare business"
+        }
     )
+
     Text(
-        text =
-            if(type == AuthTypeEnum.LOGIN) stringResource(R.string.loginMessage)
-            else stringResource(R.string.registerMessage)
+        text = when(type) {
+            AuthTypeEnum.LOGIN -> stringResource(R.string.loginMessage)
+            AuthTypeEnum.REGISTER -> stringResource(R.string.registerMessage)
+            AuthTypeEnum.REGISTER_BUSINESS -> stringResource(R.string.registerBusinessDescription)
+        }
     )
 
     Spacer(Modifier.height(BasePadding))
