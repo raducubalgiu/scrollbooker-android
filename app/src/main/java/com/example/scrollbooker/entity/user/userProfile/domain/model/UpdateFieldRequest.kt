@@ -1,6 +1,4 @@
 package com.example.scrollbooker.entity.user.userProfile.domain.model
-
-import com.example.scrollbooker.core.enums.GenderTypeEnum
 import kotlinx.serialization.Serializable
 
 @Serializable

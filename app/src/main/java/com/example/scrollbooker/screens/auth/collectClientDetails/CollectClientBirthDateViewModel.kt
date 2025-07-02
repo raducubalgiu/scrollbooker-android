@@ -3,6 +3,7 @@ package com.example.scrollbooker.screens.auth.collectClientDetails
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateBirthDateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -11,7 +12,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import timber.log.Timber
 import javax.inject.Inject
@@ -26,9 +26,6 @@ class CollectClientBirthDateViewModel @Inject constructor(
 
     private val _isSaving = MutableStateFlow<FeatureState<Unit>?>(null)
     val isSaving: StateFlow<FeatureState<Unit>?> = _isSaving
-
-    private val _navigateToNextStep = MutableStateFlow(false)
-    val navigateToNextStep: StateFlow<Boolean> = _navigateToNextStep
 
     val isBirthDateValid: StateFlow<Boolean> = combine(
         selectedDay, selectedMonth, selectedYear
@@ -52,29 +49,26 @@ class CollectClientBirthDateViewModel @Inject constructor(
         selectedYear.value = newYear
     }
 
-    fun collectUserBirthDate() {
+    suspend fun collectUserBirthDate(): AuthState? {
         val day = selectedDay.value?.toIntOrNull()
         val month = selectedMonth.value?.toIntOrNull()
         val year = selectedYear.value?.toIntOrNull()
 
-        viewModelScope.launch {
-            _isSaving.value = FeatureState.Loading
-            delay(300)
+        _isSaving.value = FeatureState.Loading
+        delay(300)
 
-            val birthdate = if(day != null && month != null && year != null) {
-               LocalDate.of(year, month, day).toString()
-            } else null
+        val birthdate = if (day != null && month != null && year != null) {
+            LocalDate.of(year, month, day).toString()
+        } else null
 
-            updateBirthDateUseCase(birthdate = birthdate)
-                .onFailure { e ->
-                    _isSaving.value = FeatureState.Error(e)
-                    _navigateToNextStep.value = false
-                    Timber.tag("Update birthdate").e("ERROR: on updating Birthdate $e")
-                }
-                .onSuccess {
-                    _isSaving.value = FeatureState.Success(Unit)
-                    _navigateToNextStep.value = true
-                }
-        }
+        return updateBirthDateUseCase(birthdate = birthdate)
+            .onFailure { e ->
+                _isSaving.value = FeatureState.Error(e)
+                Timber.tag("Update birthdate").e("ERROR: on updating Birthdate $e")
+            }
+            .onSuccess {
+                _isSaving.value = FeatureState.Success(Unit)
+            }
+            .getOrNull()
     }
 }

@@ -1,4 +1,5 @@
 package com.example.scrollbooker.entity.user.userProfile.data.remote
+import com.example.scrollbooker.entity.auth.data.remote.AuthStateDto
 import com.example.scrollbooker.entity.user.userProfile.domain.model.SearchUsernameResponse
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateBioRequest
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateBirthDateRequest
@@ -25,21 +26,21 @@ interface UserProfileApiService {
     @PATCH("users/user-info/username")
     suspend fun updateUsername(
         @Body request: UpdateUsernameRequest
-    )
+    ): AuthStateDto
 
     @PATCH("users/user-info/birthdate")
     suspend fun updateBirthDate(
         @Body request: UpdateBirthDateRequest
-    )
-
-    @PATCH("users/user-info/bio")
-    suspend fun updateBio(
-        @Body request: UpdateBioRequest
-    )
+    ): AuthStateDto
 
     @PATCH("users/user-info/gender")
     suspend fun updateGender(
         @Body request: UpdateGenderRequest
+    ): AuthStateDto
+
+    @PATCH("users/user-info/bio")
+    suspend fun updateBio(
+        @Body request: UpdateBioRequest
     )
 
     @GET("users/available-username")

@@ -18,7 +18,9 @@ import com.example.scrollbooker.core.nav.routes.AuthRoute
 import com.example.scrollbooker.screens.auth.AuthViewModel
 import com.example.scrollbooker.ui.theme.Background
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.entity.auth.data.remote.RoleNameEnum
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.user.userInfo.domain.model.RegistrationStepEnum
 import com.example.scrollbooker.screens.auth.AuthScreen
@@ -37,6 +39,7 @@ import com.example.scrollbooker.screens.profile.myBusiness.myBusinessLocation.My
 import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.SchedulesScreen
 import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.MySchedulesViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.myServices.MyServicesViewModel
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 enum class AuthTypeEnum {
@@ -49,6 +52,7 @@ enum class AuthTypeEnum {
 fun AuthNavHost(authViewModel: AuthViewModel) {
     val navController = rememberNavController()
     val authState by authViewModel.authState.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
 
     val startDestination = when(val state = authState) {
         is FeatureState.Success -> {
@@ -95,7 +99,8 @@ fun AuthNavHost(authViewModel: AuthViewModel) {
                     onSubmit = { email, _, password ->
                         authViewModel.register(
                             email,
-                            password
+                            password,
+                            roleName = RoleNameEnum.CLIENT
                         )
                     }
                 )
@@ -148,7 +153,8 @@ fun AuthNavHost(authViewModel: AuthViewModel) {
                     onSubmit = { email, _, password ->
                         authViewModel.register(
                             email,
-                            password
+                            password,
+                            roleName = RoleNameEnum.BUSINESS
                         )
                     }
                 )
@@ -165,75 +171,47 @@ fun AuthNavHost(authViewModel: AuthViewModel) {
 
             composable(AuthRoute.CollectUserUsername.route) { backStackEntry ->
                 val viewModel: CollectUserUsernameViewModel = hiltViewModel(backStackEntry)
-                val shouldNavigate by viewModel.navigateToNextStep.collectAsState()
-
-                LaunchedEffect(shouldNavigate) {
-                    if(shouldNavigate) {
-                        authViewModel.updateAuthState(
-                            AuthState(
-                                isValidated = false,
-                                registrationStep = RegistrationStepEnum.COLLECT_CLIENT_BIRTHDATE
-                            )
-                        )
-                    }
-                }
 
                 CollectUserUsernameScreen(
                     viewModel = viewModel,
-                    onSubmit = { viewModel.collectUserUsername(newUsername = it) }
+                    onSubmit = {
+                        coroutineScope.launch {
+                            val authState = viewModel.collectUserUsername(newUsername = it)
+                            if(authState != null) {
+                                authViewModel.updateAuthState(authState)
+                            }
+                        }
+                    }
                 )
             }
 
             composable(AuthRoute.CollectClientBirthDate.route) { backStackEntry ->
                 val viewModel: CollectClientBirthDateViewModel = hiltViewModel(backStackEntry)
-                val shouldNavigate by viewModel.navigateToNextStep.collectAsState()
-
-                LaunchedEffect(shouldNavigate) {
-                    if(shouldNavigate) {
-                        authViewModel.updateAuthState(
-                            AuthState(
-                                isValidated = false,
-                                registrationStep = RegistrationStepEnum.COLLECT_CLIENT_GENDER
-                            )
-                        )
-                    }
-                }
 
                 CollectClientBirthDateScreen(
                     viewModel = viewModel,
                     onNext = {
-                        viewModel.collectUserBirthDate()
+                        coroutineScope.launch {
+                           val authState = viewModel.collectUserBirthDate()
+                            if(authState != null) {
+                                authViewModel.updateAuthState(authState)
+                            }
+                        }
                     }
                 )
             }
 
             composable(AuthRoute.CollectClientGender.route) { backStackEntry ->
                 val viewModel: CollectClientGenderViewModel = hiltViewModel(backStackEntry)
-                val shouldNavigate by viewModel.navigateToNextStep.collectAsState()
-
-                LaunchedEffect(shouldNavigate) {
-                    if(shouldNavigate) {
-                        authViewModel.updateAuthState(
-                            AuthState(
-                                isValidated = true,
-                                registrationStep = null
-                            )
-                        )
-                    }
-                }
 
                 CollectClientGenderScreen(
                     viewModel = viewModel,
                     onNext = {
-                        viewModel.collectUserGender(it)
-
-                        if(shouldNavigate) {
-                            authViewModel.updateAuthState(
-                                AuthState(
-                                    isValidated = true,
-                                    registrationStep = null
-                                )
-                            )
+                        coroutineScope.launch {
+                            val authState = viewModel.collectUserGender(it)
+                            if(authState != null) {
+                                authViewModel.updateAuthState(authState)
+                            }
                         }
                     }
                 )

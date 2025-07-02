@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
+import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.user.userProfile.domain.model.SearchUsernameResponse
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.SearchUsernameUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateUsernameUseCase
@@ -29,9 +30,6 @@ class CollectUserUsernameViewModel @Inject constructor(
 
     private val _currentUsername = MutableStateFlow("")
     val currentUsername: StateFlow<String> = _currentUsername
-
-    private val _navigateToNextStep = MutableStateFlow(false)
-    val navigateToNextStep: StateFlow<Boolean> = _navigateToNextStep
 
     private var debounceJob: Job? = null
 
@@ -59,21 +57,18 @@ class CollectUserUsernameViewModel @Inject constructor(
        }
     }
 
-    fun collectUserUsername(newUsername: String) {
-        viewModelScope.launch {
-            _isSaving.value = FeatureState.Loading
-            delay(300)
+    suspend fun collectUserUsername(newUsername: String): AuthState? {
+        _isSaving.value = FeatureState.Loading
+        delay(300)
 
-            updateUsernameUseCase(username = newUsername)
-                .onFailure { e ->
-                    _isSaving.value = FeatureState.Error(e)
-                    _navigateToNextStep.value = false
-                    Timber.tag("Update username").e("ERROR: on updating Username $e")
-                }
-                .onSuccess {
-                    _isSaving.value = FeatureState.Success(Unit)
-                    _navigateToNextStep.value = true
-                }
-        }
+        return updateUsernameUseCase(username = newUsername)
+            .onFailure { e ->
+                _isSaving.value = FeatureState.Error(e)
+                Timber.tag("Update username").e("ERROR: on updating Username $e")
+            }
+            .onSuccess {
+                _isSaving.value = FeatureState.Success(Unit)
+            }
+            .getOrNull()
     }
 }

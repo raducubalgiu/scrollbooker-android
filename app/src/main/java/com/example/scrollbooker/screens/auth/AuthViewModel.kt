@@ -49,13 +49,14 @@ class AuthViewModel @Inject constructor(
     fun register(
         email: String,
         password: String,
+        roleName: RoleNameEnum
     ) {
         viewModelScope.launch {
             _authState.value = FeatureState.Loading
             _authState.value = registerUseCase(
                 email,
                 password,
-                roleName = RoleNameEnum.CLIENT
+                roleName
             )
         }
     }
