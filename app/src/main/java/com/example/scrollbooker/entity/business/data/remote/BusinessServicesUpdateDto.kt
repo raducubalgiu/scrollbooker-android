@@ -1,8 +1,8 @@
-package com.example.scrollbooker.entity.service.data.remote
+package com.example.scrollbooker.entity.business.data.remote
 
 import com.google.gson.annotations.SerializedName
 
-data class AttachManyServicesRequest(
+data class BusinessServicesUpdateRequest(
     @SerializedName("service_ids")
     val serviceIds: List<Int>
 )

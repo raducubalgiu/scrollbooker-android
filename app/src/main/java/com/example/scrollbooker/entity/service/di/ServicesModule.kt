@@ -4,11 +4,8 @@ import com.example.scrollbooker.core.util.Constants
 import com.example.scrollbooker.entity.service.data.remote.ServicesApiService
 import com.example.scrollbooker.entity.service.data.repository.ServiceRepositoryImpl
 import com.example.scrollbooker.entity.service.domain.repository.ServiceRepository
-import com.example.scrollbooker.entity.service.domain.useCase.AttachManyServicesUseCase
-import com.example.scrollbooker.entity.service.domain.useCase.DetachServiceUseCase
 import com.example.scrollbooker.entity.service.domain.useCase.GetServicesByBusinessTypeUseCase
 import com.example.scrollbooker.entity.service.domain.useCase.GetServicesByBusinessIdUseCase
-import com.example.scrollbooker.store.AuthDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -53,23 +50,5 @@ object ServicesModule {
         repository: ServiceRepository,
     ): GetServicesByBusinessTypeUseCase {
         return GetServicesByBusinessTypeUseCase(repository)
-    }
-
-    @Provides
-    @Singleton
-    fun provideAttachManyServicesUseCase(
-        repository: ServiceRepository,
-        authDataStore: AuthDataStore
-    ): AttachManyServicesUseCase {
-        return AttachManyServicesUseCase(authDataStore, repository)
-    }
-
-    @Provides
-    @Singleton
-    fun provideDetachServiceUseCase(
-        authDataStore: AuthDataStore,
-        repository: ServiceRepository
-    ): DetachServiceUseCase {
-        return DetachServiceUseCase(authDataStore, repository)
     }
 }

@@ -5,6 +5,7 @@ import com.example.scrollbooker.entity.business.data.remote.BusinessApiService
 import com.example.scrollbooker.entity.business.data.repository.BusinessRepositoryImpl
 import com.example.scrollbooker.entity.business.domain.repository.BusinessRepository
 import com.example.scrollbooker.entity.business.domain.useCase.SearchBusinessAddressUseCase
+import com.example.scrollbooker.entity.business.domain.useCase.UpdateBusinessServicesUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -40,5 +41,13 @@ object BusinessModule {
         repository: BusinessRepository,
     ): SearchBusinessAddressUseCase {
         return SearchBusinessAddressUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUpdateBusinessServicesUseCase(
+        repository: BusinessRepository,
+    ): UpdateBusinessServicesUseCase {
+        return UpdateBusinessServicesUseCase(repository)
     }
 }

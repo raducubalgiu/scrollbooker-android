@@ -297,7 +297,14 @@ fun AuthNavHost(authViewModel: AuthViewModel) {
                 MyServicesScreen(
                     viewModel = viewModel,
                     onBack = { navController.navigate(AuthRoute.CollectBusinessLocation.route) },
-                    onNextOrSave = { navController.navigate(AuthRoute.CollectBusinessSchedules.route) },
+                    onNextOrSave = {
+                        coroutineScope.launch {
+                            val authState = viewModel.updateBusinessServices()
+                            if(authState != null) {
+                                authViewModel.updateAuthState(authState)
+                            }
+                        }
+                    },
                 )
             }
 
