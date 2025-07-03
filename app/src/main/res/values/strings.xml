@@ -159,4 +159,11 @@
     <string name="registerBusinessDescription">Creează un cont pentru a-ți înregistra afacerea și a incepe procesul de configurare</string>
     <string name="back">Înapoi</string>
     <string name="next">Înainte</string>
+    <string name="addDescription">Adaugă o descriere</string>
+    <string name="yourBusinessName">Numele business-ului tău</string>
+    <string name="locationPresentation">Prezentarea locației</string>
+    <string name="locationPresentationDescription">Spune-ne cum se numește business-ul tău și oferă cateva detalii despre servicii, atmosferă sau orice crezi ca e important</string>
+    <string name="locationAddress">Adresa locației</string>
+    <string name="photoGallery">Galerie foto</string>
+    <string name="photoGalleryDescription">"Încarcă cateva imagini de la locație - o prezentare vizuală bună atrage mai mulți clienți"</string>
 </resources>

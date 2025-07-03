@@ -5,11 +5,10 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
+import com.example.scrollbooker.entity.business.domain.model.BusinessAddress
+import com.example.scrollbooker.entity.business.domain.useCase.SearchBusinessAddressUseCase
 import com.example.scrollbooker.entity.businessType.domain.model.BusinessType
 import com.example.scrollbooker.entity.businessType.domain.useCase.GetAllPaginatedBusinessTypesUseCase
-import com.example.scrollbooker.entity.mapbbox.domain.model.Address
-import com.example.scrollbooker.entity.mapbbox.domain.useCase.SearchAddressUseCase
-import com.example.scrollbooker.entity.user.userProfile.domain.model.SearchUsernameResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -22,7 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MyBusinessLocationViewModel @Inject constructor(
     private val getAllBusinessTypesUseCase: GetAllPaginatedBusinessTypesUseCase,
-    private val searchAddressUseCase: SearchAddressUseCase
+    private val searchBusinessAddressUseCase: SearchBusinessAddressUseCase
 ): ViewModel() {
     private val _businessTypes: Flow<PagingData<BusinessType>> by lazy {
         getAllBusinessTypesUseCase().cachedIn(viewModelScope)
@@ -36,16 +35,37 @@ class MyBusinessLocationViewModel @Inject constructor(
         _selectedBusinessType.value = businessType
     }
 
-    private val _searchState = MutableStateFlow<FeatureState<List<Address>>?>(null)
-    val searchState: StateFlow<FeatureState<List<Address>>?> = _searchState
+    private val _searchState = MutableStateFlow<FeatureState<List<BusinessAddress>>?>(null)
+    val searchState: StateFlow<FeatureState<List<BusinessAddress>>?> = _searchState
 
-    private val _currentAddress = MutableStateFlow("")
-    val currentAddress: StateFlow<String> = _currentAddress
+    private val _selectedAddress = MutableStateFlow<BusinessAddress?>(null)
+    val selectedBusinessAddress: StateFlow<BusinessAddress?> = _selectedAddress
+
+    private val _currentQuery = MutableStateFlow("")
+    val currentQuery: StateFlow<String> = _currentQuery
+
+    fun setBusinessAddress(businessAddress: BusinessAddress) {
+        _selectedAddress.value = businessAddress
+    }
+
+    private val _currentName = MutableStateFlow("")
+    val currentName: StateFlow<String> = _currentName
+
+    fun setBusinessName(businessName: String) {
+        _currentName.value = businessName
+    }
+
+    private val _currentDescription = MutableStateFlow("")
+    val currentDescription: StateFlow<String> = _currentDescription
+
+    fun setBusinessDescription(businessDescription: String) {
+        _currentDescription.value = businessDescription
+    }
 
     private var debounceJob: Job? = null
 
     fun searchAddress(query: String) {
-        _currentAddress.value = query
+        _currentQuery.value = query
 
         if(query.length < 3) {
             debounceJob?.cancel()
@@ -55,15 +75,15 @@ class MyBusinessLocationViewModel @Inject constructor(
 
         debounceJob?.cancel()
         debounceJob = viewModelScope.launch {
-            delay(300)
+            delay(200)
 
-            val latest = currentAddress.value
+            val latest = currentQuery.value
             if(latest.length < 3 || latest != query) return@launch
 
             _searchState.value = FeatureState.Loading
 
             _searchState.value = withVisibleLoading {
-                searchAddressUseCase(query)
+                searchBusinessAddressUseCase(query)
             }
         }
     }

@@ -31,6 +31,8 @@ import com.example.scrollbooker.screens.auth.CollectUserUsernameScreen
 import com.example.scrollbooker.screens.auth.CollectUserUsernameViewModel
 import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessServices.MyServicesScreen
 import com.example.scrollbooker.screens.auth.collectBusinessType.CollectBusinessTypeScreen
+import com.example.scrollbooker.screens.auth.collectBusinessType.MyBusinessDetailsScreen
+import com.example.scrollbooker.screens.auth.collectBusinessType.MyBusinessGalleryScreen
 import com.example.scrollbooker.screens.auth.collectClientDetails.CollectClientBirthDateScreen
 import com.example.scrollbooker.screens.auth.collectClientDetails.CollectClientBirthDateViewModel
 import com.example.scrollbooker.screens.auth.collectClientDetails.CollectClientGenderScreen
@@ -241,7 +243,20 @@ fun AuthNavHost(authViewModel: AuthViewModel) {
 
                     CollectBusinessTypeScreen(
                         viewModel = viewModel,
-                        onNext = { navController.navigate(AuthRoute.CollectBusinessLocation.route) },
+                        onNext = { navController.navigate(AuthRoute.CollectBusinessDetails.route) },
+                    )
+                }
+
+                composable(route = AuthRoute.CollectBusinessDetails.route) { backStackEntry ->
+                    val parentEntry = remember(backStackEntry) {
+                        navController.getBackStackEntry(AuthRoute.CollectBusiness.route)
+                    }
+                    val viewModel: MyBusinessLocationViewModel = hiltViewModel(parentEntry)
+
+                    MyBusinessDetailsScreen(
+                        viewModel = viewModel,
+                        onBack = { navController.popBackStack() },
+                        onNext = { navController.navigate(AuthRoute.CollectBusinessLocation.route) }
                     )
                 }
 
@@ -254,7 +269,24 @@ fun AuthNavHost(authViewModel: AuthViewModel) {
                     MyBusinessLocationScreen(
                         viewModel = viewModel,
                         onBack = { navController.popBackStack() },
-                        onNextOrSave = { navController.navigate(AuthRoute.CollectBusinessServices.route) }
+                        onNextOrSave = {
+                            navController.navigate(AuthRoute.CollectBusinessGallery.route)
+                        }
+                    )
+                }
+
+                composable(route = AuthRoute.CollectBusinessGallery.route) { backStackEntry ->
+                    val parentEntry = remember(backStackEntry) {
+                        navController.getBackStackEntry(AuthRoute.CollectBusiness.route)
+                    }
+                    val viewModel: MyBusinessLocationViewModel = hiltViewModel(parentEntry)
+
+                    MyBusinessGalleryScreen(
+                        viewModel = viewModel,
+                        onBack = { navController.popBackStack() },
+                        onNext = {
+
+                        }
                     )
                 }
             }

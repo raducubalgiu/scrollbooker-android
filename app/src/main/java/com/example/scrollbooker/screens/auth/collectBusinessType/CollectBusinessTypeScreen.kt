@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
+import com.example.scrollbooker.components.core.inputs.InputRadio
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
@@ -82,37 +83,13 @@ fun CollectBusinessTypeScreen(
                 pagingItems[index]?.let { businessType ->
                     val selected = selectedBusinessType?.id == businessType.id
 
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .height(70.dp)
-                            .background(Background)
-                            .selectable(
-                                selected = selected,
-                                onClick = { viewModel.setBusinessType(businessType) },
-                                role = Role.RadioButton
-                            ),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            modifier = Modifier.padding(start = SpacingXXL),
-                            text = businessType.name,
-                            style = bodyLarge,
-                            color = OnBackground
-                        )
-                        RadioButton(
-                            modifier = Modifier.scale(1.3f).padding(end = SpacingXXL),
-                            selected = selected,
-                            onClick = null,
-                            colors = RadioButtonColors(
-                                selectedColor = Primary,
-                                unselectedColor = Divider,
-                                disabledSelectedColor = Divider,
-                                disabledUnselectedColor = Divider
-                            )
-                        )
-                    }
+                    InputRadio(
+                        selected = selected,
+                        onSelect = {
+                            viewModel.setBusinessType(businessType)
+                        },
+                        headLine = businessType.name
+                    )
 
                     if(index < pagingItems.itemCount - 1) {
                         Box(

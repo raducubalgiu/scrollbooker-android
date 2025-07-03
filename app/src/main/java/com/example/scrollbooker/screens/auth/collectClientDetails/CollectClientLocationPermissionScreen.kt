@@ -14,7 +14,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.scrollbooker.components.core.layout.FormLayout
-import com.google.android.gms.location.LocationServices
 import timber.log.Timber
 
 @SuppressLint("MissingPermission")
