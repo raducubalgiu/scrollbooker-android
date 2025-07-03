@@ -13,10 +13,8 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -36,36 +34,31 @@ import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.components.core.inputs.SearchBar
 import com.example.scrollbooker.components.core.layout.FormLayout
-import com.example.scrollbooker.core.nav.routes.AuthRoute
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
+import com.example.scrollbooker.screens.profile.myBusiness.myBusinessLocation.MyBusinessLocationViewModel
 
 @Composable
 fun CollectBusinessTypeScreen(
-    viewModel: CollectBusinessTypeViewModel,
-    onNext: (String) -> Unit
+    viewModel: MyBusinessLocationViewModel,
+    onNext: () -> Unit
 ) {
     val pagingItems = viewModel.businessTypes.collectAsLazyPagingItems()
-    var selectedBusinessTypeId by remember { mutableStateOf<Int?>(null) }
-    var selectedBusinessName by remember { mutableStateOf("") }
+    val selectedBusinessType by viewModel.selectedBusinessType.collectAsState()
 
     FormLayout(
         enableBack = false,
-        isEnabled = selectedBusinessTypeId != null,
+        isEnabled = selectedBusinessType != null,
         headLine = stringResource(id = R.string.collectBusinessTypeHeadline),
         subHeadLine = stringResource(id = R.string.collectBusinessTypeSubHeadline),
         buttonTitle = stringResource(R.string.nextStep),
-        onNext = { onNext(AuthRoute.CollectBusinessLocation.route) },
+        onNext = onNext,
     ) {
         pagingItems.apply {
             when(loadState.refresh) {
                 is LoadState.Loading -> LoadingScreen()
                 is LoadState.Error -> ErrorScreen()
-                is LoadState.NotLoading -> {
-                    if(pagingItems.itemCount == 0) {
-                        ErrorScreen()
-                    }
-                }
+                is LoadState.NotLoading -> Unit
             }
         }
 
@@ -87,18 +80,16 @@ fun CollectBusinessTypeScreen(
 
             items(pagingItems.itemCount) { index ->
                 pagingItems[index]?.let { businessType ->
+                    val selected = selectedBusinessType?.id == businessType.id
+
                     Row(
                         Modifier
                             .fillMaxWidth()
                             .height(70.dp)
                             .background(Background)
                             .selectable(
-                                selected = selectedBusinessTypeId == businessType.id,
-                                onClick = {
-                                    selectedBusinessTypeId = businessType.id
-                                    selectedBusinessName = businessType.name
-
-                                },
+                                selected = selected,
+                                onClick = { viewModel.setBusinessType(businessType) },
                                 role = Role.RadioButton
                             ),
                         verticalAlignment = Alignment.CenterVertically,
@@ -112,7 +103,7 @@ fun CollectBusinessTypeScreen(
                         )
                         RadioButton(
                             modifier = Modifier.scale(1.3f).padding(end = SpacingXXL),
-                            selected = selectedBusinessTypeId == businessType.id,
+                            selected = selected,
                             onClick = null,
                             colors = RadioButtonColors(
                                 selectedColor = Primary,

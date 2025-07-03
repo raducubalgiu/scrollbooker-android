@@ -44,7 +44,7 @@ class CollectUserUsernameViewModel @Inject constructor(
 
         debounceJob?.cancel()
         debounceJob = viewModelScope.launch {
-            delay(500)
+            delay(300)
 
             val latest = currentUsername.value
             if(latest.length < 3 || latest != username) return@launch

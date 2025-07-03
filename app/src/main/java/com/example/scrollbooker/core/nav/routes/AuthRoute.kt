@@ -8,14 +8,17 @@ sealed class AuthRoute(val route: String) {
     object RegisterClient: AuthRoute(route = "registerClient")
     object RegisterBusiness: AuthRoute(route = "registerBusiness")
 
-    object CollectEmailVerification: AuthRoute(route = RegistrationStepEnum.COLLECT_EMAIL_VERIFICATION.key)
+    object CollectEmailVerification: AuthRoute(route = RegistrationStepEnum.COLLECT_USER_EMAIL_VALIDATION.key)
     object CollectUserUsername: AuthRoute(route = RegistrationStepEnum.COLLECT_USER_USERNAME.key)
 
     object CollectClientBirthDate: AuthRoute(route = RegistrationStepEnum.COLLECT_CLIENT_BIRTHDATE.key)
     object CollectClientGender: AuthRoute(route = RegistrationStepEnum.COLLECT_CLIENT_GENDER.key)
+    object CollectClientLocationPermission: AuthRoute(route = RegistrationStepEnum.COLLECT_CLIENT_LOCATION_PERMISSION.key)
 
-    object CollectBusinessType: AuthRoute(route = RegistrationStepEnum.COLLECT_BUSINESS_TYPE.key)
-    object CollectBusinessLocation: AuthRoute(route = RegistrationStepEnum.COLLECT_BUSINESS_LOCATION.key)
+    object CollectBusiness: AuthRoute(route = RegistrationStepEnum.COLLECT_BUSINESS.key)
+    object CollectBusinessType: AuthRoute(route = "collect_business_type")
+    object CollectBusinessLocation: AuthRoute(route = "collect_business_location")
+
     object CollectBusinessServices: AuthRoute(route = RegistrationStepEnum.COLLECT_BUSINESS_SERVICES.key)
     object CollectBusinessSchedules: AuthRoute(route = RegistrationStepEnum.COLLECT_BUSINESS_SCHEDULES.key)
 }
