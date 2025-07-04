@@ -140,10 +140,17 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
 
         composable(MainRoute.MyCurrencies.route) { backStackEntry ->
             val viewModel = hiltViewModel<MyCurrenciesViewModel>(backStackEntry)
+            val coroutineScope = rememberCoroutineScope()
 
             MyCurrenciesScreen(
                 viewModel = viewModel,
-                onBack = { navController.popBackStack() }
+                buttonTitle = stringResource(R.string.save),
+                onBack = { navController.popBackStack() },
+                onNextOrSave = {
+                    coroutineScope.launch {
+                        viewModel.updateBusinessServices()
+                    }
+                },
             )
         }
 

@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -29,23 +28,28 @@ import com.example.scrollbooker.ui.theme.Divider
 @Composable
 fun MyCurrenciesScreen(
     viewModel: MyCurrenciesViewModel,
-    onBack: () -> Unit
+    buttonTitle: String,
+    onBack: () -> Unit,
+    onNextOrSave: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
+    val isSaving by viewModel.isSaving.collectAsState()
 
-    LaunchedEffect(Unit) {
-        viewModel.fetchCurrencies()
-    }
+    val defaultSelectedIds by viewModel.defaultSelectedCurrencyIds.collectAsState()
+    val selectedIds by viewModel.selectedCurrencyIds.collectAsState()
+
+    val isLoading = isSaving is FeatureState.Loading
+    val isEnabled = !isLoading && selectedIds.isNotEmpty() && selectedIds != defaultSelectedIds
 
     FormLayout(
         modifier = Modifier.statusBarsPadding(),
-        isEnabled = true,
-        headerTitle = "",
         headLine = stringResource(R.string.acceptedCurrencies),
         subHeadLine = stringResource(R.string.chooseDesiredCurrencies),
-        buttonTitle = stringResource(R.string.save),
+        buttonTitle = buttonTitle,
+        isEnabled = isEnabled,
+        isLoading = isLoading,
         onBack = onBack,
-        onNext = {}
+        onNext = onNextOrSave
     ) {
         when (val result = state) {
             is FeatureState.Loading -> LoadingScreen()
@@ -58,7 +62,7 @@ fun MyCurrenciesScreen(
                     LazyColumn(modifier = Modifier.weight(1f)) {
                         itemsIndexed(result.data) { index, currency ->
                             InputCheckbox(
-                                checked = currency.isSelected,
+                                checked = currency.id in selectedIds,
                                 onCheckedChange = { viewModel.toggleCurrency(currency.id) },
                                 headLine = currency.name
                             )

@@ -6,6 +6,7 @@ import com.example.scrollbooker.entity.currency.data.repository.CurrencyReposito
 import com.example.scrollbooker.entity.currency.domain.repository.CurrencyRepository
 import com.example.scrollbooker.entity.currency.domain.useCase.GetAllCurrenciesUseCase
 import com.example.scrollbooker.entity.currency.domain.useCase.GetUserCurrenciesUseCase
+import com.example.scrollbooker.entity.currency.domain.useCase.UpdateUserCurrenciesUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.Module
 import dagger.Provides
@@ -51,5 +52,13 @@ object CurrenciesModule {
         repository: CurrencyRepository,
     ): GetUserCurrenciesUseCase {
         return GetUserCurrenciesUseCase(authDataStore, repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserCurrenciesUpdateUseCase(
+        repository: CurrencyRepository,
+    ): UpdateUserCurrenciesUseCase {
+        return UpdateUserCurrenciesUseCase(repository)
     }
 }
