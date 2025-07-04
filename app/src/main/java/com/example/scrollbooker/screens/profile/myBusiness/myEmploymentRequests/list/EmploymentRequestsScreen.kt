@@ -1,4 +1,5 @@
 package com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.list
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -13,7 +14,9 @@ import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.Layout
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.FeatureState
@@ -26,31 +29,21 @@ fun EmploymentRequestsScreen(
     onBack: () -> Unit,
     onNavigateSelectEmployee: () -> Unit
 ) {
+    val state by viewModel.employmentRequests.collectAsState()
+
     Layout(
         modifier = Modifier.statusBarsPadding(),
         headerTitle = stringResource(R.string.employmentRequests),
         onBack = onBack
     ) {
-        val state by viewModel.employmentRequests.collectAsState()
-
         Column(Modifier.fillMaxSize()) {
-            when(state) {
+            when(val result = state) {
                 is FeatureState.Loading -> LoadingScreen()
                 is FeatureState.Error -> ErrorScreen()
                 is FeatureState.Success -> {
-                    val employmentRequests = (state as FeatureState.Success).data
-
-                    if(employmentRequests.isEmpty()) {
-                        MessageScreen(
-                            modifier = Modifier.weight(1f),
-                            icon = Icons.Outlined.CollectionsBookmark,
-                            message = stringResource(R.string.notFoundEmploymentRequests),
-                        )
-                    } else {
-                        LazyColumn(Modifier.weight(1f)) {
-                            items(employmentRequests) { employmentRequest ->
-                                Text(employmentRequest.status)
-                            }
+                    LazyColumn(Modifier.weight(1f)) {
+                        items(result.data) { employmentRequest ->
+                            Text(employmentRequest.status)
                         }
                     }
                 }
@@ -61,5 +54,22 @@ fun EmploymentRequestsScreen(
                 onClick = onNavigateSelectEmployee,
             )
         }
+    }
+
+    when(val result = state) {
+        is FeatureState.Success -> {
+            if(result.data.isEmpty()) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    MessageScreen(
+                        icon = painterResource(R.drawable.ic_business_outline),
+                        message = stringResource(R.string.notFoundEmploymentRequests),
+                    )
+                }
+            }
+        }
+        else -> Unit
     }
 }

@@ -14,7 +14,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -27,7 +29,7 @@ import com.example.scrollbooker.ui.theme.bodyMedium
 @Composable
 fun MessageScreen(
     modifier: Modifier = Modifier,
-    icon: ImageVector,
+    icon: Painter,
     message: String,
     iconSize: Dp = 64.dp,
     contentPadding: PaddingValues = PaddingValues(32.dp),
@@ -44,7 +46,7 @@ fun MessageScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
-                imageVector = icon,
+                painter = icon,
                 modifier = Modifier.size(iconSize),
                 tint = Divider,
                 contentDescription = null,

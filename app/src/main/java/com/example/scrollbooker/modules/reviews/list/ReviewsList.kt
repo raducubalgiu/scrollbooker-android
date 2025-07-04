@@ -14,6 +14,7 @@ import androidx.compose.material.icons.outlined.Book
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -65,7 +66,7 @@ fun ReviewsList(
                     if(pagingItems.itemCount == 0) {
                         item { MessageScreen(
                             message = stringResource(R.string.dontFoundResults),
-                            icon = Icons.Outlined.Book
+                            icon = painterResource(R.drawable.ic_clipboard_outline)
                         ) }
                     }
                 }
