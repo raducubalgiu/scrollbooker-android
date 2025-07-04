@@ -171,6 +171,7 @@ fun MainNavHost() {
                         is MainTab.Inbox -> {
                             DefaultTabContainer(
                                 navController = navControllers[MainTab.Inbox]!!,
+                                enablePadding = false,
                                 innerPadding = innerPadding,
                                 content = { InboxNavHost(navController = it) }
                             )

@@ -1,5 +1,6 @@
 package com.example.scrollbooker.screens.profile.edit
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AlternateEmail
 import androidx.compose.material3.Icon
@@ -41,6 +42,7 @@ fun EditUsernameScreen(
     }
 
     Layout(
+        modifier = Modifier.statusBarsPadding(),
         header = {
             HeaderEdit(
                 onBack = onBack,

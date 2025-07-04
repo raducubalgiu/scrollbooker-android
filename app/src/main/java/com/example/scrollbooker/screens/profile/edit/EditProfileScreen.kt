@@ -82,8 +82,5 @@ fun EditProfileScreen(
             supportingText = user?.profession ?: "",
             onClick = { onNavigate(MainRoute.EditProfession.route) }
         )
-        Button(onClick = { authViewModel.logout() }) {
-            Text("Logout")
-        }
     }
 }

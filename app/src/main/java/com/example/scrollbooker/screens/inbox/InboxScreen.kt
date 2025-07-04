@@ -1,10 +1,7 @@
 package com.example.scrollbooker.screens.inbox
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.paging.LoadState
@@ -22,23 +19,24 @@ fun InboxScreen(viewModel: InboxViewModel) {
     val refreshState = notifications.loadState.refresh
 
     Layout(
+        modifier = Modifier.statusBarsPadding(),
         headerTitle = stringResource(id = R.string.inbox),
         enableBack = false,
         enablePaddingH = false,
         enablePaddingV = false
-    ) { if(refreshState is LoadState.NotLoading) NotificationsList(notifications) }
+    ) {
+        if(refreshState is LoadState.NotLoading) NotificationsList(notifications)
+    }
 
-    Box(Modifier.fillMaxSize()) {
-        when(refreshState) {
-            is LoadState.Loading -> { LoadingScreen() }
-            is LoadState.Error -> ErrorScreen()
-            is LoadState.NotLoading -> {
-                if(notifications.itemCount == 0) {
-                    MessageScreen(
-                        message = "Nu ai nici o notificare",
-                        icon = painterResource(R.drawable.ic_notifications_alert_outline)
-                    )
-                }
+    when(refreshState) {
+        is LoadState.Loading -> { LoadingScreen() }
+        is LoadState.Error -> ErrorScreen()
+        is LoadState.NotLoading -> {
+            if(notifications.itemCount == 0) {
+                MessageScreen(
+                    message = "Nu ai nici o notificare",
+                    icon = painterResource(R.drawable.ic_notifications_alert_outline)
+                )
             }
         }
     }

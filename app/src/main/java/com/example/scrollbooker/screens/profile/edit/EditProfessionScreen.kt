@@ -2,6 +2,7 @@ package com.example.scrollbooker.screens.profile.edit
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -37,6 +38,7 @@ fun EditProfessionScreen(
     )
 
     Layout(
+        modifier = Modifier.statusBarsPadding(),
         headerTitle = "",
         onBack = onBack
     ) {

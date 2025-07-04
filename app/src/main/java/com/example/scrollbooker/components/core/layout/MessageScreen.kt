@@ -1,30 +1,24 @@
 package com.example.scrollbooker.components.core.layout
-
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.theme.Divider
-import com.example.scrollbooker.ui.theme.bodyMedium
+import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.bodyLarge
 
 @Composable
 fun MessageScreen(
@@ -32,18 +26,14 @@ fun MessageScreen(
     icon: Painter,
     message: String,
     iconSize: Dp = 64.dp,
-    contentPadding: PaddingValues = PaddingValues(32.dp),
-    textStyle: TextStyle = bodyMedium
 ) {
-    Column(modifier = Modifier
+    Box(modifier = Modifier
         .fillMaxSize()
-        .padding(contentPadding)
         .then(modifier),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        contentAlignment = Alignment.Center
     ) {
-        Column(modifier = Modifier.padding(BasePadding),
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Icon(
                 painter = icon,
@@ -54,10 +44,10 @@ fun MessageScreen(
             Spacer(Modifier.height(BasePadding))
             Text(
                 text = message,
-                style = textStyle,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = bodyLarge,
+                color = OnBackground,
                 textAlign = TextAlign.Center,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.Normal
             )
         }
     }
