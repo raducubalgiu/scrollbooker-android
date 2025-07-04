@@ -11,8 +11,8 @@ class GetSchedulesByUserIdUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(userId: Int): FeatureState<List<Schedule>> {
         return try {
-            delay(200)
             val schedules = scheduleRepository.getSchedules(userId)
+
             FeatureState.Success(schedules)
         } catch (e: Exception) {
             Timber.Forest.tag("Schedules").e(e, "ERROR: on Fetching Schedules By User Id")

@@ -23,4 +23,6 @@ sealed class AuthRoute(val route: String) {
 
     object CollectBusinessServices: AuthRoute(route = RegistrationStepEnum.COLLECT_BUSINESS_SERVICES.key)
     object CollectBusinessSchedules: AuthRoute(route = RegistrationStepEnum.COLLECT_BUSINESS_SCHEDULES.key)
+    object CollectBusinessHasEmployees: AuthRoute(route = RegistrationStepEnum.COLLECT_BUSINESS_HAS_EMPLOYEES.key)
+    object CollectBusinessValidation: AuthRoute(route = RegistrationStepEnum.COLLECT_BUSINESS_VALIDATION.key)
 }

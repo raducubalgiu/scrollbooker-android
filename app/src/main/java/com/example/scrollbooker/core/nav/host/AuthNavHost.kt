@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -20,12 +19,15 @@ import com.example.scrollbooker.ui.theme.Background
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.navigation
+import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.auth.data.remote.RoleNameEnum
-import com.example.scrollbooker.entity.auth.domain.model.AuthState
-import com.example.scrollbooker.entity.user.userInfo.domain.model.RegistrationStepEnum
 import com.example.scrollbooker.screens.auth.AuthScreen
+import com.example.scrollbooker.screens.auth.CollectBusinessHasEmployeesScreen
+import com.example.scrollbooker.screens.auth.CollectBusinessHasEmployeesViewModel
+import com.example.scrollbooker.screens.auth.CollectBusinessValidationScreen
 import com.example.scrollbooker.screens.auth.CollectEmailVerificationScreen
 import com.example.scrollbooker.screens.auth.CollectUserUsernameScreen
 import com.example.scrollbooker.screens.auth.CollectUserUsernameViewModel
@@ -45,7 +47,6 @@ import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.Schedules
 import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.MySchedulesViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.myServices.MyServicesViewModel
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 enum class AuthTypeEnum {
     LOGIN,
@@ -293,9 +294,11 @@ fun AuthNavHost(authViewModel: AuthViewModel) {
 
             composable(AuthRoute.CollectBusinessServices.route) { backStackEntry ->
                 val viewModel: MyServicesViewModel = hiltViewModel(backStackEntry)
+                val buttonTitle = stringResource(R.string.nextStep)
 
                 MyServicesScreen(
                     viewModel = viewModel,
+                    buttonTitle = buttonTitle,
                     onBack = { navController.navigate(AuthRoute.CollectBusinessLocation.route) },
                     onNextOrSave = {
                         coroutineScope.launch {
@@ -314,6 +317,37 @@ fun AuthNavHost(authViewModel: AuthViewModel) {
                 SchedulesScreen(
                     viewModel = viewModel,
                     onBack = { navController.navigate(AuthRoute.CollectBusinessServices.route) },
+                    onNextOrSave = {
+                        coroutineScope.launch {
+                            val authState = viewModel.updateSchedules()
+                            if(authState != null) {
+                                authViewModel.updateAuthState(authState)
+                            }
+                        }
+                    }
+                )
+            }
+
+            composable(AuthRoute.CollectBusinessHasEmployees.route) { backStackEntry ->
+                val viewModel: CollectBusinessHasEmployeesViewModel = hiltViewModel(backStackEntry)
+
+                CollectBusinessHasEmployeesScreen(
+                    viewModel = viewModel,
+                    onNext = {
+                        coroutineScope.launch {
+                            val authState = viewModel.updateHasEmployees()
+                            if(authState != null) {
+                                authViewModel.updateAuthState(authState)
+                            }
+                        }
+                    }
+                )
+            }
+
+            composable(AuthRoute.CollectBusinessValidation.route) { backStackEntry ->
+//                val viewModel: CollectBusinessHasEmployeesViewModel = hiltViewModel(backStackEntry)
+
+                CollectBusinessValidationScreen(
                 )
             }
         }

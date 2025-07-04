@@ -28,12 +28,18 @@ import com.example.scrollbooker.ui.theme.Divider
 @Composable
 fun MyServicesScreen(
     viewModel: MyServicesViewModel,
+    buttonTitle: String,
     onBack: () -> Unit,
     onNextOrSave: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
     val isSaving by viewModel.isSaving.collectAsState()
+
+    val defaultSelectedIds by viewModel.defaultSelectedServiceIds.collectAsState()
     val selectedIds by viewModel.selectedServiceIds.collectAsState()
+
+    val isLoading = isSaving is FeatureState.Loading
+    val isEnabled = !isLoading && selectedIds.isNotEmpty() && selectedIds != defaultSelectedIds
 
     Box(modifier = Modifier
         .fillMaxSize()
@@ -42,11 +48,11 @@ fun MyServicesScreen(
         FormLayout(
             headLine = stringResource(id = R.string.services),
             subHeadLine = stringResource(id = R.string.addYourBusinessServices),
-            buttonTitle = stringResource(id = R.string.nextStep),
+            buttonTitle = buttonTitle,
             onBack = onBack,
             onNext = onNextOrSave,
-            isEnabled = isSaving != FeatureState.Loading && selectedIds.isNotEmpty(),
-            isLoading = isSaving is FeatureState.Loading
+            isEnabled = isEnabled,
+            isLoading = isLoading
         ) {
             when (val result = state) {
                 is FeatureState.Loading -> LoadingScreen()

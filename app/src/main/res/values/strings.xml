@@ -166,4 +166,9 @@
     <string name="locationAddress">Adresa locației</string>
     <string name="photoGallery">Galerie foto</string>
     <string name="photoGalleryDescription">"Încarcă cateva imagini de la locație - o prezentare vizuală bună atrage mai mulți clienți"</string>
+    <string name="doYouHaveEmployees">Ai angajați care primesc programări?</string>
+    <string name="ifHaveEmployeesDescription">Daca da, fiecare angajat va avea propriul calendar și își va gestiona propriile produse separat.</string>
+    <string name="ifNotHaveEmployeesDescription">Daca nu, toate programările vor fi gestionate direct în numele business-ului tău, intr-un singur calendar.</string>
+    <string name="YesIHaveEmployees">DA, am angajați care primesc programări</string>
+    <string name="NoIDoNotHaveEmployees">NU am angajați care primesc programări</string>
 </resources>

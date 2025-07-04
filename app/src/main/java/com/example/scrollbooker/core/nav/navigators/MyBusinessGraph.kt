@@ -3,7 +3,8 @@ package com.example.scrollbooker.core.nav.navigators
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -12,6 +13,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.example.scrollbooker.R
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.screens.profile.myBusiness.MyBusinessScreen
 import com.example.scrollbooker.screens.profile.myBusiness.MyBusinessViewModel
@@ -30,8 +32,8 @@ import com.example.scrollbooker.screens.profile.myBusiness.myCurrencies.MyCurren
 import com.example.scrollbooker.screens.profile.myBusiness.myCurrencies.MyCurrenciesViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.SchedulesScreen
 import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.MySchedulesViewModel
-import com.example.scrollbooker.screens.profile.myBusiness.myServices.AttachServicesScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myServices.MyServicesViewModel
+import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
     navigation(
@@ -147,21 +149,19 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
 
         composable(MainRoute.MyServices.route) { backStackEntry ->
             val viewModel = hiltViewModel<MyServicesViewModel>(backStackEntry)
+            val coroutineScope = rememberCoroutineScope()
+            val buttonTitle = stringResource(R.string.save)
 
             MyServicesScreen(
                 viewModel,
+                buttonTitle,
                 onBack = { navController.popBackStack() },
-                onNextOrSave = {  }
+                onNextOrSave = {
+                    coroutineScope.launch {
+                        viewModel.updateBusinessServices()
+                    }
+                }
             )
-        }
-
-        composable(MainRoute.AttachServices.route) { backStackEntry ->
-            val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(MainRoute.MyServices.route)
-            }
-            val viewModel = hiltViewModel<MyServicesViewModel>(parentEntry)
-
-            AttachServicesScreen(viewModel, onBack = { navController.popBackStack() })
         }
 
         composable(MainRoute.Products.route) { backStackEntry ->
@@ -200,10 +200,16 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
             MainRoute.Schedules.route,
         ) { backStackEntry ->
             val viewModel = hiltViewModel<MySchedulesViewModel>(backStackEntry)
+            val coroutineScope = rememberCoroutineScope()
 
             SchedulesScreen(
                 viewModel = viewModel,
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+                onNextOrSave = {
+                    coroutineScope.launch {
+                        viewModel.updateSchedules()
+                    }
+                }
             )
         }
 

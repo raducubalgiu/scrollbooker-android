@@ -3,6 +3,8 @@ package com.example.scrollbooker.screens.profile.myBusiness.mySchedules
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.util.withVisibleLoading
+import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.schedule.domain.model.Schedule
 import com.example.scrollbooker.entity.schedule.domain.useCase.GetSchedulesByUserIdUseCase
 import com.example.scrollbooker.entity.schedule.domain.useCase.UpdateSchedulesUseCase
@@ -25,8 +27,8 @@ class MySchedulesViewModel @Inject constructor(
         MutableStateFlow<FeatureState<List<Schedule>>>(FeatureState.Loading)
     val schedulesState: StateFlow<FeatureState<List<Schedule>>> = _schedulesState
 
-    private val _isSaving = MutableStateFlow(false)
-    val isSaving: StateFlow<Boolean> = _isSaving
+    private val _isSaving = MutableStateFlow<FeatureState<Unit>?>(null)
+    val isSaving: StateFlow<FeatureState<Unit>?> = _isSaving
 
     init {
         loadSchedules()
@@ -40,10 +42,15 @@ class MySchedulesViewModel @Inject constructor(
 
             if(userId == null) {
                 Timber.tag("Schedules").e("User Id not found in datastore")
-                FeatureState.Error()
-            } else {
-                _schedulesState.value = getSchedulesByUserIdUseCase(userId)
+                _schedulesState.value = FeatureState.Error()
+                return@launch
             }
+
+            val result = withVisibleLoading {
+                getSchedulesByUserIdUseCase(userId)
+            }
+
+            _schedulesState.value = result
         }
     }
 
@@ -62,21 +69,22 @@ class MySchedulesViewModel @Inject constructor(
         }
     }
 
-    fun updateSchedules() {
-        viewModelScope.launch {
-            _isSaving.value = true
+    suspend fun updateSchedules(): AuthState? {
+        _isSaving.value = FeatureState.Loading
 
-            val current = (_schedulesState.value as? FeatureState.Success)?.data ?: return@launch
+        val schedules = (_schedulesState.value as? FeatureState.Success)?.data
+        if (schedules.isNullOrEmpty()) return null
 
-            updateSchedulesUseCase(current)
-                .onSuccess { updated ->
-                    _schedulesState.value = FeatureState.Success(updated)
-                }
-                .onFailure { error ->
-                    _schedulesState.value = FeatureState.Error(error)
-                    Timber.Forest.tag("Schedules").e("ERROR: on Updating Schedules $error")
-                }
-            _isSaving.value = false
-        }
+        val result = withVisibleLoading { updateSchedulesUseCase(schedules) }
+
+        return result
+            .onFailure { error ->
+                _isSaving.value = FeatureState.Error(error)
+                Timber.Forest.tag("Schedules").e("ERROR: on Updating Schedules $error")
+            }
+            .onSuccess { updated ->
+                _isSaving.value = FeatureState.Success(Unit)
+            }
+            .getOrNull()
     }
 }

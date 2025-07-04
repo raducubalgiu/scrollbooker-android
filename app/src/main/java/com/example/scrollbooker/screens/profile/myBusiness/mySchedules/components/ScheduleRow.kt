@@ -21,6 +21,7 @@ import com.example.scrollbooker.components.core.inputs.InputSelect
 import com.example.scrollbooker.components.core.inputs.Option
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.generateTimeSlots
+import com.example.scrollbooker.core.util.translateDayOfWeek
 import com.example.scrollbooker.entity.schedule.domain.model.Schedule
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.titleMedium
@@ -45,12 +46,11 @@ fun ScheduleRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-
         Column(Modifier.width(90.dp)) {
             Text(
                 style = titleMedium,
                 fontWeight = FontWeight.SemiBold,
-                text = schedule.dayOfWeek,
+                text = translateDayOfWeek(schedule.dayOfWeek) ?: schedule.dayOfWeek,
                 color = OnBackground,
             )
         }

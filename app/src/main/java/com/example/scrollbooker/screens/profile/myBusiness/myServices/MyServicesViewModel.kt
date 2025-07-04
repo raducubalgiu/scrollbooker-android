@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.enums.GenderTypeEnum
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.business.domain.useCase.UpdateBusinessServicesUseCase
 import com.example.scrollbooker.entity.service.domain.model.Service
@@ -33,6 +34,9 @@ class MyServicesViewModel @Inject constructor(
     private val _state = MutableStateFlow<FeatureState<List<Service>>>(FeatureState.Loading)
     val state: StateFlow<FeatureState<List<Service>>> = _state
 
+    private val _defaultSelectedServiceIds = MutableStateFlow<Set<Int>>(emptySet())
+    val defaultSelectedServiceIds: StateFlow<Set<Int>> = _defaultSelectedServiceIds.asStateFlow()
+
     private val _selectedServiceIds = MutableStateFlow<Set<Int>>(emptySet())
     val selectedServiceIds: StateFlow<Set<Int>> = _selectedServiceIds.asStateFlow()
 
@@ -47,38 +51,43 @@ class MyServicesViewModel @Inject constructor(
         viewModelScope.launch {
             _state.value = FeatureState.Loading
 
-            val businessId = authDataStore.getBusinessId().firstOrNull()
-            val businessTypeId = authDataStore.getBusinessTypeId().firstOrNull()
+            val result = withVisibleLoading {
+                val businessId = authDataStore.getBusinessId().firstOrNull()
+                val businessTypeId = authDataStore.getBusinessTypeId().firstOrNull()
 
-            if(businessId == null) {
-                throw IllegalStateException("Business Id not found in data store")
-            }
-
-            if(businessTypeId == null) {
-                throw IllegalStateException("BusinessType Id not found in data store")
-            }
-
-            val user = getServicesByBusinessIdUseCase(businessId)
-            val all = getServicesByBusinessTypeUseCase(businessTypeId)
-
-            if(all.isSuccess && user.isSuccess) {
-                val selectedIds = user.getOrThrow().map { it.id }.toSet()
-                _selectedServiceIds.value = selectedIds
-
-                val combined = all.getOrThrow().map {
-                    Service(
-                        id = it.id,
-                        name = it.name,
-                        businessDomainId = it.businessDomainId
-                    )
+                if(businessId == null) {
+                    throw IllegalStateException("Business Id not found in data store")
                 }
 
-                _state.value = FeatureState.Success(combined)
-            } else {
-                val error = all.exceptionOrNull() ?: user.exceptionOrNull()
-                Timber.tag("Services").e("ERROR: on Fetching Services $error")
-                _state.value = FeatureState.Error(error ?: Exception("Unexpected Error"))
+                if(businessTypeId == null) {
+                    throw IllegalStateException("BusinessType Id not found in data store")
+                }
+
+                val user = getServicesByBusinessIdUseCase(businessId)
+                val all = getServicesByBusinessTypeUseCase(businessTypeId)
+
+                if(all.isSuccess && user.isSuccess) {
+                    val selectedIds = user.getOrThrow().map { it.id }.toSet()
+                    _selectedServiceIds.value = selectedIds
+                    _defaultSelectedServiceIds.value = selectedIds
+
+                    val combined = all.getOrThrow().map {
+                        Service(
+                            id = it.id,
+                            name = it.name,
+                            businessDomainId = it.businessDomainId
+                        )
+                    }
+
+                    return@withVisibleLoading FeatureState.Success(combined)
+                } else {
+                    val error = all.exceptionOrNull() ?: user.exceptionOrNull()
+                    Timber.tag("Services").e("ERROR: on Fetching Services $error")
+                    return@withVisibleLoading FeatureState.Error(error ?: Exception("Unexpected Error"))
+                }
             }
+
+            _state.value = result
         }
     }
 
@@ -90,10 +99,11 @@ class MyServicesViewModel @Inject constructor(
 
     suspend fun updateBusinessServices(): AuthState? {
         _isSaving.value = FeatureState.Loading
-        delay(200)
-        val serviceIds = _selectedServiceIds.value.toList()
 
-        return updateBusinessServicesUseCase(serviceIds)
+        val serviceIds = _selectedServiceIds.value.toList()
+        val result = withVisibleLoading { updateBusinessServicesUseCase(serviceIds) }
+
+        return result
             .onFailure { e ->
                 _isSaving.value = FeatureState.Error(e)
                 Timber.tag("Update Services").e("ERROR: on updating Business Services $e")

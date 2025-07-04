@@ -1,5 +1,6 @@
 package com.example.scrollbooker.entity.schedule.data.remote
 
+import com.example.scrollbooker.entity.auth.data.remote.AuthStateDto
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PUT
@@ -14,5 +15,5 @@ interface SchedulesApiService {
     @PUT("schedules")
     suspend fun updateSchedules(
         @Body schedules: List<ScheduleDto>
-    ): List<ScheduleDto>
+    ): AuthStateDto
 }

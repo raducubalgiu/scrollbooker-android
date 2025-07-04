@@ -1,4 +1,6 @@
 package com.example.scrollbooker.entity.schedule.data.repository
+import com.example.scrollbooker.entity.auth.data.mappers.toDomain
+import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.schedule.data.mappers.toDomain
 import com.example.scrollbooker.entity.schedule.data.mappers.toDto
 import com.example.scrollbooker.entity.schedule.data.remote.SchedulesApiService
@@ -13,10 +15,8 @@ class ScheduleRepositoryImpl @Inject constructor(
         return api.getSchedules(userId).map { it.toDomain() }
     }
 
-    override suspend fun updateSchedules(schedules: List<Schedule>): List<Schedule> {
-        val dtoList = schedules.toDto()
-        val response = api.updateSchedules(dtoList)
-        return response.toDomain()
+    override suspend fun updateSchedules(schedules: List<Schedule>): AuthState {
+        return api.updateSchedules(schedules.toDto()).toDomain()
     }
 
 }

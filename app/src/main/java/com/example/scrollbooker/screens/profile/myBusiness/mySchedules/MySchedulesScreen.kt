@@ -16,12 +16,12 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.components.SchedulesList
-import com.example.scrollbooker.entity.schedule.domain.model.Schedule
 
 @Composable
 fun SchedulesScreen(
     viewModel: MySchedulesViewModel,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onNextOrSave: () -> Unit
 ) {
     val state by viewModel.schedulesState.collectAsState()
     val isSaving by viewModel.isSaving.collectAsState()
@@ -30,10 +30,11 @@ fun SchedulesScreen(
         modifier = Modifier.statusBarsPadding(),
         headLine = stringResource(R.string.schedule),
         subHeadLine = stringResource(R.string.scheduleSubheaderDescription),
-        isEnabled = isSaving,
-        buttonTitle = "Save",
+        buttonTitle = stringResource(R.string.nextStep),
+        isEnabled = isSaving != FeatureState.Loading,
+        isLoading = isSaving is FeatureState.Loading,
         onBack = onBack,
-        onNext = { viewModel.updateSchedules() }
+        onNext = onNextOrSave
     ) {
         Column(modifier = Modifier
             .fillMaxSize()
@@ -42,14 +43,12 @@ fun SchedulesScreen(
                 horizontal = SpacingXXL
             )
         ) {
-            when(state) {
+            when(val schedules = state) {
                 is FeatureState.Loading -> LoadingScreen()
                 is FeatureState.Error -> SnackbarManager.showToast(stringResource(id = R.string.somethingWentWrong))
                 is FeatureState.Success -> {
-                    val schedules = (state as FeatureState.Success<List<Schedule>>).data
-
                     SchedulesList(
-                        schedules,
+                        schedules=schedules.data,
                         onScheduleChange = { schedule ->
                             viewModel.updateScheduleTime(schedule)
                         }
