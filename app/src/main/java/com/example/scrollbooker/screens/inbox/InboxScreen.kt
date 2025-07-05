@@ -14,7 +14,10 @@ import com.example.scrollbooker.components.core.layout.MessageScreen
 import com.example.scrollbooker.screens.inbox.components.NotificationsList
 
 @Composable
-fun InboxScreen(viewModel: InboxViewModel) {
+fun InboxScreen(
+    viewModel: InboxViewModel,
+    onNavigate: () -> Unit
+) {
     val notifications = viewModel.notifications.collectAsLazyPagingItems()
     val refreshState = notifications.loadState.refresh
 
@@ -25,7 +28,12 @@ fun InboxScreen(viewModel: InboxViewModel) {
         enablePaddingH = false,
         enablePaddingV = false
     ) {
-        if(refreshState is LoadState.NotLoading) NotificationsList(notifications)
+        if(refreshState is LoadState.NotLoading) {
+            NotificationsList(
+                notifications=notifications,
+                onNavigate = onNavigate
+            )
+        }
     }
 
     when(refreshState) {

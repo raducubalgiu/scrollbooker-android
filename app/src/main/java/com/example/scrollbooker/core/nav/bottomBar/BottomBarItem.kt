@@ -1,4 +1,4 @@
-package com.example.scrollbooker.core.nav
+package com.example.scrollbooker.core.nav.bottomBar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,7 +24,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.components.core.badge.CustomBadge
-import com.example.scrollbooker.core.nav.host.MainTab
 import com.example.scrollbooker.core.nav.routes.MainRoute.Appointments
 import com.example.scrollbooker.core.nav.routes.MainRoute.Inbox
 import com.example.scrollbooker.ui.theme.Error

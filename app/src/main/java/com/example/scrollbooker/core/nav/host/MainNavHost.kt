@@ -1,20 +1,9 @@
 package com.example.scrollbooker.core.nav.host
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
+import BottomBar
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -28,59 +17,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.scrollbooker.R
-import com.example.scrollbooker.core.nav.BottomBarItem
+import com.example.scrollbooker.core.nav.bottomBar.MainTab
 import com.example.scrollbooker.core.nav.containers.DefaultTabContainer
-import com.example.scrollbooker.core.nav.routes.MainRoute
-import com.example.scrollbooker.ui.theme.Background
-import com.example.scrollbooker.ui.theme.Divider
 import kotlinx.coroutines.launch
-import kotlin.collections.contains
-
-sealed class MainTab(
-    val route: String,
-    val label: String,
-    val painter: Int
-) {
-    object Feed: MainTab(
-        MainRoute.Feed.route, "Acasa",
-        painter = R.drawable.ic_home_solid
-    )
-    object Inbox: MainTab(
-        MainRoute.Inbox.route, "Inbox",
-        painter = R.drawable.ic_notifications_solid
-    )
-    object Search: MainTab(
-        MainRoute.Search.route, "Search",
-        painter = R.drawable.ic_search_solid
-    )
-    object Appointments: MainTab(
-        MainRoute.Appointments.route, "Comenzi",
-        painter = R.drawable.ic_clipboard_solid
-    )
-    object Profile: MainTab(
-        MainRoute.MyProfile.route, "Profil",
-        painter = R.drawable.ic_person_solid
-    )
-
-    companion object {
-        fun fromRoute(route: String): MainTab = when(route) {
-            Feed.route -> Feed
-            Inbox.route -> Inbox
-            Search.route -> Search
-            Appointments.route -> Appointments
-            Profile.route -> Profile
-            else -> Feed
-        }
-
-        val allTabs = listOf(Feed, Inbox, Search, Appointments, Profile)
-    }
-}
-
 
 val MainTabSaver: Saver<MainTab, String> = Saver(
     save = { it.route },
@@ -89,8 +31,6 @@ val MainTabSaver: Saver<MainTab, String> = Saver(
 
 @Composable
 fun MainNavHost() {
-    val allTabs = MainTab.allTabs
-
     var currentTab by rememberSaveable(stateSaver = MainTabSaver) {
         mutableStateOf(MainTab.Feed)
     }
@@ -107,47 +47,19 @@ fun MainNavHost() {
     val scope = rememberCoroutineScope()
 
     val isFeedTab = currentTab == MainTab.Feed
-    val bottomBarRoutes = MainTab.allTabs.map { it.route }
 
     val currentNavController = navControllers[currentTab]!!
     val currentBackStackEntry by currentNavController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry?.destination?.route
 
-    val dividerColor = if (isFeedTab) Color(0xFF3A3A3A) else Divider
-    val containerColor = if(isFeedTab) Color(0xFF121212) else Background
-
     val scaffoldContent: @Composable () -> Unit = {
         Scaffold(
             bottomBar = {
-                AnimatedVisibility(
-                    visible = currentRoute in bottomBarRoutes,
-                    enter = fadeIn() + slideInVertically { it },
-                    exit = fadeOut() + slideOutVertically { it }
-                ) {
-                    Column(Modifier.height(90.dp)) {
-                        HorizontalDivider(color = dividerColor, thickness = 1.dp)
-                        NavigationBar(
-                            tonalElevation = 0.dp,
-                            modifier = Modifier.fillMaxWidth(),
-                            containerColor = containerColor
-                        ) {
-                            Row(modifier = Modifier
-                                .fillMaxSize()
-                                .padding(vertical = 5.dp)
-                            ) {
-                                allTabs.forEach { tab ->
-                                    BottomBarItem(
-                                        modifier = Modifier.then(Modifier.weight(1f)),
-                                        onNavigate = { currentTab = tab },
-                                        isSelected = currentTab == tab,
-                                        isFeedTab = isFeedTab,
-                                        tab = tab
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
+                  BottomBar(
+                      currentTab = currentTab,
+                      currentRoute = currentRoute,
+                      onNavigate = { currentTab = it }
+                  )
             }
         ) { innerPadding ->
             Box(modifier = Modifier.fillMaxSize()) {
@@ -168,7 +80,9 @@ fun MainNavHost() {
                                 content = { InboxNavHost(navController = it) }
                             )
                         }
+
                         is MainTab.Search -> SearchNavHost(navController = navControllers[MainTab.Search]!!)
+
                         is MainTab.Appointments -> {
                             DefaultTabContainer(
                                 navController = navControllers[MainTab.Appointments]!!,

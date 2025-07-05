@@ -11,7 +11,10 @@ import com.example.scrollbooker.entity.notification.domain.model.Notification
 import timber.log.Timber
 
 @Composable
-fun NotificationsList(notifications: LazyPagingItems<Notification>) {
+fun NotificationsList(
+    notifications: LazyPagingItems<Notification>,
+    onNavigate: () -> Unit
+) {
     val appendState = notifications.loadState.append
 
     LazyColumn {
@@ -27,7 +30,8 @@ fun NotificationsList(notifications: LazyPagingItems<Notification>) {
                             fullName = it.sender.fullName.toString(),
                             message = stringResource(id = R.string.startedFollowingYou),
                             avatar = it.sender.avatar.toString(),
-                            actionTitle = stringResource(R.string.follow)
+                            actionTitle = stringResource(R.string.follow),
+                            onActionClick = onNavigate
                         )
                     }
                     "employment_request" -> {
@@ -35,7 +39,8 @@ fun NotificationsList(notifications: LazyPagingItems<Notification>) {
                             fullName = it.sender.fullName.toString(),
                             message = stringResource(R.string.sentYouAnEmploymentRequest),
                             avatar = it.sender.avatar.toString(),
-                            actionTitle = stringResource(R.string.seeMore)
+                            actionTitle = stringResource(R.string.seeMore),
+                            onActionClick = onNavigate
                         )
                     }
                     else -> Unit

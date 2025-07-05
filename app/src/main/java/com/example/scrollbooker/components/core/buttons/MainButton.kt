@@ -1,5 +1,4 @@
 package com.example.scrollbooker.components.core.buttons
-
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
@@ -7,9 +6,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.util.Dimens.BasePadding
@@ -24,17 +25,19 @@ fun MainButton(
     onClick: () -> Unit,
     enabled: Boolean = true,
     title: String,
-    colors: ButtonColors = ButtonDefaults.buttonColors()
+    colors: ButtonColors = ButtonDefaults.buttonColors(),
+    shape: Shape = ShapeDefaults.ExtraLarge
 ) {
     Button(
         onClick = onClick,
-        modifier = if(fullWidth) Modifier.fillMaxWidth().then(modifier) else modifier,
+        modifier = if(fullWidth) modifier.fillMaxWidth() else modifier,
         enabled = enabled,
         colors = colors,
         contentPadding = PaddingValues(
             vertical = BasePadding,
             horizontal = 16.dp
-        )
+        ),
+        shape = shape
     ) {
         if(isLoading) {
             CircularProgressIndicator(

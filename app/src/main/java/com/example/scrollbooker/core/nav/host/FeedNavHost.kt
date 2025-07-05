@@ -1,7 +1,5 @@
 package com.example.scrollbooker.core.nav.host
 import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
@@ -109,8 +107,6 @@ fun FeedNavHost(
                 )
             }
         ) { backStackEntry ->
-//            val viewModel = hiltViewModel<FeedViewModel>(backStackEntry)
-
             FeedSearchScreen(
                 onBack = { navController.popBackStack() }
             )

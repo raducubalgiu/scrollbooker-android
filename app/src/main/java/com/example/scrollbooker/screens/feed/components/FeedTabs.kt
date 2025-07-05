@@ -128,7 +128,7 @@ fun FeedTabs(
             ) {
                 Icon(
                     modifier = Modifier.size(30.dp),
-                    painter = painterResource(R.drawable.ic_search_solid),
+                    painter = painterResource(R.drawable.ic_search),
                     contentDescription = null,
                     tint = Color(0xFFE0E0E0),
                 )
