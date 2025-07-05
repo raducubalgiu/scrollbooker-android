@@ -3,6 +3,7 @@ import com.example.scrollbooker.entity.auth.data.remote.AuthStateDto
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
+import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -13,7 +14,7 @@ interface BusinessApiService {
         @Query("query") query: String
     ): List<BusinessAddressDto>
 
-    @GET("/users/{userId}/businesses")
+    @GET("/users/{userId}/businesses/")
     suspend fun getBusinessByUserId(
         @Path("userId") userId: Int
     ): BusinessDto
@@ -23,8 +24,13 @@ interface BusinessApiService {
         @Body request: BusinessServicesUpdateRequest
     ): AuthStateDto
 
-    @PATCH("/businesses/update-has-employees")
+    @PATCH("/businesses/update-has-employees/")
     suspend fun updateBusinessHasEmployees(
         @Body request: BusinessHasEmployeesUpdateRequest
     ): AuthStateDto
+
+    @POST("/businesses")
+    suspend fun createBusiness(
+        @Body request: BusinessCreateDto
+    ): BusinessCreateResponseDto
 }

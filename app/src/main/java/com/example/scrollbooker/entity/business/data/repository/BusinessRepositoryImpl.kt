@@ -4,10 +4,12 @@ import com.example.scrollbooker.entity.auth.data.mappers.toDomain
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.business.data.mappers.toDomain
 import com.example.scrollbooker.entity.business.data.remote.BusinessApiService
+import com.example.scrollbooker.entity.business.data.remote.BusinessCreateDto
 import com.example.scrollbooker.entity.business.data.remote.BusinessHasEmployeesUpdateRequest
 import com.example.scrollbooker.entity.business.data.remote.BusinessServicesUpdateRequest
 import com.example.scrollbooker.entity.business.domain.model.Business
 import com.example.scrollbooker.entity.business.domain.model.BusinessAddress
+import com.example.scrollbooker.entity.business.domain.model.BusinessCreateResponse
 import com.example.scrollbooker.entity.business.domain.repository.BusinessRepository
 import javax.inject.Inject
 
@@ -32,5 +34,18 @@ class BusinessRepositoryImpl @Inject constructor(
         val request = BusinessHasEmployeesUpdateRequest(hasEmployees)
 
         return apiService.updateBusinessHasEmployees(request).toDomain()
+    }
+
+    override suspend fun createBusiness(
+        description: String?,
+        placeId: String,
+        businessTypeId: Int
+    ): BusinessCreateResponse {
+        val request = BusinessCreateDto(
+            description = description,
+            placeId = placeId,
+            businessTypeId = businessTypeId
+        )
+        return apiService.createBusiness(request).toDomain()
     }
 }

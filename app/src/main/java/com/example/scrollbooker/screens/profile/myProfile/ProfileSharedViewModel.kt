@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.bookmark.domain.useCase.GetUserBookmarkedPostsUseCase
 import com.example.scrollbooker.entity.post.domain.model.Post
 import com.example.scrollbooker.entity.post.domain.useCase.GetUserPostsUseCase
@@ -69,10 +70,7 @@ class ProfileSharedViewModel @Inject constructor(
 
     var isSaved by mutableStateOf(false)
 
-    init {
-        Timber.tag("Init Profile")
-        loadUserProfile()
-    }
+    init { loadUserProfile() }
 
     fun loadUserProfile() {
         viewModelScope.launch {
@@ -87,7 +85,9 @@ class ProfileSharedViewModel @Inject constructor(
         viewModelScope.launch {
             _editState.value = FeatureState.Loading
 
-            updateFullNameUseCase(newFullName)
+            val result = withVisibleLoading { updateFullNameUseCase(newFullName) }
+
+            result
                 .onSuccess {
                     _editState.value = FeatureState.Success(Unit)
 
@@ -109,7 +109,9 @@ class ProfileSharedViewModel @Inject constructor(
         viewModelScope.launch {
             _editState.value = FeatureState.Loading
 
-            updateUsernameUseCase(newUsername)
+            val result = updateUsernameUseCase(newUsername)
+
+            result
                 .onSuccess {
                     _editState.value = FeatureState.Success(Unit)
 
@@ -131,11 +133,14 @@ class ProfileSharedViewModel @Inject constructor(
         viewModelScope.launch {
             _editState.value = FeatureState.Loading
 
-            updateBioUseCase(newBio)
+            val result = withVisibleLoading { updateBioUseCase(newBio) }
+
+            result
                 .onSuccess {
                     _editState.value = FeatureState.Success(Unit)
 
                     val currentProfile = (_userProfileState.value as? FeatureState.Success)?.data
+
                     if(currentProfile != null) {
                         val updatedProfile = currentProfile.copy(bio = newBio)
                         _userProfileState.value = FeatureState.Success(updatedProfile)
@@ -153,21 +158,23 @@ class ProfileSharedViewModel @Inject constructor(
         viewModelScope.launch {
             _editState.value = FeatureState.Loading
 
-//            updateGenderUseCase(newGender)
-//                .onSuccess {
-//                    _editState.value = FeatureState.Success(Unit)
-//
-//                    val currentProfile = (_userProfileState.value as? FeatureState.Success)?.data
-//                    if(currentProfile != null) {
-//                        val updatedProfile = currentProfile.copy(gender = newGender)
-//                        _userProfileState.value = FeatureState.Success(updatedProfile)
-//                    }
-//                    isSaved = true
-//                }
-//                .onFailure { error ->
-//                    Timber.tag("EditProfile").e(error, "ERROR: on Edit Gender User Data")
-//                    _editState.value = FeatureState.Error(error = null)
-//                }
+            val result = withVisibleLoading { updateGenderUseCase(newGender) }
+
+            result
+                .onSuccess {
+                    _editState.value = FeatureState.Success(Unit)
+
+                    val currentProfile = (_userProfileState.value as? FeatureState.Success)?.data
+                    if(currentProfile != null) {
+                        val updatedProfile = currentProfile.copy(gender = newGender)
+                        _userProfileState.value = FeatureState.Success(updatedProfile)
+                    }
+                    isSaved = true
+                }
+                .onFailure { error ->
+                    Timber.tag("EditProfile").e(error, "ERROR: on Edit Gender User Data")
+                    _editState.value = FeatureState.Error(error = null)
+                }
         }
     }
 }

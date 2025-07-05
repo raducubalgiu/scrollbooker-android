@@ -286,7 +286,13 @@ fun AuthNavHost(authViewModel: AuthViewModel) {
                         viewModel = viewModel,
                         onBack = { navController.popBackStack() },
                         onNext = {
+                            coroutineScope.launch {
+                                val business = viewModel.createBusiness()
 
+                                if(business != null) {
+                                    authViewModel.updateAuthState(business.authState)
+                                }
+                            }
                         }
                     )
                 }
@@ -345,10 +351,7 @@ fun AuthNavHost(authViewModel: AuthViewModel) {
             }
 
             composable(AuthRoute.CollectBusinessValidation.route) { backStackEntry ->
-//                val viewModel: CollectBusinessHasEmployeesViewModel = hiltViewModel(backStackEntry)
-
-                CollectBusinessValidationScreen(
-                )
+                CollectBusinessValidationScreen()
             }
         }
     }

@@ -5,10 +5,14 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
+import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.business.domain.model.BusinessAddress
+import com.example.scrollbooker.entity.business.domain.model.BusinessCreateResponse
+import com.example.scrollbooker.entity.business.domain.useCase.CreateBusinessUseCase
 import com.example.scrollbooker.entity.business.domain.useCase.SearchBusinessAddressUseCase
 import com.example.scrollbooker.entity.businessType.domain.model.BusinessType
 import com.example.scrollbooker.entity.businessType.domain.useCase.GetAllPaginatedBusinessTypesUseCase
+import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -16,12 +20,15 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class MyBusinessLocationViewModel @Inject constructor(
+    private val authDataStore: AuthDataStore,
     private val getAllBusinessTypesUseCase: GetAllPaginatedBusinessTypesUseCase,
-    private val searchBusinessAddressUseCase: SearchBusinessAddressUseCase
+    private val searchBusinessAddressUseCase: SearchBusinessAddressUseCase,
+    private val createBusinessUseCase: CreateBusinessUseCase
 ): ViewModel() {
     private val _businessTypes: Flow<PagingData<BusinessType>> by lazy {
         getAllBusinessTypesUseCase().cachedIn(viewModelScope)
@@ -62,6 +69,9 @@ class MyBusinessLocationViewModel @Inject constructor(
         _currentDescription.value = businessDescription
     }
 
+    private val _isSaving = MutableStateFlow<FeatureState<Unit>?>(null)
+    val isSaving: StateFlow<FeatureState<Unit>?> = _isSaving
+
     private var debounceJob: Job? = null
 
     fun searchAddress(query: String) {
@@ -86,5 +96,37 @@ class MyBusinessLocationViewModel @Inject constructor(
                 searchBusinessAddressUseCase(query)
             }
         }
+    }
+
+    suspend fun createBusiness(): BusinessCreateResponse? {
+        _isSaving.value = FeatureState.Loading
+        val placeId = _selectedAddress.value?.placeId
+        val businessTypeId = _selectedBusinessType.value?.id
+
+        if(placeId.isNullOrEmpty() || businessTypeId == null) {
+            Timber.tag("Create Business").e("Place Id or Business Type Id is null")
+            return null
+        }
+
+        val result = withVisibleLoading {
+            createBusinessUseCase(
+                description = _currentDescription.value,
+                placeId = placeId,
+                businessTypeId = businessTypeId
+            )
+        }
+
+        return result
+            .onFailure { error ->
+                _isSaving.value = FeatureState.Error(error)
+                Timber.Forest.tag("Create Business").e("ERROR: on creating Business $error")
+            }
+            .onSuccess { response ->
+                _isSaving.value = FeatureState.Success(Unit)
+
+                authDataStore.setBusinessId(response.businessId)
+                authDataStore.setBusinessTypeId(businessTypeId)
+            }
+            .getOrNull()
     }
 }

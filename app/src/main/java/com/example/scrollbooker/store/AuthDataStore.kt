@@ -50,6 +50,14 @@ class AuthDataStore(private val context: Context) {
         }
     }
 
+    suspend fun setBusinessId(businessId: Int) {
+        context.dataStore.edit { prefs -> prefs[BUSINESS_ID] = businessId }
+    }
+
+    suspend fun setBusinessTypeId(businessTypeId: Int) {
+        context.dataStore.edit { prefs -> prefs[BUSINESS_TYPE_ID] = businessTypeId }
+    }
+
     fun getAccessToken(): Flow<String?> = context.dataStore.data.map { it[ACCESS_TOKEN] }
     fun getRefreshToken(): Flow<String?> = context.dataStore.data.map { it[REFRESH_TOKEN] }
     fun getUserId(): Flow<Int?> = context.dataStore.data.map { it[USER_ID] }

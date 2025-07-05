@@ -1,5 +1,4 @@
 package com.example.scrollbooker.entity.user.userProfile.data.repository
-import com.example.scrollbooker.core.enums.GenderTypeEnum
 import com.example.scrollbooker.entity.auth.data.mappers.toDomain
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.user.userProfile.data.mappers.toDomain
@@ -12,7 +11,6 @@ import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateGende
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateUsernameRequest
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.entity.user.userProfile.domain.repository.UserProfileRepository
-import timber.log.Timber
 import javax.inject.Inject
 
 class UserProfileRepositoryImpl @Inject constructor(
@@ -23,27 +21,19 @@ class UserProfileRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateFullName(fullName: String) {
-        return apiService.updateFullName(UpdateFullNameRequest(
-            fullname = fullName
-        ))
+        return apiService.updateFullName(UpdateFullNameRequest(fullname = fullName))
     }
 
     override suspend fun updateUsername(username: String): AuthState {
-        val response = apiService.updateUsername(UpdateUsernameRequest(username)).toDomain()
-        Timber.tag("UPDATE RESPONSE").e("Update Username $response")
-        return response
+        return apiService.updateUsername(UpdateUsernameRequest(username)).toDomain()
     }
 
     override suspend fun updateBirthDate(birthdate: String?): AuthState {
-        val response = apiService.updateBirthDate(UpdateBirthDateRequest(birthdate)).toDomain()
-        Timber.tag("UPDATE RESPONSE").e("Update Birthdate $response")
-        return response
+        return apiService.updateBirthDate(UpdateBirthDateRequest(birthdate)).toDomain()
     }
 
     override suspend fun updateGender(gender: String): AuthState {
-        val response = apiService.updateGender(UpdateGenderRequest(gender)).toDomain()
-        Timber.tag("UPDATE RESPONSE").e("Update Gender $response")
-        return response
+        return apiService.updateGender(UpdateGenderRequest(gender)).toDomain()
     }
 
     override suspend fun updateBio(bio: String) {

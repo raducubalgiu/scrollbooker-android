@@ -46,7 +46,7 @@ class UserSocialViewModel @Inject constructor(
 
     private val filtersTrigger = MutableStateFlow(Unit)
 
-    private var _selectedRatings = mutableStateOf(setOf<Int>())
+    private val _selectedRatings = mutableStateOf(setOf<Int>())
     val selectedRatings: State<Set<Int>> get() = _selectedRatings
 
     @OptIn(ExperimentalCoroutinesApi::class)
