@@ -11,6 +11,7 @@ import com.example.scrollbooker.entity.auth.data.remote.AuthApiService
 import com.example.scrollbooker.entity.auth.data.repository.AuthRepositoryImpl
 import com.example.scrollbooker.entity.auth.domain.useCase.IsLoggedInUseCase
 import com.example.scrollbooker.entity.auth.domain.useCase.LoginUseCase
+import com.example.scrollbooker.entity.auth.domain.useCase.RefreshTokenUseCase
 import com.example.scrollbooker.entity.auth.domain.useCase.RegisterUseCase
 import com.example.scrollbooker.entity.auth.domain.useCase.SaveSessionUseCase
 import com.example.scrollbooker.entity.user.userEmailVerify.domain.useCase.VerifyUserEmailUseCase
@@ -109,16 +110,16 @@ object AuthModule {
     @Provides
     @Singleton
     fun provideIsLoggedInUseCase(
-        apiService: AuthApiService,
         tokenProvider: TokenProvider,
         authDataStore: AuthDataStore,
-        getUserInfoUseCase: GetUserInfoUseCase
+        getUserInfoUseCase: GetUserInfoUseCase,
+        refreshTokenUseCase: RefreshTokenUseCase
     ): IsLoggedInUseCase {
         return IsLoggedInUseCase(
-            apiService = apiService,
             tokenProvider = tokenProvider,
             authDataStore = authDataStore,
-            getUserInfoUseCase = getUserInfoUseCase
+            getUserInfoUseCase = getUserInfoUseCase,
+            refreshTokenUseCase = refreshTokenUseCase
         )
     }
 
@@ -135,6 +136,22 @@ object AuthModule {
             authDataStore = authDataStore,
             getUserInfoUseCase = getUserInfoUseCase,
             getUserPermissionsUseCase = getUserPermissionsUseCase
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideRefreshTokenUseCase(
+        apiService: AuthApiService,
+        authDataStore: AuthDataStore,
+        tokenProvider: TokenProvider,
+        getUserInfoUseCase: GetUserInfoUseCase
+    ): RefreshTokenUseCase {
+        return RefreshTokenUseCase(
+            apiService = apiService,
+            authDataStore = authDataStore,
+            tokenProvider = tokenProvider,
+            getUserInfoUseCase = getUserInfoUseCase
         )
     }
 }

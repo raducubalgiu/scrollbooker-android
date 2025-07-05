@@ -171,4 +171,13 @@
     <string name="ifNotHaveEmployeesDescription">Daca nu, toate programările vor fi gestionate direct în numele business-ului tău, intr-un singur calendar.</string>
     <string name="YesIHaveEmployees">DA, am angajați care primesc programări</string>
     <string name="NoIDoNotHaveEmployees">NU am angajați care primesc programări</string>
+    <string name="congratsRegisterConfirmation">Felicitări! Ai finalizat înregistrarea</string>
+    <string name="pendingBusinessApprovalMessage">Am primit toate detaliile despre business-ul tău. În scurt timp, echipa noastră va revizui aplicația și te vom anunța imediat ce contul tău este aprobat.</string>
+    <string name="usuallyWeRespondInSeveralMinutes">De obicei răspundem în câteva minute</string>
+    <string name="hereIsWhatYouShouldNow">Iată ce trebuie să mai știi:</string>
+    <string name="afterValidationYouNeedToAddEmployees">După ce îți vom valida detaliile locației, va fi necesar să îți adaugi angajații pentru a putea primi programări. Procesul este urmatorul:</string>
+    <string name="employeeShouldCreateAccount">Angajatul va trebui să își creeze un cont în aplicație ca user obișnuit.</string>
+    <string name="afterEmployeeCreateAccountYouSendEmploymentRequest">După ce angajatul și-a creat contul, îi vei trimite o cerere de angajare.</string>
+    <string name="employeeWillReceiveEmploymentRequest">Angajatul va primi cererea ta și va fi necesar să o accepte. Cand o va accepta îl vom cupla la business-ul tău și va primi acces la propriul calendar, va gestiona propriile produse în cadrul locației tale.</string>
+    <string name="dontWorryYouWillReceiveVideoGuidance">Nu îți face griji. Procesul este foarte simplu, vei găsi inclusiv un ghid video in aplicație după ce te vei loga.</string>
 </resources>

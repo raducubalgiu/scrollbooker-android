@@ -42,6 +42,7 @@ fun MyBusinessLocationScreen(
         headLine = stringResource(id = R.string.locationAddress),
         subHeadLine = stringResource(id = R.string.addYourBusinessLocation),
         buttonTitle = stringResource(id = R.string.nextStep),
+        isEnabled = selectedAddress != null,
         onBack = onBack,
         onNext = onNextOrSave,
     ) {
@@ -59,7 +60,7 @@ fun MyBusinessLocationScreen(
                     onValueChange = {
                         viewModel.searchAddress(it)
                     },
-                    placeholder = "Cauta"
+                    placeholder = stringResource(R.string.search)
                 )
             }
 
