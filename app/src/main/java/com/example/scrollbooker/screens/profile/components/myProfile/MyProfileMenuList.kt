@@ -13,25 +13,25 @@ fun MyProfileMenuList(
 ) {
     ItemList(
         headLine = "Creaza o postare",
-        leftIcon = painterResource(R.drawable.ic_camera_solid),
+        leftIcon = painterResource(R.drawable.ic_camera_outline),
         displayRightIcon = false,
         onClick = {  }
     )
     ItemList(
         headLine = stringResource(id = R.string.calendar),
-        leftIcon = painterResource(R.drawable.ic_calendar),
+        leftIcon = painterResource(R.drawable.ic_calendar_outline),
         displayRightIcon = false,
         onClick = { onNavigate(MainRoute.MyCalendar.route) }
     )
     ItemList(
         headLine = stringResource(id = R.string.myBusiness),
-        leftIcon = painterResource(R.drawable.ic_business_solid),
+        leftIcon = painterResource(R.drawable.ic_business_outline),
         displayRightIcon = false,
         onClick = { onNavigate(MainRoute.MyBusiness.route) }
     )
     ItemList(
         headLine = stringResource(id = R.string.settings),
-        leftIcon = painterResource(R.drawable.ic_settings_solid),
+        leftIcon = painterResource(R.drawable.ic_settings_outline),
         displayRightIcon = false,
         onClick = { onNavigate(MainRoute.Settings.route) }
     )

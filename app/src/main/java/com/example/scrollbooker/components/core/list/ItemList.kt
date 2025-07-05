@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.ArrowForwardIos
@@ -15,11 +16,13 @@ import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.SurfaceBG
@@ -37,9 +40,6 @@ fun ItemList(
     displayRightIcon: Boolean = true,
     onClick: () -> Unit
 ) {
-    val isDarkMode = isSystemInDarkTheme()
-    val background = if(isDarkMode) SurfaceBG else Background
-
     ListItem(
         modifier = Modifier
             .fillMaxWidth()
@@ -69,21 +69,22 @@ fun ItemList(
             if(leftIcon != null) {
                 Icon(
                     painter = leftIcon,
-                    contentDescription = null,
+                    contentDescription = null
                 )
             }
         },
         trailingContent = {
             if(displayRightIcon) {
                 Icon(
+                    modifier = Modifier.size(18.dp),
                     imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
                     contentDescription = null,
+                    tint = Color.Gray
                 )
             }
         },
         colors = ListItemDefaults.colors(
-            containerColor = background
+            containerColor = Color.Transparent
         )
-
     )
 }

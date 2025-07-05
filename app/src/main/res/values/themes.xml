@@ -3,7 +3,8 @@
     <style name="Theme.ScrollBooker" parent="android:Theme.Material.Light.NoActionBar" />
     <style name="Theme.ScrollBooker.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">#121212</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_calendar</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_location_solid</item>
+        <item name="windowSplashScreenIconBackgroundColor">#FF6F00</item>
         <item name="postSplashScreenTheme">@style/Theme.ScrollBooker</item>
     </style>
 </resources>

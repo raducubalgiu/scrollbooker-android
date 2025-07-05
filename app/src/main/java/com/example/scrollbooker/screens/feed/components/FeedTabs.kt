@@ -28,12 +28,14 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 
 @Composable
@@ -125,7 +127,7 @@ fun FeedTabs(
             ) {
                 Icon(
                     modifier = Modifier.size(30.dp),
-                    imageVector = Icons.Outlined.Search,
+                    painter = painterResource(R.drawable.ic_search_solid),
                     contentDescription = null,
                     tint = Color(0xFFE0E0E0),
                 )

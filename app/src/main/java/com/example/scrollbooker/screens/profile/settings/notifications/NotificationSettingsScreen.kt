@@ -1,6 +1,7 @@
 package com.example.scrollbooker.screens.profile.settings.notifications
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -17,6 +18,7 @@ fun NotificationSettings(
     onBack: () -> Unit
 ) {
     Layout(
+        modifier = Modifier.statusBarsPadding(),
         headerTitle = stringResource(R.string.notifications),
         onBack = onBack,
         enablePaddingH = false
