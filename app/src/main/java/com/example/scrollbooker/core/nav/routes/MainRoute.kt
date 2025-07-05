@@ -2,6 +2,8 @@ package com.example.scrollbooker.core.nav.routes
 
 sealed class MainRoute(val route: String) {
     object Feed: MainRoute(route = "feed")
+    object FeedSearch: MainRoute(route = "feedSearch")
+
     object Inbox: MainRoute(route = "inbox")
     object Search: MainRoute(route = "search")
 

@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ModeComment
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -28,7 +29,7 @@ fun CommentsList(
 ) {
     if(comments.itemCount == 0) {
         EmptyScreen(
-            icon = Icons.Outlined.ModeComment,
+            icon = painterResource(R.drawable.ic_comment_outline),
             message = stringResource(R.string.notFoundComments),
         )
     } else {

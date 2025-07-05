@@ -42,7 +42,8 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 fun FeedTabs(
     selectedTabIndex: Int,
     onOpenDrawer: () -> Unit,
-    onChangeTab: (Int) -> Unit
+    onChangeTab: (Int) -> Unit,
+    onNavigateSearch: () -> Unit
 ) {
     val tabs = listOf("Book Now", "Urmaresti")
 
@@ -120,7 +121,7 @@ fun FeedTabs(
         }
 
 
-        Box(modifier = Modifier.clickable(onClick = {})) {
+        Box(modifier = Modifier.clickable { onNavigateSearch() }) {
             Box(
                 modifier = Modifier.padding(BasePadding),
                 contentAlignment = Alignment.Center

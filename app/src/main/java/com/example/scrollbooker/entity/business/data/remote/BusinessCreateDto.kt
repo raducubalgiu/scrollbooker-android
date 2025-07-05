@@ -8,5 +8,8 @@ data class BusinessCreateDto(
     val placeId: String,
 
     @SerializedName("business_type_id")
-    val businessTypeId: Int
+    val businessTypeId: Int,
+
+    @SerializedName("owner_fullname")
+    val ownerFullName: String
 )

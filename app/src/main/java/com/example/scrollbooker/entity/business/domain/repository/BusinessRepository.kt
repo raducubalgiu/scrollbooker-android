@@ -13,6 +13,7 @@ interface BusinessRepository {
     suspend fun createBusiness(
         description: String?,
         placeId: String,
-        businessTypeId: Int
+        businessTypeId: Int,
+        ownerFullName: String
     ): BusinessCreateResponse
 }

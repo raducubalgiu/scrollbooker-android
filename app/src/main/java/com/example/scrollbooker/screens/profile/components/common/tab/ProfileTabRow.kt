@@ -25,8 +25,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.example.scrollbooker.R
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
@@ -35,7 +38,7 @@ import kotlinx.coroutines.launch
 
 class ProfileTab(
     val route: String,
-    val icon: ImageVector
+    val icon: Painter
 )
 
 @Composable
@@ -43,11 +46,11 @@ fun ProfileTabRow(
     pagerState: PagerState
 ) {
     val tabs = listOf(
-        ProfileTab(route = "Posts", icon = Icons.Outlined.ViewComfyAlt),
-        ProfileTab(route = "Products", icon = Icons.Outlined.ShoppingBag),
-        ProfileTab(route = "Reposts", icon = Icons.Outlined.Repeat),
-        ProfileTab(route = "Bookmarks", icon = Icons.Outlined.BookmarkBorder),
-        ProfileTab(route = "Info", icon = Icons.Outlined.LocationOn)
+        ProfileTab(route = "Posts", painterResource(R.drawable.ic_video_outline)),
+        ProfileTab(route = "Products", icon = painterResource(R.drawable.ic_shopping_outline)),
+        ProfileTab(route = "Reposts", icon = painterResource(R.drawable.ic_arrow_repeat_outline)),
+        ProfileTab(route = "Bookmarks", icon = painterResource(R.drawable.ic_bookmark_outline)),
+        ProfileTab(route = "Info", icon = painterResource(R.drawable.ic_location_outline))
     )
     val selectedTabIndex = pagerState.currentPage
     val coroutineScope = rememberCoroutineScope()
@@ -59,8 +62,8 @@ fun ProfileTabRow(
             Box(
                 Modifier
                     .tabIndicatorOffset(tabPositions[selectedTabIndex])
-                    .height(1.5.dp)
-                    .padding(horizontal = 10.dp)
+                    .height(3.5.dp)
+                    .padding(horizontal = 15.dp)
                     .background(OnBackground)
             )
         },
@@ -97,7 +100,7 @@ fun ProfileTabRow(
                         }
                     ) {
                         Icon(
-                            imageVector = item.icon,
+                            painter = item.icon,
                             contentDescription = null,
                             tint = if (isSelected) OnBackground else Color.Gray
                         )

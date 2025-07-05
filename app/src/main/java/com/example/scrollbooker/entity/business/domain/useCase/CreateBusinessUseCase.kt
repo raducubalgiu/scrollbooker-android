@@ -9,12 +9,14 @@ class CreateBusinessUseCase @Inject constructor(
     suspend operator fun invoke(
         description: String?,
         placeId: String,
-        businessTypeId: Int
+        businessTypeId: Int,
+        ownerFullName: String
     ): Result<BusinessCreateResponse> = runCatching {
         repository.createBusiness(
             description = description,
             placeId = placeId,
-            businessTypeId = businessTypeId
+            businessTypeId = businessTypeId,
+            ownerFullName = ownerFullName
         )
     }
 }

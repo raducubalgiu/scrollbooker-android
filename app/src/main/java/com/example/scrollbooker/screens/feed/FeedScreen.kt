@@ -23,7 +23,8 @@ import com.example.scrollbooker.modules.posts.common.PostsList
 @Composable
 fun FeedScreen(
     viewModel: FeedViewModel,
-    onOpenDrawer: () -> Unit
+    onOpenDrawer: () -> Unit,
+    onNavigateSearch: () -> Unit
 ) {
     val tabCount = 2
     val pagerState = rememberPagerState(initialPage = 0) { tabCount }
@@ -46,6 +47,7 @@ fun FeedScreen(
         FeedTabs(
             selectedTabIndex = selectedTabIndex,
             onOpenDrawer = onOpenDrawer,
+            onNavigateSearch = onNavigateSearch,
             onChangeTab = {
                 coroutineScope.launch {
                     pagerState.animateScrollToPage(it)

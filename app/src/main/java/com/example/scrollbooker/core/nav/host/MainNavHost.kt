@@ -1,4 +1,9 @@
 package com.example.scrollbooker.core.nav.host
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -6,12 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ModalNavigationDrawer
@@ -29,28 +28,18 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.nav.BottomBarItem
 import com.example.scrollbooker.core.nav.containers.DefaultTabContainer
 import com.example.scrollbooker.core.nav.routes.MainRoute
-import com.example.scrollbooker.screens.feed.FeedScreen
-import com.example.scrollbooker.screens.feed.FeedViewModel
-import com.example.scrollbooker.screens.profile.myProfile.MyProfileScreen
-import com.example.scrollbooker.screens.profile.myProfile.ProfileSharedViewModel
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import kotlinx.coroutines.launch
-import timber.log.Timber
+import kotlin.collections.contains
 
 sealed class MainTab(
     val route: String,
@@ -106,8 +95,7 @@ fun MainNavHost() {
         mutableStateOf(MainTab.Feed)
     }
 
-    val navControllers = remember {
-        mutableMapOf<MainTab, NavHostController>()
+    val navControllers = remember { mutableMapOf<MainTab, NavHostController>()
     }.also { controllers ->
         MainTab.allTabs.forEach { tab ->
             controllers.putIfAbsent(tab, rememberNavController())
@@ -131,7 +119,11 @@ fun MainNavHost() {
     val scaffoldContent: @Composable () -> Unit = {
         Scaffold(
             bottomBar = {
-                if(currentRoute in bottomBarRoutes) {
+                AnimatedVisibility(
+                    visible = currentRoute in bottomBarRoutes,
+                    enter = fadeIn() + slideInVertically { it },
+                    exit = fadeOut() + slideOutVertically { it }
+                ) {
                     Column(Modifier.height(90.dp)) {
                         HorizontalDivider(color = dividerColor, thickness = 1.dp)
                         NavigationBar(

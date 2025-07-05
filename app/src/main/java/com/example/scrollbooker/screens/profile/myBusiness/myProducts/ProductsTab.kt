@@ -10,6 +10,7 @@ import androidx.compose.material.icons.outlined.ShoppingBag
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -38,7 +39,7 @@ fun ProductsTab(
                     if(state.itemCount == 0) {
                         EmptyScreen(
                             message = stringResource(R.string.noProductsFound),
-                            icon = Icons.Outlined.ShoppingBag
+                            icon = painterResource(R.drawable.ic_shopping_outline)
                         )
                     }
                 }

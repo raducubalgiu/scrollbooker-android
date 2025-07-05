@@ -39,12 +39,14 @@ class BusinessRepositoryImpl @Inject constructor(
     override suspend fun createBusiness(
         description: String?,
         placeId: String,
-        businessTypeId: Int
+        businessTypeId: Int,
+        ownerFullName: String
     ): BusinessCreateResponse {
         val request = BusinessCreateDto(
             description = description,
             placeId = placeId,
-            businessTypeId = businessTypeId
+            businessTypeId = businessTypeId,
+            ownerFullName = ownerFullName
         )
         return apiService.createBusiness(request).toDomain()
     }

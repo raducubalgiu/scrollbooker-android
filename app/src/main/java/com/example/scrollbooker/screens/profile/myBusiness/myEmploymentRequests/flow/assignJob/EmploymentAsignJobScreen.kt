@@ -3,6 +3,7 @@ package com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -29,6 +30,7 @@ fun EmploymentAssignJobScreen(
     val professionId by globalViewModel.professionId.collectAsState()
 
     Layout(
+        modifier = Modifier.statusBarsPadding(),
         headerTitle = stringResource(R.string.assignJob),
         onBack = onBack
     ) {

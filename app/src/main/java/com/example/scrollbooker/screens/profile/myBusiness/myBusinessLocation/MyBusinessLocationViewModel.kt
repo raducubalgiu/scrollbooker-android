@@ -112,7 +112,8 @@ class MyBusinessLocationViewModel @Inject constructor(
             createBusinessUseCase(
                 description = _currentDescription.value,
                 placeId = placeId,
-                businessTypeId = businessTypeId
+                businessTypeId = businessTypeId,
+                ownerFullName = _currentName.value
             )
         }
 
