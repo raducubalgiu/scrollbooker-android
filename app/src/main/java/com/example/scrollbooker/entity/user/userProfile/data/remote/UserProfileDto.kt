@@ -29,7 +29,16 @@ data class UserProfileDto (
     val isFollow: Boolean,
 
     @SerializedName("business_owner")
-    val businessOwner: BusinessOwnerDto?
+    val businessOwner: BusinessOwnerDto?,
+
+    @SerializedName("is_own_profile")
+    val isOwnProfile: Boolean,
+
+    @SerializedName("is_business_or_employee")
+    val isBusinessOrEmployee: Boolean,
+
+    @SerializedName("distance_km")
+    val distanceKm: Float?
 )
 
 data class BusinessOwnerDto(

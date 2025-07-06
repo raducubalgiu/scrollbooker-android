@@ -1,6 +1,7 @@
 package com.example.scrollbooker.screens.profile.userProfile
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -23,7 +24,11 @@ fun UserProfileScreen(
     val userProfileState by viewModel.userProfileState.collectAsState()
     val userPosts = viewModel.userPosts.collectAsLazyPagingItems()
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .statusBarsPadding()
+    ) {
         when(userProfileState) {
             is FeatureState.Error -> ErrorScreen()
             is FeatureState.Loading -> LoadingScreen()

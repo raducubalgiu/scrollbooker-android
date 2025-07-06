@@ -47,7 +47,7 @@ fun AppDrawer() {
 
         ModalDrawerSheet(
             modifier = Modifier.width(drawerWidth),
-            drawerContainerColor = Color(0xFF121212)
+            drawerContainerColor = Color.Red
         ) {
             Column(
                 modifier = Modifier

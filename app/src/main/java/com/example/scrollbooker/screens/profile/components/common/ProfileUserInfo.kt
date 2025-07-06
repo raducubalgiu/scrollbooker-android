@@ -1,6 +1,4 @@
 package com.example.scrollbooker.screens.profile.components.common
-
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -17,13 +15,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.Repeat
 import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -31,19 +28,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
-import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
@@ -69,7 +69,7 @@ fun ProfileUserInfo(
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(contentAlignment = Alignment.BottomEnd) {
                 Avatar(
-                    url = "",
+                    url = user.avatar ?: "",
                     size = 90.dp
                 )
                 if(isBusinessOrEmployee) {
@@ -195,6 +195,41 @@ fun ProfileUserInfo(
                 color = OnBackground,
                 fontWeight = FontWeight.SemiBold
             )
+        }
+        Spacer(Modifier.height(SpacingS))
+
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = "Strada Oarecare 15, Sector 3",
+                fontWeight = FontWeight.SemiBold,
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(Modifier.height(SpacingS))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_location_outline),
+                    contentDescription = null
+                )
+                Spacer(Modifier.width(4.dp))
+                Text(text =
+                    buildAnnotatedString {
+                        append("La ")
+                        withStyle(SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )) {
+                            append("5km")
+                        }
+                        append(" de tine")
+                    }
+                )
+            }
         }
     }
 

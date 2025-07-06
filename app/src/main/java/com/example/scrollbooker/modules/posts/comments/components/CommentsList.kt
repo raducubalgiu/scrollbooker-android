@@ -3,6 +3,7 @@ package com.example.scrollbooker.modules.posts.comments.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -11,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
@@ -29,6 +31,8 @@ fun CommentsList(
 ) {
     if(comments.itemCount == 0) {
         EmptyScreen(
+            modifier = Modifier.padding(top = 50.dp),
+            fillMaxSize = false,
             icon = painterResource(R.drawable.ic_comment_outline),
             message = stringResource(R.string.notFoundComments),
         )

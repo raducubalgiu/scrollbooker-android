@@ -189,4 +189,7 @@
     <string name="youWillAppearInThePublicBusinessProfile">"Vei apărea in profilul public al business-ului ca membru oficial al echipei"</string>
     <string name="youWillReceiveReviewsFromYourClients">Vei putea primi review-uri individuale din partea clienților</string>
     <string name="youCouldResignAnytime">Poți renunța oricând la colaborare prin funcția demisie din aplicație</string>
+    <string name="isClosingAt">Închide la</string>
+    <string name="opens">Deschide</string>
+    <string name="at">la</string>
 </resources>

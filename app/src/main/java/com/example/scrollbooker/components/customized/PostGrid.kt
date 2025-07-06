@@ -22,15 +22,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.scrollbooker.R
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.entity.post.domain.model.Post
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.SurfaceBG
+import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
 
 @Composable
@@ -88,26 +91,25 @@ fun PostGrid(
 
         Row(modifier = Modifier
             .align(Alignment.BottomStart)
-            .padding(6.dp)
-            .background(
-                color = Color.Black.copy(alpha = 0.4f),
-                shape = RoundedCornerShape(6.dp)
-            )
-            .padding(horizontal = 6.dp, vertical = 2.dp),
+            .padding(
+                bottom = 5.dp,
+                start = 5.dp
+            ),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
-                imageVector = Icons.Outlined.PlayArrow,
+                painter = painterResource(R.drawable.ic_play_outline),
                 contentDescription = null,
                 tint = Color.White,
-                modifier = Modifier.size(14.dp)
+                modifier = Modifier.size(18.dp)
             )
-            Spacer(modifier = Modifier.width(4.dp))
+            Spacer(modifier = Modifier.width(2.dp))
             Text(
-                text = "14K",
+                text = "14,200",
                 color = Color.White,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.SemiBold
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
+                style = bodyLarge
             )
         }
     }

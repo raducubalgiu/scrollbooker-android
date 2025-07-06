@@ -23,14 +23,14 @@ fun formatOpeningHours(openingHours: OpeningHours): String? {
 
     return (if(openingHours.openNow) {
         openingHours.closingTime?.let {
-            "Inchide la ${openingHours.closingTime}"
+            "${stringResource(R.string.isClosingAt)} ${openingHours.closingTime}"
         }
     } else {
         val day = localizeDay(openingHours.nextOpenDay)
         val hour = openingHours.nextOpenTime
 
         if(day != null && hour != null) {
-            "Deschide ${day.lowercase()} la $hour"
-        } else null
+            "${stringResource(R.string.opens)} ${day.lowercase()} ${stringResource(R.string.at)} $hour"
+        } else stringResource(R.string.closed)
     })
 }
