@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.inbox.employmentRequestAccept
+package com.example.scrollbooker.screens.inbox.employmentRequestRespond
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,6 +20,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,12 +49,17 @@ import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.titleMedium
+import androidx.compose.runtime.getValue
+import com.example.scrollbooker.core.util.FeatureState
 
 @Composable
-fun EmploymentRequestAcceptScreen(
-    viewModel: EmploymentRequestAcceptViewModel,
-    onBack: () -> Unit
+fun EmploymentRequestRespondScreen(
+    viewModel: EmploymentRequestRespondViewModel,
+    onBack: () -> Unit,
+    onNavigate: () -> Unit
 ) {
+    val isSaving by viewModel.isSaving.collectAsState()
+
     val verticalScroll = rememberScrollState()
 
     val paragraphs = listOf(
@@ -158,26 +164,26 @@ fun EmploymentRequestAcceptScreen(
                         .padding(top = SpacingM, bottom = SpacingM)
                 ) {
                     MainButton(
+                        modifier = Modifier.weight(0.5f),
                         title = stringResource(R.string.deny),
-                        onClick = {
-                            viewModel.respondToRequest()
-                        },
+                        isLoading = isSaving is FeatureState.Loading,
+                        enabled = isSaving != FeatureState.Loading,
+                        onClick = {  },
                         colors = ButtonColors(
                             containerColor = SurfaceBG,
                             contentColor = OnSurfaceBG,
                             disabledContainerColor = Divider,
                             disabledContentColor = OnSurfaceBG
                         ),
-                        modifier = Modifier.weight(0.5f)
                     )
 
                     Spacer(Modifier.width(SpacingS))
                     MainButton(
                         modifier = Modifier.weight(0.5f),
                         title = stringResource(R.string.accept),
-                        onClick = {
-                            viewModel.respondToRequest()
-                        },
+                        isLoading = isSaving is FeatureState.Loading,
+                        enabled = isSaving != FeatureState.Loading,
+                        onClick = onNavigate,
                     )
                 }
             }

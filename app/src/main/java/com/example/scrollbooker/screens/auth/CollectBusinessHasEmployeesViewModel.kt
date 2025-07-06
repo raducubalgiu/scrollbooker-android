@@ -9,7 +9,6 @@ import com.example.scrollbooker.entity.business.domain.model.Business
 import com.example.scrollbooker.entity.business.domain.useCase.GetBusinessByUserUseCase
 import com.example.scrollbooker.entity.business.domain.useCase.UpdateBusinessHasEmployeesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -49,12 +48,13 @@ class CollectBusinessHasEmployeesViewModel @Inject constructor(
 
     suspend fun updateHasEmployees(): AuthState? {
         _isSaving.value = FeatureState.Loading
-        delay(200)
 
         val business = (_businessState.value as? FeatureState.Success)?.data
 
         return if(business?.hasEmployees != null) {
-            updateBusinessHasEmployeesUseCase(business.hasEmployees)
+            val response = withVisibleLoading { updateBusinessHasEmployeesUseCase(business.hasEmployees) }
+
+            response
                 .onFailure { error ->
                     _isSaving.value = FeatureState.Error(error)
                     Timber.Forest.tag("Business Has Employees").e("ERROR: on Updating Business Has Employees $error")

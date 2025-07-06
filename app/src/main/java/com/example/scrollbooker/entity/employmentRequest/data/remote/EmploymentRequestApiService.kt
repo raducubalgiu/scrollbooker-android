@@ -2,6 +2,7 @@ package com.example.scrollbooker.entity.employmentRequest.data.remote
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface EmploymentRequestsApiService {
@@ -13,5 +14,11 @@ interface EmploymentRequestsApiService {
     @POST("employment-requests")
     suspend fun createEmploymentRequest(
         @Body request: EmploymentRequestCreateDto
+    )
+
+    @PUT("employment-requests/{employmentId}")
+    suspend fun respondEmploymentRequest(
+        @Body requestRespondDto: EmploymentRequestRespondDto,
+        @Path("employmentId") employmentId: Int
     )
 }

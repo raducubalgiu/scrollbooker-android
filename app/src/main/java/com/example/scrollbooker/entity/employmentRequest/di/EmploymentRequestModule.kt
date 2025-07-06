@@ -5,6 +5,7 @@ import com.example.scrollbooker.entity.employmentRequest.data.remote.EmploymentR
 import com.example.scrollbooker.entity.employmentRequest.data.repository.EmploymentRequestRepositoryImpl
 import com.example.scrollbooker.entity.employmentRequest.domain.repository.EmploymentRequestRepository
 import com.example.scrollbooker.entity.employmentRequest.domain.useCase.GetEmploymentRequestsUseCase
+import com.example.scrollbooker.entity.employmentRequest.domain.useCase.RespondEmploymentRequestUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.Module
 import dagger.Provides
@@ -42,5 +43,13 @@ object EmploymentRequestModule {
         repository: EmploymentRequestRepository,
     ): GetEmploymentRequestsUseCase {
         return GetEmploymentRequestsUseCase(authDataStore, repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRespondEmploymentRequestUseCase(
+        repository: EmploymentRequestRepository,
+    ): RespondEmploymentRequestUseCase {
+        return RespondEmploymentRequestUseCase(repository)
     }
 }
