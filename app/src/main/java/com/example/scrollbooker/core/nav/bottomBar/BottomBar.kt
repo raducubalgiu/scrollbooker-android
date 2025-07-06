@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.NavigationBar
 import androidx.compose.runtime.Composable
@@ -22,6 +24,7 @@ import com.example.scrollbooker.ui.theme.Divider
 
 @Composable
 fun BottomBar(
+    drawerState: DrawerState,
     currentTab: MainTab,
     currentRoute: String?,
     onNavigate: (MainTab) -> Unit
@@ -34,8 +37,10 @@ fun BottomBar(
     val dividerColor = if (isFeedTab) Color(0xFF3A3A3A) else Divider
     val containerColor = if(isFeedTab) Color(0xFF121212) else Background
 
+    val isVisible = currentRoute in bottomBarRoutes && !drawerState.isAnimationRunning && drawerState.isClosed
+
     AnimatedVisibility(
-        visible = currentRoute in bottomBarRoutes,
+        visible = isVisible,
         enter = fadeIn() + slideInVertically { it },
         exit = fadeOut() + slideOutVertically { it }
     ) {

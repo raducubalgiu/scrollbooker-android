@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.inbox
+package com.example.scrollbooker.screens.inbox.employmentRequestAccept
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,16 +12,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -39,16 +42,29 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
-import com.example.scrollbooker.ui.theme.titleLarge
+import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun EmploymentRequestAcceptScreen(
+    viewModel: EmploymentRequestAcceptViewModel,
     onBack: () -> Unit
 ) {
+    val verticalScroll = rememberScrollState()
+
+    val paragraphs = listOf(
+        stringResource(R.string.youWillReceiveAccessToYourOwnCalendarAndAppointments),
+        "${stringResource(R.string.youWillBeAbleToEditAndAddServicesWithinYourBusiness)} Frizeria Figaro",
+        stringResource(R.string.clientsWillBeAbleToSelectYouDirectlyBasedYourAvailability),
+        stringResource(R.string.youWillAppearInThePublicBusinessProfile),
+        stringResource(R.string.youWillReceiveReviewsFromYourClients),
+        stringResource(R.string.youCouldResignAnytime)
+    )
+
     Layout(
         modifier = Modifier
             .background(Background)
@@ -57,15 +73,16 @@ fun EmploymentRequestAcceptScreen(
         onBack = onBack
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = SpacingXXL),
+            modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Column {
+            Column(modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = SpacingXXL)
+                .verticalScroll(verticalScroll)
+            ) {
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
@@ -79,9 +96,9 @@ fun EmploymentRequestAcceptScreen(
                     Text(
                         buildAnnotatedString {
                             withStyle(style = SpanStyle(fontWeight = FontWeight.ExtraBold)) {
-                                append("Frizeria Figaro")
+                                append("Frizeria Figaro ")
                             }
-                            append(" ți-a trimis o cerere de angajare")
+                            append(stringResource(R.string.sentYouAnEmploymentRequest))
                         },
                         style = bodyLarge
                     )
@@ -90,7 +107,7 @@ fun EmploymentRequestAcceptScreen(
                 Spacer(Modifier.height(SpacingXXL))
 
                 Text(
-                    style = titleLarge,
+                    style = titleMedium,
                     fontWeight = FontWeight.SemiBold,
                     text = stringResource(R.string.hereIsWhatYouShouldNow)
                 )
@@ -100,91 +117,69 @@ fun EmploymentRequestAcceptScreen(
                     style = bodyLarge,
                     fontWeight = FontWeight.Normal,
                     color = Color.Gray,
-                    text = stringResource(R.string.afterValidationYouNeedToAddEmployees)
+                    text = "${stringResource(R.string.byAcceptingThisRequest)}:"
                 )
 
-                Spacer(Modifier.height(BasePadding))
-                Row(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        modifier = Modifier.padding(start = BasePadding),
-                        style = bodyLarge,
-                        fontWeight = FontWeight.Normal,
-                        color = Color.Gray,
-                        text = "\u2022")
-                    Spacer(Modifier.width(SpacingS))
-                    Text(
-                        style = bodyLarge,
-                        fontWeight = FontWeight.Normal,
-                        color = Color.Gray,
-                        text = stringResource(R.string.employeeShouldCreateAccount)
-                    )
+                paragraphs.forEach { text ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = BasePadding),
+                        verticalAlignment = Alignment.Top
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .padding(
+                                    top = 6.dp,
+                                    start = BasePadding
+                                )
+                                .clip(CircleShape)
+                                .size(5.dp)
+                                .background(OnBackground)
+                                .alignBy(FirstBaseline)
+                        )
+                        Spacer(Modifier.width(SpacingS))
+                        Text(
+                            style = bodyLarge,
+                            color = Color.Gray,
+                            text = text
+                        )
+                    }
                 }
 
                 Spacer(Modifier.height(BasePadding))
-                Row(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        modifier = Modifier.padding(start = BasePadding),
-                        style = bodyLarge,
-                        fontWeight = FontWeight.Normal,
-                        color = Color.Gray,
-                        text = "\u2022")
-                    Spacer(Modifier.width(SpacingS))
-                    Text(
-                        style = bodyLarge,
-                        fontWeight = FontWeight.Normal,
-                        color = Color.Gray,
-                        text = stringResource(R.string.afterEmployeeCreateAccountYouSendEmploymentRequest)
-                    )
-                }
-
-                Spacer(Modifier.height(BasePadding))
-                Row(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        modifier = Modifier.padding(start = BasePadding),
-                        style = bodyLarge,
-                        fontWeight = FontWeight.Normal,
-                        color = Color.Gray,
-                        text = "\u2022")
-                    Spacer(Modifier.width(SpacingS))
-                    Text(
-                        style = bodyLarge,
-                        fontWeight = FontWeight.Normal,
-                        color = Color.Gray,
-                        text = stringResource(R.string.employeeWillReceiveEmploymentRequest)
-                    )
-                }
             }
-            Row(
-                modifier = Modifier.padding(bottom = BasePadding)
-            ) {
-                MainButton(
-                    title = "Anuleaza",
-                    onClick = {},
-                    shape = ShapeDefaults.Small,
-                    colors = ButtonColors(
-                        containerColor = SurfaceBG,
-                        contentColor = OnSurfaceBG,
-                        disabledContainerColor = Divider,
-                        disabledContentColor = OnSurfaceBG
-                    ),
+            Column {
+                HorizontalDivider(color = Divider, thickness = 0.5.dp)
+                Row(
                     modifier = Modifier
-                        .weight(0.5f)
-                )
+                        .fillMaxWidth()
+                        .padding(horizontal = BasePadding)
+                        .padding(top = SpacingM, bottom = SpacingM)
+                ) {
+                    MainButton(
+                        title = stringResource(R.string.deny),
+                        onClick = {
+                            viewModel.respondToRequest()
+                        },
+                        colors = ButtonColors(
+                            containerColor = SurfaceBG,
+                            contentColor = OnSurfaceBG,
+                            disabledContainerColor = Divider,
+                            disabledContentColor = OnSurfaceBG
+                        ),
+                        modifier = Modifier.weight(0.5f)
+                    )
 
-                Spacer(Modifier.width(SpacingM))
-                MainButton(
-                    modifier = Modifier
-                        .weight(0.5f),
-                    title = "Accepta",
-                    onClick = {},
-                    shape = ShapeDefaults.Small
-                )
+                    Spacer(Modifier.width(SpacingS))
+                    MainButton(
+                        modifier = Modifier.weight(0.5f),
+                        title = stringResource(R.string.accept),
+                        onClick = {
+                            viewModel.respondToRequest()
+                        },
+                    )
+                }
             }
         }
     }

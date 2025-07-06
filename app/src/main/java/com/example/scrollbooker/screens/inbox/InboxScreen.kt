@@ -16,7 +16,7 @@ import com.example.scrollbooker.screens.inbox.components.NotificationsList
 @Composable
 fun InboxScreen(
     viewModel: InboxViewModel,
-    onNavigate: () -> Unit
+    onNavigate: (Int) -> Unit
 ) {
     val notifications = viewModel.notifications.collectAsLazyPagingItems()
     val refreshState = notifications.loadState.refresh

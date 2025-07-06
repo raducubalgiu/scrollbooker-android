@@ -6,12 +6,15 @@ import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.scrollbooker.core.nav.routes.MainRoute
-import com.example.scrollbooker.screens.inbox.EmploymentRequestAcceptScreen
+import com.example.scrollbooker.screens.inbox.employmentRequestAccept.EmploymentRequestAcceptScreen
 import com.example.scrollbooker.screens.inbox.InboxScreen
 import com.example.scrollbooker.screens.inbox.InboxViewModel
+import com.example.scrollbooker.screens.inbox.employmentRequestAccept.EmploymentRequestAcceptViewModel
 
 @Composable
 fun InboxNavHost(navController: NavHostController) {
@@ -23,11 +26,16 @@ fun InboxNavHost(navController: NavHostController) {
             val viewModel = hiltViewModel<InboxViewModel>(backStackEntry)
             InboxScreen(
                 viewModel = viewModel,
-                onNavigate = { navController.navigate(MainRoute.EmploymentRequestAccept.route) }
+                onNavigate = {
+                    navController.navigate("${MainRoute.EmploymentRequestAccept.route}/${it}")
+                }
             )
         }
 
-        composable(route = MainRoute.EmploymentRequestAccept.route,
+        composable(route = "${MainRoute.EmploymentRequestAccept.route}/{employmentId}",
+            arguments = listOf(
+                navArgument("employmentId") { type = NavType.IntType }
+            ),
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Left,
@@ -65,8 +73,10 @@ fun InboxNavHost(navController: NavHostController) {
                 )
             }
         ) { backStackEntry ->
-            //val viewModel = hiltViewModel<InboxViewModel>(backStackEntry)
+            val viewModel = hiltViewModel<EmploymentRequestAcceptViewModel>(backStackEntry)
+
             EmploymentRequestAcceptScreen(
+                viewModel = viewModel,
                 onBack = { navController.popBackStack() }
             )
         }

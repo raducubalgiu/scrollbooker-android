@@ -13,7 +13,7 @@ import timber.log.Timber
 @Composable
 fun NotificationsList(
     notifications: LazyPagingItems<Notification>,
-    onNavigate: () -> Unit
+    onNavigate: (Int) -> Unit
 ) {
     val appendState = notifications.loadState.append
 
@@ -31,7 +31,6 @@ fun NotificationsList(
                             message = stringResource(id = R.string.startedFollowingYou),
                             avatar = it.sender.avatar.toString(),
                             actionTitle = stringResource(R.string.follow),
-                            onActionClick = onNavigate
                         )
                     }
                     "employment_request" -> {
@@ -40,7 +39,7 @@ fun NotificationsList(
                             message = stringResource(R.string.sentYouAnEmploymentRequest),
                             avatar = it.sender.avatar.toString(),
                             actionTitle = stringResource(R.string.seeMore),
-                            onActionClick = onNavigate
+                            onActionClick = { onNavigate(it.id) }
                         )
                     }
                     else -> Unit

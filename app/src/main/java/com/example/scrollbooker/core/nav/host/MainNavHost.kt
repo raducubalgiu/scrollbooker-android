@@ -23,6 +23,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.scrollbooker.core.nav.bottomBar.MainTab
 import com.example.scrollbooker.core.nav.containers.DefaultTabContainer
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 val MainTabSaver: Saver<MainTab, String> = Saver(
     save = { it.route },
@@ -31,87 +32,84 @@ val MainTabSaver: Saver<MainTab, String> = Saver(
 
 @Composable
 fun MainNavHost() {
-    var currentTab by rememberSaveable(stateSaver = MainTabSaver) {
-        mutableStateOf(MainTab.Feed)
-    }
+    val saveableStateHolder = rememberSaveableStateHolder()
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
 
-    val navControllers = remember { mutableMapOf<MainTab, NavHostController>()
+    val navControllers = remember {
+        mutableMapOf<MainTab, NavHostController>()
     }.also { controllers ->
         MainTab.allTabs.forEach { tab ->
             controllers.putIfAbsent(tab, rememberNavController())
         }
     }
 
-    val saveableStateHolder = rememberSaveableStateHolder()
-    val drawerState = rememberDrawerState(DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
+    var currentTab by rememberSaveable(stateSaver = MainTabSaver) {
+        mutableStateOf(MainTab.Feed)
+    }
 
-    val isFeedTab = currentTab == MainTab.Feed
+    val currentNavController = checkNotNull(navControllers[currentTab]) {
+        Timber.tag("Current NavController").e("NavController for tab $currentTab is not initialized")
+    }
 
-    val currentNavController = navControllers[currentTab]!!
     val currentBackStackEntry by currentNavController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry?.destination?.route
 
-    val scaffoldContent: @Composable () -> Unit = {
-        Scaffold(
-            bottomBar = {
-                  BottomBar(
-                      currentTab = currentTab,
-                      currentRoute = currentRoute,
-                      onNavigate = { currentTab = it }
-                  )
-            }
-        ) { innerPadding ->
-            Box(modifier = Modifier.fillMaxSize()) {
-                saveableStateHolder.SaveableStateProvider(currentTab.route) {
-                    when (currentTab) {
-                        is MainTab.Feed -> {
+    Scaffold(
+        bottomBar = {
+            BottomBar(
+                drawerState = drawerState,
+                currentTab = currentTab,
+                currentRoute = currentRoute,
+                onNavigate = { currentTab = it }
+            )
+        }
+    ) { innerPadding ->
+        Box(modifier = Modifier.fillMaxSize()) {
+            saveableStateHolder.SaveableStateProvider(currentTab.route) {
+                when (currentTab) {
+                    is MainTab.Feed -> {
+                        ModalNavigationDrawer(
+                            drawerContent = { AppDrawer() },
+                            scrimColor = Color(0xFF121212).copy(0.7f),
+                            drawerState = drawerState,
+                            gesturesEnabled = drawerState.currentValue == DrawerValue.Open,
+                        ) {
                             FeedNavHost(
                                 navController = navControllers[MainTab.Feed]!!,
                                 onOpenDrawer = { scope.launch { drawerState.open() } }
                             )
                         }
+                    }
 
-                        is MainTab.Inbox -> {
-                            DefaultTabContainer(
-                                navController = navControllers[MainTab.Inbox]!!,
-                                enablePadding = false,
-                                innerPadding = innerPadding,
-                                content = { InboxNavHost(navController = it) }
-                            )
-                        }
+                    is MainTab.Inbox -> {
+                        DefaultTabContainer(
+                            navController = navControllers[MainTab.Inbox]!!,
+                            enablePadding = false,
+                            innerPadding = innerPadding,
+                            content = { InboxNavHost(navController = it) }
+                        )
+                    }
 
-                        is MainTab.Search -> SearchNavHost(navController = navControllers[MainTab.Search]!!)
+                    is MainTab.Search -> SearchNavHost(navController = navControllers[MainTab.Search]!!)
 
-                        is MainTab.Appointments -> {
-                            DefaultTabContainer(
-                                navController = navControllers[MainTab.Appointments]!!,
-                                innerPadding = innerPadding,
-                                content = { AppointmentsNavHost(navController = it) }
-                            )
-                        }
-                        is MainTab.Profile -> {
-                            DefaultTabContainer(
-                                enablePadding = false,
-                                navController = navControllers[MainTab.Profile]!!,
-                                innerPadding = innerPadding,
-                                content = { ProfileNavHost(navController = it) }
-                            )
-                        }
+                    is MainTab.Appointments -> {
+                        DefaultTabContainer(
+                            navController = navControllers[MainTab.Appointments]!!,
+                            innerPadding = innerPadding,
+                            content = { AppointmentsNavHost(navController = it) }
+                        )
+                    }
+                    is MainTab.Profile -> {
+                        DefaultTabContainer(
+                            enablePadding = false,
+                            navController = navControllers[MainTab.Profile]!!,
+                            innerPadding = innerPadding,
+                            content = { ProfileNavHost(navController = it) }
+                        )
                     }
                 }
             }
         }
-    }
-
-    if(isFeedTab) {
-        ModalNavigationDrawer(
-            drawerContent = { AppDrawer() },
-            scrimColor = Color(0xFF121212).copy(0.7f),
-            drawerState = drawerState,
-            gesturesEnabled = drawerState.currentValue == DrawerValue.Open,
-        ) { scaffoldContent() }
-    } else {
-        scaffoldContent()
     }
 }

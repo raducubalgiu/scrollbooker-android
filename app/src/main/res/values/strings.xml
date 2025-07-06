@@ -174,10 +174,19 @@
     <string name="congratsRegisterConfirmation">Felicitări! Ai finalizat înregistrarea</string>
     <string name="pendingBusinessApprovalMessage">Am primit toate detaliile despre business-ul tău. În scurt timp, echipa noastră va revizui aplicația și te vom anunța imediat ce contul tău este aprobat.</string>
     <string name="usuallyWeRespondInSeveralMinutes">De obicei răspundem în câteva minute</string>
-    <string name="hereIsWhatYouShouldNow">Iată ce trebuie să mai știi:</string>
+    <string name="hereIsWhatYouShouldNow">Iată ce trebuie să mai știi.</string>
     <string name="afterValidationYouNeedToAddEmployees">După ce îți vom valida detaliile locației, va fi necesar să îți adaugi angajații pentru a putea primi programări. Procesul este urmatorul:</string>
     <string name="employeeShouldCreateAccount">Angajatul va trebui să își creeze un cont în aplicație ca user obișnuit.</string>
     <string name="afterEmployeeCreateAccountYouSendEmploymentRequest">După ce angajatul și-a creat contul, îi vei trimite o cerere de angajare.</string>
     <string name="employeeWillReceiveEmploymentRequest">Angajatul va primi cererea ta și va fi necesar să o accepte. Cand o va accepta îl vom cupla la business-ul tău și va primi acces la propriul calendar, va gestiona propriile produse în cadrul locației tale.</string>
     <string name="dontWorryYouWillReceiveVideoGuidance">Nu îți face griji. Procesul este foarte simplu, vei găsi inclusiv un ghid video in aplicație după ce te vei loga.</string>
+    <string name="deny">Refuză</string>
+    <string name="accept">Acceptă</string>
+    <string name="byAcceptingThisRequest">Prin acceptarea acestei cereri</string>
+    <string name="youWillReceiveAccessToYourOwnCalendarAndAppointments">Vei primi acces la un calendar propriu în care îți vei putea gestiona programările zilnice</string>
+    <string name="youWillBeAbleToEditAndAddServicesWithinYourBusiness">Vei putea edita și adăuga serviciile pe care le oferi în cadrul business-ului</string>
+    <string name="clientsWillBeAbleToSelectYouDirectlyBasedYourAvailability">Clienții te vor putea selecta direct pentru programări, pe baza disponibilității tale</string>
+    <string name="youWillAppearInThePublicBusinessProfile">"Vei apărea in profilul public al business-ului ca membru oficial al echipei"</string>
+    <string name="youWillReceiveReviewsFromYourClients">Vei putea primi review-uri individuale din partea clienților</string>
+    <string name="youCouldResignAnytime">Poți renunța oricând la colaborare prin funcția demisie din aplicație</string>
 </resources>
