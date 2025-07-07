@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 class GetUserBookmarkedPostsUseCase(
     private val repository: BookmarkPostRepository
 ) {
-    operator fun invoke(): Flow<PagingData<Post>> {
-        return repository.getUserBookmarkedPosts()
+    operator fun invoke(userId: Int): Flow<PagingData<Post>> {
+        return repository.getUserBookmarkedPosts(userId)
     }
 }

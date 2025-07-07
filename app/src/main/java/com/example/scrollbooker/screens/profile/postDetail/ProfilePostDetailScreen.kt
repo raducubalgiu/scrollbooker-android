@@ -27,28 +27,27 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
-import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.entity.post.domain.model.Post
 import com.example.scrollbooker.modules.posts.PostsPager
-import com.example.scrollbooker.screens.profile.myProfile.ProfileSharedViewModel
 import com.example.scrollbooker.ui.theme.labelLarge
 
 @OptIn(UnstableApi::class)
 @Composable
 fun ProfilePostDetailScreen(
     postId: Int?,
-    viewModel: ProfileSharedViewModel,
+    posts: LazyPagingItems<Post>,
     onBack: () -> Unit
 ) {
-    val userPosts = viewModel.userPosts.collectAsLazyPagingItems()
     val pagerState = rememberPagerState(
         initialPage = 0
-    ) { userPosts.itemCount }
+    ) { posts.itemCount }
 
-    LaunchedEffect(userPosts.itemSnapshotList.items, postId) {
-        val index = userPosts.itemSnapshotList.items.indexOfFirst { it.id == postId }
+    LaunchedEffect(posts.itemSnapshotList.items, postId) {
+        val index = posts.itemSnapshotList.items.indexOfFirst { it.id == postId }
         if (index >= 0) {
             pagerState.scrollToPage(index)
         }
@@ -60,33 +59,10 @@ fun ProfilePostDetailScreen(
     ) {
         PostsPager(
             pagerState = pagerState,
-            posts = userPosts,
+            posts = posts,
             isVisibleTab = true,
             paddingBottom = 80.dp,
         )
-
-//        VerticalPager(
-//            state = pagerState,
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .padding(bottom = 80.dp),
-//            beyondViewportPageCount = 1
-//        ) { page ->
-//            if(page < userPosts.itemCount) {
-//                val post = userPosts[page]
-//                if(post != null) {
-//                    Box(modifier = Modifier
-//                        .fillMaxSize(),
-//                        contentAlignment = Alignment.Center
-//                    ) {
-////                        Video(
-////                            url = post.mediaFiles.first().url,
-////                            playWhenReady = pagerState.currentPage == page,
-////                        )
-//                    }
-//                }
-//            }
-//        }
 
         Box(modifier = Modifier
             .fillMaxWidth()

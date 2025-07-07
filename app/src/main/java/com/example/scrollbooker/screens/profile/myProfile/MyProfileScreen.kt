@@ -13,7 +13,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
@@ -34,11 +33,6 @@ fun MyProfileScreen(
     onNavigate: (String) -> Unit
 ) {
     val userProfileState by viewModel.userProfileState.collectAsState()
-
-    //val userPosts = viewModel.userPosts.collectAsLazyPagingItems()
-    val userBookmarkedPosts = viewModel.userBookmarkedPosts.collectAsLazyPagingItems()
-    //val userReposts = viewModel.userReposts.collectAsLazyPagingItems()
-
     val coroutineScope = rememberCoroutineScope()
 
     val sheetState = rememberModalBottomSheetState(
@@ -91,13 +85,7 @@ fun MyProfileScreen(
                     }
                 )
 
-                ProfileLayout(
-                    user = user,
-                    onNavigate = onNavigate,
-                    //userPosts = userPosts,
-                    userBookmarkedPosts = userBookmarkedPosts,
-                    //userReposts = userReposts
-                ) {
+                ProfileLayout(user = user, onNavigate = onNavigate) {
                     MyProfileActions(
                         onEditProfile = { onNavigate(MainRoute.EditProfile.route) }
                     )

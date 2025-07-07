@@ -6,11 +6,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.components.core.layout.ErrorScreen
-import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.screens.profile.components.common.ProfileLayout
 import com.example.scrollbooker.screens.profile.components.common.ProfileShimmer
@@ -23,7 +21,6 @@ fun UserProfileScreen(
     onBack: () -> Unit
 ) {
     val userProfileState by viewModel.userProfileState.collectAsState()
-    val userPosts = viewModel.userPosts.collectAsLazyPagingItems()
 
     Column(
         modifier = Modifier
@@ -41,13 +38,7 @@ fun UserProfileScreen(
                     onBack = onBack
                 )
 
-                ProfileLayout(
-                    user = user,
-                    onNavigate = onNavigate,
-                    //userPosts = userPosts,
-                    userBookmarkedPosts = null,
-                    //userReposts = null
-                ) {
+                ProfileLayout(user = user, onNavigate = onNavigate) {
                     UserProfileActions(
                         isFollow = user.isFollow,
                         onNavigateToCalendar = { onNavigate(MainRoute.Calendar.route) }

@@ -31,7 +31,6 @@ import com.example.scrollbooker.ui.theme.SurfaceBG
 @Composable
 fun ProfilePostsTab(
     userId: Int,
-    //posts: LazyPagingItems<Post>,
     lazyListState: LazyGridState,
     onNavigate: (String) -> Unit
 ) {

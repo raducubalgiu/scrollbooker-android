@@ -184,7 +184,7 @@ fun ProfileUserInfo(
             Icon(
                 imageVector = Icons.Outlined.Repeat,
                 contentDescription = null,
-                tint = Primary
+                tint = Color.Gray
             )
             Spacer(Modifier.width(SpacingS))
             Avatar(

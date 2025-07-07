@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,7 +17,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
-import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.components.core.sheet.BottomSheet
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.screens.profile.components.common.tab.ProfileTabRow
@@ -27,18 +25,13 @@ import com.example.scrollbooker.screens.profile.components.common.tab.info.Profi
 import com.example.scrollbooker.screens.profile.components.common.tab.posts.ProfilePostsTab
 import com.example.scrollbooker.screens.profile.components.common.tab.products.ProfileProductsTab
 import com.example.scrollbooker.screens.profile.components.common.tab.reposts.ProfileRepostsTab
-import com.example.scrollbooker.entity.post.domain.model.Post
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 
-@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun ProfileLayout(
     user: UserProfile,
     onNavigate: (String) -> Unit,
-    //userPosts: LazyPagingItems<Post>,
-    userBookmarkedPosts: LazyPagingItems<Post>?,
-    //userReposts: LazyPagingItems<Post>?,
     actions: @Composable (() -> Unit)
 ) {
     var showScheduleSheet by remember { mutableStateOf(false) }
@@ -93,19 +86,17 @@ fun ProfileLayout(
                     when(page) {
                         0 -> ProfilePostsTab(
                             userId=user.id,
-                            //posts = userPosts,
                             lazyListState = lazyListStates[page],
                             onNavigate = onNavigate
                         )
                         1 -> ProfileProductsTab(lazyListStates[page])
                         2 -> ProfileRepostsTab(
                             userId = user.id,
-                            //posts = userReposts,
                             lazyListState = lazyListStates[page],
                             onNavigate = onNavigate
                         )
                         3 -> ProfileBookmarksTab(
-                            posts = userBookmarkedPosts,
+                            userId = user.id,
                             lazyListState =lazyListStates[page],
                             onNavigate = onNavigate
                         )

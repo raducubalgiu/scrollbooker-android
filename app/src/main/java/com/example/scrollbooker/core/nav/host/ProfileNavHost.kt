@@ -10,11 +10,13 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.core.nav.navigators.myBusinessGraph
 import com.example.scrollbooker.core.nav.navigators.settingsGraph
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.screens.calendar.CalendarScreen
 import com.example.scrollbooker.screens.calendar.CalendarViewModel
+import com.example.scrollbooker.screens.profile.components.common.tab.posts.ProfilePostsTabViewModel
 import com.example.scrollbooker.screens.profile.myProfile.MyProfileScreen
 import com.example.scrollbooker.screens.profile.myProfile.ProfileSharedViewModel
 import com.example.scrollbooker.screens.profile.userProfile.ProfileViewModel
@@ -82,11 +84,11 @@ fun ProfileNavHost(navController: NavHostController) {
             arguments = listOf(navArgument("postId") { type = NavType.IntType }
         )) { backStackEntry ->
             val postId = backStackEntry.arguments?.getInt("postId")
-            val viewModel = hiltViewModel<ProfileSharedViewModel>(backStackEntry)
+            val viewModel = hiltViewModel<ProfilePostsTabViewModel>(backStackEntry)
 
             ProfilePostDetailScreen(
                 postId = postId,
-                viewModel = viewModel,
+                posts = viewModel.userPosts.collectAsLazyPagingItems(),
                 onBack = { navController.popBackStack() }
             )
         }

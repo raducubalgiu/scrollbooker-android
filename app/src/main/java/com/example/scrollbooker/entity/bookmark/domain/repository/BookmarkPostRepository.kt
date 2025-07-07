@@ -5,5 +5,5 @@ import com.example.scrollbooker.entity.post.domain.model.Post
 import kotlinx.coroutines.flow.Flow
 
 interface BookmarkPostRepository {
-    fun getUserBookmarkedPosts(): Flow<PagingData<Post>>
+    fun getUserBookmarkedPosts(userId: Int): Flow<PagingData<Post>>
 }

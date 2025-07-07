@@ -13,10 +13,10 @@ import javax.inject.Inject
 class BookmarkPostRepositoryImpl @Inject constructor(
     private val apiService: BookmarkPostsApiService
 ): BookmarkPostRepository {
-    override fun getUserBookmarkedPosts(): Flow<PagingData<Post>> {
+    override fun getUserBookmarkedPosts(userId: Int): Flow<PagingData<Post>> {
         return Pager(
             config = PagingConfig(pageSize = 10),
-            pagingSourceFactory = { BookmarkPostsPagingSource(apiService) }
+            pagingSourceFactory = { BookmarkPostsPagingSource(apiService, userId) }
         ).flow
     }
 }
