@@ -21,5 +21,4 @@ class AppointmentRepositoryImpl @Inject constructor(
             pagingSourceFactory = { AppointmentPagingSource(api, asCustomer) }
         ).flow
     }
-
 }

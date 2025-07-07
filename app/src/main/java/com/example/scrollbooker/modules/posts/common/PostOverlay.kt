@@ -29,7 +29,8 @@ fun PostOverlay(
     onLike: () -> Unit,
     onBookmark: () -> Unit,
     onOpenReviews: () -> Unit,
-    onOpenComments: () -> Unit
+    onOpenComments: () -> Unit,
+    onOpenCalendar: () -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.BottomCenter
@@ -88,6 +89,7 @@ fun PostOverlay(
                 PostActionButton(
                     counter = counters.shareCount,
                     icon = painterResource(R.drawable.ic_send_solid),
+                    onClick = onOpenCalendar
                 )
             }
         }

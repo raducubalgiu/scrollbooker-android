@@ -2,11 +2,9 @@ package com.example.scrollbooker.screens.profile.myProfile
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -15,6 +13,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.components.core.layout.ErrorScreen
+import com.example.scrollbooker.components.core.sheet.Sheet
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.FeatureState
@@ -23,7 +22,6 @@ import com.example.scrollbooker.screens.profile.components.common.ProfileShimmer
 import com.example.scrollbooker.screens.profile.components.myProfile.MyProfileActions
 import com.example.scrollbooker.screens.profile.components.myProfile.MyProfileHeader
 import com.example.scrollbooker.screens.profile.components.myProfile.MyProfileMenuList
-import com.example.scrollbooker.ui.theme.Background
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,16 +38,13 @@ fun MyProfileScreen(
     )
 
     if(sheetState.isVisible) {
-        ModalBottomSheet(
-            dragHandle = null,
-            onDismissRequest = {
+        Sheet(
+            sheetState = sheetState,
+            onClose = {
                 coroutineScope.launch {
                     sheetState.hide()
                 }
-            },
-            containerColor = Background,
-            sheetState = sheetState,
-            modifier = Modifier.fillMaxWidth()
+            }
         ) {
             Spacer(Modifier.height(BasePadding))
 

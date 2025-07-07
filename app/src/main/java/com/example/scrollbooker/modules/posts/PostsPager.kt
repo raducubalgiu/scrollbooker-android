@@ -1,19 +1,18 @@
 package com.example.scrollbooker.modules.posts
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,21 +22,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
+import com.example.scrollbooker.components.core.sheet.Sheet
 import com.example.scrollbooker.modules.reviews.ReviewsViewModel
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.entity.post.domain.model.Post
+import com.example.scrollbooker.modules.calendar.Calendar
+import com.example.scrollbooker.modules.calendar.CalendarViewModel
 import com.example.scrollbooker.modules.posts.comments.CommentsSheet
 import com.example.scrollbooker.modules.posts.comments.CommentsViewModel
 import com.example.scrollbooker.modules.posts.common.PostItem
 import com.example.scrollbooker.modules.posts.common.PostSheetsContent
 import com.example.scrollbooker.modules.posts.reviews.ReviewsListSheet
-import com.example.scrollbooker.ui.theme.Background
-import com.example.scrollbooker.ui.theme.SurfaceBG
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalCoroutinesApi::class)
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun PostsPager(
@@ -50,11 +52,15 @@ fun PostsPager(
     val pagerViewModel: PostsPagerViewModel = hiltViewModel()
     val commentsViewModel: CommentsViewModel = hiltViewModel()
     val reviewsViewModel: ReviewsViewModel = hiltViewModel()
+    val calendarViewModel: CalendarViewModel = hiltViewModel()
 
     val coroutineScope = rememberCoroutineScope()
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
+
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = false
+    )
+
     var sheetContent by remember { mutableStateOf<PostSheetsContent>(PostSheetsContent.None) }
-    val isDarkTheme = isSystemInDarkTheme()
 
     fun handleClose() {
         sheetContent = PostSheetsContent.None
@@ -62,17 +68,12 @@ fun PostsPager(
     }
 
     if(sheetState.isVisible) {
-        ModalBottomSheet(
-            dragHandle = null,
-            onDismissRequest = { sheetContent = PostSheetsContent.None },
-            containerColor = if(isDarkTheme) SurfaceBG else Background,
+        Sheet(
+            onClose = { sheetContent = PostSheetsContent.None },
             sheetState = sheetState,
-            modifier = Modifier
-                .fillMaxWidth()
-                .statusBarsPadding()
+            modifier = Modifier.statusBarsPadding()
         ) {
-            Column(modifier = Modifier
-                .fillMaxHeight(1f)) {
+            Column(modifier = Modifier.fillMaxHeight(1f)) {
                 when (val content = sheetContent) {
                     is PostSheetsContent.ReviewsSheet -> {
                         reviewsViewModel.setUserId(userId = content.userId)
@@ -95,7 +96,34 @@ fun PostsPager(
                             onClose = { handleClose() }
                         )
                     }
-                    is PostSheetsContent.CalendarSheet -> Unit
+                    is PostSheetsContent.CalendarSheet -> {
+                        val config by calendarViewModel.calendarConfig.collectAsState()
+                        val calendarDays by calendarViewModel.calendarDays.collectAsState()
+                        val availableDays by calendarViewModel.availableDays.collectAsState()
+                        val availableDayTimeslots by calendarViewModel.availableDay.collectAsState()
+
+                        LaunchedEffect(Unit) {
+                            calendarViewModel.setCalendarConfig(userId = content.userId)
+                        }
+
+                        LaunchedEffect(config?.selectedDay) {
+                            config?.let {
+                                calendarViewModel.loadUserAvailableTimeslots(
+                                    userId = it.userId,
+                                    day = it.selectedDay,
+                                    slotDuration = 30
+                                )
+                            }
+                        }
+
+                        Calendar(
+                            availableDayTimeslots = availableDayTimeslots,
+                            calendarDays = calendarDays,
+                            availableDays = availableDays,
+                            onBack = {},
+                            config = config
+                        )
+                    }
                     is PostSheetsContent.None -> Unit
                 }
             }
@@ -128,7 +156,8 @@ fun PostsPager(
                         post = post,
                         playWhenReady = pagerState.currentPage == page && isVisibleTab,
                         onOpenReviews = { handleOpenSheet(PostSheetsContent.ReviewsSheet(post.user.id)) },
-                        onOpenComments = { handleOpenSheet(PostSheetsContent.CommentsSheet(post.id)) }
+                        onOpenComments = { handleOpenSheet(PostSheetsContent.CommentsSheet(post.id)) },
+                        onOpenCalendar = { handleOpenSheet(PostSheetsContent.CalendarSheet(post.user.id)) }
                     )
                 }
             }

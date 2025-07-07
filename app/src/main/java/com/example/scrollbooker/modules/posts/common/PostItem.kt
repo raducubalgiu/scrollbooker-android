@@ -13,7 +13,8 @@ fun PostItem(
     post: Post,
     playWhenReady: Boolean,
     onOpenReviews: () -> Unit,
-    onOpenComments: () -> Unit
+    onOpenComments: () -> Unit,
+    onOpenCalendar: () -> Unit
 ) {
     val context = LocalContext.current
     val url = post.mediaFiles.first().url
@@ -37,6 +38,7 @@ fun PostItem(
         onBookmark = { viewModel.toggleBookmark(post.id) },
         onOpenReviews = onOpenReviews,
         onOpenComments = onOpenComments,
+        onOpenCalendar = onOpenCalendar
     )
 
 //    AndroidView(

@@ -8,10 +8,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,6 +35,7 @@ fun CalendarDayTab(
     date: LocalDate,
     onChangeTab: () -> Unit,
     isCurrentTab: Boolean,
+    isLoading: Boolean,
     isDayAvailable: Boolean,
     bgColor: Color,
     scale: Float,
@@ -78,22 +77,12 @@ fun CalendarDayTab(
                     style = titleMedium,
                     fontWeight = FontWeight.ExtraBold,
                     color = when {
-                        isCurrentTab -> OnPrimary
+                        isLoading -> Divider
                         !isDayAvailable -> Divider
+                        isCurrentTab -> OnPrimary
                         else -> OnBackground
                     }
                 )
-//                if(isDayAvailable) {
-//                    Box(
-//                        modifier = Modifier
-//                            .size(7.dp)
-//                            .offset(y = 3.dp)
-//                            .clip(CircleShape)
-//                            .align(Alignment.TopCenter)
-//                            .background(Color.Green)
-//
-//                    )
-//                }
             }
         }
     }
