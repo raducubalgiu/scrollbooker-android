@@ -6,7 +6,8 @@ data class AvailableDayDto(
     @SerializedName("is_closed")
     val isClosed: Boolean,
 
-    val slots: List<SlotDto>
+    @SerializedName("available_slots")
+    val availableSlots: List<SlotDto>
 )
 
 data class SlotDto(

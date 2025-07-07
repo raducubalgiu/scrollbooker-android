@@ -1,6 +1,7 @@
 package com.example.scrollbooker.core.util
 
 import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.TextStyle
@@ -46,4 +47,10 @@ fun displayDatePeriod(start: LocalDate, end: LocalDate, locale: Locale = Locale(
     } else {
         "$startDay $startMonth - $endDay $endMonth"
     }
+}
+
+fun formatHour(timeString: String): String {
+    val formatter = DateTimeFormatter.ofPattern("HH:mm")
+    val dateTime = LocalDateTime.parse(timeString)
+    return dateTime.toLocalTime().format(formatter)
 }

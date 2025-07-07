@@ -24,6 +24,7 @@ import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
+import com.example.scrollbooker.components.core.shimmer.rememberShimmerBrush
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.modules.calendar.components.CalendarActions
@@ -49,6 +51,7 @@ import org.threeten.bp.LocalDate
 import java.util.Locale
 import com.example.scrollbooker.core.util.displayDatePeriod
 import com.example.scrollbooker.core.util.displayShortDayOfWeek
+import com.example.scrollbooker.core.util.formatHour
 import com.example.scrollbooker.entity.calendar.domain.model.AvailableDay
 
 @Composable
@@ -57,7 +60,8 @@ fun Calendar(
     calendarDays: List<LocalDate>,
     availableDays: FeatureState<List<LocalDate>>,
     onBack: () -> Unit,
-    config: CalendarConfig?
+    config: CalendarConfig?,
+    onDayChange: (LocalDate) -> Unit
 ) {
     if(calendarDays.isEmpty() || config == null) return
 
@@ -66,6 +70,8 @@ fun Calendar(
 
     val weekPagerState = rememberPagerState(initialPage = config.initialWeekPage) { config.totalWeeks }
     val dayPagerState = rememberPagerState(initialPage = config.initialDayPage) { 7 }
+
+    val currentDayIndex = dayPagerState.currentPage
     val currentWeekIndex = weekPagerState.currentPage
 
     val currentWeekDates = calendarDays.drop(currentWeekIndex * 7).take(7)
@@ -87,6 +93,14 @@ fun Calendar(
             if(enableNext) {
                 weekPagerState.scrollToPage(currentWeekIndex + 1)
             }
+        }
+    }
+
+    val selectedDay = calendarDays.drop(currentWeekIndex * 7).getOrNull(currentDayIndex)
+
+    LaunchedEffect(currentWeekIndex, currentDayIndex) {
+        selectedDay?.let {
+            onDayChange(it)
         }
     }
 
@@ -137,6 +151,7 @@ fun Calendar(
                         isCurrentTab = index == dayPagerState.currentPage,
                         onChangeTab = {
                             coroutineScope.launch {
+                                onDayChange(date)
                                 dayPagerState.animateScrollToPage(index)
                             }
                         },
@@ -165,12 +180,29 @@ fun Calendar(
             ) {
                 when(val day = availableDayTimeslots) {
                     is FeatureState.Error -> ErrorScreen()
-                    is FeatureState.Loading -> LoadingScreen()
+                    is FeatureState.Loading -> {
+                        Column(Modifier.fillMaxSize()) {
+                            repeat(10) {
+                                val brush = rememberShimmerBrush()
+
+                                Spacer(Modifier.height(BasePadding))
+
+                                Spacer(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(50.dp)
+                                        .clip(shape = ShapeDefaults.Medium)
+                                        .background(brush)
+                                        .padding(BasePadding)
+                                )
+                            }
+                        }
+                    }
                     is FeatureState.Success -> {
                         val day = day.data
 
                         LazyColumn {
-                            items(day.slots) { slot ->
+                            items(day.availableSlots) { slot ->
                                 Spacer(Modifier.height(BasePadding))
 
                                 Row(
@@ -184,7 +216,7 @@ fun Calendar(
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
                                     Text(
-                                        text = slot.startDateLocale,
+                                        text = formatHour(slot.startDateLocale),
                                         style = bodyLarge,
                                         fontWeight = FontWeight.SemiBold
                                     )

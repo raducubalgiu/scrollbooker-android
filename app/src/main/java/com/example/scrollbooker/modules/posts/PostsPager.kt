@@ -121,7 +121,8 @@ fun PostsPager(
                             calendarDays = calendarDays,
                             availableDays = availableDays,
                             onBack = {},
-                            config = config
+                            config = config,
+                            onDayChange = { calendarViewModel.updateSelectedDay(it) }
                         )
                     }
                     is PostSheetsContent.None -> Unit

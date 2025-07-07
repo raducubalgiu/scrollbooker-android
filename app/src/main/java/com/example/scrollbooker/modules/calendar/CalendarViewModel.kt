@@ -10,6 +10,7 @@ import com.example.scrollbooker.entity.calendar.domain.useCase.GetUserAvailableT
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.LocalDate
@@ -31,6 +32,12 @@ class CalendarViewModel @Inject constructor(
 
     private val _calendarConfig = MutableStateFlow<CalendarConfig?>(null)
     val calendarConfig: StateFlow<CalendarConfig?> = _calendarConfig
+
+    fun updateSelectedDay(newDay: LocalDate) {
+        _calendarConfig.update { current ->
+            current?.copy(selectedDay = newDay)
+        }
+    }
 
     fun setCalendarConfig(
         userId: Int,

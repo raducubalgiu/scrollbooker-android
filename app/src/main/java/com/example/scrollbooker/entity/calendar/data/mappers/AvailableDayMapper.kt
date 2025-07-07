@@ -8,7 +8,7 @@ import com.example.scrollbooker.entity.calendar.domain.model.Slot
 fun AvailableDayDto.toDomain(): AvailableDay {
     return AvailableDay(
         isClosed = isClosed,
-        slots = slots.map { it.toDomain() }
+        availableSlots = availableSlots.map { it.toDomain() }
     )
 }
 

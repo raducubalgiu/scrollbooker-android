@@ -2,7 +2,7 @@ package com.example.scrollbooker.entity.calendar.domain.model
 
 data class AvailableDay(
     val isClosed: Boolean,
-    val slots: List<Slot>
+    val availableSlots: List<Slot>
 )
 
 data class Slot(
