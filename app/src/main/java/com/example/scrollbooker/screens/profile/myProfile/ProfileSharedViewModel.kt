@@ -44,6 +44,9 @@ class ProfileSharedViewModel @Inject constructor(
     private val getUserRepostsUseCase: GetUserRepostsUseCase
 ): ViewModel() {
 
+    private val _userProfileState = MutableStateFlow<FeatureState<UserProfile>>(FeatureState.Loading)
+    val userProfileState: StateFlow<FeatureState<UserProfile>> = _userProfileState
+
     @OptIn(ExperimentalCoroutinesApi::class)
     val userPosts: Flow<PagingData<Post>> = authDataStore.getUserId()
         .filterNotNull()
@@ -57,13 +60,10 @@ class ProfileSharedViewModel @Inject constructor(
     }
     val userBookmarkedPosts: Flow<PagingData<Post>> get() = _userBookmarkedPosts
 
-    private val _userReposts: Flow<PagingData<Post>> by lazy {
-        getUserRepostsUseCase().cachedIn(viewModelScope)
-    }
-    val userReposts: Flow<PagingData<Post>> get() = _userReposts
-
-    private val _userProfileState = MutableStateFlow<FeatureState<UserProfile>>(FeatureState.Loading)
-    val userProfileState: StateFlow<FeatureState<UserProfile>> = _userProfileState
+//    private val _userReposts: Flow<PagingData<Post>> by lazy {
+//        getUserRepostsUseCase().cachedIn(viewModelScope)
+//    }
+//    val userReposts: Flow<PagingData<Post>> get() = _userReposts
 
     private val _editState = MutableStateFlow<FeatureState<Unit>?>(null)
     val editState: StateFlow<FeatureState<Unit>?> = _editState
@@ -77,7 +77,9 @@ class ProfileSharedViewModel @Inject constructor(
             _userProfileState.value = FeatureState.Loading
             val userId = authDataStore.getUserId().firstOrNull()
 
-            _userProfileState.value = getUserProfileUseCase(userId)
+            val response = withVisibleLoading { getUserProfileUseCase(userId) }
+
+            _userProfileState.value = response
         }
     }
 

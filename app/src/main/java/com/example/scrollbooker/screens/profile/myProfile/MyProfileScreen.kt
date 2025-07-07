@@ -1,67 +1,102 @@
 package com.example.scrollbooker.screens.profile.myProfile
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.example.scrollbooker.components.core.sheet.BottomSheet
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.components.core.layout.ErrorScreen
+import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.screens.profile.components.common.ProfileLayout
+import com.example.scrollbooker.screens.profile.components.common.ProfileShimmer
 import com.example.scrollbooker.screens.profile.components.myProfile.MyProfileActions
 import com.example.scrollbooker.screens.profile.components.myProfile.MyProfileHeader
 import com.example.scrollbooker.screens.profile.components.myProfile.MyProfileMenuList
+import com.example.scrollbooker.ui.theme.Background
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyProfileScreen(
     viewModel: ProfileSharedViewModel,
     onNavigate: (String) -> Unit
 ) {
-    var showMenuSheet by remember { mutableStateOf(false) }
     val userProfileState by viewModel.userProfileState.collectAsState()
-    val userPosts = viewModel.userPosts.collectAsLazyPagingItems()
-    val userBookmarkedPosts = viewModel.userBookmarkedPosts.collectAsLazyPagingItems()
-    val userReposts = viewModel.userReposts.collectAsLazyPagingItems()
 
-    BottomSheet(
-        onDismiss = { showMenuSheet = false },
-        showBottomSheet = showMenuSheet,
-        showHeader = false,
-    ) {
-        MyProfileMenuList(
-            onNavigate = {
-                onNavigate(it)
-                showMenuSheet = false
-            }
-        )
+    //val userPosts = viewModel.userPosts.collectAsLazyPagingItems()
+    val userBookmarkedPosts = viewModel.userBookmarkedPosts.collectAsLazyPagingItems()
+    //val userReposts = viewModel.userReposts.collectAsLazyPagingItems()
+
+    val coroutineScope = rememberCoroutineScope()
+
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true,
+    )
+
+    if(sheetState.isVisible) {
+        ModalBottomSheet(
+            dragHandle = null,
+            onDismissRequest = {
+                coroutineScope.launch {
+                    sheetState.hide()
+                }
+            },
+            containerColor = Background,
+            sheetState = sheetState,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Spacer(Modifier.height(BasePadding))
+
+            MyProfileMenuList(
+                onNavigate = {
+                    coroutineScope.launch {
+                        sheetState.hide()
+
+                        if(!sheetState.isVisible) {
+                            onNavigate(it)
+                        }
+                    }
+                }
+            )
+
+            Spacer(Modifier.height(SpacingXXL))
+        }
     }
 
     Column(modifier = Modifier.fillMaxSize().statusBarsPadding()) {
         when(userProfileState) {
             is FeatureState.Error -> ErrorScreen()
-            is FeatureState.Loading -> LoadingScreen()
+            is FeatureState.Loading -> ProfileShimmer()
             is FeatureState.Success-> {
                 val user = (userProfileState as FeatureState.Success).data
 
                 MyProfileHeader(
                     username = user.username,
-                    onOpenBottomSheet = { showMenuSheet = true }
+                    onOpenBottomSheet = {
+                        coroutineScope.launch {
+                            sheetState.show()
+                        }
+                    }
                 )
 
                 ProfileLayout(
                     user = user,
                     onNavigate = onNavigate,
-                    userPosts = userPosts,
+                    //userPosts = userPosts,
                     userBookmarkedPosts = userBookmarkedPosts,
-                    userReposts = userReposts
+                    //userReposts = userReposts
                 ) {
                     MyProfileActions(
                         onEditProfile = { onNavigate(MainRoute.EditProfile.route) }

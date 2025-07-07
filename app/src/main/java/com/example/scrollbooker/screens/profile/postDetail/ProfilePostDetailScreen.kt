@@ -31,6 +31,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.modules.posts.PostsPager
 import com.example.scrollbooker.screens.profile.myProfile.ProfileSharedViewModel
 import com.example.scrollbooker.ui.theme.labelLarge
 
@@ -57,6 +58,13 @@ fun ProfilePostDetailScreen(
         .fillMaxSize()
         .background(Color(0xFF121212))
     ) {
+        PostsPager(
+            pagerState = pagerState,
+            posts = userPosts,
+            isVisibleTab = true,
+            paddingBottom = 80.dp,
+        )
+
 //        VerticalPager(
 //            state = pagerState,
 //            modifier = Modifier
@@ -71,19 +79,14 @@ fun ProfilePostDetailScreen(
 //                        .fillMaxSize(),
 //                        contentAlignment = Alignment.Center
 //                    ) {
-//                        Video(
-//                            url = post.mediaFiles.first().url,
-//                            playWhenReady = pagerState.currentPage == page,
-//                        )
+////                        Video(
+////                            url = post.mediaFiles.first().url,
+////                            playWhenReady = pagerState.currentPage == page,
+////                        )
 //                    }
 //                }
 //            }
 //        }
-//        PostPager(
-//            posts = userPosts,
-//            pagerState = pagerState,
-//            isVisibleTab = true,
-//        )
 
         Box(modifier = Modifier
             .fillMaxWidth()

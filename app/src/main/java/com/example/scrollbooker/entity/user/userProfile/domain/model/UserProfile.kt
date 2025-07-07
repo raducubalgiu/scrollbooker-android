@@ -18,7 +18,8 @@ data class UserProfile(
     val businessOwner: BusinessOwner?,
     val isOwnProfile: Boolean,
     val isBusinessOrEmployee: Boolean,
-    val distanceKm: Float?
+    val distanceKm: Float?,
+    val address: String?
 )
 
 data class BusinessOwner(

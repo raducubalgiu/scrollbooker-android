@@ -13,10 +13,10 @@ import javax.inject.Inject
 class RepostsRepositoryImpl @Inject constructor(
     private val apiService: RepostsApiService
 ): RepostsRepository {
-    override fun getUserRepostsPosts(): Flow<PagingData<Post>> {
+    override fun getUserRepostsPosts(userId: Int): Flow<PagingData<Post>> {
         return Pager(
             config = PagingConfig(pageSize = 10),
-            pagingSourceFactory = { RepostsPagingSource(apiService) }
+            pagingSourceFactory = { RepostsPagingSource(apiService, userId) }
         ).flow
     }
 }

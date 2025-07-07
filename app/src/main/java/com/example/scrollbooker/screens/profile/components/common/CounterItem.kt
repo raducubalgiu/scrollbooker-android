@@ -21,7 +21,7 @@ import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun CounterItem(
-    counter: Int,
+    counter: Int?,
     label: String,
     onNavigate: () -> Unit
 ) {
@@ -38,7 +38,7 @@ fun CounterItem(
     ) {
         Text(
             style = titleMedium,
-            text = "$counter",
+            text = if(counter != null) "$counter" else "-",
             fontSize = 19.sp,
             fontWeight = FontWeight.ExtraBold,
             color = OnBackground

@@ -38,7 +38,10 @@ data class UserProfileDto (
     val isBusinessOrEmployee: Boolean,
 
     @SerializedName("distance_km")
-    val distanceKm: Float?
+    val distanceKm: Float?,
+
+    @SerializedName("address")
+    val address: String?
 )
 
 data class BusinessOwnerDto(

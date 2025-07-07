@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.post.domain.model.Post
 import com.example.scrollbooker.entity.post.domain.useCase.GetUserPostsUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
@@ -38,7 +39,10 @@ class ProfileViewModel @Inject constructor(
     fun loadUserProfile() {
         viewModelScope.launch {
             _userProfileState.value = FeatureState.Loading
-            _userProfileState.value = getUserProfileUseCase(userId)
+
+            val response = withVisibleLoading { getUserProfileUseCase(userId) }
+
+            _userProfileState.value = response
         }
     }
 }

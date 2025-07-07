@@ -192,4 +192,7 @@
     <string name="isClosingAt">Închide la</string>
     <string name="opens">Deschide</string>
     <string name="at">la</string>
+    <string name="fromYou">de tine</string>
+    <string name="address">Adresă</string>
+    <string name="website">Website</string>
 </resources>

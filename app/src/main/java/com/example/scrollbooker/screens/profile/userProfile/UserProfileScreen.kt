@@ -10,9 +10,10 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.components.core.layout.ErrorScreen
-import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.components.core.layout.LoadingScreen
+import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.screens.profile.components.common.ProfileLayout
+import com.example.scrollbooker.screens.profile.components.common.ProfileShimmer
 import com.example.scrollbooker.screens.profile.components.userProfile.UserProfileActions
 
 @Composable
@@ -31,7 +32,7 @@ fun UserProfileScreen(
     ) {
         when(userProfileState) {
             is FeatureState.Error -> ErrorScreen()
-            is FeatureState.Loading -> LoadingScreen()
+            is FeatureState.Loading -> ProfileShimmer()
             is FeatureState.Success-> {
                 val user = (userProfileState as FeatureState.Success).data
 
@@ -43,9 +44,9 @@ fun UserProfileScreen(
                 ProfileLayout(
                     user = user,
                     onNavigate = onNavigate,
-                    userPosts = userPosts,
+                    //userPosts = userPosts,
                     userBookmarkedPosts = null,
-                    userReposts = null
+                    //userReposts = null
                 ) {
                     UserProfileActions(
                         isFollow = user.isFollow,

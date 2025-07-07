@@ -26,7 +26,8 @@ fun UserProfileDto.toDomain(): UserProfile {
         businessOwner = businessOwner?.toDomain(),
         isOwnProfile = isOwnProfile,
         isBusinessOrEmployee = isBusinessOrEmployee,
-        distanceKm = distanceKm
+        distanceKm = distanceKm,
+        address = address
     )
 }
 

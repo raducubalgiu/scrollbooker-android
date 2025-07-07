@@ -36,9 +36,9 @@ import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 fun ProfileLayout(
     user: UserProfile,
     onNavigate: (String) -> Unit,
-    userPosts: LazyPagingItems<Post>,
+    //userPosts: LazyPagingItems<Post>,
     userBookmarkedPosts: LazyPagingItems<Post>?,
-    userReposts: LazyPagingItems<Post>?,
+    //userReposts: LazyPagingItems<Post>?,
     actions: @Composable (() -> Unit)
 ) {
     var showScheduleSheet by remember { mutableStateOf(false) }
@@ -85,19 +85,22 @@ fun ProfileLayout(
             item {
                 HorizontalPager(
                     state = pagerState,
+                    beyondViewportPageCount = 0,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(LocalConfiguration.current.screenHeightDp.dp - 150.dp)
                 ) { page ->
                     when(page) {
                         0 -> ProfilePostsTab(
-                            posts = userPosts,
+                            userId=user.id,
+                            //posts = userPosts,
                             lazyListState = lazyListStates[page],
                             onNavigate = onNavigate
                         )
                         1 -> ProfileProductsTab(lazyListStates[page])
                         2 -> ProfileRepostsTab(
-                            posts = userReposts,
+                            userId = user.id,
+                            //posts = userReposts,
                             lazyListState = lazyListStates[page],
                             onNavigate = onNavigate
                         )

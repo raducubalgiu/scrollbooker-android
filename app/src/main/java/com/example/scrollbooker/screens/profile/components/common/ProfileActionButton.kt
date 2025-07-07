@@ -14,6 +14,7 @@ import com.example.scrollbooker.ui.theme.SurfaceBG
 fun ProfileActionButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
+    isEnabled: Boolean = true,
     containerColor: Color = SurfaceBG,
     contentColor: Color = OnSurfaceBG,
     content: @Composable () -> Unit,
@@ -21,6 +22,7 @@ fun ProfileActionButton(
     Button(
         modifier = modifier,
         onClick = onClick,
+        enabled = isEnabled,
         shape = RoundedCornerShape(size = 7.5.dp),
         contentPadding = PaddingValues(
             vertical = 14.dp

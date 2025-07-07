@@ -4,6 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.scrollbooker.entity.post.data.mappers.toDomain
 import com.example.scrollbooker.entity.post.domain.model.Post
+import kotlinx.coroutines.delay
 import timber.log.Timber
 import java.lang.Exception
 
@@ -24,6 +25,7 @@ class PostPagingSource(
         val limit = 10
 
         return try {
+            delay(1000)
             val response = api.getUserPosts(userId, page, limit)
             val posts = response.results.map { it.toDomain() }
 

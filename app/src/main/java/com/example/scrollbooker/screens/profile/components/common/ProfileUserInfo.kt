@@ -20,14 +20,15 @@ import androidx.compose.material.icons.outlined.Repeat
 import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -43,6 +44,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
+import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
@@ -163,7 +165,7 @@ fun ProfileUserInfo(
         actions()
     }
 
-    if(isBusinessOrEmployee && user.businessOwner?.id != user.id) {
+    if(isBusinessOrEmployee) {
         Row(modifier = Modifier
             .fillMaxWidth()
             .padding(top = BasePadding)
@@ -186,7 +188,7 @@ fun ProfileUserInfo(
             )
             Spacer(Modifier.width(SpacingS))
             Avatar(
-                url = "",
+                url = user.businessOwner?.avatar ?: "",
                 size = 25.dp
             )
             Spacer(Modifier.width(SpacingS))
@@ -196,17 +198,74 @@ fun ProfileUserInfo(
                 fontWeight = FontWeight.SemiBold
             )
         }
-        Spacer(Modifier.height(SpacingS))
+        Spacer(Modifier.height(SpacingM))
 
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Text(
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = SpacingXXL)
+        ) {
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                text = "Strada Oarecare 15, Sector 3",
-                fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center
-            )
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_map_outline),
+                        contentDescription = null,
+                        tint = Primary
+                    )
+                    Spacer(Modifier.width(SpacingS))
+                    Text(
+                        text = stringResource(R.string.address),
+                        fontWeight = FontWeight.Bold
+                    )
+                }
 
-            Spacer(Modifier.height(SpacingS))
+                Box(
+                    modifier = Modifier
+                        .width(1.dp)
+                        .height(10.dp)
+                        .background(Color.Gray, shape = RectangleShape)
+                        .padding(vertical = BasePadding)
+                )
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_email_outline),
+                        contentDescription = null,
+                        tint = Primary
+                    )
+                    Spacer(Modifier.width(SpacingS))
+                    Text(
+                        text = stringResource(R.string.email),
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                Box(
+                    modifier = Modifier
+                        .width(1.dp)
+                        .height(10.dp)
+                        .background(Color.Gray, shape = RectangleShape)
+                        .padding(vertical = BasePadding)
+                )
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_globe_outline),
+                        contentDescription = null,
+                        tint = Primary
+                    )
+                    Spacer(Modifier.width(SpacingS))
+                    Text(
+                        text = stringResource(R.string.website),
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(SpacingM))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -215,18 +274,19 @@ fun ProfileUserInfo(
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_location_outline),
-                    contentDescription = null
+                    contentDescription = null,
+                    tint = Color.Gray
                 )
                 Spacer(Modifier.width(4.dp))
                 Text(text =
                     buildAnnotatedString {
-                        append("La ")
+                        append("${stringResource(R.string.at)} ")
                         withStyle(SpanStyle(
                             fontWeight = FontWeight.Bold
                         )) {
-                            append("5km")
+                            append("${user.distanceKm}km")
                         }
-                        append(" de tine")
+                        append(" ${stringResource(R.string.fromYou)}")
                     }
                 )
             }
@@ -237,7 +297,7 @@ fun ProfileUserInfo(
         Column(modifier = Modifier
             .fillMaxWidth()
             .padding(
-                top = BasePadding,
+                top = SpacingM,
                 start = 50.dp,
                 end = 50.dp,
                 bottom = 0.dp
@@ -246,7 +306,7 @@ fun ProfileUserInfo(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = user.bio ?: "",
+                text = user.bio,
                 textAlign = TextAlign.Center
             )
         }

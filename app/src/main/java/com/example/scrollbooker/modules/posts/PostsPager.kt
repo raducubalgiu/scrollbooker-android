@@ -61,7 +61,7 @@ fun PostsPager(
         coroutineScope.launch { sheetState.hide() }
     }
 
-    if(sheetContent != PostSheetsContent.None) {
+    if(sheetState.isVisible) {
         ModalBottomSheet(
             dragHandle = null,
             onDismissRequest = { sheetContent = PostSheetsContent.None },
