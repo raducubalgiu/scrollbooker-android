@@ -36,17 +36,35 @@ fun displayShortDayOfWeek(date: LocalDate, locale: Locale = Locale("en")): Strin
 }
 
 fun displayDatePeriod(start: LocalDate, end: LocalDate, locale: Locale = Locale("en")): String {
-    val startDay = start.dayOfMonth.toString().padStart(2, '0')
-    val endDay = end.dayOfMonth.toString().padStart(2, '0')
-
-    val startMonth = start.month.getDisplayName(TextStyle.FULL, locale).replaceFirstChar { it.uppercase(locale) }
-    val endMonth = end.month.getDisplayName(TextStyle.FULL, locale).replaceFirstChar { it.uppercase(locale) }
+    val startDay = start.dayOfMonth.toString()
+    val endDay = end.dayOfMonth.toString()
 
     return if (start.month == end.month) {
-        "$startDay - $endDay $endMonth"
+        val month = start.month.getDisplayName(TextStyle.FULL, locale)
+            .replace(".", "")
+                .replaceFirstChar { it.uppercase(locale) }
+
+        "$startDay - $endDay $month"
     } else {
+        val startMonth = start.month.getDisplayName(TextStyle.SHORT, locale)
+            .replace(".", "")
+            .replaceFirstChar { it.uppercase(locale) }
+
+        val endMonth = end.month.getDisplayName(TextStyle.SHORT, locale)
+            .replace(".", "")
+            .replaceFirstChar { it.uppercase(locale) }
+
         "$startDay $startMonth - $endDay $endMonth"
     }
+
+//    val startMonth = start.month.getDisplayName(TextStyle.FULL, locale).replaceFirstChar { it.uppercase(locale) }
+//    val endMonth = end.month.getDisplayName(TextStyle.FULL, locale).replaceFirstChar { it.uppercase(locale) }
+//
+//    return if (start.month == end.month) {
+//        "$startDay - $endDay $endMonth"
+//    } else {
+//        "$startDay $startMonth - $endDay $endMonth"
+//    }
 }
 
 fun formatHour(timeString: String): String {

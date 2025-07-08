@@ -76,6 +76,8 @@ fun ReviewsSummarySection(
             RatingsStars(
                 rating = summary.averageRating
             )
+
+//            Spacer(Modifier.height(SpacingS))
         }
 
         summary.breakdown.sortedByDescending { it.rating }.forEach { item ->

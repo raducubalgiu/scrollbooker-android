@@ -195,4 +195,9 @@
     <string name="fromYou">de tine</string>
     <string name="address">Adresă</string>
     <string name="website">Website</string>
+    <string name="nextOpenDay">Următoarea zi disponibilă</string>
+    <string name="doesntHaveOpenSeatsThisDay">nu mai are locuri libere în această zi</string>
+    <string name="youArrivedToLate">Ai ajuns prea târziu</string>
+    <string name="locationIsClosed">Locația este închisă</string>
+    <string name="thisDayDoesntBelongToSchedule">Această zi nu face parte din programul de lucru</string>
 </resources>

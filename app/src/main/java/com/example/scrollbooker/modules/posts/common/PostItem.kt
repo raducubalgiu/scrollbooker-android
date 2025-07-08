@@ -6,6 +6,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.example.scrollbooker.entity.post.domain.model.Post
 import com.example.scrollbooker.modules.posts.PostsPagerViewModel
 import androidx.compose.runtime.getValue
+import com.example.scrollbooker.modules.posts.videoItem.PostVideo
 
 @Composable
 fun PostItem(
@@ -76,10 +77,10 @@ fun PostItem(
 //            },
 //        )
 //
-////        PostVideo(
-////            url = post.mediaFiles.first().url,
-////            playWhenReady = playWhenReady,
-////        )
+//        PostVideo(
+//            url = post.mediaFiles.first().url,
+//            //playWhenReady = playWhenReady,
+//        )
 ////
 
 ////

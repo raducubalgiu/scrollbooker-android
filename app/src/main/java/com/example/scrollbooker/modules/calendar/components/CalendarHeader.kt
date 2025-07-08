@@ -1,84 +1,124 @@
 package com.example.scrollbooker.modules.calendar.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBackIosNew
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingXXS
-import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.core.util.Dimens.SpacingM
+import com.example.scrollbooker.core.util.Dimens.SpacingXL
+import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun CalendarHeader(
-    onBack: () -> Unit,
-    period: String
+    period: String,
+    enableBack: Boolean,
+    enableNext: Boolean,
+    handlePreviousWeek: () -> Unit,
+    handleNextWeek: () -> Unit
 ) {
-    Row(modifier = Modifier
-        .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                horizontal = SpacingXL,
+                vertical = BasePadding
+            ),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(modifier = Modifier.clickable { onBack() }) {
-            Box(modifier = Modifier
-                .padding(BasePadding),
-                contentAlignment = Alignment.Center
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                modifier = Modifier.size(40.dp),
+                painter = painterResource(R.drawable.ic_calendar_outline_stroke_small),
+                contentDescription = null,
+                tint = Color.Gray
+            )
+            Spacer(Modifier.width(SpacingM))
+            Text(
+                style = titleMedium,
+                fontSize = 17.sp,
+                text = period,
+                fontWeight = FontWeight.SemiBold,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1
+            )
+        }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(
+                modifier = Modifier
+                    .size(42.5.dp)
+                    .shadow(
+                        elevation = if(enableBack) 1.dp else 0.dp,
+                        shape = CircleShape,
+                        clip = false
+                    )
+                    .clip(CircleShape)
+                    .background(
+                        color = if(enableBack) Color(0xFFE8E8E8) else Color.Transparent,
+                        shape = CircleShape
+                    )
+                    .clickable { handlePreviousWeek() },
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Icon(
-                    imageVector = Icons.Default.ArrowBackIosNew,
-                    tint = OnBackground,
-                    contentDescription = null
+                    modifier = Modifier.size(22.dp),
+                    painter = painterResource(R.drawable.ic_arrow_chevron_left_outline),
+                    contentDescription = null,
+                    tint = if(enableBack) OnSurfaceBG.copy(0.8f) else Divider
                 )
             }
-        }
 
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = stringResource(R.string.calendar),
-                style = titleMedium,
-                fontWeight = FontWeight.SemiBold
-            )
+            Spacer(Modifier.width(SpacingM))
 
-            Spacer(Modifier.height(SpacingXXS))
-
-            Text(
-                text = period,
-                style = titleMedium,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Gray,
-            )
-        }
-
-        Box {
-            Box(modifier = Modifier
-                .padding(BasePadding),
-                contentAlignment = Alignment.Center
+            Column(
+                modifier = Modifier
+                    .size(42.5.dp)
+                    .shadow(
+                        elevation = if(enableNext) 1.dp else 0.dp,
+                        shape = CircleShape,
+                        clip = false
+                    )
+                    .clip(CircleShape)
+                    .background(
+                        color = if(enableNext) Color(0xFFE8E8E8) else Color.Transparent,
+                        shape = CircleShape
+                    )
+                    .clickable { handleNextWeek() },
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Icon(
-                    imageVector = Icons.Default.ArrowBackIosNew,
-                    tint = Color.Transparent,
-                    contentDescription = null
+                    modifier = Modifier.size(22.dp),
+                    painter = painterResource(R.drawable.ic_arrow_chevron_right_outlines),
+                    contentDescription = null,
+                    tint = if(enableNext) OnSurfaceBG.copy(0.8f) else Divider
                 )
             }
         }
