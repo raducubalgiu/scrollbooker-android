@@ -1,9 +1,13 @@
 package com.example.scrollbooker.screens.profile.myBusiness.myProducts
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
@@ -24,11 +28,16 @@ import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.screens.profile.myBusiness.myServices.MyServicesViewModel
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
-import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import com.example.scrollbooker.components.core.buttons.MainButton
+import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.ui.theme.OnPrimary
+import com.example.scrollbooker.ui.theme.Primary
 
 @Composable
 fun MyProductsScreen(
@@ -55,46 +64,66 @@ fun MyProductsScreen(
                 val coroutineScope = rememberCoroutineScope()
                 val selectedTabIndex = pagerState.currentPage
 
-                Column {
-                    ScrollableTabRow(
-                        containerColor = Background,
-                        contentColor = OnSurfaceBG,
-                        edgePadding = 0.dp,
-                        selectedTabIndex = pagerState.currentPage,
-                    ) {
-                        services.forEachIndexed { index, service ->
-                            val isSelected = selectedTabIndex == index
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        ScrollableTabRow(
+                            modifier = Modifier.padding(start = BasePadding),
+                            containerColor = Background,
+                            contentColor = OnSurfaceBG,
+                            edgePadding = 0.dp,
+                            selectedTabIndex = pagerState.currentPage,
+                            indicator = {},
+                            divider = { HorizontalDivider(color = Color.Transparent) }
+                        ) {
+                            services.forEachIndexed { index, service ->
+                                val isSelected = selectedTabIndex == index
 
-                            Tab(
-                                selected = isSelected,
-                                onClick = {
-                                    coroutineScope.launch {
-                                        pagerState.animateScrollToPage(index)
+                                Tab(
+                                    modifier = Modifier
+                                        .clip(CircleShape)
+                                        .background(if(isSelected) Primary else Color.Transparent),
+                                    selected = isSelected,
+                                    onClick = {
+                                        coroutineScope.launch {
+                                            pagerState.animateScrollToPage(index)
+                                        }
+                                    },
+                                    text = {
+                                        Text(
+                                            text = service.name,
+                                            style = bodyLarge,
+                                            color = if (isSelected) OnPrimary else OnSurfaceBG,
+                                            fontWeight = FontWeight.Bold
+                                        )
                                     }
-                                },
-                                text = {
-                                    Text(
-                                        text = service.name,
-                                        style = bodyLarge,
-                                        color = if (isSelected) OnBackground else OnSurfaceBG,
-                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                                    )
-                                }
+                                )
+                            }
+                        }
+                        HorizontalDivider(color = Divider)
+
+                        HorizontalPager(
+                            state = pagerState,
+                            beyondViewportPageCount = 0,
+                            modifier = Modifier.fillMaxSize()
+                        ) { page ->
+                            val serviceId = services[page].id
+
+                            ProductsTab(
+                                myProductsViewModel = myProductsViewModel,
+                                serviceId = serviceId
                             )
                         }
                     }
-                    HorizontalDivider(color = Divider)
 
-                    HorizontalPager(
-                        state = pagerState,
-                        beyondViewportPageCount = 0,
-                        modifier = Modifier.fillMaxSize()
-                    ) { page ->
-                        val serviceId = services[page].id
-
-                        ProductsTab(
-                            myProductsViewModel = myProductsViewModel,
-                            serviceId = serviceId
+                    Column {
+                        HorizontalDivider(color = Divider, thickness = 0.5.dp)
+                        MainButton(
+                            modifier = Modifier.padding(BasePadding),
+                            title = stringResource(R.string.createNewProduct),
+                            onClick = {}
                         )
                     }
                 }

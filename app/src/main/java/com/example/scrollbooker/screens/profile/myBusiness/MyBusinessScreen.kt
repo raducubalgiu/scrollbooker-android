@@ -26,9 +26,11 @@ import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.screens.profile.myBusiness.myProducts.components.MyBusinessCard
 import androidx.compose.runtime.getValue
+import com.example.scrollbooker.components.core.layout.ErrorScreen
+import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.enums.PermissionEnum
 import com.example.scrollbooker.core.enums.has
-import com.example.scrollbooker.screens.profile.myBusiness.MyBusinessViewModel
+import com.example.scrollbooker.core.util.FeatureState
 
 data class BusinessCard(
     val title: String,
@@ -44,7 +46,7 @@ fun MyBusinessScreen(
     onNavigation: (String) -> Unit,
     onBack: () -> Unit
 ) {
-    val permissions by viewModel.permissions.collectAsState()
+    val permissionsState by viewModel.permissionsState.collectAsState()
 
     val pages = listOf(
         BusinessCard(
@@ -105,27 +107,34 @@ fun MyBusinessScreen(
         )
     )
 
-    val visiblePages = pages.filter { permissions.has(it.permission) }
-
     Layout(
         modifier = Modifier.statusBarsPadding(),
         headerTitle = stringResource(R.string.myBusiness),
         onBack = onBack
     ) {
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(vertical = 8.dp),
-            modifier = Modifier.fillMaxSize()
-        ) {
-            items(visiblePages) { page ->
-                MyBusinessCard(
-                    title = page.title,
-                    icon = page.icon,
-                    description = page.description,
-                    onClick = { onNavigation(page.route) }
-                )
+        when(permissionsState) {
+            is FeatureState.Error -> ErrorScreen()
+            is FeatureState.Loading -> LoadingScreen()
+            is FeatureState.Success<*> -> {
+                val permissions = (permissionsState as FeatureState.Success).data
+                val visiblePages = pages.filter { permissions.has(it.permission) }
+
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(vertical = 8.dp),
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    items(visiblePages) { page ->
+                        MyBusinessCard(
+                            title = page.title,
+                            icon = page.icon,
+                            description = page.description,
+                            onClick = { onNavigation(page.route) }
+                        )
+                    }
+                }
             }
         }
     }
