@@ -25,6 +25,9 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,13 +36,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.layout.ErrorScreen
-import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.core.shimmer.rememberShimmerBrush
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.modules.calendar.components.CalendarActions
 import com.example.scrollbooker.modules.calendar.components.CalendarDayTab
-import com.example.scrollbooker.modules.calendar.components.CalendarHeader
 import com.example.scrollbooker.screens.profile.myBusiness.myCalendar.rememberAnimatedPagerStyle
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
@@ -49,7 +50,6 @@ import com.example.scrollbooker.ui.theme.bodyLarge
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import java.util.Locale
-import com.example.scrollbooker.core.util.displayDatePeriod
 import com.example.scrollbooker.core.util.displayShortDayOfWeek
 import com.example.scrollbooker.core.util.formatHour
 import com.example.scrollbooker.entity.calendar.domain.model.AvailableDay
@@ -59,9 +59,10 @@ fun Calendar(
     availableDayTimeslots: FeatureState<AvailableDay>,
     calendarDays: List<LocalDate>,
     availableDays: FeatureState<List<LocalDate>>,
-    onBack: () -> Unit,
+    onBack: (() -> Unit)? = null,
     config: CalendarConfig?,
-    onDayChange: (LocalDate) -> Unit
+    onDayChange: (LocalDate) -> Unit,
+    onPeriodChange: (LocalDate, LocalDate, Locale) -> Unit
 ) {
     if(calendarDays.isEmpty() || config == null) return
 
@@ -75,28 +76,65 @@ fun Calendar(
     val currentWeekIndex = weekPagerState.currentPage
 
     val currentWeekDates = calendarDays.drop(currentWeekIndex * 7).take(7)
-    val period = displayDatePeriod(start = currentWeekDates.first(), end = currentWeekDates.last(), locale)
 
     val enableBack = currentWeekIndex > 0
-    val enableNext = currentWeekIndex < config.totalWeeks -1
+    val enableNext = currentWeekIndex < config.totalWeeks - 1
+
+    LaunchedEffect(currentWeekIndex) {
+        onPeriodChange(currentWeekDates.first(), currentWeekDates.last(), locale)
+    }
 
     fun handlePreviousWeek() {
+        if(!enableBack) return
         coroutineScope.launch {
-            if(enableBack) {
-                weekPagerState.scrollToPage(currentWeekIndex - 1)
-            }
+            weekPagerState.animateScrollToPage(currentWeekIndex - 1)
         }
     }
 
     fun handleNextWeek() {
+        if(!enableNext) return
         coroutineScope.launch {
-            if(enableNext) {
-                weekPagerState.scrollToPage(currentWeekIndex + 1)
-            }
+            weekPagerState.animateScrollToPage(currentWeekIndex + 1)
         }
     }
 
     val selectedDay = calendarDays.drop(currentWeekIndex * 7).getOrNull(currentDayIndex)
+
+    val previousDayPage = remember { mutableIntStateOf(dayPagerState.currentPage) }
+    val justSwitchedWeek = remember { mutableStateOf(false) }
+    val directionState = remember { mutableIntStateOf(0) }
+
+    LaunchedEffect(dayPagerState.currentPage) {
+        if (justSwitchedWeek.value) {
+            justSwitchedWeek.value = false
+            previousDayPage.intValue = dayPagerState.currentPage
+            return@LaunchedEffect
+        }
+
+        directionState.intValue = dayPagerState.currentPage - previousDayPage.intValue
+
+        val isLastDay = dayPagerState.currentPage == 6
+        val isFirstDay = dayPagerState.currentPage == 0
+
+        if(directionState.intValue > 0 && isLastDay && enableNext) {
+            justSwitchedWeek.value = true
+
+            coroutineScope.launch {
+                weekPagerState.animateScrollToPage(currentWeekIndex + 1)
+                dayPagerState.animateScrollToPage(0)
+            }
+
+        } else if (directionState.intValue < 0 && isFirstDay && enableBack) {
+            justSwitchedWeek.value = true
+
+            coroutineScope.launch {
+                weekPagerState.animateScrollToPage(currentWeekIndex - 1)
+                dayPagerState.animateScrollToPage(6)
+            }
+        }
+
+        previousDayPage.intValue = dayPagerState.currentPage
+    }
 
     LaunchedEffect(currentWeekIndex, currentDayIndex) {
         selectedDay?.let {
@@ -105,10 +143,10 @@ fun Calendar(
     }
 
     Column(modifier = Modifier.statusBarsPadding()) {
-        CalendarHeader(
-            onBack = onBack,
-            period = period
-        )
+//        CalendarHeader(
+//            onBack = onBack,
+//            period = period
+//        )
 
         CalendarActions(
             enableBack = enableBack,
@@ -140,12 +178,6 @@ fun Calendar(
                         ?.data
                         ?.contains(date) == true
 
-                    val (bgColor, scale) = rememberAnimatedPagerStyle(
-                        pagerState = dayPagerState,
-                        index = index,
-                        primaryColor = Primary
-                    )
-
                     CalendarDayTab(
                         date = date,
                         isCurrentTab = index == dayPagerState.currentPage,
@@ -155,8 +187,7 @@ fun Calendar(
                                 dayPagerState.animateScrollToPage(index)
                             }
                         },
-                        bgColor = bgColor,
-                        scale = scale,
+                        bgColor = if(currentDayIndex == index) Primary else Color.Transparent,
                         label = displayShortDayOfWeek(date, locale),
                         isLoading = availableDays is FeatureState.Loading,
                         isDayAvailable = isAvailable

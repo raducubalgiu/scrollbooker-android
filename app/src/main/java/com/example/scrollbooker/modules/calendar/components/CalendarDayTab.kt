@@ -38,7 +38,6 @@ fun CalendarDayTab(
     isLoading: Boolean,
     isDayAvailable: Boolean,
     bgColor: Color,
-    scale: Float,
     label: String
 ) {
     Box(
@@ -65,7 +64,6 @@ fun CalendarDayTab(
             Box(
                 modifier = Modifier
                     .size(45.dp)
-                    .scale(scale)
                     .clip(CircleShape)
                     .background(bgColor),
                 contentAlignment = Alignment.Center

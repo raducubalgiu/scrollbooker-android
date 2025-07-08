@@ -2,13 +2,16 @@ package com.example.scrollbooker.modules.posts
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -18,14 +21,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
+import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.sheet.Sheet
+import com.example.scrollbooker.components.core.sheet.SheetHeader
+import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.modules.reviews.ReviewsViewModel
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.entity.post.domain.model.Post
@@ -36,8 +45,11 @@ import com.example.scrollbooker.modules.posts.comments.CommentsViewModel
 import com.example.scrollbooker.modules.posts.common.PostItem
 import com.example.scrollbooker.modules.posts.common.PostSheetsContent
 import com.example.scrollbooker.modules.posts.reviews.ReviewsListSheet
+import com.example.scrollbooker.ui.theme.titleMedium
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
+import org.threeten.bp.LocalDate
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalCoroutinesApi::class)
 @SuppressLint("ConfigurationScreenWidthHeight")
@@ -101,6 +113,7 @@ fun PostsPager(
                         val calendarDays by calendarViewModel.calendarDays.collectAsState()
                         val availableDays by calendarViewModel.availableDays.collectAsState()
                         val availableDayTimeslots by calendarViewModel.availableDay.collectAsState()
+                        val period by calendarViewModel.currentPeriod.collectAsState()
 
                         LaunchedEffect(Unit) {
                             calendarViewModel.setCalendarConfig(userId = content.userId)
@@ -116,13 +129,38 @@ fun PostsPager(
                             }
                         }
 
+                        SheetHeader(
+                            customTitle = {
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.calendar),
+                                        style = titleMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.Gray
+                                    )
+                                    Spacer(Modifier.height(SpacingXXS))
+                                    Text(
+                                        text = period,
+                                        style = titleMedium,
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                }
+                            },
+                            title = period,
+                            onClose = { handleClose() }
+                        )
+
                         Calendar(
                             availableDayTimeslots = availableDayTimeslots,
                             calendarDays = calendarDays,
                             availableDays = availableDays,
-                            onBack = {},
                             config = config,
-                            onDayChange = { calendarViewModel.updateSelectedDay(it) }
+                            onDayChange = { calendarViewModel.updateSelectedDay(it) },
+                            onPeriodChange = { start, end, locale ->
+                                calendarViewModel.updatePeriod(start, end, locale)
+                            }
                         )
                     }
                     is PostSheetsContent.None -> Unit

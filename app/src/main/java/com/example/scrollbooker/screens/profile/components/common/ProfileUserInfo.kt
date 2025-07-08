@@ -45,6 +45,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
+import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
@@ -211,6 +212,7 @@ fun ProfileUserInfo(
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
+                        modifier = Modifier.size(20.dp),
                         painter = painterResource(R.drawable.ic_map_outline),
                         contentDescription = null,
                         tint = Primary
@@ -232,6 +234,7 @@ fun ProfileUserInfo(
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
+                        modifier = Modifier.size(20.dp),
                         painter = painterResource(R.drawable.ic_email_outline),
                         contentDescription = null,
                         tint = Primary
@@ -253,6 +256,7 @@ fun ProfileUserInfo(
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
+                        modifier = Modifier.size(20.dp),
                         painter = painterResource(R.drawable.ic_globe_outline),
                         contentDescription = null,
                         tint = Primary

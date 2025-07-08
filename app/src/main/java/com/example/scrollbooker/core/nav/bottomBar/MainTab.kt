@@ -6,27 +6,33 @@ import com.example.scrollbooker.core.nav.routes.MainRoute
 sealed class MainTab(
     val route: String,
     val label: String,
-    val painter: Int
+    val painterSolid: Int,
+    val painterOutline: Int
 ) {
     object Feed: MainTab(
         MainRoute.Feed.route, "Acasa",
-        painter = R.drawable.ic_home_solid
+        painterSolid = R.drawable.ic_home_solid,
+        painterOutline = R.drawable.ic_home_outline
     )
     object Inbox: MainTab(
         MainRoute.Inbox.route, "Inbox",
-        painter = R.drawable.ic_notifications_solid
+        painterSolid = R.drawable.ic_notifications_solid,
+        painterOutline = R.drawable.ic_notifications_outline
     )
     object Search: MainTab(
         MainRoute.Search.route, "Search",
-        painter = R.drawable.ic_search_solid
+        painterSolid = R.drawable.ic_search_solid,
+        painterOutline = R.drawable.ic_search
     )
     object Appointments: MainTab(
         MainRoute.Appointments.route, "Comenzi",
-        painter = R.drawable.ic_clipboard_solid
+        painterSolid = R.drawable.ic_clipboard_solid,
+        painterOutline = R.drawable.ic_clipboard_outline
     )
     object Profile: MainTab(
         MainRoute.MyProfile.route, "Profil",
-        painter = R.drawable.ic_person_solid
+        painterSolid = R.drawable.ic_person_solid,
+        painterOutline = R.drawable.ic_person_outline
     )
 
     companion object {

@@ -1,8 +1,8 @@
 package com.example.scrollbooker.modules.calendar
-
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.util.displayDatePeriod
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.calendar.domain.model.AvailableDay
 import com.example.scrollbooker.entity.calendar.domain.useCase.GetCalendarAvailableDaysUseCase
@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.LocalDate
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,6 +33,14 @@ class CalendarViewModel @Inject constructor(
 
     private val _calendarConfig = MutableStateFlow<CalendarConfig?>(null)
     val calendarConfig: StateFlow<CalendarConfig?> = _calendarConfig
+
+    private val _currentPeriod = MutableStateFlow("")
+    val currentPeriod: StateFlow<String> = _currentPeriod
+
+    fun updatePeriod(start: LocalDate, end: LocalDate, locale: Locale) {
+        val formatted = displayDatePeriod(start, end, locale)
+        _currentPeriod.value = formatted
+    }
 
     fun updateSelectedDay(newDay: LocalDate) {
         _calendarConfig.update { current ->

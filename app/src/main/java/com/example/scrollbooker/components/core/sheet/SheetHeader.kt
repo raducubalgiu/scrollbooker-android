@@ -21,6 +21,7 @@ import com.example.scrollbooker.ui.theme.titleMedium
 @Composable
 fun SheetHeader(
     title: String,
+    customTitle: (@Composable () -> Unit)? = null,
     onClose: () -> Unit
 ) {
     Row(modifier = Modifier
@@ -41,11 +42,15 @@ fun SheetHeader(
             }
         }
 
-        Text(
-            text = title,
-            style = titleMedium,
-            fontWeight = FontWeight.SemiBold
-        )
+        if(customTitle != null) {
+            customTitle()
+        } else {
+            Text(
+                text = title,
+                style = titleMedium,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
 
         Box(modifier = Modifier.clickable { onClose() }) {
             Box(modifier = Modifier
