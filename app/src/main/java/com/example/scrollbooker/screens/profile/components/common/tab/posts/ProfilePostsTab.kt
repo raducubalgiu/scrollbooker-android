@@ -3,16 +3,20 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -24,6 +28,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.components.customized.PostGrid
 import com.example.scrollbooker.components.core.layout.ErrorScreen
+import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.SurfaceBG
@@ -48,15 +53,10 @@ fun ProfilePostsTab(
         when(posts.loadState.refresh) {
             is LoadState.Error -> ErrorScreen()
             is LoadState.Loading -> {
-                LazyVerticalGrid(columns = GridCells.Fixed(3)) {
-                    items(10) {
-                        Box(modifier = Modifier
-                            .aspectRatio(9f / 12f)
-                            .border(0.5.dp, Divider)
-                            .background(SurfaceBG)
-                        )
-                    }
-                }
+                LoadingScreen(
+                    modifier = Modifier.padding(top = 50.dp),
+                    arrangement = Arrangement.Top
+                )
             }
             is LoadState.NotLoading -> {
                 LazyVerticalGrid(

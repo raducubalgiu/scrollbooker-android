@@ -2,6 +2,7 @@ package com.example.scrollbooker.entity.post.data.remote
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.post.data.mappers.toDomain
 import com.example.scrollbooker.entity.post.domain.model.Post
 import timber.log.Timber
@@ -23,7 +24,14 @@ class PostBookNowPagingSource(
         val limit = 10
 
         return try {
-            val response = api.getBookNowPosts(page, limit)
+            val response = if(page == 1) {
+                withVisibleLoading {
+                    api.getBookNowPosts(page, limit)
+                }
+            } else {
+                api.getBookNowPosts(page, limit)
+            }
+
             val posts = response.results.map { it.toDomain() }
 
             val totalLoaded = (page - 1) * limit + response.results.size

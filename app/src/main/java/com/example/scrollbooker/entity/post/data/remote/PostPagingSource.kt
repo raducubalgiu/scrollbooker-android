@@ -2,6 +2,7 @@ package com.example.scrollbooker.entity.post.data.remote
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.post.data.mappers.toDomain
 import com.example.scrollbooker.entity.post.domain.model.Post
 import kotlinx.coroutines.delay
@@ -25,8 +26,13 @@ class PostPagingSource(
         val limit = 10
 
         return try {
-            delay(1000)
-            val response = api.getUserPosts(userId, page, limit)
+            delay(300)
+
+            val response = if(page == 1) {
+                withVisibleLoading { api.getUserPosts(userId, page, limit) }
+            } else {
+                api.getUserPosts(userId, page, limit)
+            }
             val posts = response.results.map { it.toDomain() }
 
             val totalLoaded = (page - 1) * limit + response.results.size
