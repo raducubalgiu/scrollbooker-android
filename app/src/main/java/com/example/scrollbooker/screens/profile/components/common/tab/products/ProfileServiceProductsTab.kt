@@ -32,7 +32,8 @@ import com.example.scrollbooker.ui.theme.Divider
 fun ProfileServiceProductsTab(
     viewModel: ProfileProductsTabViewModel,
     serviceId: Int,
-    userId: Int
+    userId: Int,
+    onNavigateToCalendar: (Int) -> Unit
 ) {
     val productsState = viewModel.loadProducts(serviceId, userId).collectAsLazyPagingItems()
 
@@ -60,6 +61,7 @@ fun ProfileServiceProductsTab(
                                     onNavigateToEdit = {},
                                     isLoadingDelete = false,
                                     onDeleteProduct = {},
+                                    onNavigateToCalendar = { onNavigateToCalendar(userId) }
                                 )
 
                                 if(index < productsState.itemCount - 1) {

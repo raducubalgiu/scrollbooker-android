@@ -31,6 +31,7 @@ import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 fun ProfileLayout(
     user: UserProfile,
     onNavigate: (String) -> Unit,
+    onNavigateToCalendar: (Int) -> Unit,
     actions: @Composable (() -> Unit)
 ) {
     var showScheduleSheet by remember { mutableStateOf(false) }
@@ -85,7 +86,8 @@ fun ProfileLayout(
                         )
                         1 -> ProfileProductsTab(
                             userId = user.id,
-                            businessId = user.businessId
+                            businessId = user.businessId,
+                            onNavigateToCalendar = onNavigateToCalendar
                         )
                         2 -> ProfileRepostsTab(
                             userId = user.id,

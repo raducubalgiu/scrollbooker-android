@@ -41,7 +41,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun ProfileProductsTab(
     userId: Int,
-    businessId: Int?
+    businessId: Int?,
+    onNavigateToCalendar: (Int) -> Unit
 ) {
     val viewModel: ProfileProductsTabViewModel = hiltViewModel()
     val servicesState by viewModel.servicesState.collectAsState()
@@ -130,7 +131,8 @@ fun ProfileProductsTab(
                     ProfileServiceProductsTab(
                         viewModel = viewModel,
                         userId = userId,
-                        serviceId = serviceId
+                        serviceId = serviceId,
+                        onNavigateToCalendar = onNavigateToCalendar
                     )
                 }
             }

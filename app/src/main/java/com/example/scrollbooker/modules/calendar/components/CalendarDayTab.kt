@@ -39,6 +39,8 @@ fun CalendarDayTab(
     bgColor: Color,
     label: String
 ) {
+    val isPastDay = date < LocalDate.now()
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -75,6 +77,7 @@ fun CalendarDayTab(
                     fontWeight = FontWeight.ExtraBold,
                     color = when {
                         isLoading -> Divider
+                        isPastDay -> Divider
                         !isDayAvailable -> Divider
                         isCurrentTab -> OnPrimary
                         else -> OnBackground

@@ -69,6 +69,7 @@ fun ProductsTab(
                                     mode = ProductCardEnum.OWNER,
                                     onNavigateToEdit = onNavigateToEdit,
                                     isLoadingDelete = isSaving && selectedProduct?.id == product.id,
+                                    onNavigateToCalendar = {},
                                     onDeleteProduct = { productId: Int ->
                                         myProductsViewModel.deleteProduct(product, serviceId)
                                     },

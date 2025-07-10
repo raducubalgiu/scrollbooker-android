@@ -18,7 +18,8 @@ import com.example.scrollbooker.screens.profile.components.userProfile.UserProfi
 fun UserProfileScreen(
     viewModel: ProfileViewModel,
     onNavigate: (String) -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onNavigateToCalendar: (Int) -> Unit
 ) {
     val userProfileState by viewModel.userProfileState.collectAsState()
 
@@ -38,7 +39,11 @@ fun UserProfileScreen(
                     onBack = onBack
                 )
 
-                ProfileLayout(user = user, onNavigate = onNavigate) {
+                ProfileLayout(
+                    user = user,
+                    onNavigate = onNavigate,
+                    onNavigateToCalendar = onNavigateToCalendar
+                ) {
                     UserProfileActions(
                         isFollow = user.isFollow,
                         onNavigateToCalendar = { onNavigate(MainRoute.Calendar.route) }

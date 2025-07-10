@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButtonMedium
 import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
-import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.products.domain.model.Product
@@ -45,7 +44,8 @@ fun ProductCard(
     mode: ProductCardEnum,
     onNavigateToEdit: (Int) -> Unit,
     isLoadingDelete: Boolean,
-    onDeleteProduct: (productId: Int) -> Unit
+    onDeleteProduct: (productId: Int) -> Unit,
+    onNavigateToCalendar: () -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.padding(BasePadding)) {
@@ -117,7 +117,7 @@ fun ProductCard(
                 if(mode == ProductCardEnum.CLIENT) {
                     MainButtonOutlined(
                         title = stringResource(R.string.book),
-                        onClick = {}
+                        onClick = onNavigateToCalendar
                     )
                 }
             }
@@ -132,7 +132,9 @@ fun ProductCard(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     MainButtonMedium(
-                        modifier = Modifier.weight(0.5f).clip(shape = ShapeDefaults.ExtraLarge),
+                        modifier = Modifier
+                            .weight(0.5f)
+                            .clip(shape = ShapeDefaults.ExtraLarge),
                         title = stringResource(R.string.edit),
                         onClick = { onNavigateToEdit(product.id) },
                         colors = ButtonDefaults.buttonColors(
@@ -142,7 +144,9 @@ fun ProductCard(
                     )
                     Spacer(Modifier.width(BasePadding))
                     MainButtonMedium(
-                        modifier = Modifier.weight(0.5f).clip(shape = ShapeDefaults.ExtraLarge),
+                        modifier = Modifier
+                            .weight(0.5f)
+                            .clip(shape = ShapeDefaults.ExtraLarge),
                         title = stringResource(R.string.delete),
                         isLoading = isLoadingDelete,
                         isEnabled = !isLoadingDelete,

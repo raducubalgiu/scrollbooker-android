@@ -28,7 +28,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun MyProfileScreen(
     viewModel: ProfileSharedViewModel,
-    onNavigate: (String) -> Unit
+    onNavigate: (String) -> Unit,
+    onNavigateToCalendar: (Int) -> Unit
 ) {
     val userProfileState by viewModel.userProfileState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
@@ -80,9 +81,13 @@ fun MyProfileScreen(
                     }
                 )
 
-                ProfileLayout(user = user, onNavigate = onNavigate) {
+                ProfileLayout(
+                    user = user,
+                    onNavigate = onNavigate,
+                    onNavigateToCalendar = onNavigateToCalendar
+                ) {
                     MyProfileActions(
-                        onEditProfile = { onNavigate(MainRoute.EditProfile.route) }
+                        onEditProfile = { onNavigate(MainRoute.EditProfile.route) },
                     )
                 }
             }

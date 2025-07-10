@@ -3,6 +3,9 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -14,8 +17,8 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.core.nav.navigators.myBusinessGraph
 import com.example.scrollbooker.core.nav.navigators.settingsGraph
 import com.example.scrollbooker.core.nav.routes.MainRoute
-import com.example.scrollbooker.screens.calendar.CalendarScreen
-import com.example.scrollbooker.screens.calendar.CalendarViewModel
+import com.example.scrollbooker.modules.calendar.CalendarViewModel
+import com.example.scrollbooker.screens.profile.calendar.CalendarScreen
 import com.example.scrollbooker.screens.profile.components.common.tab.posts.ProfilePostsTabViewModel
 import com.example.scrollbooker.screens.profile.myProfile.MyProfileScreen
 import com.example.scrollbooker.screens.profile.myProfile.ProfileSharedViewModel
@@ -77,7 +80,8 @@ fun ProfileNavHost(navController: NavHostController) {
             val viewModel = hiltViewModel<ProfileSharedViewModel>(backStackEntry)
             MyProfileScreen(
                 viewModel = viewModel,
-                onNavigate = { navController.navigate(it) }
+                onNavigate = { navController.navigate(it) },
+                onNavigateToCalendar = { navController.navigate("${MainRoute.Calendar.route}/$it") }
             )
         }
         composable("${MainRoute.ProfilePostDetail.route}/{postId}",
@@ -101,7 +105,8 @@ fun ProfileNavHost(navController: NavHostController) {
             UserProfileScreen(
                 viewModel = viewModel,
                 onNavigate = { navController.navigate(it) },
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+                onNavigateToCalendar = { navController.navigate("${MainRoute.Calendar.route}/$it") }
             )
         }
         composable(MainRoute.EditProfile.route) { backStackEntry ->
@@ -196,12 +201,17 @@ fun ProfileNavHost(navController: NavHostController) {
             )
         }
 
-        composable(MainRoute.Calendar.route) { backStackEntry ->
-            val viewModel = hiltViewModel<CalendarViewModel>(backStackEntry)
+        composable(
+            route = "${MainRoute.Calendar.route}/{userId}",
+            arguments = listOf(navArgument("userId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val userId = backStackEntry.arguments?.getInt("userId") ?: return@composable
+            val viewModel: CalendarViewModel = hiltViewModel()
 
             CalendarScreen(
-                viewModel=viewModel,
-                onBack= { navController.popBackStack() }
+                userId = userId,
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() }
             )
         }
 
