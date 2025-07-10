@@ -15,7 +15,9 @@ import androidx.compose.material.icons.outlined.Repeat
 import androidx.compose.material.icons.outlined.ShoppingBag
 import androidx.compose.material.icons.outlined.ViewComfyAlt
 import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
@@ -31,6 +33,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.ui.theme.Background
+import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
@@ -62,11 +65,12 @@ fun ProfileTabRow(
             Box(
                 Modifier
                     .tabIndicatorOffset(tabPositions[selectedTabIndex])
-                    .height(3.5.dp)
+                    .height(1.5.dp)
                     .padding(horizontal = 15.dp)
-                    .background(OnBackground)
+                    .background(OnBackground, shape = ShapeDefaults.Large)
             )
         },
+        divider = { HorizontalDivider(color = Divider, thickness = 0.55.dp) },
         selectedTabIndex = selectedTabIndex
     ) {
         tabs.forEachIndexed { index, item ->

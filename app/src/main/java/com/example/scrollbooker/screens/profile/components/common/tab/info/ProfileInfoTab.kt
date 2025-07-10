@@ -4,7 +4,7 @@ import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.runtime.Composable
 
 @Composable
-fun ProfileInfoTab(state: LazyGridState) {
+fun ProfileInfoTab() {
 //    LazyColumn(
 //        state = state,
 //        modifier = Modifier.fillMaxSize(),

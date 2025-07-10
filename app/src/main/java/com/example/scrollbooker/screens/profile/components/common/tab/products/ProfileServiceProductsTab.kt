@@ -1,7 +1,7 @@
-package com.example.scrollbooker.screens.profile.myBusiness.myProducts
-import androidx.compose.runtime.getValue
+package com.example.scrollbooker.screens.profile.components.common.tab.products
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -21,30 +19,22 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.customized.ProductCard
-import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.components.core.layout.ErrorScreen
-import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.components.core.layout.LoadingScreen
-import com.example.scrollbooker.core.util.Dimens.SpacingM
+import com.example.scrollbooker.components.customized.ProductCard
+import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.entity.products.domain.model.ProductCardEnum
 import com.example.scrollbooker.ui.theme.Divider
 
 @Composable
-fun ProductsTab(
-    myProductsViewModel: MyProductsViewModel,
+fun ProfileServiceProductsTab(
+    viewModel: ProfileProductsTabViewModel,
     serviceId: Int,
-    onNavigateToEdit: (Int) -> Unit
+    userId: Int
 ) {
-    val reloadKey by myProductsViewModel.productsReloadTrigger
-
-    val productsState = remember(reloadKey) {
-        myProductsViewModel.loadProducts(serviceId)
-    }.collectAsLazyPagingItems()
-
-    val selectedProduct by myProductsViewModel.selectedProduct.collectAsState()
-    val isSaving by myProductsViewModel.isSaving.collectAsState()
+    val productsState = viewModel.loadProducts(serviceId, userId).collectAsLazyPagingItems()
 
     Column(Modifier.fillMaxSize()) {
         productsState.apply {
@@ -54,24 +44,22 @@ fun ProductsTab(
                 is LoadState.NotLoading -> {
                     if(productsState.itemCount == 0) {
                         EmptyScreen(
+                            modifier = Modifier.padding(top = 30.dp),
+                            arrangement = Arrangement.Top,
                             message = stringResource(R.string.noProductsFound),
                             icon = painterResource(R.drawable.ic_shopping_outline)
                         )
                     }
 
                     LazyColumn(Modifier.weight(1f)) {
-                        item { Spacer(Modifier.height(SpacingM)) }
-
                         items(productsState.itemCount) { index ->
                             productsState[index]?.let { product ->
                                 ProductCard(
                                     product = product,
-                                    mode = ProductCardEnum.OWNER,
-                                    onNavigateToEdit = onNavigateToEdit,
-                                    isLoadingDelete = isSaving && selectedProduct?.id == product.id,
-                                    onDeleteProduct = { productId: Int ->
-                                        myProductsViewModel.deleteProduct(product, serviceId)
-                                    },
+                                    mode = ProductCardEnum.CLIENT,
+                                    onNavigateToEdit = {},
+                                    isLoadingDelete = false,
+                                    onDeleteProduct = {},
                                 )
 
                                 if(index < productsState.itemCount - 1) {

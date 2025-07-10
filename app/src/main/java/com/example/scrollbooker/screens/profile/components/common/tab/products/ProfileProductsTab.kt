@@ -1,17 +1,139 @@
 package com.example.scrollbooker.screens.profile.components.common.tab.products
-
-import androidx.compose.foundation.lazy.grid.LazyGridState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.ShapeDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.scrollbooker.components.core.layout.ErrorScreen
+import com.example.scrollbooker.components.core.layout.LoadingScreen
+import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.ui.theme.Background
+import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.OnSurfaceBG
+import com.example.scrollbooker.ui.theme.Primary
+import com.example.scrollbooker.ui.theme.bodyLarge
+import kotlinx.coroutines.launch
 
 @Composable
-fun ProfileProductsTab(state: LazyGridState) {
-//    LazyColumn(
-//        state = state,
-//        modifier = Modifier.fillMaxSize(),
-//        userScrollEnabled = false
-//    ) {
-//        items(50) {
-//            Text(text = "Products Tab")
-//        }
-//    }
+fun ProfileProductsTab(
+    userId: Int,
+    businessId: Int?
+) {
+    val viewModel: ProfileProductsTabViewModel = hiltViewModel()
+    val servicesState by viewModel.servicesState.collectAsState()
+
+    LaunchedEffect(businessId) {
+        viewModel.loadServices(businessId)
+    }
+
+    when(servicesState) {
+        is FeatureState.Loading -> {
+            LoadingScreen(
+                arrangement = Arrangement.Top,
+                modifier = Modifier.padding(top = 50.dp)
+            )
+        }
+        is FeatureState.Error -> ErrorScreen()
+        is FeatureState.Success -> {
+            val services = (servicesState as FeatureState.Success).data
+
+            val pagerState = rememberPagerState(initialPage = 0) { services.size }
+            val coroutineScope = rememberCoroutineScope()
+            val selectedTabIndex = pagerState.currentPage
+
+            Column(modifier = Modifier.fillMaxSize()) {
+                ScrollableTabRow(
+                    containerColor = Background,
+                    contentColor = OnSurfaceBG,
+                    edgePadding = BasePadding,
+                    selectedTabIndex = pagerState.currentPage,
+                    indicator = {  tabPositions ->
+                        Box(
+                            Modifier
+                                .tabIndicatorOffset(tabPositions[selectedTabIndex])
+                                .height(4.5.dp)
+                                .padding(horizontal = 30.dp)
+                                .background(Primary, shape = ShapeDefaults.Large)
+                        )
+                    },
+                    divider = {
+                        HorizontalDivider(
+                            modifier = Modifier.padding(top = 5.dp),
+                            color = Divider,
+                            thickness = 0.55.dp
+                        )
+                    }
+                ) {
+                    services.forEachIndexed { index, service ->
+                        val isSelected = selectedTabIndex == index
+
+                        Box(modifier = Modifier
+                            .padding(vertical = 5.dp)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .clip(shape = ShapeDefaults.ExtraLarge)
+                                    .clickable {
+                                        coroutineScope.launch {
+                                            pagerState.animateScrollToPage(index)
+                                        }
+                                    }
+                                    .padding(
+                                        vertical = 8.dp,
+                                        horizontal = 14.dp
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "${service.name} 100",
+                                    style = bodyLarge,
+                                    fontSize = if(isSelected) 16.sp else 14.sp,
+                                    color = if (isSelected) OnSurfaceBG else Color.Gray,
+                                    fontWeight = if(isSelected) FontWeight.Bold else FontWeight.SemiBold,
+                                )
+                            }
+                        }
+                    }
+                }
+
+                HorizontalPager(
+                    state = pagerState,
+                    beyondViewportPageCount = 0,
+                    modifier = Modifier.fillMaxSize()
+                ) { page ->
+                    val serviceId = services[page].id
+
+                    ProfileServiceProductsTab(
+                        viewModel = viewModel,
+                        userId = userId,
+                        serviceId = serviceId
+                    )
+                }
+            }
+        }
+    }
 }

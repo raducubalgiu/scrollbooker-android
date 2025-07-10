@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -39,10 +38,6 @@ fun ProfileLayout(
 
     val tabCount = 5
     val pagerState = rememberPagerState(initialPage = 0) { tabCount }
-
-    val lazyListStates = remember {
-        List(tabCount) { LazyGridState() }
-    }
 
     BottomSheet(
         onDismiss = { showScheduleSheet = false },
@@ -86,21 +81,21 @@ fun ProfileLayout(
                     when(page) {
                         0 -> ProfilePostsTab(
                             userId=user.id,
-                            lazyListState = lazyListStates[page],
                             onNavigate = onNavigate
                         )
-                        1 -> ProfileProductsTab(lazyListStates[page])
+                        1 -> ProfileProductsTab(
+                            userId = user.id,
+                            businessId = user.businessId
+                        )
                         2 -> ProfileRepostsTab(
                             userId = user.id,
-                            lazyListState = lazyListStates[page],
                             onNavigate = onNavigate
                         )
                         3 -> ProfileBookmarksTab(
                             userId = user.id,
-                            lazyListState =lazyListStates[page],
                             onNavigate = onNavigate
                         )
-                        4 -> ProfileInfoTab(lazyListStates[page])
+                        4 -> ProfileInfoTab()
                     }
                 }
             }

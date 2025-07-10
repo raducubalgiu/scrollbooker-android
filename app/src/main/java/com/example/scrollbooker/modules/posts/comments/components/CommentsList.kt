@@ -32,7 +32,7 @@ fun CommentsList(
     if(comments.itemCount == 0) {
         EmptyScreen(
             modifier = Modifier.padding(top = 50.dp),
-            fillMaxSize = false,
+            arrangement = Arrangement.Top,
             icon = painterResource(R.drawable.ic_comment_outline),
             message = stringResource(R.string.notFoundComments),
         )

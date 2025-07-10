@@ -20,7 +20,7 @@ interface PostApiService {
         @Query("limit") limit: Int
     ): PaginatedResponseDto<PostDto>
 
-    @GET("users/{userId}/posts/")
+    @GET("users/{userId}/posts")
     suspend fun getUserPosts(
         @Path("userId") userId: Int,
         @Query("page") page: Int,

@@ -58,7 +58,7 @@ fun ProductCard(
                     Text(
                         text = product.name,
                         style = titleMedium,
-                        fontSize = 19.sp,
+                        fontSize = 18.sp,
                         color = OnBackground
                     )
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -93,7 +93,7 @@ fun ProductCard(
                                 Text(
                                     text = "${product.priceWithDiscount} RON",
                                     style = titleMedium,
-                                    fontSize = 18.sp,
+                                    fontSize = 17.sp,
                                     fontWeight = FontWeight.SemiBold
                                 )
                                 Spacer(Modifier.width(SpacingS))
@@ -107,15 +107,6 @@ fun ProductCard(
                                     Text(
                                         text = "(-${product.discount}%)",
                                         color = Error
-                                    )
-                                }
-                            }
-                            if(mode == ProductCardEnum.CLIENT) {
-                                Button(onClick = {}) {
-                                    Text(
-                                        style = bodyMedium,
-                                        fontWeight = FontWeight.SemiBold,
-                                        text = stringResource(R.string.book)
                                     )
                                 }
                             }

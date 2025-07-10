@@ -1,5 +1,4 @@
 package com.example.scrollbooker.screens.profile.components.common.tab.posts
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -8,7 +7,6 @@ import com.example.scrollbooker.entity.post.domain.model.Post
 import com.example.scrollbooker.entity.post.domain.useCase.GetUserPostsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -26,9 +24,7 @@ class ProfilePostsTabViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     val userPosts: StateFlow<PagingData<Post>> = userIdState
         .filterNotNull()
-        .flatMapLatest { userId ->
-            getUserPostsUseCase(userId)
-        }
+        .flatMapLatest { userId -> getUserPostsUseCase(userId) }
         .cachedIn(viewModelScope)
         .stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
 

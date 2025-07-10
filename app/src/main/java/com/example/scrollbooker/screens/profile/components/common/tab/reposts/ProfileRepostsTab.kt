@@ -38,8 +38,6 @@ import com.example.scrollbooker.ui.theme.SurfaceBG
 @Composable
 fun ProfileRepostsTab(
     userId: Int,
-    //posts: LazyPagingItems<Post>?,
-    lazyListState: LazyGridState,
     onNavigate: (String) -> Unit
 ) {
     val viewModel: ProfileRepostsTabViewModel = hiltViewModel()
@@ -70,7 +68,6 @@ fun ProfileRepostsTab(
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(3),
                     contentPadding = PaddingValues(2.dp),
-                    state = lazyListState,
                     verticalArrangement = Arrangement.spacedBy(2.dp),
                     horizontalArrangement = Arrangement.spacedBy(2.dp),
                     modifier = Modifier.fillMaxSize()
@@ -95,7 +92,7 @@ fun ProfileRepostsTab(
                 if(posts.itemCount == 0) {
                     EmptyScreen(
                         modifier = Modifier.padding(top = 50.dp),
-                        fillMaxSize = false,
+                        arrangement = Arrangement.Top,
                         message = stringResource(R.string.notFoundPosts),
                         icon = painterResource(R.drawable.ic_video_outline)
                     )

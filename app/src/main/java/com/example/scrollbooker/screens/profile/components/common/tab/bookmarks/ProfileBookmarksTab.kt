@@ -31,7 +31,6 @@ import com.example.scrollbooker.ui.theme.SurfaceBG
 @Composable
 fun ProfileBookmarksTab(
     userId: Int,
-    lazyListState: LazyGridState,
     onNavigate: (String) -> Unit
 ) {
     val viewModel: ProfileBookmarkTabViewModel = hiltViewModel()
@@ -62,7 +61,6 @@ fun ProfileBookmarksTab(
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(3),
                     contentPadding = PaddingValues(2.dp),
-                    state = lazyListState,
                     verticalArrangement = Arrangement.spacedBy(2.dp),
                     horizontalArrangement = Arrangement.spacedBy(2.dp),
                     modifier = Modifier.fillMaxSize()
@@ -87,7 +85,7 @@ fun ProfileBookmarksTab(
                 if(posts.itemCount == 0) {
                     EmptyScreen(
                         modifier = Modifier.padding(top = 50.dp),
-                        fillMaxSize = false,
+                        arrangement = Arrangement.Top,
                         message = stringResource(R.string.notFoundPosts),
                         icon = painterResource(R.drawable.ic_video_outline)
                     )
