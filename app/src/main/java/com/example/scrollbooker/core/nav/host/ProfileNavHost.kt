@@ -18,6 +18,7 @@ import com.example.scrollbooker.core.nav.navigators.myBusinessGraph
 import com.example.scrollbooker.core.nav.navigators.settingsGraph
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.modules.calendar.CalendarViewModel
+import com.example.scrollbooker.screens.profile.calendar.AppointmentConfirmationScreen
 import com.example.scrollbooker.screens.profile.calendar.CalendarScreen
 import com.example.scrollbooker.screens.profile.components.common.tab.posts.ProfilePostsTabViewModel
 import com.example.scrollbooker.screens.profile.myProfile.MyProfileScreen
@@ -228,6 +229,28 @@ fun ProfileNavHost(navController: NavHostController) {
                 slotDuration = slotDuration,
                 productName = productName,
                 viewModel = viewModel,
+                onBack = { navController.popBackStack() },
+                onNavigateToConfirmation = {
+                    navController.navigate(MainRoute.AppointmentConfirmation.route)
+                }
+            )
+        }
+
+        composable(
+            route = MainRoute.AppointmentConfirmation.route,
+//            arguments = listOf(
+//                navArgument("userId") { type = NavType.IntType },
+//                navArgument("slotDuration") { type = NavType.IntType },
+//                navArgument("productName") { type = NavType.StringType }
+//            )
+        ) { backStackEntry ->
+//            val userId = backStackEntry.arguments?.getInt("userId") ?: return@composable
+//            val slotDuration = backStackEntry.arguments?.getInt("slotDuration") ?: return@composable
+//            val productName = backStackEntry.arguments?.getString("productName") ?: return@composable
+
+            val viewModel: CalendarViewModel = hiltViewModel()
+
+            AppointmentConfirmationScreen(
                 onBack = { navController.popBackStack() }
             )
         }

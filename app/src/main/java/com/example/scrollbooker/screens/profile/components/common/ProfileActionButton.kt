@@ -1,5 +1,6 @@
 package com.example.scrollbooker.screens.profile.components.common
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -20,7 +21,7 @@ fun ProfileActionButton(
     content: @Composable () -> Unit,
 ) {
     Button(
-        modifier = modifier,
+        modifier = modifier.height(50.dp),
         onClick = onClick,
         enabled = isEnabled,
         shape = RoundedCornerShape(size = 7.5.dp),
