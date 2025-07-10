@@ -16,6 +16,9 @@ data class ProductDto(
 
     val discount: BigDecimal,
 
+    @SerializedName("user_id")
+    val userId: Int,
+
     @SerializedName("service_id")
     val serviceId: Int,
 

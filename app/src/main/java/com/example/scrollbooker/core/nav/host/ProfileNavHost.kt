@@ -81,7 +81,11 @@ fun ProfileNavHost(navController: NavHostController) {
             MyProfileScreen(
                 viewModel = viewModel,
                 onNavigate = { navController.navigate(it) },
-                onNavigateToCalendar = { navController.navigate("${MainRoute.Calendar.route}/$it") }
+                onNavigateToCalendar = {
+                    navController.navigate(
+                        "${MainRoute.Calendar.route}/${it.userId}/${it.slotDuration}/${it.productName}"
+                    )
+                }
             )
         }
         composable("${MainRoute.ProfilePostDetail.route}/{postId}",
@@ -106,7 +110,11 @@ fun ProfileNavHost(navController: NavHostController) {
                 viewModel = viewModel,
                 onNavigate = { navController.navigate(it) },
                 onBack = { navController.popBackStack() },
-                onNavigateToCalendar = { navController.navigate("${MainRoute.Calendar.route}/$it") }
+                onNavigateToCalendar = {
+                    navController.navigate(
+                        "${MainRoute.Calendar.route}/${it.userId}/${it.slotDuration}/${it.productName}"
+                    )
+                }
             )
         }
         composable(MainRoute.EditProfile.route) { backStackEntry ->
@@ -202,14 +210,23 @@ fun ProfileNavHost(navController: NavHostController) {
         }
 
         composable(
-            route = "${MainRoute.Calendar.route}/{userId}",
-            arguments = listOf(navArgument("userId") { type = NavType.IntType })
+            route = "${MainRoute.Calendar.route}/{userId}/{slotDuration}/{productName}",
+            arguments = listOf(
+                navArgument("userId") { type = NavType.IntType },
+                navArgument("slotDuration") { type = NavType.IntType },
+                navArgument("productName") { type = NavType.StringType }
+            )
         ) { backStackEntry ->
             val userId = backStackEntry.arguments?.getInt("userId") ?: return@composable
+            val slotDuration = backStackEntry.arguments?.getInt("slotDuration") ?: return@composable
+            val productName = backStackEntry.arguments?.getString("productName") ?: return@composable
+
             val viewModel: CalendarViewModel = hiltViewModel()
 
             CalendarScreen(
                 userId = userId,
+                slotDuration = slotDuration,
+                productName = productName,
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() }
             )

@@ -23,6 +23,7 @@ import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.customized.ProductCard
+import com.example.scrollbooker.components.customized.ProductCardNavigationData
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.entity.products.domain.model.ProductCardEnum
@@ -33,7 +34,7 @@ fun ProfileServiceProductsTab(
     viewModel: ProfileProductsTabViewModel,
     serviceId: Int,
     userId: Int,
-    onNavigateToCalendar: (Int) -> Unit
+    onNavigateToCalendar: (ProductCardNavigationData) -> Unit
 ) {
     val productsState = viewModel.loadProducts(serviceId, userId).collectAsLazyPagingItems()
 
@@ -61,7 +62,7 @@ fun ProfileServiceProductsTab(
                                     onNavigateToEdit = {},
                                     isLoadingDelete = false,
                                     onDeleteProduct = {},
-                                    onNavigateToCalendar = { onNavigateToCalendar(userId) }
+                                    onNavigateToCalendar = onNavigateToCalendar
                                 )
 
                                 if(index < productsState.itemCount - 1) {

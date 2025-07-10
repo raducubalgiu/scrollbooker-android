@@ -37,7 +37,9 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnPrimary
+import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
+import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
@@ -119,42 +121,30 @@ fun ProfileShimmer() {
         ) {
             ProfileActionButton(
                 modifier = Modifier.weight(5f),
-                //isEnabled = false,
-                containerColor = Primary,
-                contentColor = OnPrimary,
+                containerColor = SurfaceBG,
+                contentColor = OnBackground,
                 onClick = { }
             ) {
-                Text(
-                    text = stringResource(R.string.following),
-                    color = OnPrimary,
-                    style = titleMedium,
-                    fontWeight = FontWeight.Bold,
+                Spacer(modifier = Modifier
+                    .height(12.5.dp)
+                    .fillMaxWidth(fraction = 0.4f)
+                    .background(brush)
                 )
             }
             Spacer(Modifier.width(SpacingS))
             ProfileActionButton(
                 modifier = Modifier.weight(5f),
-                //isEnabled = false,
                 onClick = {}
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Outlined.CalendarToday,
-                        contentDescription = null
-                    )
-                    Spacer(Modifier.width(SpacingS))
-                    Text(
-                        text = "Calendar",
-                        style = titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = OnBackground
-                    )
-                }
+                Spacer(modifier = Modifier
+                    .height(12.5.dp)
+                    .fillMaxWidth(fraction = 0.4f)
+                    .background(brush)
+                )
             }
             Spacer(Modifier.width(SpacingS))
             ProfileActionButton(
                 modifier = Modifier.weight(1.5f),
-                //isEnabled = false,
                 onClick = {}
             ) {
                 Icon(

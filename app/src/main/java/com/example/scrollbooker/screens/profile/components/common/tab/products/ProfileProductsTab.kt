@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
+import com.example.scrollbooker.components.customized.ProductCardNavigationData
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.ui.theme.Background
@@ -42,7 +43,7 @@ import kotlinx.coroutines.launch
 fun ProfileProductsTab(
     userId: Int,
     businessId: Int?,
-    onNavigateToCalendar: (Int) -> Unit
+    onNavigateToCalendar: (ProductCardNavigationData) -> Unit
 ) {
     val viewModel: ProfileProductsTabViewModel = hiltViewModel()
     val servicesState by viewModel.servicesState.collectAsState()

@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.sheet.Sheet
+import com.example.scrollbooker.components.customized.ProductCardNavigationData
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.FeatureState
@@ -29,7 +30,7 @@ import kotlinx.coroutines.launch
 fun MyProfileScreen(
     viewModel: ProfileSharedViewModel,
     onNavigate: (String) -> Unit,
-    onNavigateToCalendar: (Int) -> Unit
+    onNavigateToCalendar: (ProductCardNavigationData) -> Unit
 ) {
     val userProfileState by viewModel.userProfileState.collectAsState()
     val coroutineScope = rememberCoroutineScope()

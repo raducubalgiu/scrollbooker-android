@@ -16,10 +16,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.titleMedium
@@ -30,6 +28,7 @@ fun Header(
     onBack: (() -> Unit)? = null,
     title: String = "",
     enableBack: Boolean = true,
+    customTitle: (@Composable () -> Unit)? = null,
     actions: @Composable (() -> Unit)? = null
 ) {
     Row(
@@ -70,6 +69,9 @@ fun Header(
                     fontWeight = FontWeight.Bold,
                     text = title
                 )
+            }
+            if(customTitle != null) {
+                customTitle()
             }
         }
         Box(Modifier.size(50.dp)) {

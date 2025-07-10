@@ -10,6 +10,7 @@ data class Product(
     val price: BigDecimal,
     val priceWithDiscount: BigDecimal,
     val discount: BigDecimal,
+    val userId: Int,
     val serviceId: Int,
     val businessId: Int,
     val currencyId: Int

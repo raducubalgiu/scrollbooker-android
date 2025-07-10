@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
@@ -38,6 +37,12 @@ import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
 import java.math.BigDecimal
 
+data class ProductCardNavigationData(
+    val userId: Int,
+    val slotDuration: Int,
+    val productName: String
+)
+
 @Composable
 fun ProductCard(
     product: Product,
@@ -45,7 +50,7 @@ fun ProductCard(
     onNavigateToEdit: (Int) -> Unit,
     isLoadingDelete: Boolean,
     onDeleteProduct: (productId: Int) -> Unit,
-    onNavigateToCalendar: () -> Unit
+    onNavigateToCalendar: (ProductCardNavigationData) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.padding(BasePadding)) {
@@ -117,7 +122,15 @@ fun ProductCard(
                 if(mode == ProductCardEnum.CLIENT) {
                     MainButtonOutlined(
                         title = stringResource(R.string.book),
-                        onClick = onNavigateToCalendar
+                        onClick = {
+                            onNavigateToCalendar(
+                                ProductCardNavigationData(
+                                    userId = product.userId,
+                                    slotDuration = product.duration,
+                                    productName = product.name
+                                )
+                            )
+                        }
                     )
                 }
             }

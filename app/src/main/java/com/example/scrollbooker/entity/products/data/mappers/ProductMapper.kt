@@ -12,6 +12,7 @@ fun ProductDto.toDomain(): Product {
         price = price,
         priceWithDiscount = priceWithDiscount,
         discount = discount,
+        userId = userId,
         serviceId = serviceId,
         businessId = businessId,
         currencyId = currencyId
