@@ -43,7 +43,7 @@ import java.math.BigDecimal
 fun ProductCard(
     product: Product,
     mode: ProductCardEnum,
-    onNavigate: (String) -> Unit,
+    onNavigateToEdit: (Int) -> Unit,
     isLoadingDelete: Boolean,
     onDeleteProduct: (productId: Int) -> Unit
 ) {
@@ -143,7 +143,7 @@ fun ProductCard(
                     MainButtonMedium(
                         modifier = Modifier.weight(0.5f).clip(shape = ShapeDefaults.ExtraLarge),
                         title = stringResource(R.string.edit),
-                        onClick = { onNavigate("${MainRoute.EditProduct.route}/${product.id}/${product.name}") },
+                        onClick = { onNavigateToEdit(product.id) },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = SurfaceBG,
                             contentColor = OnSurfaceBG

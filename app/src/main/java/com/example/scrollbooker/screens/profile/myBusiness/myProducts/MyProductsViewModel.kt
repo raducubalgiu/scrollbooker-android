@@ -16,11 +16,13 @@ import com.example.scrollbooker.entity.products.domain.model.Product
 import com.example.scrollbooker.entity.products.domain.model.ProductCreate
 import com.example.scrollbooker.entity.products.domain.useCase.CreateProductUseCase
 import com.example.scrollbooker.entity.products.domain.useCase.DeleteProductUseCase
+import com.example.scrollbooker.entity.products.domain.useCase.GetProductUseCase
 import com.example.scrollbooker.entity.products.domain.useCase.GetProductsByUserIdAndServiceIdUseCase
 import com.example.scrollbooker.entity.service.domain.model.Service
 import com.example.scrollbooker.entity.service.domain.useCase.GetServicesByBusinessIdUseCase
 
 import com.example.scrollbooker.store.AuthDataStore
+import com.google.android.gms.common.Feature
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -40,6 +42,7 @@ import javax.inject.Inject
 class MyProductsViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
     private val getServicesByBusinessIdUseCase: GetServicesByBusinessIdUseCase,
+    private val getProductUseCase: GetProductUseCase,
     private val getProductsByUserIdAndServiceIdUseCase: GetProductsByUserIdAndServiceIdUseCase,
     private val getUserCurrenciesUseCase: GetUserCurrenciesUseCase,
     private val getFiltersByBusinessTypeUseCase: GetFiltersByBusinessTypeUseCase,
@@ -61,8 +64,11 @@ class MyProductsViewModel @Inject constructor(
     private val _isSaving = MutableStateFlow<Boolean>(false)
     val isSaving: StateFlow<Boolean> = _isSaving
 
-    private val _selectedProductId = MutableStateFlow<Int?>(null)
-    val selectedProductId = _selectedProductId
+    private val _product = MutableStateFlow<FeatureState<Product>>(FeatureState.Loading)
+    val product: StateFlow<FeatureState<Product>> = _product
+
+    private val _selectedProduct = MutableStateFlow<Product?>(null)
+    val selectedProduct = _selectedProduct
 
     private val _productsReloadTrigger = mutableIntStateOf(0)
     val productsReloadTrigger: State<Int> = _productsReloadTrigger
@@ -91,6 +97,10 @@ class MyProductsViewModel @Inject constructor(
                     .cachedIn(viewModelScope)
             }.shareIn(viewModelScope, SharingStarted.Lazily, replay = 1)
         }
+    }
+
+    fun setProduct(product: Product) {
+        _selectedProduct.value = product
     }
 
     fun updateSelectedFilter(key: String, value: String) {
@@ -151,13 +161,17 @@ class MyProductsViewModel @Inject constructor(
         }
     }
 
-    fun deleteProduct(productId: Int, serviceId: Int) {
+    fun deleteProduct(product: Product, serviceId: Int) {
         viewModelScope.launch {
             _isSaving.value = true
-            _selectedProductId.value = productId
+            _selectedProduct.value = product
+
+            if(_selectedProduct.value == null) {
+                throw IllegalStateException("Product is not devined")
+            }
 
             val result = withVisibleLoading {
-                deleteProductUseCase(productId)
+                deleteProductUseCase(_selectedProduct.value!!.id)
             }
 
             result
@@ -165,13 +179,30 @@ class MyProductsViewModel @Inject constructor(
                     refreshProducts(serviceId)
 
                     _isSaving.value = false
-                    _selectedProductId.value = null
+                    _selectedProduct.value = null
                     Timber.tag("Products").e("SHOULD RUN!!!")
                 }
                 .onFailure { e ->
                     _isSaving.value = false
-                    _selectedProductId.value = null
+                    _selectedProduct.value = null
                     Timber.tag("Products").e("ERROR: on Deleting Product in MyProducts $e")
+                }
+        }
+    }
+
+    fun loadProduct(productId: Int) {
+        viewModelScope.launch {
+            _product.value = FeatureState.Loading
+
+            val result = withVisibleLoading { getProductUseCase(productId) }
+
+            result
+                .onSuccess { response ->
+                    _product.value = FeatureState.Success(response)
+                }
+                .onFailure { e ->
+                    Timber.tag("Products").e("ERROR: on Fetching Product in EditProductScreen $e")
+                    _product.value = FeatureState.Error()
                 }
         }
     }

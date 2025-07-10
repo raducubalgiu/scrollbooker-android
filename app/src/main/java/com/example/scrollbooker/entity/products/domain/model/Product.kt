@@ -9,5 +9,8 @@ data class Product(
     val duration: Int,
     val price: BigDecimal,
     val priceWithDiscount: BigDecimal,
-    val discount: BigDecimal
+    val discount: BigDecimal,
+    val serviceId: Int,
+    val businessId: Int,
+    val currencyId: Int
 )

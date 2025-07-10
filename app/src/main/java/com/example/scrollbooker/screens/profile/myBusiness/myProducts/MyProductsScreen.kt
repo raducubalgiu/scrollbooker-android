@@ -12,7 +12,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -42,7 +41,8 @@ import com.example.scrollbooker.ui.theme.Primary
 fun MyProductsScreen(
     viewModel: MyProductsViewModel,
     onBack: () -> Unit,
-    onAddProduct: () -> Unit
+    onAddProduct: () -> Unit,
+    onNavigateToEdit: (Int) -> Unit
 ) {
     val myProductsViewModel: MyProductsViewModel = hiltViewModel()
     val servicesState by viewModel.servicesState.collectAsState()
@@ -116,7 +116,8 @@ fun MyProductsScreen(
 
                         ProductsTab(
                             myProductsViewModel = myProductsViewModel,
-                            serviceId = serviceId
+                            serviceId = serviceId,
+                            onNavigateToEdit = onNavigateToEdit
                         )
                     }
                 }

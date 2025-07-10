@@ -6,6 +6,7 @@ import com.example.scrollbooker.entity.products.data.repository.ProductRepositor
 import com.example.scrollbooker.entity.products.domain.repository.ProductRepository
 import com.example.scrollbooker.entity.products.domain.useCase.CreateProductUseCase
 import com.example.scrollbooker.entity.products.domain.useCase.DeleteProductUseCase
+import com.example.scrollbooker.entity.products.domain.useCase.GetProductUseCase
 import com.example.scrollbooker.entity.products.domain.useCase.GetProductsByUserIdAndServiceIdUseCase
 import dagger.Module
 import dagger.Provides
@@ -34,6 +35,14 @@ object ProductsModule {
     @Singleton
     fun provideProductsRepository(apiService: ProductsApiService): ProductRepository {
         return ProductRepositoryImpl(apiService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetProductUseCase(
+        repository: ProductRepository,
+    ): GetProductUseCase {
+        return GetProductUseCase(repository)
     }
 
     @Provides

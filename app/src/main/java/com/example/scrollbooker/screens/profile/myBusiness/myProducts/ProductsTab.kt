@@ -34,14 +34,15 @@ import com.example.scrollbooker.ui.theme.Divider
 @Composable
 fun ProductsTab(
     myProductsViewModel: MyProductsViewModel,
-    serviceId: Int
+    serviceId: Int,
+    onNavigateToEdit: (Int) -> Unit
 ) {
     val reloadKey by myProductsViewModel.productsReloadTrigger
     val productsState = remember(reloadKey) {
         myProductsViewModel.loadProducts(serviceId)
     }.collectAsLazyPagingItems()
 
-    val selectedProductId by myProductsViewModel.selectedProductId.collectAsState()
+    val selectedProduct by myProductsViewModel.selectedProduct.collectAsState()
     val isSaving by myProductsViewModel.isSaving.collectAsState()
 
     Column(Modifier.fillMaxSize()) {
@@ -65,10 +66,10 @@ fun ProductsTab(
                                 ProductCard(
                                     product = product,
                                     mode = ProductCardEnum.OWNER,
-                                    onNavigate = {},
-                                    isLoadingDelete = isSaving && selectedProductId == product.id,
+                                    onNavigateToEdit = onNavigateToEdit,
+                                    isLoadingDelete = isSaving && selectedProduct?.id == product.id,
                                     onDeleteProduct = { productId: Int ->
-                                        myProductsViewModel.deleteProduct(productId, serviceId)
+                                        myProductsViewModel.deleteProduct(product, serviceId)
                                     },
                                 )
 
