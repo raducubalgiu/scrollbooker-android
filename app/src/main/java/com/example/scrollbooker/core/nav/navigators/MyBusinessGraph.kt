@@ -245,7 +245,9 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
                 )
             }
 
-            composable(MainRoute.AddProduct.route) { backStackEntry ->
+            composable(
+                route = MainRoute.AddProduct.route
+            ) { backStackEntry ->
                 val parentEntry = remember(backStackEntry) {
                     navController.getBackStackEntry(MainRoute.MyProductsNavigator.route)
                 }
@@ -258,24 +260,6 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
                 )
             }
         }
-
-//        composable(route = "${MainRoute.EditProduct.route}/{productId}/{productName}",
-//            arguments = listOf(
-//                navArgument("productId") { type = NavType.IntType },
-//                navArgument("productName") { type = NavType.StringType }
-//            )
-//        ) { backStackEntry ->
-//            val productId = backStackEntry.arguments?.getInt("productId") ?: return@composable
-//            val productName = backStackEntry.arguments?.getString("productName") ?: return@composable
-//            val viewModel = hiltViewModel<MyProductsViewModel>(backStackEntry)
-//
-//            EditProductScreen(
-//                productId=productId,
-//                productName=productName,
-//                onBack = { navController.popBackStack() },
-//                viewModel = viewModel
-//            )
-//        }
 
         composable(
             MainRoute.Schedules.route,

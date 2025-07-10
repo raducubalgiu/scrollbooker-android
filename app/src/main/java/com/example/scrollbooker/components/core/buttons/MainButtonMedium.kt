@@ -3,10 +3,11 @@ package com.example.scrollbooker.components.core.buttons
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.labelLarge
@@ -25,7 +27,8 @@ fun MainButtonMedium(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     title: String,
-    enabled: Boolean = true,
+    isLoading: Boolean = false,
+    isEnabled: Boolean = true,
     border: BorderStroke = BorderStroke(width = 0.dp, color = Color.Transparent),
     colors: ButtonColors = ButtonDefaults.buttonColors(
         containerColor = Primary,
@@ -41,17 +44,25 @@ fun MainButtonMedium(
             horizontal = 14.dp
         ),
         shape = ShapeDefaults.ExtraSmall,
-        enabled = enabled,
+        enabled = isEnabled,
         border = border,
         colors = colors,
     ) {
-        Text(
-            style = labelLarge,
-            text = title,
-            fontWeight = FontWeight.SemiBold,
-            textAlign = TextAlign.Center,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
+        if(isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(15.dp),
+                strokeWidth = 4.dp,
+                color = Divider
+            )
+        } else {
+            Text(
+                style = labelLarge,
+                text = title,
+                fontWeight = FontWeight.SemiBold,
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
     }
 }

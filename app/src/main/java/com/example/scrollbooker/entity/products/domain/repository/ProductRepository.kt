@@ -9,4 +9,5 @@ interface ProductRepository {
     fun getUserProducts(userId: Int, serviceId: Int): Flow<PagingData<Product>>
     suspend fun getProduct(productId: Int): Result<Product>
     suspend fun createProduct(productCreate: ProductCreate, subFilters: List<Int>): Product
+    suspend fun deleteProduct(productId: Int)
 }

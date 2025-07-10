@@ -1,7 +1,4 @@
 package com.example.scrollbooker.components.customized
-
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,8 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,23 +20,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.buttons.MainButtonMedium
 import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
-import com.example.scrollbooker.components.core.buttons.MainButtonSmall
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.core.util.Dimens.SpacingXL
-import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.entity.products.domain.model.Product
 import com.example.scrollbooker.entity.products.domain.model.ProductCardEnum
-import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
@@ -55,7 +43,9 @@ import java.math.BigDecimal
 fun ProductCard(
     product: Product,
     mode: ProductCardEnum,
-    onNavigate: (String) -> Unit
+    onNavigate: (String) -> Unit,
+    isLoadingDelete: Boolean,
+    onDeleteProduct: (productId: Int) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.padding(BasePadding)) {
@@ -163,7 +153,11 @@ fun ProductCard(
                     MainButtonMedium(
                         modifier = Modifier.weight(0.5f).clip(shape = ShapeDefaults.ExtraLarge),
                         title = stringResource(R.string.delete),
-                        onClick = {},
+                        isLoading = isLoadingDelete,
+                        isEnabled = !isLoadingDelete,
+                        onClick = {
+                            onDeleteProduct(product.id)
+                        },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Error
                         )

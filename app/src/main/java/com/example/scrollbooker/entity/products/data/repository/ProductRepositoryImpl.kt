@@ -37,9 +37,10 @@ class ProductRepositoryImpl @Inject constructor(
         subFilters: List<Int>
     ): Product {
         val request = ProductCreateRequestDto(product = productCreate.toDto(), subFilters = subFilters)
-
-        Timber.tag("Product Request").e("Product Request: $request")
-
         return api.createProduct(request).toDomain()
+    }
+
+    override suspend fun deleteProduct(productId: Int) {
+        return api.deleteProduct(productId)
     }
 }

@@ -1,25 +1,18 @@
 package com.example.scrollbooker.screens.profile.myBusiness.myProducts
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ScrollableTabRow
-import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -95,9 +88,9 @@ fun MyProductsScreen(
                             Box(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(50.dp))
-                                    .background(if(isSelected) Primary else Color.Transparent)
+                                    .background(if (isSelected) Primary else Color.Transparent)
                                     .clickable {
-                                            coroutineScope.launch {
+                                        coroutineScope.launch {
                                             pagerState.animateScrollToPage(index)
                                         }
                                     }
@@ -111,28 +104,6 @@ fun MyProductsScreen(
                                     fontWeight = FontWeight.Bold,
                                 )
                             }
-
-//                            Tab(
-//                                modifier = Modifier
-//                                    .clip(CircleShape)
-//                                    .height(36.dp)
-//                                    .padding(horizontal = 8.dp)
-//                                    .background(if(isSelected) Primary else Color.Transparent),
-//                                selected = isSelected,
-//                                onClick = {
-//                                    coroutineScope.launch {
-//                                        pagerState.animateScrollToPage(index)
-//                                    }
-//                                },
-//                                text = {
-//                                    Text(
-//                                        text = service.name,
-//                                        style = bodyLarge,
-//                                        color = if (isSelected) OnPrimary else OnSurfaceBG,
-//                                        fontWeight = FontWeight.Bold
-//                                    )
-//                                }
-//                            )
                         }
                     }
 

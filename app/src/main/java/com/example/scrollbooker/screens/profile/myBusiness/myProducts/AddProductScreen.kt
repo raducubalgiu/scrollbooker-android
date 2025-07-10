@@ -31,7 +31,6 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -86,8 +85,6 @@ fun AddProductScreen(
     val filtersState by viewModel.filtersState.collectAsState()
     val isSaving by viewModel.isSaving.collectAsState()
     val selectedFilters by viewModel.selectedFilterOptions
-
-    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         viewModel.loadCurrencies()

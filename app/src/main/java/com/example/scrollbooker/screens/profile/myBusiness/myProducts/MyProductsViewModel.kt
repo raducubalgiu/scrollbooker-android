@@ -1,5 +1,6 @@
 package com.example.scrollbooker.screens.profile.myBusiness.myProducts
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,10 +12,10 @@ import com.example.scrollbooker.entity.currency.domain.model.Currency
 import com.example.scrollbooker.entity.currency.domain.useCase.GetUserCurrenciesUseCase
 import com.example.scrollbooker.entity.filter.domain.model.Filter
 import com.example.scrollbooker.entity.filter.domain.useCase.GetFiltersByBusinessTypeUseCase
-import com.example.scrollbooker.entity.products.data.remote.ProductCreateDto
 import com.example.scrollbooker.entity.products.domain.model.Product
 import com.example.scrollbooker.entity.products.domain.model.ProductCreate
 import com.example.scrollbooker.entity.products.domain.useCase.CreateProductUseCase
+import com.example.scrollbooker.entity.products.domain.useCase.DeleteProductUseCase
 import com.example.scrollbooker.entity.products.domain.useCase.GetProductsByUserIdAndServiceIdUseCase
 import com.example.scrollbooker.entity.service.domain.model.Service
 import com.example.scrollbooker.entity.service.domain.useCase.GetServicesByBusinessIdUseCase
@@ -33,8 +34,6 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.lang.IllegalStateException
-import java.math.BigDecimal
 import javax.inject.Inject
 
 @HiltViewModel
@@ -44,7 +43,8 @@ class MyProductsViewModel @Inject constructor(
     private val getProductsByUserIdAndServiceIdUseCase: GetProductsByUserIdAndServiceIdUseCase,
     private val getUserCurrenciesUseCase: GetUserCurrenciesUseCase,
     private val getFiltersByBusinessTypeUseCase: GetFiltersByBusinessTypeUseCase,
-    private val createProductUseCase: CreateProductUseCase
+    private val createProductUseCase: CreateProductUseCase,
+    private val deleteProductUseCase: DeleteProductUseCase
 ): ViewModel() {
     private val _servicesState = MutableStateFlow<FeatureState<List<Service>>>(FeatureState.Loading)
     val servicesState: StateFlow<FeatureState<List<Service>>> = _servicesState
@@ -61,6 +61,12 @@ class MyProductsViewModel @Inject constructor(
     private val _isSaving = MutableStateFlow<Boolean>(false)
     val isSaving: StateFlow<Boolean> = _isSaving
 
+    private val _selectedProductId = MutableStateFlow<Int?>(null)
+    val selectedProductId = _selectedProductId
+
+    private val _productsReloadTrigger = mutableIntStateOf(0)
+    val productsReloadTrigger: State<Int> = _productsReloadTrigger
+
     init {
         loadServices()
     }
@@ -71,6 +77,21 @@ class MyProductsViewModel @Inject constructor(
         .shareIn(viewModelScope, SharingStarted.Eagerly, replay = 1)
 
     private val productsFlowCache = mutableMapOf<Int, Flow<PagingData<Product>>>()
+
+    fun refreshProducts(serviceId: Int?) {
+        productsFlowCache.remove(serviceId)
+        _productsReloadTrigger.intValue++
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun loadProducts(serviceId: Int): Flow<PagingData<Product>> {
+        return productsFlowCache.getOrPut(serviceId) {
+            userIdFlow.flatMapLatest { userId ->
+                getProductsByUserIdAndServiceIdUseCase(userId, serviceId)
+                    .cachedIn(viewModelScope)
+            }.shareIn(viewModelScope, SharingStarted.Lazily, replay = 1)
+        }
+    }
 
     fun updateSelectedFilter(key: String, value: String) {
         _selectedFilterOptions.value = _selectedFilterOptions.value.toMutableMap().apply {
@@ -90,7 +111,7 @@ class MyProductsViewModel @Inject constructor(
         discount: String,
         duration: String,
         serviceId: String,
-        currencyId: String
+        currencyId: String,
     ) {
         viewModelScope.launch {
             _isSaving.value = true
@@ -119,8 +140,6 @@ class MyProductsViewModel @Inject constructor(
                 )
             }
 
-            Timber.tag("Create Product").e("RESPONSE $response")
-
             response
                 .onSuccess { response ->
                     _isSaving.value = false
@@ -132,29 +151,50 @@ class MyProductsViewModel @Inject constructor(
         }
     }
 
+    fun deleteProduct(productId: Int, serviceId: Int) {
+        viewModelScope.launch {
+            _isSaving.value = true
+            _selectedProductId.value = productId
+
+            val result = withVisibleLoading {
+                deleteProductUseCase(productId)
+            }
+
+            result
+                .onSuccess {
+                    refreshProducts(serviceId)
+
+                    _isSaving.value = false
+                    _selectedProductId.value = null
+                    Timber.tag("Products").e("SHOULD RUN!!!")
+                }
+                .onFailure { e ->
+                    _isSaving.value = false
+                    _selectedProductId.value = null
+                    Timber.tag("Products").e("ERROR: on Deleting Product in MyProducts $e")
+                }
+        }
+    }
+
     fun loadCurrencies() {
         viewModelScope.launch {
-            try {
-                _currenciesState.value = FeatureState.Loading
+            _currenciesState.value = FeatureState.Loading
 
-                val result = withVisibleLoading {
-                    val userId = authDataStore.getUserId().firstOrNull()
-                        ?: throw IllegalStateException("User Id not found in authDataStore")
+            val result = withVisibleLoading {
+                val userId = authDataStore.getUserId().firstOrNull()
+                    ?: throw IllegalStateException("User Id not found in authDataStore")
 
-                    getUserCurrenciesUseCase(userId)
-                }
-
-                result
-                    .onSuccess { response ->
-                        _currenciesState.value = FeatureState.Success(response)
-                    }
-                    .onFailure { e ->
-                        Timber.tag("Currencies").e("ERROR: on Fetching Currencies in MyProducts $e")
-                        _currenciesState.value = FeatureState.Error()
-                    }
-            } catch (e: Exception) {
-
+                getUserCurrenciesUseCase(userId)
             }
+
+            result
+                .onSuccess { response ->
+                    _currenciesState.value = FeatureState.Success(response)
+                }
+                .onFailure { e ->
+                    Timber.tag("Currencies").e("ERROR: on Fetching Currencies in MyProducts $e")
+                    _currenciesState.value = FeatureState.Error()
+                }
         }
     }
 
@@ -183,20 +223,7 @@ class MyProductsViewModel @Inject constructor(
     fun loadFilters() {
         viewModelScope.launch {
             _filtersState.value = FeatureState.Loading
-
-            val response = withVisibleLoading { getFiltersByBusinessTypeUseCase() }
-
-            _filtersState.value = response
-        }
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    fun loadProducts(serviceId: Int): Flow<PagingData<Product>> {
-        return productsFlowCache.getOrPut(serviceId) {
-            userIdFlow.flatMapLatest { userId ->
-                getProductsByUserIdAndServiceIdUseCase(userId, serviceId)
-                    .cachedIn(viewModelScope)
-            }.shareIn(viewModelScope, SharingStarted.Lazily, replay = 1)
+            _filtersState.value = withVisibleLoading { getFiltersByBusinessTypeUseCase() }
         }
     }
 }

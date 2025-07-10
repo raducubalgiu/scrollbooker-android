@@ -1,4 +1,5 @@
 package com.example.scrollbooker.screens.profile.myBusiness.myProducts
+import androidx.compose.runtime.getValue
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -9,10 +10,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ShoppingBag
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -27,9 +28,7 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.Dimens.SpacingM
-import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.entity.products.domain.model.ProductCardEnum
-import com.example.scrollbooker.screens.appointments.components.AppointmentCard
 import com.example.scrollbooker.ui.theme.Divider
 
 @Composable
@@ -37,7 +36,13 @@ fun ProductsTab(
     myProductsViewModel: MyProductsViewModel,
     serviceId: Int
 ) {
-    val productsState = myProductsViewModel.loadProducts(serviceId).collectAsLazyPagingItems()
+    val reloadKey by myProductsViewModel.productsReloadTrigger
+    val productsState = remember(reloadKey) {
+        myProductsViewModel.loadProducts(serviceId)
+    }.collectAsLazyPagingItems()
+
+    val selectedProductId by myProductsViewModel.selectedProductId.collectAsState()
+    val isSaving by myProductsViewModel.isSaving.collectAsState()
 
     Column(Modifier.fillMaxSize()) {
         productsState.apply {
@@ -60,7 +65,11 @@ fun ProductsTab(
                                 ProductCard(
                                     product = product,
                                     mode = ProductCardEnum.OWNER,
-                                    onNavigate = {}
+                                    onNavigate = {},
+                                    isLoadingDelete = isSaving && selectedProductId == product.id,
+                                    onDeleteProduct = { productId: Int ->
+                                        myProductsViewModel.deleteProduct(productId, serviceId)
+                                    },
                                 )
 
                                 if(index < productsState.itemCount - 1) {

@@ -2,6 +2,7 @@ package com.example.scrollbooker.entity.products.data.remote
 
 import com.example.scrollbooker.core.util.PaginatedResponseDto
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -25,4 +26,9 @@ interface ProductsApiService {
     suspend fun createProduct(
         @Body request: ProductCreateRequestDto
     ): ProductDto
+
+    @DELETE("products/{productId}")
+    suspend fun deleteProduct(
+        @Path("productId") productId: Int
+    )
 }
