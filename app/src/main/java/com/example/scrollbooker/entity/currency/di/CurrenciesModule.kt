@@ -48,10 +48,9 @@ object CurrenciesModule {
     @Provides
     @Singleton
     fun provideGetUserCurrenciesUseCase(
-        authDataStore: AuthDataStore,
         repository: CurrencyRepository,
     ): GetUserCurrenciesUseCase {
-        return GetUserCurrenciesUseCase(authDataStore, repository)
+        return GetUserCurrenciesUseCase(repository)
     }
 
     @Provides

@@ -1,27 +1,69 @@
 package com.example.scrollbooker.screens.profile.myBusiness.myProducts
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.util.withVisibleLoading
+import com.example.scrollbooker.entity.currency.domain.model.Currency
+import com.example.scrollbooker.entity.currency.domain.useCase.GetUserCurrenciesUseCase
+import com.example.scrollbooker.entity.filter.domain.model.Filter
+import com.example.scrollbooker.entity.filter.domain.useCase.GetFiltersByBusinessTypeUseCase
+import com.example.scrollbooker.entity.products.data.remote.ProductCreateDto
 import com.example.scrollbooker.entity.products.domain.model.Product
+import com.example.scrollbooker.entity.products.domain.model.ProductCreate
+import com.example.scrollbooker.entity.products.domain.useCase.CreateProductUseCase
 import com.example.scrollbooker.entity.products.domain.useCase.GetProductsByUserIdAndServiceIdUseCase
+import com.example.scrollbooker.entity.service.domain.model.Service
+import com.example.scrollbooker.entity.service.domain.useCase.GetServicesByBusinessIdUseCase
 
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.launch
+import timber.log.Timber
+import java.lang.IllegalStateException
+import java.math.BigDecimal
 import javax.inject.Inject
 
 @HiltViewModel
 class MyProductsViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
-    private val getProductsByUserIdAndServiceIdUseCase: GetProductsByUserIdAndServiceIdUseCase
+    private val getServicesByBusinessIdUseCase: GetServicesByBusinessIdUseCase,
+    private val getProductsByUserIdAndServiceIdUseCase: GetProductsByUserIdAndServiceIdUseCase,
+    private val getUserCurrenciesUseCase: GetUserCurrenciesUseCase,
+    private val getFiltersByBusinessTypeUseCase: GetFiltersByBusinessTypeUseCase,
+    private val createProductUseCase: CreateProductUseCase
 ): ViewModel() {
+    private val _servicesState = MutableStateFlow<FeatureState<List<Service>>>(FeatureState.Loading)
+    val servicesState: StateFlow<FeatureState<List<Service>>> = _servicesState
+
+    private val _currenciesState = MutableStateFlow<FeatureState<List<Currency>>>(FeatureState.Loading)
+    val currenciesState: StateFlow<FeatureState<List<Currency>>> = _currenciesState
+
+    private val _filtersState = MutableStateFlow<FeatureState<List<Filter>>>(FeatureState.Loading)
+    val filtersState: StateFlow<FeatureState<List<Filter>>> = _filtersState
+
+    private val _selectedFilterOptions = mutableStateOf<Map<String, String>>(emptyMap())
+    val selectedFilterOptions: State<Map<String, String>> = _selectedFilterOptions
+
+    private val _isSaving = MutableStateFlow<Boolean>(false)
+    val isSaving: StateFlow<Boolean> = _isSaving
+
+    init {
+        loadServices()
+    }
 
     private val userIdFlow = authDataStore.getUserId()
         .filterNotNull()
@@ -30,8 +72,126 @@ class MyProductsViewModel @Inject constructor(
 
     private val productsFlowCache = mutableMapOf<Int, Flow<PagingData<Product>>>()
 
+    fun updateSelectedFilter(key: String, value: String) {
+        _selectedFilterOptions.value = _selectedFilterOptions.value.toMutableMap().apply {
+            this[key] = value
+        }
+    }
+
+    fun removeSelectedFilters() {
+        _selectedFilterOptions.value = emptyMap()
+    }
+
+    fun createProduct(
+        name: String,
+        description: String,
+        price: String,
+        priceWithDiscount: String,
+        discount: String,
+        duration: String,
+        serviceId: String,
+        currencyId: String
+    ) {
+        viewModelScope.launch {
+            _isSaving.value = true
+
+            val subFilters = selectedFilterOptions.value.values.mapNotNull { it.toIntOrNull() }
+            val businessId = authDataStore.getBusinessId().firstOrNull()
+
+            if(businessId == null) {
+                throw kotlin.IllegalStateException("Business Id not found in Auth Data Store")
+            }
+
+            val response = withVisibleLoading {
+                createProductUseCase(
+                    productCreate = ProductCreate(
+                        name = name,
+                        description = description,
+                        price = price.toBigDecimal(),
+                        priceWithDiscount = priceWithDiscount.toBigDecimal(),
+                        discount = discount.toBigDecimal(),
+                        duration = duration.toInt(),
+                        serviceId = serviceId.toInt(),
+                        businessId = businessId,
+                        currencyId = currencyId.toInt()
+                    ),
+                    subFilters = subFilters
+                )
+            }
+
+            Timber.tag("Create Product").e("RESPONSE $response")
+
+            response
+                .onSuccess { response ->
+                    _isSaving.value = false
+                }
+                .onFailure { e ->
+                    Timber.tag("Create Product").e("ERROR: on Creating Product in MyProducts $e")
+                    _isSaving.value = false
+                }
+        }
+    }
+
+    fun loadCurrencies() {
+        viewModelScope.launch {
+            try {
+                _currenciesState.value = FeatureState.Loading
+
+                val result = withVisibleLoading {
+                    val userId = authDataStore.getUserId().firstOrNull()
+                        ?: throw IllegalStateException("User Id not found in authDataStore")
+
+                    getUserCurrenciesUseCase(userId)
+                }
+
+                result
+                    .onSuccess { response ->
+                        _currenciesState.value = FeatureState.Success(response)
+                    }
+                    .onFailure { e ->
+                        Timber.tag("Currencies").e("ERROR: on Fetching Currencies in MyProducts $e")
+                        _currenciesState.value = FeatureState.Error()
+                    }
+            } catch (e: Exception) {
+
+            }
+        }
+    }
+
+    fun loadServices() {
+        viewModelScope.launch {
+            _servicesState.value = FeatureState.Loading
+
+            val result = withVisibleLoading {
+                val businessId = authDataStore.getBusinessId().firstOrNull()
+                    ?: throw IllegalStateException("Business Id not found in authDataStore")
+
+                getServicesByBusinessIdUseCase(businessId)
+            }
+
+            result
+                .onSuccess { response ->
+                    _servicesState.value = FeatureState.Success(response)
+                }
+                .onFailure { e ->
+                    Timber.tag("Services").e("ERROR: on Fetching Services in MyProducts $e")
+                    _servicesState.value = FeatureState.Error()
+                }
+        }
+    }
+
+    fun loadFilters() {
+        viewModelScope.launch {
+            _filtersState.value = FeatureState.Loading
+
+            val response = withVisibleLoading { getFiltersByBusinessTypeUseCase() }
+
+            _filtersState.value = response
+        }
+    }
+
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun getProductsFlow(serviceId: Int): Flow<PagingData<Product>> {
+    fun loadProducts(serviceId: Int): Flow<PagingData<Product>> {
         return productsFlowCache.getOrPut(serviceId) {
             userIdFlow.flatMapLatest { userId ->
                 getProductsByUserIdAndServiceIdUseCase(userId, serviceId)

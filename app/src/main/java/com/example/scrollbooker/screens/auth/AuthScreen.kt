@@ -114,7 +114,6 @@ fun AuthScreen(
                         value = username,
                         onValueChange = { username = it },
                         label = stringResource(R.string.username),
-                        placeholder = stringResource(R.string.username),
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Text,
                             imeAction = ImeAction.Next
@@ -128,7 +127,6 @@ fun AuthScreen(
                             if(wasSubmitted) wasSubmitted = false
                         },
                         label = stringResource(R.string.email),
-                        placeholder = stringResource(R.string.email),
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Text,
                             imeAction = ImeAction.Next
@@ -163,7 +161,6 @@ fun AuthScreen(
                     value = password,
                     onValueChange = { password = it },
                     label = stringResource(R.string.password),
-                    placeholder = stringResource(R.string.password),
                     isError = wasSubmitted && !isValidPassword,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Password,

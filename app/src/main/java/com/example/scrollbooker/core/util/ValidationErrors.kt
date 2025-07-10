@@ -1,6 +1,7 @@
 package com.example.scrollbooker.core.util
 import android.content.Context
 import com.example.scrollbooker.R
+import java.math.BigDecimal
 
 fun checkLength(context: Context, field: String, minLength: Int = 0, maxLength: Int): String? {
     val trimmed = field.trim()
@@ -8,6 +9,16 @@ fun checkLength(context: Context, field: String, minLength: Int = 0, maxLength: 
     return when {
         trimmed.length < minLength -> context.getString(R.string.minLengthValidationMessage, minLength)
         trimmed.length > maxLength -> context.getString(R.string.maxLengthValidationMessage, maxLength)
+        else -> null
+    }
+}
+
+fun checkMinMax(context: Context, field: String, min: Int? = null, max: Int? = null): String? {
+    val value = field.trim().toIntOrNull() ?: return null
+
+    return when {
+        min != null && value < min -> context.getString(R.string.minNumberValidationMessage, min)
+        max !== null &&  value > max -> context.getString(R.string.maxNumberValidationMessage, max)
         else -> null
     }
 }

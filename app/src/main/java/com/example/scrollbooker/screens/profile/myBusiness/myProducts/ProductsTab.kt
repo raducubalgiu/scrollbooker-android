@@ -1,8 +1,12 @@
 package com.example.scrollbooker.screens.profile.myBusiness.myProducts
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -12,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
@@ -21,58 +26,70 @@ import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.components.core.layout.LoadingScreen
+import com.example.scrollbooker.core.util.Dimens.SpacingM
+import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.entity.products.domain.model.ProductCardEnum
+import com.example.scrollbooker.screens.appointments.components.AppointmentCard
+import com.example.scrollbooker.ui.theme.Divider
 
 @Composable
 fun ProductsTab(
     myProductsViewModel: MyProductsViewModel,
     serviceId: Int
 ) {
-    val state = myProductsViewModel.getProductsFlow(serviceId).collectAsLazyPagingItems()
+    val productsState = myProductsViewModel.loadProducts(serviceId).collectAsLazyPagingItems()
 
     Column(Modifier.fillMaxSize()) {
-        state.apply {
+        productsState.apply {
             when (loadState.refresh) {
                 is LoadState.Loading -> LoadingScreen()
                 is LoadState.Error -> ErrorScreen()
                 is LoadState.NotLoading -> {
-                    if(state.itemCount == 0) {
+                    if(productsState.itemCount == 0) {
                         EmptyScreen(
                             message = stringResource(R.string.noProductsFound),
                             icon = painterResource(R.drawable.ic_shopping_outline)
                         )
                     }
-                }
-            }
-            LazyColumn(Modifier.weight(1f)) {
-                items(count = state.itemCount) { index ->
-                    val product = state[index]
 
-                    product?.let {
-                        Box(modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = BasePadding)
-                        ) {
-                            ProductCard(
-                                product = it,
-                                mode = ProductCardEnum.OWNER,
-                                onNavigate = {}
-                            )
-                        }
-                    }
-                }
+                    LazyColumn(Modifier.weight(1f)) {
+                        item { Spacer(Modifier.height(SpacingM)) }
 
-                state.apply {
-                    when (loadState.append) {
-                        is LoadState.Loading -> {
-                            item { LoadMoreSpinner() }
+                        items(productsState.itemCount) { index ->
+                            productsState[index]?.let { product ->
+                                ProductCard(
+                                    product = product,
+                                    mode = ProductCardEnum.OWNER,
+                                    onNavigate = {}
+                                )
+
+                                if(index < productsState.itemCount - 1) {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = BasePadding)
+                                            .height(0.55.dp)
+                                            .background(Divider)
+                                    )
+                                }
+                            }
                         }
 
-                        is LoadState.Error -> {
-                            item { Text("Eroare la incarcare") }
-                        }
+                        item {
+                            productsState.apply {
+                                when (loadState.append) {
+                                    is LoadState.Loading -> {
+                                        LoadMoreSpinner()
+                                    }
 
-                        is LoadState.NotLoading -> Unit
+                                    is LoadState.Error -> {
+                                        Text("Eroare la incarcare")
+                                    }
+
+                                    is LoadState.NotLoading -> Unit
+                                }
+                            }
+                        }
                     }
                 }
             }

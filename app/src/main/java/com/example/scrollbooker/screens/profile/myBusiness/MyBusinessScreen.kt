@@ -67,7 +67,7 @@ fun MyBusinessScreen(
             title = stringResource(R.string.products),
             description = stringResource(R.string.userProductsDetails),
             icon = Icons.Outlined.ShoppingBag,
-            route = MainRoute.Products.route,
+            route = MainRoute.MyProducts.route,
             permission = PermissionEnum.MY_PRODUCTS_VIEW
         ),
         BusinessCard(

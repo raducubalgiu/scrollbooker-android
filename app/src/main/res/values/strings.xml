@@ -200,4 +200,9 @@
     <string name="youArrivedToLate">Ai ajuns prea târziu</string>
     <string name="locationIsClosed">Locația este închisă</string>
     <string name="thisDayDoesntBelongToSchedule">Această zi nu face parte din programul de lucru</string>
+    <string name="minNumberValidationMessage">Acest câmp trebuie să fie mai mare ca %1$d</string>
+    <string name="maxNumberValidationMessage">Acest câmp trebuie să fie mai mic decât %1$d</string>
+    <string name="requiredValidationMessage">Acest câmp este obligatoriu</string>
+    <string name="pickService">Alege un serviciu</string>
+    <string name="pickCurrency">Alege moneda</string>
 </resources>

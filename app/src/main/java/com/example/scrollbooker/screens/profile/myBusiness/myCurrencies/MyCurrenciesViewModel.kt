@@ -9,10 +9,12 @@ import com.example.scrollbooker.entity.currency.domain.model.Currency
 import com.example.scrollbooker.entity.currency.domain.useCase.GetAllCurrenciesUseCase
 import com.example.scrollbooker.entity.currency.domain.useCase.GetUserCurrenciesUseCase
 import com.example.scrollbooker.entity.currency.domain.useCase.UpdateUserCurrenciesUseCase
+import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -20,6 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MyCurrenciesViewModel @Inject constructor(
+    private val authDataStore: AuthDataStore,
     private val getAllCurrenciesUseCase: GetAllCurrenciesUseCase,
     private val getUserCurrenciesUseCase: GetUserCurrenciesUseCase,
     private val updateUserCurrenciesUseCase: UpdateUserCurrenciesUseCase
@@ -42,12 +45,19 @@ class MyCurrenciesViewModel @Inject constructor(
         viewModelScope.launch {
             _state.value = FeatureState.Loading
 
+            val userId = authDataStore.getUserId().firstOrNull()
+
+            if(userId == null) {
+                throw IllegalStateException("User Id not found in AuthDataStore")
+            }
+
             val result = withVisibleLoading {
                 val all = getAllCurrenciesUseCase()
-                val user = getUserCurrenciesUseCase()
+                val user = getUserCurrenciesUseCase(userId)
 
                 if(all.isSuccess && user.isSuccess) {
                     val selectedIds = user.getOrThrow().map { it.id }.toSet()
+
                     _selectedCurrencyIds.value = selectedIds
                     _defaultSelectedCurrencyIds.value = selectedIds
 

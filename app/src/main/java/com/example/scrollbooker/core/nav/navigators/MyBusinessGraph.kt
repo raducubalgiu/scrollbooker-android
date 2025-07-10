@@ -39,6 +39,7 @@ import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.
 import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.flow.assignJob.EmploymentAssignJobViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.flow.selectEmployee.EmploymentSelectEmployeeScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.flow.selectEmployee.EmploymentSelectEmployeeViewModel
+import com.example.scrollbooker.screens.profile.myBusiness.myProducts.MyProductsViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.SchedulesScreen
 import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.MySchedulesViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.myServices.MyServicesViewModel
@@ -226,14 +227,36 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
             )
         }
 
-        composable(MainRoute.Products.route) { backStackEntry ->
-            val viewModel = hiltViewModel<MyServicesViewModel>(backStackEntry)
+        navigation(
+            route = MainRoute.MyProductsNavigator.route,
+            startDestination = MainRoute.MyProducts.route
+        ) {
+            composable(MainRoute.MyProducts.route) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(MainRoute.MyProductsNavigator.route)
+                }
 
-            MyProductsScreen(
-                viewModel=viewModel,
-                onNavigate = { navController.navigate(it) },
-                onBack = { navController.popBackStack() }
-            )
+                val viewModel = hiltViewModel<MyProductsViewModel>(parentEntry)
+
+                MyProductsScreen(
+                    viewModel=viewModel,
+                    onBack = { navController.popBackStack() },
+                    onAddProduct = { navController.navigate(MainRoute.AddProduct.route) }
+                )
+            }
+
+            composable(MainRoute.AddProduct.route) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(MainRoute.MyProductsNavigator.route)
+                }
+
+                val viewModel = hiltViewModel<MyProductsViewModel>(parentEntry)
+
+                AddProductScreen(
+                    viewModel = viewModel,
+                    onBack = { navController.popBackStack() }
+                )
+            }
         }
 
 //        composable(route = "${MainRoute.EditProduct.route}/{productId}/{productName}",
@@ -253,10 +276,6 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
 //                viewModel = viewModel
 //            )
 //        }
-
-        composable(MainRoute.AddProduct.route) {
-            AddProductScreen(navController = navController)
-        }
 
         composable(
             MainRoute.Schedules.route,
