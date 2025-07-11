@@ -18,6 +18,7 @@ import com.example.scrollbooker.core.nav.navigators.myBusinessGraph
 import com.example.scrollbooker.core.nav.navigators.settingsGraph
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.modules.calendar.CalendarViewModel
+import com.example.scrollbooker.screens.auth.AuthViewModel
 import com.example.scrollbooker.screens.profile.calendar.AppointmentConfirmationScreen
 import com.example.scrollbooker.screens.profile.calendar.CalendarScreen
 import com.example.scrollbooker.screens.profile.components.common.tab.posts.ProfilePostsTabViewModel
@@ -36,7 +37,10 @@ import com.example.scrollbooker.screens.profile.social.UserSocialScreen
 import com.example.scrollbooker.screens.profile.social.UserSocialViewModel
 
 @Composable
-fun ProfileNavHost(navController: NavHostController) {
+fun ProfileNavHost(
+    navController: NavHostController,
+    authViewModel: AuthViewModel
+) {
     NavHost(
         navController = navController,
         startDestination = MainRoute.MyProfile.route,
@@ -256,6 +260,6 @@ fun ProfileNavHost(navController: NavHostController) {
         }
 
         myBusinessGraph(navController)
-        settingsGraph(navController)
+        settingsGraph(navController = navController, authViewModel = authViewModel)
     }
 }

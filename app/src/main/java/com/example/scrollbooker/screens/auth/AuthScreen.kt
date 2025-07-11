@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -63,6 +64,7 @@ fun AuthScreen(
 ) {
     val authState by viewModel.authState.collectAsState()
     val isLoading = authState is FeatureState.Loading
+    val focusManager = LocalFocusManager.current
 
     var email by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
@@ -107,7 +109,7 @@ fun AuthScreen(
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column {
-                AuthHeader(type)
+                //AuthHeader(type)
 
                 if(type == AuthTypeEnum.LOGIN) {
                     Input(

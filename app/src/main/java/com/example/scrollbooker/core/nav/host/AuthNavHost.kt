@@ -24,13 +24,15 @@ import androidx.navigation.compose.navigation
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.auth.data.remote.RoleNameEnum
-import com.example.scrollbooker.screens.auth.AuthScreen
 import com.example.scrollbooker.screens.auth.CollectBusinessHasEmployeesScreen
 import com.example.scrollbooker.screens.auth.CollectBusinessHasEmployeesViewModel
 import com.example.scrollbooker.screens.auth.CollectBusinessValidationScreen
 import com.example.scrollbooker.screens.auth.CollectEmailVerificationScreen
 import com.example.scrollbooker.screens.auth.CollectUserUsernameScreen
 import com.example.scrollbooker.screens.auth.CollectUserUsernameViewModel
+import com.example.scrollbooker.screens.auth.LoginScreen
+import com.example.scrollbooker.screens.auth.RegisterBusinessScreen
+import com.example.scrollbooker.screens.auth.RegisterClientScreen
 import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessServices.MyServicesScreen
 import com.example.scrollbooker.screens.auth.collectBusinessType.CollectBusinessTypeScreen
 import com.example.scrollbooker.screens.auth.collectBusinessType.MyBusinessDetailsScreen
@@ -84,11 +86,11 @@ fun AuthNavHost(authViewModel: AuthViewModel) {
             startDestination = startDestination
         ) {
             composable(AuthRoute.Login.route) {
-                AuthScreen(
+                LoginScreen(
                     viewModel = authViewModel,
-                    type = AuthTypeEnum.LOGIN,
-                    onNavigate = { navController.navigate(it) },
-                    onSubmit = { _, username, password ->
+                    onNavigateToRegisterClient = { navController.navigate(AuthRoute.RegisterClient.route) },
+                    onNavigateToRegisterBusiness = { navController.navigate(AuthRoute.RegisterBusiness.route) },
+                    onSubmit = { username, password ->
                         authViewModel.login(
                             username,
                             password
@@ -98,11 +100,11 @@ fun AuthNavHost(authViewModel: AuthViewModel) {
             }
 
             composable(AuthRoute.RegisterClient.route) {
-                AuthScreen(
+                RegisterClientScreen(
                     viewModel = authViewModel,
-                    type = AuthTypeEnum.REGISTER,
-                    onNavigate = { navController.navigate(it) },
-                    onSubmit = { email, _, password ->
+                    onNavigateToLogin = { navController.navigate(AuthRoute.Login.route) },
+                    onNavigateToRegisterBusiness = { navController.navigate(AuthRoute.RegisterBusiness.route) },
+                    onSubmit = { email, password ->
                         authViewModel.register(
                             email,
                             password,
@@ -151,12 +153,10 @@ fun AuthNavHost(authViewModel: AuthViewModel) {
                     )
                 }
             ) {
-                AuthScreen(
+                RegisterBusinessScreen(
                     viewModel = authViewModel,
-                    type = AuthTypeEnum.REGISTER_BUSINESS,
                     onBack = { navController.popBackStack() },
-                    onNavigate = { navController.navigate(it) },
-                    onSubmit = { email, _, password ->
+                    onSubmit = { email, password ->
                         authViewModel.register(
                             email,
                             password,

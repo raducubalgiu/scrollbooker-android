@@ -20,7 +20,6 @@ import com.example.scrollbooker.components.core.list.ItemList
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.headlineLarge
@@ -29,7 +28,8 @@ import com.example.scrollbooker.ui.theme.headlineLarge
 fun SettingsScreen(
     viewModel: SettingsViewModel,
     onBack: () -> Unit,
-    onNavigate: (String) -> Unit
+    onNavigate: (String) -> Unit,
+    onLogout: () -> Unit
 ) {
     Layout(
         modifier = Modifier.statusBarsPadding(),
@@ -113,6 +113,14 @@ fun SettingsScreen(
                 headLine = stringResource(R.string.termsAndConditions),
                 leftIcon = painterResource(R.drawable.ic_info_solid),
                 onClick = { onNavigate(MainRoute.TermsAndConditions.route) }
+            )
+
+            Spacer(Modifier.height(SpacingS))
+
+            ItemList(
+                headLine = "Logout",
+                leftIcon = painterResource(R.drawable.ic_info_solid),
+                onClick = onLogout
             )
         }
     }

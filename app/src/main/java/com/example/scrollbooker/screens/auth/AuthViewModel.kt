@@ -1,6 +1,7 @@
 package com.example.scrollbooker.screens.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.scrollbooker.core.network.tokenProvider.TokenProvider
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.auth.data.remote.RoleNameEnum
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
@@ -19,6 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
+    private val tokenProvider: TokenProvider,
     private val loginUseCase: LoginUseCase,
     private val registerUseCase: RegisterUseCase,
     private val isLoggedInUseCase: IsLoggedInUseCase,
@@ -75,6 +77,8 @@ class AuthViewModel @Inject constructor(
     fun logout() {
         viewModelScope.launch {
             authDataStore.clearUserSession()
+            tokenProvider.clearTokens()
+
             _authState.value = FeatureState.Success(
                 AuthState(
                     isValidated = false,

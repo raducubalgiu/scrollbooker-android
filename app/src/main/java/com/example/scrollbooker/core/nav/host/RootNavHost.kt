@@ -38,7 +38,7 @@ fun RootNavHost(
             }
 
             composable(GlobalRoute.MAIN) {
-                MainNavHost()
+                MainNavHost(authViewModel = viewModel)
             }
         }
     }

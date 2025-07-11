@@ -22,6 +22,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.scrollbooker.core.nav.bottomBar.MainTab
 import com.example.scrollbooker.core.nav.containers.DefaultTabContainer
+import com.example.scrollbooker.screens.auth.AuthViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -31,7 +32,7 @@ val MainTabSaver: Saver<MainTab, String> = Saver(
 )
 
 @Composable
-fun MainNavHost() {
+fun MainNavHost(authViewModel: AuthViewModel) {
     val saveableStateHolder = rememberSaveableStateHolder()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -105,7 +106,7 @@ fun MainNavHost() {
                             enablePadding = false,
                             navController = navControllers[MainTab.Profile]!!,
                             innerPadding = innerPadding,
-                            content = { ProfileNavHost(navController = it) }
+                            content = { ProfileNavHost(navController = it, authViewModel = authViewModel) }
                         )
                     }
                 }

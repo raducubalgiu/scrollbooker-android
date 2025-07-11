@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.example.scrollbooker.core.nav.routes.MainRoute
+import com.example.scrollbooker.screens.auth.AuthViewModel
 import com.example.scrollbooker.screens.profile.settings.SettingsScreen
 import com.example.scrollbooker.screens.profile.settings.SettingsViewModel
 import com.example.scrollbooker.screens.profile.settings.account.AccountScreen
@@ -20,7 +21,10 @@ import com.example.scrollbooker.screens.profile.settings.support.SupportScreen
 import com.example.scrollbooker.screens.profile.settings.terms.TermsAndConditionsScreen
 import com.example.scrollbooker.screens.profile.settings.reportProblem.presentation.ReportAProblemViewModel
 
-fun NavGraphBuilder.settingsGraph(navController: NavHostController) {
+fun NavGraphBuilder.settingsGraph(
+    navController: NavHostController,
+    authViewModel: AuthViewModel
+) {
     navigation(
         route = MainRoute.SettingsNavigator.route,
         startDestination = MainRoute.Settings.route,
@@ -67,7 +71,8 @@ fun NavGraphBuilder.settingsGraph(navController: NavHostController) {
             SettingsScreen(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
-                onNavigate = { navController.navigate(it) }
+                onNavigate = { navController.navigate(it) },
+                onLogout = { authViewModel.logout() }
             )
         }
 
