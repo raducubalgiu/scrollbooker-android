@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,11 +37,14 @@ import com.example.scrollbooker.ui.theme.bodyMedium
 @Composable
 fun PostGrid(
     post: Post,
+    columnIndex: Int,
     onNavigateToPost: (String) -> Unit
 ) {
+    val showRightBorder = columnIndex != 2
+
     Box(modifier = Modifier
         .aspectRatio(9f / 12f)
-        .border(0.5.dp, Divider)
+        //.border(0.5.dp, Divider)
         .background(SurfaceBG)
         .clickable(onClick = { onNavigateToPost("${MainRoute.ProfilePostDetail.route}/${post.id}") })
     ) {

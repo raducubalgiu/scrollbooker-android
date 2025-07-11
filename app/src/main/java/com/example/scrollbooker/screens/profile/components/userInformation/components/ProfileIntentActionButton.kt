@@ -10,10 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.ui.theme.Primary
 
@@ -31,7 +29,7 @@ fun ProfileIntentActionButton(
         )
         Spacer(Modifier.width(SpacingS))
         Text(
-            text = stringResource(R.string.address),
+            text = title,
             fontWeight = FontWeight.Bold
         )
     }

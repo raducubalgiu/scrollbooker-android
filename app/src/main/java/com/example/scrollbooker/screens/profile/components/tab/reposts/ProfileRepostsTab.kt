@@ -69,6 +69,7 @@ fun ProfileRepostsTab(
                         if(post != null) {
                             PostGrid(
                                 post = post,
+                                columnIndex = index,
                                 onNavigateToPost = onNavigate
                             )
                         }

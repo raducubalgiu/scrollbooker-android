@@ -50,9 +50,8 @@ fun ProfilePostsTab(
             is LoadState.NotLoading -> {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(3),
-                    contentPadding = PaddingValues(2.dp),
-                    verticalArrangement = Arrangement.spacedBy(2.dp),
-                    horizontalArrangement = Arrangement.spacedBy(2.dp),
+                    verticalArrangement = Arrangement.spacedBy(1.dp),
+                    horizontalArrangement = Arrangement.spacedBy(1.dp),
                     modifier = Modifier.fillMaxSize()
                 ) {
                     items(posts.itemCount) { index ->
@@ -60,6 +59,7 @@ fun ProfilePostsTab(
                         if(post != null) {
                             PostGrid(
                                 post = post,
+                                columnIndex = index,
                                 onNavigateToPost = onNavigate
                             )
                         }
