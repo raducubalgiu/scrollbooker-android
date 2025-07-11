@@ -3,9 +3,6 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -21,7 +18,7 @@ import com.example.scrollbooker.modules.calendar.CalendarViewModel
 import com.example.scrollbooker.screens.auth.AuthViewModel
 import com.example.scrollbooker.screens.profile.calendar.AppointmentConfirmationScreen
 import com.example.scrollbooker.screens.profile.calendar.CalendarScreen
-import com.example.scrollbooker.screens.profile.components.common.tab.posts.ProfilePostsTabViewModel
+import com.example.scrollbooker.screens.profile.components.tab.posts.ProfilePostsTabViewModel
 import com.example.scrollbooker.screens.profile.myProfile.MyProfileScreen
 import com.example.scrollbooker.screens.profile.myProfile.ProfileSharedViewModel
 import com.example.scrollbooker.screens.profile.userProfile.ProfileViewModel

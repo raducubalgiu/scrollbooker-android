@@ -32,12 +32,7 @@ fun MyProfileHeader(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(modifier = Modifier
-            .size(50.dp)
-            .clickable(
-                onClick = onOpenBottomSheet,
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null
-            ),
+            .size(50.dp),
             contentAlignment = Alignment.Center
         ) {
 
