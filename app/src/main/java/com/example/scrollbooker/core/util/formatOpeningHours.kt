@@ -1,9 +1,10 @@
-package com.example.scrollbooker.screens.profile.components.common
+package com.example.scrollbooker.core.util
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.entity.user.userProfile.domain.model.OpeningHours
+import kotlin.collections.get
 
 @Composable
 fun formatOpeningHours(openingHours: OpeningHours): String? {

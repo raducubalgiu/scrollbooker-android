@@ -3,6 +3,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.network.tokenProvider.TokenProvider
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.auth.data.remote.RoleNameEnum
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.auth.domain.useCase.IsLoggedInUseCase
@@ -44,7 +45,10 @@ class AuthViewModel @Inject constructor(
     fun login(username: String, password: String) {
         viewModelScope.launch {
             _authState.value = FeatureState.Loading
-            _authState.value = loginUseCase(username, password)
+
+            _authState.value = withVisibleLoading {
+                loginUseCase(username, password)
+            }
         }
     }
 
@@ -55,11 +59,14 @@ class AuthViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             _authState.value = FeatureState.Loading
-            _authState.value = registerUseCase(
-                email,
-                password,
-                roleName
-            )
+            _authState.value =
+                withVisibleLoading {
+                    registerUseCase(
+                        email,
+                        password,
+                        roleName
+                    )
+                }
         }
     }
 
