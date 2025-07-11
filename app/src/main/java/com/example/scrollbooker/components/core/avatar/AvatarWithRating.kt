@@ -30,7 +30,7 @@ fun AvatarWithRating(
 ) {
 
     Box(modifier = modifier
-        .size(65.dp),
+        .size(80.dp),
         contentAlignment = Alignment.BottomCenter)
     {
         Avatar(

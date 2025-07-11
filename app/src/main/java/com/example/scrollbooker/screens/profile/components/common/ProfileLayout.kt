@@ -1,6 +1,8 @@
 package com.example.scrollbooker.screens.profile.components.common
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.gestures.animateScrollBy
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -9,6 +11,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -59,7 +62,9 @@ fun ProfileLayout(
             item {
                 ProfileCounters(
                     counters =user.counters,
-                    onNavigate = { onNavigate("$it/${user.id}/${user.username}") }
+                    onNavigate = {
+                        onNavigate("$it/${user.id}/${user.username}")
+                    }
                 )
 
                 ProfileUserInfo(

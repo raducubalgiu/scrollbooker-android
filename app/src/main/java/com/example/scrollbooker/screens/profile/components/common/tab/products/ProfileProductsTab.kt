@@ -1,5 +1,6 @@
 package com.example.scrollbooker.screens.profile.components.common.tab.products
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -36,6 +37,7 @@ import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
+import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
 import kotlinx.coroutines.launch
 
@@ -73,15 +75,7 @@ fun ProfileProductsTab(
                     contentColor = OnSurfaceBG,
                     edgePadding = BasePadding,
                     selectedTabIndex = pagerState.currentPage,
-                    indicator = {  tabPositions ->
-                        Box(
-                            Modifier
-                                .tabIndicatorOffset(tabPositions[selectedTabIndex])
-                                .height(4.5.dp)
-                                .padding(horizontal = 30.dp)
-                                .background(Primary, shape = ShapeDefaults.Large)
-                        )
-                    },
+                    indicator = {},
                     divider = {
                         HorizontalDivider(
                             modifier = Modifier.padding(top = 5.dp),
@@ -94,18 +88,19 @@ fun ProfileProductsTab(
                         val isSelected = selectedTabIndex == index
 
                         Box(modifier = Modifier
-                            .padding(vertical = 5.dp)
+                            .padding(vertical = 8.dp)
+                            .clip(shape = ShapeDefaults.Small)
+                            .background(if(isSelected) SurfaceBG else Color.Transparent)
+                            .clickable {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(index)
+                                }
+                            }
                         ) {
                             Box(
                                 modifier = Modifier
-                                    .clip(shape = ShapeDefaults.ExtraLarge)
-                                    .clickable {
-                                        coroutineScope.launch {
-                                            pagerState.animateScrollToPage(index)
-                                        }
-                                    }
                                     .padding(
-                                        vertical = 8.dp,
+                                        vertical = 10.dp,
                                         horizontal = 14.dp
                                     ),
                                 contentAlignment = Alignment.Center
@@ -113,7 +108,7 @@ fun ProfileProductsTab(
                                 Text(
                                     text = "${service.name} 100",
                                     style = bodyLarge,
-                                    fontSize = if(isSelected) 16.sp else 14.sp,
+                                    fontSize = 16.sp,
                                     color = if (isSelected) OnSurfaceBG else Color.Gray,
                                     fontWeight = if(isSelected) FontWeight.Bold else FontWeight.SemiBold,
                                 )

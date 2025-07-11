@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -25,6 +26,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButtonMedium
 import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.products.domain.model.Product
 import com.example.scrollbooker.entity.products.domain.model.ProductCardEnum
@@ -130,7 +132,7 @@ fun ProductCard(
                                     productName = product.name
                                 )
                             )
-                        }
+                        },
                     )
                 }
             }
@@ -144,19 +146,19 @@ fun ProductCard(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    MainButtonMedium(
+                    MainButtonOutlined(
                         modifier = Modifier
                             .weight(0.5f)
                             .clip(shape = ShapeDefaults.ExtraLarge),
                         title = stringResource(R.string.edit),
                         onClick = { onNavigateToEdit(product.id) },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = SurfaceBG,
-                            contentColor = OnSurfaceBG
-                        )
+                        icon = painterResource(R.drawable.ic_edit_outline),
+                        iconColor = Color.Gray
                     )
-                    Spacer(Modifier.width(BasePadding))
-                    MainButtonMedium(
+
+                    Spacer(Modifier.width(SpacingS))
+
+                    MainButtonOutlined(
                         modifier = Modifier
                             .weight(0.5f)
                             .clip(shape = ShapeDefaults.ExtraLarge),
@@ -166,9 +168,8 @@ fun ProductCard(
                         onClick = {
                             onDeleteProduct(product.id)
                         },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Error
-                        )
+                        icon = painterResource(R.drawable.ic_delete_outline),
+                        iconColor = Error
                     )
                 }
             }

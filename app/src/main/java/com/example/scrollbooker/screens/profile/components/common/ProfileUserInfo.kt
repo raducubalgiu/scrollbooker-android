@@ -215,7 +215,7 @@ fun ProfileUserInfo(
                         modifier = Modifier.size(20.dp),
                         painter = painterResource(R.drawable.ic_map_outline),
                         contentDescription = null,
-                        tint = Color.Gray
+                        tint = Primary.copy(alpha = 0.8f)
                     )
                     Spacer(Modifier.width(SpacingS))
                     Text(
@@ -237,7 +237,7 @@ fun ProfileUserInfo(
                         modifier = Modifier.size(20.dp),
                         painter = painterResource(R.drawable.ic_email_outline),
                         contentDescription = null,
-                        tint = Color.Gray
+                        tint = Primary.copy(alpha = 0.8f)
                     )
                     Spacer(Modifier.width(SpacingS))
                     Text(
@@ -259,7 +259,7 @@ fun ProfileUserInfo(
                         modifier = Modifier.size(20.dp),
                         painter = painterResource(R.drawable.ic_globe_outline),
                         contentDescription = null,
-                        tint = Color.Gray
+                        tint = Primary.copy(alpha = 0.8f)
                     )
                     Spacer(Modifier.width(SpacingS))
                     Text(

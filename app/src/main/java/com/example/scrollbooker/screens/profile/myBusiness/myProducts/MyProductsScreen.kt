@@ -4,12 +4,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -32,10 +34,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.components.core.headers.HeaderEdit
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.ui.theme.OnPrimary
-import com.example.scrollbooker.ui.theme.Primary
+import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable
 fun MyProductsScreen(
@@ -73,36 +77,56 @@ fun MyProductsScreen(
                 val selectedTabIndex = pagerState.currentPage
 
                 Column(modifier = Modifier.fillMaxSize()) {
+                    HorizontalDivider(
+                        color = Divider,
+                        thickness = 0.55.dp
+                    )
                     ScrollableTabRow(
-                        modifier = Modifier.padding(start = BasePadding),
                         containerColor = Background,
                         contentColor = OnSurfaceBG,
-                        edgePadding = 0.dp,
+                        edgePadding = BasePadding,
                         selectedTabIndex = pagerState.currentPage,
                         indicator = {},
-                        divider = {}
+                        divider = {
+                            HorizontalDivider(
+                                modifier = Modifier.padding(top = 5.dp),
+                                color = Divider,
+                                thickness = 0.55.dp
+                            )
+                        }
                     ) {
                         services.forEachIndexed { index, service ->
                             val isSelected = selectedTabIndex == index
 
-                            Box(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(50.dp))
-                                    .background(if (isSelected) Primary else Color.Transparent)
-                                    .clickable {
-                                        coroutineScope.launch {
-                                            pagerState.animateScrollToPage(index)
-                                        }
+                            Box(modifier = Modifier
+                                .padding(vertical = 8.dp)
+                                .clip(shape = ShapeDefaults.Small)
+                                .background(if(isSelected) SurfaceBG else Color.Transparent)
+                                .clickable {
+                                    coroutineScope.launch {
+                                        pagerState.animateScrollToPage(index)
                                     }
-                                    .padding(horizontal = BasePadding, vertical = 12.dp),
+                                },
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text(
-                                    text = service.name,
-                                    style = bodyLarge,
-                                    color = if (isSelected) OnPrimary else OnSurfaceBG,
-                                    fontWeight = FontWeight.Bold,
-                                )
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(
+                                            vertical = 10.dp,
+                                            horizontal = 14.dp
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = service.name,
+                                        style = bodyLarge,
+                                        fontSize = 16.sp,
+                                        color = if (isSelected) OnSurfaceBG else Color.Gray,
+                                        fontWeight = if(isSelected) FontWeight.Bold else FontWeight.SemiBold,
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
                             }
                         }
                     }
