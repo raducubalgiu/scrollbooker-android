@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.auth.collectClientDetails
+package com.example.scrollbooker.screens.auth.onboarding.collectClient
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

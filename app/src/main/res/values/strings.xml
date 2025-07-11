@@ -8,9 +8,11 @@
     <string name="login">Logare</string>
     <string name="loginMessage">Please login to continue</string>
     <string name="register">Înregistrare</string>
+    <string name="registerNow">Înregistrează</string>
     <string name="registerMessage">Please register to continue</string>
     <string name="alreadyHaveAnAccount">Ai deja un cont</string>
     <string name="dontHaveAnAccount">Nu ai încă un cont</string>
+    <string name="doYouHaveABusinessWhichReceivesAppointments">Ai un business care primeste programari?</string>
     <string name="dateOfBirth">Data de naștere</string>
     <string name="dateOfBirthLabelDescription">Folosim această informație doar pentru a-ți personaliza experiența</string>
     <string name="omit">Omite</string>

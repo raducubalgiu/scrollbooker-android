@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.auth.collectClientDetails
+package com.example.scrollbooker.screens.auth.onboarding.collectClient
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

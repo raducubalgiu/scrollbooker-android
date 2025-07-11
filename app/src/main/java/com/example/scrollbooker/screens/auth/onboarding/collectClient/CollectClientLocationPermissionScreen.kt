@@ -1,20 +1,8 @@
-package com.example.scrollbooker.screens.auth.collectClientDetails
+package com.example.scrollbooker.screens.auth.onboarding.collectClient
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
-import android.provider.Settings
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.example.scrollbooker.components.core.layout.FormLayout
-import timber.log.Timber
 
 @SuppressLint("MissingPermission")
 @Composable

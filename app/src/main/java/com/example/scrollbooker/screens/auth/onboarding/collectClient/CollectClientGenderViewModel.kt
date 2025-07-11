@@ -1,7 +1,6 @@
-package com.example.scrollbooker.screens.auth.collectClientDetails
+package com.example.scrollbooker.screens.auth.onboarding.collectClient
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.enums.GenderTypeEnum
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.auth.domain.model.AuthState

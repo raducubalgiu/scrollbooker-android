@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.auth
+package com.example.scrollbooker.screens.auth.onboarding
 
 import androidx.compose.runtime.Composable
 import com.example.scrollbooker.components.core.layout.FormLayout

@@ -13,8 +13,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.isKeyboardOpen
@@ -42,7 +44,7 @@ fun AuthFooterBusinessNavigation(
             Spacer(Modifier.height(BasePadding))
 
             Text(
-                text = "Ai un business care primeste programari?",
+                text = stringResource(R.string.doYouHaveABusinessWhichReceivesAppointments),
                 style = titleMedium,
                 fontWeight = FontWeight.Normal
             )
@@ -50,7 +52,7 @@ fun AuthFooterBusinessNavigation(
             Spacer(Modifier.height(BasePadding))
 
             MainButtonOutlined(
-                title = "Inregistreaza",
+                title = stringResource(R.string.registerNow),
                 onClick = onNavigateToRegisterBusiness
             )
         }
