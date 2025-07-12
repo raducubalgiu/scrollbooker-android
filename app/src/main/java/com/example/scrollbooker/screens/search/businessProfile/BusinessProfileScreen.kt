@@ -14,7 +14,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,11 +25,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.headers.Header
-import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.screens.search.businessProfile.tabs.BusinessAboutTab
 import com.example.scrollbooker.screens.search.businessProfile.tabs.BusinessEmployeesTab
@@ -46,23 +44,12 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun BusinessProfileScreen(onBack: () -> Unit) {
-    val sections = listOf("Servicii", "Social", "Angajati", "Recenzii", "About")
+    val sections = BusinessProfileSection.all
+    val itemKeys = sections.map { it.key }
+
     val lazyListState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
-
-    val sectionMap = remember {
-        mapOf(
-            "Servicii" to "services",
-            "Social" to "social",
-            "Angajati" to "employees",
-            "Recenzii" to "reviews",
-            "About" to "about"
-        )
-    }
-
-    val itemKeys = sectionMap.values.toList()
-
     var selectedTabIndex by remember { mutableIntStateOf(0) }
+    val coroutineScope = rememberCoroutineScope()
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -93,12 +80,12 @@ fun BusinessProfileScreen(onBack: () -> Unit) {
                         },
                         divider = { HorizontalDivider(color = Divider, thickness = 0.55.dp) }
                     ) {
-                        sections.forEachIndexed { index, label ->
+                        sections.forEachIndexed { index, section ->
                             Tab(
                                 selected = selectedTabIndex == index,
                                 onClick = {
                                     coroutineScope.launch {
-                                        val targetKey = itemKeys[index]
+                                        val targetKey = section.key
                                         val targetIndex = lazyListState.layoutInfo
                                             .visibleItemsInfo
                                             .find { it.key == targetKey }
@@ -111,7 +98,7 @@ fun BusinessProfileScreen(onBack: () -> Unit) {
                                 },
                                 text = {
                                     Text(
-                                        text = label,
+                                        text = stringResource(section.label),
                                         fontWeight = FontWeight.Bold,
                                         style = bodyLarge
                                     )
@@ -122,25 +109,19 @@ fun BusinessProfileScreen(onBack: () -> Unit) {
                 }
             }
 
-            item(key = "services") { BusinessServicesTab() }
-            item(key = "social") { BusinessSocialTab() }
-            item(key = "employees") { BusinessEmployeesTab() }
-            item(key = "reviews") { BusinessReviewsTab() }
-            item(key = "about") { BusinessAboutTab() }
+            item(key = BusinessProfileSection.Services.key) { BusinessServicesTab() }
+            item(key = BusinessProfileSection.Social.key) { BusinessSocialTab() }
+            item(key = BusinessProfileSection.Employees.key) { BusinessEmployeesTab() }
+            item(key = BusinessProfileSection.Reviews.key) { BusinessReviewsTab() }
+            item(key = BusinessProfileSection.About.key) { BusinessAboutTab() }
         }
 
         LaunchedEffect(lazyListState) {
             snapshotFlow { lazyListState.layoutInfo.visibleItemsInfo }
                 .collect { visibleItems ->
-                    val visibleSections = visibleItems.filter { item ->
-                        item.key in itemKeys
-                    }
-
+                    val visibleSections = visibleItems.filter { it.key in itemKeys }
                     val topMostSection = visibleSections.minByOrNull { it.offset }
-
-                    val newIndex = topMostSection?.key?.let { key ->
-                        itemKeys.indexOf(key)
-                    }
+                    val newIndex = topMostSection?.key?.let { itemKeys.indexOf(it) }
 
                     if(newIndex != null && newIndex != selectedTabIndex) {
                         selectedTabIndex = newIndex

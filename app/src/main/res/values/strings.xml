@@ -207,4 +207,6 @@
     <string name="requiredValidationMessage">Acest câmp este obligatoriu</string>
     <string name="pickService">Alege un serviciu</string>
     <string name="pickCurrency">Alege moneda</string>
+    <string name="social">Social</string>
+    <string name="about">Despre</string>
 </resources>
