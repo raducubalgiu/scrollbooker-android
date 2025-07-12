@@ -6,7 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.scrollbooker.core.nav.routes.MainRoute
-import com.example.scrollbooker.screens.search.BusinessProfileScreen
+import com.example.scrollbooker.screens.search.businessProfile.BusinessProfileScreen
 import com.example.scrollbooker.screens.search.SearchScreen
 import com.example.scrollbooker.screens.search.SearchViewModel
 
@@ -25,7 +25,9 @@ fun SearchNavHost(navController: NavHostController) {
         }
         composable(MainRoute.BusinessProfile.route) { backStackEntry ->
 
-            BusinessProfileScreen()
+            BusinessProfileScreen(
+                onBack = { navController.popBackStack() }
+            )
         }
     }
 }
