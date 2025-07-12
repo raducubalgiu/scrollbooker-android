@@ -7,6 +7,7 @@ sealed class BusinessProfileSection(
     @StringRes val label: Int,
     val key: String
 ) {
+    object Photos: BusinessProfileSection(R.string.photos, "photos")
     object Services: BusinessProfileSection(R.string.services, "services")
     object Social: BusinessProfileSection(R.string.social, "social")
     object Employees: BusinessProfileSection(R.string.employees, "employees")
@@ -14,6 +15,6 @@ sealed class BusinessProfileSection(
     object About: BusinessProfileSection(R.string.about, "about")
 
     companion object {
-        val all = listOf(Services, Social, Employees, Reviews, About)
+        val all = listOf(Photos, Services, Social, Employees, Reviews, About)
     }
 }

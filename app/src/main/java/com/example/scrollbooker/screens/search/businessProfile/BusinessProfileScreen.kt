@@ -1,37 +1,60 @@
 package com.example.scrollbooker.screens.search.businessProfile
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.scrollbooker.components.core.headers.Header
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
+import coil.compose.AsyncImage
+import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.screens.search.businessProfile.tabs.BusinessAboutTab
 import com.example.scrollbooker.screens.search.businessProfile.tabs.BusinessEmployeesTab
+import com.example.scrollbooker.screens.search.businessProfile.tabs.BusinessPhotosTab
 import com.example.scrollbooker.screens.search.businessProfile.tabs.BusinessReviewsTab
 import com.example.scrollbooker.screens.search.businessProfile.tabs.BusinessServicesTab
 import com.example.scrollbooker.screens.search.businessProfile.tabs.BusinessSocialTab
@@ -51,34 +74,144 @@ fun BusinessProfileScreen(onBack: () -> Unit) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val coroutineScope = rememberCoroutineScope()
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .statusBarsPadding()
-    ) {
-        Header(onBack = onBack)
+    val density = LocalDensity.current
+
+    val insets = WindowInsets.statusBars.asPaddingValues()
+    val statusBarHeight = with(density) { insets.calculateTopPadding().toPx() }
+
+    val imageHeight = 250.dp
+    val headerHeight = 56.dp + with(density) { statusBarHeight.toDp() }
+    val tabRowHeight = 48.dp
+    val overlayHeight = headerHeight + tabRowHeight
+
+
+    val imageAlpha by remember {
+        derivedStateOf {
+            val isFirstVisibleItem = lazyListState.firstVisibleItemIndex == 0
+            val offsetPx = lazyListState.firstVisibleItemScrollOffset.toFloat()
+            val maxPx = with(density) { imageHeight.toPx() }
+
+            if(isFirstVisibleItem) {
+                1f - (offsetPx / maxPx).coerceIn(0f, 1f)
+            } else {
+                0f
+            }
+        }
+    }
+
+    val imageTranslationY by remember {
+        derivedStateOf {
+            val isFirstVisibleItem = lazyListState.firstVisibleItemIndex == 0
+            val offsetPx = lazyListState.firstVisibleItemScrollOffset.toFloat()
+            val maxPx = with(density) { imageHeight.toPx() }
+
+            if(isFirstVisibleItem) {
+                -offsetPx.coerceIn(0f, maxPx)
+            } else {
+                0f
+            }
+        }
+    }
+
+    val rawAlpha by remember {
+        derivedStateOf {
+            val isFirstVisibleItem = lazyListState.firstVisibleItemIndex == 0
+            val offsetPx = lazyListState.firstVisibleItemScrollOffset.toFloat()
+            val maxPx = with(density) { imageHeight.toPx() }
+
+            if(isFirstVisibleItem) {
+                (offsetPx / maxPx).coerceIn(0f, 1f)
+            } else {
+                1f
+            }
+        }
+    }
+
+    val animatedAlpha by animateFloatAsState(
+        targetValue = rawAlpha,
+        animationSpec = tween(durationMillis = 250),
+        label = "TabRowAlpha"
+    )
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .height(imageHeight)
+            .graphicsLayer(
+                alpha = imageAlpha,
+                translationY = imageTranslationY
+            )
+            .zIndex(2f)
+        ) {
+            AsyncImage(
+                model = "https://media.scrollbooker.ro/frizeria-figaro-location-1.avif",
+                contentDescription = "Business gallery",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .height(imageHeight)
+            )
+        }
+
         LazyColumn(
             state = lazyListState,
             modifier = Modifier.fillMaxSize()
         ) {
             stickyHeader {
-                Surface(tonalElevation = 4.dp) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Background)
+                        .statusBarsPadding()
+                        .padding(8.dp)
+                        .size(36.dp)
+                        .zIndex(3f),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_arrow_chevron_left_outline),
+                            contentDescription = null
+                        )
+                    }
+                    IconButton(onClick = {}) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_star_outline),
+                            contentDescription = null
+                        )
+                    }
+                }
+                Surface(
+                    tonalElevation = 4.dp,
+                    color = Background
+                ) {
                     ScrollableTabRow(
                         selectedTabIndex = selectedTabIndex,
                         modifier = Modifier
-                            .fillMaxWidth(),
-                        containerColor = Background,
+                            .fillMaxWidth()
+                            .height(tabRowHeight),
+                        containerColor = Color.Transparent,
                         contentColor = OnSurfaceBG,
                         edgePadding = SpacingS,
                         indicator = { tabPositions ->
                             Box(
                                 Modifier
                                     .tabIndicatorOffset(tabPositions[selectedTabIndex])
-                                    .height(2.5.dp)
+                                    .height(3.dp)
                                     .padding(horizontal = 20.dp)
-                                    .background(OnBackground)
+                                    .background(
+                                        color = OnBackground.copy(alpha = animatedAlpha),
+                                        shape = ShapeDefaults.ExtraLarge
+                                    )
                             )
                         },
-                        divider = { HorizontalDivider(color = Divider, thickness = 0.55.dp) }
+                        divider = {
+                            HorizontalDivider(
+                                color = Divider,
+                                thickness = 0.55.dp
+                            )
+                        }
                     ) {
                         sections.forEachIndexed { index, section ->
                             Tab(
@@ -98,9 +231,11 @@ fun BusinessProfileScreen(onBack: () -> Unit) {
                                 },
                                 text = {
                                     Text(
+                                        modifier = Modifier.alpha(animatedAlpha),
                                         text = stringResource(section.label),
                                         fontWeight = FontWeight.Bold,
-                                        style = bodyLarge
+                                        style = bodyLarge,
+                                        fontSize = 17.sp
                                     )
                                 }
                             )
@@ -109,6 +244,11 @@ fun BusinessProfileScreen(onBack: () -> Unit) {
                 }
             }
 
+            item(key = BusinessProfileSection.Photos.key) {
+                Column(modifier = Modifier.padding(top = imageHeight - overlayHeight)) {
+                    BusinessPhotosTab()
+                }
+            }
             item(key = BusinessProfileSection.Services.key) { BusinessServicesTab() }
             item(key = BusinessProfileSection.Social.key) { BusinessSocialTab() }
             item(key = BusinessProfileSection.Employees.key) { BusinessEmployeesTab() }
