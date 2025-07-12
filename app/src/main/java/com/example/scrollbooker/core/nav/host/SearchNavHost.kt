@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.scrollbooker.core.nav.routes.MainRoute
+import com.example.scrollbooker.screens.search.BusinessProfileScreen
 import com.example.scrollbooker.screens.search.SearchScreen
 import com.example.scrollbooker.screens.search.SearchViewModel
 
@@ -17,7 +18,14 @@ fun SearchNavHost(navController: NavHostController) {
     ) {
         composable(MainRoute.Search.route) { backStackEntry ->
             val viewModel = hiltViewModel<SearchViewModel>(backStackEntry)
-            SearchScreen(viewModel = viewModel)
+            SearchScreen(
+                viewModel = viewModel,
+                onNavigateToBusinessProfile = { navController.navigate(MainRoute.BusinessProfile.route) }
+            )
+        }
+        composable(MainRoute.BusinessProfile.route) { backStackEntry ->
+
+            BusinessProfileScreen()
         }
     }
 }

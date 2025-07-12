@@ -10,6 +10,7 @@ sealed class MainRoute(val route: String) {
     object EmploymentRequestRespondConsent: MainRoute(route = "employmentRequestRespondConsent")
 
     object Search: MainRoute(route = "search")
+    object BusinessProfile: MainRoute(route = "businessProfile")
 
     object Appointments: MainRoute(route = "appointments")
     object AppointmentDetails: MainRoute(route = "appointmentDetails")
