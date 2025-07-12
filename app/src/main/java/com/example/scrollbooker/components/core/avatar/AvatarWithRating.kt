@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.ui.theme.Primary
@@ -27,15 +28,17 @@ fun AvatarWithRating(
     modifier: Modifier = Modifier,
     url: String =  "https://media.scrollbooker.ro/frizerie-1-cover.jpg",
     rating: String,
+    size: Dp = 75.dp
 ) {
 
     Box(modifier = modifier
-        .size(80.dp),
-        contentAlignment = Alignment.BottomCenter)
-    {
+        .size(size)
+        .padding(bottom = 10.dp),
+        contentAlignment = Alignment.BottomCenter
+    ) {
         Avatar(
             url = url,
-            size = 65.dp
+            size = size
         )
 
         Row(
@@ -46,7 +49,7 @@ fun AvatarWithRating(
                     color = Color.Black.copy(alpha = 0.7f),
                     shape = RoundedCornerShape(15.dp)
                 )
-                .padding(horizontal = 6.dp, vertical = 8.dp)
+                .padding(horizontal = 8.dp, vertical = 6.dp)
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_star_solid),

@@ -109,9 +109,7 @@ fun BusinessServicesTab() {
 
         Spacer(Modifier.height(BasePadding))
 
-        LazyColumn(
-            modifier = Modifier.height(420.dp)
-        ) {
+        LazyColumn(modifier = Modifier.height(420.dp)) {
             itemsIndexed(products) { index, product ->
                 ProductCard(
                     product =product,

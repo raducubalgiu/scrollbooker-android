@@ -1,12 +1,15 @@
 package com.example.scrollbooker.screens.search.businessProfile
-
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +21,9 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -39,6 +45,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
@@ -51,6 +58,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.example.scrollbooker.R
+import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.screens.search.businessProfile.tabs.BusinessAboutTab
 import com.example.scrollbooker.screens.search.businessProfile.tabs.BusinessEmployeesTab
@@ -63,6 +71,8 @@ import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
+import com.example.scrollbooker.ui.theme.titleLarge
+import com.example.scrollbooker.ui.theme.titleMedium
 import kotlinx.coroutines.launch
 
 @Composable
@@ -137,10 +147,10 @@ fun BusinessProfileScreen(onBack: () -> Unit) {
         Box(modifier = Modifier
             .fillMaxWidth()
             .height(imageHeight)
-            .graphicsLayer(
-                alpha = imageAlpha,
+            .graphicsLayer {
+                alpha = imageAlpha
                 translationY = imageTranslationY
-            )
+            }
             .zIndex(2f)
         ) {
             AsyncImage(
@@ -153,35 +163,65 @@ fun BusinessProfileScreen(onBack: () -> Unit) {
             )
         }
 
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .statusBarsPadding()
+                .padding(8.dp)
+                .size(36.dp)
+                .zIndex(3f),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            IconButton(
+                onClick = onBack,
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .background(Background)
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = null
+                )
+            }
+
+            AnimatedVisibility(
+                visible = imageAlpha == 0f,
+                enter = fadeIn(tween(250)),
+                exit = fadeOut(tween(250))
+            ) {
+                Text(
+                    text = "House Of Barbers",
+                    style = titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                )
+            }
+
+            IconButton(
+                onClick = {},
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .background(Background)
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_star_outline),
+                    contentDescription = null
+                )
+            }
+        }
+
         LazyColumn(
             state = lazyListState,
             modifier = Modifier.fillMaxSize()
         ) {
             stickyHeader {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Background)
-                        .statusBarsPadding()
-                        .padding(8.dp)
-                        .size(36.dp)
-                        .zIndex(3f),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_arrow_chevron_left_outline),
-                            contentDescription = null
-                        )
-                    }
-                    IconButton(onClick = {}) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_star_outline),
-                            contentDescription = null
-                        )
-                    }
-                }
+                Spacer(Modifier
+                    .height(headerHeight)
+                    .background(Background)
+                    .fillMaxSize()
+                    .zIndex(3f)
+                )
                 Surface(
                     tonalElevation = 4.dp,
                     color = Background
@@ -245,7 +285,10 @@ fun BusinessProfileScreen(onBack: () -> Unit) {
             }
 
             item(key = BusinessProfileSection.Photos.key) {
-                Column(modifier = Modifier.padding(top = imageHeight - overlayHeight)) {
+                Column(modifier = Modifier.padding(
+                    top = imageHeight - overlayHeight,
+                    bottom = BasePadding
+                )) {
                     BusinessPhotosTab()
                 }
             }
