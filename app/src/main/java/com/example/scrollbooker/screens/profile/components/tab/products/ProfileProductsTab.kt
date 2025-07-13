@@ -30,6 +30,7 @@ import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.customized.ProductCardNavigationData
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.entity.products.domain.model.Product
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
@@ -41,7 +42,7 @@ import kotlinx.coroutines.launch
 fun ProfileProductsTab(
     userId: Int,
     businessId: Int?,
-    onNavigateToCalendar: (ProductCardNavigationData) -> Unit
+    onNavigateToCalendar: (Product) -> Unit
 ) {
     val viewModel: ProfileProductsTabViewModel = hiltViewModel()
     val servicesState by viewModel.servicesState.collectAsState()

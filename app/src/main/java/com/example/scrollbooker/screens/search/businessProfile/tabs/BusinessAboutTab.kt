@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
@@ -27,6 +28,7 @@ fun BusinessAboutTab() {
             modifier = Modifier.padding(horizontal = BasePadding),
             text = stringResource(R.string.about),
             style = headlineMedium,
+            fontSize = 26.sp,
             fontWeight = FontWeight.SemiBold
         )
 

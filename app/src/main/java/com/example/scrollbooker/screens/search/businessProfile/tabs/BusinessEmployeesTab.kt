@@ -51,6 +51,7 @@ fun BusinessEmployeesTab() {
             modifier = Modifier.padding(horizontal = BasePadding),
             text = stringResource(R.string.team),
             style = headlineMedium,
+            fontSize = 26.sp,
             fontWeight = FontWeight.SemiBold
         )
 
@@ -68,7 +69,7 @@ fun BusinessEmployeesTab() {
                     AvatarWithRating(
                         url = employee.avatar,
                         rating = employee.rating,
-                        size = 100.dp
+                        size = 90.dp
                     )
                     Spacer(Modifier.height(BasePadding))
                     Text(

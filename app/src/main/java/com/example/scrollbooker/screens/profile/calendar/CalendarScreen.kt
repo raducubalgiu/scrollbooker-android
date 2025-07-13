@@ -28,6 +28,7 @@ import com.example.scrollbooker.ui.theme.titleMedium
 fun CalendarScreen(
     userId: Int,
     slotDuration: Int,
+    productId: Int,
     productName: String,
     viewModel: CalendarViewModel,
     onBack: () -> Unit,

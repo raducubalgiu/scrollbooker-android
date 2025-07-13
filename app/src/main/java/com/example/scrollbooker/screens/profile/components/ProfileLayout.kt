@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.sheet.BottomSheet
 import com.example.scrollbooker.components.customized.ProductCardNavigationData
 import com.example.scrollbooker.core.nav.routes.MainRoute
+import com.example.scrollbooker.entity.products.domain.model.Product
 import com.example.scrollbooker.screens.profile.components.tab.ProfileTabRow
 import com.example.scrollbooker.screens.profile.components.tab.bookmarks.ProfileBookmarksTab
 import com.example.scrollbooker.screens.profile.components.tab.info.ProfileInfoTab
@@ -35,7 +36,7 @@ import com.example.scrollbooker.screens.profile.components.userInformation.compo
 fun ProfileLayout(
     user: UserProfile,
     onNavigate: (String) -> Unit,
-    onNavigateToCalendar: (ProductCardNavigationData) -> Unit,
+    onNavigateToCalendar: (Product) -> Unit,
     actions: @Composable (() -> Unit)
 ) {
     var showScheduleSheet by remember { mutableStateOf(false) }

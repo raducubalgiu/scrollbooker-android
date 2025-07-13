@@ -1,16 +1,13 @@
 package com.example.scrollbooker.screens.search.businessProfile.tabs
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
@@ -26,22 +23,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.components.core.avatar.AvatarWithRating
 import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
 import com.example.scrollbooker.components.core.divider.VerticalDivider
-import com.example.scrollbooker.components.customized.RatingsStars
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.screens.profile.components.userInformation.components.CounterItem
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.titleLarge
-import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
-fun BusinessPhotosTab() {
-    Column(modifier = Modifier
+fun BusinessPhotosTab(
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier
         .fillMaxWidth()
         .padding(horizontal = BasePadding)
     ) {
@@ -89,43 +85,6 @@ fun BusinessPhotosTab() {
                     onClick = {}
                 )
             }
-
-//            Text(
-//                text = "(1,000)",
-//                style = titleMedium,
-//                fontWeight = FontWeight.SemiBold
-//            )
-//
-//            Spacer(Modifier.width(SpacingM))
-//
-//            Column {
-//                Text(
-//                    text = "House Of Barbers",
-//                    style = titleLarge,
-//                    fontWeight = FontWeight.Bold,
-//                    fontSize = 20.sp
-//                )
-//                Spacer(Modifier.height(SpacingS))
-////                Row(
-////                    modifier = Modifier.fillMaxWidth(),
-////                    verticalAlignment = Alignment.CenterVertically
-////                ) {
-////                    Text(
-////                        text = "4.5",
-////                        style = titleLarge,
-////                        fontWeight = FontWeight.SemiBold,
-////                        fontSize = 20.sp
-////
-////                    )
-////                    Spacer(Modifier.width(SpacingS))
-////                    RatingsStars(rating = 5f, starSize = 22.dp)
-////                    Spacer(Modifier.width(SpacingS))
-////                    Text(
-////                        text = "(1,000)",
-////                        style = titleMedium
-////                    )
-////                }
-//            }
         }
 
         Text(
@@ -170,10 +129,12 @@ fun BusinessPhotosTab() {
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_clock_outline),
-                contentDescription = null,
-                tint = Color.Gray
+            Box(
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .width(10.dp)
+                    .height(10.dp)
+                    .background(Color.Green)
             )
 
             Spacer(Modifier.width(SpacingS))

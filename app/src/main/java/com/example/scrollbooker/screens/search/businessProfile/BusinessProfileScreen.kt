@@ -94,7 +94,6 @@ fun BusinessProfileScreen(onBack: () -> Unit) {
     val tabRowHeight = 48.dp
     val overlayHeight = headerHeight + tabRowHeight
 
-
     val imageAlpha by remember {
         derivedStateOf {
             val isFirstVisibleItem = lazyListState.firstVisibleItemIndex == 0
@@ -285,12 +284,12 @@ fun BusinessProfileScreen(onBack: () -> Unit) {
             }
 
             item(key = BusinessProfileSection.Photos.key) {
-                Column(modifier = Modifier.padding(
-                    top = imageHeight - overlayHeight,
-                    bottom = BasePadding
-                )) {
-                    BusinessPhotosTab()
-                }
+                BusinessPhotosTab(
+                    modifier = Modifier.padding(
+                        top = imageHeight - overlayHeight,
+                        bottom = BasePadding
+                    )
+                )
             }
             item(key = BusinessProfileSection.Services.key) { BusinessServicesTab() }
             item(key = BusinessProfileSection.Social.key) { BusinessSocialTab() }

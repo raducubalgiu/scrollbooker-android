@@ -17,9 +17,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.scrollbooker.core.nav.MainUIViewModel
 import com.example.scrollbooker.core.nav.bottomBar.MainTab
 import com.example.scrollbooker.core.nav.containers.DefaultTabContainer
 import com.example.scrollbooker.screens.auth.AuthViewModel
@@ -33,6 +35,8 @@ val MainTabSaver: Saver<MainTab, String> = Saver(
 
 @Composable
 fun MainNavHost(authViewModel: AuthViewModel) {
+    val mainViewModel: MainUIViewModel = hiltViewModel()
+
     val saveableStateHolder = rememberSaveableStateHolder()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -59,6 +63,7 @@ fun MainNavHost(authViewModel: AuthViewModel) {
     Scaffold(
         bottomBar = {
             BottomBar(
+                appointmentsNumber = mainViewModel.appointmentsState,
                 drawerState = drawerState,
                 currentTab = currentTab,
                 currentRoute = currentRoute,

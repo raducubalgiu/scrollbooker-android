@@ -23,17 +23,13 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.buttons.MainButtonMedium
 import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.products.domain.model.Product
 import com.example.scrollbooker.entity.products.domain.model.ProductCardEnum
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
-import com.example.scrollbooker.ui.theme.OnSurfaceBG
-import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
@@ -52,7 +48,7 @@ fun ProductCard(
     onNavigateToEdit: (Int) -> Unit,
     isLoadingDelete: Boolean,
     onDeleteProduct: (productId: Int) -> Unit,
-    onNavigateToCalendar: (ProductCardNavigationData) -> Unit
+    onNavigateToCalendar: (Product) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.padding(BasePadding)) {
@@ -124,15 +120,7 @@ fun ProductCard(
                 if(mode == ProductCardEnum.CLIENT) {
                     MainButtonOutlined(
                         title = stringResource(R.string.book),
-                        onClick = {
-                            onNavigateToCalendar(
-                                ProductCardNavigationData(
-                                    userId = product.userId,
-                                    slotDuration = product.duration,
-                                    productName = product.name
-                                )
-                            )
-                        },
+                        onClick = { onNavigateToCalendar(product) },
                     )
                 }
             }

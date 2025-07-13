@@ -11,6 +11,7 @@ import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.customized.ProductCardNavigationData
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.entity.products.domain.model.Product
 import com.example.scrollbooker.screens.profile.components.ProfileLayout
 import com.example.scrollbooker.screens.profile.components.userInformation.ProfileShimmer
 import com.example.scrollbooker.screens.profile.components.userProfile.UserProfileActions
@@ -20,7 +21,7 @@ fun UserProfileScreen(
     viewModel: ProfileViewModel,
     onNavigate: (String) -> Unit,
     onBack: () -> Unit,
-    onNavigateToCalendar: (ProductCardNavigationData) -> Unit
+    onNavigateToCalendar: (Product) -> Unit
 ) {
     val userProfileState by viewModel.userProfileState.collectAsState()
 

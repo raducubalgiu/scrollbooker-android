@@ -18,6 +18,7 @@ import com.example.scrollbooker.components.customized.ProductCardNavigationData
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.entity.products.domain.model.Product
 import com.example.scrollbooker.screens.profile.components.ProfileLayout
 import com.example.scrollbooker.screens.profile.components.userInformation.ProfileShimmer
 import com.example.scrollbooker.screens.profile.components.myProfile.MyProfileActions
@@ -30,7 +31,7 @@ import kotlinx.coroutines.launch
 fun MyProfileScreen(
     viewModel: ProfileSharedViewModel,
     onNavigate: (String) -> Unit,
-    onNavigateToCalendar: (ProductCardNavigationData) -> Unit
+    onNavigateToCalendar: (Product) -> Unit
 ) {
     val userProfileState by viewModel.userProfileState.collectAsState()
     val coroutineScope = rememberCoroutineScope()

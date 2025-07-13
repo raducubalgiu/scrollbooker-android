@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,7 +27,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -54,12 +52,11 @@ import com.example.scrollbooker.components.customized.ProductCardNavigationData
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.core.util.LoadMoreSpinner
+import com.example.scrollbooker.entity.products.domain.model.Product
 import com.example.scrollbooker.entity.products.domain.model.ProductCardEnum
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Primary
-import kotlin.math.roundToInt
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
@@ -67,7 +64,7 @@ fun ProfileServiceProductsTab(
     viewModel: ProfileProductsTabViewModel,
     serviceId: Int,
     userId: Int,
-    onNavigateToCalendar: (ProductCardNavigationData) -> Unit
+    onNavigateToCalendar: (Product) -> Unit
 ) {
     val productsState = viewModel.loadProducts(serviceId, userId).collectAsLazyPagingItems()
     val lazyRowListState = rememberLazyListState()

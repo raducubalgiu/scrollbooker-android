@@ -23,6 +23,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.customized.RatingsStars
@@ -42,10 +43,11 @@ fun BusinessReviewsTab() {
             modifier = Modifier.padding(horizontal = BasePadding),
             text = stringResource(R.string.reviews),
             style = headlineMedium,
+            fontSize = 26.sp,
             fontWeight = FontWeight.SemiBold
         )
 
-        Spacer(Modifier.height(SpacingXL))
+        Spacer(Modifier.height(BasePadding))
 
         RatingsStars(
             modifier = Modifier.padding(start = BasePadding),

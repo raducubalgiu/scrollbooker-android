@@ -32,6 +32,7 @@ import com.example.scrollbooker.ui.theme.Primary
 
 @Composable
 fun BottomBarItem(
+    appointmentsNumber: Int,
     modifier: Modifier = Modifier,
     onNavigate: () -> Unit,
     isSelected: Boolean,
@@ -73,7 +74,7 @@ fun BottomBarItem(
                                 .background(Error)
                         )
                     }
-                    Appointments.route -> CustomBadge(content = 10)
+                    Appointments.route -> CustomBadge(content = appointmentsNumber)
                 }
             }
         ) {

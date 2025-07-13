@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerState
-import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.NavigationBar
 import androidx.compose.runtime.Composable
@@ -24,6 +23,7 @@ import com.example.scrollbooker.ui.theme.Divider
 
 @Composable
 fun BottomBar(
+    appointmentsNumber: Int,
     drawerState: DrawerState,
     currentTab: MainTab,
     currentRoute: String?,
@@ -57,6 +57,7 @@ fun BottomBar(
                 ) {
                     allTabs.forEach { tab ->
                         BottomBarItem(
+                            appointmentsNumber = appointmentsNumber,
                             modifier = Modifier.then(Modifier.weight(1f)),
                             onNavigate = { onNavigate(tab) },
                             isSelected = currentTab == tab,

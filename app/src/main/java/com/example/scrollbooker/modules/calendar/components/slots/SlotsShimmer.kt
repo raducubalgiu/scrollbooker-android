@@ -24,7 +24,7 @@ fun SlotsShimmer() {
     val brush = rememberShimmerBrush()
 
     Column(Modifier.fillMaxSize()) {
-        repeat(10) {
+        repeat(5) {
             Spacer(Modifier.height(BasePadding))
 
             Box(
