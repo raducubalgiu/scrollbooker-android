@@ -2,6 +2,7 @@ package com.example.scrollbooker.entity.appointment.data.remote
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.appointment.domain.model.Appointment
 import com.example.scrollbooker.entity.appointment.data.mappers.toDomain
 import timber.log.Timber
@@ -24,7 +25,12 @@ class AppointmentPagingSource(
         val limit = 10
 
         return try {
-            val response = api.getUserAppointments(page, limit, asCustomer)
+            val response = if(page == 1) {
+                withVisibleLoading { api.getUserAppointments(page, limit, asCustomer) }
+            } else {
+                api.getUserAppointments(page, limit, asCustomer)
+            }
+
             val appointments = response.results.map { it.toDomain() }
 
             val totalLoaded = page * limit
