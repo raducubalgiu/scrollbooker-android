@@ -23,6 +23,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.customized.PostGrid
 import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.components.core.layout.ErrorScreen
+import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.SurfaceBG
@@ -46,15 +47,10 @@ fun ProfileBookmarksTab(
         when(posts.loadState.refresh) {
             is LoadState.Error -> ErrorScreen()
             is LoadState.Loading -> {
-                LazyVerticalGrid(columns = GridCells.Fixed(3)) {
-                    items(10) {
-                        Box(modifier = Modifier
-                            .aspectRatio(9f / 12f)
-                            .border(0.5.dp, Divider)
-                            .background(SurfaceBG)
-                        )
-                    }
-                }
+                LoadingScreen(
+                    modifier = Modifier.padding(top = 50.dp),
+                    arrangement = Arrangement.Top
+                )
             }
             is LoadState.NotLoading -> {
                 LazyVerticalGrid(
