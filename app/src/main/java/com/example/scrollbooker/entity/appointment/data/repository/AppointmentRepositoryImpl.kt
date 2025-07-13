@@ -21,4 +21,8 @@ class AppointmentRepositoryImpl @Inject constructor(
             pagingSourceFactory = { AppointmentPagingSource(api, asCustomer) }
         ).flow
     }
+
+    override suspend fun getUserAppointmentsNumber(): Int {
+        return api.getUserAppointmentsNumber()
+    }
 }

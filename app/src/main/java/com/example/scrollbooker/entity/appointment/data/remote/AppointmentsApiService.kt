@@ -11,4 +11,7 @@ interface AppointmentsApiService {
         @Query("limit") limit: Int,
         @Query("as_customer") asCustomer: Boolean
     ): PaginatedResponseDto<AppointmentDto>
+
+    @GET("appointments/count")
+    suspend fun getUserAppointmentsNumber(): Int
 }
