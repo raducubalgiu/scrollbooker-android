@@ -38,7 +38,9 @@ fun CalendarScreen(
     val availableDays by viewModel.availableDays.collectAsState()
     val availableDayTimeslots by viewModel.availableDay.collectAsState()
 
-    LaunchedEffect(Unit) { viewModel.setCalendarConfig(userId) }
+    LaunchedEffect(Unit) {
+        viewModel.setCalendarConfig(userId)
+    }
 
     LaunchedEffect(config?.selectedDay) {
         config?.let {
@@ -90,7 +92,10 @@ fun CalendarScreen(
             availableDays = availableDays,
             config = config,
             onDayChange = { viewModel.updateSelectedDay(it) },
-            onSelectSlot = { onNavigateToConfirmation() }
+            onSelectSlot = {
+                viewModel.toggleSlot(it)
+                onNavigateToConfirmation()
+            }
         )
     }
 }

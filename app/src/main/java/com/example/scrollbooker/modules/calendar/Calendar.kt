@@ -45,6 +45,7 @@ fun Calendar(
 
     val locale = Locale("ro")
     val coroutineScope = rememberCoroutineScope()
+    val today = LocalDate.now()
 
     val weekPagerState = rememberPagerState(initialPage = config.initialWeekPage) { config.totalWeeks }
     val dayPagerState = rememberPagerState(initialPage = config.initialDayPage) { 7 }
@@ -54,24 +55,28 @@ fun Calendar(
 
     val currentWeekDates = calendarDays.drop(currentWeekIndex * 7).take(7)
 
-    val enableBack = currentWeekIndex > 0
+    val selectedDay = calendarDays.drop(currentWeekIndex * 7).getOrNull(currentDayIndex)
+
+    val enableBack = currentWeekIndex > 0 && selectedDay?.isAfter(today.minusDays(1)) == true
     val enableNext = currentWeekIndex < config.totalWeeks - 1
 
     fun handlePreviousWeek() {
-        if(!enableBack) return
         coroutineScope.launch {
             weekPagerState.animateScrollToPage(currentWeekIndex - 1)
         }
     }
 
     fun handleNextWeek() {
-        if(!enableNext) return
         coroutineScope.launch {
             weekPagerState.animateScrollToPage(currentWeekIndex + 1)
         }
     }
 
-    val selectedDay = calendarDays.drop(currentWeekIndex * 7).getOrNull(currentDayIndex)
+    LaunchedEffect(currentWeekIndex) {
+        if(dayPagerState.currentPage != 0) {
+            dayPagerState.scrollToPage(0)
+        }
+    }
 
     LaunchedEffect(currentWeekIndex, currentDayIndex) {
         selectedDay?.let {

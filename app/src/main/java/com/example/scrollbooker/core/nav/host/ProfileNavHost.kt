@@ -10,6 +10,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import androidx.navigation.navigation
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.core.nav.navigators.myBusinessGraph
 import com.example.scrollbooker.core.nav.navigators.settingsGraph
@@ -211,49 +212,52 @@ fun ProfileNavHost(
             )
         }
 
-        composable(
-            route = "${MainRoute.Calendar.route}/{userId}/{slotDuration}/{productName}",
-            arguments = listOf(
-                navArgument("userId") { type = NavType.IntType },
-                navArgument("slotDuration") { type = NavType.IntType },
-                navArgument("productName") { type = NavType.StringType }
-            )
-        ) { backStackEntry ->
-            val userId = backStackEntry.arguments?.getInt("userId") ?: return@composable
-            val slotDuration = backStackEntry.arguments?.getInt("slotDuration") ?: return@composable
-            val productName = backStackEntry.arguments?.getString("productName") ?: return@composable
-
-            val viewModel: CalendarViewModel = hiltViewModel()
-
-            CalendarScreen(
-                userId = userId,
-                slotDuration = slotDuration,
-                productName = productName,
-                viewModel = viewModel,
-                onBack = { navController.popBackStack() },
-                onNavigateToConfirmation = {
-                    navController.navigate(MainRoute.AppointmentConfirmation.route)
+        navigation(
+            route = MainRoute.CalendarNavigator.route,
+            startDestination = "${MainRoute.Calendar.route}/{userId}/{slotDuration}/{productName}"
+        ) {
+            composable(
+                route = "${MainRoute.Calendar.route}/{userId}/{slotDuration}/{productName}",
+                arguments = listOf(
+                    navArgument("userId") { type = NavType.IntType },
+                    navArgument("slotDuration") { type = NavType.IntType },
+                    navArgument("productName") { type = NavType.StringType }
+                )
+            ) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(MainRoute.CalendarNavigator.route)
                 }
-            )
-        }
 
-        composable(
-            route = MainRoute.AppointmentConfirmation.route,
-//            arguments = listOf(
-//                navArgument("userId") { type = NavType.IntType },
-//                navArgument("slotDuration") { type = NavType.IntType },
-//                navArgument("productName") { type = NavType.StringType }
-//            )
-        ) { backStackEntry ->
-//            val userId = backStackEntry.arguments?.getInt("userId") ?: return@composable
-//            val slotDuration = backStackEntry.arguments?.getInt("slotDuration") ?: return@composable
-//            val productName = backStackEntry.arguments?.getString("productName") ?: return@composable
+                val userId = backStackEntry.arguments?.getInt("userId") ?: return@composable
+                val slotDuration = backStackEntry.arguments?.getInt("slotDuration") ?: return@composable
+                val productName = backStackEntry.arguments?.getString("productName") ?: return@composable
 
-            val viewModel: CalendarViewModel = hiltViewModel()
+                val viewModel: CalendarViewModel = hiltViewModel(parentEntry)
 
-            AppointmentConfirmationScreen(
-                onBack = { navController.popBackStack() }
-            )
+                CalendarScreen(
+                    userId = userId,
+                    slotDuration = slotDuration,
+                    productName = productName,
+                    viewModel = viewModel,
+                    onBack = { navController.popBackStack() },
+                    onNavigateToConfirmation = {
+                        navController.navigate(MainRoute.AppointmentConfirmation.route)
+                    }
+                )
+            }
+
+            composable(route = MainRoute.AppointmentConfirmation.route) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(MainRoute.CalendarNavigator.route)
+                }
+
+                val viewModel: CalendarViewModel = hiltViewModel(parentEntry)
+
+                AppointmentConfirmationScreen(
+                    viewModel = viewModel,
+                    onBack = { navController.popBackStack() }
+                )
+            }
         }
 
         myBusinessGraph(navController)
