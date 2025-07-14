@@ -4,6 +4,6 @@ import com.example.scrollbooker.entity.appointment.domain.model.Appointment
 import kotlinx.coroutines.flow.Flow
 
 interface AppointmentRepository {
-    fun getUserAppointments(asCustomer: Boolean): Flow<PagingData<Appointment>>
+    fun getUserAppointments(asCustomer: Boolean?): Flow<PagingData<Appointment>>
     suspend fun getUserAppointmentsNumber(): Int
 }

@@ -211,4 +211,10 @@
     <string name="about">Despre</string>
     <string name="photos">Foto</string>
     <string name="team">Echipă</string>
+    <string name="confirmed">Confirmat</string>
+    <string name="finished">Finalizat</string>
+    <string name="canceled">Anulat</string>
+    <string name="all">Toate</string>
+    <string name="filter">Filtrează</string>
+    <string name="filterAppointments">Filtrează comenzile</string>
 </resources>

@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 class GetUserAppointmentsUseCase(
     private val repository: AppointmentRepository
 ) {
-    operator fun invoke(asCustomer: Boolean): Flow<PagingData<Appointment>> {
+    operator fun invoke(asCustomer: Boolean?): Flow<PagingData<Appointment>> {
         return repository.getUserAppointments(asCustomer)
     }
 }

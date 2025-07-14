@@ -100,11 +100,9 @@ fun MainNavHost(authViewModel: AuthViewModel) {
                     is MainTab.Search -> SearchNavHost(navController = navControllers[MainTab.Search]!!)
 
                     is MainTab.Appointments -> {
-                        DefaultTabContainer(
-                            navController = navControllers[MainTab.Appointments]!!,
-                            innerPadding = innerPadding,
-                            content = { AppointmentsNavHost(navController = it) }
-                        )
+                        Box(Modifier.fillMaxSize()) {
+                            AppointmentsNavHost(navController = navControllers[MainTab.Appointments]!!)
+                        }
                     }
                     is MainTab.Profile -> {
                         DefaultTabContainer(

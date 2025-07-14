@@ -1,9 +1,11 @@
 package com.example.scrollbooker.entity.appointment.domain.model
+import org.threeten.bp.ZonedDateTime
+import java.math.BigDecimal
 
 data class Appointment(
     val id: Int,
-    val startDate: String,
-    val endDate: String,
+    val startDate: ZonedDateTime,
+    val endDate: ZonedDateTime,
     val channel: String,
     val status: String,
     val product: AppointmentProduct,
@@ -14,10 +16,11 @@ data class Appointment(
 data class AppointmentProduct(
     val id: Int?,
     val name: String,
-    val price: Int,
-    val priceWithDiscount: Int,
-    val discount: Int,
-    val currency: String
+    val price: BigDecimal,
+    val priceWithDiscount: BigDecimal,
+    val discount: BigDecimal,
+    val currency: String,
+    val exchangeRate: BigDecimal
 )
 
 data class AppointmentUser(

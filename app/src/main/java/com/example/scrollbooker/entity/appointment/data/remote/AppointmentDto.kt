@@ -1,5 +1,6 @@
 package com.example.scrollbooker.entity.appointment.data.remote
 import com.google.gson.annotations.SerializedName
+import java.math.BigDecimal
 
 data class AppointmentDto(
     val id: Int,
@@ -22,13 +23,16 @@ data class AppointmentDto(
 data class AppointmentProductDto(
     val id: Int?,
     val name: String,
-    val price: Int,
+    val price: BigDecimal,
 
     @SerializedName("price_with_discount")
-    val priceWithDiscount: Int,
+    val priceWithDiscount: BigDecimal,
 
-    val discount: Int,
-    val currency: String
+    val discount: BigDecimal,
+    val currency: String,
+
+    @SerializedName("exchange_rate")
+    val exchangeRate: BigDecimal
 )
 
 data class AppointmentUserDto(

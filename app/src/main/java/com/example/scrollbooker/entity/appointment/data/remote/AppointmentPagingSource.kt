@@ -10,7 +10,7 @@ import java.lang.Exception
 
 class AppointmentPagingSource(
     private val api: AppointmentsApiService,
-    private val asCustomer: Boolean
+    private val asCustomer: Boolean?
 ) : PagingSource<Int, Appointment>() {
 
     override fun getRefreshKey(state: PagingState<Int, Appointment>): Int? {

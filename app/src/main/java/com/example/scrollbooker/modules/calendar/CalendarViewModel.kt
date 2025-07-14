@@ -7,6 +7,7 @@ import com.example.scrollbooker.entity.calendar.domain.model.AvailableDay
 import com.example.scrollbooker.entity.calendar.domain.model.Slot
 import com.example.scrollbooker.entity.calendar.domain.useCase.GetCalendarAvailableDaysUseCase
 import com.example.scrollbooker.entity.calendar.domain.useCase.GetUserAvailableTimeslotsUseCase
+import com.example.scrollbooker.entity.products.domain.model.Product
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

@@ -12,7 +12,7 @@ import javax.inject.Inject
 class AppointmentRepositoryImpl @Inject constructor(
     private val api : AppointmentsApiService
 ): AppointmentRepository {
-    override fun getUserAppointments(asCustomer: Boolean): Flow<PagingData<Appointment>> {
+    override fun getUserAppointments(asCustomer: Boolean?): Flow<PagingData<Appointment>> {
         return Pager(
             config = PagingConfig(
                 pageSize = 10,
