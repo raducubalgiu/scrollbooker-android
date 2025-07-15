@@ -53,8 +53,6 @@ import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.labelLarge
-import com.example.scrollbooker.ui.theme.labelMedium
-import com.example.scrollbooker.ui.theme.labelSmall
 
 @Composable
 fun InputSelect(

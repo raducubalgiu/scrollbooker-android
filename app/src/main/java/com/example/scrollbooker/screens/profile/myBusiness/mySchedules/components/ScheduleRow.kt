@@ -61,29 +61,35 @@ fun ScheduleRow(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            InputSelect(
-                placeholder = stringResource(R.string.closed),
-                modifier = Modifier.weight(1f),
-                options = slots,
-                selectedOption = selectedStartTime.toString(),
-                onValueChange = {
-                    selectedStartTime = it
-                    onChange(it, selectedEndTime)
-                }
-            )
+            Column(
+                modifier = Modifier.weight(0.5f)
+            ) {
+                InputSelect(
+                    placeholder = stringResource(R.string.closed),
+                    options = slots,
+                    selectedOption = selectedStartTime.toString(),
+                    onValueChange = {
+                        selectedStartTime = it
+                        onChange(it, selectedEndTime)
+                    }
+                )
+            }
 
             Spacer(Modifier.width(BasePadding))
 
-            InputSelect(
-                placeholder = stringResource(R.string.closed),
-                modifier = Modifier.weight(1f),
-                options = slots,
-                selectedOption = selectedEndTime.toString(),
-                onValueChange = {
-                    selectedEndTime = it
-                    onChange(selectedStartTime, selectedEndTime)
-                }
-            )
+            Column(
+                modifier = Modifier.weight(0.5f)
+            ) {
+                InputSelect(
+                    placeholder = stringResource(R.string.closed),
+                    options = slots,
+                    selectedOption = selectedEndTime.toString(),
+                    onValueChange = {
+                        selectedEndTime = it
+                        onChange(selectedStartTime, selectedEndTime)
+                    }
+                )
+            }
         }
     }
 }
