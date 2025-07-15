@@ -2,12 +2,10 @@ package com.example.scrollbooker.components.core.list
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
-import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
@@ -18,14 +16,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.example.scrollbooker.R
-import com.example.scrollbooker.ui.theme.Background
-import com.example.scrollbooker.ui.theme.SurfaceBG
+import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodySmall
 
@@ -38,8 +33,10 @@ fun ItemList(
     supportingTextStyle: TextStyle = bodySmall,
     leftIcon: Painter? = null,
     displayRightIcon: Boolean = true,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    color: Color = OnBackground
 ) {
+
     ListItem(
         modifier = Modifier
             .fillMaxWidth()
@@ -55,7 +52,8 @@ fun ItemList(
                 text = headLine,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
+                color = color
             )},
         supportingContent = {
             if(supportingText.isNotEmpty()) {
@@ -69,7 +67,8 @@ fun ItemList(
             if(leftIcon != null) {
                 Icon(
                     painter = leftIcon,
-                    contentDescription = null
+                    contentDescription = null,
+                    tint = color
                 )
             }
         },

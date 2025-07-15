@@ -10,7 +10,6 @@ import androidx.navigation.compose.navigation
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.screens.auth.AuthViewModel
 import com.example.scrollbooker.screens.profile.settings.SettingsScreen
-import com.example.scrollbooker.screens.profile.settings.SettingsViewModel
 import com.example.scrollbooker.screens.profile.settings.account.AccountScreen
 import com.example.scrollbooker.screens.profile.settings.display.DisplayScreen
 import com.example.scrollbooker.screens.profile.settings.notifications.NotificationSettings
@@ -65,11 +64,8 @@ fun NavGraphBuilder.settingsGraph(
             )
         }
     ) {
-        composable(MainRoute.Settings.route) { backStackKey ->
-            val viewModel = hiltViewModel<SettingsViewModel>(backStackKey)
-
+        composable(MainRoute.Settings.route) {
             SettingsScreen(
-                viewModel = viewModel,
                 onBack = { navController.popBackStack() },
                 onNavigate = { navController.navigate(it) },
                 onLogout = { authViewModel.logout() }
