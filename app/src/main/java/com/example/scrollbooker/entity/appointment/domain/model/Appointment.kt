@@ -8,6 +8,7 @@ data class Appointment(
     val endDate: ZonedDateTime,
     val channel: String,
     val status: String,
+    val message: String?,
     val product: AppointmentProduct,
     val user: AppointmentUser,
     val isCustomer: Boolean,

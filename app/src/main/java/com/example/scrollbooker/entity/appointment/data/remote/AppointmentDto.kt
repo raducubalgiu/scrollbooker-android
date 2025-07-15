@@ -13,6 +13,7 @@ data class AppointmentDto(
 
     val channel: String,
     val status: String,
+    val message: String?,
     val product: AppointmentProductDto,
     val user: AppointmentUserDto,
 

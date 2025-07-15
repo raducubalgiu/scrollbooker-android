@@ -4,6 +4,7 @@ import com.example.scrollbooker.core.util.Constants
 import com.example.scrollbooker.entity.appointment.data.remote.AppointmentsApiService
 import com.example.scrollbooker.entity.appointment.data.repository.AppointmentRepositoryImpl
 import com.example.scrollbooker.entity.appointment.domain.repository.AppointmentRepository
+import com.example.scrollbooker.entity.appointment.domain.useCase.DeleteAppointmentUseCase
 import com.example.scrollbooker.entity.appointment.domain.useCase.GetUserAppointmentsNumberUseCase
 import com.example.scrollbooker.entity.appointment.domain.useCase.GetUserAppointmentsUseCase
 import dagger.Module
@@ -49,5 +50,13 @@ object AppointmentsModule {
         repository: AppointmentRepository,
     ): GetUserAppointmentsNumberUseCase {
         return GetUserAppointmentsNumberUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDeleteAppointmentUseCase(
+        repository: AppointmentRepository,
+    ): DeleteAppointmentUseCase {
+        return DeleteAppointmentUseCase(repository)
     }
 }

@@ -101,7 +101,10 @@ fun MainNavHost(authViewModel: AuthViewModel) {
 
                     is MainTab.Appointments -> {
                         Box(Modifier.fillMaxSize()) {
-                            AppointmentsNavHost(navController = navControllers[MainTab.Appointments]!!)
+                            AppointmentsNavHost(
+                                navController = navControllers[MainTab.Appointments]!!,
+                                mainViewModel = mainViewModel
+                            )
                         }
                     }
                     is MainTab.Profile -> {

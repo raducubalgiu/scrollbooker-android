@@ -10,9 +10,7 @@ import com.example.scrollbooker.entity.appointment.domain.model.AppointmentBusin
 import com.example.scrollbooker.entity.appointment.domain.model.AppointmentProduct
 import com.example.scrollbooker.entity.appointment.domain.model.AppointmentUser
 import com.example.scrollbooker.entity.appointment.domain.model.BusinessCoordinates
-import com.example.scrollbooker.entity.business.domain.model.Business
 import org.threeten.bp.ZonedDateTime
-import org.threeten.bp.format.DateTimeFormatter
 
 fun AppointmentDto.toDomain(): Appointment {
     return Appointment(
@@ -21,6 +19,7 @@ fun AppointmentDto.toDomain(): Appointment {
         endDate = ZonedDateTime.parse(endDate),
         channel = channel,
         status = status,
+        message = message,
         product = product.toDomain(),
         user = user.toDomain(),
         isCustomer = isCustomer,

@@ -6,20 +6,24 @@ import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.example.scrollbooker.core.nav.MainUIViewModel
 import com.example.scrollbooker.core.nav.routes.MainRoute
-import com.example.scrollbooker.core.nav.transitions.slideEnterTransition
-import com.example.scrollbooker.core.nav.transitions.slideExitTransition
 import com.example.scrollbooker.screens.appointments.AppointmentDetailsScreen
 import com.example.scrollbooker.screens.appointments.AppointmentsScreen
 import com.example.scrollbooker.screens.appointments.AppointmentsViewModel
-import com.example.scrollbooker.screens.appointments.components.AppointmentCancelScreen
+import com.example.scrollbooker.screens.appointments.AppointmentCancelScreen
+import kotlinx.coroutines.launch
 
 @Composable
-fun AppointmentsNavHost(navController: NavHostController) {
+fun AppointmentsNavHost(
+    navController: NavHostController,
+    mainViewModel: MainUIViewModel
+) {
     NavHost(
         navController = navController,
         startDestination = MainRoute.AppointmentsNavigator.route,
@@ -101,7 +105,19 @@ fun AppointmentsNavHost(navController: NavHostController) {
 
                 AppointmentCancelScreen(
                     viewModel = viewModel,
-                    onBack = { navController.popBackStack() }
+                    onBack = { navController.popBackStack() },
+                    onCancelAppointment = { appointmentId, message ->
+                        navController.currentBackStackEntry?.lifecycleScope?.launch {
+                            val result = viewModel.cancelAppointment(appointmentId, message)
+
+                            result
+                                .onSuccess {
+                                    mainViewModel.decreaseAppointmentsNumber()
+                                    navController.popBackStack()
+                                }
+                                .onFailure {  }
+                        }
+                    }
                 )
             }
         }

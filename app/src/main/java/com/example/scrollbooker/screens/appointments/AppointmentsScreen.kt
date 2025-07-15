@@ -136,7 +136,7 @@ fun AppointmentsScreen(
                     coroutineScope.launch {
                         selectedFilter = selectedOption
                         sheetState.hide()
-                        viewModel.setCustomerFilter(selectedFilter?.asCustomer)
+                        viewModel.loadAppointments(selectedFilter?.asCustomer)
                     }
                 }
             )

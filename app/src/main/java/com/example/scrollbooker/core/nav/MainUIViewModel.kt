@@ -26,6 +26,12 @@ class MainUIViewModel @Inject constructor(
         appointmentsState = appointmentsState + 1
     }
 
+    fun decreaseAppointmentsNumber() {
+        if(appointmentsState > 0) {
+            appointmentsState = appointmentsState - 1
+        }
+    }
+
     private fun loadInitialData() {
         viewModelScope.launch {
             appointmentsState = getUserAppointmentsNumberUseCase()

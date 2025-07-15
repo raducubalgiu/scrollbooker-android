@@ -121,7 +121,9 @@ fun AppointmentDetailsScreen(
                     .clip(shape = ShapeDefaults.Medium)
                     .height(200.dp)
                     .background(SurfaceBG)
-            ) {}
+            ) {
+
+            }
 
             Spacer(Modifier.height(BasePadding))
         }
