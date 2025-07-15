@@ -21,7 +21,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.headers.HeaderEdit
-import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.components.core.inputs.InputRadio
 import com.example.scrollbooker.core.enums.GenderTypeEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
@@ -70,16 +69,10 @@ fun EditGenderScreen(
 
         LazyColumn {
             itemsIndexed(genders) { index, gender ->
-                val headLine = when(gender) {
-                    GenderTypeEnum.MALE -> stringResource(R.string.male)
-                    GenderTypeEnum.FEMALE -> stringResource(R.string.female)
-                    else -> stringResource(R.string.preferNotToSay)
-                }
-
                 InputRadio(
                     selected = gender.key == newGender,
                     onSelect = { newGender = gender.key },
-                    headLine = headLine
+                    headLine = gender.getLabel()
                 )
 
                 if(index < genders.size) {

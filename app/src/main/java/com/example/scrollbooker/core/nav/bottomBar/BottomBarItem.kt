@@ -61,20 +61,25 @@ fun BottomBarItem(
         BadgedBox(
             badge = {
                 when(tab.route) {
-                    Inbox.route -> Box(
-                        Modifier
-                            .offset(x = 10.dp, y = (-7.5).dp),
-                        contentAlignment = Alignment.TopStart
-                    ) {
+                    Inbox.route -> {
                         Box(
-                            modifier = Modifier
-                                .width(9.dp)
-                                .height(9.dp)
-                                .clip(CircleShape)
-                                .background(Error)
-                        )
+                            Modifier.offset(x = 10.dp, y = (-7.5).dp),
+                            contentAlignment = Alignment.TopStart
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .width(9.dp)
+                                    .height(9.dp)
+                                    .clip(CircleShape)
+                                    .background(Error)
+                            )
+                        }
                     }
-                    Appointments.route -> CustomBadge(content = appointmentsNumber)
+                    Appointments.route -> {
+                        if(appointmentsNumber > 0) {
+                            CustomBadge(content = appointmentsNumber)
+                        }
+                    }
                 }
             }
         ) {
