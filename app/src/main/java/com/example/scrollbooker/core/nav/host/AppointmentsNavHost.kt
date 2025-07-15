@@ -16,6 +16,7 @@ import com.example.scrollbooker.core.nav.transitions.slideExitTransition
 import com.example.scrollbooker.screens.appointments.AppointmentDetailsScreen
 import com.example.scrollbooker.screens.appointments.AppointmentsScreen
 import com.example.scrollbooker.screens.appointments.AppointmentsViewModel
+import com.example.scrollbooker.screens.appointments.components.AppointmentCancelScreen
 
 @Composable
 fun AppointmentsNavHost(navController: NavHostController) {
@@ -86,6 +87,19 @@ fun AppointmentsNavHost(navController: NavHostController) {
                 val viewModel = hiltViewModel<AppointmentsViewModel>(parentEntry)
 
                 AppointmentDetailsScreen(
+                    viewModel = viewModel,
+                    onBack = { navController.popBackStack() },
+                    onGoToCancel = { navController.navigate(MainRoute.AppointmentCancel.route) }
+                )
+            }
+
+            composable(MainRoute.AppointmentCancel.route) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(MainRoute.AppointmentsNavigator.route)
+                }
+                val viewModel = hiltViewModel<AppointmentsViewModel>(parentEntry)
+
+                AppointmentCancelScreen(
                     viewModel = viewModel,
                     onBack = { navController.popBackStack() }
                 )

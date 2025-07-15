@@ -56,15 +56,6 @@ fun displayDatePeriod(start: LocalDate, end: LocalDate, locale: Locale = Locale(
 
         "$startDay $startMonth - $endDay $endMonth"
     }
-
-//    val startMonth = start.month.getDisplayName(TextStyle.FULL, locale).replaceFirstChar { it.uppercase(locale) }
-//    val endMonth = end.month.getDisplayName(TextStyle.FULL, locale).replaceFirstChar { it.uppercase(locale) }
-//
-//    return if (start.month == end.month) {
-//        "$startDay - $endDay $endMonth"
-//    } else {
-//        "$startDay $startMonth - $endDay $endMonth"
-//    }
 }
 
 fun formatHour(timeString: String): String {

@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.sheet.BottomSheet
-import com.example.scrollbooker.components.customized.ProductCardNavigationData
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.entity.products.domain.model.Product
 import com.example.scrollbooker.screens.profile.components.tab.ProfileTabRow
@@ -40,7 +39,7 @@ fun ProfileLayout(
     actions: @Composable (() -> Unit)
 ) {
     var showScheduleSheet by remember { mutableStateOf(false) }
-    var globalLazyListState = rememberLazyListState()
+    //var globalLazyListState = rememberLazyListState()
 
     val tabCount = 5
     val pagerState = rememberPagerState(initialPage = 0) { tabCount }
@@ -55,11 +54,7 @@ fun ProfileLayout(
 
     Column {
         LazyColumn(
-            state = globalLazyListState,
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-        ) {
+            modifier = Modifier.fillMaxWidth().weight(1f)) {
             item {
                 ProfileCounters(
                     counters = user.counters,

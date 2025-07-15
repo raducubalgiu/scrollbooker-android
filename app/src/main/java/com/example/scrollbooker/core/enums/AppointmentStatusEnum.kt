@@ -8,7 +8,7 @@ enum class AppointmentStatusEnum(val key: String) {
     CANCELED("canceled");
 
     companion object {
-        fun fromKey(key: String): AppointmentStatusEnum? =
+        fun fromKey(key: String?): AppointmentStatusEnum? =
             AppointmentStatusEnum.entries.find { it.key == key }
 
         fun fromKeys(keys: List<String>): List<AppointmentStatusEnum> =

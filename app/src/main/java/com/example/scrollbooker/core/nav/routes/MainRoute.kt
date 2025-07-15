@@ -15,6 +15,7 @@ sealed class MainRoute(val route: String) {
     object AppointmentsNavigator: MainRoute(route = "appointmentsNavigator")
     object Appointments: MainRoute(route = "appointments")
     object AppointmentDetails: MainRoute(route = "appointmentDetails")
+    object AppointmentCancel: MainRoute(route = "appointmentCancel")
 
     object MyProfile: MainRoute(route = "profile")
     object ProfilePostDetail: MainRoute(route = "profilePostDetail")

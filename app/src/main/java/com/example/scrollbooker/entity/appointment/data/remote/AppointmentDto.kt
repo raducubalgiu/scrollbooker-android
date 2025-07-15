@@ -17,7 +17,9 @@ data class AppointmentDto(
     val user: AppointmentUserDto,
 
     @SerializedName("is_customer")
-    val isCustomer: Boolean
+    val isCustomer: Boolean,
+
+    val business: AppointmentBusinessDto
 )
 
 data class AppointmentProductDto(
@@ -44,4 +46,14 @@ data class AppointmentUserDto(
     val username: String?,
     val avatar: String?,
     val profession: String?
+)
+
+data class BusinessCoordinatesDto(
+    val lat: Float,
+    val lng: Float
+)
+
+data class AppointmentBusinessDto(
+    val address: String,
+    val coordinates: BusinessCoordinatesDto
 )

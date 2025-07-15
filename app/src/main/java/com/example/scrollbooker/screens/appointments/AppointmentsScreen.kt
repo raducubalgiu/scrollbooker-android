@@ -115,7 +115,11 @@ fun AppointmentsScreen(
                     )
 
                     if(index < filters.size) {
-                        HorizontalDivider(color = Divider, thickness = 0.55.dp)
+                        HorizontalDivider(
+                            modifier = Modifier.padding(horizontal = SpacingXL),
+                            color = Divider,
+                            thickness = 0.55.dp
+                        )
                     }
                 }
 

@@ -36,9 +36,7 @@ fun ProfilePostsTab(
 
     val posts = viewModel.userPosts.collectAsLazyPagingItems()
 
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
         when(posts.loadState.refresh) {
             is LoadState.Error -> ErrorScreen()
             is LoadState.Loading -> {
