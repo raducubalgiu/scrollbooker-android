@@ -1,8 +1,12 @@
 package com.example.scrollbooker.screens.profile.myBusiness.mySchedules
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -15,7 +19,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.components.core.layout.LoadingScreen
-import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.components.SchedulesList
+import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.components.ScheduleRow
 
 @Composable
 fun SchedulesScreen(
@@ -47,12 +51,18 @@ fun SchedulesScreen(
                 is FeatureState.Loading -> LoadingScreen()
                 is FeatureState.Error -> SnackbarManager.showToast(stringResource(id = R.string.somethingWentWrong))
                 is FeatureState.Success -> {
-                    SchedulesList(
-                        schedules=schedules.data,
-                        onScheduleChange = { schedule ->
-                            viewModel.updateScheduleTime(schedule)
+                    LazyColumn {
+                        items(schedules.data) { schedule ->
+                            ScheduleRow(schedule,
+                                onChange = { start, end ->
+                                    viewModel.updateScheduleTime(
+                                        schedule.copy(startTime = start, endTime = end)
+                                    )
+                                }
+                            )
+                            Spacer(Modifier.height(BasePadding))
                         }
-                    )
+                    }
                 }
             }
         }
