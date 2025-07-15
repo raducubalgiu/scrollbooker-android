@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ShapeDefaults
@@ -30,10 +32,12 @@ import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.core.enums.AppointmentStatusEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
+import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.screens.appointments.components.AppointmentCard.AppointmentCard
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.SurfaceBG
+import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
@@ -88,6 +92,24 @@ fun AppointmentDetailsScreen(
                     )
                 }
                 else -> Unit
+            }
+
+            appointment?.message?.let {
+                Column {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Outlined.Warning,
+                            contentDescription = null,
+                            tint = Error
+                        )
+                        Spacer(Modifier.width(SpacingS))
+                        Text(
+                            text = "${stringResource(R.string.cancelReason)}: ${appointment?.message ?: ""}",
+                            color = Error,
+                            style = bodyMedium
+                        )
+                    }
+                }
             }
 
             Spacer(Modifier.height(SpacingXL))

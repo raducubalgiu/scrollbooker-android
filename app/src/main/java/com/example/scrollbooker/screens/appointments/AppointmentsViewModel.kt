@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
+import com.example.scrollbooker.core.enums.AppointmentStatusEnum
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.appointment.domain.model.Appointment
 import com.example.scrollbooker.entity.appointment.domain.useCase.DeleteAppointmentUseCase
@@ -70,7 +71,7 @@ class AppointmentsViewModel @Inject constructor(
                     pagingData.map { appointment ->
                         if (appointment.id == appointmentId) {
                             appointment.copy(
-                                status = "canceled",
+                                status = AppointmentStatusEnum.CANCELED.key,
                                 message = message
                             )
                         } else appointment
@@ -83,7 +84,7 @@ class AppointmentsViewModel @Inject constructor(
 
                 if(currentSelected.id == appointmentId) {
                     _selectedAppointment.value = currentSelected.copy(
-                        status = "canceled",
+                        status = AppointmentStatusEnum.CANCELED.key,
                         message = message
                     )
                 }

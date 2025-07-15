@@ -219,7 +219,9 @@
     <string name="filterAppointments">Filtrează comenzile</string>
     <string name="cancelAppointment">Anulează programarea</string>
     <string name="cannotArriveToAppointment">Nu mai pot ajunge la programare</string>
-    <string name="iFoundABetterOffer">Am găsit o ofertă mai bună</string>
-    <string name="iBookedByMistake">Am rezervat din greșeală</string>
+    <string name="foundABetterOffer">Am găsit o ofertă mai bună</string>
+    <string name="bookedByMistake">Am rezervat din greșeală</string>
     <string name="otherReason">Alt motiv</string>
+    <string name="cancelReason">Motivul anulării</string>
+    <string name="writeCancelReason">Scrie motivul anulării</string>
 </resources>

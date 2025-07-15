@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ButtonDefaults
@@ -26,6 +27,7 @@ import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.inputs.EditInput
 import com.example.scrollbooker.components.core.inputs.InputRadio
 import com.example.scrollbooker.core.util.checkLength
+import com.example.scrollbooker.screens.appointments.components.AppointmentCancelEnum
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnPrimary
@@ -40,18 +42,16 @@ fun AppointmentCancelScreen(
     val isSaving by viewModel.isSaving.collectAsState()
 
     val reasons = listOf(
-        stringResource(R.string.cannotArriveToAppointment),
-        stringResource(R.string.iFoundABetterOffer),
-        stringResource(R.string.iBookedByMistake),
-        stringResource(R.string.otherReason)
+        AppointmentCancelEnum.CANNOT_ARRIVE.key,
+        AppointmentCancelEnum.FOUND_BETTER_OFFER.key,
+        AppointmentCancelEnum.BOOKED_BY_MISTAKE.key,
+        AppointmentCancelEnum.OTHER_REASON.key
     )
 
     var message by remember { mutableStateOf("") }
-    var selectedReason by rememberSaveable { mutableStateOf("Alt Motiv") }
+    var selectedReason by rememberSaveable { mutableStateOf(AppointmentCancelEnum.OTHER_REASON.key) }
 
-    val checkMessage = checkLength(
-        LocalContext.current, maxLength = 100, field = message
-    )
+    val checkMessage = checkLength(LocalContext.current, maxLength = 100, field = message)
     val isMessageValid = checkMessage.isNullOrEmpty()
 
     Column(
@@ -60,6 +60,7 @@ fun AppointmentCancelScreen(
             .safeDrawingPadding(),
     ) {
         Header(
+            modifier = Modifier.statusBarsPadding(),
             title = "",
             onBack = onBack
         )
@@ -67,17 +68,22 @@ fun AppointmentCancelScreen(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            LazyColumn(
-                modifier = Modifier.weight(1f)
-            ) {
+            LazyColumn {
                 itemsIndexed(reasons) { index, reason ->
                     InputRadio(
                         selected = reason == selectedReason,
                         onSelect = {
                             selectedReason = reason
-                            if(reason == "Altele") message = "" else message = reason
+
+                            if(reason in reasons) {
+                                message = ""
+                            }
                         },
-                        headLine = reason
+                        headLine = stringResource(
+                            AppointmentCancelEnum.label(
+                                AppointmentCancelEnum.fromKey(reason)
+                            )
+                        )
                     )
 
                     if(index < reasons.size) {
@@ -95,10 +101,10 @@ fun AppointmentCancelScreen(
                         value = message,
                         onValueChange = { message = it },
                         singleLine = false,
-                        placeholder = "Scrie motivul",
+                        placeholder = stringResource(R.string.writeCancelReason),
                         minLines = 3,
                         maxLines = 3,
-                        isEnabled = selectedReason == "Altele",
+                        isEnabled = selectedReason == AppointmentCancelEnum.OTHER_REASON.key,
                         isInputValid = isMessageValid,
                         errorMessage = checkMessage.toString(),
                     )
@@ -117,7 +123,9 @@ fun AppointmentCancelScreen(
                     .padding(horizontal = BasePadding)
                     .padding(bottom = BasePadding),
                 onClick = {
-                    appointment?.id?.let { onCancelAppointment(appointment!!.id, message) }
+                    appointment?.id?.let {
+                        onCancelAppointment(appointment!!.id, message)
+                    }
                 }
             )
         }
