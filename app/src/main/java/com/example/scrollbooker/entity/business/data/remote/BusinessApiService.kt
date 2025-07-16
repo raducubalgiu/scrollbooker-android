@@ -9,22 +9,22 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface BusinessApiService {
-    @GET("/businesses/search/")
+    @GET("/businesses/search")
     suspend fun searchBusinessAddress(
         @Query("query") query: String
     ): List<BusinessAddressDto>
 
-    @GET("/users/{userId}/businesses/")
+    @GET("/users/{userId}/businesses")
     suspend fun getBusinessByUserId(
         @Path("userId") userId: Int
     ): BusinessDto
 
-    @PUT("/businesses/update-services/")
+    @PUT("/businesses/update-services")
     suspend fun updateBusinessServices(
         @Body request: BusinessServicesUpdateRequest
     ): AuthStateDto
 
-    @PATCH("/businesses/update-has-employees/")
+    @PATCH("/businesses/update-has-employees")
     suspend fun updateBusinessHasEmployees(
         @Body request: BusinessHasEmployeesUpdateRequest
     ): AuthStateDto

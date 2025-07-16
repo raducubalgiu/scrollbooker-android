@@ -1,4 +1,5 @@
 package com.example.scrollbooker.entity.business.data.remote
+import com.example.scrollbooker.entity.appointment.data.remote.BusinessCoordinatesDto
 import com.google.gson.annotations.SerializedName
 
 data class BusinessDto(
@@ -16,7 +17,7 @@ data class BusinessDto(
 
     val address: String,
 
-    val coordinates: List<Float>,
+    val coordinates: BusinessCoordinatesDto,
 
     @SerializedName("has_employees")
     val hasEmployees: Boolean

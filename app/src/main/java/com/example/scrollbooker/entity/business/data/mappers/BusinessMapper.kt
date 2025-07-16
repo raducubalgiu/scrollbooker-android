@@ -1,5 +1,6 @@
 package com.example.scrollbooker.entity.business.data.mappers
 
+import com.example.scrollbooker.entity.appointment.data.mappers.toDomain
 import com.example.scrollbooker.entity.business.data.remote.BusinessDto
 import com.example.scrollbooker.entity.business.domain.model.Business
 
@@ -11,7 +12,7 @@ fun BusinessDto.toDomain(): Business {
         description = description,
         timezone = timezone,
         address = address,
-        coordinates = coordinates,
+        coordinates = coordinates.toDomain(),
         hasEmployees = hasEmployees
     )
 }
