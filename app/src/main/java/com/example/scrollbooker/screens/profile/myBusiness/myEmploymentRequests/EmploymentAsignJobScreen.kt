@@ -31,8 +31,8 @@ fun EmploymentAssignJobScreen(
 
     FormLayout(
         modifier = Modifier.safeDrawingPadding(),
-        headLine = "Atribuie un rol",
-        subHeadLine = "Alege rolul potrivit pentru angajat din lista de profesii disponibile",
+        headLine = stringResource(R.string.assignJob),
+        subHeadLine = stringResource(R.string.chooseProfessionsFromTheList),
         onBack = onBack,
         onNext = onNext,
         isEnabled = selectedProfession != null,

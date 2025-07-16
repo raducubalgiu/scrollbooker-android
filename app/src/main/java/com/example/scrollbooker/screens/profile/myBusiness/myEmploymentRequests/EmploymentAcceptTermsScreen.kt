@@ -45,8 +45,8 @@ fun EmploymentAcceptTermsScreen(
 
     FormLayout(
         modifier = Modifier.safeDrawingPadding(),
-        headLine = "Accepta termenii",
-        subHeadLine = "Citeste si accepta termenii de colaborare pentru a finaliza adaugarea angajatului",
+        headLine = stringResource(R.string.acceptTerms),
+        subHeadLine = stringResource(R.string.acceptTermsForFinishingEmployeeOnboarding),
         onBack = onBack,
         isEnabled = agreedConsent && !isSaving,
         isLoading = isSaving,

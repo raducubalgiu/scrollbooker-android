@@ -89,7 +89,9 @@
     <string name="areYouSureYouWantDeleteService">Ești sigur că dorești să ștergi acest serviciu?</string>
     <string name="addServices">Adaugă Servicii</string>
     <string name="noServicesFound">Nu s-au găsit servicii</string>
+    <string name="acceptTerms">Acceptă termenii și condițiile</string>
     <string name="acceptTermsAndConditions">Declar că am ințeles termenii și condițiile aplicației</string>
+    <string name="acceptTermsForFinishingEmployeeOnboarding">Citește și acceptă termenii de colaborare pentru a finaliza adăugarea angajatului</string>
     <string name="dismiss">Demite</string>
     <string name="dismissal">Concediere</string>
     <string name="hireDate">Data angajării</string>
@@ -97,6 +99,7 @@
     <string name="notFoundEmploymentRequests">Nu au fost găsite cereri de angajare</string>
     <string name="sendTheRequest">Trimite cererea</string>
     <string name="assignJob">Atribuie o funcție</string>
+    <string name="chooseProfessionsFromTheList">Alege funcția potriviă pentru acest angajat din lista de profesii disponibile</string>
     <string name="termsAndConditionsAcceptance">Acceptare termeni și condiții</string>
     <string name="applicationTheme">Tema aplicației</string>
     <string name="deviceSettings">Setările dispozitivului</string>
@@ -228,4 +231,5 @@
     <string name="logout">Delogare</string>
     <string name="notFoundAnyResult">Nu a fost găsit nici un rezultat</string>
     <string name="youDidntSearchedInListYet">Incă nu ai căutat in listă</string>
+
 </resources>
