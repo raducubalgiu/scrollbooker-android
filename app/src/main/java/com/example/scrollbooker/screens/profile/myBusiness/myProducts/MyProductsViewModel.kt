@@ -22,7 +22,6 @@ import com.example.scrollbooker.entity.service.domain.model.Service
 import com.example.scrollbooker.entity.service.domain.useCase.GetServicesByBusinessIdUseCase
 
 import com.example.scrollbooker.store.AuthDataStore
-import com.google.android.gms.common.Feature
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow

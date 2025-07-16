@@ -6,6 +6,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
@@ -27,7 +28,8 @@ fun DialogConfirm(
                 style = titleMedium,
                 color = OnSurfaceBG,
                 fontWeight = FontWeight.Bold,
-                text = title
+                text = title,
+                fontSize = 18.sp
             )
         },
         text = {

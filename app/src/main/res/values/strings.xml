@@ -231,5 +231,7 @@
     <string name="logout">Delogare</string>
     <string name="notFoundAnyResult">Nu a fost găsit nici un rezultat</string>
     <string name="youDidntSearchedInListYet">Incă nu ai căutat in listă</string>
-
+    <string name="cancelRequest">Anulează cererea</string>
+    <string name="date">Data</string>
+    <string name="proposedProfession">Funcția propusă</string>
 </resources>

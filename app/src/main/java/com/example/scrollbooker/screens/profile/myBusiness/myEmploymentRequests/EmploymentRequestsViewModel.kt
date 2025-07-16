@@ -5,10 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.enums.ConsentEnum
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
-import com.example.scrollbooker.entity.business.domain.model.BusinessAddress
 import com.example.scrollbooker.entity.consent.domain.model.Consent
 import com.example.scrollbooker.entity.consent.domain.useCase.GetConsentsByNameUseCase
-import com.example.scrollbooker.entity.employmentRequest.data.remote.EmploymentRequestCreateDto
 import com.example.scrollbooker.entity.employmentRequest.domain.model.EmploymentRequest
 import com.example.scrollbooker.entity.employmentRequest.domain.model.EmploymentRequestCreate
 import com.example.scrollbooker.entity.employmentRequest.domain.useCase.CreateEmploymentRequestUseCase
@@ -18,7 +16,6 @@ import com.example.scrollbooker.entity.profession.domain.useCase.GetProfessionsB
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.SearchUsersClientsUseCase
 import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
 import com.example.scrollbooker.store.AuthDataStore
-import com.google.android.gms.common.Feature
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
