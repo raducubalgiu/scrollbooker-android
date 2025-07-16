@@ -1,5 +1,6 @@
 package com.example.scrollbooker.screens.appointments.components.AppointmentCard
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -35,7 +37,12 @@ fun AppointmentCard(
 ) {
     Column(modifier = Modifier
         .fillMaxWidth()
-        .clickable { navigateToAppointmentDetails(appointment) }
+        .clickable(
+            interactionSource = remember { MutableInteractionSource() },
+            indication = null
+        ) {
+            navigateToAppointmentDetails(appointment)
+        }
     ) {
         val zone = ZoneId.systemDefault()
         val appointmentStart = appointment.startDate.withZoneSameInstant(zone)

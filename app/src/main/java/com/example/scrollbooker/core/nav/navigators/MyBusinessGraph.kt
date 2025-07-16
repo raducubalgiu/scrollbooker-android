@@ -16,7 +16,6 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.nav.routes.MainRoute
-import com.example.scrollbooker.entity.employmentRequest.data.mappers.toDto
 import com.example.scrollbooker.screens.profile.myBusiness.MyBusinessScreen
 import com.example.scrollbooker.screens.profile.myBusiness.MyBusinessViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.myCalendar.MyCalendarScreen
@@ -26,19 +25,15 @@ import com.example.scrollbooker.feature.myBusiness.employeeDismissal.presentatio
 import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessServices.MyServicesScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myEmployees.EmployeesScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myEmployees.EmployeesViewModel
-import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.list.EmploymentRequestsScreen
-import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.list.EmploymentRequestsViewModel
+import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.EmploymentRequestsScreen
+import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.EmploymentRequestsViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.myProducts.AddProductScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myProducts.MyProductsScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myCurrencies.MyCurrenciesScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myCurrencies.MyCurrenciesViewModel
-import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.flow.EmploymentRequestViewModel
-import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.flow.acceptTerms.EmploymentAcceptTermsScreen
-import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.flow.acceptTerms.EmploymentAcceptTermsViewModel
-import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.flow.assignJob.EmploymentAssignJobScreen
-import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.flow.assignJob.EmploymentAssignJobViewModel
-import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.flow.selectEmployee.EmploymentSelectEmployeeScreen
-import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.flow.selectEmployee.EmploymentSelectEmployeeViewModel
+import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.EmploymentAcceptTermsScreen
+import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.EmploymentAssignJobScreen
+import com.example.scrollbooker.screens.profile.myBusiness.myEmploymentRequests.EmploymentSelectEmployeeScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myProducts.EditProductScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myProducts.MyProductsViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.SchedulesScreen
@@ -120,72 +115,124 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
             )
         }
 
-        composable(MainRoute.EmploymentsRequests.route) { backStackEntry ->
-            val viewModel = hiltViewModel<EmploymentRequestsViewModel>(backStackEntry)
-
-            EmploymentRequestsScreen(
-                viewModel,
-                onBack = { navController.popBackStack() },
-                onNavigateSelectEmployee = { navController.navigate(MainRoute.EmploymentRequestsFlow.route) }
-            )
-        }
-
         navigation(
-            route = MainRoute.EmploymentRequestsFlow.route,
-            startDestination = MainRoute.EmploymentSelectEmployee.route,
+            route = MainRoute.EmploymentRequestsNavigator.route,
+            startDestination = MainRoute.EmploymentsRequests.route
         ) {
+            composable(MainRoute.EmploymentsRequests.route) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(MainRoute.EmploymentRequestsNavigator.route)
+                }
+
+                val viewModel = hiltViewModel<EmploymentRequestsViewModel>(parentEntry)
+
+                EmploymentRequestsScreen(
+                    viewModel = viewModel,
+                    onBack = { navController.popBackStack() },
+                    onNavigateSelectEmployee = {
+                        navController.navigate(MainRoute.EmploymentSelectEmployee.route)
+                    }
+                )
+            }
+
             composable(MainRoute.EmploymentSelectEmployee.route) { backStackEntry ->
                 val parentEntry = remember(backStackEntry) {
-                    navController.getBackStackEntry(MainRoute.EmploymentSelectEmployee.route)
+                    navController.getBackStackEntry(MainRoute.EmploymentRequestsNavigator.route)
                 }
-                val employmentRequestViewModel: EmploymentRequestViewModel = hiltViewModel(parentEntry)
-                val employmentSelectEmployeeViewModel: EmploymentSelectEmployeeViewModel = hiltViewModel()
+
+                val viewModel = hiltViewModel<EmploymentRequestsViewModel>(parentEntry)
 
                 EmploymentSelectEmployeeScreen(
-                    globalViewModel = employmentRequestViewModel,
-                    localViewModel = employmentSelectEmployeeViewModel,
-                    onNext = { navController.navigate(MainRoute.EmploymentAssignJob.route) },
-                    onBack = { navController.popBackStack() }
+                    viewModel = viewModel,
+                    onBack = { navController.popBackStack() },
+                    onNext = { navController.navigate(MainRoute.EmploymentAssignJob.route) }
                 )
             }
 
             composable(MainRoute.EmploymentAssignJob.route) { backStackEntry ->
                 val parentEntry = remember(backStackEntry) {
-                    navController.getBackStackEntry(MainRoute.EmploymentSelectEmployee.route)
+                    navController.getBackStackEntry(MainRoute.EmploymentRequestsNavigator.route)
                 }
-                val employmentRequestViewModel: EmploymentRequestViewModel = hiltViewModel(parentEntry)
-                val employmentAssignJobViewModel: EmploymentAssignJobViewModel = hiltViewModel()
+
+                val viewModel = hiltViewModel<EmploymentRequestsViewModel>(parentEntry)
 
                 EmploymentAssignJobScreen(
-                    globalViewModel = employmentRequestViewModel,
-                    localViewModel = employmentAssignJobViewModel,
-                    onNext = { navController.navigate(MainRoute.EmploymentAcceptTerms.route) },
-                    onBack = { navController.popBackStack() }
+                    viewModel = viewModel,
+                    onBack = { navController.popBackStack() },
+                    onNext = { navController.navigate(MainRoute.EmploymentAcceptTerms.route) }
                 )
             }
 
             composable(MainRoute.EmploymentAcceptTerms.route) { backStackEntry ->
                 val parentEntry = remember(backStackEntry) {
-                    navController.getBackStackEntry(MainRoute.EmploymentSelectEmployee.route)
+                    navController.getBackStackEntry(MainRoute.EmploymentRequestsNavigator.route)
                 }
-                val employmentRequestViewModel: EmploymentRequestViewModel = hiltViewModel(parentEntry)
-                val employmentAcceptTermsViewModel: EmploymentAcceptTermsViewModel = hiltViewModel()
-                val employmentRequestsViewModel: EmploymentRequestsViewModel = hiltViewModel()
+
+                val viewModel = hiltViewModel<EmploymentRequestsViewModel>(parentEntry)
 
                 EmploymentAcceptTermsScreen(
-                    employmentRequestsViewModel = employmentRequestsViewModel,
-                    globalViewModel = employmentRequestViewModel,
-                    localViewModel = employmentAcceptTermsViewModel,
-                    onSubmit = {
-                        val request = employmentRequestViewModel.buildEmploymentRequest()
-                        employmentRequestsViewModel.createEmploymentRequest(request.toDto())
-
-                        navController.popBackStack(MainRoute.EmploymentsRequests.route, inclusive = false)
-                    },
-                    onBack = { navController.popBackStack() }
+                    viewModel = viewModel,
+                    onBack = { navController.popBackStack() },
                 )
             }
         }
+
+//        navigation(
+//            route = MainRoute.EmploymentRequestsFlow.route,
+//            startDestination = MainRoute.EmploymentSelectEmployee.route,
+//        ) {
+//            composable(MainRoute.EmploymentSelectEmployee.route) { backStackEntry ->
+//                val parentEntry = remember(backStackEntry) {
+//                    navController.getBackStackEntry(MainRoute.EmploymentSelectEmployee.route)
+//                }
+//                val employmentRequestViewModel: EmploymentRequestViewModel = hiltViewModel(parentEntry)
+//                val employmentSelectEmployeeViewModel: EmploymentSelectEmployeeViewModel = hiltViewModel()
+//
+//                EmploymentSelectEmployeeScreen(
+//                    globalViewModel = employmentRequestViewModel,
+//                    localViewModel = employmentSelectEmployeeViewModel,
+//                    onNext = { navController.navigate(MainRoute.EmploymentAssignJob.route) },
+//                    onBack = { navController.popBackStack() }
+//                )
+//            }
+//
+//            composable(MainRoute.EmploymentAssignJob.route) { backStackEntry ->
+//                val parentEntry = remember(backStackEntry) {
+//                    navController.getBackStackEntry(MainRoute.EmploymentSelectEmployee.route)
+//                }
+//                val employmentRequestViewModel: EmploymentRequestViewModel = hiltViewModel(parentEntry)
+//                val employmentAssignJobViewModel: EmploymentAssignJobViewModel = hiltViewModel()
+//
+//                EmploymentAssignJobScreen(
+//                    globalViewModel = employmentRequestViewModel,
+//                    localViewModel = employmentAssignJobViewModel,
+//                    onNext = { navController.navigate(MainRoute.EmploymentAcceptTerms.route) },
+//                    onBack = { navController.popBackStack() }
+//                )
+//            }
+//
+//            composable(MainRoute.EmploymentAcceptTerms.route) { backStackEntry ->
+//                val parentEntry = remember(backStackEntry) {
+//                    navController.getBackStackEntry(MainRoute.EmploymentSelectEmployee.route)
+//                }
+//                val employmentRequestViewModel: EmploymentRequestViewModel = hiltViewModel(parentEntry)
+//                val employmentAcceptTermsViewModel: EmploymentAcceptTermsViewModel = hiltViewModel()
+//                val employmentRequestsViewModel: EmploymentRequestsViewModel = hiltViewModel()
+//
+//                EmploymentAcceptTermsScreen(
+//                    employmentRequestsViewModel = employmentRequestsViewModel,
+//                    globalViewModel = employmentRequestViewModel,
+//                    localViewModel = employmentAcceptTermsViewModel,
+//                    onSubmit = {
+//                        val request = employmentRequestViewModel.buildEmploymentRequest()
+//                        employmentRequestsViewModel.createEmploymentRequest(request.toDto())
+//
+//                        navController.popBackStack(MainRoute.EmploymentsRequests.route, inclusive = false)
+//                    },
+//                    onBack = { navController.popBackStack() }
+//                )
+//            }
+//        }
 
         composable(MainRoute.MyCalendar.route) { backStackEntry ->
             val viewModel = hiltViewModel<MyCalendarViewModel>(backStackEntry)

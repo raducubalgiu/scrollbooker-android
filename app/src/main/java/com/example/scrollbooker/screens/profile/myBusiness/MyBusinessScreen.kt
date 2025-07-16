@@ -2,6 +2,7 @@ package com.example.scrollbooker.screens.profile.myBusiness
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -108,7 +109,7 @@ fun MyBusinessScreen(
     )
 
     Layout(
-        modifier = Modifier.statusBarsPadding(),
+        modifier = Modifier.safeDrawingPadding(),
         headerTitle = stringResource(R.string.myBusiness),
         onBack = onBack
     ) {

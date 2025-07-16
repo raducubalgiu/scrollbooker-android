@@ -11,6 +11,8 @@ import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateGende
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateUsernameRequest
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.entity.user.userProfile.domain.repository.UserProfileRepository
+import com.example.scrollbooker.entity.user.userSocial.data.mappers.toDomain
+import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
 import javax.inject.Inject
 
 class UserProfileRepositoryImpl @Inject constructor(
@@ -43,9 +45,8 @@ class UserProfileRepositoryImpl @Inject constructor(
     override suspend fun searchUsername(username: String): SearchUsernameResponse {
         return apiService.searchUsername(username)
     }
-//
-//    override suspend fun searchUsersClients(q: String): List<UserSocial> {
-//        return userApiService.searchUsersClients(q).map { it.toDomain() }
-//    }
 
+    override suspend fun searchUsersClients(q: String): List<UserSocial> {
+        return apiService.searchUserClients(q).map { it.toDomain() }
+    }
 }

@@ -70,7 +70,6 @@ fun FormLayout(
                 Column(Modifier.fillMaxWidth()) {
                     MainButton(
                         modifier = Modifier.padding(
-                            vertical = BasePadding,
                             horizontal = SpacingXXL
                         ),
                         title = buttonTitle ?: "",

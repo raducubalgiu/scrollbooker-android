@@ -7,12 +7,7 @@ import timber.log.Timber
 class GetProfessionsByBusinessTypeUseCase(
     private val repository: ProfessionRepository,
 ) {
-    suspend operator fun invoke(businessTypeId: Int?): FeatureState<List<Profession>> {
-        if(businessTypeId == null) {
-            Timber.tag("Professions").e("Business Type Id Not Found")
-            return FeatureState.Error()
-        }
-
+    suspend operator fun invoke(businessTypeId: Int): FeatureState<List<Profession>> {
         return try {
             val response = repository.getProfessionsByBusinessTypeId(businessTypeId)
             FeatureState.Success(response)

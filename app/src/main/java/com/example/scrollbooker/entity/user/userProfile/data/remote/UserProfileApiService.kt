@@ -6,6 +6,7 @@ import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateBirth
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateFullNameRequest
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateGenderRequest
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateUsernameRequest
+import com.example.scrollbooker.entity.user.userSocial.data.remote.UserSocialDto
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
@@ -47,4 +48,9 @@ interface UserProfileApiService {
     suspend fun searchUsername(
         @Query("username") username: String
     ): SearchUsernameResponse
+
+    @GET("users/search-user-clients")
+    suspend fun searchUserClients(
+        @Query("q") q: String
+    ): List<UserSocialDto>
 }
