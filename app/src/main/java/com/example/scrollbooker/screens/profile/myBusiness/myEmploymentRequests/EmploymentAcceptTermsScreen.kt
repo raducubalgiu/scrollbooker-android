@@ -26,9 +26,6 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
@@ -37,28 +34,33 @@ import com.example.scrollbooker.ui.theme.bodyLarge
 @Composable
 fun EmploymentAcceptTermsScreen(
     viewModel: EmploymentRequestsViewModel,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onNext: () -> Unit
 ) {
     val consentState by viewModel.consentState.collectAsState()
+    val agreedConsent by viewModel.agreedConsent.collectAsState()
+    val isSaving by viewModel.isSaving.collectAsState()
+
     val scrollState = rememberScrollState()
-    var agreed by remember { mutableStateOf(false) }
 
     FormLayout(
         modifier = Modifier.safeDrawingPadding(),
-        headLine = "Trimite cererea",
-        subHeadLine = "Trimite cererea",
+        headLine = "Accepta termenii",
+        subHeadLine = "Citeste si accepta termenii de colaborare pentru a finaliza adaugarea angajatului",
         onBack = onBack,
-        isEnabled = agreed,
-        buttonTitle = stringResource(R.string.sendAnEmploymentRequest)
+        isEnabled = agreedConsent && !isSaving,
+        isLoading = isSaving,
+        buttonTitle = stringResource(R.string.sendAnEmploymentRequest),
+        onNext = onNext
     ) {
         Column(modifier = Modifier
             .fillMaxSize()
-            .clip(shape = ShapeDefaults.Small)
             .padding(horizontal = SpacingXL),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column(modifier = Modifier
                 .weight(1f)
+                .clip(shape = ShapeDefaults.Medium)
                 .background(SurfaceBG)
                 .padding(SpacingS)
                 .verticalScroll(scrollState),
@@ -80,8 +82,10 @@ fun EmploymentAcceptTermsScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Checkbox(
-                    checked = agreed,
-                    onCheckedChange = { agreed = it }
+                    checked = agreedConsent,
+                    onCheckedChange = {
+                       viewModel.setAgreedConsent(it)
+                    }
                 )
                 Text(
                     text = stringResource(R.string.acceptTermsAndConditions),

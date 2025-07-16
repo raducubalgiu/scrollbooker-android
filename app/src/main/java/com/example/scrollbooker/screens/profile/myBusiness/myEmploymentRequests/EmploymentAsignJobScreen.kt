@@ -31,8 +31,8 @@ fun EmploymentAssignJobScreen(
 
     FormLayout(
         modifier = Modifier.safeDrawingPadding(),
-        headLine = "Adauga jobul",
-        subHeadLine = "Asigneaza",
+        headLine = "Atribuie un rol",
+        subHeadLine = "Alege rolul potrivit pentru angajat din lista de profesii disponibile",
         onBack = onBack,
         onNext = onNext,
         isEnabled = selectedProfession != null,

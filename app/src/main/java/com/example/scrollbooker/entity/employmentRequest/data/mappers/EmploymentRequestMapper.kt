@@ -3,10 +3,12 @@ import com.example.scrollbooker.entity.employmentRequest.data.remote.EmploymentR
 import com.example.scrollbooker.entity.employmentRequest.domain.model.EmploymentRequest
 import com.example.scrollbooker.entity.profession.data.mappers.toDomain
 import com.example.scrollbooker.entity.user.userSocial.data.mappers.toDomain
+import org.threeten.bp.ZonedDateTime
 
 fun EmploymentRequestDto.toDomain(): EmploymentRequest {
     return EmploymentRequest(
         id = id,
+        createdAt = ZonedDateTime.parse(createdAt),
         status = status,
         employee = employee.toDomain(),
         employer = employer.toDomain(),

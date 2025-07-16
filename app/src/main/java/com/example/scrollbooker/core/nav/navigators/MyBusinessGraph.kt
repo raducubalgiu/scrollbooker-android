@@ -3,10 +3,12 @@ package com.example.scrollbooker.core.nav.navigators
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -16,6 +18,8 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.nav.routes.MainRoute
+import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.entity.employmentRequest.domain.model.EmploymentRequestCreate
 import com.example.scrollbooker.screens.profile.myBusiness.MyBusinessScreen
 import com.example.scrollbooker.screens.profile.myBusiness.MyBusinessViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.myCalendar.MyCalendarScreen
@@ -173,66 +177,23 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
                 EmploymentAcceptTermsScreen(
                     viewModel = viewModel,
                     onBack = { navController.popBackStack() },
+                    onNext = {
+                        navController.currentBackStackEntry?.lifecycleScope?.launch {
+                            val result = viewModel.createEmploymentRequest()
+
+                            result
+                                .onSuccess {
+                                    navController.navigate(MainRoute.EmploymentsRequests.route) {
+                                        popUpTo(MainRoute.EmploymentRequestsNavigator.route) {
+                                            inclusive = true
+                                        }
+                                    }
+                                }
+                        }
+                    },
                 )
             }
         }
-
-//        navigation(
-//            route = MainRoute.EmploymentRequestsFlow.route,
-//            startDestination = MainRoute.EmploymentSelectEmployee.route,
-//        ) {
-//            composable(MainRoute.EmploymentSelectEmployee.route) { backStackEntry ->
-//                val parentEntry = remember(backStackEntry) {
-//                    navController.getBackStackEntry(MainRoute.EmploymentSelectEmployee.route)
-//                }
-//                val employmentRequestViewModel: EmploymentRequestViewModel = hiltViewModel(parentEntry)
-//                val employmentSelectEmployeeViewModel: EmploymentSelectEmployeeViewModel = hiltViewModel()
-//
-//                EmploymentSelectEmployeeScreen(
-//                    globalViewModel = employmentRequestViewModel,
-//                    localViewModel = employmentSelectEmployeeViewModel,
-//                    onNext = { navController.navigate(MainRoute.EmploymentAssignJob.route) },
-//                    onBack = { navController.popBackStack() }
-//                )
-//            }
-//
-//            composable(MainRoute.EmploymentAssignJob.route) { backStackEntry ->
-//                val parentEntry = remember(backStackEntry) {
-//                    navController.getBackStackEntry(MainRoute.EmploymentSelectEmployee.route)
-//                }
-//                val employmentRequestViewModel: EmploymentRequestViewModel = hiltViewModel(parentEntry)
-//                val employmentAssignJobViewModel: EmploymentAssignJobViewModel = hiltViewModel()
-//
-//                EmploymentAssignJobScreen(
-//                    globalViewModel = employmentRequestViewModel,
-//                    localViewModel = employmentAssignJobViewModel,
-//                    onNext = { navController.navigate(MainRoute.EmploymentAcceptTerms.route) },
-//                    onBack = { navController.popBackStack() }
-//                )
-//            }
-//
-//            composable(MainRoute.EmploymentAcceptTerms.route) { backStackEntry ->
-//                val parentEntry = remember(backStackEntry) {
-//                    navController.getBackStackEntry(MainRoute.EmploymentSelectEmployee.route)
-//                }
-//                val employmentRequestViewModel: EmploymentRequestViewModel = hiltViewModel(parentEntry)
-//                val employmentAcceptTermsViewModel: EmploymentAcceptTermsViewModel = hiltViewModel()
-//                val employmentRequestsViewModel: EmploymentRequestsViewModel = hiltViewModel()
-//
-//                EmploymentAcceptTermsScreen(
-//                    employmentRequestsViewModel = employmentRequestsViewModel,
-//                    globalViewModel = employmentRequestViewModel,
-//                    localViewModel = employmentAcceptTermsViewModel,
-//                    onSubmit = {
-//                        val request = employmentRequestViewModel.buildEmploymentRequest()
-//                        employmentRequestsViewModel.createEmploymentRequest(request.toDto())
-//
-//                        navController.popBackStack(MainRoute.EmploymentsRequests.route, inclusive = false)
-//                    },
-//                    onBack = { navController.popBackStack() }
-//                )
-//            }
-//        }
 
         composable(MainRoute.MyCalendar.route) { backStackEntry ->
             val viewModel = hiltViewModel<MyCalendarViewModel>(backStackEntry)

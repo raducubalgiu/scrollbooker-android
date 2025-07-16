@@ -8,7 +8,9 @@ import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.business.domain.model.BusinessAddress
 import com.example.scrollbooker.entity.consent.domain.model.Consent
 import com.example.scrollbooker.entity.consent.domain.useCase.GetConsentsByNameUseCase
+import com.example.scrollbooker.entity.employmentRequest.data.remote.EmploymentRequestCreateDto
 import com.example.scrollbooker.entity.employmentRequest.domain.model.EmploymentRequest
+import com.example.scrollbooker.entity.employmentRequest.domain.model.EmploymentRequestCreate
 import com.example.scrollbooker.entity.employmentRequest.domain.useCase.CreateEmploymentRequestUseCase
 import com.example.scrollbooker.entity.employmentRequest.domain.useCase.GetEmploymentRequestsUseCase
 import com.example.scrollbooker.entity.profession.domain.model.Profession
@@ -16,11 +18,13 @@ import com.example.scrollbooker.entity.profession.domain.useCase.GetProfessionsB
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.SearchUsersClientsUseCase
 import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
 import com.example.scrollbooker.store.AuthDataStore
+import com.google.android.gms.common.Feature
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -57,8 +61,11 @@ class EmploymentRequestsViewModel @Inject constructor(
     private val _consentState = MutableStateFlow<FeatureState<Consent>>(FeatureState.Loading)
     val consentState: StateFlow<FeatureState<Consent>> = _consentState
 
-    private val _createRequestState = MutableStateFlow<FeatureState<Unit>?>(null)
-    val createRequestState: StateFlow<FeatureState<Unit>?> = _createRequestState
+    private val _agreedConsent = MutableStateFlow<Boolean>(false)
+    val agreedConsent: StateFlow<Boolean> = _agreedConsent
+
+    private val _isSaving = MutableStateFlow<Boolean>(false)
+    val isSaving: StateFlow<Boolean> = _isSaving
 
     init {
         loadEmploymentRequests()
@@ -81,6 +88,10 @@ class EmploymentRequestsViewModel @Inject constructor(
 
     fun setSelectedProfession(profession: Profession) {
         _selectedProfession.value = profession
+    }
+
+    fun setAgreedConsent(agreed: Boolean) {
+        _agreedConsent.value = agreed
     }
 
     private fun loadProfessions() {
@@ -135,15 +146,31 @@ class EmploymentRequestsViewModel @Inject constructor(
         }
     }
 
+    suspend fun createEmploymentRequest(): Result<Unit> {
+        _isSaving.value = true
 
-//    fun createEmploymentRequest(dto: EmploymentRequestCreateDto) {
-//        viewModelScope.launch {
-//            _createRequestState.value = FeatureState.Loading
-//            _createRequestState.value = createEmploymentRequestUseCase(dto)
-//
-//            if(createRequestState.value is FeatureState.Success) {
-//                loadEmploymentRequests()
-//            }
-//        }
-//    }
+        val consent = consentState.first { it is FeatureState.Success }
+        val consentId = (consent as FeatureState.Success).data.id
+
+        val result = withVisibleLoading {
+            createEmploymentRequestUseCase(
+                EmploymentRequestCreate(
+                    employeeId = _selectedEmployee.value!!.id,
+                    professionId = _selectedProfession.value!!.id,
+                    consentId = consentId
+                )
+            )
+        }
+
+        result
+            .onFailure { e ->
+                Timber.tag("Employment Requests").e("ERROR: on Sending Employment Request $e")
+            }
+            .onSuccess {
+                loadEmploymentRequests()
+            }
+
+        _isSaving.value = false
+        return result
+    }
 }

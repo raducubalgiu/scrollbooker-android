@@ -109,6 +109,7 @@
     <string name="maxLengthValidationMessage">Acest câmp este limitat la %1$d caractere</string>
     <string name="searchEmployee">Caută angajat</string>
     <string name="selectEmployee">Selectează angajat</string>
+    <string name="searchEmployeeAndSelectToContinue">Caută angajatul în lista de mai jos și selectează-l pentru a continua</string>
     <string name="noProductsFound">Nu au fost găsite produse</string>
     <string name="monday">Luni</string>
     <string name="tuesday">Marți</string>
@@ -225,4 +226,6 @@
     <string name="cancelReason">Motivul anulării</string>
     <string name="writeCancelReason">Scrie motivul anulării</string>
     <string name="logout">Delogare</string>
+    <string name="notFoundAnyResult">Nu a fost găsit nici un rezultat</string>
+    <string name="youDidntSearchedInListYet">Incă nu ai căutat in listă</string>
 </resources>

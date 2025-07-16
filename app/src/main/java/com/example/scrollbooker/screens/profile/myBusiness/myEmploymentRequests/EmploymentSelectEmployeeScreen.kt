@@ -68,8 +68,8 @@ fun EmploymentSelectEmployeeScreen(
 
     FormLayout(
         modifier = Modifier.safeDrawingPadding(),
-        headLine = "Selecteaza angajat",
-        subHeadLine = "Cauta angajatul in lista de mai jos",
+        headLine = stringResource(R.string.selectEmployee),
+        subHeadLine = stringResource(R.string.searchEmployeeAndSelectToContinue),
         onBack = {
             coroutineScope.launch {
                 focusManager.clearFocus()
@@ -130,9 +130,7 @@ fun EmploymentSelectEmployeeScreen(
                         .padding(BasePadding),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = "Inca nu ai cautat angajatul"
-                    )
+                    Text(text = stringResource(R.string.youDidntSearchedInListYet))
                 }
             }
 
@@ -148,9 +146,7 @@ fun EmploymentSelectEmployeeScreen(
                         items(users) { user ->
                             InputRadio(
                                 selected = user.id == selectedEmployee?.id,
-                                onSelect = {
-                                    viewModel.setSelectedEmployee(user)
-                                },
+                                onSelect = { viewModel.setSelectedEmployee(user) },
                                 headLine = user.fullName,
                             )
                         }
@@ -163,9 +159,7 @@ fun EmploymentSelectEmployeeScreen(
                                         .padding(BasePadding),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    Text(
-                                        text = "Nu a fost gasit nici un rezultat"
-                                    )
+                                    Text(text = stringResource(R.string.notFoundAnyResult))
                                 }
                             }
                         }

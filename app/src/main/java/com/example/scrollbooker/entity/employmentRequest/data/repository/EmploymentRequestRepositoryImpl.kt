@@ -1,10 +1,12 @@
 package com.example.scrollbooker.entity.employmentRequest.data.repository
 import com.example.scrollbooker.core.enums.EmploymentRequestStatusEnum
 import com.example.scrollbooker.entity.employmentRequest.data.mappers.toDomain
+import com.example.scrollbooker.entity.employmentRequest.data.mappers.toDto
 import com.example.scrollbooker.entity.employmentRequest.data.remote.EmploymentRequestCreateDto
 import com.example.scrollbooker.entity.employmentRequest.data.remote.EmploymentRequestRespondDto
 import com.example.scrollbooker.entity.employmentRequest.data.remote.EmploymentRequestsApiService
 import com.example.scrollbooker.entity.employmentRequest.domain.model.EmploymentRequest
+import com.example.scrollbooker.entity.employmentRequest.domain.model.EmploymentRequestCreate
 import com.example.scrollbooker.entity.employmentRequest.domain.repository.EmploymentRequestRepository
 import javax.inject.Inject
 
@@ -15,8 +17,9 @@ class EmploymentRequestRepositoryImpl @Inject constructor(
         return apiService.getUserEmploymentRequests(userId).map { it.toDomain() }
     }
 
-    override suspend fun createEmploymentRequest(request: EmploymentRequestCreateDto) {
-        return apiService.createEmploymentRequest(request)
+    override suspend fun createEmploymentRequest(request: EmploymentRequestCreate) {
+        val requestDto = request.toDto()
+        return apiService.createEmploymentRequest(requestDto)
     }
 
     override suspend fun responseEmploymentRequest(
