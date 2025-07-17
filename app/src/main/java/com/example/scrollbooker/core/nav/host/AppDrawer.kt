@@ -2,12 +2,11 @@ package com.example.scrollbooker.core.nav.host
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,113 +15,161 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.ListItemColors
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.inputs.SearchBar
+import com.example.scrollbooker.components.core.buttons.MainButton
+import com.example.scrollbooker.components.core.inputs.InputRadio
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.entity.businessDomain.domain.model.BusinessDomain
 import com.example.scrollbooker.entity.businessType.domain.model.BusinessType
-import com.example.scrollbooker.ui.theme.Background
-import com.example.scrollbooker.ui.theme.Divider
-import com.example.scrollbooker.ui.theme.SurfaceBG
-import com.example.scrollbooker.ui.theme.bodyLarge
-import com.example.scrollbooker.ui.theme.titleMedium
+import com.example.scrollbooker.ui.theme.headlineMedium
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun AppDrawer(
-    businessTypesState: FeatureState<List<BusinessType>>
+    businessDomainsState: FeatureState<List<BusinessDomain>>
 ) {
-    var search by remember { mutableStateOf("") }
+    val businessTypes = listOf(
+        BusinessType(
+            id = 1,
+            name = "Service-uri auto",
+            businessDomainId = 3,
+            plural = "Service-uri auto"
+        ),
+        BusinessType(
+            id = 2,
+            name = "Statii ITP",
+            businessDomainId = 3,
+            plural = "Statii ITP"
+        ),
+        BusinessType(
+            id = 3,
+            name = "Frizerie",
+            businessDomainId = 1,
+            plural = "Frizerii"
+        ),
+        BusinessType(
+            id = 3,
+            name = "Salon de infrumusetare",
+            businessDomainId = 1,
+            plural = "Saloane de infrumusetare"
+        )
+    )
 
     BoxWithConstraints {
-        val drawerWidth = maxWidth * 0.7f
+        val drawerWidth = maxWidth * 0.8f
 
         ModalDrawerSheet(
-            modifier = Modifier
-                .width(drawerWidth),
+            modifier = Modifier.width(drawerWidth),
             drawerContainerColor = Color(0xFF121212)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(BasePadding)
+                    .padding(SpacingXL),
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-                SearchBar(
-                    value = search,
-                    containerColor = Color(0xFF1C1C1C),
-                    contentColor = Color(0xFF3A3A3A),
-                    onValueChange = { search = it },
-                    placeholder = "Ce cauti?",
-                    onSearch = {}
-                )
+                Column {
+                    when(val businessDomains = businessDomainsState) {
+                        is FeatureState.Success -> {
+                            LazyColumn {
+                                item {
+                                    Text(
+                                        modifier = Modifier.padding(vertical = SpacingXL),
+                                        style = headlineMedium,
+                                        color = Color(0xFFE0E0E0),
+                                        fontWeight = FontWeight.SemiBold,
+                                        text = "Alege ce vrei să vezi în Feed"
+                                    )
 
-                HorizontalDivider(modifier = Modifier
-                    .padding(vertical = BasePadding),
-                    color = Color(0xFF3A3A3A)
-                )
+                                    Spacer(Modifier.height(BasePadding))
+                                }
 
-                Text(
-                    style = titleMedium,
-                    color = Color(0xFF3A3A3A),
-                    fontWeight = FontWeight.Normal,
-                    text = "Filtrează conținutul video"
-                )
-
-                Spacer(Modifier.height(BasePadding))
-
-                when(val businessTypes = businessTypesState) {
-                    is FeatureState.Success -> {
-                        LazyColumn {
-                            itemsIndexed(businessTypes.data) { index, businessType ->
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(
-                                            vertical = SpacingS
-                                        )
-                                        .clip(shape = ShapeDefaults.ExtraLarge)
-                                        .background(Color(0xFF1C1C1C)),
-                                ) {
+                                itemsIndexed(businessDomains.data) { index, businessDomain ->
                                     Box(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(
-                                                BasePadding
-                                            )
+                                            .clip(shape = ShapeDefaults.ExtraLarge)
+                                            .background(Color(0xFF1C1C1C)),
                                     ) {
-                                        Text(
-                                            text = businessType.plural,
-                                            color = Color(0xFFAAAAAA)
-                                        )
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(
+                                                    vertical = BasePadding,
+                                                    horizontal = SpacingXL
+                                                ),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.SpaceBetween
+                                        ) {
+                                            Text(
+                                                modifier = Modifier.weight(1f),
+                                                text = businessDomain.shortName,
+                                                color = Color(0xFFAAAAAA),
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis
+                                            )
+                                            Spacer(Modifier.width(BasePadding))
+                                            Icon(
+                                                imageVector = Icons.Default.KeyboardArrowDown,
+                                                contentDescription = null,
+                                                tint = Color(0xFF3A3A3A)
+                                            )
+                                        }
                                     }
+
+//                                    Spacer(Modifier.height(BasePadding))
+
+                                    businessTypes.mapIndexed { index, businessType ->
+                                        val elements = businessTypes.filter { businessType.businessDomainId == businessDomain.id }
+
+                                        if(elements.isNotEmpty()) {
+                                            InputRadio(
+                                                modifier = Modifier.background(Color(0xFF121212)),
+                                                selected = index == 0,
+                                                onSelect = {},
+                                                headLine = businessType.plural,
+                                                contentColor = Color(0xFFE0E0E0)
+                                            )
+
+                                            if(index < elements.size - 1) {
+                                                HorizontalDivider(
+                                                    color = Color(0xFF3A3A3A),
+                                                    thickness = 0.55.dp
+                                                )
+                                            }
+                                        }
+                                    }
+                                    Spacer(Modifier.height(BasePadding))
                                 }
-                                Spacer(Modifier.height(SpacingS))
                             }
                         }
+                        else -> Unit
                     }
-                    else -> Unit
                 }
+
+                MainButton(
+                    onClick = {},
+                    title = stringResource(R.string.filter),
+                    //shape = RoundedCornerShape(2.dp)
+                )
             }
         }
     }

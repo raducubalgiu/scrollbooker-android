@@ -26,6 +26,7 @@ import com.example.scrollbooker.core.nav.MainUIViewModel
 import com.example.scrollbooker.core.nav.bottomBar.MainTab
 import com.example.scrollbooker.core.nav.containers.DefaultTabContainer
 import com.example.scrollbooker.screens.auth.AuthViewModel
+import com.example.scrollbooker.screens.feed.FeedViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -37,7 +38,10 @@ val MainTabSaver: Saver<MainTab, String> = Saver(
 @Composable
 fun MainNavHost(authViewModel: AuthViewModel) {
     val mainViewModel: MainUIViewModel = hiltViewModel()
+    val feedViewModel: FeedViewModel = hiltViewModel()
+
     val businessTypesState by mainViewModel.businessTypesState.collectAsState()
+    val businessDomainsState by mainViewModel.businessDomainsState.collectAsState()
 
     val saveableStateHolder = rememberSaveableStateHolder()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -67,7 +71,7 @@ fun MainNavHost(authViewModel: AuthViewModel) {
             when (currentTab) {
                 is MainTab.Feed -> {
                     ModalNavigationDrawer(
-                        drawerContent = { AppDrawer(businessTypesState = businessTypesState) },
+                        drawerContent = { AppDrawer(businessDomainsState = businessDomainsState) },
                         scrimColor = Color(0xFF121212).copy(0.7f),
                         drawerState = drawerState,
                         gesturesEnabled = drawerState.currentValue == DrawerValue.Open,
@@ -88,6 +92,7 @@ fun MainNavHost(authViewModel: AuthViewModel) {
                                 innerPadding = innerPadding,
                                 content = {
                                     FeedNavHost(
+                                        feedViewModel = feedViewModel,
                                         navController = navControllers[MainTab.Feed]!!,
                                         onOpenDrawer = { scope.launch { drawerState.open() } }
                                     )

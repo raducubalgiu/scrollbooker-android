@@ -33,10 +33,7 @@ fun MainButton(
         modifier = if(fullWidth) modifier.fillMaxWidth() else modifier,
         enabled = enabled,
         colors = colors,
-        contentPadding = PaddingValues(
-            vertical = BasePadding,
-            horizontal = 16.dp
-        ),
+        contentPadding = PaddingValues(BasePadding),
         shape = shape
     ) {
         if(isLoading) {

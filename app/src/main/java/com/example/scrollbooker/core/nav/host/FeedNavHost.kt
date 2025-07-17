@@ -3,7 +3,6 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -14,6 +13,7 @@ import com.example.scrollbooker.screens.feed.search.FeedSearchScreen
 
 @Composable
 fun FeedNavHost(
+    feedViewModel: FeedViewModel,
     navController: NavHostController,
     onOpenDrawer: () -> Unit
 ) {
@@ -59,9 +59,8 @@ fun FeedNavHost(
                 )
             }
         ) { backStackEntry ->
-            val viewModel = hiltViewModel<FeedViewModel>(backStackEntry)
             FeedScreen(
-                viewModel = viewModel,
+                viewModel = feedViewModel,
                 onOpenDrawer = onOpenDrawer,
                 onNavigateSearch = {
                     navController.navigate(MainRoute.FeedSearch.route)
