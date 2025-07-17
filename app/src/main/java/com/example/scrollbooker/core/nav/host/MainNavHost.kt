@@ -7,6 +7,7 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,6 +37,7 @@ val MainTabSaver: Saver<MainTab, String> = Saver(
 @Composable
 fun MainNavHost(authViewModel: AuthViewModel) {
     val mainViewModel: MainUIViewModel = hiltViewModel()
+    val businessTypes by mainViewModel.businessTypesState.collectAsState()
 
     val saveableStateHolder = rememberSaveableStateHolder()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -97,7 +99,12 @@ fun MainNavHost(authViewModel: AuthViewModel) {
                         )
                     }
 
-                    is MainTab.Search -> SearchNavHost(navController = navControllers[MainTab.Search]!!)
+                    is MainTab.Search -> {
+                        SearchNavHost(
+                            businessTypes = businessTypes,
+                            navController = navControllers[MainTab.Search]!!
+                        )
+                    }
 
                     is MainTab.Appointments -> {
                         Box(Modifier.fillMaxSize()) {

@@ -5,6 +5,6 @@ import com.example.scrollbooker.entity.businessType.domain.model.BusinessType
 import kotlinx.coroutines.flow.Flow
 
 interface BusinessTypeRepository {
-    fun getAllBusinessTypes(): List<BusinessType>
+    suspend fun getAllBusinessTypes(): List<BusinessType>
     fun getAllPaginatedBusinessTypes(): Flow<PagingData<BusinessType>>
 }

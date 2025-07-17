@@ -161,13 +161,6 @@ fun AppointmentsScreen(
             is LoadState.Loading -> LoadingScreen()
             is LoadState.Error -> ErrorScreen()
             is LoadState.NotLoading -> {
-                if(appointments.itemCount == 0) {
-                    MessageScreen(
-                        message = stringResource(R.string.dontHaveAppointmentsYet),
-                        icon = painterResource(R.drawable.ic_calendar_outline)
-                    )
-                }
-
                 LazyColumn(Modifier.fillMaxSize()) {
                     item { Spacer(Modifier.height(BasePadding)) }
 
@@ -203,6 +196,20 @@ fun AppointmentsScreen(
                     }
                 }
             }
+        }
+    }
+
+    Box {
+        when(appointments.loadState.refresh) {
+            is LoadState.NotLoading -> {
+                if(appointments.itemCount == 0) {
+                    MessageScreen(
+                        message = stringResource(R.string.dontHaveAppointmentsYet),
+                        icon = painterResource(R.drawable.ic_calendar_outline)
+                    )
+                }
+            }
+            else -> Unit
         }
     }
 }

@@ -6,6 +6,7 @@ fun BusinessTypeDto.toDomain(): BusinessType {
     return BusinessType(
         id = id,
         name = name,
-        businessDomainId = businessDomainId
+        businessDomainId = businessDomainId,
+        plural = plural
     )
 }

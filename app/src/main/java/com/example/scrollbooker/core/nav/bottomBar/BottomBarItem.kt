@@ -28,7 +28,6 @@ import com.example.scrollbooker.core.nav.routes.MainRoute.Appointments
 import com.example.scrollbooker.core.nav.routes.MainRoute.Inbox
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
-import com.example.scrollbooker.ui.theme.Primary
 
 @Composable
 fun BottomBarItem(
@@ -48,6 +47,7 @@ fun BottomBarItem(
     }
 
     val painter = if(isSelected) tab.painterSolid else tab.painterOutline
+    val iconSize = if(tab.route == MainTab.Search.route) 35.dp else 27.5.dp
 
     Column(modifier = modifier
         .clickable(
@@ -84,21 +84,12 @@ fun BottomBarItem(
             }
         ) {
             Box {
-                if(tab.route == MainTab.Search.route) {
-                    Icon(
-                        modifier = Modifier.size(35.dp),
-                        painter = painterResource(painter),
-                        contentDescription = null,
-                        tint = if (isSelected) Primary else Color.Gray,
-                    )
-                } else {
-                    Icon(
-                        modifier = Modifier.size(27.5.dp),
-                        painter = painterResource(painter),
-                        contentDescription = null,
-                        tint = contentColor,
-                    )
-                }
+                Icon(
+                    modifier = Modifier.size(iconSize),
+                    painter = painterResource(painter),
+                    contentDescription = null,
+                    tint = contentColor,
+                )
             }
         }
         Text(
