@@ -37,7 +37,7 @@ val MainTabSaver: Saver<MainTab, String> = Saver(
 @Composable
 fun MainNavHost(authViewModel: AuthViewModel) {
     val mainViewModel: MainUIViewModel = hiltViewModel()
-    val businessTypes by mainViewModel.businessTypesState.collectAsState()
+    val businessTypesState by mainViewModel.businessTypesState.collectAsState()
 
     val saveableStateHolder = rememberSaveableStateHolder()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -62,35 +62,52 @@ fun MainNavHost(authViewModel: AuthViewModel) {
     val currentBackStackEntry by currentNavController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry?.destination?.route
 
-    Scaffold(
-        bottomBar = {
-            BottomBar(
-                appointmentsNumber = mainViewModel.appointmentsState,
-                drawerState = drawerState,
-                currentTab = currentTab,
-                currentRoute = currentRoute,
-                onNavigate = { currentTab = it }
-            )
-        }
-    ) { innerPadding ->
-        Box(modifier = Modifier.fillMaxSize()) {
-            saveableStateHolder.SaveableStateProvider(currentTab.route) {
-                when (currentTab) {
-                    is MainTab.Feed -> {
-                        ModalNavigationDrawer(
-                            drawerContent = { AppDrawer() },
-                            scrimColor = Color(0xFF121212).copy(0.7f),
-                            drawerState = drawerState,
-                            gesturesEnabled = drawerState.currentValue == DrawerValue.Open,
-                        ) {
-                            FeedNavHost(
-                                navController = navControllers[MainTab.Feed]!!,
-                                onOpenDrawer = { scope.launch { drawerState.open() } }
+    Box(modifier = Modifier.fillMaxSize()) {
+        saveableStateHolder.SaveableStateProvider(currentTab.route) {
+            when (currentTab) {
+                is MainTab.Feed -> {
+                    ModalNavigationDrawer(
+                        drawerContent = { AppDrawer(businessTypesState = businessTypesState) },
+                        scrimColor = Color(0xFF121212).copy(0.7f),
+                        drawerState = drawerState,
+                        gesturesEnabled = drawerState.currentValue == DrawerValue.Open,
+                    ) {
+                        Scaffold(
+                            bottomBar = {
+                                BottomBar(
+                                    appointmentsNumber = mainViewModel.appointmentsState,
+                                    currentTab = currentTab,
+                                    currentRoute = currentRoute,
+                                    onNavigate = { currentTab = it }
+                                )
+                            }
+                        ) { innerPadding ->
+                            DefaultTabContainer(
+                                navController = navControllers[MainTab.Inbox]!!,
+                                enablePadding = false,
+                                innerPadding = innerPadding,
+                                content = {
+                                    FeedNavHost(
+                                        navController = navControllers[MainTab.Feed]!!,
+                                        onOpenDrawer = { scope.launch { drawerState.open() } }
+                                    )
+                                }
                             )
                         }
                     }
+                }
 
-                    is MainTab.Inbox -> {
+                is MainTab.Inbox -> {
+                    Scaffold(
+                        bottomBar = {
+                            BottomBar(
+                                appointmentsNumber = mainViewModel.appointmentsState,
+                                currentTab = currentTab,
+                                currentRoute = currentRoute,
+                                onNavigate = { currentTab = it }
+                            )
+                        }
+                    ) { innerPadding ->
                         DefaultTabContainer(
                             navController = navControllers[MainTab.Inbox]!!,
                             enablePadding = false,
@@ -98,23 +115,68 @@ fun MainNavHost(authViewModel: AuthViewModel) {
                             content = { InboxNavHost(navController = it) }
                         )
                     }
+                }
 
-                    is MainTab.Search -> {
-                        SearchNavHost(
-                            businessTypes = businessTypes,
-                            navController = navControllers[MainTab.Search]!!
-                        )
-                    }
-
-                    is MainTab.Appointments -> {
-                        Box(Modifier.fillMaxSize()) {
-                            AppointmentsNavHost(
-                                navController = navControllers[MainTab.Appointments]!!,
-                                mainViewModel = mainViewModel
+                is MainTab.Search -> {
+                    Scaffold(
+                        bottomBar = {
+                            BottomBar(
+                                appointmentsNumber = mainViewModel.appointmentsState,
+                                currentTab = currentTab,
+                                currentRoute = currentRoute,
+                                onNavigate = { currentTab = it }
                             )
                         }
+                    ) { innerPadding ->
+                        DefaultTabContainer(
+                            navController = navControllers[MainTab.Inbox]!!,
+                            enablePadding = false,
+                            innerPadding = innerPadding,
+                            content = {
+                                SearchNavHost(
+                                    businessTypesState = businessTypesState,
+                                    navController = navControllers[MainTab.Search]!!
+                                )
+                            }
+                        )
                     }
-                    is MainTab.Profile -> {
+                }
+
+                is MainTab.Appointments -> {
+                    Scaffold(
+                        bottomBar = {
+                            BottomBar(
+                                appointmentsNumber = mainViewModel.appointmentsState,
+                                currentTab = currentTab,
+                                currentRoute = currentRoute,
+                                onNavigate = { currentTab = it }
+                            )
+                        }
+                    ) { innerPadding ->
+                        DefaultTabContainer(
+                            navController = navControllers[MainTab.Inbox]!!,
+                            enablePadding = false,
+                            innerPadding = innerPadding,
+                            content = {
+                                AppointmentsNavHost(
+                                    navController = navControllers[MainTab.Appointments]!!,
+                                    mainViewModel = mainViewModel
+                                )
+                            }
+                        )
+                    }
+                }
+                is MainTab.Profile -> {
+                    Scaffold(
+                        bottomBar = {
+                            BottomBar(
+                                appointmentsNumber = mainViewModel.appointmentsState,
+                                currentTab = currentTab,
+                                currentRoute = currentRoute,
+                                onNavigate = { currentTab = it }
+                            )
+                        }
+                    ) { innerPadding ->
                         DefaultTabContainer(
                             enablePadding = false,
                             navController = navControllers[MainTab.Profile]!!,

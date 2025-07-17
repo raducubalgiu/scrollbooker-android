@@ -234,4 +234,6 @@
     <string name="cancelRequest">Anulează cererea</string>
     <string name="date">Data</string>
     <string name="proposedProfession">Funcția propusă</string>
+    <string name="allServices">Toate Serviciile</string>
+    <string name="anytimeAnyHour">Oricând la orice oră</string>
 </resources>

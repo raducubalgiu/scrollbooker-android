@@ -24,7 +24,6 @@ import com.example.scrollbooker.ui.theme.Divider
 @Composable
 fun BottomBar(
     appointmentsNumber: Int,
-    drawerState: DrawerState,
     currentTab: MainTab,
     currentRoute: String?,
     onNavigate: (MainTab) -> Unit
@@ -37,7 +36,7 @@ fun BottomBar(
     val dividerColor = if (isFeedTab) Color(0xFF3A3A3A) else Divider
     val containerColor = if(isFeedTab) Color(0xFF121212) else Background
 
-    val isVisible = currentRoute in bottomBarRoutes && !drawerState.isAnimationRunning && drawerState.isClosed
+    val isVisible = currentRoute in bottomBarRoutes
 
     AnimatedVisibility(
         visible = isVisible,
