@@ -23,6 +23,7 @@ import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,19 +34,24 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
-import com.example.scrollbooker.components.core.inputs.InputRadio
+import com.example.scrollbooker.components.core.inputs.InputCheckbox
+import com.example.scrollbooker.core.nav.MainUIViewModel
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.businessDomain.domain.model.BusinessDomain
 import com.example.scrollbooker.entity.businessType.domain.model.BusinessType
 import com.example.scrollbooker.ui.theme.headlineMedium
+import androidx.compose.runtime.getValue
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun AppDrawer(
+    viewModel: MainUIViewModel,
     businessDomainsState: FeatureState<List<BusinessDomain>>
 ) {
+    val selectedBusinessTypes by viewModel.selectedBusinessTypes.collectAsState()
+
     val businessTypes = listOf(
         BusinessType(
             id = 1,
@@ -66,7 +72,7 @@ fun AppDrawer(
             plural = "Frizerii"
         ),
         BusinessType(
-            id = 3,
+            id = 4,
             name = "Salon de infrumusetare",
             businessDomainId = 1,
             plural = "Saloane de infrumusetare"
@@ -141,10 +147,10 @@ fun AppDrawer(
                                         val elements = businessTypes.filter { businessType.businessDomainId == businessDomain.id }
 
                                         if(elements.isNotEmpty()) {
-                                            InputRadio(
+                                            InputCheckbox(
                                                 modifier = Modifier.background(Color(0xFF121212)),
-                                                selected = index == 0,
-                                                onSelect = {},
+                                                checked = selectedBusinessTypes.contains(businessType.id),
+                                                onCheckedChange = { viewModel.setBusinessType(businessType.id) },
                                                 headLine = businessType.plural,
                                                 contentColor = Color(0xFFE0E0E0)
                                             )

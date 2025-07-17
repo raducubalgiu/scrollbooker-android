@@ -4,9 +4,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxColors
@@ -18,6 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.shimmer.rememberShimmerBrush
+import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
@@ -32,22 +35,36 @@ fun InputCheckbox(
     onCheckedChange: () -> Unit,
     isEnabled: Boolean = true,
     headLine: String,
+    contentColor: Color = OnBackground,
+    leadingIcon: (@Composable () -> Unit)? = null
 ) {
     Row(
-        modifier
+        Modifier
             .fillMaxWidth()
             .height(70.dp)
             .background(Background)
-            .clickable { if(isEnabled) onCheckedChange() },
+            .clickable { if(isEnabled) onCheckedChange() }
+            .then(modifier),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(
-            modifier = Modifier.padding(start = SpacingXXL),
-            text = headLine,
-            style = bodyLarge,
-            color = OnBackground
-        )
+        Row(
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = SpacingXXL),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if(leadingIcon != null) {
+                leadingIcon()
+                Spacer(Modifier.width(SpacingS))
+            }
+
+            Text(
+                text = headLine,
+                style = bodyLarge,
+                color = contentColor,
+            )
+        }
         Checkbox(
             modifier = Modifier.padding(end = SpacingXXL),
             checked = checked,

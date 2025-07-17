@@ -71,7 +71,12 @@ fun MainNavHost(authViewModel: AuthViewModel) {
             when (currentTab) {
                 is MainTab.Feed -> {
                     ModalNavigationDrawer(
-                        drawerContent = { AppDrawer(businessDomainsState = businessDomainsState) },
+                        drawerContent = {
+                            AppDrawer(
+                                viewModel = mainViewModel,
+                                businessDomainsState = businessDomainsState
+                            )
+                        },
                         scrimColor = Color(0xFF121212).copy(0.7f),
                         drawerState = drawerState,
                         gesturesEnabled = drawerState.currentValue == DrawerValue.Open,

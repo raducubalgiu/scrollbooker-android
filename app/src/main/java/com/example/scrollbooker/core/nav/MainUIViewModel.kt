@@ -14,6 +14,7 @@ import com.example.scrollbooker.entity.businessType.domain.useCase.GetAllBusines
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -33,6 +34,9 @@ class MainUIViewModel @Inject constructor(
     private val _businessDomainsState = MutableStateFlow<FeatureState<List<BusinessDomain>>>(FeatureState.Loading)
     val businessDomainsState: StateFlow<FeatureState<List<BusinessDomain>>> = _businessDomainsState
 
+    private val _selectedBusinessTypes = MutableStateFlow<Set<Int>>(emptySet())
+    val selectedBusinessTypes: StateFlow<Set<Int>> = _selectedBusinessTypes
+
     init {
         loadAppointmentsNumber()
         loadAllBusinessTypes()
@@ -46,6 +50,12 @@ class MainUIViewModel @Inject constructor(
     fun decreaseAppointmentsNumber() {
         if(appointmentsState > 0) {
             appointmentsState = appointmentsState - 1
+        }
+    }
+
+    fun setBusinessType(id: Int) {
+        _selectedBusinessTypes.update { current ->
+            if(current.contains(id)) current - 1 else current + 1
         }
     }
 
