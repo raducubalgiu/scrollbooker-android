@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -16,32 +17,28 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.ShapeDefaults
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -53,66 +50,48 @@ import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
+import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.ui.theme.Background
+import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun FeedSearchScreen(
+fun FeedSearchResultsScreen(
     viewModel: FeedSearchViewModel,
-    onBack: () -> Unit,
-    onGoToSearch: () -> Unit
+    onBack: () -> Unit
 ) {
-    var value by remember { mutableStateOf("") }
+    val tabs = listOf(
+        "For You",
+        "Users",
+        "Last Minute",
+        "Instant Booking",
+        "Servicii",
+        "Reviews"
+    )
 
-    val focusManager = LocalFocusManager.current
-    val focusRequester = remember { FocusRequester() }
-    val keyboardController = LocalSoftwareKeyboardController.current
+    val pagerState = rememberPagerState(initialPage = 0 ) { 6 }
+    val selectedTabIndex = pagerState.currentPage
     val coroutineScope = rememberCoroutineScope()
 
-    LaunchedEffect(Unit) {
-        delay(200)
-        focusRequester.requestFocus()
-        keyboardController?.show()
-    }
+    val value = ""
 
-    DisposableEffect(Unit) {
-        onDispose {
-            focusManager.clearFocus()
-            keyboardController?.hide()
-        }
-    }
-
-    fun handleSearch() {
-        keyboardController?.hide()
-        onGoToSearch()
-    }
-
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Background)
             .statusBarsPadding()
-    ) {
+    )  {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(end = BasePadding),
+            modifier = Modifier.fillMaxWidth().padding(end = BasePadding),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(modifier = Modifier.clickable(
-                onClick = {
-                    coroutineScope.launch {
-                        focusManager.clearFocus()
-                        keyboardController?.hide()
-                        delay(150)
-                        onBack()
-                    }
-                },
+                onClick = onBack,
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null
             )) {
@@ -130,11 +109,10 @@ fun FeedSearchScreen(
                 modifier = Modifier
                     .weight(1f)
                     .clip(shape = ShapeDefaults.Medium)
-                    .background(SurfaceBG)
-                    .focusRequester(focusRequester),
-                value = value,
+                    .background(SurfaceBG),
+                value = "",
                 singleLine = true,
-                onValueChange = { value = it },
+                onValueChange = {  },
                 textStyle = TextStyle(
                     color = Color.Black,
                     fontSize = 14.sp
@@ -177,7 +155,7 @@ fun FeedSearchScreen(
                             exit = fadeOut()
                         ) {
                             Icon(
-                                modifier = Modifier.clickable { value = "" },
+                                modifier = Modifier.clickable {  },
                                 painter = painterResource(R.drawable.ic_close_circle_solid),
                                 tint = Color.Gray.copy(alpha = 0.7f),
                                 contentDescription = null
@@ -190,19 +168,92 @@ fun FeedSearchScreen(
                     keyboardType = KeyboardType.Password
                 ),
                 keyboardActions = KeyboardActions(
-                    onSearch = { handleSearch() }
+                    onSearch = {
+
+                    }
                 )
             )
+        }
 
-            TextButton(
-                enabled = value.isNotEmpty(),
-                onClick = { handleSearch() }
-            ) {
-                Text(
-                    text = stringResource(R.string.search),
-                    style = bodyLarge,
-                    fontWeight = FontWeight.Bold
+        Spacer(Modifier.height(SpacingXS))
+
+        ScrollableTabRow(
+            containerColor = Background,
+            contentColor = OnSurfaceBG,
+            edgePadding = BasePadding,
+            selectedTabIndex = pagerState.currentPage,
+            indicator = {  tabPositions ->
+                Box(
+                    Modifier
+                        .tabIndicatorOffset(tabPositions[selectedTabIndex])
+                        .height(3.5.dp)
+                        .padding(horizontal = 20.dp)
+                        .background(
+                            color = OnBackground,
+                            shape = ShapeDefaults.Large
+                        )
                 )
+            },
+            divider = { HorizontalDivider(color = Divider, thickness = 0.55.dp) },
+        ) {
+            tabs.forEachIndexed { index, tab ->
+                val isSelected = selectedTabIndex == index
+
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    //.padding(vertical = 8.dp)
+                    .clickable {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(index)
+                        }
+                    },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                vertical = 10.dp,
+                                horizontal = 14.dp
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = tab,
+                            style = bodyLarge,
+                            fontSize = 16.sp,
+                            color = if (isSelected) OnSurfaceBG else Color.Gray,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
+                }
+            }
+        }
+
+        HorizontalPager(
+            state = pagerState,
+            beyondViewportPageCount = 0,
+            modifier = Modifier.fillMaxSize()
+        ) { page ->
+            when(page) {
+                0 -> Box(Modifier.fillMaxSize()) {
+                    Text("For You")
+                }
+                1 -> Box(Modifier.fillMaxSize()) {
+                    Text("Users")
+                }
+                2 -> Box(Modifier.fillMaxSize()) {
+                    Text("Servicii")
+                }
+                3 -> Box(Modifier.fillMaxSize()) {
+                    Text("Last Minute")
+                }
+                4 -> Box(Modifier.fillMaxSize()) {
+                    Text("Instant Booking")
+                }
+                5 -> Box(Modifier.fillMaxSize()) {
+                    Text("Reviews")
+                }
             }
         }
     }

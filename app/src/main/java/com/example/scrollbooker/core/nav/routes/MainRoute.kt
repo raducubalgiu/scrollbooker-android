@@ -2,7 +2,10 @@ package com.example.scrollbooker.core.nav.routes
 
 sealed class MainRoute(val route: String) {
     object Feed: MainRoute(route = "feed")
+
+    object FeedSearchNavigator: MainRoute(route = "feedSearchNavigator")
     object FeedSearch: MainRoute(route = "feedSearch")
+    object FeedSearchResults: MainRoute(route = "feedSearchResults")
 
     object Inbox: MainRoute(route = "inbox")
     object EmploymentRequestRespondNavigator: MainRoute(route = "employmentRequestRespondNavigator")
@@ -31,7 +34,6 @@ sealed class MainRoute(val route: String) {
     object CalendarNavigator: MainRoute(route = "calendarNavigator")
     object Calendar: MainRoute(route = "calendar")
     object AppointmentConfirmation: MainRoute(route = "appointmentConfirmation")
-
 
     object Camera: MainRoute(route = "camera")
 

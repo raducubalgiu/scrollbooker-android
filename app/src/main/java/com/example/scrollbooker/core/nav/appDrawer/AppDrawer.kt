@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -69,17 +70,18 @@ fun AppDrawer(
         Column(modifier = Modifier.fillMaxWidth()){
             Box(
                 modifier = Modifier
+                    .fillMaxWidth()
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
                         onClick = onBack
                     )
                     .padding(BasePadding),
-                contentAlignment = Alignment.CenterStart
+                contentAlignment = Alignment.CenterEnd
             ) {
                 Icon(
-                    modifier = Modifier.size(32.5.dp),
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    modifier = Modifier.size(30.dp),
+                    imageVector = Icons.Default.Close,
                     contentDescription = null,
                     tint = Color(0xFFE0E0E0),
                 )
