@@ -6,11 +6,14 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.appointment.domain.useCase.GetUserAppointmentsNumberUseCase
 import com.example.scrollbooker.entity.businessDomain.domain.model.BusinessDomain
 import com.example.scrollbooker.entity.businessDomain.domain.useCase.GetAllBusinessDomainsUseCase
 import com.example.scrollbooker.entity.businessType.domain.model.BusinessType
+import com.example.scrollbooker.entity.businessType.domain.useCase.GetAllBusinessTypesByBusinessDomainUseCase
 import com.example.scrollbooker.entity.businessType.domain.useCase.GetAllBusinessTypesUseCase
+import com.mapbox.geojson.Feature
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,20 +25,23 @@ import javax.inject.Inject
 class MainUIViewModel @Inject constructor(
     private val getUserAppointmentsNumberUseCase: GetUserAppointmentsNumberUseCase,
     private val getAllBusinessTypesUseCase: GetAllBusinessTypesUseCase,
-    private val getAllBusinessDomainsUseCase: GetAllBusinessDomainsUseCase
+    private val getAllBusinessDomainsUseCase: GetAllBusinessDomainsUseCase,
+    private val getAllBusinessTypesByBusinessDomainUseCase: GetAllBusinessTypesByBusinessDomainUseCase
 ): ViewModel() {
-
     var appointmentsState by mutableIntStateOf(0)
         private set
 
     private val _businessTypesState = MutableStateFlow<FeatureState<List<BusinessType>>>(FeatureState.Loading)
     val businessTypesState: StateFlow<FeatureState<List<BusinessType>>> = _businessTypesState
 
+    private val _businessTypesByBusinessDomainState = MutableStateFlow<Map<Int, FeatureState<List<BusinessType>>>>(emptyMap())
+    val businessTypesByBusinessDomainState: StateFlow<Map<Int, FeatureState<List<BusinessType>>>> = _businessTypesByBusinessDomainState
+
     private val _businessDomainsState = MutableStateFlow<FeatureState<List<BusinessDomain>>>(FeatureState.Loading)
     val businessDomainsState: StateFlow<FeatureState<List<BusinessDomain>>> = _businessDomainsState
 
-    private val _selectedBusinessTypes = MutableStateFlow<Set<Int>>(emptySet())
-    val selectedBusinessTypes: StateFlow<Set<Int>> = _selectedBusinessTypes
+//    private val _selectedBusinessTypes = MutableStateFlow<Set<Int>>(emptySet())
+//    val selectedBusinessTypes: StateFlow<Set<Int>> = _selectedBusinessTypes
 
     init {
         loadAppointmentsNumber()
@@ -53,9 +59,23 @@ class MainUIViewModel @Inject constructor(
         }
     }
 
-    fun setBusinessType(id: Int) {
-        _selectedBusinessTypes.update { current ->
-            if(current.contains(id)) current - 1 else current + 1
+    fun hasBusinessTypesForMain(businessDomainId: Int): Boolean {
+        return _businessTypesByBusinessDomainState.value[businessDomainId] != null
+    }
+
+    fun fetchBusinessTypesByBusinessDomain(businessDomainId: Int) {
+        viewModelScope.launch {
+            _businessTypesByBusinessDomainState.update { current ->
+                current + (businessDomainId to FeatureState.Loading)
+            }
+
+            val result = withVisibleLoading {
+                getAllBusinessTypesByBusinessDomainUseCase(businessDomainId)
+            }
+
+            _businessTypesByBusinessDomainState.update { current ->
+                current + (businessDomainId to result)
+            }
         }
     }
 

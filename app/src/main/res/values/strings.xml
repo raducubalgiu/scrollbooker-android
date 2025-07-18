@@ -236,4 +236,6 @@
     <string name="proposedProfession">Funcția propusă</string>
     <string name="allServices">Toate Serviciile</string>
     <string name="anytimeAnyHour">Oricând la orice oră</string>
+    <string name="chooseWhatDoYouWantToSeeInFeed">"Alege ce vrei să vezi în Feed-ul tău</string>
+    <string name="clearFilters">Elimină filtrele</string>
 </resources>

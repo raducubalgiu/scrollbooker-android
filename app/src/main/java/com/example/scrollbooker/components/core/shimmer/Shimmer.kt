@@ -8,13 +8,30 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.SurfaceBG
+
+enum class ShimmerMode {
+    SYSTEM,
+    LIGHT,
+    DARK
+}
 
 @Composable
-fun rememberShimmerBrush(): Brush {
+fun rememberShimmerBrush(
+    mode: ShimmerMode = ShimmerMode.SYSTEM
+): Brush {
+    val color = when(mode) {
+        ShimmerMode.SYSTEM -> Divider
+        ShimmerMode.LIGHT -> Color(0xFFCCCCCC)
+        ShimmerMode.DARK -> Color(0xFF3A3A3A)
+    }
+
+
     val shimmerColors = listOf(
-        Color.LightGray.copy(alpha = 0.6f),
-        Color.LightGray.copy(alpha = 0.2f),
-        Color.LightGray.copy(alpha = 0.6f)
+        color.copy(alpha = 0.5f),
+        color.copy(alpha = 0.2f),
+        color.copy(alpha = 0.5f)
     )
 
     val transition = rememberInfiniteTransition()

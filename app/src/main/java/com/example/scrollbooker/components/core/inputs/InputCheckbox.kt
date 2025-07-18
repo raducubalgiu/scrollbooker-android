@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.shimmer.rememberShimmerBrush
 import com.example.scrollbooker.core.util.Dimens.SpacingS
@@ -36,12 +37,13 @@ fun InputCheckbox(
     isEnabled: Boolean = true,
     headLine: String,
     contentColor: Color = OnBackground,
+    height: Dp = 70.dp,
     leadingIcon: (@Composable () -> Unit)? = null
 ) {
     Row(
         Modifier
             .fillMaxWidth()
-            .height(70.dp)
+            .height(height)
             .background(Background)
             .clickable { if(isEnabled) onCheckedChange() }
             .then(modifier),

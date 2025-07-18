@@ -23,6 +23,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.scrollbooker.core.nav.MainUIViewModel
+import com.example.scrollbooker.core.nav.appDrawer.AppDrawer
 import com.example.scrollbooker.core.nav.bottomBar.MainTab
 import com.example.scrollbooker.core.nav.containers.DefaultTabContainer
 import com.example.scrollbooker.screens.auth.AuthViewModel
@@ -74,7 +75,9 @@ fun MainNavHost(authViewModel: AuthViewModel) {
                         drawerContent = {
                             AppDrawer(
                                 viewModel = mainViewModel,
-                                businessDomainsState = businessDomainsState
+                                feedViewModel = feedViewModel,
+                                businessDomainsState = businessDomainsState,
+                                onBack = { scope.launch { drawerState.close() } }
                             )
                         },
                         scrimColor = Color(0xFF121212).copy(0.7f),
