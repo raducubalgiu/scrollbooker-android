@@ -112,7 +112,7 @@ fun AppDrawer(
                                     style = bodyLarge,
                                     fontWeight = FontWeight.Normal,
                                     color = Color.Gray,
-                                    text = "Filtreaza continutul video in functie de preferintele tale",
+                                    text = stringResource(R.string.filterVideoContentAccordingToYouPreferences),
                                 )
                                 Spacer(Modifier.height(SpacingXL))
                             }

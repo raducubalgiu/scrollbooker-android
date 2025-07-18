@@ -2,6 +2,7 @@ package com.example.scrollbooker.entity.notification.data.remote
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.notification.data.mappers.toDomain
 import com.example.scrollbooker.entity.notification.domain.model.Notification
 import timber.log.Timber
@@ -23,7 +24,7 @@ class NotificationPagingSource(
         val limit = 10
 
         return try {
-            val response = api.getUserNotifications(page, limit)
+            val response = withVisibleLoading { api.getUserNotifications(page, limit) }
             val notifications = response.results.map { it.toDomain() }
 
             val totalLoaded = (page - 1) * limit + response.results.size
