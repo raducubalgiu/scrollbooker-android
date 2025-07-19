@@ -58,7 +58,6 @@ fun ProfilePostDetailScreen(
         .background(Color(0xFF121212))
     ) {
         PostsPager(
-            pagerState = pagerState,
             posts = posts,
             isVisibleTab = true,
             paddingBottom = 80.dp,

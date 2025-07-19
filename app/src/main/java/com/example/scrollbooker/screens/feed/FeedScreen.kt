@@ -16,7 +16,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.example.scrollbooker.modules.posts.common.PostsList
+import com.example.scrollbooker.modules.posts.PostsPager
 import com.example.scrollbooker.screens.feed.components.FeedTabs
 import kotlinx.coroutines.launch
 
@@ -65,14 +65,16 @@ fun FeedScreen(
             when(page) {
                 0 -> {
                     val posts = viewModel.bookNowPosts.collectAsLazyPagingItems()
-                    PostsList(
+
+                    PostsPager(
                         posts = posts,
                         isVisibleTab = pagerState.currentPage == page && !isUserSwiping
                     )
                 }
                 1 -> {
                     val posts = viewModel.followingPosts.collectAsLazyPagingItems()
-                    PostsList(
+
+                    PostsPager(
                         posts = posts,
                         isVisibleTab = pagerState.currentPage == page && !isUserSwiping
                     )

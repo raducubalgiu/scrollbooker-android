@@ -34,6 +34,7 @@ fun PostItem(
     onOpenCalendar: () -> Unit
 ) {
     val context = LocalContext.current
+    val url = post.mediaFiles.first().url
 
     val exoPlayer = remember {
         ExoPlayer
@@ -41,7 +42,6 @@ fun PostItem(
             .setMediaSourceFactory(DefaultMediaSourceFactory(VideoPlayerCache.getFactory(context)))
             .build()
             .apply {
-                val url = post.mediaFiles.first().url
                 setMediaItem(MediaItem.fromUri(url))
                 repeatMode = Player.REPEAT_MODE_ONE
                 prepare()

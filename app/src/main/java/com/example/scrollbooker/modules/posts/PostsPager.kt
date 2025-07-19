@@ -19,8 +19,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.VerticalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -46,9 +46,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
+import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.sheet.Sheet
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.modules.reviews.ReviewsViewModel
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.entity.post.domain.model.Post
@@ -70,10 +70,11 @@ import kotlinx.coroutines.launch
 @Composable
 fun PostsPager(
     posts: LazyPagingItems<Post>,
-    pagerState: PagerState,
     isVisibleTab: Boolean,
     paddingBottom: Dp = 90.dp,
 ) {
+    val pagerState = rememberPagerState(initialPage = 0) { posts.itemCount }
+
     val pagerViewModel: PostsPagerViewModel = hiltViewModel()
     val commentsViewModel: CommentsViewModel = hiltViewModel()
     val reviewsViewModel: ReviewsViewModel = hiltViewModel()
@@ -286,28 +287,36 @@ fun PostsPager(
         }
     }
 
-    VerticalPager(
-        state = pagerState,
-        beyondViewportPageCount = 1,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = paddingBottom)
-    ) { page ->
-        when(posts.loadState.append) {
-            is LoadState.Error -> "Something went wrong"
-            is LoadState.Loading -> LoadMoreSpinner()
+    posts.apply {
+        when(loadState.refresh) {
+            is LoadState.Loading -> Unit
+            is LoadState.Error -> ErrorScreen()
             is LoadState.NotLoading -> {
-                val post = posts[page]
+                VerticalPager(
+                    state = pagerState,
+                    beyondViewportPageCount = 1,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = paddingBottom)
+                ) { page ->
+                    when(posts.loadState.append) {
+                        is LoadState.Error -> "Something went wrong"
+                        is LoadState.Loading -> LoadMoreSpinner()
+                        is LoadState.NotLoading -> {
+                            val post = posts[page]
 
-                if(post != null) {
-                    PostItem(
-                        viewModel = pagerViewModel,
-                        post = post,
-                        playWhenReady = pagerState.currentPage == page && isVisibleTab,
-                        onOpenReviews = { handleOpenSheet(PostSheetsContent.ReviewsSheet(post.user.id)) },
-                        onOpenComments = { handleOpenSheet(PostSheetsContent.CommentsSheet(post.id)) },
-                        onOpenCalendar = { handleOpenSheet(PostSheetsContent.CalendarSheet(post.user.id)) }
-                    )
+                            if(post != null) {
+                                PostItem(
+                                    viewModel = pagerViewModel,
+                                    post = post,
+                                    playWhenReady = pagerState.currentPage == page && isVisibleTab,
+                                    onOpenReviews = { handleOpenSheet(PostSheetsContent.ReviewsSheet(post.user.id)) },
+                                    onOpenComments = { handleOpenSheet(PostSheetsContent.CommentsSheet(post.id)) },
+                                    onOpenCalendar = { handleOpenSheet(PostSheetsContent.CalendarSheet(post.user.id)) }
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
