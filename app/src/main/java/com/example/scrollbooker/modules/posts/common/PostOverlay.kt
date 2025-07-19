@@ -16,10 +16,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
@@ -35,18 +33,15 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.AvatarWithRating
-import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.entity.post.domain.model.PostCounters
 import com.example.scrollbooker.modules.posts.PostInteractionState
-import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.Primary
-import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
 
 @Composable
@@ -61,19 +56,18 @@ fun PostOverlay(
 ) {
     Box(modifier = Modifier
         .fillMaxSize()
+        .padding(
+            top = SpacingS,
+            start = SpacingS,
+            bottom = SpacingS
+        )
         .zIndex(3f),
         contentAlignment = Alignment.BottomCenter
     ) {
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = SpacingS),
+        Row(modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.Bottom
         ) {
-            Column(
-                modifier = Modifier
-                    .padding(start = SpacingS)
-                    .weight(1f)
-            ) {
+            Column(modifier = Modifier.weight(1f)) {
                 Button(
                     onClick = {},
                     modifier = Modifier
@@ -132,7 +126,7 @@ fun PostOverlay(
             ) {
                 AvatarWithRating(
                     rating = "4.5",
-                    size = 65.dp
+                    size = 60.dp
                 )
 
                 Spacer(Modifier.height(SpacingM))
