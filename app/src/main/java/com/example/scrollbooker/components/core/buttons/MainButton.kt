@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
 
 @Composable
@@ -26,6 +27,7 @@ fun MainButton(
     enabled: Boolean = true,
     title: String,
     colors: ButtonColors = ButtonDefaults.buttonColors(),
+    contentPadding: PaddingValues = PaddingValues(BasePadding),
     shape: Shape = ShapeDefaults.ExtraLarge
 ) {
     Button(
@@ -33,7 +35,7 @@ fun MainButton(
         modifier = if(fullWidth) modifier.fillMaxWidth() else modifier,
         enabled = enabled,
         colors = colors,
-        contentPadding = PaddingValues(BasePadding),
+        contentPadding = contentPadding,
         shape = shape
     ) {
         if(isLoading) {
@@ -44,7 +46,7 @@ fun MainButton(
             )
         } else {
             Text(
-                style = bodyMedium,
+                style = bodyLarge,
                 fontWeight = FontWeight.SemiBold,
                 text = title
             )

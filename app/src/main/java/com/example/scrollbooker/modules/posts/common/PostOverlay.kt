@@ -1,27 +1,53 @@
 package com.example.scrollbooker.modules.posts.common
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.AvatarWithRating
+import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingM
+import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.entity.post.domain.model.PostCounters
 import com.example.scrollbooker.modules.posts.PostInteractionState
+import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Error
+import com.example.scrollbooker.ui.theme.OnPrimary
+import com.example.scrollbooker.ui.theme.Primary
+import com.example.scrollbooker.ui.theme.bodyLarge
+import com.example.scrollbooker.ui.theme.bodyMedium
 
 @Composable
 fun PostOverlay(
@@ -40,15 +66,64 @@ fun PostOverlay(
     ) {
         Row(modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = BasePadding),
+            .padding(bottom = SpacingS),
             verticalAlignment = Alignment.Bottom
         ) {
             Column(
                 modifier = Modifier
-                    .padding(start = BasePadding)
+                    .padding(start = SpacingS)
                     .weight(1f)
             ) {
-                Text("Hello World")
+                Button(
+                    onClick = {},
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = SpacingXL),
+                    shape = ShapeDefaults.Medium,
+                    contentPadding = PaddingValues(
+                        vertical = 11.dp,
+                        horizontal = BasePadding
+                    ),
+                    colors = ButtonDefaults.buttonColors(
+                        contentColor = OnPrimary,
+                        containerColor = Primary.copy(0.9f)
+                    ),
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                                onClick = onOpenCalendar
+                            ),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(20.dp),
+                            painter = painterResource(R.drawable.ic_calendar_outline),
+                            contentDescription = null,
+                            tint = OnPrimary
+                        )
+
+                        Spacer(Modifier.width(BasePadding))
+
+                        Text(
+                            style = bodyMedium,
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            text = "Intervale disponibile"
+                        )
+
+                        Icon(
+                            modifier = Modifier.size(20.dp),
+                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                            contentDescription = null,
+                            tint = OnPrimary
+                        )
+                    }
+                }
             }
 
             Column(
@@ -56,10 +131,11 @@ fun PostOverlay(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 AvatarWithRating(
-                    rating = "4.5"
+                    rating = "4.5",
+                    size = 65.dp
                 )
 
-                Spacer(Modifier.height(SpacingXL))
+                Spacer(Modifier.height(SpacingM))
 
                 PostActionButton(
                     isEnabled = !interactionState.isLiking,

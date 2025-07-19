@@ -42,6 +42,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.ui.theme.Error
 
 @Composable
 fun FeedTabs(
@@ -81,19 +82,9 @@ fun FeedTabs(
 
             TabRow(
                 selectedTabIndex = selectedTabIndex,
-                modifier = Modifier.width(220.dp),
+                modifier = Modifier.width(210.dp),
                 containerColor = Color.Transparent,
-                indicator = { tabPositions ->
-//                    val currentTab = tabPositions[selectedTabIndex]
-//
-//                    Box(
-//                        Modifier
-//                            .tabIndicatorOffset(currentTab)
-//                            .padding(horizontal = 50.dp)
-//                            .height(3.dp)
-//                            .background(Color.White)
-//                    )
-                },
+                indicator = {},
                 divider = {}
             ) {
                 tabs.forEachIndexed { index, title ->
@@ -106,10 +97,10 @@ fun FeedTabs(
 
                     Box(modifier = Modifier
                         .clip(shape = ShapeDefaults.ExtraLarge)
-                        .background(if(isSelected) Primary.copy(alpha = 0.5f) else Color.Transparent)
+                        .background(if(isSelected) Primary.copy(alpha = 0.6f) else Color.Transparent)
                         .padding(
-                            vertical = 10.dp,
-                            horizontal = SpacingM
+                            vertical = 9.dp,
+                            horizontal = SpacingS
                         ),
                         contentAlignment = Alignment.Center
                     ) {
