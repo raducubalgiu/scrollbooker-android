@@ -19,7 +19,6 @@ class PostsPagerViewModel @Inject constructor(
     private val bookmarkPostUseCase: BookmarkPostUseCase,
     private val unBookmarkPostUseCase: UnBookmarkPostUseCase
 ): ViewModel() {
-
     private val _interactionMap = mutableMapOf<Int, MutableStateFlow<PostInteractionState>>()
 
     fun interactionState(postId: Int): StateFlow<PostInteractionState> {

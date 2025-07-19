@@ -28,6 +28,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -67,7 +68,7 @@ fun FeedSearchScreen(
     onBack: () -> Unit,
     onGoToSearch: () -> Unit
 ) {
-    var value by remember { mutableStateOf("") }
+    val search by viewModel.currentSearch.collectAsState()
 
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
@@ -132,9 +133,9 @@ fun FeedSearchScreen(
                     .clip(shape = ShapeDefaults.Medium)
                     .background(SurfaceBG)
                     .focusRequester(focusRequester),
-                value = value,
+                value = search,
                 singleLine = true,
-                onValueChange = { value = it },
+                onValueChange = { viewModel.updateSearch(it) },
                 textStyle = TextStyle(
                     color = Color.Black,
                     fontSize = 14.sp
@@ -162,7 +163,7 @@ fun FeedSearchScreen(
                             .fillMaxHeight(),
                             contentAlignment = Alignment.CenterStart
                         ) {
-                            if(value.isEmpty()) {
+                            if(search.isEmpty()) {
                                 Text(
                                     text = stringResource(R.string.search),
                                     color = Color.Gray,
@@ -172,12 +173,12 @@ fun FeedSearchScreen(
                             innerTextField()
                         }
                         AnimatedVisibility(
-                            visible = value.isNotEmpty(),
+                            visible = search.isNotEmpty(),
                             enter = fadeIn(),
                             exit = fadeOut()
                         ) {
                             Icon(
-                                modifier = Modifier.clickable { value = "" },
+                                modifier = Modifier.clickable {  },
                                 painter = painterResource(R.drawable.ic_close_circle_solid),
                                 tint = Color.Gray.copy(alpha = 0.7f),
                                 contentDescription = null
@@ -195,7 +196,7 @@ fun FeedSearchScreen(
             )
 
             TextButton(
-                enabled = value.isNotEmpty(),
+                enabled = search.isNotEmpty(),
                 onClick = { handleSearch() }
             ) {
                 Text(

@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.zIndex
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.AvatarWithRating
 import com.example.scrollbooker.core.util.Dimens.BasePadding
@@ -32,7 +33,9 @@ fun PostOverlay(
     onOpenComments: () -> Unit,
     onOpenCalendar: () -> Unit
 ) {
-    Box(modifier = Modifier.fillMaxSize(),
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .zIndex(3f),
         contentAlignment = Alignment.BottomCenter
     ) {
         Row(modifier = Modifier

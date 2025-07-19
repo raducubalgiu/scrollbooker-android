@@ -23,8 +23,7 @@ fun PostsList(
             is LoadState.NotLoading -> PostsPager(
                 posts = posts,
                 pagerState = pagerState,
-                isVisibleTab = isVisibleTab,
-                modifier = modifier
+                isVisibleTab = isVisibleTab
             )
         }
     }

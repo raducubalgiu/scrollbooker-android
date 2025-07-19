@@ -32,6 +32,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -59,6 +60,7 @@ import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.getValue
 
 @Composable
 fun FeedSearchResultsScreen(
@@ -78,7 +80,7 @@ fun FeedSearchResultsScreen(
     val selectedTabIndex = pagerState.currentPage
     val coroutineScope = rememberCoroutineScope()
 
-    val value = ""
+    val search by viewModel.currentSearch.collectAsState()
 
     Column(
         modifier = Modifier
@@ -110,9 +112,9 @@ fun FeedSearchResultsScreen(
                     .weight(1f)
                     .clip(shape = ShapeDefaults.Medium)
                     .background(SurfaceBG),
-                value = "",
+                value = search,
                 singleLine = true,
-                onValueChange = {  },
+                onValueChange = {},
                 textStyle = TextStyle(
                     color = Color.Black,
                     fontSize = 14.sp
@@ -140,7 +142,7 @@ fun FeedSearchResultsScreen(
                             .fillMaxHeight(),
                             contentAlignment = Alignment.CenterStart
                         ) {
-                            if(value.isEmpty()) {
+                            if(search.isEmpty()) {
                                 Text(
                                     text = stringResource(R.string.search),
                                     color = Color.Gray,
@@ -150,12 +152,15 @@ fun FeedSearchResultsScreen(
                             innerTextField()
                         }
                         AnimatedVisibility(
-                            visible = value.isNotEmpty(),
+                            visible = search.isNotEmpty(),
                             enter = fadeIn(),
                             exit = fadeOut()
                         ) {
                             Icon(
-                                modifier = Modifier.clickable {  },
+                                modifier = Modifier.clickable {
+                                    viewModel.clearSearch()
+                                    onBack()
+                                },
                                 painter = painterResource(R.drawable.ic_close_circle_solid),
                                 tint = Color.Gray.copy(alpha = 0.7f),
                                 contentDescription = null
@@ -201,7 +206,6 @@ fun FeedSearchResultsScreen(
 
                 Box(modifier = Modifier
                     .fillMaxWidth()
-                    //.padding(vertical = 8.dp)
                     .clickable {
                         coroutineScope.launch {
                             pagerState.animateScrollToPage(index)
@@ -213,7 +217,7 @@ fun FeedSearchResultsScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(
-                                vertical = 10.dp,
+                                vertical = 16.dp,
                                 horizontal = 14.dp
                             ),
                         contentAlignment = Alignment.Center

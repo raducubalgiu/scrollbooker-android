@@ -29,41 +29,41 @@ fun CommentsList(
     onLike: (LikeCommentDto) -> Unit,
     onCreateComment: (CreateComment) -> Unit
 ) {
-    if(comments.itemCount == 0) {
-        EmptyScreen(
-            modifier = Modifier.padding(top = 50.dp),
-            arrangement = Arrangement.Top,
-            icon = painterResource(R.drawable.ic_comment_outline),
-            message = stringResource(R.string.notFoundComments),
-        )
-    } else {
-        Column (
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            LazyColumn(Modifier.weight(1f)) {
-                items(newComments) { comment ->
-                    CommentItem(comment, onLike)
-                }
-
-                items(comments.itemCount) { index ->
-                    comments[index]?.let { comment ->
+    Column (
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            if(comments.itemCount == 0) {
+                EmptyScreen(
+                    icon = painterResource(R.drawable.ic_comment_outline),
+                    message = stringResource(R.string.notFoundComments),
+                )
+            } else {
+                LazyColumn(Modifier.weight(1f)) {
+                    items(newComments) { comment ->
                         CommentItem(comment, onLike)
                     }
-                }
 
-                item {
-                    when(comments.loadState.append) {
-                        is LoadState.Loading -> LoadMoreSpinner()
-                        is LoadState.Error -> "Something went wrong"
-                        is LoadState.NotLoading -> Unit
+                    items(comments.itemCount) { index ->
+                        comments[index]?.let { comment ->
+                            CommentItem(comment, onLike)
+                        }
+                    }
+
+                    item {
+                        when(comments.loadState.append) {
+                            is LoadState.Loading -> LoadMoreSpinner()
+                            is LoadState.Error -> "Something went wrong"
+                            is LoadState.NotLoading -> Unit
+                        }
                     }
                 }
             }
-
-            CommentFooter(
-                onCreateComment = onCreateComment
-            )
         }
+
+        CommentFooter(
+            onCreateComment = onCreateComment
+        )
     }
 }

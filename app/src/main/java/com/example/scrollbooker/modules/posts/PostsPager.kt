@@ -1,66 +1,40 @@
 package com.example.scrollbooker.modules.posts
 
 import android.annotation.SuppressLint
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.VerticalPager
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.sheet.Sheet
-import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.modules.reviews.ReviewsViewModel
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.entity.post.domain.model.Post
-import com.example.scrollbooker.modules.calendar.Calendar
 import com.example.scrollbooker.modules.calendar.CalendarViewModel
 import com.example.scrollbooker.modules.posts.comments.CommentsSheet
 import com.example.scrollbooker.modules.posts.comments.CommentsViewModel
+import com.example.scrollbooker.modules.posts.common.PlayerViewModel
 import com.example.scrollbooker.modules.posts.common.PostItem
 import com.example.scrollbooker.modules.posts.common.PostSheetsContent
+import com.example.scrollbooker.modules.posts.common.VideoViewModel
 import com.example.scrollbooker.modules.posts.reviews.ReviewsListSheet
-import com.example.scrollbooker.ui.theme.OnBackground
-import com.example.scrollbooker.ui.theme.SurfaceBG
-import com.example.scrollbooker.ui.theme.titleMedium
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
@@ -72,12 +46,12 @@ fun PostsPager(
     pagerState: PagerState,
     isVisibleTab: Boolean,
     paddingBottom: Dp = 90.dp,
-    modifier: Modifier = Modifier
 ) {
     val pagerViewModel: PostsPagerViewModel = hiltViewModel()
     val commentsViewModel: CommentsViewModel = hiltViewModel()
     val reviewsViewModel: ReviewsViewModel = hiltViewModel()
     val calendarViewModel: CalendarViewModel = hiltViewModel()
+    val playerViewModel: VideoViewModel = hiltViewModel()
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -287,7 +261,7 @@ fun PostsPager(
     VerticalPager(
         state = pagerState,
         beyondViewportPageCount = 1,
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .padding(bottom = paddingBottom)
     ) { page ->
@@ -300,6 +274,7 @@ fun PostsPager(
                 if(post != null) {
                     PostItem(
                         viewModel = pagerViewModel,
+                        //playerViewModel = playerViewModel,
                         post = post,
                         playWhenReady = pagerState.currentPage == page && isVisibleTab,
                         onOpenReviews = { handleOpenSheet(PostSheetsContent.ReviewsSheet(post.user.id)) },

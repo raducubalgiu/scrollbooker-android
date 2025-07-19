@@ -84,15 +84,15 @@ fun FeedTabs(
                 modifier = Modifier.width(220.dp),
                 containerColor = Color.Transparent,
                 indicator = { tabPositions ->
-                    val currentTab = tabPositions[selectedTabIndex]
-
-                    Box(
-                        Modifier
-                            .tabIndicatorOffset(currentTab)
-                            .padding(horizontal = 50.dp)
-                            .height(3.dp)
-                            .background(Color.White)
-                    )
+//                    val currentTab = tabPositions[selectedTabIndex]
+//
+//                    Box(
+//                        Modifier
+//                            .tabIndicatorOffset(currentTab)
+//                            .padding(horizontal = 50.dp)
+//                            .height(3.dp)
+//                            .background(Color.White)
+//                    )
                 },
                 divider = {}
             ) {
@@ -106,7 +106,7 @@ fun FeedTabs(
 
                     Box(modifier = Modifier
                         .clip(shape = ShapeDefaults.ExtraLarge)
-                        .background(if(isSelected) Primary.copy(alpha = 0.2f) else Color.Transparent)
+                        .background(if(isSelected) Primary.copy(alpha = 0.5f) else Color.Transparent)
                         .padding(
                             vertical = 10.dp,
                             horizontal = SpacingM
