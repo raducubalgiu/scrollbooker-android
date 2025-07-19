@@ -54,11 +54,12 @@ import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.entity.post.domain.model.Post
 import com.example.scrollbooker.modules.calendar.Calendar
 import com.example.scrollbooker.modules.calendar.CalendarViewModel
-import com.example.scrollbooker.modules.posts.comments.CommentsSheet
-import com.example.scrollbooker.modules.posts.comments.CommentsViewModel
+import com.example.scrollbooker.modules.posts.sheets.comments.CommentsSheet
+import com.example.scrollbooker.modules.posts.sheets.comments.CommentsViewModel
 import com.example.scrollbooker.modules.posts.common.PostItem
 import com.example.scrollbooker.modules.posts.common.PostSheetsContent
-import com.example.scrollbooker.modules.posts.reviews.ReviewsListSheet
+import com.example.scrollbooker.modules.posts.sheets.LocationSheet
+import com.example.scrollbooker.modules.posts.sheets.ReviewsListSheet
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.titleMedium
@@ -95,7 +96,9 @@ fun PostsPager(
 
     if(sheetState.isVisible) {
         Sheet(
-            modifier = Modifier.statusBarsPadding().padding(top = 50.dp),
+            modifier = Modifier
+                .statusBarsPadding()
+                .padding(top = 50.dp),
             onClose = { sheetContent = PostSheetsContent.None },
             sheetState = sheetState,
         ) {
@@ -274,6 +277,13 @@ fun PostsPager(
                             }
                         }
                     }
+                    is PostSheetsContent.LocationSheet -> {
+                        LocationSheet(
+                            pagerViewModel = pagerViewModel,
+                            onClose = { handleClose() },
+                            businessId = content.businessId
+                        )
+                    }
                     is PostSheetsContent.None -> Unit
                 }
             }
@@ -312,7 +322,8 @@ fun PostsPager(
                                     playWhenReady = pagerState.currentPage == page && isVisibleTab,
                                     onOpenReviews = { handleOpenSheet(PostSheetsContent.ReviewsSheet(post.user.id)) },
                                     onOpenComments = { handleOpenSheet(PostSheetsContent.CommentsSheet(post.id)) },
-                                    onOpenCalendar = { handleOpenSheet(PostSheetsContent.CalendarSheet(post.user.id)) }
+                                    onOpenCalendar = { handleOpenSheet(PostSheetsContent.CalendarSheet(post.user.id)) },
+                                    onOpenLocation = { handleOpenSheet(PostSheetsContent.LocationSheet(post.businessId)) }
                                 )
                             }
                         }

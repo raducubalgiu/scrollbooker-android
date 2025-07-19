@@ -1,4 +1,4 @@
-package com.example.scrollbooker.modules.posts.calendar
+package com.example.scrollbooker.modules.posts.sheets
 
 import androidx.compose.runtime.Composable
 

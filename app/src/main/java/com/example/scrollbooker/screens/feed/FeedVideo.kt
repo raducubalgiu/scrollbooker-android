@@ -104,7 +104,8 @@ fun VideoPlayer(
         onBookmark = { pagerViewModel.toggleBookmark(post.id) },
         onOpenReviews = {},
         onOpenComments = {},
-        onOpenCalendar = {}
+        onOpenCalendar = {},
+        onOpenLocation = {}
     )
 
     LaunchedEffect(shouldPlay) {

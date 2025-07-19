@@ -239,4 +239,5 @@
     <string name="chooseWhatDoYouWantToSeeInFeed">"Alege ce vrei să vezi în Feed-ul tău</string>
     <string name="clearFilters">Elimină filtrele</string>
     <string name="filterVideoContentAccordingToYouPreferences">Filtrează conținutul video în funcție de preferințele tale</string>
+    <string name="close">Închide</string>
 </resources>

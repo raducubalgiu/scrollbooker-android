@@ -28,6 +28,7 @@ fun PostDto.toDomain(): Post {
         mentions = mentions,
         hashtags = hashtags.map { it.toDomain() },
         bookable = bookable,
+        businessId = businessId,
         instantBooking = instantBooking,
         lastMinute = lastMinute.toDomain(),
         createdAt = createdAt,

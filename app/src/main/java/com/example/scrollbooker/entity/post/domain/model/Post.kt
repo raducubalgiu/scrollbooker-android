@@ -13,6 +13,7 @@ data class Post(
     val mentions: List<UserSocialDto>,
     val hashtags: List<Hashtag>,
     val bookable: Boolean,
+    val businessId: Int?,
     val instantBooking: Boolean,
     val lastMinute: LastMinute,
     val createdAt: String

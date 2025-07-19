@@ -30,6 +30,10 @@ class BusinessRepositoryImpl @Inject constructor(
         return apiService.getBusinessByUserId(userId).toDomain()
     }
 
+    override suspend fun getBusinessById(businessId: Int): Business {
+        return apiService.getBusinessById(businessId).toDomain()
+    }
+
     override suspend fun updateBusinessHasEmployees(hasEmployees: Boolean): AuthState {
         val request = BusinessHasEmployeesUpdateRequest(hasEmployees)
 

@@ -31,7 +31,8 @@ fun PostItem(
     playWhenReady: Boolean,
     onOpenReviews: () -> Unit,
     onOpenComments: () -> Unit,
-    onOpenCalendar: () -> Unit
+    onOpenCalendar: () -> Unit,
+    onOpenLocation: () -> Unit
 ) {
     val context = LocalContext.current
     val url = post.mediaFiles.first().url
@@ -49,7 +50,8 @@ fun PostItem(
     }
 
     LaunchedEffect(playWhenReady) {
-        exoPlayer.playWhenReady = playWhenReady
+        //exoPlayer.playWhenReady = playWhenReady
+        exoPlayer.playWhenReady = false
     }
 
     val interactionState by viewModel.interactionState(post.id).collectAsState()
@@ -94,7 +96,8 @@ fun PostItem(
             onBookmark = { viewModel.toggleBookmark(post.id) },
             onOpenReviews = onOpenReviews,
             onOpenComments = onOpenComments,
-            onOpenCalendar = onOpenCalendar
+            onOpenCalendar = onOpenCalendar,
+            onOpenLocation = onOpenLocation
         )
     }
 }

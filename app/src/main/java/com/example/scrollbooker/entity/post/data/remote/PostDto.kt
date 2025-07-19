@@ -22,6 +22,9 @@ data class PostDto(
     val hashtags: List<HashtagDto>,
     val bookable: Boolean,
 
+    @SerializedName("business_id")
+    val businessId: Int?,
+
     @SerializedName("instant_booking")
     val instantBooking: Boolean,
 

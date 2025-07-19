@@ -9,6 +9,7 @@ interface BusinessRepository {
     suspend fun searchBusinessAddress(query: String): List<BusinessAddress>
     suspend fun updateBusinessServices(serviceIds: List<Int>): AuthState
     suspend fun getBusiness(userId: Int): Business
+    suspend fun getBusinessById(businessId: Int): Business
     suspend fun updateBusinessHasEmployees(hasEmployees: Boolean): AuthState
     suspend fun createBusiness(
         description: String?,

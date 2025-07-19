@@ -1,4 +1,4 @@
-package com.example.scrollbooker.modules.posts.comments
+package com.example.scrollbooker.modules.posts.sheets.comments
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

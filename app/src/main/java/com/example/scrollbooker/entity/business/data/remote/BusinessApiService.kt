@@ -14,6 +14,11 @@ interface BusinessApiService {
         @Query("query") query: String
     ): List<BusinessAddressDto>
 
+    @GET("/businesses/{businessId}")
+    suspend fun getBusinessById(
+        @Path("businessId") businessId: Int
+    ): BusinessDto
+
     @GET("/users/{userId}/businesses")
     suspend fun getBusinessByUserId(
         @Path("userId") userId: Int
