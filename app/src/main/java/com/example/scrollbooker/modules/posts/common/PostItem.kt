@@ -50,8 +50,8 @@ fun PostItem(
     }
 
     LaunchedEffect(playWhenReady) {
-        //exoPlayer.playWhenReady = playWhenReady
-        exoPlayer.playWhenReady = false
+        exoPlayer.playWhenReady = playWhenReady
+        //exoPlayer.playWhenReady = false
     }
 
     val interactionState by viewModel.interactionState(post.id).collectAsState()

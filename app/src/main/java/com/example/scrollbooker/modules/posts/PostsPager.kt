@@ -57,7 +57,7 @@ import com.example.scrollbooker.modules.calendar.CalendarViewModel
 import com.example.scrollbooker.modules.posts.sheets.comments.CommentsSheet
 import com.example.scrollbooker.modules.posts.sheets.comments.CommentsViewModel
 import com.example.scrollbooker.modules.posts.common.PostItem
-import com.example.scrollbooker.modules.posts.common.PostSheetsContent
+import com.example.scrollbooker.modules.posts.sheets.PostSheetsContent
 import com.example.scrollbooker.modules.posts.sheets.LocationSheet
 import com.example.scrollbooker.modules.posts.sheets.ReviewsListSheet
 import com.example.scrollbooker.ui.theme.OnBackground
