@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -59,6 +60,11 @@ fun AvatarWithRating(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .offset(y = 15.dp)
+                .shadow(
+                    elevation = 1.dp,
+                    shape = CircleShape,
+                    clip = false
+                )
                 .background(
                     color = Color.White,
                     shape = RoundedCornerShape(15.dp)

@@ -1,10 +1,10 @@
 package com.example.scrollbooker.entity.search.domain.model
-import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
+import com.example.scrollbooker.entity.search.data.remote.SearchTypeEnum
 import com.google.gson.annotations.SerializedName
 import java.math.BigDecimal
 
 data class Search (
-    val type: String,
+    val type: SearchTypeEnum?,
     val label: String,
     val user: SearchUser?,
     val service: SearchServiceBusinessType?,
@@ -20,7 +20,6 @@ data class SearchUser(
 
     @SerializedName("ratings_average")
     val ratingsAverage: BigDecimal,
-
     val distance: BigDecimal?,
 
     @SerializedName("is_business_or_employee")

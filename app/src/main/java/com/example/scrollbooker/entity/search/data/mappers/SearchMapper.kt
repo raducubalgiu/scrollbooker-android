@@ -1,6 +1,7 @@
 package com.example.scrollbooker.entity.search.data.mappers
 import com.example.scrollbooker.entity.search.data.remote.SearchDto
 import com.example.scrollbooker.entity.search.data.remote.SearchServiceBusinessTypeDto
+import com.example.scrollbooker.entity.search.data.remote.SearchTypeEnum
 import com.example.scrollbooker.entity.search.data.remote.SearchUserDto
 import com.example.scrollbooker.entity.search.domain.model.Search
 import com.example.scrollbooker.entity.search.domain.model.SearchServiceBusinessType
@@ -8,7 +9,7 @@ import com.example.scrollbooker.entity.search.domain.model.SearchUser
 
 fun SearchDto.toDomain(): Search {
     return Search(
-        type = type,
+        type = SearchTypeEnum.fromKey(type),
         label = label,
         user = user?.toDomain(),
         service = service?.toDomain(),

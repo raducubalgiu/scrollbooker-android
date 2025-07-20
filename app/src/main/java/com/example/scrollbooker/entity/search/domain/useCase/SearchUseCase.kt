@@ -9,9 +9,9 @@ import javax.inject.Inject
 class SearchUseCase @Inject constructor(
     private val repository: SearchRepository
 ) {
-    suspend operator fun invoke(query: String): FeatureState<List<Search>> {
+    suspend operator fun invoke(query: String, lat: Float?, lng: Float?): FeatureState<List<Search>> {
         return try {
-            val response = repository.search(query)
+            val response = repository.search(query, lat, lng)
             FeatureState.Success(response)
         } catch (e: Exception) {
             Timber.tag("Search").e("ERROR: on Searching keywords, users, services or business types $e")
