@@ -27,18 +27,18 @@ import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
 
 @Composable
 fun UserSocialList(
-    pagingItems: LazyPagingItems<UserSocial>,
+    users: LazyPagingItems<UserSocial>,
     followedOverrides: Map<Int, Boolean>,
     followRequestLocks: Set<Int>,
     onFollow: (Boolean, Int) -> Unit,
     onNavigateUserProfile: (Int) -> Unit
 ) {
-    pagingItems.apply {
+    users.apply {
         when(loadState.refresh) {
             is LoadState.Loading -> LoadingScreen()
             is LoadState.Error -> ErrorScreen()
             is LoadState.NotLoading -> {
-                if(pagingItems.itemCount == 0) {
+                if(users.itemCount == 0) {
                     MessageScreen(
                         message = stringResource(R.string.dontFoundResults),
                         icon = painterResource(R.drawable.ic_users_outline)
@@ -49,8 +49,8 @@ fun UserSocialList(
     }
 
     LazyColumn(Modifier.fillMaxSize()) {
-        items(pagingItems.itemCount) { index ->
-            pagingItems[index]?.let { userSocial ->
+        items(users.itemCount) { index ->
+            users[index]?.let { userSocial ->
                 val isLocked = followRequestLocks.contains(userSocial.id)
 
                 UserSocialItem(
@@ -63,7 +63,7 @@ fun UserSocialList(
             }
         }
 
-        pagingItems.apply {
+        users.apply {
             when (loadState.append) {
                 is LoadState.Loading -> {
                     item { LoadMoreSpinner() }

@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.modules.reviews.list.ReviewsList
 import com.example.scrollbooker.screens.profile.social.tab.followers.UserFollowersTab
 import com.example.scrollbooker.screens.profile.social.tab.followings.UserFollowingsTab
@@ -58,11 +59,16 @@ fun UserSocialScreen(
         enablePaddingV = false
     ) {
         Column {
-            Tabs(tabs, selectedTabIndex, onChangeTab = {
-                coroutineScope.launch {
-                    pagerState.animateScrollToPage(it)
+            Tabs(
+                tabs,
+                selectedTabIndex,
+                indicatorPadding = 35.dp,
+                onChangeTab = {
+                    coroutineScope.launch {
+                        pagerState.animateScrollToPage(it)
+                    }
                 }
-            })
+            )
 
             HorizontalPager(
                 state = pagerState,

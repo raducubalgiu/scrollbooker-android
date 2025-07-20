@@ -29,7 +29,6 @@ class FeedSearchUsersViewModel @Inject constructor(
     private val followUserUseCase: FollowUserUseCase,
     private val unfollowUserUseCase: UnfollowUserUseCase,
 ): ViewModel() {
-
     private val currentQuery = MutableStateFlow<String?>(null)
 
     @OptIn(ExperimentalCoroutinesApi::class)

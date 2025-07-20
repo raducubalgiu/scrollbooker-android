@@ -16,7 +16,7 @@ fun UserFollowersTab(
     val followRequestLocks by viewModel.followRequestLocks.collectAsState()
 
     UserSocialList(
-        pagingItems = userFollowers,
+        users = userFollowers,
         followedOverrides = followedOverrides,
         followRequestLocks = followRequestLocks,
         onFollow = { isFollowed, userId ->

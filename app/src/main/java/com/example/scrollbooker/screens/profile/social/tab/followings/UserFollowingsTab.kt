@@ -17,7 +17,7 @@ fun UserFollowingsTab(
     val followRequestLocks by viewModal.followRequestLocks.collectAsState()
 
     UserSocialList(
-        pagingItems = userFollowings,
+        users = userFollowings,
         followedOverrides = followedOverrides,
         followRequestLocks = followRequestLocks,
         onFollow = { isFollowed, userId ->
