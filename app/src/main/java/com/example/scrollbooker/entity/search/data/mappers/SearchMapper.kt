@@ -1,16 +1,31 @@
 package com.example.scrollbooker.entity.search.data.mappers
 import com.example.scrollbooker.entity.search.data.remote.SearchDto
 import com.example.scrollbooker.entity.search.data.remote.SearchServiceBusinessTypeDto
+import com.example.scrollbooker.entity.search.data.remote.SearchUserDto
 import com.example.scrollbooker.entity.search.domain.model.Search
 import com.example.scrollbooker.entity.search.domain.model.SearchServiceBusinessType
+import com.example.scrollbooker.entity.search.domain.model.SearchUser
 
 fun SearchDto.toDomain(): Search {
     return Search(
         type = type,
         label = label,
-        user = user,
+        user = user?.toDomain(),
         service = service?.toDomain(),
         businessType = businessType?.toDomain()
+    )
+}
+
+fun SearchUserDto.toDomain(): SearchUser {
+    return SearchUser(
+        id = id,
+        fullname = fullname,
+        username = username,
+        profession = profession,
+        avatar = avatar,
+        ratingsAverage = ratingsAverage,
+        distance = distance,
+        isBusinessOrEmployee = isBusinessOrEmployee,
     )
 }
 
