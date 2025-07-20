@@ -1,4 +1,4 @@
-package com.example.scrollbooker.modules.posts.common
+package com.example.scrollbooker.modules.posts.components
 import android.view.ViewGroup
 import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.Box
@@ -50,8 +50,8 @@ fun PostItem(
     }
 
     LaunchedEffect(playWhenReady) {
-        exoPlayer.playWhenReady = playWhenReady
-        //exoPlayer.playWhenReady = false
+        //exoPlayer.playWhenReady = playWhenReady
+        exoPlayer.playWhenReady = false
     }
 
     val interactionState by viewModel.interactionState(post.id).collectAsState()

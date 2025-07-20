@@ -1,4 +1,4 @@
-package com.example.scrollbooker.modules.posts.common
+package com.example.scrollbooker.modules.posts.components
 
 import android.annotation.SuppressLint
 

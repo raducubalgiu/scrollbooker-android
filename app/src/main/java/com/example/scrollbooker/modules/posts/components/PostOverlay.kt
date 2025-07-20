@@ -1,5 +1,4 @@
-package com.example.scrollbooker.modules.posts.common
-import androidx.compose.foundation.background
+package com.example.scrollbooker.modules.posts.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
