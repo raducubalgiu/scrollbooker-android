@@ -55,6 +55,7 @@ fun FeedSearchScreen(
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val coroutineScope = rememberCoroutineScope()
+    val interactionSource = remember { MutableInteractionSource() }
 
     LaunchedEffect(Unit) {
         delay(150)
@@ -86,7 +87,7 @@ fun FeedSearchScreen(
                     coroutineScope.launch {
                         keyboardController?.hide()
                         focusManager.clearFocus()
-                        delay(250)
+                        delay(150)
                         onBack()
                     }
                 },

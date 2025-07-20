@@ -4,6 +4,7 @@ import com.example.scrollbooker.core.util.Constants
 import com.example.scrollbooker.entity.search.data.remote.SearchApiService
 import com.example.scrollbooker.entity.search.data.repository.SearchRepositoryImpl
 import com.example.scrollbooker.entity.search.domain.repository.SearchRepository
+import com.example.scrollbooker.entity.search.domain.useCase.SearchPaginatedUsersUseCase
 import com.example.scrollbooker.entity.search.domain.useCase.SearchUseCase
 import dagger.Module
 import dagger.Provides
@@ -40,5 +41,13 @@ object SearchModule {
         repository: SearchRepository
     ): SearchUseCase {
         return SearchUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSearchPaginatedUsersUseCase(
+        repository: SearchRepository
+    ): SearchPaginatedUsersUseCase {
+        return SearchPaginatedUsersUseCase(repository)
     }
 }

@@ -21,7 +21,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.example.scrollbooker.modules.reviews.list.ReviewsList
-import com.example.scrollbooker.screens.profile.social.components.UserSocialList
+import com.example.scrollbooker.screens.profile.social.tab.followers.UserFollowersTab
+import com.example.scrollbooker.screens.profile.social.tab.followings.UserFollowingsTab
 
 @Composable
 fun UserSocialScreen(
@@ -38,8 +39,8 @@ fun UserSocialScreen(
         stringResource(id = R.string.followers),
         stringResource(id = R.string.following)
     )
-    val coroutineScope = rememberCoroutineScope()
 
+    val coroutineScope = rememberCoroutineScope()
     var didLoadSummary by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(pagerState.currentPage) {
@@ -81,37 +82,8 @@ fun UserSocialScreen(
                             selectedRatings = selectedRatings
                         )
                     }
-                    1 -> {
-                        val userFollowers = viewModal.userFollowers.collectAsLazyPagingItems()
-                        val followedOverrides by viewModal.followedOverrides.collectAsState()
-                        val followRequestLocks by viewModal.followRequestLocks.collectAsState()
-
-                        UserSocialList(
-                            pagingItems = userFollowers,
-                            followedOverrides = followedOverrides,
-                            followRequestLocks = followRequestLocks,
-                            onFollow = { isFollowed, userId ->
-                                viewModal.onFollow(isFollowed, userId)
-                            },
-                            onNavigateUserProfile = onNavigateUserProfile
-                        )
-                    }
-
-                    2 -> {
-                        val userFollowings = viewModal.userFollowings.collectAsLazyPagingItems()
-                        val followedOverrides by viewModal.followedOverrides.collectAsState()
-                        val followRequestLocks by viewModal.followRequestLocks.collectAsState()
-
-                        UserSocialList(
-                            pagingItems = userFollowings,
-                            followedOverrides = followedOverrides,
-                            followRequestLocks = followRequestLocks,
-                            onFollow = { isFollowed, userId ->
-                                viewModal.onFollow(isFollowed, userId)
-                            },
-                            onNavigateUserProfile = onNavigateUserProfile
-                        )
-                    }
+                    1 -> UserFollowersTab(viewModal, onNavigateUserProfile)
+                    2 -> UserFollowingsTab(viewModal, onNavigateUserProfile)
                 }
             }
         }

@@ -13,7 +13,7 @@ import com.example.scrollbooker.entity.employmentRequest.domain.useCase.CreateEm
 import com.example.scrollbooker.entity.employmentRequest.domain.useCase.GetEmploymentRequestsUseCase
 import com.example.scrollbooker.entity.profession.domain.model.Profession
 import com.example.scrollbooker.entity.profession.domain.useCase.GetProfessionsByBusinessTypeUseCase
-import com.example.scrollbooker.entity.user.userProfile.domain.usecase.SearchUsersClientsUseCase
+import com.example.scrollbooker.entity.search.domain.useCase.SearchUsersUseCase
 import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,7 +31,7 @@ import javax.inject.Inject
 class EmploymentRequestsViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
     private val getEmploymentRequestsUseCase: GetEmploymentRequestsUseCase,
-    private val searchUsersClientsUseCase: SearchUsersClientsUseCase,
+    private val searchUsersUseCase: SearchUsersUseCase,
     private val getProfessionsByBusinessTypeUseCase: GetProfessionsByBusinessTypeUseCase,
     private val getConsentsByNameUseCase: GetConsentsByNameUseCase,
     private val createEmploymentRequestUseCase: CreateEmploymentRequestUseCase,
@@ -138,7 +138,7 @@ class EmploymentRequestsViewModel @Inject constructor(
             _searchUsersClientsState.value = FeatureState.Loading
 
             _searchUsersClientsState.value = withVisibleLoading {
-                searchUsersClientsUseCase(query)
+                searchUsersUseCase(query)
             }
         }
     }

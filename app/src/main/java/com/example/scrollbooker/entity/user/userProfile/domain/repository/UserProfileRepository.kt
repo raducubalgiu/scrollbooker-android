@@ -14,5 +14,4 @@ interface UserProfileRepository {
 
     suspend fun updateBio(bio: String)
     suspend fun searchUsername(username: String): SearchUsernameResponse
-    suspend fun searchUsersClients(q: String): List<UserSocial>
 }

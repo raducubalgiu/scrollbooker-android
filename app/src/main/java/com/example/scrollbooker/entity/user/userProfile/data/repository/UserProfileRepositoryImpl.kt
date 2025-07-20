@@ -45,8 +45,4 @@ class UserProfileRepositoryImpl @Inject constructor(
     override suspend fun searchUsername(username: String): SearchUsernameResponse {
         return apiService.searchUsername(username)
     }
-
-    override suspend fun searchUsersClients(q: String): List<UserSocial> {
-        return apiService.searchUserClients(q).map { it.toDomain() }
-    }
 }

@@ -48,9 +48,4 @@ interface UserProfileApiService {
     suspend fun searchUsername(
         @Query("username") username: String
     ): SearchUsernameResponse
-
-    @GET("users/search-user-clients")
-    suspend fun searchUserClients(
-        @Query("q") q: String
-    ): List<UserSocialDto>
 }
