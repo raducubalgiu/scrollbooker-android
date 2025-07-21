@@ -26,8 +26,8 @@ class UserProfileRepositoryImpl @Inject constructor(
         return apiService.updateFullName(UpdateFullNameRequest(fullname = fullName))
     }
 
-    override suspend fun updateUsername(username: String): AuthState {
-        return apiService.updateUsername(UpdateUsernameRequest(username)).toDomain()
+    override suspend fun updateUsername(username: String) {
+        return apiService.updateUsername(UpdateUsernameRequest(username))
     }
 
     override suspend fun updateBirthDate(birthdate: String?): AuthState {

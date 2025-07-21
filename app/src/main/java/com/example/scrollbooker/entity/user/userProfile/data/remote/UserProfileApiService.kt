@@ -27,7 +27,7 @@ interface UserProfileApiService {
     @PATCH("users/user-info/username")
     suspend fun updateUsername(
         @Body request: UpdateUsernameRequest
-    ): AuthStateDto
+    )
 
     @PATCH("users/user-info/birthdate")
     suspend fun updateBirthDate(

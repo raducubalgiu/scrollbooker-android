@@ -8,7 +8,7 @@ interface UserProfileRepository {
     suspend fun getUserProfile(userId: Int): UserProfile
     suspend fun updateFullName(fullName: String)
 
-    suspend fun updateUsername(username: String): AuthState
+    suspend fun updateUsername(username: String)
     suspend fun updateBirthDate(birthdate: String?): AuthState
     suspend fun updateGender(gender: String): AuthState
 

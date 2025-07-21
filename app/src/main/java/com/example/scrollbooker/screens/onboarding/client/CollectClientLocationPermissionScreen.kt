@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.auth.onboarding.collectClient
+package com.example.scrollbooker.screens.onboarding.client
 
 import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable

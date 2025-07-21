@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.auth.onboarding
+package com.example.scrollbooker.screens.onboarding.collectUsername
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize

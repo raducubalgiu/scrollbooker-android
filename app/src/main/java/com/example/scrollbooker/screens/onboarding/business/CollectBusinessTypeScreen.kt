@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.auth.onboarding.collectBusiness
+package com.example.scrollbooker.screens.onboarding.business
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

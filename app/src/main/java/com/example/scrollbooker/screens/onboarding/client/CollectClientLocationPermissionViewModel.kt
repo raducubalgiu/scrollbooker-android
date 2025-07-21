@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.auth.onboarding.collectClient
+package com.example.scrollbooker.screens.onboarding.client
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

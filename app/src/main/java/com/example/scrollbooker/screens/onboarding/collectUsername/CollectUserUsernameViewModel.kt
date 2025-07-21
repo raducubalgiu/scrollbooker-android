@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.auth.onboarding
+package com.example.scrollbooker.screens.onboarding.collectUsername
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,6 +7,7 @@ import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.auth.domain.useCase.RefreshTokenUseCase
+import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectUserUsernameUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.model.SearchUsernameResponse
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.SearchUsernameUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateUsernameUseCase
@@ -23,7 +24,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CollectUserUsernameViewModel @Inject constructor(
-    private val updateUsernameUseCase: UpdateUsernameUseCase,
+    private val collectUserUsernameUseCase: CollectUserUsernameUseCase,
     private val searchUsernameUseCase: SearchUsernameUseCase,
     private val authDataStore: AuthDataStore,
     private val refreshTokenUseCase: RefreshTokenUseCase,
@@ -66,7 +67,7 @@ class CollectUserUsernameViewModel @Inject constructor(
     suspend fun collectUserUsername(newUsername: String): AuthState? {
         _isSaving.value = FeatureState.Loading
 
-        val result = withVisibleLoading { updateUsernameUseCase(username = newUsername) }
+        val result = withVisibleLoading { collectUserUsernameUseCase(username = newUsername) }
 
         return result
             .onFailure { e ->
