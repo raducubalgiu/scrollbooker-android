@@ -1,9 +1,11 @@
-package com.example.scrollbooker.screens.onboarding.client
+package com.example.scrollbooker.screens.onboarding.client.collectGender
 
 import androidx.lifecycle.ViewModel
 import com.example.scrollbooker.core.enums.GenderTypeEnum
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
+import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectClientGenderUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateGenderUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -14,16 +16,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CollectClientGenderViewModel @Inject constructor(
-    private val updateGenderUseCase: UpdateGenderUseCase
+    private val collectClientGenderUseCase: CollectClientGenderUseCase
 ): ViewModel() {
     private val _isSaving = MutableStateFlow<FeatureState<Unit>?>(null)
     val isSaving: StateFlow<FeatureState<Unit>?> = _isSaving
 
-    suspend fun collectUserGender(gender: GenderTypeEnum): AuthState? {
+    suspend fun collectUserGender(gender: GenderTypeEnum): Result<AuthState> {
         _isSaving.value = FeatureState.Loading
-        delay(300)
 
-        return updateGenderUseCase(gender.key)
+        val result = withVisibleLoading { collectClientGenderUseCase(gender.key) }
+
+        result
             .onFailure { e ->
                 _isSaving.value = FeatureState.Error(e)
                 Timber.tag("Update Gender").e("ERROR: on updating User Gender $e")
@@ -31,6 +34,7 @@ class CollectClientGenderViewModel @Inject constructor(
             .onSuccess {
                 _isSaving.value = FeatureState.Success(Unit)
             }
-            .getOrNull()
+
+        return result
     }
 }

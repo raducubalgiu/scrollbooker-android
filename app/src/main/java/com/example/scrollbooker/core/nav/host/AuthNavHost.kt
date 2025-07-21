@@ -40,8 +40,8 @@ import com.example.scrollbooker.screens.onboarding.business.MyBusinessDetailsScr
 import com.example.scrollbooker.screens.onboarding.business.MyBusinessGalleryScreen
 import com.example.scrollbooker.screens.onboarding.client.collectBirthdate.CollectClientBirthDateScreen
 import com.example.scrollbooker.screens.onboarding.client.collectBirthdate.CollectClientBirthDateViewModel
-import com.example.scrollbooker.screens.onboarding.client.CollectClientGenderScreen
-import com.example.scrollbooker.screens.onboarding.client.CollectClientGenderViewModel
+import com.example.scrollbooker.screens.onboarding.client.collectGender.CollectClientGenderScreen
+import com.example.scrollbooker.screens.onboarding.client.collectGender.CollectClientGenderViewModel
 import com.example.scrollbooker.screens.onboarding.client.CollectClientLocationPermissionScreen
 import com.example.scrollbooker.screens.onboarding.client.CollectClientLocationPermissionViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.myBusinessLocation.MyBusinessLocationScreen
@@ -213,11 +213,10 @@ fun AuthNavHost(authViewModel: AuthViewModel) {
                 CollectClientGenderScreen(
                     viewModel = viewModel,
                     onNext = {
-                        coroutineScope.launch {
+                        navController.currentBackStackEntry?.lifecycleScope?.launch {
                             val authState = viewModel.collectUserGender(it)
-                            if(authState != null) {
-                                authViewModel.updateAuthState(authState)
-                            }
+
+                            authState.onSuccess { authViewModel.updateAuthState(it) }
                         }
                     }
                 )

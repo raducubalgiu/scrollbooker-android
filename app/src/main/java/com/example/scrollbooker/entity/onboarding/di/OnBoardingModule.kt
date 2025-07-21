@@ -5,6 +5,7 @@ import com.example.scrollbooker.entity.onboarding.data.remote.OnboardingApiServi
 import com.example.scrollbooker.entity.onboarding.data.repository.OnboardingRepositoryImpl
 import com.example.scrollbooker.entity.onboarding.domain.repository.OnboardingRepository
 import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectClientBirthDateUseCase
+import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectClientGenderUseCase
 import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectUserUsernameUseCase
 import dagger.Module
 import dagger.Provides
@@ -49,5 +50,13 @@ object BusinessModule {
         repository: OnboardingRepository,
     ): CollectClientBirthDateUseCase {
         return CollectClientBirthDateUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCollectClientGenderUseCase(
+        repository: OnboardingRepository,
+    ): CollectClientGenderUseCase {
+        return CollectClientGenderUseCase(repository)
     }
 }

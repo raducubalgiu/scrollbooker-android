@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.onboarding.client
+package com.example.scrollbooker.screens.onboarding.client.collectGender
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
