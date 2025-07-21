@@ -5,4 +5,5 @@ interface OnboardingRepository {
     suspend fun collectUserUsername(username: String): AuthState
     suspend fun collectClientBirthDate(birthdate: String?): AuthState
     suspend fun collectClientGender(gender: String): AuthState
+    suspend fun collectUserLocationPermission(): AuthState
 }

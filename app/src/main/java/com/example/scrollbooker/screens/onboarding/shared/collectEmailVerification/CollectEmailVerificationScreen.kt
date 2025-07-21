@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.onboarding
+package com.example.scrollbooker.screens.onboarding.shared.collectEmailVerification
 
 import androidx.compose.runtime.Composable
 import com.example.scrollbooker.components.core.layout.FormLayout

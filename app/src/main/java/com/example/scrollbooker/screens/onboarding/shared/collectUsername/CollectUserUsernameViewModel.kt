@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.onboarding.collectUsername
+package com.example.scrollbooker.screens.onboarding.shared.collectUsername
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

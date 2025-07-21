@@ -6,6 +6,7 @@ import com.example.scrollbooker.entity.onboarding.data.repository.OnboardingRepo
 import com.example.scrollbooker.entity.onboarding.domain.repository.OnboardingRepository
 import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectClientBirthDateUseCase
 import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectClientGenderUseCase
+import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectUserLocationPermissionUseCase
 import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectUserUsernameUseCase
 import dagger.Module
 import dagger.Provides
@@ -58,5 +59,13 @@ object BusinessModule {
         repository: OnboardingRepository,
     ): CollectClientGenderUseCase {
         return CollectClientGenderUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCollectUserLocationPermission(
+        repository: OnboardingRepository,
+    ): CollectUserLocationPermissionUseCase {
+        return CollectUserLocationPermissionUseCase(repository)
     }
 }

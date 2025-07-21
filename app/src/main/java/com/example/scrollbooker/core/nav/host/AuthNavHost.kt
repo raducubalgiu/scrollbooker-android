@@ -28,9 +28,9 @@ import com.example.scrollbooker.entity.auth.data.remote.RoleNameEnum
 import com.example.scrollbooker.screens.onboarding.business.CollectBusinessHasEmployeesScreen
 import com.example.scrollbooker.screens.onboarding.business.CollectBusinessHasEmployeesViewModel
 import com.example.scrollbooker.screens.onboarding.business.CollectBusinessValidationScreen
-import com.example.scrollbooker.screens.onboarding.CollectEmailVerificationScreen
-import com.example.scrollbooker.screens.onboarding.collectUsername.CollectUserUsernameScreen
-import com.example.scrollbooker.screens.onboarding.collectUsername.CollectUserUsernameViewModel
+import com.example.scrollbooker.screens.onboarding.shared.collectEmailVerification.CollectEmailVerificationScreen
+import com.example.scrollbooker.screens.onboarding.shared.collectUsername.CollectUserUsernameScreen
+import com.example.scrollbooker.screens.onboarding.shared.collectUsername.CollectUserUsernameViewModel
 import com.example.scrollbooker.screens.auth.LoginScreen
 import com.example.scrollbooker.screens.auth.RegisterBusinessScreen
 import com.example.scrollbooker.screens.auth.RegisterClientScreen
@@ -42,8 +42,8 @@ import com.example.scrollbooker.screens.onboarding.client.collectBirthdate.Colle
 import com.example.scrollbooker.screens.onboarding.client.collectBirthdate.CollectClientBirthDateViewModel
 import com.example.scrollbooker.screens.onboarding.client.collectGender.CollectClientGenderScreen
 import com.example.scrollbooker.screens.onboarding.client.collectGender.CollectClientGenderViewModel
-import com.example.scrollbooker.screens.onboarding.client.CollectClientLocationPermissionScreen
-import com.example.scrollbooker.screens.onboarding.client.CollectClientLocationPermissionViewModel
+import com.example.scrollbooker.screens.onboarding.shared.collectLocationPermission.CollectClientLocationPermissionScreen
+import com.example.scrollbooker.screens.onboarding.shared.collectLocationPermission.CollectClientLocationPermissionViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.myBusinessLocation.MyBusinessLocationScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myBusinessLocation.MyBusinessLocationViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.SchedulesScreen
@@ -227,7 +227,13 @@ fun AuthNavHost(authViewModel: AuthViewModel) {
 
                 CollectClientLocationPermissionScreen(
                     viewModel = viewModel,
-                    onNext = {}
+                    onNext = {
+                        navController.currentBackStackEntry?.lifecycleScope?.launch {
+                            val authState = viewModel.collectLocationPermission()
+
+                            authState.onSuccess { authViewModel.updateAuthState(it) }
+                        }
+                    }
                 )
             }
 

@@ -26,4 +26,8 @@ class OnboardingRepositoryImpl @Inject constructor(
         val request = UpdateGenderRequest(gender)
         return apiService.collectClientGender(request).toDomain()
     }
+
+    override suspend fun collectUserLocationPermission(): AuthState {
+        return apiService.collectUserLocationPermission().toDomain()
+    }
 }

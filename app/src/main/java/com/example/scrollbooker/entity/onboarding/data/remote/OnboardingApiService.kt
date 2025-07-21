@@ -22,4 +22,7 @@ interface OnboardingApiService {
     suspend fun collectClientGender(
         @Body request: UpdateGenderRequest
     ): AuthStateDto
+
+    @PATCH("/onboarding/collect-user-location-permission")
+    suspend fun collectUserLocationPermission(): AuthStateDto
 }
