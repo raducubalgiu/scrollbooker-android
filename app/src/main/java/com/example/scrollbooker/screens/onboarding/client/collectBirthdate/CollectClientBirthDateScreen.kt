@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.onboarding.client
+package com.example.scrollbooker.screens.onboarding.client.collectBirthdate
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

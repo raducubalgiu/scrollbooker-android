@@ -1,9 +1,11 @@
-package com.example.scrollbooker.screens.onboarding.client
+package com.example.scrollbooker.screens.onboarding.client.collectBirthdate
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
+import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectClientBirthDateUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateBirthDateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -18,7 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CollectClientBirthDateViewModel @Inject constructor(
-    private val updateBirthDateUseCase: UpdateBirthDateUseCase
+    private val collectClientBirthDateUseCase: CollectClientBirthDateUseCase
 ): ViewModel() {
     val selectedDay = MutableStateFlow<String?>(null)
     val selectedMonth = MutableStateFlow<String?>(null)
@@ -49,19 +51,20 @@ class CollectClientBirthDateViewModel @Inject constructor(
         selectedYear.value = newYear
     }
 
-    suspend fun collectUserBirthDate(): AuthState? {
+    suspend fun collectUserBirthDate(): Result<AuthState> {
         val day = selectedDay.value?.toIntOrNull()
         val month = selectedMonth.value?.toIntOrNull()
         val year = selectedYear.value?.toIntOrNull()
 
         _isSaving.value = FeatureState.Loading
-        delay(300)
 
         val birthdate = if (day != null && month != null && year != null) {
             LocalDate.of(year, month, day).toString()
         } else null
 
-        return updateBirthDateUseCase(birthdate = birthdate)
+        val result = withVisibleLoading { collectClientBirthDateUseCase(birthdate = birthdate) }
+
+        result
             .onFailure { e ->
                 _isSaving.value = FeatureState.Error(e)
                 Timber.tag("Update birthdate").e("ERROR: on updating Birthdate $e")
@@ -69,6 +72,7 @@ class CollectClientBirthDateViewModel @Inject constructor(
             .onSuccess {
                 _isSaving.value = FeatureState.Success(Unit)
             }
-            .getOrNull()
+
+        return result
     }
 }

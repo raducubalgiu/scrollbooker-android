@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.navigation
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.FeatureState
@@ -37,8 +38,8 @@ import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusin
 import com.example.scrollbooker.screens.onboarding.business.CollectBusinessTypeScreen
 import com.example.scrollbooker.screens.onboarding.business.MyBusinessDetailsScreen
 import com.example.scrollbooker.screens.onboarding.business.MyBusinessGalleryScreen
-import com.example.scrollbooker.screens.onboarding.client.CollectClientBirthDateScreen
-import com.example.scrollbooker.screens.onboarding.client.CollectClientBirthDateViewModel
+import com.example.scrollbooker.screens.onboarding.client.collectBirthdate.CollectClientBirthDateScreen
+import com.example.scrollbooker.screens.onboarding.client.collectBirthdate.CollectClientBirthDateViewModel
 import com.example.scrollbooker.screens.onboarding.client.CollectClientGenderScreen
 import com.example.scrollbooker.screens.onboarding.client.CollectClientGenderViewModel
 import com.example.scrollbooker.screens.onboarding.client.CollectClientLocationPermissionScreen
@@ -197,11 +198,10 @@ fun AuthNavHost(authViewModel: AuthViewModel) {
                 CollectClientBirthDateScreen(
                     viewModel = viewModel,
                     onNext = {
-                        coroutineScope.launch {
-                           val authState = viewModel.collectUserBirthDate()
-                            if(authState != null) {
-                                authViewModel.updateAuthState(authState)
-                            }
+                        navController.currentBackStackEntry?.lifecycleScope?.launch {
+                            val authState = viewModel.collectUserBirthDate()
+
+                            authState.onSuccess { authViewModel.updateAuthState(it) }
                         }
                     }
                 )
