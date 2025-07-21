@@ -82,10 +82,7 @@ fun PostsPager(
     val calendarViewModel: CalendarViewModel = hiltViewModel()
 
     val coroutineScope = rememberCoroutineScope()
-
-    val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     var sheetContent by remember { mutableStateOf<PostSheetsContent>(PostSheetsContent.None) }
 
@@ -314,6 +311,18 @@ fun PostsPager(
                         is LoadState.Loading -> LoadMoreSpinner()
                         is LoadState.NotLoading -> {
                             val post = posts[page]
+
+                            LaunchedEffect(post) {
+                                if(post != null) {
+                                    pagerViewModel.setInitialState(
+                                        postId = post.id,
+                                        isLiked = post.userActions.isLiked,
+                                        likeCount = post.counters.likeCount,
+                                        isBookmarked = post.userActions.isBookmarked,
+                                        bookmarkCount = post.counters.bookmarkCount
+                                    )
+                                }
+                            }
 
                             if(post != null) {
                                 PostItem(

@@ -37,57 +37,47 @@ fun PostItem(
     val context = LocalContext.current
     val url = post.mediaFiles.first().url
 
-    val exoPlayer = remember {
-        ExoPlayer
-            .Builder(context)
-            .setMediaSourceFactory(DefaultMediaSourceFactory(VideoPlayerCache.getFactory(context)))
-            .build()
-            .apply {
-                setMediaItem(MediaItem.fromUri(url))
-                repeatMode = Player.REPEAT_MODE_ONE
-                prepare()
-            }
-    }
+//    val exoPlayer = remember {
+//        ExoPlayer
+//            .Builder(context)
+//            .setMediaSourceFactory(DefaultMediaSourceFactory(VideoPlayerCache.getFactory(context)))
+//            .build()
+//            .apply {
+//                setMediaItem(MediaItem.fromUri(url))
+//                repeatMode = Player.REPEAT_MODE_ONE
+//                prepare()
+//            }
+//    }
 
-    LaunchedEffect(playWhenReady) {
-        exoPlayer.playWhenReady = playWhenReady
-        //exoPlayer.playWhenReady = false
-    }
+//    LaunchedEffect(playWhenReady) {
+//        exoPlayer.playWhenReady = playWhenReady
+//        //exoPlayer.playWhenReady = false
+//    }
 
     val interactionState by viewModel.interactionState(post.id).collectAsState()
 
-    DisposableEffect(post.id) {
-        onDispose {
-            exoPlayer.stop()
-            exoPlayer.release()
-        }
-    }
-
-    LaunchedEffect(post.id) {
-        viewModel.setInitialState(
-            postId = post.id,
-            isLiked = post.userActions.isLiked,
-            likeCount = post.counters.likeCount,
-            isBookmarked = post.userActions.isBookmarked,
-            bookmarkCount = post.counters.bookmarkCount
-        )
-    }
+//    DisposableEffect(post.id) {
+//        onDispose {
+//            exoPlayer.stop()
+//            exoPlayer.release()
+//        }
+//    }
 
     Box(Modifier.fillMaxSize()) {
-        AndroidView(
-            factory = {
-                PlayerView(context).apply {
-                    player = exoPlayer
-                    useController = false
-                    resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
-                    layoutParams = ViewGroup.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                    )
-                }
-            },
-            modifier = Modifier.fillMaxSize()
-        )
+//        AndroidView(
+//            factory = {
+//                PlayerView(context).apply {
+//                    player = exoPlayer
+//                    useController = false
+//                    resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
+//                    layoutParams = ViewGroup.LayoutParams(
+//                        ViewGroup.LayoutParams.MATCH_PARENT,
+//                        ViewGroup.LayoutParams.MATCH_PARENT,
+//                    )
+//                }
+//            },
+//            modifier = Modifier.fillMaxSize()
+//        )
 
         PostOverlay(
             interactionState = interactionState,

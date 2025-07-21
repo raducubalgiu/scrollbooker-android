@@ -79,7 +79,6 @@ class PostsPagerViewModel @Inject constructor(
         }
     }
 
-
     fun setInitialState(
         postId: Int,
         isLiked: Boolean,

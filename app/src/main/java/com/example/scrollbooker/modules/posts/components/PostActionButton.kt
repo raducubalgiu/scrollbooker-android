@@ -48,8 +48,7 @@ fun PostActionButton(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Icon(
-                modifier = Modifier
-                    .size(35.dp),
+                modifier = Modifier.size(35.dp),
                 painter = icon,
                 contentDescription = null,
                 tint = tint
