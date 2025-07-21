@@ -1,16 +1,12 @@
 package com.example.scrollbooker.screens.search
 
 import androidx.lifecycle.ViewModel
-import com.example.scrollbooker.entity.businessType.domain.model.BusinessType
+import com.example.scrollbooker.entity.nomenclature.businessType.domain.model.BusinessType
 import com.mapbox.geojson.Point
-import com.mapbox.maps.CameraState
 import com.mapbox.maps.extension.compose.animation.viewport.MapViewportState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel

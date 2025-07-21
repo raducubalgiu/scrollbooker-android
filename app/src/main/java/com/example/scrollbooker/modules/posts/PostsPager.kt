@@ -51,7 +51,7 @@ import com.example.scrollbooker.components.core.sheet.Sheet
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.modules.reviews.ReviewsViewModel
 import com.example.scrollbooker.core.util.LoadMoreSpinner
-import com.example.scrollbooker.entity.post.domain.model.Post
+import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.modules.calendar.Calendar
 import com.example.scrollbooker.modules.calendar.CalendarViewModel
 import com.example.scrollbooker.modules.posts.sheets.comments.CommentsSheet

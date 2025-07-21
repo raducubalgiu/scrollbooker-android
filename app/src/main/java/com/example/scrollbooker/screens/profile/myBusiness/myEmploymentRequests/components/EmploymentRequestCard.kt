@@ -20,7 +20,7 @@ import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.entity.employmentRequest.domain.model.EmploymentRequest
+import com.example.scrollbooker.entity.booking.employmentRequest.domain.model.EmploymentRequest
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.titleMedium
 import org.threeten.bp.ZoneId

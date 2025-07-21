@@ -10,7 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.entity.businessType.domain.model.BusinessType
+import com.example.scrollbooker.entity.nomenclature.businessType.domain.model.BusinessType
 import com.example.scrollbooker.screens.search.businessProfile.BusinessProfileScreen
 import com.example.scrollbooker.screens.search.SearchScreen
 import com.example.scrollbooker.screens.search.SearchViewModel

@@ -14,11 +14,10 @@ import androidx.compose.ui.Modifier
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.sheet.Sheet
-import com.example.scrollbooker.components.customized.ProductCardNavigationData
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.entity.products.domain.model.Product
+import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.screens.profile.components.ProfileLayout
 import com.example.scrollbooker.screens.profile.components.userInformation.ProfileShimmer
 import com.example.scrollbooker.screens.profile.components.myProfile.MyProfileActions

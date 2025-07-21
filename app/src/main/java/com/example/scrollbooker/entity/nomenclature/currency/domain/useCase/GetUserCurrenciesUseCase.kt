@@ -1,0 +1,12 @@
+package com.example.scrollbooker.entity.nomenclature.currency.domain.useCase
+import com.example.scrollbooker.entity.nomenclature.currency.domain.model.Currency
+import com.example.scrollbooker.entity.nomenclature.currency.domain.repository.CurrencyRepository
+import javax.inject.Inject
+
+class GetUserCurrenciesUseCase @Inject constructor(
+    private val repository: CurrencyRepository
+) {
+    suspend operator fun invoke(userId: Int): Result<List<Currency>> {
+        return repository.getUserCurrencies(userId)
+    }
+}

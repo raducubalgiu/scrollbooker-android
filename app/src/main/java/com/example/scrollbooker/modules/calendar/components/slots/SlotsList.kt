@@ -8,8 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.entity.calendar.domain.model.AvailableDay
-import com.example.scrollbooker.entity.calendar.domain.model.Slot
+import com.example.scrollbooker.entity.booking.calendar.domain.model.AvailableDay
+import com.example.scrollbooker.entity.booking.calendar.domain.model.Slot
 
 @Composable
 fun SlotsList(

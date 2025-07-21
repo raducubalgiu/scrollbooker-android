@@ -37,7 +37,7 @@ import com.example.scrollbooker.core.util.Dimens.AvatarSizeXS
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.entity.comment.domain.model.CreateComment
+import com.example.scrollbooker.entity.social.comment.domain.model.CreateComment
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnPrimary

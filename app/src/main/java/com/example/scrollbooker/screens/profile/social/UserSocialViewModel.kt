@@ -9,10 +9,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.entity.review.domain.model.Review
-import com.example.scrollbooker.entity.review.domain.model.ReviewsSummary
-import com.example.scrollbooker.entity.review.domain.useCase.GetReviewsSummaryUseCase
-import com.example.scrollbooker.entity.review.domain.useCase.GetReviewsUseCase
+import com.example.scrollbooker.entity.booking.review.domain.model.Review
+import com.example.scrollbooker.entity.booking.review.domain.model.ReviewsSummary
+import com.example.scrollbooker.entity.booking.review.domain.useCase.GetReviewsSummaryUseCase
+import com.example.scrollbooker.entity.booking.review.domain.useCase.GetReviewsUseCase
 import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
 import com.example.scrollbooker.entity.user.userSocial.domain.useCase.FollowUserUseCase
 import com.example.scrollbooker.entity.user.userSocial.domain.useCase.GetUserSocialFollowersUseCase

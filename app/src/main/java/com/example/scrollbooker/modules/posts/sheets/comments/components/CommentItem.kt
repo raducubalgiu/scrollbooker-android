@@ -46,9 +46,9 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
-import com.example.scrollbooker.entity.comment.data.remote.LikeCommentDto
-import com.example.scrollbooker.entity.comment.data.remote.LikeCommentEnum
-import com.example.scrollbooker.entity.comment.domain.model.Comment
+import com.example.scrollbooker.entity.social.comment.data.remote.LikeCommentDto
+import com.example.scrollbooker.entity.social.comment.data.remote.LikeCommentEnum
+import com.example.scrollbooker.entity.social.comment.domain.model.Comment
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.bodyLarge

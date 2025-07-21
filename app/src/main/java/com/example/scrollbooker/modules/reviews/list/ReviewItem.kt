@@ -30,8 +30,8 @@ import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
-import com.example.scrollbooker.entity.review.data.remote.ReviewLabel
-import com.example.scrollbooker.entity.review.domain.model.Review
+import com.example.scrollbooker.entity.booking.review.data.remote.ReviewLabel
+import com.example.scrollbooker.entity.booking.review.domain.model.Review
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.bodyLarge

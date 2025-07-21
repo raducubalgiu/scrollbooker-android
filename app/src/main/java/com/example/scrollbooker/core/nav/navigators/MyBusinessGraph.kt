@@ -3,7 +3,6 @@ package com.example.scrollbooker.core.nav.navigators
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.stringResource
@@ -18,14 +17,11 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.nav.routes.MainRoute
-import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.entity.employmentRequest.domain.model.EmploymentRequestCreate
 import com.example.scrollbooker.screens.profile.myBusiness.MyBusinessScreen
 import com.example.scrollbooker.screens.profile.myBusiness.MyBusinessViewModel
 import com.example.scrollbooker.screens.profile.myBusiness.myCalendar.MyCalendarScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myCalendar.MyCalendarViewModel
-import com.example.scrollbooker.feature.myBusiness.employeeDismissal.presentation.EmployeesDismissalScreen
-import com.example.scrollbooker.feature.myBusiness.employeeDismissal.presentation.EmployeesDismissalViewModel
+import com.example.scrollbooker.screens.profile.myBusiness.myEmployees.EmployeesDismissalScreen
 import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessServices.MyServicesScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myEmployees.EmployeesScreen
 import com.example.scrollbooker.screens.profile.myBusiness.myEmployees.EmployeesViewModel
@@ -111,10 +107,10 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
                 navArgument("userId") { type = NavType.IntType },
             )
         ) { backStackEntry ->
-            val viewModel = hiltViewModel<EmployeesDismissalViewModel>(backStackEntry)
+            //val viewModel = hiltViewModel<EmployeesDismissalViewModel>(backStackEntry)
 
             EmployeesDismissalScreen(
-                viewModel,
+                //viewModel,
                 onBack = { navController.popBackStack() }
             )
         }
@@ -178,9 +174,9 @@ fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
                     viewModel = viewModel,
                     onBack = { navController.popBackStack() },
                     onNext = {
+
                         navController.currentBackStackEntry?.lifecycleScope?.launch {
                             val result = viewModel.createEmploymentRequest()
-
                             result
                                 .onSuccess {
                                     navController.navigate(MainRoute.EmploymentsRequests.route) {

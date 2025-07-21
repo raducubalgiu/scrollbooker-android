@@ -27,8 +27,8 @@ import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import java.util.Locale
 import com.example.scrollbooker.core.util.displayShortDayOfWeek
-import com.example.scrollbooker.entity.calendar.domain.model.AvailableDay
-import com.example.scrollbooker.entity.calendar.domain.model.Slot
+import com.example.scrollbooker.entity.booking.calendar.domain.model.AvailableDay
+import com.example.scrollbooker.entity.booking.calendar.domain.model.Slot
 import com.example.scrollbooker.modules.calendar.components.CalendarHeader
 import com.example.scrollbooker.modules.calendar.components.slots.SlotsList
 

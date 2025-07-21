@@ -6,9 +6,9 @@ import com.example.scrollbooker.core.enums.ConsentEnum
 import com.example.scrollbooker.core.enums.EmploymentRequestStatusEnum
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
-import com.example.scrollbooker.entity.consent.domain.model.Consent
-import com.example.scrollbooker.entity.consent.domain.useCase.GetConsentsByNameUseCase
-import com.example.scrollbooker.entity.employmentRequest.domain.useCase.RespondEmploymentRequestUseCase
+import com.example.scrollbooker.entity.booking.employmentRequest.domain.useCase.RespondEmploymentRequestUseCase
+import com.example.scrollbooker.entity.nomenclature.consent.domain.model.Consent
+import com.example.scrollbooker.entity.nomenclature.consent.domain.useCase.GetConsentsByNameUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

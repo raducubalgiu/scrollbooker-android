@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Book
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -23,10 +21,10 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.components.core.layout.MessageScreen
+import com.example.scrollbooker.entity.booking.review.domain.model.Review
+import com.example.scrollbooker.entity.booking.review.domain.model.ReviewsSummary
 import com.example.scrollbooker.modules.reviews.summary.ReviewSummaryShimmer
 import com.example.scrollbooker.modules.reviews.summary.ReviewsSummarySection
-import com.example.scrollbooker.entity.review.domain.model.Review
-import com.example.scrollbooker.entity.review.domain.model.ReviewsSummary
 import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable

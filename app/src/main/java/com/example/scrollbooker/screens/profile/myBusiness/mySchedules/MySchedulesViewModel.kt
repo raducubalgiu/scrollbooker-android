@@ -5,9 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
-import com.example.scrollbooker.entity.schedule.domain.model.Schedule
-import com.example.scrollbooker.entity.schedule.domain.useCase.GetSchedulesByUserIdUseCase
-import com.example.scrollbooker.entity.schedule.domain.useCase.UpdateSchedulesUseCase
+import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
+import com.example.scrollbooker.entity.booking.schedule.domain.useCase.GetSchedulesByUserIdUseCase
+import com.example.scrollbooker.entity.booking.schedule.domain.useCase.UpdateSchedulesUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

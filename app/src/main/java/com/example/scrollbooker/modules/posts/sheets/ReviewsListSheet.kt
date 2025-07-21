@@ -30,7 +30,7 @@ import com.example.scrollbooker.modules.reviews.list.ReviewItemShimmer
 import com.example.scrollbooker.modules.reviews.summary.ReviewsSummarySection
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.LoadMoreSpinner
-import com.example.scrollbooker.entity.review.domain.model.ReviewsSummary
+import com.example.scrollbooker.entity.booking.review.domain.model.ReviewsSummary
 import com.example.scrollbooker.modules.reviews.ReviewsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)

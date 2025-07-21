@@ -22,7 +22,7 @@ import com.example.scrollbooker.components.core.inputs.Option
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.generateTimeSlots
 import com.example.scrollbooker.core.util.translateDayOfWeek
-import com.example.scrollbooker.entity.schedule.domain.model.Schedule
+import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.titleMedium
 

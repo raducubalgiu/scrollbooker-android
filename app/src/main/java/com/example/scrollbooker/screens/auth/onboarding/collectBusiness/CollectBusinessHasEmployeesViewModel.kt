@@ -5,9 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
-import com.example.scrollbooker.entity.business.domain.model.Business
-import com.example.scrollbooker.entity.business.domain.useCase.GetBusinessByUserUseCase
-import com.example.scrollbooker.entity.business.domain.useCase.UpdateBusinessHasEmployeesUseCase
+import com.example.scrollbooker.entity.booking.business.domain.model.Business
+import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessByUserUseCase
+import com.example.scrollbooker.entity.booking.business.domain.useCase.UpdateBusinessHasEmployeesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

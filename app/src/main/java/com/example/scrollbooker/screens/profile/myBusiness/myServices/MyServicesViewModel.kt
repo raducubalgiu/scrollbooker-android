@@ -2,22 +2,19 @@ package com.example.scrollbooker.screens.profile.myBusiness.myServices
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.scrollbooker.core.enums.GenderTypeEnum
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
-import com.example.scrollbooker.entity.business.domain.useCase.UpdateBusinessServicesUseCase
-import com.example.scrollbooker.entity.service.domain.model.Service
-import com.example.scrollbooker.entity.service.domain.useCase.GetServicesByBusinessTypeUseCase
-import com.example.scrollbooker.entity.service.domain.useCase.GetServicesByBusinessIdUseCase
+import com.example.scrollbooker.entity.booking.business.domain.useCase.UpdateBusinessServicesUseCase
+import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
+import com.example.scrollbooker.entity.nomenclature.service.domain.useCase.GetServicesByBusinessTypeUseCase
+import com.example.scrollbooker.entity.nomenclature.service.domain.useCase.GetServicesByBusinessIdUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber

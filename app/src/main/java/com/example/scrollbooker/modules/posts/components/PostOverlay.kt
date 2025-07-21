@@ -36,7 +36,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
-import com.example.scrollbooker.entity.post.domain.model.PostCounters
+import com.example.scrollbooker.entity.social.post.domain.model.PostCounters
 import com.example.scrollbooker.modules.posts.PostInteractionState
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnPrimary

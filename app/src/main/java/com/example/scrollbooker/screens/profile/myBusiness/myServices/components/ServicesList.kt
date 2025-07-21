@@ -9,7 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.example.scrollbooker.components.DeletableItem
-import com.example.scrollbooker.entity.service.domain.model.Service
+import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

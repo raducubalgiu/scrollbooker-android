@@ -5,10 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
-import com.example.scrollbooker.entity.currency.domain.model.Currency
-import com.example.scrollbooker.entity.currency.domain.useCase.GetAllCurrenciesUseCase
-import com.example.scrollbooker.entity.currency.domain.useCase.GetUserCurrenciesUseCase
-import com.example.scrollbooker.entity.currency.domain.useCase.UpdateUserCurrenciesUseCase
+import com.example.scrollbooker.entity.nomenclature.currency.domain.model.Currency
+import com.example.scrollbooker.entity.nomenclature.currency.domain.useCase.GetAllCurrenciesUseCase
+import com.example.scrollbooker.entity.nomenclature.currency.domain.useCase.GetUserCurrenciesUseCase
+import com.example.scrollbooker.entity.nomenclature.currency.domain.useCase.UpdateUserCurrenciesUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

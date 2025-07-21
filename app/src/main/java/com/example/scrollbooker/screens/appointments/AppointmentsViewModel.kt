@@ -6,9 +6,9 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.example.scrollbooker.core.enums.AppointmentStatusEnum
 import com.example.scrollbooker.core.util.withVisibleLoading
-import com.example.scrollbooker.entity.appointment.domain.model.Appointment
-import com.example.scrollbooker.entity.appointment.domain.useCase.DeleteAppointmentUseCase
-import com.example.scrollbooker.entity.appointment.domain.useCase.GetUserAppointmentsUseCase
+import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointment
+import com.example.scrollbooker.entity.booking.appointment.domain.useCase.DeleteAppointmentUseCase
+import com.example.scrollbooker.entity.booking.appointment.domain.useCase.GetUserAppointmentsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow

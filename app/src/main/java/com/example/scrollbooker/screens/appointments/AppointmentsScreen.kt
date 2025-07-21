@@ -39,7 +39,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.LoadMoreSpinner
-import com.example.scrollbooker.entity.appointment.domain.model.Appointment
+import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointment
 import com.example.scrollbooker.screens.appointments.components.AppointmentCard.AppointmentCard
 import com.example.scrollbooker.screens.appointments.components.AppointmentFilter
 import com.example.scrollbooker.screens.appointments.components.AppointmentFilterTitleEnum

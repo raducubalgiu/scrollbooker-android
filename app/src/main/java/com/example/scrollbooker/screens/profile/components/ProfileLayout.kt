@@ -17,7 +17,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.sheet.BottomSheet
 import com.example.scrollbooker.core.nav.routes.MainRoute
-import com.example.scrollbooker.entity.products.domain.model.Product
+import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.screens.profile.components.tab.ProfileTabRow
 import com.example.scrollbooker.screens.profile.components.tab.bookmarks.ProfileBookmarksTab
 import com.example.scrollbooker.screens.profile.components.tab.info.ProfileInfoTab
