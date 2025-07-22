@@ -1,4 +1,4 @@
-package com.example.scrollbooker.core.nav
+package com.example.scrollbooker.screens.main
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -30,13 +30,16 @@ class MainUIViewModel @Inject constructor(
     var appointmentsState by mutableIntStateOf(0)
         private set
 
-    private val _businessTypesState = MutableStateFlow<FeatureState<List<BusinessType>>>(FeatureState.Loading)
+    private val _businessTypesState =
+        MutableStateFlow<FeatureState<List<BusinessType>>>(FeatureState.Loading)
     val businessTypesState: StateFlow<FeatureState<List<BusinessType>>> = _businessTypesState
 
-    private val _businessTypesByBusinessDomainState = MutableStateFlow<Map<Int, FeatureState<List<BusinessType>>>>(emptyMap())
+    private val _businessTypesByBusinessDomainState =
+        MutableStateFlow<Map<Int, FeatureState<List<BusinessType>>>>(emptyMap())
     val businessTypesByBusinessDomainState: StateFlow<Map<Int, FeatureState<List<BusinessType>>>> = _businessTypesByBusinessDomainState
 
-    private val _businessDomainsState = MutableStateFlow<FeatureState<List<BusinessDomain>>>(FeatureState.Loading)
+    private val _businessDomainsState =
+        MutableStateFlow<FeatureState<List<BusinessDomain>>>(FeatureState.Loading)
     val businessDomainsState: StateFlow<FeatureState<List<BusinessDomain>>> = _businessDomainsState
 
 //    private val _selectedBusinessTypes = MutableStateFlow<Set<Int>>(emptySet())

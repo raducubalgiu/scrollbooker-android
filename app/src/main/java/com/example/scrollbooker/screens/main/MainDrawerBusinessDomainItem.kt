@@ -1,4 +1,4 @@
-package com.example.scrollbooker.core.nav.appDrawer
+package com.example.scrollbooker.screens.main
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
@@ -33,7 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
-import com.example.scrollbooker.core.nav.MainUIViewModel
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.BusinessDomain
@@ -49,7 +48,7 @@ import com.example.scrollbooker.components.core.inputs.InputCheckbox
 import com.example.scrollbooker.core.util.FeatureState
 
 @Composable
-fun DrawerBusinessDomainItem(
+fun MainDrawerBusinessDomainItem(
     selectedBusinessTypes: Set<Int>,
     viewModel: MainUIViewModel,
     businessDomain: BusinessDomain,
@@ -118,7 +117,7 @@ fun DrawerBusinessDomainItem(
     ) {
         when(businessTypesState) {
             is FeatureState.Error -> Unit
-            is FeatureState.Loading -> DrawerBusinessTypeShimmer()
+            is FeatureState.Loading -> MainDrawerBusinessTypeShimmer()
             is FeatureState.Success<*> -> {
                 val businessTypes = (businessTypesState as FeatureState.Success).data
 

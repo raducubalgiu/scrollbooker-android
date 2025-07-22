@@ -22,12 +22,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.scrollbooker.core.nav.MainUIViewModel
-import com.example.scrollbooker.core.nav.appDrawer.AppDrawer
+import com.example.scrollbooker.screens.main.MainUIViewModel
 import com.example.scrollbooker.core.nav.bottomBar.MainTab
 import com.example.scrollbooker.core.nav.containers.DefaultTabContainer
 import com.example.scrollbooker.screens.auth.AuthViewModel
 import com.example.scrollbooker.screens.feed.FeedViewModel
+import com.example.scrollbooker.screens.main.MainDrawer
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -73,11 +73,10 @@ fun MainNavHost(authViewModel: AuthViewModel) {
                 is MainTab.Feed -> {
                     ModalNavigationDrawer(
                         drawerContent = {
-                            AppDrawer(
+                            MainDrawer(
                                 viewModel = mainViewModel,
                                 feedViewModel = feedViewModel,
-                                businessDomainsState = businessDomainsState,
-                                onBack = { scope.launch { drawerState.close() } }
+                                businessDomainsState = businessDomainsState
                             )
                         },
                         scrimColor = Color(0xFF121212).copy(0.7f),

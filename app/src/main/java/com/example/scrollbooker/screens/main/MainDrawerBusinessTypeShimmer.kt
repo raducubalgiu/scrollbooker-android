@@ -1,4 +1,4 @@
-package com.example.scrollbooker.core.nav.appDrawer
+package com.example.scrollbooker.screens.main
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,7 +18,7 @@ import com.example.scrollbooker.components.core.shimmer.ShimmerMode
 import com.example.scrollbooker.components.core.shimmer.rememberShimmerBrush
 
 @Composable
-fun DrawerBusinessTypeShimmer() {
+fun MainDrawerBusinessTypeShimmer() {
     val brush = rememberShimmerBrush(mode = ShimmerMode.DARK)
 
     Column(Modifier.fillMaxSize()) {

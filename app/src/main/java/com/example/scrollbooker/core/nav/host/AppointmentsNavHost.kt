@@ -11,7 +11,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.example.scrollbooker.core.nav.MainUIViewModel
+import com.example.scrollbooker.screens.main.MainUIViewModel
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.screens.appointments.AppointmentDetailsScreen
 import com.example.scrollbooker.screens.appointments.AppointmentsScreen

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.core.nav.appDrawer
+package com.example.scrollbooker.screens.main
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
@@ -32,7 +32,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
-import com.example.scrollbooker.core.nav.MainUIViewModel
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.FeatureState
@@ -48,11 +47,10 @@ import com.example.scrollbooker.ui.theme.bodyMedium
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
-fun AppDrawer(
+fun MainDrawer(
     viewModel: MainUIViewModel,
     feedViewModel: FeedViewModel,
-    businessDomainsState: FeatureState<List<BusinessDomain>>,
-    onBack: () -> Unit
+    businessDomainsState: FeatureState<List<BusinessDomain>>
 ) {
     val selectedBusinessTypes by feedViewModel.selectedBusinessTypes.collectAsState()
 
@@ -92,7 +90,7 @@ fun AppDrawer(
                                 }
 
                                 itemsIndexed(businessDomains.data) { index, businessDomain ->
-                                    DrawerBusinessDomainItem(
+                                    MainDrawerBusinessDomainItem(
                                         viewModel = viewModel,
                                         selectedBusinessTypes = selectedBusinessTypes,
                                         businessDomain = businessDomain,
