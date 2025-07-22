@@ -7,24 +7,19 @@ import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
-import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserProfileUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateBioUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateFullNameUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateGenderUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateUsernameUseCase
-import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class ProfileSharedViewModel @Inject constructor(
-    private val authDataStore: AuthDataStore,
-    private val getUserProfileUseCase: GetUserProfileUseCase,
     private val updateFullNameUseCase: UpdateFullNameUseCase,
     private val updateUsernameUseCase: UpdateUsernameUseCase,
     private val updateBioUseCase: UpdateBioUseCase,
@@ -39,17 +34,8 @@ class ProfileSharedViewModel @Inject constructor(
 
     var isSaved by mutableStateOf(false)
 
-    init { loadUserProfile() }
-
-    fun loadUserProfile() {
-        viewModelScope.launch {
-            _userProfileState.value = FeatureState.Loading
-            val userId = authDataStore.getUserId().firstOrNull()
-
-            val response = withVisibleLoading { getUserProfileUseCase(userId) }
-
-            _userProfileState.value = response
-        }
+    fun setUserProfile(userProfileData: FeatureState<UserProfile>) {
+        _userProfileState.value = userProfileData
     }
 
     fun updateFullName(newFullName: String) {

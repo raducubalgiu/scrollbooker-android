@@ -7,15 +7,12 @@ sealed class MainTab(
     val route: String,
     val label: String,
     val painterSolid: Int,
-    val painterOutline: Int,
-    val showBottomBar: Boolean = true,
-    val animateBottomBar: Boolean = true
+    val painterOutline: Int
 ) {
     object Feed: MainTab(
         MainRoute.Feed.route, "Acasa",
         painterSolid = R.drawable.ic_home_solid,
         painterOutline = R.drawable.ic_home_outline,
-        showBottomBar = true
     )
     object Inbox: MainTab(
         MainRoute.Inbox.route, "Inbox",

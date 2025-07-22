@@ -13,9 +13,13 @@ import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.useCas
 import com.example.scrollbooker.entity.nomenclature.businessType.domain.model.BusinessType
 import com.example.scrollbooker.entity.nomenclature.businessType.domain.useCase.GetAllBusinessTypesByBusinessDomainUseCase
 import com.example.scrollbooker.entity.nomenclature.businessType.domain.useCase.GetAllBusinessTypesUseCase
+import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
+import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserProfileUseCase
+import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -25,8 +29,13 @@ class MainUIViewModel @Inject constructor(
     private val getUserAppointmentsNumberUseCase: GetUserAppointmentsNumberUseCase,
     private val getAllBusinessTypesUseCase: GetAllBusinessTypesUseCase,
     private val getAllBusinessDomainsUseCase: GetAllBusinessDomainsUseCase,
-    private val getAllBusinessTypesByBusinessDomainUseCase: GetAllBusinessTypesByBusinessDomainUseCase
+    private val getAllBusinessTypesByBusinessDomainUseCase: GetAllBusinessTypesByBusinessDomainUseCase,
+    private val getUserProfileUseCase: GetUserProfileUseCase,
+    private val authDataStore: AuthDataStore,
 ): ViewModel() {
+    private val _userProfileState = MutableStateFlow<FeatureState<UserProfile>>(FeatureState.Loading)
+    val userProfileState: StateFlow<FeatureState<UserProfile>> = _userProfileState
+
     var appointmentsState by mutableIntStateOf(0)
         private set
 
@@ -44,12 +53,6 @@ class MainUIViewModel @Inject constructor(
 
 //    private val _selectedBusinessTypes = MutableStateFlow<Set<Int>>(emptySet())
 //    val selectedBusinessTypes: StateFlow<Set<Int>> = _selectedBusinessTypes
-
-    init {
-        loadAppointmentsNumber()
-        loadAllBusinessTypes()
-        loadAllBusinessDomains()
-    }
 
     fun increaseAppointmentsNumber() {
         appointmentsState = appointmentsState + 1
@@ -81,6 +84,16 @@ class MainUIViewModel @Inject constructor(
         }
     }
 
+    fun loadUserProfile() {
+        viewModelScope.launch {
+            _userProfileState.value = FeatureState.Loading
+            val userId = authDataStore.getUserId().firstOrNull()
+
+            val response = getUserProfileUseCase(userId)
+            _userProfileState.value = response
+        }
+    }
+
     private fun loadAllBusinessTypes() {
         viewModelScope.launch {
             _businessTypesState.value = FeatureState.Loading
@@ -99,5 +112,12 @@ class MainUIViewModel @Inject constructor(
         viewModelScope.launch {
             appointmentsState = getUserAppointmentsNumberUseCase()
         }
+    }
+
+    init {
+        loadUserProfile()
+        loadAppointmentsNumber()
+        loadAllBusinessTypes()
+        loadAllBusinessDomains()
     }
 }

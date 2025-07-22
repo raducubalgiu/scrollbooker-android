@@ -43,6 +43,7 @@ fun MainNavHost(authViewModel: AuthViewModel) {
 
     val businessTypesState by mainViewModel.businessTypesState.collectAsState()
     val businessDomainsState by mainViewModel.businessDomainsState.collectAsState()
+    val myProfileData by mainViewModel.userProfileState.collectAsState()
 
     val saveableStateHolder = rememberSaveableStateHolder()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -193,7 +194,13 @@ fun MainNavHost(authViewModel: AuthViewModel) {
                             enablePadding = false,
                             navController = navControllers[MainTab.Profile]!!,
                             innerPadding = innerPadding,
-                            content = { ProfileNavHost(navController = it, authViewModel = authViewModel) }
+                            content = {
+                                ProfileNavHost(
+                                    myProfileData = myProfileData,
+                                    navController = it,
+                                    authViewModel = authViewModel
+                                )
+                            }
                         )
                     }
                 }

@@ -1,4 +1,5 @@
 package com.example.scrollbooker.ui.sharedModules.posts.components
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -14,7 +15,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -36,9 +39,11 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
+import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.entity.social.post.domain.model.PostCounters
 import com.example.scrollbooker.ui.sharedModules.posts.PostInteractionState
 import com.example.scrollbooker.ui.theme.Error
+import com.example.scrollbooker.ui.theme.OnError
 import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyMedium
@@ -56,114 +61,149 @@ fun PostOverlay(
 ) {
     Box(modifier = Modifier
         .fillMaxSize()
-        .padding(
-            top = SpacingS,
-            start = SpacingS,
-            bottom = SpacingS
-        )
         .zIndex(3f),
         contentAlignment = Alignment.BottomCenter
     ) {
-        Row(modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.Bottom
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Button(
-                    onClick = {},
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(end = SpacingXL),
-                    shape = ShapeDefaults.Medium,
-                    contentPadding = PaddingValues(
-                        vertical = 11.dp,
-                        horizontal = BasePadding
-                    ),
-                    colors = ButtonDefaults.buttonColors(
-                        contentColor = OnPrimary,
-                        containerColor = Primary.copy(0.9f)
-                    ),
-                ) {
-                    Row(
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    top = SpacingS,
+                    start = SpacingS,
+                    bottom = SpacingS
+                ),
+                verticalAlignment = Alignment.Bottom
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Button(
+                        onClick = {},
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null,
-                                onClick = onOpenCalendar
-                            ),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
+                            .padding(end = SpacingXL),
+                        shape = ShapeDefaults.Medium,
+                        contentPadding = PaddingValues(
+                            vertical = 11.dp,
+                            horizontal = BasePadding
+                        ),
+                        colors = ButtonDefaults.buttonColors(
+                            contentColor = OnPrimary,
+                            containerColor = Primary.copy(0.9f)
+                        ),
                     ) {
-                        Icon(
-                            modifier = Modifier.size(20.dp),
-                            painter = painterResource(R.drawable.ic_calendar_outline),
-                            contentDescription = null,
-                            tint = OnPrimary
-                        )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable(
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = null,
+                                    onClick = onOpenCalendar
+                                ),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(20.dp),
+                                painter = painterResource(R.drawable.ic_calendar_outline),
+                                contentDescription = null,
+                                tint = OnPrimary
+                            )
 
-                        Spacer(Modifier.width(BasePadding))
+                            Spacer(Modifier.width(BasePadding))
 
-                        Text(
-                            style = bodyMedium,
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            text = "Intervale disponibile"
-                        )
+                            Text(
+                                style = bodyMedium,
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                text = "Intervale disponibile"
+                            )
 
-                        Icon(
-                            modifier = Modifier.size(20.dp),
-                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                            contentDescription = null,
-                            tint = OnPrimary
-                        )
+                            Icon(
+                                modifier = Modifier.size(20.dp),
+                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                contentDescription = null,
+                                tint = OnPrimary
+                            )
+                        }
                     }
+                }
+
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    AvatarWithRating(
+                        rating = "4.5",
+                        size = 60.dp
+                    )
+
+                    Spacer(Modifier.height(SpacingM))
+
+                    PostActionButton(
+                        isEnabled = !interactionState.isLiking,
+                        counter = interactionState.likeCount,
+                        icon = painterResource(R.drawable.ic_heart_solid),
+                        tint = if(interactionState.isLiked) Error else Color.White,
+                        onClick = onLike
+                    )
+
+                    PostActionButton(
+                        counter = 120,
+                        icon = painterResource(R.drawable.ic_clipboard_check_solid),
+                        //tint = Color(0xFFF3BA2F),
+                        tint = Color.White,
+                        onClick = onOpenReviews
+                    )
+
+                    PostActionButton(
+                        counter = counters.commentCount,
+                        icon = painterResource(R.drawable.ic_comment_solid),
+                        onClick = onOpenComments
+                    )
+                    PostActionButton(
+                        isEnabled = !interactionState.isBookmarking,
+                        counter = interactionState.bookmarkCount,
+                        icon = painterResource(R.drawable.ic_bookmark_solid),
+                        tint = if(interactionState.isBookmarked) Color(0xFFF3BA2F) else Color.White,
+                        onClick = onBookmark
+                    )
+                    PostActionButton(
+                        counter = counters.shareCount,
+                        icon = painterResource(R.drawable.ic_send_solid),
+                        onClick = onOpenLocation
+                    )
                 }
             }
 
+            Spacer(Modifier.height(SpacingXS))
+
             Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Error.copy(alpha = 0.7f))
             ) {
-                AvatarWithRating(
-                    rating = "4.5",
-                    size = 60.dp
-                )
-
-                Spacer(Modifier.height(SpacingM))
-
-                PostActionButton(
-                    isEnabled = !interactionState.isLiking,
-                    counter = interactionState.likeCount,
-                    icon = painterResource(R.drawable.ic_heart_solid),
-                    tint = if(interactionState.isLiked) Error else Color.White,
-                    onClick = onLike
-                )
-
-                PostActionButton(
-                    counter = 120,
-                    icon = painterResource(R.drawable.ic_clipboard_check_solid),
-                    //tint = Color(0xFFF3BA2F),
-                    tint = Color.White,
-                    onClick = onOpenReviews
-                )
-
-                PostActionButton(
-                    counter = counters.commentCount,
-                    icon = painterResource(R.drawable.ic_comment_solid),
-                    onClick = onOpenComments
-                )
-                PostActionButton(
-                    isEnabled = !interactionState.isBookmarking,
-                    counter = interactionState.bookmarkCount,
-                    icon = painterResource(R.drawable.ic_bookmark_solid),
-                    tint = if(interactionState.isBookmarked) Color(0xFFF3BA2F) else Color.White,
-                    onClick = onBookmark
-                )
-                PostActionButton(
-                    counter = counters.shareCount,
-                    icon = painterResource(R.drawable.ic_send_solid),
-                    onClick = onOpenLocation
-                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            vertical = 10.dp,
+                            horizontal = SpacingM
+                        ),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Vezi mai multe produse",
+                        color = OnError,
+                        style = bodyMedium,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Icon(
+                        modifier = Modifier.size(15.dp),
+                        imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
+                        contentDescription = null,
+                        tint = OnError
+                    )
+                }
             }
         }
     }

@@ -21,34 +21,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.example.scrollbooker.R
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import kotlinx.coroutines.launch
 
-class ProfileTab(
-    val route: String,
-    val icon: Painter
-)
-
 @Composable
 fun ProfileTabRow(
-    pagerState: PagerState
+    pagerState: PagerState,
+    tabs: List<ProfileTab>
 ) {
-    val tabs = listOf(
-        ProfileTab(route = "Posts", painterResource(R.drawable.ic_video_outline)),
-        ProfileTab(route = "Products", icon = painterResource(R.drawable.ic_shopping_outline)),
-        ProfileTab(route = "Reposts", icon = painterResource(R.drawable.ic_arrow_repeat_outline)),
-        ProfileTab(route = "Bookmarks", icon = painterResource(R.drawable.ic_bookmark_outline)),
-        ProfileTab(route = "Info", icon = painterResource(R.drawable.ic_location_outline))
-    )
     val selectedTabIndex = pagerState.currentPage
-    val coroutineScope = rememberCoroutineScope()
+    val scope = rememberCoroutineScope()
 
     TabRow(
         containerColor = Background,
@@ -65,20 +52,16 @@ fun ProfileTabRow(
         divider = { HorizontalDivider(color = Divider, thickness = 0.55.dp) },
         selectedTabIndex = selectedTabIndex
     ) {
-        tabs.forEachIndexed { index, item ->
+        tabs.forEachIndexed { index, tab ->
             val isSelected = selectedTabIndex == index
 
             Tab(
                 selected = isSelected,
-                onClick = {
-                    coroutineScope.launch {
-                        pagerState.animateScrollToPage(index)
-                    }
-                },
+                onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
                 icon = {
                     BadgedBox(
                         badge = {
-                            if (index == 1) {
+                            if (tab is ProfileTab.Products) {
                                 Box(
                                     Modifier
                                         .offset(x = 15.dp, y = (-12).dp),
@@ -96,7 +79,7 @@ fun ProfileTabRow(
                         }
                     ) {
                         Icon(
-                            painter = item.icon,
+                            painter = painterResource(tab.icon),
                             contentDescription = null,
                             tint = if (isSelected) OnBackground else Color.Gray
                         )

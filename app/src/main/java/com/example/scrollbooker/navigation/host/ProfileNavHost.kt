@@ -12,6 +12,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.navigation.navigators.myBusinessGraph
 import com.example.scrollbooker.navigation.navigators.settingsGraph
 import com.example.scrollbooker.navigation.routes.MainRoute
@@ -36,6 +38,7 @@ import com.example.scrollbooker.ui.sharedModules.calendar.CalendarViewModel
 
 @Composable
 fun ProfileNavHost(
+    myProfileData: FeatureState<UserProfile>,
     navController: NavHostController,
     authViewModel: AuthViewModel
 ) {
@@ -82,6 +85,7 @@ fun ProfileNavHost(
         composable(MainRoute.MyProfile.route) { backStackEntry ->
             val viewModel = hiltViewModel<ProfileSharedViewModel>(backStackEntry)
             MyProfileScreen(
+                myProfileData = myProfileData,
                 viewModel = viewModel,
                 onNavigate = { navController.navigate(it) },
                 onNavigateToCalendar = {

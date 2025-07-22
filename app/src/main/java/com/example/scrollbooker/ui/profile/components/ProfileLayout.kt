@@ -77,6 +77,7 @@ fun ProfileLayout(
     ) { UserScheduleSheet() }
 
     PullToRefreshBox(
+        state = state,
         isRefreshing = isRefreshing,
         onRefresh = {
             scope.launch {
@@ -84,14 +85,7 @@ fun ProfileLayout(
                 delay(300)
                 isRefreshing = false
             }
-        },
-//        indicator = {
-//            MyCustomIndicator(
-//                state = state,
-//                isRefreshing = isRefreshing,
-//                modifier = Modifier.align(Alignment.TopCenter)
-//            )
-//        },
+        }
     ) {
         Column {
             LazyColumn(
@@ -112,7 +106,7 @@ fun ProfileLayout(
                     )
                 }
 
-                stickyHeader { ProfileTabRow(pagerState) }
+                //stickyHeader { ProfileTabRow(pagerState) }
 
                 item {
                     HorizontalPager(
@@ -144,48 +138,6 @@ fun ProfileLayout(
                         }
                     }
                 }
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MyCustomIndicator(
-    state: PullToRefreshState,
-    isRefreshing: Boolean,
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier = modifier.pullToRefreshIndicator(
-            state = state,
-            isRefreshing = isRefreshing,
-            containerColor = PullToRefreshDefaults.containerColor,
-            threshold = PositionalThreshold
-        ),
-        contentAlignment = Alignment.Center
-    ) {
-        Crossfade(
-            targetState = isRefreshing,
-            animationSpec = tween(durationMillis = 250),
-            modifier = Modifier.align(Alignment.Center)
-        ) { refreshing ->
-            if (refreshing) {
-                CircularProgressIndicator(Modifier.size(20.dp))
-            } else {
-                val distanceFraction = { state.distanceFraction.coerceIn(0f, 1f) }
-                Icon(
-                    imageVector = Icons.Filled.CloudDownload,
-                    contentDescription = "Refresh",
-                    modifier = Modifier
-                        .size(18.dp)
-                        .graphicsLayer {
-                            val progress = distanceFraction()
-                            this.alpha = progress
-                            this.scaleX = progress
-                            this.scaleY = progress
-                        },
-                )
             }
         }
     }
