@@ -12,7 +12,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.example.scrollbooker.modules.calendar.CalendarViewModel
 import com.example.scrollbooker.navigation.navigators.myBusinessGraph
 import com.example.scrollbooker.navigation.navigators.settingsGraph
 import com.example.scrollbooker.navigation.routes.MainRoute
@@ -33,6 +32,7 @@ import com.example.scrollbooker.ui.profile.social.UserSocialScreen
 import com.example.scrollbooker.ui.profile.social.UserSocialViewModel
 import com.example.scrollbooker.ui.profile.userProfile.ProfileViewModel
 import com.example.scrollbooker.ui.profile.userProfile.UserProfileScreen
+import com.example.scrollbooker.ui.sharedModules.calendar.CalendarViewModel
 
 @Composable
 fun ProfileNavHost(

@@ -16,8 +16,8 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.example.scrollbooker.modules.posts.PostsPager
 import com.example.scrollbooker.ui.feed.components.FeedTabs
+import com.example.scrollbooker.ui.sharedModules.posts.PostsPager
 import kotlinx.coroutines.launch
 
 @Composable

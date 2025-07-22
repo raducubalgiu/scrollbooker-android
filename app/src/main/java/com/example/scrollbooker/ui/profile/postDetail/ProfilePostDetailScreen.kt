@@ -32,7 +32,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.social.post.domain.model.Post
-import com.example.scrollbooker.modules.posts.PostsPager
+import com.example.scrollbooker.ui.sharedModules.posts.PostsPager
 import com.example.scrollbooker.ui.theme.labelLarge
 
 @OptIn(UnstableApi::class)

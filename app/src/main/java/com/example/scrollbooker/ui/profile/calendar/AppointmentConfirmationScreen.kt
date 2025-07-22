@@ -13,12 +13,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.layout.Layout
-import com.example.scrollbooker.modules.calendar.CalendarViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
+import com.example.scrollbooker.ui.sharedModules.calendar.CalendarViewModel
 
 @Composable
 fun AppointmentConfirmationScreen(

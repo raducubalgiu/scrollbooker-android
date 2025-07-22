@@ -21,9 +21,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.dp
-import com.example.scrollbooker.modules.reviews.list.ReviewsList
 import com.example.scrollbooker.ui.profile.social.tab.followers.UserFollowersTab
 import com.example.scrollbooker.ui.profile.social.tab.followings.UserFollowingsTab
+import com.example.scrollbooker.ui.sharedModules.reviews.list.ReviewsList
 
 @Composable
 fun UserSocialScreen(

@@ -1,0 +1,12 @@
+package com.example.scrollbooker.ui.sharedModules.calendar
+import org.threeten.bp.LocalDate
+
+data class CalendarConfig(
+    val userId: Int,
+    val startDate: LocalDate,
+    val endDate: LocalDate,
+    val totalWeeks: Int,
+    val initialWeekPage: Int,
+    val initialDayPage: Int,
+    val selectedDay: LocalDate
+)
