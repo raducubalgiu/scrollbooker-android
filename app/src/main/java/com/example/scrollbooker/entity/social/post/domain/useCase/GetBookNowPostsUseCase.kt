@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 class GetBookNowPostsUseCase(
     private val repository: PostRepository
 ) {
-    operator fun invoke(): Flow<PagingData<Post>> {
-        return repository.getBookNowPosts()
+    operator fun invoke(selectedBusinessTypes: List<Int?>): Flow<PagingData<Post>> {
+        return repository.getBookNowPosts(selectedBusinessTypes)
     }
 }

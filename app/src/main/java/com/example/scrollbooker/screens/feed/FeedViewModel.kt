@@ -9,9 +9,12 @@ import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetBookNowPostsUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetFollowingPostsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
@@ -24,11 +27,13 @@ class FeedViewModel @Inject constructor(
     private val _selectedBusinessTypes = MutableStateFlow<Set<Int>>(emptySet())
     val selectedBusinessTypes: StateFlow<Set<Int>> = _selectedBusinessTypes
 
-    private val _bookNowPosts: Flow<PagingData<Post>> by lazy {
-        getBookNowPostsUseCase()
-            .cachedIn(viewModelScope)
-    }
-    val bookNowPosts: Flow<PagingData<Post>> get() = _bookNowPosts
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val bookNowPosts: Flow<PagingData<Post>> = selectedBusinessTypes
+        .map { it.toList() }
+        .flatMapLatest { selectedTypes ->
+            getBookNowPostsUseCase(selectedTypes)
+        }
+        .cachedIn(viewModelScope)
 
     private val _followingPosts: Flow<PagingData<Post>> by lazy {
         getFollowingPostsUseCase()

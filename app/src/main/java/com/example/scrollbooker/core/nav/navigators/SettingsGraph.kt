@@ -9,16 +9,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.screens.auth.AuthViewModel
-import com.example.scrollbooker.screens.profile.settings.SettingsScreen
-import com.example.scrollbooker.screens.profile.settings.account.AccountScreen
-import com.example.scrollbooker.screens.profile.settings.display.DisplayScreen
-import com.example.scrollbooker.screens.profile.settings.notifications.NotificationSettings
-import com.example.scrollbooker.screens.profile.settings.privacy.PrivacyScreen
-import com.example.scrollbooker.screens.profile.settings.reportProblem.presentation.ReportProblemScreen
-import com.example.scrollbooker.screens.profile.settings.security.SecurityScreen
-import com.example.scrollbooker.screens.profile.settings.support.SupportScreen
-import com.example.scrollbooker.screens.profile.settings.terms.TermsAndConditionsScreen
-import com.example.scrollbooker.screens.profile.settings.reportProblem.presentation.ReportAProblemViewModel
+import com.example.scrollbooker.screens.profile.myProfile.settings.SettingsScreen
+import com.example.scrollbooker.screens.profile.myProfile.settings.account.AccountScreen
+import com.example.scrollbooker.screens.profile.myProfile.settings.display.DisplayScreen
+import com.example.scrollbooker.screens.profile.myProfile.settings.notifications.NotificationSettings
+import com.example.scrollbooker.screens.profile.myProfile.settings.privacy.PrivacyScreen
+import com.example.scrollbooker.screens.profile.myProfile.settings.reportProblem.presentation.ReportAProblemViewModel
+import com.example.scrollbooker.screens.profile.myProfile.settings.reportProblem.presentation.ReportProblemScreen
+import com.example.scrollbooker.screens.profile.myProfile.settings.security.SecurityScreen
+import com.example.scrollbooker.screens.profile.myProfile.settings.support.SupportScreen
+import com.example.scrollbooker.screens.profile.myProfile.settings.terms.TermsAndConditionsScreen
 
 fun NavGraphBuilder.settingsGraph(
     navController: NavHostController,

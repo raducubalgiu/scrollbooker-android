@@ -9,7 +9,8 @@ import timber.log.Timber
 import java.lang.Exception
 
 class PostBookNowPagingSource(
-    private val api: PostApiService
+    private val api: PostApiService,
+    private val selectedBusinessTypes: List<Int?>
 ) : PagingSource<Int, Post>() {
 
     override fun getRefreshKey(state: PagingState<Int, Post>): Int? {
@@ -26,10 +27,10 @@ class PostBookNowPagingSource(
         return try {
             val response = if(page == 1) {
                 withVisibleLoading {
-                    api.getBookNowPosts(page, limit)
+                    api.getBookNowPosts(selectedBusinessTypes, page, limit)
                 }
             } else {
-                api.getBookNowPosts(page, limit)
+                api.getBookNowPosts(selectedBusinessTypes, page, limit)
             }
 
             val posts = response.results.map { it.toDomain() }

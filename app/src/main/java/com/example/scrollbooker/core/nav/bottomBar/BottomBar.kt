@@ -13,6 +13,7 @@ import androidx.compose.material3.DrawerState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.NavigationBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -38,11 +39,7 @@ fun BottomBar(
 
     val isVisible = currentRoute in bottomBarRoutes
 
-    AnimatedVisibility(
-        visible = isVisible,
-        enter = fadeIn() + slideInVertically { it },
-        exit = fadeOut() + slideOutVertically { it }
-    ) {
+    if(isVisible) {
         Column(Modifier.height(90.dp)) {
             HorizontalDivider(color = dividerColor, thickness = 1.dp)
             NavigationBar(
@@ -68,4 +65,35 @@ fun BottomBar(
             }
         }
     }
+
+//    AnimatedVisibility(
+//        visible = isVisible,
+//        enter = fadeIn() + slideInVertically { it },
+//        exit = fadeOut() + slideOutVertically { it }
+//    ) {
+//        Column(Modifier.height(90.dp)) {
+//            HorizontalDivider(color = dividerColor, thickness = 1.dp)
+//            NavigationBar(
+//                tonalElevation = 0.dp,
+//                modifier = Modifier.fillMaxWidth(),
+//                containerColor = containerColor
+//            ) {
+//                Row(modifier = Modifier
+//                    .fillMaxSize()
+//                    .padding(vertical = 5.dp)
+//                ) {
+//                    allTabs.forEach { tab ->
+//                        BottomBarItem(
+//                            appointmentsNumber = appointmentsNumber,
+//                            modifier = Modifier.then(Modifier.weight(1f)),
+//                            onNavigate = { onNavigate(tab) },
+//                            isSelected = currentTab == tab,
+//                            isFeedTab = isFeedTab,
+//                            tab = tab
+//                        )
+//                    }
+//                }
+//            }
+//        }
+//    }
 }

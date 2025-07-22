@@ -44,11 +44,11 @@ import com.example.scrollbooker.screens.onboarding.client.collectGender.CollectC
 import com.example.scrollbooker.screens.onboarding.client.collectGender.CollectClientGenderViewModel
 import com.example.scrollbooker.screens.onboarding.shared.collectLocationPermission.CollectClientLocationPermissionScreen
 import com.example.scrollbooker.screens.onboarding.shared.collectLocationPermission.CollectClientLocationPermissionViewModel
-import com.example.scrollbooker.screens.profile.myBusiness.myBusinessLocation.MyBusinessLocationScreen
-import com.example.scrollbooker.screens.profile.myBusiness.myBusinessLocation.MyBusinessLocationViewModel
-import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.SchedulesScreen
-import com.example.scrollbooker.screens.profile.myBusiness.mySchedules.MySchedulesViewModel
-import com.example.scrollbooker.screens.profile.myBusiness.myServices.MyServicesViewModel
+import com.example.scrollbooker.screens.profile.myProfile.myBusiness.myBusinessLocation.MyBusinessLocationScreen
+import com.example.scrollbooker.screens.profile.myProfile.myBusiness.myBusinessLocation.MyBusinessLocationViewModel
+import com.example.scrollbooker.screens.profile.myProfile.myBusiness.mySchedules.MySchedulesViewModel
+import com.example.scrollbooker.screens.profile.myProfile.myBusiness.mySchedules.SchedulesScreen
+import com.example.scrollbooker.screens.profile.myProfile.myBusiness.myServices.MyServicesViewModel
 import kotlinx.coroutines.launch
 
 enum class AuthTypeEnum {

@@ -10,6 +10,7 @@ import retrofit2.http.Query
 interface PostApiService {
     @GET("posts/book-now")
     suspend fun getBookNowPosts(
+        @Query("business_types") selectedBusinessTypes: List<Int?>,
         @Query("page") page: Int,
         @Query("limit") limit: Int
     ): PaginatedResponseDto<PostDto>

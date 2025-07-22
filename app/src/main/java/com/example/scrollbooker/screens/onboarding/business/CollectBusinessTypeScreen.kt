@@ -24,7 +24,7 @@ import com.example.scrollbooker.components.core.inputs.SearchBar
 import com.example.scrollbooker.components.core.layout.FormLayout
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
-import com.example.scrollbooker.screens.profile.myBusiness.myBusinessLocation.MyBusinessLocationViewModel
+import com.example.scrollbooker.screens.profile.myProfile.myBusiness.myBusinessLocation.MyBusinessLocationViewModel
 
 @Composable
 fun CollectBusinessTypeScreen(

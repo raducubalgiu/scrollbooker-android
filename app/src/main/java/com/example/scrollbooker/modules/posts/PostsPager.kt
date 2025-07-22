@@ -57,6 +57,7 @@ import com.example.scrollbooker.modules.calendar.CalendarViewModel
 import com.example.scrollbooker.modules.posts.sheets.comments.CommentsSheet
 import com.example.scrollbooker.modules.posts.sheets.comments.CommentsViewModel
 import com.example.scrollbooker.modules.posts.components.PostItem
+import com.example.scrollbooker.modules.posts.components.PostShimmer
 import com.example.scrollbooker.modules.posts.sheets.PostSheetsContent
 import com.example.scrollbooker.modules.posts.sheets.LocationSheet
 import com.example.scrollbooker.modules.posts.sheets.ReviewsListSheet
@@ -296,7 +297,7 @@ fun PostsPager(
 
     posts.apply {
         when(loadState.refresh) {
-            is LoadState.Loading -> Unit
+            is LoadState.Loading -> PostShimmer()
             is LoadState.Error -> ErrorScreen()
             is LoadState.NotLoading -> {
                 VerticalPager(
