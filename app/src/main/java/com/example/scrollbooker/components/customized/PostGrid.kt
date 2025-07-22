@@ -26,8 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.scrollbooker.R
-import com.example.scrollbooker.core.nav.routes.MainRoute
 import com.example.scrollbooker.entity.social.post.domain.model.Post
+import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
