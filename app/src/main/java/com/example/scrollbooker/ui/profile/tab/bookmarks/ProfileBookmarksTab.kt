@@ -26,6 +26,7 @@ import com.example.scrollbooker.core.util.LoadMoreSpinner
 @Composable
 fun ProfileBookmarksTab(
     userId: Int,
+    isOwnProfile: Boolean,
     onNavigate: (String) -> Unit
 ) {
     val viewModel: ProfileBookmarkTabViewModel = hiltViewModel()
@@ -77,8 +78,8 @@ fun ProfileBookmarksTab(
                     EmptyScreen(
                         modifier = Modifier.padding(top = 50.dp),
                         arrangement = Arrangement.Top,
-                        message = stringResource(R.string.notFoundPosts),
-                        icon = painterResource(R.drawable.ic_video_outline)
+                        message = if(isOwnProfile) "Inca nu ai salvat nici un videoclip" else stringResource(R.string.notFoundPosts),
+                        icon = painterResource(R.drawable.ic_bookmark_outline)
                     )
                 }
             }

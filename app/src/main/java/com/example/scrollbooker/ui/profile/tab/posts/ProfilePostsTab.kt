@@ -25,6 +25,7 @@ import com.example.scrollbooker.core.util.LoadMoreSpinner
 @Composable
 fun ProfilePostsTab(
     userId: Int,
+    isOwnProfile: Boolean,
     onNavigate: (String) -> Unit
 ) {
     val viewModel: ProfilePostsTabViewModel = hiltViewModel()
@@ -73,7 +74,7 @@ fun ProfilePostsTab(
                     EmptyScreen(
                         modifier = Modifier.padding(top = 50.dp),
                         arrangement = Arrangement.Top,
-                        message = stringResource(R.string.notFoundPosts),
+                        message = if(isOwnProfile) "Inca nu ai postat nici un review video" else stringResource(R.string.notFoundPosts),
                         icon = painterResource(R.drawable.ic_video_outline)
                     )
                 }

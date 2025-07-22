@@ -116,26 +116,26 @@ fun ProfileLayout(
                             .fillMaxWidth()
                             .height(LocalConfiguration.current.screenHeightDp.dp - 150.dp)
                     ) { page ->
-                        when(page) {
-                            0 -> ProfilePostsTab(
-                                userId = user.id,
-                                onNavigate = onNavigate
-                            )
-                            1 -> ProfileProductsTab(
-                                userId = user.id,
-                                businessId = user.businessId,
-                                onNavigateToCalendar = onNavigateToCalendar
-                            )
-                            2 -> ProfileRepostsTab(
-                                userId = user.id,
-                                onNavigate = onNavigate
-                            )
-                            3 -> ProfileBookmarksTab(
-                                userId = user.id,
-                                onNavigate = onNavigate
-                            )
-                            4 -> ProfileInfoTab()
-                        }
+//                        when(page) {
+//                            0 -> ProfilePostsTab(
+//                                userId = user.id,
+//                                onNavigate = onNavigate
+//                            )
+//                            1 -> ProfileProductsTab(
+//                                userId = user.id,
+//                                businessId = user.businessId,
+//                                onNavigateToCalendar = onNavigateToCalendar
+//                            )
+//                            2 -> ProfileRepostsTab(
+//                                userId = user.id,
+//                                onNavigate = onNavigate
+//                            )
+//                            3 -> ProfileBookmarksTab(
+//                                userId = user.id,
+//                                onNavigate = onNavigate
+//                            )
+//                            4 -> ProfileInfoTab()
+//                        }
                     }
                 }
             }

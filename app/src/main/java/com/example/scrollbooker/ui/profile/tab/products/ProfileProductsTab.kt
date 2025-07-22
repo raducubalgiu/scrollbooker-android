@@ -40,6 +40,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ProfileProductsTab(
     userId: Int,
+    isOwnProfile: Boolean,
     businessId: Int?,
     onNavigateToCalendar: (Product) -> Unit
 ) {

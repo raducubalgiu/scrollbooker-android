@@ -159,19 +159,23 @@ fun MyProfileScreen(
                                 when(tabs[page]) {
                                     ProfileTab.Posts -> ProfilePostsTab(
                                         userId = user.id,
+                                        isOwnProfile = user.isOwnProfile,
                                         onNavigate = onNavigate
                                     )
                                     ProfileTab.Products -> ProfileProductsTab(
                                         userId = user.id,
+                                        isOwnProfile = user.isOwnProfile,
                                         businessId = user.businessId,
                                         onNavigateToCalendar = onNavigateToCalendar
                                     )
                                     ProfileTab.Reposts -> ProfileRepostsTab(
                                         userId = user.id,
+                                        isOwnProfile = user.isOwnProfile,
                                         onNavigate = onNavigate
                                     )
                                     ProfileTab.Bookmarks -> ProfileBookmarksTab(
                                         userId = user.id,
+                                        isOwnProfile = user.isOwnProfile,
                                         onNavigate = onNavigate
                                     )
                                     ProfileTab.Info -> ProfileInfoTab()

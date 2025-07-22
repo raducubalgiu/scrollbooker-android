@@ -44,8 +44,8 @@ fun ProfileTabRow(
             Box(
                 Modifier
                     .tabIndicatorOffset(tabPositions[selectedTabIndex])
-                    .height(1.5.dp)
-                    .padding(horizontal = 15.dp)
+                    .height(2.dp)
+                    .padding(horizontal = 25.dp)
                     .background(OnBackground, shape = ShapeDefaults.Large)
             )
         },

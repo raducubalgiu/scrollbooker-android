@@ -10,10 +10,7 @@ import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
-import com.example.scrollbooker.navigation.routes.MainRoute
-import com.example.scrollbooker.ui.profile.components.ProfileLayout
 import com.example.scrollbooker.ui.profile.components.userInformation.ProfileShimmer
-import com.example.scrollbooker.ui.profile.components.userProfile.UserProfileActions
 
 @Composable
 fun UserProfileScreen(
@@ -40,16 +37,16 @@ fun UserProfileScreen(
                     onBack = onBack
                 )
 
-                ProfileLayout(
-                    user = user,
-                    onNavigate = onNavigate,
-                    onNavigateToCalendar = onNavigateToCalendar
-                ) {
-                    UserProfileActions(
-                        isFollow = user.isFollow,
-                        onNavigateToCalendar = { onNavigate(MainRoute.Calendar.route) }
-                    )
-                }
+//                ProfileLayout(
+//                    user = user,
+//                    onNavigate = onNavigate,
+//                    onNavigateToCalendar = onNavigateToCalendar
+//                ) {
+//                    UserProfileActions(
+//                        isFollow = user.isFollow,
+//                        onNavigateToCalendar = { onNavigate(MainRoute.Calendar.route) }
+//                    )
+//                }
             }
         }
     }
