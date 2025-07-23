@@ -195,23 +195,26 @@ fun ProfileNavHost(
             )
         }
 
-        composable("${MainRoute.UserSocial.route}/{initialPage}/{userId}/{username}",
+        composable("${MainRoute.UserSocial.route}/{initialPage}/{userId}/{username}/{isBusinessOrEmployee}",
             arguments = listOf(
                 navArgument("initialPage") { type = NavType.IntType },
                 navArgument("userId") { type = NavType.IntType },
-                navArgument("username") { type = NavType.StringType }
+                navArgument("username") { type = NavType.StringType },
+                navArgument("isBusinessOrEmployee") { type = NavType.BoolType }
             )
         ) { backStackEntry ->
             val initialPage = backStackEntry.arguments?.getInt("initialPage") ?: return@composable
             val username = backStackEntry.arguments?.getString("username") ?: return@composable
+            val isBusinessOrEmployee = backStackEntry.arguments?.getBoolean("isBusinessOrEmployee") ?: return@composable
 
             val viewModel = hiltViewModel<UserSocialViewModel>(backStackEntry)
 
             UserSocialScreen(
-                onBack = { navController.popBackStack() },
                 viewModal = viewModel,
                 initialPage = initialPage,
                 username = username,
+                isBusinessOrEmployee = isBusinessOrEmployee,
+                onBack = { navController.popBackStack() },
                 onNavigateUserProfile = { navController.navigate("${MainRoute.UserProfile.route}/$it") }
             )
         }

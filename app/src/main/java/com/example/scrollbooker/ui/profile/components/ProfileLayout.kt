@@ -94,8 +94,9 @@ fun ProfileLayout(
                     ProfileCounters(
                         counters = user.counters,
                         onNavigate = {
-                            onNavigate("$it/${user.id}/${user.username}")
-                        }
+                            onNavigate("$it/${user.id}/${user.username}/${user.isBusinessOrEmployee}")
+                        },
+                        isBusinessOrEmployee = user.isBusinessOrEmployee
                     )
 
                     ProfileUserInfo(

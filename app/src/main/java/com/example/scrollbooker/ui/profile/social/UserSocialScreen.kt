@@ -10,17 +10,18 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.tabs.Tabs
 import com.example.scrollbooker.components.core.layout.Layout
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.scrollbooker.ui.profile.social.tab.bookings.BookingsTab
 import com.example.scrollbooker.ui.profile.social.tab.followers.UserFollowersTab
 import com.example.scrollbooker.ui.profile.social.tab.followings.UserFollowingsTab
 import com.example.scrollbooker.ui.sharedModules.reviews.list.ReviewsList
@@ -28,24 +29,24 @@ import com.example.scrollbooker.ui.sharedModules.reviews.list.ReviewsList
 @Composable
 fun UserSocialScreen(
     viewModal: UserSocialViewModel,
-    onBack: () -> Unit,
     initialPage: Int,
     username: String,
+    isBusinessOrEmployee: Boolean,
+    onBack: () -> Unit,
     onNavigateUserProfile: (Int) -> Unit
 ) {
-    val pagerState = rememberPagerState(initialPage = initialPage ) { 3 }
-    val selectedTabIndex = pagerState.currentPage
-    val tabs = listOf(
-        stringResource(id = R.string.reviews),
-        stringResource(id = R.string.followers),
-        stringResource(id = R.string.following)
-    )
-
-    val coroutineScope = rememberCoroutineScope()
+    val scope = rememberCoroutineScope()
     var didLoadSummary by rememberSaveable { mutableStateOf(false) }
 
+    val tabs = remember(isBusinessOrEmployee) {
+        SocialTab.getTabs(isBusinessOrEmployee)
+    }
+
+    val pagerState = rememberPagerState(initialPage = initialPage ) { tabs.size }
+    val selectedTabIndex = pagerState.currentPage
+
     LaunchedEffect(pagerState.currentPage) {
-        if(pagerState.currentPage == 0 && !didLoadSummary) {
+        if(pagerState.currentPage == 0 && !didLoadSummary && isBusinessOrEmployee) {
             viewModal.loadUserReviews()
             didLoadSummary = true
         }
@@ -60,14 +61,10 @@ fun UserSocialScreen(
     ) {
         Column {
             Tabs(
-                tabs,
+                tabs = tabs.map { it.route },
                 selectedTabIndex,
                 indicatorPadding = 35.dp,
-                onChangeTab = {
-                    coroutineScope.launch {
-                        pagerState.animateScrollToPage(it)
-                    }
-                }
+                onChangeTab = { scope.launch { pagerState.animateScrollToPage(it) } }
             )
 
             HorizontalPager(
@@ -75,8 +72,9 @@ fun UserSocialScreen(
                 beyondViewportPageCount = 0,
                 modifier = Modifier.fillMaxSize()
             ) { page ->
-                when(page) {
-                    0 -> {
+                when(tabs[page]) {
+                    SocialTab.Bookings -> BookingsTab()
+                    SocialTab.Reviews -> {
                         val pagingItems = viewModal.userReviews.collectAsLazyPagingItems()
                         val summaryState by viewModal.userReviewsSummary.collectAsState()
                         val selectedRatings by viewModal.selectedRatings
@@ -88,8 +86,8 @@ fun UserSocialScreen(
                             selectedRatings = selectedRatings
                         )
                     }
-                    1 -> UserFollowersTab(viewModal, onNavigateUserProfile)
-                    2 -> UserFollowingsTab(viewModal, onNavigateUserProfile)
+                    SocialTab.Followers -> UserFollowersTab(viewModal, onNavigateUserProfile)
+                    SocialTab.Followings -> UserFollowingsTab(viewModal, onNavigateUserProfile)
                 }
             }
         }

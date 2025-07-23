@@ -18,6 +18,7 @@ import com.example.scrollbooker.navigation.routes.MainRoute
 @Composable
 fun ProfileCounters(
     counters: UserCounters,
+    isBusinessOrEmployee: Boolean,
     onNavigate: (String) -> Unit
 ) {
     Row(modifier = Modifier
@@ -31,7 +32,7 @@ fun ProfileCounters(
     ) {
         CounterItem(
             counter = counters.ratingsCount,
-            label = stringResource(R.string.reviews),
+            label = if(!isBusinessOrEmployee) stringResource(R.string.bookings) else stringResource(R.string.reviews),
             onNavigate = { onNavigate("${MainRoute.UserSocial.route}/0") }
         )
         VerticalDivider()

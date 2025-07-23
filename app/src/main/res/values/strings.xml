@@ -242,4 +242,5 @@
     <string name="close">Închide</string>
     <string name="locationPermission">Permisiunea locației</string>
     <string name="locationPermissionDescription">Ne ajută să îți oferim servicii din apropiere și să îți personalizăm experiența</string>
+    <string name="bookings">Rezervări</string>
 </resources>

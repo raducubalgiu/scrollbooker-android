@@ -129,8 +129,9 @@ fun MyProfileScreen(
                         item {
                             ProfileCounters(
                                 counters = user.counters,
+                                isBusinessOrEmployee = user.isBusinessOrEmployee,
                                 onNavigate = {
-                                    onNavigate("$it/${user.id}/${user.username}")
+                                    onNavigate("$it/${user.id}/${user.username}/${user.isBusinessOrEmployee}")
                                 }
                             )
 
