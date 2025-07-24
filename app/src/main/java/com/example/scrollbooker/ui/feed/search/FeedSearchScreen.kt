@@ -15,7 +15,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -55,19 +54,11 @@ fun FeedSearchScreen(
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val coroutineScope = rememberCoroutineScope()
-    val interactionSource = remember { MutableInteractionSource() }
 
     LaunchedEffect(Unit) {
-        delay(150)
+        delay(250)
         focusRequester.requestFocus()
         keyboardController?.show()
-    }
-
-    DisposableEffect(Unit) {
-        onDispose {
-            focusManager.clearFocus()
-            keyboardController?.hide()
-        }
     }
 
     Column(
@@ -87,7 +78,6 @@ fun FeedSearchScreen(
                     coroutineScope.launch {
                         keyboardController?.hide()
                         focusManager.clearFocus()
-                        delay(150)
                         onBack()
                     }
                 },
@@ -142,17 +132,9 @@ fun FeedSearchScreen(
 
                         itemsIndexed(search.data) { index, searchResult ->
                             when(searchResult.type) {
-                                SearchTypeEnum.USER -> {
-                                    if(searchResult.user != null) {
-                                        FeedSearchUserItem(user = searchResult.user)
-                                    }
-                                }
-                                SearchTypeEnum.SERVICE -> {
-                                    FeedSearchKeyword(searchResult.label, R.drawable.ic_shopping_outline)
-                                }
-                                SearchTypeEnum.BUSINESS_TYPE -> {
-                                    FeedSearchKeyword(searchResult.label, R.drawable.ic_store_solid)
-                                }
+                                SearchTypeEnum.USER -> searchResult.user?.let { FeedSearchUserItem(user = searchResult.user) }
+                                SearchTypeEnum.SERVICE -> FeedSearchKeyword(searchResult.label, R.drawable.ic_shopping_outline)
+                                SearchTypeEnum.BUSINESS_TYPE -> FeedSearchKeyword(searchResult.label, R.drawable.ic_store_solid)
                                 SearchTypeEnum.KEYWORD -> FeedSearchKeyword(searchResult.label)
                                 else -> Unit
                             }

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.sharedModules.posts.components.postOverlay.label
+package com.example.scrollbooker.ui.sharedModules.posts.components.postOverlay
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
@@ -16,13 +16,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
+import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnError
 
 @Composable
-fun PostLabel(
+fun PostOverlayLabel(
     icon: Int,
     title: String,
     containerColor: Color = Error,
@@ -32,7 +34,7 @@ fun PostLabel(
         modifier = Modifier
             .clip(CircleShape)
             .background(containerColor.copy(alpha = 0.8f))
-            .padding(vertical = SpacingXS, horizontal = SpacingS),
+            .padding(vertical = SpacingXS, horizontal = SpacingM),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(

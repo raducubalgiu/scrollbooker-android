@@ -129,21 +129,23 @@ fun ProfileUserInfo(
     ) { actions() }
 
     if(isBusinessOrEmployee) {
-        ProfileBusinessEmployee(
-            businessOwnerAvatar = user.businessOwner?.avatar,
-            businessOwnerFullName = user.businessOwner?.fullName,
-            onNavigateToBusinessOwner = {
-                if (user.businessOwner?.id != null) {
-                    onNavigateToBusinessOwner(user.businessOwner.id)
+        if(user.id != user.businessOwner?.id) {
+            ProfileBusinessEmployee(
+                businessOwnerAvatar = user.businessOwner?.avatar,
+                businessOwnerFullName = user.businessOwner?.fullName,
+                onNavigateToBusinessOwner = {
+                    if (user.businessOwner?.id != null) {
+                        onNavigateToBusinessOwner(user.businessOwner.id)
+                    }
                 }
-            }
-        )
+            )
+        }
 
         Spacer(Modifier.height(SpacingM))
 
         ProfileIntentActionsList()
 
-        user.distanceKm?.let {
+        if(!user.isOwnProfile && user.distanceKm != null) {
             ProfileLocationDistance(distance = user.distanceKm)
         }
     }

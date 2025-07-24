@@ -1,6 +1,4 @@
 package com.example.scrollbooker.ui.feed.search
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,37 +21,32 @@ fun FeedSearchKeyword(
     icon: Int = R.drawable.ic_search,
     displayRightIcon: Boolean = true
 ) {
-    Box(modifier = Modifier
+    Row(modifier = Modifier
         .fillMaxWidth()
-        .clickable {}
+        .padding(BasePadding),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(BasePadding),
+        Row(
+            modifier = Modifier.weight(1f),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                modifier = Modifier.weight(1f),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    painter = painterResource(icon),
-                    contentDescription = null,
-                    tint = Color.Gray
-                )
+            Icon(
+                painter = painterResource(icon),
+                contentDescription = null,
+                tint = Color.Gray
+            )
 
-                Spacer(Modifier.width(BasePadding))
-                Text(
-                    text = keyword,
-                    style = bodyLarge
-                )
-            }
-            if(displayRightIcon) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_arrow_up_right_solid),
-                    contentDescription = null
-                )
-            }
+            Spacer(Modifier.width(BasePadding))
+            Text(
+                text = keyword,
+                style = bodyLarge
+            )
+        }
+        if(displayRightIcon) {
+            Icon(
+                painter = painterResource(R.drawable.ic_arrow_up_right_solid),
+                contentDescription = null
+            )
         }
     }
 }

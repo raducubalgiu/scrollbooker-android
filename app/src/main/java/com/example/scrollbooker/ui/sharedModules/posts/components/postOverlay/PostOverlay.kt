@@ -23,7 +23,6 @@ import com.example.scrollbooker.entity.social.post.domain.model.PostCounters
 import com.example.scrollbooker.entity.social.post.domain.model.PostProduct
 import com.example.scrollbooker.entity.user.userSocial.data.remote.UserSocialDto
 import com.example.scrollbooker.ui.sharedModules.posts.PostInteractionState
-import com.example.scrollbooker.ui.sharedModules.posts.components.postOverlay.label.PostLabel
 import java.math.BigDecimal
 
 @Composable
@@ -52,13 +51,13 @@ fun PostOverlay(
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 if(product.discount > BigDecimal.ZERO) {
-                    PostLabel(
+                    PostOverlayLabel(
                         icon = R.drawable.ic_percent_badge_solid,
                         title = "Reducere"
                     )
                 }
 
-                Spacer(Modifier.height(SpacingS))
+                Spacer(Modifier.height(SpacingM))
 
                 PostOverlayUser(
                     fullName = user.fullName,

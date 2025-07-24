@@ -44,7 +44,7 @@ fun MainButtonSmall(
         shape = ShapeDefaults.ExtraSmall,
         enabled = enabled,
         border = border,
-        colors = colors,
+        colors = colors
     ) {
         Text(
             style = labelLarge,

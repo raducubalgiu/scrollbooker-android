@@ -1,7 +1,6 @@
 package com.example.scrollbooker.ui.feed.search
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,7 +22,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.Avatar
-import com.example.scrollbooker.components.core.avatar.AvatarWithRating
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
@@ -31,69 +29,55 @@ import com.example.scrollbooker.entity.search.domain.model.SearchUser
 
 @Composable
 fun FeedSearchUserItem(user: SearchUser) {
-    Box(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable {},
+            .padding(
+                horizontal = BasePadding,
+                vertical = SpacingM
+            ),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    horizontal = BasePadding,
-                    vertical = if(user.isBusinessOrEmployee) SpacingM else BasePadding
-                ),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            modifier = Modifier.weight(1f),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                modifier = Modifier.weight(1f),
-                verticalAlignment = Alignment.CenterVertically
+            Icon(
+                painter = painterResource(R.drawable.ic_search),
+                contentDescription = null,
+                tint = Color.Gray
+            )
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = BasePadding)
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_search),
-                    contentDescription = null,
-                    tint = Color.Gray
-                )
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(horizontal = BasePadding)
-                ) {
-                    Text(text = user.fullname)
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(text = user.fullname)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = if(user.isBusinessOrEmployee) user.profession else "@${user.username}",
+                        color = Color.Gray
+                    )
+                    user.distance?.let {
+                        Spacer(Modifier.width(SpacingS))
+                        Box(modifier = Modifier
+                            .size(5.dp)
+                            .clip(CircleShape)
+                            .background(Color.Gray)
+                        )
+                        Spacer(Modifier.width(SpacingS))
                         Text(
-                            text = if(user.isBusinessOrEmployee) user.profession else "@${user.username}",
+                            text = "${user.distance}km",
                             color = Color.Gray
                         )
-                        user.distance?.let {
-                            Spacer(Modifier.width(SpacingS))
-                            Box(modifier = Modifier
-                                .size(5.dp)
-                                .clip(CircleShape)
-                                .background(Color.Gray)
-                            )
-                            Spacer(Modifier.width(SpacingS))
-                            Text(
-                                text = "la ${user.distance}km de tine",
-                                color = Color.Gray
-                            )
-                        }
                     }
                 }
             }
-            if(user.isBusinessOrEmployee) {
-                AvatarWithRating(
-                    rating = user.ratingsAverage.toString(),
-                    size = 55.dp,
-                    url = user.avatar ?: ""
-                )
-            } else {
-                Avatar(
-                    url = user.avatar ?: "",
-                    size = 55.dp
-                )
-            }
         }
+        Avatar(
+            url = user.avatar ?: "",
+            size = 50.dp
+        )
     }
 }

@@ -17,8 +17,10 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.ui.theme.Background
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.scrollbooker.ui.feed.components.FeedSearchResultsTabRow
+import com.example.scrollbooker.ui.feed.search.tab.FeedSearchTab
 import com.example.scrollbooker.ui.feed.search.tab.users.FeedSearchUsersTab
 import com.example.scrollbooker.ui.feed.search.tab.users.FeedSearchUsersViewModel
 
@@ -29,14 +31,7 @@ fun FeedSearchResultsScreen(
 ) {
     val feedSearchUsersViewModel: FeedSearchUsersViewModel = hiltViewModel()
 
-    val tabs = listOf(
-        "For You",
-        "Users",
-        "Last Minute",
-        "Instant Booking",
-        "Servicii",
-        "Reviews"
-    )
+    val tabs = remember { FeedSearchTab.getTabs }
 
     val pagerState = rememberPagerState(initialPage = 0 ) { 6 }
     val selectedTabIndex = pagerState.currentPage
@@ -64,7 +59,7 @@ fun FeedSearchResultsScreen(
 
         FeedSearchResultsTabRow(
             selectedTabIndex = selectedTabIndex,
-            tabs = tabs,
+            tabs = tabs.map { it.route },
             onChangeTab = {
                 coroutineScope.launch {
                     pagerState.animateScrollToPage(it)

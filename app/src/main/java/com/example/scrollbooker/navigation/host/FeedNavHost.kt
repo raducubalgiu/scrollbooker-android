@@ -2,6 +2,8 @@ package com.example.scrollbooker.navigation.host
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -75,7 +77,7 @@ fun FeedNavHost(
 
         navigation(
             route = MainRoute.FeedSearchNavigator.route,
-            startDestination = MainRoute.FeedSearch.route,
+            startDestination = MainRoute.FeedSearch.route
         ) {
             composable(
                 route = MainRoute.FeedSearch.route,
@@ -100,7 +102,11 @@ fun FeedNavHost(
                     onGoToSearch = { navController.navigate(MainRoute.FeedSearchResults.route) }
                 )
             }
-            composable(route = MainRoute.FeedSearchResults.route) { backStackEntry ->
+            composable(
+                route = MainRoute.FeedSearchResults.route,
+                enterTransition = { fadeIn(animationSpec = tween(200)) },
+                exitTransition = { fadeOut(animationSpec = tween(200)) }
+            ) { backStackEntry ->
                 val parentEntry = remember(backStackEntry) {
                     navController.getBackStackEntry(MainRoute.FeedSearchNavigator.route)
                 }

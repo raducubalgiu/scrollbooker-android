@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.NavigationBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -23,14 +24,13 @@ fun BottomBar(
     onNavigate: (MainTab) -> Unit
 ) {
     val allTabs = MainTab.allTabs
-
     val isFeedTab = currentTab == MainTab.Feed
-    val bottomBarRoutes = MainTab.allTabs.map { it.route }
+
+    val bottomBarRoutes = remember { MainTab.allTabs.map { it.route } }
+    val isVisible = remember(currentRoute) { currentRoute in bottomBarRoutes }
 
     val dividerColor = if (isFeedTab) Color(0xFF3A3A3A) else Divider
     val containerColor = if(isFeedTab) Color(0xFF121212) else Background
-
-    val isVisible = currentRoute in bottomBarRoutes
 
     if(isVisible) {
         Column(Modifier.height(90.dp)) {
