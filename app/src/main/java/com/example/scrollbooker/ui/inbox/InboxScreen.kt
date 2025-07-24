@@ -22,7 +22,6 @@ fun InboxScreen(
     val refreshState = notifications.loadState.refresh
 
     Layout(
-        modifier = Modifier.statusBarsPadding(),
         headerTitle = stringResource(id = R.string.inbox),
         enableBack = false,
         enablePaddingH = false,

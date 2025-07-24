@@ -54,11 +54,7 @@ fun AppointmentCancelScreen(
     val checkMessage = checkLength(LocalContext.current, maxLength = 100, field = message)
     val isMessageValid = checkMessage.isNullOrEmpty()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .safeDrawingPadding(),
-    ) {
+    Column(modifier = Modifier.fillMaxSize()) {
         Header(
             modifier = Modifier.statusBarsPadding(),
             title = "",

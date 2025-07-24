@@ -2,6 +2,7 @@ package com.example.scrollbooker.navigation.host
 import BottomBar
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
@@ -121,12 +122,9 @@ fun MainNavHost(authViewModel: AuthViewModel) {
                             )
                         }
                     ) { innerPadding ->
-                        DefaultTabContainer(
-                            navController = navControllers[MainTab.Inbox]!!,
-                            enablePadding = false,
-                            innerPadding = innerPadding,
-                            content = { InboxNavHost(navController = it) }
-                        )
+                        Box(Modifier.fillMaxSize().padding(innerPadding)) {
+                            InboxNavHost(navController = navControllers[MainTab.Inbox]!!)
+                        }
                     }
                 }
 
@@ -166,17 +164,12 @@ fun MainNavHost(authViewModel: AuthViewModel) {
                             )
                         }
                     ) { innerPadding ->
-                        DefaultTabContainer(
-                            navController = navControllers[MainTab.Inbox]!!,
-                            enablePadding = false,
-                            innerPadding = innerPadding,
-                            content = {
-                                AppointmentsNavHost(
-                                    navController = navControllers[MainTab.Appointments]!!,
-                                    mainViewModel = mainViewModel
-                                )
-                            }
-                        )
+                        Box(Modifier.fillMaxSize().padding(innerPadding)) {
+                            AppointmentsNavHost(
+                                navController = navControllers[MainTab.Appointments]!!,
+                                mainViewModel = mainViewModel
+                            )
+                        }
                     }
                 }
                 is MainTab.Profile -> {

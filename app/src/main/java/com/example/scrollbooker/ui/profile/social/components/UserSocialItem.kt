@@ -77,7 +77,10 @@ fun UserSocialItem(
             MainButtonSmall(
                 title = stringResource(if(isFollowed) R.string.following else R.string.follow),
                 modifier = Modifier.width(110.dp),
-                border = BorderStroke(width = 1.dp, color = if(isFollowed) Divider else Primary),
+                border = BorderStroke(
+                    width = 1.dp,
+                    color = if(isFollowed) Divider else Primary
+                ),
                 enabled = enabled,
                 onClick = { onFollow(isFollowed) },
                 colors = ButtonDefaults.buttonColors(

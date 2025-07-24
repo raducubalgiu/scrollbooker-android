@@ -143,7 +143,9 @@ fun AppointmentsScreen(
         }
     }
 
-    Column(modifier = Modifier.fillMaxSize().safeDrawingPadding()) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+    ) {
         AppointmentsHeader()
 
         ArrowButton(

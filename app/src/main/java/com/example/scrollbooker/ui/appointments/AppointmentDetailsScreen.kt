@@ -50,10 +50,7 @@ fun AppointmentDetailsScreen(
     val status = AppointmentStatusEnum.fromKey(appointment?.status)
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .safeDrawingPadding()
-    ) {
+        modifier = Modifier.fillMaxSize()) {
         Header(
             title = "",
             onBack = onBack
