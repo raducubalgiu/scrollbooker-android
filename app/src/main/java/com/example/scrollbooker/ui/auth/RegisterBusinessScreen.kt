@@ -56,7 +56,6 @@ fun RegisterBusinessScreen(
     val emailError = if(wasSubmitted) checkEmail(email) else null
     val isValidPassword = checkPassword(password)
 
-    val isValid = wasSubmitted && emailError == null
     val isEnabled = email.isNotEmpty() && password.isNotEmpty()
 
     Column(
@@ -126,10 +125,10 @@ fun RegisterBusinessScreen(
                     enabled = !isLoading && isEnabled,
                     title = stringResource(R.string.register),
                     onClick = {
-                        wasSubmitted = true
-                        if(isValid) {
+                        if(emailError == null) {
                             onSubmit(email, password)
                         }
+                        wasSubmitted = true
                     }
                 )
             }

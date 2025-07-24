@@ -1,8 +1,10 @@
 package com.example.scrollbooker.ui.auth
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -52,18 +55,17 @@ fun LoginScreen(
 
     var wasSubmitted by remember { mutableStateOf(false) }
     val isValidPassword = checkPassword(password)
-
-    val isValid = wasSubmitted && isValidPassword
     val isEnabled = username.isNotEmpty() && password.isNotEmpty()
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Background)
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null
-            ) { focusManager.clearFocus() }
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = {
+                    focusManager.clearFocus()
+                })
+            }
     ) {
         Column(
             modifier = Modifier
@@ -113,10 +115,10 @@ fun LoginScreen(
                     enabled = !isLoading && isEnabled,
                     title = stringResource(id = R.string.login),
                     onClick = {
-                        wasSubmitted = true
-                        if(isValid) {
+                        if(isValidPassword) {
                             onSubmit(username, password)
                         }
+                        wasSubmitted = true
                     }
                 )
 
