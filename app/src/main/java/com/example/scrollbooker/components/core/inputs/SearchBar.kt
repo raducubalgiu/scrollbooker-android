@@ -36,9 +36,7 @@ fun SearchBar(
     onSearch: (() -> Unit)? = null,
     onClick: (() -> Unit)? = null,
 ) {
-    val interactionSource = remember {
-        MutableInteractionSource()
-    }
+    val interactionSource = remember { MutableInteractionSource() }
     val isClicked = interactionSource.collectIsPressedAsState().value
 
     LaunchedEffect(key1 = isClicked) {

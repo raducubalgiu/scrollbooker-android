@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.scrollbooker.ui.feed.components.FeedSearchResultsTabRow
 import com.example.scrollbooker.ui.feed.search.tab.FeedSearchTab
+import com.example.scrollbooker.ui.feed.search.tab.forYou.FeedSearchForYouTab
 import com.example.scrollbooker.ui.feed.search.tab.users.FeedSearchUsersTab
 import com.example.scrollbooker.ui.feed.search.tab.users.FeedSearchUsersViewModel
 
@@ -73,9 +74,7 @@ fun FeedSearchResultsScreen(
             modifier = Modifier.fillMaxSize()
         ) { page ->
             when(page) {
-                0 -> Box(Modifier.fillMaxSize()) {
-                    Text("For You")
-                }
+                0 -> FeedSearchForYouTab()
                 1 -> {
                     FeedSearchUsersTab(
                         query = query,

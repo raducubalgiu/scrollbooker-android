@@ -24,4 +24,11 @@ interface SearchApiService {
         @Query("page") page: Int,
         @Query("limit") limit: Int
     ): PaginatedResponseDto<UserSocialDto>
+
+    @GET("search/user-history")
+    suspend fun getUserSearch(
+        @Query("lng") lng: Float?,
+        @Query("lat") limit: Float?,
+        @Query("timezone") timezone: String
+    ): UserSearchDto
 }

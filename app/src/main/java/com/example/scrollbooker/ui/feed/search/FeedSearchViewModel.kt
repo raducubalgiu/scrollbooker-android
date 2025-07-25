@@ -26,7 +26,7 @@ class FeedSearchViewModel @Inject constructor(
 
     private var debounceJob: Job? = null
 
-    fun handleSearch(query: String, lat: Float, lng: Float) {
+    fun handleSearch(query: String, lng: Float = 25.993102.toFloat(), lat: Float = 44.450507.toFloat()) {
         _currentSearch.value = query
 
         if(query.length < 2) {

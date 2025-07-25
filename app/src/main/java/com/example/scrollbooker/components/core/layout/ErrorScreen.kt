@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ErrorOutline
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,7 +23,22 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.theme.bodyLarge
 
 @Composable
-fun ErrorScreen() {
+fun ErrorScreen(
+    modifier: Modifier = Modifier,
+    arrangement: Arrangement.Vertical = Arrangement.Center
+) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = arrangement
+    ) {
+        CircularProgressIndicator(
+            modifier = Modifier
+                .size(30.dp)
+                .then(modifier)
+        )
+    }
+
     Column(modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center

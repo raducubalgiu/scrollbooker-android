@@ -244,4 +244,5 @@
     <string name="locationPermissionDescription">Ne ajută să îți oferim servicii din apropiere și să îți personalizăm experiența</string>
     <string name="bookings">Rezervări</string>
     <string name="seeAllProducts">Vezi toate produsele</string>
+    <string name="nearestServices">Servicii în apropiere</string>
 </resources>

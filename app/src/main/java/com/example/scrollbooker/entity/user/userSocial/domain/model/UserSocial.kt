@@ -7,5 +7,6 @@ data class UserSocial(
     val avatar: String?,
     val isFollow: Boolean,
     val profession: String?,
+    val ratingsAverage: Float?,
     val isBusinessOrEmployee: Boolean?
 )

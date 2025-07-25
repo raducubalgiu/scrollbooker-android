@@ -56,7 +56,6 @@ fun SearchBarSmall(
     readOnly: Boolean = false
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-
     BasicTextField(
         modifier = Modifier
             .clip(shape = ShapeDefaults.Medium)

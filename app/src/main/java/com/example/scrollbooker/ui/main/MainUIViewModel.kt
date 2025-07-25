@@ -8,11 +8,15 @@ import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.GetUserAppointmentsNumberUseCase
+import com.example.scrollbooker.entity.booking.business.domain.model.RecommendedBusiness
+import com.example.scrollbooker.entity.booking.business.domain.useCase.GetRecommendedBusinessesUseCase
 import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.BusinessDomain
 import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.useCase.GetAllBusinessDomainsUseCase
 import com.example.scrollbooker.entity.nomenclature.businessType.domain.model.BusinessType
 import com.example.scrollbooker.entity.nomenclature.businessType.domain.useCase.GetAllBusinessTypesByBusinessDomainUseCase
 import com.example.scrollbooker.entity.nomenclature.businessType.domain.useCase.GetAllBusinessTypesUseCase
+import com.example.scrollbooker.entity.search.domain.model.UserSearch
+import com.example.scrollbooker.entity.search.domain.useCase.GetUserSearchUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserProfileUseCase
 import com.example.scrollbooker.store.AuthDataStore
@@ -31,6 +35,7 @@ class MainUIViewModel @Inject constructor(
     private val getAllBusinessDomainsUseCase: GetAllBusinessDomainsUseCase,
     private val getAllBusinessTypesByBusinessDomainUseCase: GetAllBusinessTypesByBusinessDomainUseCase,
     private val getUserProfileUseCase: GetUserProfileUseCase,
+    private val getUserSearchUseCase: GetUserSearchUseCase,
     private val authDataStore: AuthDataStore,
 ): ViewModel() {
     private val _userProfileState = MutableStateFlow<FeatureState<UserProfile>>(FeatureState.Loading)
@@ -38,6 +43,9 @@ class MainUIViewModel @Inject constructor(
 
     var appointmentsState by mutableIntStateOf(0)
         private set
+
+    private val _userSearch = MutableStateFlow<FeatureState<UserSearch>>(FeatureState.Loading)
+    val userSearch: StateFlow<FeatureState<UserSearch>> = _userSearch
 
     private val _businessTypesState =
         MutableStateFlow<FeatureState<List<BusinessType>>>(FeatureState.Loading)
@@ -94,6 +102,17 @@ class MainUIViewModel @Inject constructor(
         }
     }
 
+    private fun loadUserSearch() {
+        viewModelScope.launch {
+            _userSearch.value = FeatureState.Loading
+            _userSearch.value = getUserSearchUseCase(
+                lng = 25.993102f,
+                lat = 44.45050f,
+                timezone = "Europe/Bucharest"
+            )
+        }
+    }
+
     private fun loadAllBusinessTypes() {
         viewModelScope.launch {
             _businessTypesState.value = FeatureState.Loading
@@ -115,9 +134,12 @@ class MainUIViewModel @Inject constructor(
     }
 
     init {
-        loadUserProfile()
-        loadAppointmentsNumber()
-        loadAllBusinessTypes()
-        loadAllBusinessDomains()
+        viewModelScope.launch {
+            launch { loadUserProfile() }
+            launch { loadAppointmentsNumber() }
+            launch { loadAllBusinessTypes() }
+            launch { loadAllBusinessDomains() }
+            launch { loadUserSearch() }
+        }
     }
 }

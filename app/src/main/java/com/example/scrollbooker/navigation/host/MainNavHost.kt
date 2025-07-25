@@ -102,6 +102,7 @@ fun MainNavHost(authViewModel: AuthViewModel) {
                                 content = {
                                     FeedNavHost(
                                         feedViewModel = feedViewModel,
+                                        mainViewModel = mainViewModel,
                                         navController = navControllers[MainTab.Feed]!!,
                                         onOpenDrawer = { scope.launch { drawerState.open() } }
                                     )

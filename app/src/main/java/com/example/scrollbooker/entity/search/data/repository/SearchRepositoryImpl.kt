@@ -7,6 +7,7 @@ import com.example.scrollbooker.entity.search.data.mappers.toDomain
 import com.example.scrollbooker.entity.search.data.remote.SearchApiService
 import com.example.scrollbooker.entity.search.data.remote.SearchUsersPagingSource
 import com.example.scrollbooker.entity.search.domain.model.Search
+import com.example.scrollbooker.entity.search.domain.model.UserSearch
 import com.example.scrollbooker.entity.search.domain.repository.SearchRepository
 import com.example.scrollbooker.entity.user.userSocial.data.mappers.toDomain
 import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
@@ -25,6 +26,14 @@ class SearchRepositoryImpl @Inject constructor(
         roleClient: Boolean
     ): List<UserSocial> {
         return apiService.searchUsers(query, roleClient).map { it.toDomain() }
+    }
+
+    override suspend fun getUserSearch(
+        lng: Float?,
+        lat: Float?,
+        timezone: String
+    ): UserSearch {
+        return apiService.getUserSearch(lng, lat, timezone).toDomain()
     }
 
     override fun searchPaginatedUsers(query: String): Flow<PagingData<UserSocial>> {

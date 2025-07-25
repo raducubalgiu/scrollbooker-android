@@ -19,6 +19,13 @@ interface BusinessApiService {
         @Path("businessId") businessId: Int
     ): BusinessDto
 
+    @GET("/businesses/recommended")
+    suspend fun getRecommendedBusinesses(
+        @Query("lng") lng: Float?,
+        @Query("lat") lat: Float?,
+        @Query("timezone") timezone: String
+    ): List<RecommendedBusinessDto>
+
     @GET("/users/{userId}/businesses")
     suspend fun getBusinessByUserId(
         @Path("userId") userId: Int

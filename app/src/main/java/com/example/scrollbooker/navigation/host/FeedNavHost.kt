@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -17,13 +18,18 @@ import com.example.scrollbooker.ui.feed.FeedViewModel
 import com.example.scrollbooker.ui.feed.search.FeedSearchResultsScreen
 import com.example.scrollbooker.ui.feed.search.FeedSearchScreen
 import com.example.scrollbooker.ui.feed.search.FeedSearchViewModel
+import com.example.scrollbooker.ui.main.MainUIViewModel
+import androidx.compose.runtime.getValue
 
 @Composable
 fun FeedNavHost(
     feedViewModel: FeedViewModel,
+    mainViewModel: MainUIViewModel,
     navController: NavHostController,
     onOpenDrawer: () -> Unit
 ) {
+    val userSearch by mainViewModel.userSearch.collectAsState()
+
     NavHost(
         navController = navController,
         startDestination = MainRoute.Feed.route
@@ -33,7 +39,7 @@ fun FeedNavHost(
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Left,
                     animationSpec = tween(
-                        durationMillis = 250,
+                        durationMillis = 300,
                         easing = FastOutSlowInEasing
                     )
                 )
@@ -42,7 +48,7 @@ fun FeedNavHost(
                 slideOutOfContainer(
                     AnimatedContentTransitionScope.SlideDirection.Left,
                     animationSpec = tween(
-                        durationMillis = 250,
+                        durationMillis = 300,
                         easing = FastOutSlowInEasing
                     )
                 )
@@ -51,7 +57,7 @@ fun FeedNavHost(
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Right,
                     animationSpec = tween(
-                        durationMillis = 250,
+                        durationMillis = 300,
                         easing = FastOutSlowInEasing
                     )
                 )
@@ -60,7 +66,7 @@ fun FeedNavHost(
                 slideOutOfContainer(
                     AnimatedContentTransitionScope.SlideDirection.Right,
                     animationSpec = tween(
-                        durationMillis = 250,
+                        durationMillis = 300,
                         easing = FastOutSlowInEasing
                     )
                 )
@@ -81,11 +87,38 @@ fun FeedNavHost(
         ) {
             composable(
                 route = MainRoute.FeedSearch.route,
+                enterTransition = {
+                    slideIntoContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Left,
+                        animationSpec = tween(
+                            durationMillis = 300,
+                            easing = FastOutSlowInEasing
+                        )
+                    )
+                },
+                exitTransition = {
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Left,
+                        animationSpec = tween(
+                            durationMillis = 300,
+                            easing = FastOutSlowInEasing
+                        )
+                    )
+                },
+                popEnterTransition = {
+                    slideIntoContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Right,
+                        animationSpec = tween(
+                            durationMillis = 300,
+                            easing = FastOutSlowInEasing
+                        )
+                    )
+                },
                 popExitTransition = {
                     slideOutOfContainer(
                         AnimatedContentTransitionScope.SlideDirection.Right,
                         animationSpec = tween(
-                            durationMillis = 250,
+                            durationMillis = 300,
                             easing = FastOutSlowInEasing
                         )
                     )
@@ -98,14 +131,49 @@ fun FeedNavHost(
 
                 FeedSearchScreen(
                     viewModel = viewModel,
+                    userSearch = userSearch,
                     onBack = { navController.popBackStack() },
                     onGoToSearch = { navController.navigate(MainRoute.FeedSearchResults.route) }
                 )
             }
             composable(
                 route = MainRoute.FeedSearchResults.route,
-                enterTransition = { fadeIn(animationSpec = tween(200)) },
-                exitTransition = { fadeOut(animationSpec = tween(200)) }
+                enterTransition = {
+                    slideIntoContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Left,
+                        animationSpec = tween(
+                            durationMillis = 300,
+                            easing = FastOutSlowInEasing
+                        )
+                    )
+                },
+                exitTransition = {
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Left,
+                        animationSpec = tween(
+                            durationMillis = 300,
+                            easing = FastOutSlowInEasing
+                        )
+                    )
+                },
+                popEnterTransition = {
+                    slideIntoContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Right,
+                        animationSpec = tween(
+                            durationMillis = 300,
+                            easing = FastOutSlowInEasing
+                        )
+                    )
+                },
+                popExitTransition = {
+                    slideOutOfContainer(
+                        AnimatedContentTransitionScope.SlideDirection.Right,
+                        animationSpec = tween(
+                            durationMillis = 300,
+                            easing = FastOutSlowInEasing
+                        )
+                    )
+                }
             ) { backStackEntry ->
                 val parentEntry = remember(backStackEntry) {
                     navController.getBackStackEntry(MainRoute.FeedSearchNavigator.route)
