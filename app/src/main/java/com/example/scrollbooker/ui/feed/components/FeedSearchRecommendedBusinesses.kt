@@ -2,6 +2,8 @@ package com.example.scrollbooker.ui.feed.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +17,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,13 +38,23 @@ import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
 
 @Composable
-fun FeedSearchRecommendedBusiness(recommendedBusiness: RecommendedBusiness) {
+fun FeedSearchRecommendedBusiness(
+    recommendedBusiness: RecommendedBusiness,
+    onNavigateToUserProfile: (Int) -> Unit
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(
                 vertical = SpacingM,
                 horizontal = BasePadding
+            )
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = { onNavigateToUserProfile(recommendedBusiness.user.id) }
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -54,7 +67,7 @@ fun FeedSearchRecommendedBusiness(recommendedBusiness: RecommendedBusiness) {
                 .size(15.dp)
                 .offset(3.dp)
                 .clip(CircleShape)
-                .background(Color.Green)
+                .background(if(recommendedBusiness.isOpen) Color.Green else Color(0xFFCCCCCC))
                 .border(3.dp, Color.White, CircleShape)
             )
         }

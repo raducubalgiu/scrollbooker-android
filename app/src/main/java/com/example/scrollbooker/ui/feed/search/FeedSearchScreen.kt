@@ -44,20 +44,22 @@ import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.search.data.remote.SearchTypeEnum
 import com.example.scrollbooker.entity.search.domain.model.RecentlySearch
 import com.example.scrollbooker.entity.search.domain.model.UserSearch
+import com.example.scrollbooker.navigation.LocalRootNavController
+import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.feed.components.FeedSearchRecommendedBusiness
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.titleMedium
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
 fun FeedSearchScreen(
     viewModel: FeedSearchViewModel,
     userSearch: FeatureState<UserSearch>,
     onBack: () -> Unit,
-    onGoToSearch: () -> Unit
+    onGoToSearch: () -> Unit,
 ) {
+    val rootNavController = LocalRootNavController.current
     val searchState by viewModel.searchState.collectAsState()
     var query by remember { mutableStateOf("") }
     val focusRequester = remember { FocusRequester() }
@@ -68,6 +70,13 @@ fun FeedSearchScreen(
         delay(200)
         focusRequester.requestFocus()
         keyboardController?.show()
+    }
+
+    fun handleNavigateToUserProfile(userId: Int) {
+        keyboardController?.hide()
+        rootNavController.navigate(
+            "${MainRoute.UserProfile.route}/$userId"
+        )
     }
 
     Column(
@@ -126,7 +135,8 @@ fun FeedSearchScreen(
                                             interactionSource = remember { MutableInteractionSource() },
                                             indication = null,
                                             onClick = {
-                                                recently = if(isExpanded) firstRecently else allRecently
+                                                recently =
+                                                    if (isExpanded) firstRecently else allRecently
                                             }
                                         ),
                                         contentAlignment = Alignment.Center
@@ -156,7 +166,10 @@ fun FeedSearchScreen(
                             }
 
                             items(userSearchState.data.recommendedBusiness) { recommendedBusiness ->
-                                FeedSearchRecommendedBusiness(recommendedBusiness)
+                                FeedSearchRecommendedBusiness(
+                                    recommendedBusiness = recommendedBusiness,
+                                    onNavigateToUserProfile = { handleNavigateToUserProfile(it) }
+                                )
                             }
                         }
                     }
@@ -192,7 +205,10 @@ fun FeedSearchScreen(
                             itemsIndexed(search.data) { index, searchResult ->
                                 when(searchResult.type) {
                                     SearchTypeEnum.USER -> searchResult.user?.let {
-                                        FeedSearchUserItem(user = searchResult.user)
+                                        FeedSearchUserItem(
+                                            user = searchResult.user,
+                                            onNavigateToUserProfile = { handleNavigateToUserProfile(it) }
+                                        )
                                     }
                                     SearchTypeEnum.SERVICE -> {
                                         FeedSearchKeyword(searchResult.label, R.drawable.ic_shopping_outline)

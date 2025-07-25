@@ -95,35 +95,6 @@ fun ProfileNavHost(
                 }
             )
         }
-        composable("${MainRoute.ProfilePostDetail.route}/{postId}",
-            arguments = listOf(navArgument("postId") { type = NavType.IntType }
-        )) { backStackEntry ->
-            val postId = backStackEntry.arguments?.getInt("postId")
-            val viewModel = hiltViewModel<ProfilePostsTabViewModel>(backStackEntry)
-
-            ProfilePostDetailScreen(
-                postId = postId,
-                posts = viewModel.userPosts.collectAsLazyPagingItems(),
-                onBack = { navController.popBackStack() }
-            )
-        }
-        composable("${MainRoute.UserProfile.route}/{userId}",
-            arguments = listOf(
-                navArgument("userId") { type = NavType.IntType }
-            ),
-        ) { backStackEntry ->
-            val viewModel = hiltViewModel<ProfileViewModel>(backStackEntry)
-            UserProfileScreen(
-                viewModel = viewModel,
-                onNavigate = { navController.navigate(it) },
-                onBack = { navController.popBackStack() },
-                onNavigateToCalendar = {
-                    navController.navigate(
-                        "${MainRoute.Calendar.route}/${it.userId}/${it.duration}/${it.id}/${it.name}"
-                    )
-                }
-            )
-        }
         composable(MainRoute.EditProfile.route) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(MainRoute.MyProfile.route)
@@ -192,30 +163,6 @@ fun ProfileNavHost(
             EditGenderScreen(
                 viewModel=viewModel,
                 onBack= { navController.popBackStack() }
-            )
-        }
-
-        composable("${MainRoute.UserSocial.route}/{initialPage}/{userId}/{username}/{isBusinessOrEmployee}",
-            arguments = listOf(
-                navArgument("initialPage") { type = NavType.IntType },
-                navArgument("userId") { type = NavType.IntType },
-                navArgument("username") { type = NavType.StringType },
-                navArgument("isBusinessOrEmployee") { type = NavType.BoolType }
-            )
-        ) { backStackEntry ->
-            val initialPage = backStackEntry.arguments?.getInt("initialPage") ?: return@composable
-            val username = backStackEntry.arguments?.getString("username") ?: return@composable
-            val isBusinessOrEmployee = backStackEntry.arguments?.getBoolean("isBusinessOrEmployee") ?: return@composable
-
-            val viewModel = hiltViewModel<UserSocialViewModel>(backStackEntry)
-
-            UserSocialScreen(
-                viewModal = viewModel,
-                initialPage = initialPage,
-                username = username,
-                isBusinessOrEmployee = isBusinessOrEmployee,
-                onBack = { navController.popBackStack() },
-                onNavigateUserProfile = { navController.navigate("${MainRoute.UserProfile.route}/$it") }
             )
         }
 
