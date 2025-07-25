@@ -7,28 +7,46 @@ import androidx.compose.runtime.collectAsState
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import androidx.navigation.navigation
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.navigation.navigators.myBusinessGraph
+import com.example.scrollbooker.navigation.navigators.settingsGraph
 import com.example.scrollbooker.navigation.routes.GlobalRoute
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.auth.AuthViewModel
+import com.example.scrollbooker.ui.main.MainUIViewModel
+import com.example.scrollbooker.ui.profile.calendar.AppointmentConfirmationScreen
+import com.example.scrollbooker.ui.profile.calendar.CalendarScreen
+import com.example.scrollbooker.ui.profile.myProfile.MyProfileScreen
+import com.example.scrollbooker.ui.profile.myProfile.ProfileSharedViewModel
+import com.example.scrollbooker.ui.profile.myProfile.edit.EditBioScreen
+import com.example.scrollbooker.ui.profile.myProfile.edit.EditFullNameScreen
+import com.example.scrollbooker.ui.profile.myProfile.edit.EditGenderScreen
+import com.example.scrollbooker.ui.profile.myProfile.edit.EditProfessionScreen
+import com.example.scrollbooker.ui.profile.myProfile.edit.EditProfileScreen
+import com.example.scrollbooker.ui.profile.myProfile.edit.EditUsernameScreen
 import com.example.scrollbooker.ui.profile.postDetail.ProfilePostDetailScreen
 import com.example.scrollbooker.ui.profile.social.UserSocialScreen
 import com.example.scrollbooker.ui.profile.social.UserSocialViewModel
 import com.example.scrollbooker.ui.profile.tab.posts.ProfilePostsTabViewModel
 import com.example.scrollbooker.ui.profile.userProfile.ProfileViewModel
 import com.example.scrollbooker.ui.profile.userProfile.UserProfileScreen
+import com.example.scrollbooker.ui.sharedModules.calendar.CalendarViewModel
 
 @Composable
 fun RootNavHost(
     navController: NavHostController,
     viewModel: AuthViewModel
 ) {
+    val mainViewModel: MainUIViewModel = hiltViewModel()
     val authState by viewModel.authState.collectAsState()
+    val myProfileData by mainViewModel.userProfileState.collectAsState()
 
     val startDestination = when(val state = authState) {
         is FeatureState.Success -> {
@@ -52,13 +70,15 @@ fun RootNavHost(
             }
 
             composable(GlobalRoute.MAIN) {
-                MainNavHost(authViewModel = viewModel)
+                MainNavHost(
+                    rootNavController = navController,
+                    mainViewModel = mainViewModel,
+                    myProfileData = myProfileData
+                )
             }
 
             composable("${MainRoute.UserProfile.route}/{userId}",
-                arguments = listOf(
-                    navArgument("userId") { type = NavType.IntType }
-                ),
+                arguments = listOf(navArgument("userId") { type = NavType.IntType }),
                 enterTransition = {
                     slideIntoContainer(
                         AnimatedContentTransitionScope.SlideDirection.Left,
@@ -217,6 +237,147 @@ fun RootNavHost(
                     onNavigateUserProfile = { navController.navigate("${MainRoute.UserProfile.route}/$it") }
                 )
             }
+
+//            composable(MainRoute.MyProfile.route) { backStackEntry ->
+//                val viewModel = hiltViewModel<ProfileSharedViewModel>(backStackEntry)
+//                MyProfileScreen(
+//                    myProfileData = myProfileData,
+//                    viewModel = viewModel,
+//                    onNavigate = { navController.navigate(it) },
+//                    onNavigateToCalendar = {
+//                        navController.navigate(
+//                            "${MainRoute.Calendar.route}/${it.userId}/${it.duration}/${it.id}/${it.name}"
+//                        )
+//                    }
+//                )
+//            }
+            composable(MainRoute.EditProfile.route) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(MainRoute.MyProfile.route)
+                }
+                val viewModel = hiltViewModel<ProfileSharedViewModel>(parentEntry)
+
+                EditProfileScreen(
+                    viewModel = viewModel,
+                    onBack = { navController.popBackStack() },
+                    onNavigate = { route -> navController.navigate(route) }
+                )
+            }
+            composable(MainRoute.EditFullName.route) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(MainRoute.MyProfile.route)
+                }
+                val viewModel: ProfileSharedViewModel = hiltViewModel(parentEntry)
+
+                EditFullNameScreen(
+                    viewModel = viewModel,
+                    onBack = { navController.popBackStack() }
+                )
+            }
+            composable(MainRoute.EditUsername.route) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(MainRoute.MyProfile.route)
+                }
+                val viewModel: ProfileSharedViewModel = hiltViewModel(parentEntry)
+
+                EditUsernameScreen(
+                    viewModel = viewModel,
+                    onBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(MainRoute.EditProfession.route) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(MainRoute.MyProfile.route)
+                }
+                val viewModel = hiltViewModel<ProfileSharedViewModel>(parentEntry)
+
+                EditProfessionScreen(
+                    viewModel=viewModel,
+                    onBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(MainRoute.EditBio.route) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(MainRoute.MyProfile.route)
+                }
+                val viewModel = hiltViewModel<ProfileSharedViewModel>(parentEntry)
+
+                EditBioScreen(
+                    viewModel=viewModel,
+                    onBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(MainRoute.EditGender.route) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(MainRoute.MyProfile.route)
+                }
+                val viewModel = hiltViewModel<ProfileSharedViewModel>(parentEntry)
+
+                EditGenderScreen(
+                    viewModel=viewModel,
+                    onBack= { navController.popBackStack() }
+                )
+            }
+
+            navigation(
+                route = MainRoute.CalendarNavigator.route,
+                startDestination = "${MainRoute.Calendar.route}/{userId}/{slotDuration}/{productId}/{productName}"
+            ) {
+                composable(
+                    route = "${MainRoute.Calendar.route}/{userId}/{slotDuration}/{productId}/{productName}",
+                    arguments = listOf(
+                        navArgument("userId") { type = NavType.IntType },
+                        navArgument("slotDuration") { type = NavType.IntType },
+                        navArgument("productId") { type = NavType.IntType },
+                        navArgument("productName") { type = NavType.StringType }
+                    )
+                ) { backStackEntry ->
+                    val parentEntry = remember(backStackEntry) {
+                        navController.getBackStackEntry(MainRoute.CalendarNavigator.route)
+                    }
+
+                    val userId = backStackEntry.arguments?.getInt("userId") ?: return@composable
+                    val slotDuration = backStackEntry.arguments?.getInt("slotDuration") ?: return@composable
+                    val productId = backStackEntry.arguments?.getInt("productId") ?: return@composable
+                    val productName = backStackEntry.arguments?.getString("productName") ?: return@composable
+
+                    val viewModel: CalendarViewModel = hiltViewModel(parentEntry)
+
+                    CalendarScreen(
+                        userId = userId,
+                        slotDuration = slotDuration,
+                        productId = productId,
+                        productName = productName,
+                        viewModel = viewModel,
+                        onBack = { navController.popBackStack() },
+                        onNavigateToConfirmation = {
+                            navController.navigate(MainRoute.AppointmentConfirmation.route)
+                        }
+                    )
+                }
+
+                composable(route = MainRoute.AppointmentConfirmation.route) { backStackEntry ->
+                    val parentEntry = remember(backStackEntry) {
+                        navController.getBackStackEntry(MainRoute.CalendarNavigator.route)
+                    }
+
+                    val viewModel: CalendarViewModel = hiltViewModel(parentEntry)
+
+                    AppointmentConfirmationScreen(
+                        viewModel = viewModel,
+                        onBack = { navController.popBackStack() }
+                    )
+                }
+            }
+
+            myBusinessGraph(navController)
+            settingsGraph(
+                navController = navController,
+                authViewModel = viewModel
+            )
         }
     }
 }

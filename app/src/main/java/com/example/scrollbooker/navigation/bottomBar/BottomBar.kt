@@ -26,8 +26,9 @@ fun BottomBar(
     val allTabs = MainTab.allTabs
     val isFeedTab = currentTab == MainTab.Feed
 
-    val bottomBarRoutes = remember { MainTab.allTabs.map { it.route } }
-    val isVisible = remember(currentRoute) { currentRoute in bottomBarRoutes }
+    val isVisible = remember(currentTab, currentRoute) {
+        currentTab in MainTab.allTabs
+    }
 
     val dividerColor = if (isFeedTab) Color(0xFF3A3A3A) else Divider
     val containerColor = if(isFeedTab) Color(0xFF121212) else Background

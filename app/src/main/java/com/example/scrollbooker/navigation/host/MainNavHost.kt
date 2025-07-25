@@ -23,12 +23,16 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.navigation.containers.DefaultTabContainer
+import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.auth.AuthViewModel
 import com.example.scrollbooker.ui.feed.FeedViewModel
 import com.example.scrollbooker.ui.main.MainDrawer
 import com.example.scrollbooker.ui.main.MainUIViewModel
+import com.example.scrollbooker.ui.profile.myProfile.MyProfileScreen
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -38,13 +42,15 @@ val MainTabSaver: Saver<MainTab, String> = Saver(
 )
 
 @Composable
-fun MainNavHost(authViewModel: AuthViewModel) {
-    val mainViewModel: MainUIViewModel = hiltViewModel()
+fun MainNavHost(
+    rootNavController: NavHostController,
+    mainViewModel: MainUIViewModel,
+    myProfileData: FeatureState<UserProfile>
+) {
     val feedViewModel: FeedViewModel = hiltViewModel()
 
     val businessTypesState by mainViewModel.businessTypesState.collectAsState()
     val businessDomainsState by mainViewModel.businessDomainsState.collectAsState()
-    val myProfileData by mainViewModel.userProfileState.collectAsState()
 
     val saveableStateHolder = rememberSaveableStateHolder()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -184,18 +190,18 @@ fun MainNavHost(authViewModel: AuthViewModel) {
                             )
                         }
                     ) { innerPadding ->
-                        DefaultTabContainer(
-                            enablePadding = false,
-                            navController = navControllers[MainTab.Profile]!!,
-                            innerPadding = innerPadding,
-                            content = {
-                                ProfileNavHost(
-                                    myProfileData = myProfileData,
-                                    navController = it,
-                                    authViewModel = authViewModel
-                                )
-                            }
-                        )
+                        Box(Modifier.fillMaxSize().padding(innerPadding)) {
+                            MyProfileScreen(
+                                myProfileData = myProfileData,
+                                viewModel = hiltViewModel(),
+                                onNavigate = { rootNavController.navigate(it) },
+                                onNavigateToCalendar = {
+                                    rootNavController.navigate(
+                                        "${MainRoute.Calendar.route}/${it.userId}/${it.duration}/${it.id}/${it.name}"
+                                    )
+                                }
+                            )
+                        }
                     }
                 }
             }
