@@ -3,31 +3,61 @@ package com.example.scrollbooker.ui.profile.userProfile
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
+import com.example.scrollbooker.entity.social.post.domain.model.Post
+import com.example.scrollbooker.entity.social.post.domain.useCase.GetUserPostsUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserProfileUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val getUserProfileUseCase: GetUserProfileUseCase,
+    private val getUserPostsUseCase: GetUserPostsUseCase,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
-    private val userId: Int = savedStateHandle["userId"] ?: error("Missing userId")
+    private val userId: StateFlow<Int?> = savedStateHandle.getStateFlow("userId", null)
 
     private val _userProfileState = MutableStateFlow<FeatureState<UserProfile>>(FeatureState.Loading)
     val userProfileState: StateFlow<FeatureState<UserProfile>> = _userProfileState
 
+    private val _initCompleted = MutableStateFlow(false)
+    val isInitLoading = combine(_userProfileState, _initCompleted) { profile, done ->
+        (profile is FeatureState.Loading || !done)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, true)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val userPosts: StateFlow<PagingData<Post>> = userId
+        .filterNotNull()
+        .flatMapLatest { userId -> getUserPostsUseCase(userId) }
+        .onEach { _initCompleted.value = true }
+        .cachedIn(viewModelScope)
+        .stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
+
     init {
-        loadUserProfile()
+        userId.filterNotNull()
+            .onEach { id ->
+                loadUserProfile(id)
+            }
+            .launchIn(viewModelScope)
     }
 
-    fun loadUserProfile() {
+    fun loadUserProfile(userId: Int) {
         viewModelScope.launch {
             _userProfileState.value = FeatureState.Loading
 

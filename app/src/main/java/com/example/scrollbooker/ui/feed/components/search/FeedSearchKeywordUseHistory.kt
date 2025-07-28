@@ -29,7 +29,8 @@ import com.example.scrollbooker.ui.theme.bodyLarge
 @Composable
 fun FeedSearchRecentlyHistory(
     recentlySearch: RecentlySearch,
-    onDeleteRecentlySearch: (Int) -> Unit
+    onDeleteRecentlySearch: (Int) -> Unit,
+    onClick: (String) -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -38,6 +39,11 @@ fun FeedSearchRecentlyHistory(
         .padding(
             vertical = SpacingM,
             horizontal = BasePadding
+        )
+        .clickable(
+            interactionSource = interactionSource,
+            indication = null,
+            onClick = { onClick(recentlySearch.keyword) }
         ),
         verticalAlignment = Alignment.CenterVertically
     ) {

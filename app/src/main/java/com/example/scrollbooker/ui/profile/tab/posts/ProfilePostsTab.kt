@@ -14,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.EmptyScreen
@@ -21,30 +22,18 @@ import com.example.scrollbooker.components.customized.PostGrid
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.LoadMoreSpinner
+import com.example.scrollbooker.entity.social.post.domain.model.Post
 
 @Composable
 fun ProfilePostsTab(
-    userId: Int,
     isOwnProfile: Boolean,
+    posts: LazyPagingItems<Post>,
     onNavigate: (String) -> Unit
 ) {
-    val viewModel: ProfilePostsTabViewModel = hiltViewModel()
-
-    LaunchedEffect(userId) {
-        viewModel.setUserId(userId)
-    }
-
-    val posts = viewModel.userPosts.collectAsLazyPagingItems()
-
     Box(modifier = Modifier.fillMaxSize()) {
         when(posts.loadState.refresh) {
             is LoadState.Error -> ErrorScreen()
-            is LoadState.Loading -> {
-                LoadingScreen(
-                    modifier = Modifier.padding(top = 50.dp),
-                    arrangement = Arrangement.Top
-                )
-            }
+            is LoadState.Loading -> Unit
             is LoadState.NotLoading -> {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(3),

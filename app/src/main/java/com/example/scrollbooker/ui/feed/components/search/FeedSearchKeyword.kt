@@ -1,4 +1,6 @@
-package com.example.scrollbooker.ui.feed.search
+package com.example.scrollbooker.ui.feed.components.search
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -8,10 +10,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowOutward
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,13 +27,21 @@ import com.example.scrollbooker.ui.theme.bodyLarge
 @Composable
 fun FeedSearchKeyword(
     keyword: String,
-    icon: Int = R.drawable.ic_search
+    icon: Int = R.drawable.ic_search,
+    onClick: (String) -> Unit
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+
     Row(modifier = Modifier
         .fillMaxWidth()
         .padding(
             vertical = SpacingM,
             horizontal = BasePadding
+        )
+        .clickable(
+            interactionSource = interactionSource,
+            indication = null,
+            onClick = { onClick(keyword) }
         ),
         verticalAlignment = Alignment.CenterVertically
     ) {
