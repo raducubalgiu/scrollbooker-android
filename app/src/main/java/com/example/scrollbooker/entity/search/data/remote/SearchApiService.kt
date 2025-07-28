@@ -1,7 +1,9 @@
 package com.example.scrollbooker.entity.search.data.remote
 import com.example.scrollbooker.core.util.PaginatedResponseDto
 import com.example.scrollbooker.entity.user.userSocial.data.remote.UserSocialDto
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface SearchApiService {
@@ -31,4 +33,9 @@ interface SearchApiService {
         @Query("lat") limit: Float?,
         @Query("timezone") timezone: String
     ): UserSearchDto
+
+    @POST("/search/create")
+    suspend fun createUserSearch(
+        @Body request: UserSearchCreateRequest
+    ): RecentlySearchDto
 }

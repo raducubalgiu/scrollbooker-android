@@ -16,6 +16,7 @@ import com.example.scrollbooker.entity.nomenclature.businessType.domain.model.Bu
 import com.example.scrollbooker.entity.nomenclature.businessType.domain.useCase.GetAllBusinessTypesByBusinessDomainUseCase
 import com.example.scrollbooker.entity.nomenclature.businessType.domain.useCase.GetAllBusinessTypesUseCase
 import com.example.scrollbooker.entity.search.domain.model.UserSearch
+import com.example.scrollbooker.entity.search.domain.useCase.CreateUserSearchUseCase
 import com.example.scrollbooker.entity.search.domain.useCase.GetUserSearchUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserProfileUseCase
@@ -26,6 +27,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,6 +38,7 @@ class MainUIViewModel @Inject constructor(
     private val getAllBusinessTypesByBusinessDomainUseCase: GetAllBusinessTypesByBusinessDomainUseCase,
     private val getUserProfileUseCase: GetUserProfileUseCase,
     private val getUserSearchUseCase: GetUserSearchUseCase,
+    private val createUserSearchUseCase: CreateUserSearchUseCase,
     private val authDataStore: AuthDataStore,
 ): ViewModel() {
     private val _userProfileState = MutableStateFlow<FeatureState<UserProfile>>(FeatureState.Loading)
@@ -116,10 +119,36 @@ class MainUIViewModel @Inject constructor(
         viewModelScope.launch {
             _userSearch.value = FeatureState.Loading
             _userSearch.value = getUserSearchUseCase(
-                lng = 25.993102f,
-                lat = 44.45050f,
+                lng = 44.45050f,
+                lat = 25.993102f,
                 timezone = "Europe/Bucharest"
             )
+        }
+    }
+
+    fun createSearch(keyword: String) {
+        viewModelScope.launch {
+            val response = createUserSearchUseCase(keyword)
+
+            response
+                .onFailure { e ->
+                    Timber.tag("Search").e("ERROR: on Creating User Search $e")
+                }
+                .onSuccess { newEntry ->
+                    val current = _userSearch.value
+                    if(current is FeatureState.Success) {
+                        val updatedRecentlySearch = buildList {
+                            add(newEntry)
+                            addAll(current.data.recentlySearch)
+                        }.take(20)
+
+                        val updatedUserSearch = current.data.copy(
+                            recentlySearch = updatedRecentlySearch
+                        )
+
+                        _userSearch.value = FeatureState.Success(updatedUserSearch)
+                    }
+                }
         }
     }
 

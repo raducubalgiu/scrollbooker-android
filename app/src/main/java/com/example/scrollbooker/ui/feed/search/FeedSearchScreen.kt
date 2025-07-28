@@ -58,9 +58,11 @@ fun FeedSearchScreen(
     userSearch: FeatureState<UserSearch>,
     onBack: () -> Unit,
     onGoToSearch: () -> Unit,
+    onCreateUserSearch: (String) -> Unit
 ) {
     val rootNavController = LocalRootNavController.current
     val searchState by viewModel.searchState.collectAsState()
+
     var query by remember { mutableStateOf("") }
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -94,6 +96,7 @@ fun FeedSearchScreen(
             },
             onSearch = {
                 keyboardController?.hide()
+                onCreateUserSearch(query)
                 onGoToSearch()
             },
             onClearInput = {

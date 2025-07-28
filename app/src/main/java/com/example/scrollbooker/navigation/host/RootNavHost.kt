@@ -1,7 +1,4 @@
 package com.example.scrollbooker.navigation.host
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.navigation.compose.NavHost
@@ -19,11 +16,14 @@ import com.example.scrollbooker.navigation.navigators.myBusinessGraph
 import com.example.scrollbooker.navigation.navigators.settingsGraph
 import com.example.scrollbooker.navigation.routes.GlobalRoute
 import com.example.scrollbooker.navigation.routes.MainRoute
+import com.example.scrollbooker.navigation.transition.slideInFromLeft
+import com.example.scrollbooker.navigation.transition.slideInFromRight
+import com.example.scrollbooker.navigation.transition.slideOutToLeft
+import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.ui.auth.AuthViewModel
 import com.example.scrollbooker.ui.main.MainUIViewModel
 import com.example.scrollbooker.ui.profile.calendar.AppointmentConfirmationScreen
 import com.example.scrollbooker.ui.profile.calendar.CalendarScreen
-import com.example.scrollbooker.ui.profile.myProfile.MyProfileScreen
 import com.example.scrollbooker.ui.profile.myProfile.ProfileSharedViewModel
 import com.example.scrollbooker.ui.profile.myProfile.edit.EditBioScreen
 import com.example.scrollbooker.ui.profile.myProfile.edit.EditFullNameScreen
@@ -79,44 +79,13 @@ fun RootNavHost(
 
             composable("${MainRoute.UserProfile.route}/{userId}",
                 arguments = listOf(navArgument("userId") { type = NavType.IntType }),
-                enterTransition = {
-                    slideIntoContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Left,
-                        animationSpec = tween(
-                            durationMillis = 300,
-                            easing = FastOutSlowInEasing
-                        )
-                    )
-                },
-                exitTransition = {
-                    slideOutOfContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Left,
-                        animationSpec = tween(
-                            durationMillis = 300,
-                            easing = FastOutSlowInEasing
-                        )
-                    )
-                },
-                popEnterTransition = {
-                    slideIntoContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Right,
-                        animationSpec = tween(
-                            durationMillis = 300,
-                            easing = FastOutSlowInEasing
-                        )
-                    )
-                },
-                popExitTransition = {
-                    slideOutOfContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Right,
-                        animationSpec = tween(
-                            durationMillis = 300,
-                            easing = FastOutSlowInEasing
-                        )
-                    )
-                }
+                enterTransition = { slideInFromRight() },
+                exitTransition = { slideOutToLeft() },
+                popEnterTransition = { slideInFromLeft() },
+                popExitTransition = { slideOutToRight() }
             ) { backStackEntry ->
                 val viewModel = hiltViewModel<ProfileViewModel>(backStackEntry)
+
                 UserProfileScreen(
                     viewModel = viewModel,
                     onNavigate = { navController.navigate(it) },
@@ -131,42 +100,10 @@ fun RootNavHost(
 
             composable("${MainRoute.ProfilePostDetail.route}/{postId}",
                 arguments = listOf(navArgument("postId") { type = NavType.IntType }),
-                enterTransition = {
-                    slideIntoContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Left,
-                        animationSpec = tween(
-                            durationMillis = 300,
-                            easing = FastOutSlowInEasing
-                        )
-                    )
-                },
-                exitTransition = {
-                    slideOutOfContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Left,
-                        animationSpec = tween(
-                            durationMillis = 300,
-                            easing = FastOutSlowInEasing
-                        )
-                    )
-                },
-                popEnterTransition = {
-                    slideIntoContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Right,
-                        animationSpec = tween(
-                            durationMillis = 300,
-                            easing = FastOutSlowInEasing
-                        )
-                    )
-                },
-                popExitTransition = {
-                    slideOutOfContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Right,
-                        animationSpec = tween(
-                            durationMillis = 300,
-                            easing = FastOutSlowInEasing
-                        )
-                    )
-                }
+                enterTransition = { slideInFromRight() },
+                exitTransition = { slideOutToLeft() },
+                popEnterTransition = { slideInFromLeft() },
+                popExitTransition = { slideOutToRight() }
             ) { backStackEntry ->
                 val postId = backStackEntry.arguments?.getInt("postId")
                 val viewModel = hiltViewModel<ProfilePostsTabViewModel>(backStackEntry)
@@ -185,42 +122,10 @@ fun RootNavHost(
                     navArgument("username") { type = NavType.StringType },
                     navArgument("isBusinessOrEmployee") { type = NavType.BoolType }
                 ),
-                enterTransition = {
-                    slideIntoContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Left,
-                        animationSpec = tween(
-                            durationMillis = 300,
-                            easing = FastOutSlowInEasing
-                        )
-                    )
-                },
-                exitTransition = {
-                    slideOutOfContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Left,
-                        animationSpec = tween(
-                            durationMillis = 300,
-                            easing = FastOutSlowInEasing
-                        )
-                    )
-                },
-                popEnterTransition = {
-                    slideIntoContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Right,
-                        animationSpec = tween(
-                            durationMillis = 300,
-                            easing = FastOutSlowInEasing
-                        )
-                    )
-                },
-                popExitTransition = {
-                    slideOutOfContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Right,
-                        animationSpec = tween(
-                            durationMillis = 300,
-                            easing = FastOutSlowInEasing
-                        )
-                    )
-                }
+                enterTransition = { slideInFromRight() },
+                exitTransition = { slideOutToLeft() },
+                popEnterTransition = { slideInFromLeft() },
+                popExitTransition = { slideOutToRight() }
             ) { backStackEntry ->
                 val initialPage = backStackEntry.arguments?.getInt("initialPage") ?: return@composable
                 val username = backStackEntry.arguments?.getString("username") ?: return@composable
@@ -238,19 +143,6 @@ fun RootNavHost(
                 )
             }
 
-//            composable(MainRoute.MyProfile.route) { backStackEntry ->
-//                val viewModel = hiltViewModel<ProfileSharedViewModel>(backStackEntry)
-//                MyProfileScreen(
-//                    myProfileData = myProfileData,
-//                    viewModel = viewModel,
-//                    onNavigate = { navController.navigate(it) },
-//                    onNavigateToCalendar = {
-//                        navController.navigate(
-//                            "${MainRoute.Calendar.route}/${it.userId}/${it.duration}/${it.id}/${it.name}"
-//                        )
-//                    }
-//                )
-//            }
             composable(MainRoute.EditProfile.route) { backStackEntry ->
                 val parentEntry = remember(backStackEntry) {
                     navController.getBackStackEntry(MainRoute.MyProfile.route)

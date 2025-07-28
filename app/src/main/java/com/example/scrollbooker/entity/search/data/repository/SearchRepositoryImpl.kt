@@ -6,6 +6,8 @@ import androidx.paging.PagingData
 import com.example.scrollbooker.entity.search.data.mappers.toDomain
 import com.example.scrollbooker.entity.search.data.remote.SearchApiService
 import com.example.scrollbooker.entity.search.data.remote.SearchUsersPagingSource
+import com.example.scrollbooker.entity.search.data.remote.UserSearchCreateRequest
+import com.example.scrollbooker.entity.search.domain.model.RecentlySearch
 import com.example.scrollbooker.entity.search.domain.model.Search
 import com.example.scrollbooker.entity.search.domain.model.UserSearch
 import com.example.scrollbooker.entity.search.domain.repository.SearchRepository
@@ -34,6 +36,11 @@ class SearchRepositoryImpl @Inject constructor(
         timezone: String
     ): UserSearch {
         return apiService.getUserSearch(lng, lat, timezone).toDomain()
+    }
+
+    override suspend fun createUserSearch(keyword: String): RecentlySearch {
+        val request = UserSearchCreateRequest(keyword)
+        return apiService.createUserSearch(request).toDomain()
     }
 
     override fun searchPaginatedUsers(query: String): Flow<PagingData<UserSocial>> {
