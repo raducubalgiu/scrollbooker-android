@@ -67,7 +67,8 @@ fun FeedNavHost(
                     userSearch = userSearch,
                     onBack = { navController.popBackStack() },
                     onGoToSearch = { navController.navigate(MainRoute.FeedSearchResults.route) },
-                    onCreateUserSearch = { mainViewModel.createSearch(keyword = it) }
+                    onCreateUserSearch = { mainViewModel.createSearch(keyword = it) },
+                    onDeleteRecentlySearch = { mainViewModel.deleteUserSearch(searchId = it) }
                 )
             }
             composable(

@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.search.domain.model.Search
-import com.example.scrollbooker.entity.search.domain.useCase.CreateUserSearchUseCase
 import com.example.scrollbooker.entity.search.domain.useCase.SearchUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job

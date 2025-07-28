@@ -17,6 +17,7 @@ import com.example.scrollbooker.entity.nomenclature.businessType.domain.useCase.
 import com.example.scrollbooker.entity.nomenclature.businessType.domain.useCase.GetAllBusinessTypesUseCase
 import com.example.scrollbooker.entity.search.domain.model.UserSearch
 import com.example.scrollbooker.entity.search.domain.useCase.CreateUserSearchUseCase
+import com.example.scrollbooker.entity.search.domain.useCase.DeleteUserSearchUseCase
 import com.example.scrollbooker.entity.search.domain.useCase.GetUserSearchUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserProfileUseCase
@@ -39,6 +40,7 @@ class MainUIViewModel @Inject constructor(
     private val getUserProfileUseCase: GetUserProfileUseCase,
     private val getUserSearchUseCase: GetUserSearchUseCase,
     private val createUserSearchUseCase: CreateUserSearchUseCase,
+    private val deleteUserSearchUseCase: DeleteUserSearchUseCase,
     private val authDataStore: AuthDataStore,
 ): ViewModel() {
     private val _userProfileState = MutableStateFlow<FeatureState<UserProfile>>(FeatureState.Loading)
@@ -141,6 +143,38 @@ class MainUIViewModel @Inject constructor(
                             add(newEntry)
                             addAll(current.data.recentlySearch)
                         }.take(20)
+
+                        val updatedUserSearch = current.data.copy(
+                            recentlySearch = updatedRecentlySearch
+                        )
+
+                        _userSearch.value = FeatureState.Success(updatedUserSearch)
+                    }
+                }
+        }
+    }
+
+    fun deleteUserSearch(searchId: Int) {
+        viewModelScope.launch {
+            val response = deleteUserSearchUseCase(searchId)
+
+            response
+                .onFailure { e ->
+                    Timber.tag("Search").e("ERROR: on Deleting User Search $e")
+                }
+                .onSuccess {
+                    val current = _userSearch.value
+                    if(current is FeatureState.Success) {
+                        Timber.tag("Search").e("Deleting Search with ID: $searchId")
+
+                        val beforeSize = current.data.recentlySearch.size
+
+                        val updatedRecentlySearch = current.data.recentlySearch
+                            .filterNot { it.id == searchId }
+
+                        val afterSize = updatedRecentlySearch.size
+
+                        Timber.tag("Search").e("List before size: $beforeSize, after: $afterSize")
 
                         val updatedUserSearch = current.data.copy(
                             recentlySearch = updatedRecentlySearch

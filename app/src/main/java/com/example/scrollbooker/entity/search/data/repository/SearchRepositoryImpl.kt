@@ -43,6 +43,10 @@ class SearchRepositoryImpl @Inject constructor(
         return apiService.createUserSearch(request).toDomain()
     }
 
+    override suspend fun deleteUserSearch(searchId: Int) {
+        return apiService.deleteUserSearch(searchId)
+    }
+
     override fun searchPaginatedUsers(query: String): Flow<PagingData<UserSocial>> {
         return Pager(
             config = PagingConfig(pageSize = 10),

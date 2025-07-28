@@ -23,7 +23,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -47,6 +46,7 @@ import com.example.scrollbooker.entity.search.domain.model.UserSearch
 import com.example.scrollbooker.navigation.LocalRootNavController
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.feed.components.FeedSearchRecommendedBusiness
+import com.example.scrollbooker.ui.feed.components.search.FeedSearchRecentlyHistory
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.titleMedium
@@ -58,7 +58,8 @@ fun FeedSearchScreen(
     userSearch: FeatureState<UserSearch>,
     onBack: () -> Unit,
     onGoToSearch: () -> Unit,
-    onCreateUserSearch: (String) -> Unit
+    onCreateUserSearch: (String) -> Unit,
+    onDeleteRecentlySearch: (Int) -> Unit
 ) {
     val rootNavController = LocalRootNavController.current
     val searchState by viewModel.searchState.collectAsState()
@@ -66,7 +67,6 @@ fun FeedSearchScreen(
     var query by remember { mutableStateOf("") }
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
-    val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         delay(200)
@@ -124,13 +124,13 @@ fun FeedSearchScreen(
                         LazyColumn(modifier = Modifier.padding(top = SpacingS)) {
                             item {
                                 recently.map { rec ->
-                                    FeedSearchKeyword(
-                                        keyword = rec.keyword,
-                                        showCloseIcon = true
+                                    FeedSearchRecentlyHistory(
+                                        recentlySearch = rec,
+                                        onDeleteRecentlySearch = onDeleteRecentlySearch
                                     )
                                 }
 
-                                if(allRecently.size != 3) {
+                                if(allRecently.size > 3) {
                                     Box(modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(BasePadding)
@@ -198,10 +198,7 @@ fun FeedSearchScreen(
                         ) {
                             item {
                                 if(query.isNotEmpty()) {
-                                    FeedSearchKeyword(
-                                        keyword = query,
-                                        showArrowUpIcon = true
-                                    )
+                                    FeedSearchKeyword(keyword = query)
                                 }
                             }
 
@@ -214,13 +211,21 @@ fun FeedSearchScreen(
                                         )
                                     }
                                     SearchTypeEnum.SERVICE -> {
-                                        FeedSearchKeyword(searchResult.label, R.drawable.ic_shopping_outline)
+                                        FeedSearchKeyword(
+                                            keyword = searchResult.label,
+                                            icon = R.drawable.ic_shopping_outline
+                                        )
                                     }
                                     SearchTypeEnum.BUSINESS_TYPE -> {
-                                        FeedSearchKeyword(searchResult.label, R.drawable.ic_store_solid)
+                                        FeedSearchKeyword(
+                                            keyword = searchResult.label,
+                                            icon = R.drawable.ic_store_solid
+                                        )
                                     }
                                     SearchTypeEnum.KEYWORD -> {
-                                        FeedSearchKeyword(searchResult.label)
+                                        FeedSearchKeyword(
+                                            keyword = searchResult.label,
+                                        )
                                     }
                                     else -> Unit
                                 }

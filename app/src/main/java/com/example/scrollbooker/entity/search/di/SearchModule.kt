@@ -5,6 +5,7 @@ import com.example.scrollbooker.entity.search.data.remote.SearchApiService
 import com.example.scrollbooker.entity.search.data.repository.SearchRepositoryImpl
 import com.example.scrollbooker.entity.search.domain.repository.SearchRepository
 import com.example.scrollbooker.entity.search.domain.useCase.CreateUserSearchUseCase
+import com.example.scrollbooker.entity.search.domain.useCase.DeleteUserSearchUseCase
 import com.example.scrollbooker.entity.search.domain.useCase.GetUserSearchUseCase
 import com.example.scrollbooker.entity.search.domain.useCase.SearchPaginatedUsersUseCase
 import com.example.scrollbooker.entity.search.domain.useCase.SearchUseCase
@@ -67,5 +68,13 @@ object SearchModule {
         repository: SearchRepository
     ): CreateUserSearchUseCase {
         return CreateUserSearchUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDeleteUserSearchUseCase(
+        repository: SearchRepository
+    ): DeleteUserSearchUseCase {
+        return DeleteUserSearchUseCase(repository)
     }
 }

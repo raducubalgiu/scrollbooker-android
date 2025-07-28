@@ -11,5 +11,6 @@ interface SearchRepository {
     suspend fun searchUsers(query: String, roleClient: Boolean): List<UserSocial>
     suspend fun getUserSearch(lng: Float?, lat: Float?, timezone: String): UserSearch
     suspend fun createUserSearch(keyword: String): RecentlySearch
+    suspend fun deleteUserSearch(searchId: Int)
     fun searchPaginatedUsers(query: String):  Flow<PagingData<UserSocial>>
 }
