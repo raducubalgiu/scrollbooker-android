@@ -59,8 +59,18 @@ class MainUIViewModel @Inject constructor(
         MutableStateFlow<FeatureState<List<BusinessDomain>>>(FeatureState.Loading)
     val businessDomainsState: StateFlow<FeatureState<List<BusinessDomain>>> = _businessDomainsState
 
-//    private val _selectedBusinessTypes = MutableStateFlow<Set<Int>>(emptySet())
-//    val selectedBusinessTypes: StateFlow<Set<Int>> = _selectedBusinessTypes
+    private val _selectedBusinessTypes = MutableStateFlow<Set<Int>>(emptySet())
+    val selectedBusinessTypes: StateFlow<Set<Int>> = _selectedBusinessTypes
+
+    fun setBusinessType(id: Int) {
+        _selectedBusinessTypes.update { current ->
+            if(current.contains(id)) current - id else current + id
+        }
+    }
+
+    fun clearBusinessTypes() {
+        _selectedBusinessTypes.value = emptySet()
+    }
 
     fun increaseAppointmentsNumber() {
         appointmentsState = appointmentsState + 1

@@ -84,7 +84,8 @@ fun MainNavHost(
                             MainDrawer(
                                 viewModel = mainViewModel,
                                 feedViewModel = feedViewModel,
-                                businessDomainsState = businessDomainsState
+                                businessDomainsState = businessDomainsState,
+                                onClose = { scope.launch { drawerState.close() } }
                             )
                         },
                         scrimColor = Color(0xFF121212).copy(0.7f),

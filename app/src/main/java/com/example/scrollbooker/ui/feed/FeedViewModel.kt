@@ -41,14 +41,8 @@ class FeedViewModel @Inject constructor(
     }
     val followingPosts: Flow<PagingData<Post>> get() = _followingPosts
 
-    fun setBusinessType(id: Int) {
-        _selectedBusinessTypes.update { current ->
-            if(current.contains(id)) current - id else current + id
-        }
-    }
-
-    fun clearBusinessTypes() {
-        _selectedBusinessTypes.value = emptySet()
+    fun updateBusinessTypes(businessTypes: Set<Int>) {
+        _selectedBusinessTypes.value = businessTypes
     }
 
 //    private val _exoPlayer = ExoPlayer.Builder(application)

@@ -50,9 +50,11 @@ import com.example.scrollbooker.ui.theme.bodyMedium
 fun MainDrawer(
     viewModel: MainUIViewModel,
     feedViewModel: FeedViewModel,
-    businessDomainsState: FeatureState<List<BusinessDomain>>
+    businessDomainsState: FeatureState<List<BusinessDomain>>,
+    onClose: () -> Unit
 ) {
-    val selectedBusinessTypes by feedViewModel.selectedBusinessTypes.collectAsState()
+    val selectedBusinessTypes by viewModel.selectedBusinessTypes.collectAsState()
+    val updatedBusinessTypes by feedViewModel.selectedBusinessTypes.collectAsState()
 
     BoxWithConstraints {
         val screenWidth = maxWidth
@@ -95,7 +97,7 @@ fun MainDrawer(
                                         selectedBusinessTypes = selectedBusinessTypes,
                                         businessDomain = businessDomain,
                                         onSetBusinessType = {
-                                            feedViewModel.setBusinessType(it)
+                                            viewModel.setBusinessType(it)
                                         }
                                     )
                                 }
@@ -124,7 +126,7 @@ fun MainDrawer(
                             contentAlignment = Alignment.Center
                         ) {
                             TextButton(
-                                onClick = { feedViewModel.clearBusinessTypes() }
+                                onClick = { viewModel.clearBusinessTypes() }
                             ) {
                                 Text(
                                     text = stringResource(R.string.clearFilters),
@@ -137,9 +139,12 @@ fun MainDrawer(
                     }
 
                     MainButton(
-                        onClick = {},
+                        onClick = {
+                            feedViewModel.updateBusinessTypes(selectedBusinessTypes)
+                            onClose()
+                        },
                         title = stringResource(R.string.filter),
-                        enabled = !selectedBusinessTypes.isEmpty(),
+                        enabled = !selectedBusinessTypes.isEmpty() && selectedBusinessTypes != updatedBusinessTypes,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFFFF6F00),
                             contentColor = Color(0xFFE0E0E0),
