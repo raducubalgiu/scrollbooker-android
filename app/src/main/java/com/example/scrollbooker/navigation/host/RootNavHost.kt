@@ -216,7 +216,7 @@ fun RootNavHost(
 
             navigation(
                 route = MainRoute.CalendarNavigator.route,
-                startDestination = "${MainRoute.Calendar.route}/{userId}/{slotDuration}/{productId}/{productName}"
+                startDestination = "${MainRoute.Calendar.route}/{userId}/{slotDuration}/{productId}/{productName}",
             ) {
                 composable(
                     route = "${MainRoute.Calendar.route}/{userId}/{slotDuration}/{productId}/{productName}",
@@ -225,7 +225,11 @@ fun RootNavHost(
                         navArgument("slotDuration") { type = NavType.IntType },
                         navArgument("productId") { type = NavType.IntType },
                         navArgument("productName") { type = NavType.StringType }
-                    )
+                    ),
+                    enterTransition = { slideInFromRight() },
+                    exitTransition = { slideOutToLeft() },
+                    popEnterTransition = { slideInFromLeft() },
+                    popExitTransition = { slideOutToRight() }
                 ) { backStackEntry ->
                     val parentEntry = remember(backStackEntry) {
                         navController.getBackStackEntry(MainRoute.CalendarNavigator.route)
@@ -251,7 +255,13 @@ fun RootNavHost(
                     )
                 }
 
-                composable(route = MainRoute.AppointmentConfirmation.route) { backStackEntry ->
+                composable(
+                    route = MainRoute.AppointmentConfirmation.route,
+                    enterTransition = { slideInFromRight() },
+                    exitTransition = { slideOutToLeft() },
+                    popEnterTransition = { slideInFromLeft() },
+                    popExitTransition = { slideOutToRight() }
+                ) { backStackEntry ->
                     val parentEntry = remember(backStackEntry) {
                         navController.getBackStackEntry(MainRoute.CalendarNavigator.route)
                     }
