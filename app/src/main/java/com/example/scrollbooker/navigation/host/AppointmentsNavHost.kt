@@ -27,8 +27,6 @@ fun AppointmentsNavHost(
     NavHost(
         navController = navController,
         startDestination = MainRoute.AppointmentsNavigator.route,
-        enterTransition = { slideInFromRight() },
-        exitTransition = { slideOutToLeft() },
         popEnterTransition = { slideInFromLeft() },
         popExitTransition = { slideOutToRight() }
     ) {
@@ -36,7 +34,13 @@ fun AppointmentsNavHost(
             route = MainRoute.AppointmentsNavigator.route,
             startDestination = MainRoute.Appointments.route,
         ) {
-            composable(MainRoute.Appointments.route) { backStackEntry ->
+            composable(
+                route = MainRoute.Appointments.route,
+                enterTransition = { slideInFromRight() },
+                exitTransition = { slideOutToLeft() },
+                popEnterTransition = { slideInFromLeft() },
+                popExitTransition = { slideOutToRight() }
+            ) { backStackEntry ->
                 val parentEntry = remember(backStackEntry) {
                     navController.getBackStackEntry(MainRoute.AppointmentsNavigator.route)
                 }
@@ -52,7 +56,13 @@ fun AppointmentsNavHost(
                 )
             }
 
-            composable(MainRoute.AppointmentDetails.route) { backStackEntry ->
+            composable(
+                route = MainRoute.AppointmentDetails.route,
+                enterTransition = { slideInFromRight() },
+                exitTransition = { slideOutToLeft() },
+                popEnterTransition = { slideInFromLeft() },
+                popExitTransition = { slideOutToRight() }
+            ) { backStackEntry ->
                 val parentEntry = remember(backStackEntry) {
                     navController.getBackStackEntry(MainRoute.AppointmentsNavigator.route)
                 }
@@ -65,7 +75,13 @@ fun AppointmentsNavHost(
                 )
             }
 
-            composable(MainRoute.AppointmentCancel.route) { backStackEntry ->
+            composable(
+                route = MainRoute.AppointmentCancel.route,
+                enterTransition = { slideInFromRight() },
+                exitTransition = { slideOutToLeft() },
+                popEnterTransition = { slideInFromLeft() },
+                popExitTransition = { slideOutToRight() }
+            ) { backStackEntry ->
                 val parentEntry = remember(backStackEntry) {
                     navController.getBackStackEntry(MainRoute.AppointmentsNavigator.route)
                 }

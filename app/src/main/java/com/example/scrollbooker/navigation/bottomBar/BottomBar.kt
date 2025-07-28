@@ -13,8 +13,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.navigation.bottomBar.BottomBarItem
 import com.example.scrollbooker.navigation.bottomBar.MainTab
+import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
+import timber.log.Timber
 
 @Composable
 fun BottomBar(
@@ -26,8 +28,18 @@ fun BottomBar(
     val allTabs = MainTab.allTabs
     val isFeedTab = currentTab == MainTab.Feed
 
-    val isVisible = remember(currentTab, currentRoute) {
-        currentTab in MainTab.allTabs
+    Timber.tag("CURRENT ROUTE!!!").e("CURRENT ROUTE!! $currentRoute")
+
+    val visibleRoutes = listOf(
+        MainRoute.Feed.route,
+        MainRoute.Inbox.route,
+        MainRoute.Search.route,
+        MainRoute.Appointments.route,
+        MainRoute.MyProfile.route
+    )
+
+    val isVisible = remember(currentRoute) {
+        currentRoute in visibleRoutes
     }
 
     val dividerColor = if (isFeedTab) Color(0xFF3A3A3A) else Divider
