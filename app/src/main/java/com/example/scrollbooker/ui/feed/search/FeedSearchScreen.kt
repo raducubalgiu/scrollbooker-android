@@ -47,9 +47,7 @@ fun FeedSearchScreen(
 
     fun handleNavigateToUserProfile(userId: Int) {
         keyboardController?.hide()
-        rootNavController.navigate(
-            "${MainRoute.UserProfile.route}/$userId"
-        )
+        rootNavController.navigate("${MainRoute.UserProfile.route}/$userId")
     }
 
     fun handleSearch(keyword: String) {

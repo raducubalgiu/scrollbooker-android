@@ -24,6 +24,7 @@ import com.example.scrollbooker.navigation.transition.slideOutToRight
 fun FeedNavHost(
     feedViewModel: FeedViewModel,
     mainViewModel: MainUIViewModel,
+    rootNavController: NavHostController,
     navController: NavHostController,
     onOpenDrawer: () -> Unit
 ) {
@@ -85,7 +86,8 @@ fun FeedNavHost(
 
                 FeedSearchResultsScreen(
                     viewModel = viewModel,
-                    onBack = { navController.popBackStack() }
+                    onBack = { navController.popBackStack() },
+                    onNavigateUserProfile = { rootNavController.navigate("${MainRoute.UserProfile.route}/$it") }
                 )
             }
         }

@@ -110,6 +110,7 @@ fun MainNavHost(
                                     FeedNavHost(
                                         feedViewModel = feedViewModel,
                                         mainViewModel = mainViewModel,
+                                        rootNavController = rootNavController,
                                         navController = navControllers[MainTab.Feed]!!,
                                         onOpenDrawer = { scope.launch { drawerState.open() } }
                                     )

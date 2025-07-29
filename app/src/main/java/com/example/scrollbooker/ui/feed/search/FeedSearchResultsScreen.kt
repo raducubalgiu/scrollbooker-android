@@ -28,7 +28,8 @@ import com.example.scrollbooker.ui.feed.search.tab.users.FeedSearchUsersViewMode
 @Composable
 fun FeedSearchResultsScreen(
     viewModel: FeedSearchViewModel,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onNavigateUserProfile: (Int) -> Unit
 ) {
     val feedSearchUsersViewModel: FeedSearchUsersViewModel = hiltViewModel()
 
@@ -78,7 +79,8 @@ fun FeedSearchResultsScreen(
                 1 -> {
                     FeedSearchUsersTab(
                         query = query,
-                        viewModel = feedSearchUsersViewModel
+                        viewModel = feedSearchUsersViewModel,
+                        onNavigateUserProfile = onNavigateUserProfile
                     )
                 }
                 2 -> Box(Modifier.fillMaxSize()) {

@@ -125,9 +125,7 @@ fun MainDrawer(
                                 .padding(bottom = BasePadding),
                             contentAlignment = Alignment.Center
                         ) {
-                            TextButton(
-                                onClick = { viewModel.clearBusinessTypes() }
-                            ) {
+                            TextButton(onClick = { viewModel.clearBusinessTypes() }) {
                                 Text(
                                     text = stringResource(R.string.clearFilters),
                                     color = Error,
@@ -144,7 +142,7 @@ fun MainDrawer(
                             onClose()
                         },
                         title = stringResource(R.string.filter),
-                        enabled = !selectedBusinessTypes.isEmpty() && selectedBusinessTypes != updatedBusinessTypes,
+                        enabled = selectedBusinessTypes != updatedBusinessTypes,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFFFF6F00),
                             contentColor = Color(0xFFE0E0E0),

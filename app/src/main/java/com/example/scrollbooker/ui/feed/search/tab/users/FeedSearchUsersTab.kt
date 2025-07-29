@@ -9,7 +9,8 @@ import com.example.scrollbooker.ui.profile.social.components.UserSocialList
 @Composable
 fun FeedSearchUsersTab(
     query: String,
-    viewModel: FeedSearchUsersViewModel
+    viewModel: FeedSearchUsersViewModel,
+    onNavigateUserProfile: (Int) -> Unit
 ) {
     LaunchedEffect(query) {
         viewModel.setQuery(query)
@@ -27,6 +28,6 @@ fun FeedSearchUsersTab(
         onFollow = { isFollowed, userId ->
             viewModel.onFollow(isFollowed, userId)
         },
-        onNavigateUserProfile = {}
+        onNavigateUserProfile = onNavigateUserProfile
     )
 }
