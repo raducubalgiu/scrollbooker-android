@@ -8,15 +8,21 @@ import com.example.scrollbooker.entity.booking.calendar.domain.useCase.GetCalend
 import com.example.scrollbooker.entity.booking.calendar.domain.useCase.GetUserAvailableTimeslotsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.LocalDate
 import javax.inject.Inject
@@ -30,6 +36,11 @@ class CalendarViewModel @Inject constructor(
     private val userId = MutableStateFlow<Int?>(null)
     private val selectedDay = MutableStateFlow<LocalDate?>(LocalDate.now())
     private val slotDuration = MutableStateFlow<Int?>(null)
+
+    private val _forceRefresh = MutableStateFlow<Boolean>(false)
+    val forceRefresh: StateFlow<Boolean> = _forceRefresh
+
+    private val cachedSlots = mutableMapOf<LocalDate, FeatureState<AvailableDay>>()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val calendarHeader: StateFlow<FeatureState<CalendarHeaderState>> = userId
@@ -82,33 +93,44 @@ class CalendarViewModel @Inject constructor(
     val availableDayState: StateFlow<FeatureState<AvailableDay>> = combine(
         selectedDay.filterNotNull(),
         userId.filterNotNull(),
-        slotDuration.filterNotNull()
+        slotDuration.filterNotNull(),
+        forceRefresh,
     ) {
-        day, userId, slotDuration ->
-        Triple(day, userId, slotDuration)
+        day, userId, slotDuration, forceRefresh ->
+        SlotsParams(day, userId, slotDuration, forceRefresh)
     }
         .filterNotNull()
         .distinctUntilChanged()
-        .flatMapLatest { (day, userId, slotDuration) ->
-            flow {
-                emit(FeatureState.Loading)
-
-                val response = withVisibleLoading {
-                    getUserAvailableTimeslotsUseCase(
-                        day = day.toString(),
-                        userId = userId,
-                        slotDuration = slotDuration
-                    )
-                }
-
-                emit(response)
-            }
+        .flatMapLatest { params ->
+            loadSlotsForDay(params)
         }
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
             FeatureState.Loading
         )
+
+    fun loadSlotsForDay(params: SlotsParams): Flow<FeatureState<AvailableDay>> = flow {
+        with(params) {
+            if(!forceRefresh && cachedSlots.containsKey(day)) {
+                emit(cachedSlots[day]!!)
+                return@flow
+            }
+
+            emit(FeatureState.Loading)
+
+            val response = withVisibleLoading {
+                getUserAvailableTimeslotsUseCase(
+                    day = day.toString(),
+                    userId = userId,
+                    slotDuration = slotDuration
+                )
+            }
+
+            cachedSlots[day] = response
+            emit(response)
+        }
+    }
 
     fun setUserId(id: Int) {
         userId.value = id
@@ -120,6 +142,21 @@ class CalendarViewModel @Inject constructor(
 
     fun setSlotDuration(duration: Int) {
         slotDuration.value = duration
+    }
+
+    fun handleRefresh() {
+        _forceRefresh.value = true
+
+        viewModelScope.launch {
+            availableDayState
+                .drop(1)
+                .collectLatest {
+                    if(it !is FeatureState.Loading) {
+                        _forceRefresh.value = false
+                        cancel()
+                    }
+                }
+        }
     }
 
 

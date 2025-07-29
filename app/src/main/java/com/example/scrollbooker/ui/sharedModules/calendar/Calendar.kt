@@ -58,7 +58,6 @@ fun Calendar(
     }
 
     val headerState by viewModel.calendarHeader.collectAsState()
-    val timeslotsState by viewModel.availableDayState.collectAsState()
 
     val locale = Locale("ro")
     val coroutineScope = rememberCoroutineScope()
@@ -168,7 +167,7 @@ fun Calendar(
                         contentAlignment = Alignment.TopStart
                     ) {
                         SlotsList(
-                            availableDayTimeslots = timeslotsState,
+                            viewModel = viewModel,
                             onSelectSlot = onSelectSlot
                         )
                     }
