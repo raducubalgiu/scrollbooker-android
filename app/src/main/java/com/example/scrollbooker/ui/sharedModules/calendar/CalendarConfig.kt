@@ -10,3 +10,9 @@ data class CalendarConfig(
     val initialDayPage: Int,
     val selectedDay: LocalDate
 )
+
+data class CalendarHeaderState(
+    val config: CalendarConfig,
+    val calendarDays: List<LocalDate>,
+    val calendarAvailableDays: List<LocalDate>
+)

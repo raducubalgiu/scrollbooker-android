@@ -12,11 +12,16 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.TabRow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.scrollbooker.components.core.layout.ErrorScreen
+import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.displayDatePeriod
@@ -26,7 +31,6 @@ import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import java.util.Locale
 import com.example.scrollbooker.core.util.displayShortDayOfWeek
-import com.example.scrollbooker.entity.booking.calendar.domain.model.AvailableDay
 import com.example.scrollbooker.entity.booking.calendar.domain.model.Slot
 import com.example.scrollbooker.ui.sharedModules.calendar.components.CalendarDayTab
 import com.example.scrollbooker.ui.sharedModules.calendar.components.CalendarHeader
@@ -34,122 +38,141 @@ import com.example.scrollbooker.ui.sharedModules.calendar.components.slots.Slots
 
 @Composable
 fun Calendar(
-    availableDayTimeslots: FeatureState<AvailableDay>,
-    calendarDays: List<LocalDate>,
-    availableDays: FeatureState<List<LocalDate>>,
-    config: CalendarConfig?,
-    onDayChange: (LocalDate) -> Unit,
+    userId: Int,
+    productId: Int,
+    slotDuration: Int,
     onSelectSlot: (Slot) -> Unit
 ) {
-    if(calendarDays.isEmpty() || config == null) return
+    val viewModel: CalendarViewModel = hiltViewModel()
+
+    LaunchedEffect(userId) {
+        viewModel.setUserId(userId)
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.setSlotDuration(duration = slotDuration)
+    }
+
+    fun handleDayChange(day: LocalDate) {
+        viewModel.setDay(day)
+    }
+
+    val headerState by viewModel.calendarHeader.collectAsState()
+    val timeslotsState by viewModel.availableDayState.collectAsState()
 
     val locale = Locale("ro")
     val coroutineScope = rememberCoroutineScope()
     val today = LocalDate.now()
 
-    val weekPagerState = rememberPagerState(initialPage = config.initialWeekPage) { config.totalWeeks }
-    val dayPagerState = rememberPagerState(initialPage = config.initialDayPage) { 7 }
+    when(headerState) {
+        is FeatureState.Error -> ErrorScreen()
+        is FeatureState.Loading -> LoadingScreen()
+        is FeatureState.Success -> {
+            val calendar = (headerState as FeatureState.Success).data
+            val config = calendar.config
+            val calendarDays = calendar.calendarDays
+            val availableDays = calendar.calendarAvailableDays
 
-    val currentDayIndex = dayPagerState.currentPage
-    val currentWeekIndex = weekPagerState.currentPage
+            if(calendar.calendarDays.isEmpty()) return
 
-    val currentWeekDates = calendarDays.drop(currentWeekIndex * 7).take(7)
+            val weekPagerState = rememberPagerState(initialPage = config.initialWeekPage) { config.totalWeeks }
+            val dayPagerState = rememberPagerState(initialPage = config.initialDayPage) { 7 }
 
-    val selectedDay = calendarDays.drop(currentWeekIndex * 7).getOrNull(currentDayIndex)
+            val currentDayIndex = dayPagerState.currentPage
+            val currentWeekIndex = weekPagerState.currentPage
 
-    val enableBack = currentWeekIndex > 0 && selectedDay?.isAfter(today.minusDays(1)) == true
-    val enableNext = currentWeekIndex < config.totalWeeks - 1
-
-    fun handlePreviousWeek() {
-        coroutineScope.launch {
-            weekPagerState.animateScrollToPage(currentWeekIndex - 1)
-        }
-    }
-
-    fun handleNextWeek() {
-        coroutineScope.launch {
-            weekPagerState.animateScrollToPage(currentWeekIndex + 1)
-        }
-    }
-
-    LaunchedEffect(currentWeekIndex) {
-        if(dayPagerState.currentPage != 0) {
-            dayPagerState.scrollToPage(0)
-        }
-    }
-
-    LaunchedEffect(currentWeekIndex, currentDayIndex) {
-        selectedDay?.let {
-            onDayChange(it)
-        }
-    }
-
-    Column(modifier = Modifier.statusBarsPadding()) {
-        CalendarHeader(
-            period = displayDatePeriod(currentWeekDates.first(), currentWeekDates.last(), locale),
-            enableBack = enableBack,
-            enableNext = enableNext,
-            handlePreviousWeek = { handlePreviousWeek() },
-            handleNextWeek = { handleNextWeek() }
-        )
-
-        HorizontalPager(
-            state = weekPagerState,
-            pageSize = PageSize.Fill,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(95.dp)
-                .padding(horizontal = BasePadding),
-            beyondViewportPageCount = 0
-        ) { page ->
-            val weekDates = calendarDays.drop(page * 7).take(7)
-
-            TabRow(
-                selectedTabIndex = dayPagerState.currentPage,
-                modifier = Modifier.fillMaxWidth(),
-                containerColor = Color.Transparent,
-                contentColor = OnBackground,
-                indicator = {},
-            ) {
-                weekDates.forEachIndexed { index, date ->
-                    val isAvailable = (availableDays as? FeatureState.Success)
-                        ?.data
-                        ?.contains(date) == true
-
-                    CalendarDayTab(
-                        date = date,
-                        isCurrentTab = index == dayPagerState.currentPage,
-                        onChangeTab = {
-                            coroutineScope.launch {
-                                onDayChange(date)
-                                dayPagerState.animateScrollToPage(index)
-                            }
-                        },
-                        bgColor = if(currentDayIndex == index) Primary else Color.Transparent,
-                        label = displayShortDayOfWeek(date, locale),
-                        isLoading = availableDays is FeatureState.Loading,
-                        isDayAvailable = isAvailable
-                    )
+            LaunchedEffect(currentWeekIndex, currentDayIndex) {
+                val dayIndex = currentWeekIndex * 7 + currentDayIndex
+                val day = calendarDays.getOrNull(dayIndex)
+                if(day != null) {
+                    handleDayChange(day)
                 }
             }
-        }
 
-        HorizontalPager(
-            state = dayPagerState,
-            pageSize = PageSize.Fill,
-            beyondViewportPageCount = 0,
-            modifier = Modifier.fillMaxSize()
-        ) { index ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = BasePadding),
-                contentAlignment = Alignment.TopStart
-            ) {
-                SlotsList(
-                    availableDayTimeslots = availableDayTimeslots,
-                    onSelectSlot = onSelectSlot
+            val currentWeekDates = calendarDays.drop(currentWeekIndex * 7).take(7)
+            val selectedDay = calendarDays.drop(currentWeekIndex * 7).getOrNull(currentDayIndex)
+
+            val enableBack = currentWeekIndex > 0 && selectedDay?.isAfter(today.minusDays(1)) == true
+            val enableNext = currentWeekIndex < config.totalWeeks - 1
+
+            fun handlePreviousWeek() {
+                coroutineScope.launch {
+                    weekPagerState.animateScrollToPage(currentWeekIndex - 1)
+                }
+            }
+
+            fun handleNextWeek() {
+                coroutineScope.launch {
+                    weekPagerState.animateScrollToPage(currentWeekIndex + 1)
+                }
+            }
+
+            Column(modifier = Modifier.statusBarsPadding()) {
+                CalendarHeader(
+                    period = displayDatePeriod(currentWeekDates.first(), currentWeekDates.last(), locale),
+                    enableBack = enableBack,
+                    enableNext = enableNext,
+                    handlePreviousWeek = { handlePreviousWeek() },
+                    handleNextWeek = { handleNextWeek() }
                 )
+
+                HorizontalPager(
+                    state = weekPagerState,
+                    pageSize = PageSize.Fill,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(95.dp)
+                        .padding(horizontal = BasePadding),
+                    beyondViewportPageCount = 0
+                ) { page ->
+                    val weekDates = calendarDays.drop(page * 7).take(7)
+
+                    TabRow(
+                        selectedTabIndex = dayPagerState.currentPage,
+                        modifier = Modifier.fillMaxWidth(),
+                        containerColor = Color.Transparent,
+                        contentColor = OnBackground,
+                        indicator = {},
+                    ) {
+                        weekDates.forEachIndexed { index, date ->
+                            val isAvailable = availableDays.contains(date) == true
+
+                            CalendarDayTab(
+                                date = date,
+                                isCurrentTab = index == dayPagerState.currentPage,
+                                onChangeTab = {
+                                    coroutineScope.launch {
+                                        handleDayChange(date)
+                                        dayPagerState.animateScrollToPage(index)
+                                    }
+                                },
+                                bgColor = if(currentDayIndex == index) Primary else Color.Transparent,
+                                label = displayShortDayOfWeek(date, locale),
+                                isLoading = false,
+                                isDayAvailable = isAvailable
+                            )
+                        }
+                    }
+                }
+
+                HorizontalPager(
+                    state = dayPagerState,
+                    pageSize = PageSize.Fill,
+                    beyondViewportPageCount = 0,
+                    modifier = Modifier.fillMaxSize()
+                ) { index ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = BasePadding),
+                        contentAlignment = Alignment.TopStart
+                    ) {
+                        SlotsList(
+                            availableDayTimeslots = timeslotsState,
+                            onSelectSlot = onSelectSlot
+                        )
+                    }
+                }
             }
         }
     }

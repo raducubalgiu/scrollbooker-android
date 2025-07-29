@@ -124,156 +124,158 @@ fun PostsPager(
                         )
                     }
                     is PostSheetsContent.CalendarSheet -> {
-                        val config by calendarViewModel.calendarConfig.collectAsState()
-                        val calendarDays by calendarViewModel.calendarDays.collectAsState()
-                        val availableDays by calendarViewModel.availableDays.collectAsState()
-                        val availableDayTimeslots by calendarViewModel.availableDay.collectAsState()
-                        val selectedSlot by calendarViewModel.selectedSlot.collectAsState()
+//                        val config by calendarViewModel.calendarConfig.collectAsState()
+//                        val calendarDays by calendarViewModel.calendarDays.collectAsState()
+//                        val availableDays by calendarViewModel.availableDays.collectAsState()
+//                        val availableDayTimeslots by calendarViewModel.availableDay.collectAsState()
+//                        val selectedSlot by calendarViewModel.selectedSlot.collectAsState()
+//
+//                        LaunchedEffect(Unit) {
+//                            calendarViewModel.setCalendarConfig(userId = content.userId)
+//                        }
+//                        val targetState = if(selectedSlot == null) "calendar" else "confirm"
+//
+//                        LaunchedEffect(Unit) {
+//                            calendarViewModel.setCalendarConfig(userId = content.userId)
+//                        }
+//
+//                        LaunchedEffect(config?.selectedDay) {
+//                            config?.let {
+//                                calendarViewModel.loadUserAvailableTimeslots(
+//                                    userId = it.userId,
+//                                    day = it.selectedDay,
+//                                    slotDuration = 30
+//                                )
+//                            }
+//                        }
+//
+//                        AnimatedContent(
+//                            targetState = targetState,
+//                            transitionSpec = {
+//                                fadeIn(tween(150)) togetherWith fadeOut(tween(150))
+//                            },
+//                            label = "HeaderTransition"
+//                        ) { target ->
+//                            when(target) {
+//                                "calendar" -> {
+//                                    Row(modifier = Modifier
+//                                        .fillMaxWidth(),
+//                                        verticalAlignment = Alignment.CenterVertically,
+//                                        horizontalArrangement = Arrangement.SpaceBetween
+//                                    ) {
+//                                        Box {
+//                                            Box(modifier = Modifier
+//                                                .padding(BasePadding),
+//                                                contentAlignment = Alignment.Center
+//                                            ) {
+//                                                Icon(
+//                                                    imageVector = Icons.Default.Close,
+//                                                    contentDescription = null,
+//                                                    tint = Color.Transparent
+//                                                )
+//                                            }
+//                                        }
+//
+//                                        Text(
+//                                            text = "Calendar",
+//                                            style = titleMedium,
+//                                            fontWeight = FontWeight.SemiBold
+//                                        )
+//
+//                                        Box(modifier = Modifier.clickable { handleClose() }) {
+//                                            Box(modifier = Modifier
+//                                                .padding(BasePadding),
+//                                                contentAlignment = Alignment.Center
+//                                            ) {
+//                                                Icon(
+//                                                    imageVector = Icons.Default.Close,
+//                                                    contentDescription = null,
+//                                                    tint = OnBackground
+//                                                )
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//                                "confirm" -> {
+//                                    Row(modifier = Modifier.fillMaxWidth(),
+//                                        verticalAlignment = Alignment.CenterVertically,
+//                                        horizontalArrangement = Arrangement.SpaceBetween
+//                                    ) {
+//                                        Box(modifier = Modifier.clickable { calendarViewModel.toggleSlot(null) }) {
+//                                            Box(modifier = Modifier
+//                                                .padding(BasePadding),
+//                                                contentAlignment = Alignment.Center
+//                                            ) {
+//                                                Icon(
+//                                                    painter = painterResource(R.drawable.ic_arrow_chevron_left_outline),
+//                                                    contentDescription = null,
+//                                                )
+//                                            }
+//                                        }
+//
+//                                        Text(
+//                                            text = "Confirma rezervarea",
+//                                            style = titleMedium,
+//                                            fontWeight = FontWeight.SemiBold
+//                                        )
+//
+//                                        Box(modifier = Modifier.clickable {  }) {
+//                                            Box(modifier = Modifier
+//                                                .padding(BasePadding),
+//                                                contentAlignment = Alignment.Center
+//                                            ) {
+//                                                Icon(
+//                                                    painter = painterResource(R.drawable.ic_arrow_chevron_left_outline),
+//                                                    contentDescription = null,
+//                                                    tint = Color.Transparent
+//                                                )
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        }
+//
+//                        AnimatedContent(
+//                            targetState = targetState,
+//                            transitionSpec = {
+//                                slideInHorizontally(
+//                                    animationSpec = tween(300),
+//                                    initialOffsetX = { fullHeight -> fullHeight }
+//                                ) togetherWith slideOutHorizontally(
+//                                    animationSpec = tween(300),
+//                                    targetOffsetX = { fullHeight -> fullHeight }
+//                                )
+//                            },
+//                            label = "SheetContentTransition"
+//                        ) { state ->
+//                            when(state) {
+//                                "calendar" -> {
+//                                    Calendar(
+//                                        availableDayTimeslots = availableDayTimeslots,
+//                                        calendarDays = calendarDays,
+//                                        availableDays = availableDays,
+//                                        config = config,
+//                                        onDayChange = { calendarViewModel.updateSelectedDay(it) },
+//                                        onSelectSlot = {
+//                                            calendarViewModel.toggleSlot(it)
+//                                        }
+//                                    )
+//                                }
+//                                "confirm" -> {
+//                                    Column(
+//                                        modifier = Modifier
+//                                            .fillMaxSize()
+//                                            .padding(horizontal = BasePadding)
+//                                            .background(SurfaceBG)
+//                                    ) {
+//                                        Text("Hello World")
+//                                    }
+//                                }
+//                            }
+//                        }
 
-                        LaunchedEffect(Unit) {
-                            calendarViewModel.setCalendarConfig(userId = content.userId)
-                        }
-                        val targetState = if(selectedSlot == null) "calendar" else "confirm"
-
-                        LaunchedEffect(Unit) {
-                            calendarViewModel.setCalendarConfig(userId = content.userId)
-                        }
-
-                        LaunchedEffect(config?.selectedDay) {
-                            config?.let {
-                                calendarViewModel.loadUserAvailableTimeslots(
-                                    userId = it.userId,
-                                    day = it.selectedDay,
-                                    slotDuration = 30
-                                )
-                            }
-                        }
-
-                        AnimatedContent(
-                            targetState = targetState,
-                            transitionSpec = {
-                                fadeIn(tween(150)) togetherWith fadeOut(tween(150))
-                            },
-                            label = "HeaderTransition"
-                        ) { target ->
-                            when(target) {
-                                "calendar" -> {
-                                    Row(modifier = Modifier
-                                        .fillMaxWidth(),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.SpaceBetween
-                                    ) {
-                                        Box {
-                                            Box(modifier = Modifier
-                                                .padding(BasePadding),
-                                                contentAlignment = Alignment.Center
-                                            ) {
-                                                Icon(
-                                                    imageVector = Icons.Default.Close,
-                                                    contentDescription = null,
-                                                    tint = Color.Transparent
-                                                )
-                                            }
-                                        }
-
-                                        Text(
-                                            text = "Calendar",
-                                            style = titleMedium,
-                                            fontWeight = FontWeight.SemiBold
-                                        )
-
-                                        Box(modifier = Modifier.clickable { handleClose() }) {
-                                            Box(modifier = Modifier
-                                                .padding(BasePadding),
-                                                contentAlignment = Alignment.Center
-                                            ) {
-                                                Icon(
-                                                    imageVector = Icons.Default.Close,
-                                                    contentDescription = null,
-                                                    tint = OnBackground
-                                                )
-                                            }
-                                        }
-                                    }
-                                }
-                                "confirm" -> {
-                                    Row(modifier = Modifier.fillMaxWidth(),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.SpaceBetween
-                                    ) {
-                                        Box(modifier = Modifier.clickable { calendarViewModel.toggleSlot(null) }) {
-                                            Box(modifier = Modifier
-                                                .padding(BasePadding),
-                                                contentAlignment = Alignment.Center
-                                            ) {
-                                                Icon(
-                                                    painter = painterResource(R.drawable.ic_arrow_chevron_left_outline),
-                                                    contentDescription = null,
-                                                )
-                                            }
-                                        }
-
-                                        Text(
-                                            text = "Confirma rezervarea",
-                                            style = titleMedium,
-                                            fontWeight = FontWeight.SemiBold
-                                        )
-
-                                        Box(modifier = Modifier.clickable {  }) {
-                                            Box(modifier = Modifier
-                                                .padding(BasePadding),
-                                                contentAlignment = Alignment.Center
-                                            ) {
-                                                Icon(
-                                                    painter = painterResource(R.drawable.ic_arrow_chevron_left_outline),
-                                                    contentDescription = null,
-                                                    tint = Color.Transparent
-                                                )
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        AnimatedContent(
-                            targetState = targetState,
-                            transitionSpec = {
-                                slideInHorizontally(
-                                    animationSpec = tween(300),
-                                    initialOffsetX = { fullHeight -> fullHeight }
-                                ) togetherWith slideOutHorizontally(
-                                    animationSpec = tween(300),
-                                    targetOffsetX = { fullHeight -> fullHeight }
-                                )
-                            },
-                            label = "SheetContentTransition"
-                        ) { state ->
-                            when(state) {
-                                "calendar" -> {
-                                    Calendar(
-                                        availableDayTimeslots = availableDayTimeslots,
-                                        calendarDays = calendarDays,
-                                        availableDays = availableDays,
-                                        config = config,
-                                        onDayChange = { calendarViewModel.updateSelectedDay(it) },
-                                        onSelectSlot = {
-                                            calendarViewModel.toggleSlot(it)
-                                        }
-                                    )
-                                }
-                                "confirm" -> {
-                                    Column(
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .padding(horizontal = BasePadding)
-                                            .background(SurfaceBG)
-                                    ) {
-                                        Text("Hello World")
-                                    }
-                                }
-                            }
-                        }
+                        Box(Modifier.fillMaxSize())
                     }
                     is PostSheetsContent.LocationSheet -> {
                         LocationSheet(

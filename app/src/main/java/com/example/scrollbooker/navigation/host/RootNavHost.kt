@@ -22,7 +22,7 @@ import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.ui.auth.AuthViewModel
 import com.example.scrollbooker.ui.main.MainUIViewModel
-import com.example.scrollbooker.ui.profile.calendar.AppointmentConfirmationScreen
+import com.example.scrollbooker.ui.calendar.AppointmentConfirmationScreen
 import com.example.scrollbooker.ui.profile.calendar.CalendarScreen
 import com.example.scrollbooker.ui.profile.myProfile.ProfileSharedViewModel
 import com.example.scrollbooker.ui.profile.myProfile.edit.EditBioScreen
@@ -240,14 +240,11 @@ fun RootNavHost(
                     val productId = backStackEntry.arguments?.getInt("productId") ?: return@composable
                     val productName = backStackEntry.arguments?.getString("productName") ?: return@composable
 
-                    val viewModel: CalendarViewModel = hiltViewModel(parentEntry)
-
                     CalendarScreen(
                         userId = userId,
                         slotDuration = slotDuration,
                         productId = productId,
                         productName = productName,
-                        viewModel = viewModel,
                         onBack = { navController.popBackStack() },
                         onNavigateToConfirmation = {
                             navController.navigate(MainRoute.AppointmentConfirmation.route)

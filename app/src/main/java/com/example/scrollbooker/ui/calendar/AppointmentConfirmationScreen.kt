@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.calendar
+package com.example.scrollbooker.ui.calendar
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -25,11 +26,11 @@ fun AppointmentConfirmationScreen(
     viewModel: CalendarViewModel,
     onBack: () -> Unit
 ) {
-    val selectedSlot by viewModel.selectedSlot.collectAsState()
-
+//    val selectedSlot by viewModel.selectedSlot.collectAsState()
+//
     Layout(
-        modifier = Modifier.safeDrawingPadding(),
-        headerTitle = "Confirma programarea",
+        modifier = Modifier.statusBarsPadding(),
+        headerTitle = stringResource(R.string.confirmReservation),
         onBack = onBack,
         enablePaddingH = false
     ) {
@@ -37,17 +38,17 @@ fun AppointmentConfirmationScreen(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Spacer(Modifier.height(SpacingXXL))
-                Text(
-                    text = selectedSlot?.startDateUtc ?: ""
-                )
-            }
-            MainButton(
-                modifier = Modifier.padding(horizontal = BasePadding),
-                title = stringResource(R.string.book),
-                onClick = {}
-            )
+//            Column(modifier = Modifier.weight(1f)) {
+//                Spacer(Modifier.height(SpacingXXL))
+//                Text(
+//                    text = selectedSlot?.startDateUtc ?: ""
+//                )
+//            }
+//            MainButton(
+//                modifier = Modifier.padding(horizontal = BasePadding),
+//                title = stringResource(R.string.book),
+//                onClick = {}
+//            )
         }
     }
 }
