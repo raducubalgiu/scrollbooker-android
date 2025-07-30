@@ -19,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
@@ -38,19 +37,19 @@ import com.example.scrollbooker.ui.sharedModules.calendar.components.slots.Slots
 
 @Composable
 fun Calendar(
+    viewModel: CalendarViewModel,
     userId: Int,
     productId: Int,
     slotDuration: Int,
     onSelectSlot: (Slot) -> Unit
 ) {
-    val viewModel: CalendarViewModel = hiltViewModel()
-
     LaunchedEffect(userId) {
         viewModel.setUserId(userId)
     }
 
     LaunchedEffect(Unit) {
         viewModel.setSlotDuration(duration = slotDuration)
+        viewModel.loadProduct(productId)
     }
 
     fun handleDayChange(day: LocalDate) {
@@ -168,7 +167,10 @@ fun Calendar(
                     ) {
                         SlotsList(
                             viewModel = viewModel,
-                            onSelectSlot = onSelectSlot
+                            onSelectSlot = {
+                                viewModel.setSelectedSlot(it)
+                                onSelectSlot(it)
+                            }
                         )
                     }
                 }

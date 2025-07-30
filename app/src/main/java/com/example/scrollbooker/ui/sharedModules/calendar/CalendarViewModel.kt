@@ -4,8 +4,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.calendar.domain.model.AvailableDay
+import com.example.scrollbooker.entity.booking.calendar.domain.model.Slot
 import com.example.scrollbooker.entity.booking.calendar.domain.useCase.GetCalendarAvailableDaysUseCase
 import com.example.scrollbooker.entity.booking.calendar.domain.useCase.GetUserAvailableTimeslotsUseCase
+import com.example.scrollbooker.entity.booking.products.domain.model.Product
+import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductByIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
@@ -13,11 +16,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
@@ -25,17 +28,25 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.LocalDate
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class CalendarViewModel @Inject constructor(
     private val getCalendarAvailableDaysUseCase: GetCalendarAvailableDaysUseCase,
-    private val getUserAvailableTimeslotsUseCase: GetUserAvailableTimeslotsUseCase
+    private val getUserAvailableTimeslotsUseCase: GetUserAvailableTimeslotsUseCase,
+    private val getProductByIdUseCase: GetProductByIdUseCase
 ): ViewModel() {
 
     private val userId = MutableStateFlow<Int?>(null)
     private val selectedDay = MutableStateFlow<LocalDate?>(LocalDate.now())
     private val slotDuration = MutableStateFlow<Int?>(null)
+
+    private val _product = MutableStateFlow<FeatureState<Product>>(FeatureState.Loading)
+    val product: StateFlow<FeatureState<Product>> = _product
+
+    private val _selectedSlot = MutableStateFlow<Slot?>(null)
+    val selectedSlot: StateFlow<Slot?> = _selectedSlot
 
     private val _forceRefresh = MutableStateFlow<Boolean>(false)
     val forceRefresh: StateFlow<Boolean> = _forceRefresh
@@ -144,6 +155,10 @@ class CalendarViewModel @Inject constructor(
         slotDuration.value = duration
     }
 
+    fun setSelectedSlot(slot: Slot) {
+        _selectedSlot.value = slot
+    }
+
     fun handleRefresh() {
         _forceRefresh.value = true
 
@@ -159,100 +174,18 @@ class CalendarViewModel @Inject constructor(
         }
     }
 
+    fun loadProduct(productId: Int) {
+        viewModelScope.launch {
+            Timber.tag("LOAD PRODUCT!!!").e("PRODUCT ID!! $productId")
+            _product.value = FeatureState.Loading
 
-//    private val _availableDays = MutableStateFlow<FeatureState<List<LocalDate>>>(FeatureState.Loading)
-//    val availableDays: StateFlow<FeatureState<List<LocalDate>>> = _availableDays
-//
-//    private val _calendarDays = MutableStateFlow<List<LocalDate>>(emptyList())
-//    val calendarDays: StateFlow<List<LocalDate>> = _calendarDays
-//
-//    private val _availableDay = MutableStateFlow<FeatureState<AvailableDay>>(FeatureState.Loading)
-//    val availableDay: StateFlow<FeatureState<AvailableDay>> = _availableDay
-//
-//    private val _calendarConfig = MutableStateFlow<CalendarConfig?>(null)
-//    val calendarConfig: StateFlow<CalendarConfig?> = _calendarConfig
-//
-//    private val _selectedSlot = MutableStateFlow<Slot?>(null)
-//    val selectedSlot: StateFlow<Slot?> = _selectedSlot
-//
-//    fun toggleSlot(slot: Slot?) {
-//        _selectedSlot.value = slot
-//    }
-//
-//    fun updateSelectedDay(newDay: LocalDate) {
-//        _calendarConfig.update { current ->
-//            current?.copy(selectedDay = newDay)
-//        }
-//    }
-//
-//    fun setCalendarConfig(
-//        userId: Int,
-//        selectedDay: LocalDate = LocalDate.now(),
-//        totalWeeks: Int = 13
-//    ) {
-//
-//        val today = LocalDate.now()
-//        val startOfCalendar = today.with(DayOfWeek.MONDAY)
-//        val endDate = startOfCalendar.plusWeeks(totalWeeks.toLong())
-//
-//        val calendarDates = (0 until totalWeeks * 7).map { startOfCalendar.plusDays(it.toLong()) }
-//        _calendarDays.value = calendarDates
-//
-//        val selectedDayIndex = calendarDates.indexOfFirst { it == selectedDay }.coerceAtLeast(0)
-//        val initialWeekPage = selectedDayIndex / 7
-//        val initialDayPage = selectedDay.dayOfWeek.ordinal
-//
-//        _calendarConfig.value = CalendarConfig(
-//            userId = userId,
-//            startDate = startOfCalendar,
-//            endDate = endDate,
-//            totalWeeks = totalWeeks,
-//            initialWeekPage = initialWeekPage,
-//            initialDayPage = initialDayPage,
-//            selectedDay = selectedDay
-//        )
-//
-//        loadAvailableDays(userId, startOfCalendar, endDate)
-//    }
-//
-//    fun loadAvailableDays(
-//        userId: Int,
-//        startDate: LocalDate,
-//        endDate: LocalDate
-//    ) {
-//        viewModelScope.launch {
-//            _availableDays.value = FeatureState.Loading
-//
-//            val result: Result<List<String>> = runCatching {
-//                withVisibleLoading {
-//                    getCalendarAvailableDaysUseCase(
-//                        userId = userId,
-//                        startDate = startDate.toString(),
-//                        endDate = endDate.toString()
-//                    )
-//                }
-//            }
-//
-//            _availableDays.value = result.fold(
-//                onSuccess = { days -> FeatureState.Success(days.map {LocalDate.parse(it) }) },
-//                onFailure = { FeatureState.Error(it) }
-//            )
-//        }
-//    }
-//
-//    fun loadUserAvailableTimeslots(day: LocalDate, userId: Int, slotDuration: Int) {
-//        viewModelScope.launch {
-//            _availableDay.value = FeatureState.Loading
-//
-//            val response = withVisibleLoading {
-//                getUserAvailableTimeslotsUseCase(
-//                    day = day.toString(),
-//                    userId = userId,
-//                    slotDuration = slotDuration
-//                )
-//            }
-//
-//            _availableDay.value = response
-//        }
-//    }
+            val response = withVisibleLoading {
+                getProductByIdUseCase(productId)
+            }
+
+            Timber.tag("LOAD PRODUCT!!!").e("PRODUCT RESPONSE!! $response")
+
+            _product.value = response
+        }
+    }
 }

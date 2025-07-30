@@ -27,8 +27,8 @@ class ProductRepositoryImpl @Inject constructor(
         ).flow
     }
 
-    override suspend fun getProduct(productId: Int): Result<Product> = runCatching {
-        api.getProduct(productId).toDomain()
+    override suspend fun getProduct(productId: Int): Product {
+        return api.getProduct(productId).toDomain()
     }
 
     override suspend fun createProduct(

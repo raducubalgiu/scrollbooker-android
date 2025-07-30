@@ -12,7 +12,7 @@ import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.model.ProductCreate
 import com.example.scrollbooker.entity.booking.products.domain.useCase.CreateProductUseCase
 import com.example.scrollbooker.entity.booking.products.domain.useCase.DeleteProductUseCase
-import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductUseCase
+import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductByIdUseCase
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByUserIdAndServiceIdUseCase
 import com.example.scrollbooker.entity.nomenclature.currency.domain.model.Currency
 import com.example.scrollbooker.entity.nomenclature.currency.domain.useCase.GetUserCurrenciesUseCase
@@ -41,7 +41,7 @@ import javax.inject.Inject
 class MyProductsViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
     private val getServicesByBusinessIdUseCase: GetServicesByBusinessIdUseCase,
-    private val getProductUseCase: GetProductUseCase,
+    private val getProductUseCase: GetProductByIdUseCase,
     private val getProductsByUserIdAndServiceIdUseCase: GetProductsByUserIdAndServiceIdUseCase,
     private val getUserCurrenciesUseCase: GetUserCurrenciesUseCase,
     private val getFiltersByBusinessTypeUseCase: GetFiltersByBusinessTypeUseCase,
@@ -179,7 +179,6 @@ class MyProductsViewModel @Inject constructor(
 
                     _isSaving.value = false
                     _selectedProduct.value = null
-                    Timber.tag("Products").e("SHOULD RUN!!!")
                 }
                 .onFailure { e ->
                     _isSaving.value = false
@@ -195,14 +194,14 @@ class MyProductsViewModel @Inject constructor(
 
             val result = withVisibleLoading { getProductUseCase(productId) }
 
-            result
-                .onSuccess { response ->
-                    _product.value = FeatureState.Success(response)
-                }
-                .onFailure { e ->
-                    Timber.tag("Products").e("ERROR: on Fetching Product in EditProductScreen $e")
-                    _product.value = FeatureState.Error()
-                }
+//            result
+//                .onSuccess { response ->
+//                    _product.value = FeatureState.Success(response)
+//                }
+//                .onFailure { e ->
+//                    Timber.tag("Products").e("ERROR: on Fetching Product in EditProductScreen $e")
+//                    _product.value = FeatureState.Error()
+//                }
         }
     }
 

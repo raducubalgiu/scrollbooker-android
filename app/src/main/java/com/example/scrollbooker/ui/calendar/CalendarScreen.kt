@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.calendar
+package com.example.scrollbooker.ui.calendar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -14,12 +14,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.ui.sharedModules.calendar.Calendar
+import com.example.scrollbooker.ui.sharedModules.calendar.CalendarViewModel
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun CalendarScreen(
+    viewModel: CalendarViewModel,
     userId: Int,
     slotDuration: Int,
     productId: Int,
@@ -27,6 +29,7 @@ fun CalendarScreen(
     onBack: () -> Unit,
     onNavigateToConfirmation: () -> Unit
 ) {
+
     Column (
         modifier = Modifier
             .background(Background)
@@ -57,10 +60,13 @@ fun CalendarScreen(
         )
 
         Calendar(
+            viewModel = viewModel,
             userId = userId,
             productId = productId,
             slotDuration = slotDuration,
-            onSelectSlot = { onNavigateToConfirmation() }
+            onSelectSlot = {
+                onNavigateToConfirmation()
+            }
         )
     }
 }

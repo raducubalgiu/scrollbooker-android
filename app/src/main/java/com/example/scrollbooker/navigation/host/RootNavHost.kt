@@ -23,7 +23,7 @@ import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.ui.auth.AuthViewModel
 import com.example.scrollbooker.ui.main.MainUIViewModel
 import com.example.scrollbooker.ui.calendar.AppointmentConfirmationScreen
-import com.example.scrollbooker.ui.profile.calendar.CalendarScreen
+import com.example.scrollbooker.ui.calendar.CalendarScreen
 import com.example.scrollbooker.ui.profile.myProfile.ProfileSharedViewModel
 import com.example.scrollbooker.ui.profile.myProfile.edit.EditBioScreen
 import com.example.scrollbooker.ui.profile.myProfile.edit.EditFullNameScreen
@@ -235,12 +235,15 @@ fun RootNavHost(
                         navController.getBackStackEntry(MainRoute.CalendarNavigator.route)
                     }
 
+                    val viewModel: CalendarViewModel = hiltViewModel(parentEntry)
+
                     val userId = backStackEntry.arguments?.getInt("userId") ?: return@composable
                     val slotDuration = backStackEntry.arguments?.getInt("slotDuration") ?: return@composable
                     val productId = backStackEntry.arguments?.getInt("productId") ?: return@composable
                     val productName = backStackEntry.arguments?.getString("productName") ?: return@composable
 
                     CalendarScreen(
+                        viewModel = viewModel,
                         userId = userId,
                         slotDuration = slotDuration,
                         productId = productId,
