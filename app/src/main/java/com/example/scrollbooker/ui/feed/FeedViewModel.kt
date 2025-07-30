@@ -21,29 +21,13 @@ import javax.inject.Inject
 @HiltViewModel
 class FeedViewModel @Inject constructor(
     application: Application,
-    getBookNowPostsUseCase: GetBookNowPostsUseCase,
     getFollowingPostsUseCase: GetFollowingPostsUseCase
 ): ViewModel() {
-    private val _selectedBusinessTypes = MutableStateFlow<Set<Int>>(emptySet())
-    val selectedBusinessTypes: StateFlow<Set<Int>> = _selectedBusinessTypes
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val bookNowPosts: Flow<PagingData<Post>> = selectedBusinessTypes
-        .map { it.toList() }
-        .flatMapLatest { selectedTypes ->
-            getBookNowPostsUseCase(selectedTypes)
-        }
-        .cachedIn(viewModelScope)
-
     private val _followingPosts: Flow<PagingData<Post>> by lazy {
         getFollowingPostsUseCase()
             .cachedIn(viewModelScope)
     }
     val followingPosts: Flow<PagingData<Post>> get() = _followingPosts
-
-    fun updateBusinessTypes(businessTypes: Set<Int>) {
-        _selectedBusinessTypes.value = businessTypes
-    }
 
 //    private val _exoPlayer = ExoPlayer.Builder(application)
 //        .setHandleAudioBecomingNoisy(true)

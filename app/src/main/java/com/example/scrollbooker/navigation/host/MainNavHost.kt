@@ -23,12 +23,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.navigation.containers.DefaultTabContainer
 import com.example.scrollbooker.navigation.routes.MainRoute
-import com.example.scrollbooker.ui.auth.AuthViewModel
 import com.example.scrollbooker.ui.feed.FeedViewModel
 import com.example.scrollbooker.ui.main.MainDrawer
 import com.example.scrollbooker.ui.main.MainUIViewModel
@@ -49,6 +49,7 @@ fun MainNavHost(
 ) {
     val feedViewModel: FeedViewModel = hiltViewModel()
 
+    val bookNowPosts = mainViewModel.bookNowPosts.collectAsLazyPagingItems()
     val businessTypesState by mainViewModel.businessTypesState.collectAsState()
     val businessDomainsState by mainViewModel.businessDomainsState.collectAsState()
 
@@ -83,7 +84,6 @@ fun MainNavHost(
                         drawerContent = {
                             MainDrawer(
                                 viewModel = mainViewModel,
-                                feedViewModel = feedViewModel,
                                 businessDomainsState = businessDomainsState,
                                 onClose = { scope.launch { drawerState.close() } }
                             )
@@ -110,6 +110,7 @@ fun MainNavHost(
                                     FeedNavHost(
                                         feedViewModel = feedViewModel,
                                         mainViewModel = mainViewModel,
+                                        bookNowPosts = bookNowPosts,
                                         rootNavController = rootNavController,
                                         navController = navControllers[MainTab.Feed]!!,
                                         onOpenDrawer = { scope.launch { drawerState.open() } }

@@ -41,7 +41,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.ui.feed.FeedViewModel
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.bodyMedium
 
@@ -49,19 +48,17 @@ import com.example.scrollbooker.ui.theme.bodyMedium
 @Composable
 fun MainDrawer(
     viewModel: MainUIViewModel,
-    feedViewModel: FeedViewModel,
     businessDomainsState: FeatureState<List<BusinessDomain>>,
     onClose: () -> Unit
 ) {
+    val filteredBusinessTypes by viewModel.filteredBusinessTypes.collectAsState()
     val selectedBusinessTypes by viewModel.selectedBusinessTypes.collectAsState()
-    val updatedBusinessTypes by feedViewModel.selectedBusinessTypes.collectAsState()
 
     BoxWithConstraints {
         val screenWidth = maxWidth
 
         ModalDrawerSheet(
-            modifier = Modifier
-                .width(screenWidth * 0.85f),
+            modifier = Modifier.width(screenWidth * 0.85f),
             drawerContainerColor = Color(0xFF121212)
         ) {
             Column(
@@ -79,10 +76,7 @@ fun MainDrawer(
                             LazyColumn {
                                 item {
                                     Text(
-                                        modifier = Modifier.padding(
-                                            top = SpacingXL,
-                                            end = SpacingS
-                                        ),
+                                        modifier = Modifier.padding(top = SpacingXL, end = SpacingS),
                                         style = headlineMedium,
                                         color = Color(0xFFE0E0E0),
                                         fontWeight = FontWeight.SemiBold,
@@ -138,11 +132,11 @@ fun MainDrawer(
 
                     MainButton(
                         onClick = {
-                            feedViewModel.updateBusinessTypes(selectedBusinessTypes)
+                            viewModel.updateBusinessTypes()
                             onClose()
                         },
                         title = stringResource(R.string.filter),
-                        enabled = selectedBusinessTypes != updatedBusinessTypes,
+                        enabled = true,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFFFF6F00),
                             contentColor = Color(0xFFE0E0E0),

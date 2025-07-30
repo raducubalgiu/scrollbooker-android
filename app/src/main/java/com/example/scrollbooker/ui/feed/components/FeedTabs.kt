@@ -51,7 +51,7 @@ fun FeedTabs(
     onChangeTab: (Int) -> Unit,
     onNavigateSearch: () -> Unit
 ) {
-    val tabs = listOf(stringResource(R.string.book), stringResource(R.string.following))
+    val tabs = listOf(stringResource(R.string.following), stringResource(R.string.book))
 
     Row(
         modifier = Modifier

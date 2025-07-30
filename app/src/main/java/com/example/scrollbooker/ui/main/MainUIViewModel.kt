@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.GetUserAppointmentsNumberUseCase
@@ -19,13 +21,19 @@ import com.example.scrollbooker.entity.search.domain.model.UserSearch
 import com.example.scrollbooker.entity.search.domain.useCase.CreateUserSearchUseCase
 import com.example.scrollbooker.entity.search.domain.useCase.DeleteUserSearchUseCase
 import com.example.scrollbooker.entity.search.domain.useCase.GetUserSearchUseCase
+import com.example.scrollbooker.entity.social.post.domain.model.Post
+import com.example.scrollbooker.entity.social.post.domain.useCase.GetBookNowPostsUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserProfileUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -41,6 +49,7 @@ class MainUIViewModel @Inject constructor(
     private val getUserSearchUseCase: GetUserSearchUseCase,
     private val createUserSearchUseCase: CreateUserSearchUseCase,
     private val deleteUserSearchUseCase: DeleteUserSearchUseCase,
+    private val getBookNowPostsUseCase: GetBookNowPostsUseCase,
     private val authDataStore: AuthDataStore,
 ): ViewModel() {
     private val _userProfileState = MutableStateFlow<FeatureState<UserProfile>>(FeatureState.Loading)
@@ -64,8 +73,23 @@ class MainUIViewModel @Inject constructor(
         MutableStateFlow<FeatureState<List<BusinessDomain>>>(FeatureState.Loading)
     val businessDomainsState: StateFlow<FeatureState<List<BusinessDomain>>> = _businessDomainsState
 
+    private val _filteredBusinessTypes = MutableStateFlow<Set<Int>>(emptySet())
+    val filteredBusinessTypes: StateFlow<Set<Int>> = _filteredBusinessTypes
+
     private val _selectedBusinessTypes = MutableStateFlow<Set<Int>>(emptySet())
     val selectedBusinessTypes: StateFlow<Set<Int>> = _selectedBusinessTypes
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val bookNowPosts: Flow<PagingData<Post>> = filteredBusinessTypes
+        .map { it.toList() }
+        .flatMapLatest { selectedTypes ->
+            getBookNowPostsUseCase(selectedTypes)
+        }
+        .cachedIn(viewModelScope)
+
+    fun updateBusinessTypes() {
+        _filteredBusinessTypes.value = _selectedBusinessTypes.value
+    }
 
     fun setBusinessType(id: Int) {
         _selectedBusinessTypes.update { current ->
@@ -165,16 +189,8 @@ class MainUIViewModel @Inject constructor(
                 .onSuccess {
                     val current = _userSearch.value
                     if(current is FeatureState.Success) {
-                        Timber.tag("Search").e("Deleting Search with ID: $searchId")
-
-                        val beforeSize = current.data.recentlySearch.size
-
                         val updatedRecentlySearch = current.data.recentlySearch
                             .filterNot { it.id == searchId }
-
-                        val afterSize = updatedRecentlySearch.size
-
-                        Timber.tag("Search").e("List before size: $beforeSize, after: $afterSize")
 
                         val updatedUserSearch = current.data.copy(
                             recentlySearch = updatedRecentlySearch
