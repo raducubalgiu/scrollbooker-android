@@ -3,6 +3,7 @@ package com.example.scrollbooker.entity.booking.appointment.data.remote
 import com.example.scrollbooker.core.util.PaginatedResponseDto
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Query
 
@@ -13,6 +14,11 @@ interface AppointmentsApiService {
         @Query("limit") limit: Int,
         @Query("as_customer") asCustomer: Boolean?
     ): PaginatedResponseDto<AppointmentDto>
+
+    @POST("appointments")
+    suspend fun createAppointment(
+        @Body request: AppointmentCreateDto
+    )
 
     @GET("appointments/count")
     suspend fun getUserAppointmentsNumber(): Int
