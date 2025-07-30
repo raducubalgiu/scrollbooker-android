@@ -61,7 +61,7 @@ fun ProfilePostDetailScreen(
             posts = posts,
             isVisibleTab = true,
             paddingBottom = 80.dp,
-            onDisplayBottomBar = {}
+            onDisplayBottomBar = {},
         )
 
         Box(modifier = Modifier

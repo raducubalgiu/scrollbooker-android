@@ -19,6 +19,7 @@ import androidx.compose.ui.zIndex
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.entity.social.post.domain.model.PostCounters
 import com.example.scrollbooker.entity.social.post.domain.model.PostProduct
 import com.example.scrollbooker.entity.user.userSocial.data.remote.UserSocialDto
@@ -49,7 +50,9 @@ fun PostOverlay(
             .padding(top = SpacingS, start = SpacingS),
             verticalAlignment = Alignment.Bottom
         ) {
-            Column(modifier = Modifier.weight(1f)) {
+            Column(modifier = Modifier
+                .weight(1f)
+            ) {
                 if(product.discount > BigDecimal.ZERO) {
                     PostOverlayLabel(
                         icon = R.drawable.ic_percent_badge_solid,
@@ -65,6 +68,11 @@ fun PostOverlay(
                     ratingsAverage = "4.5",
                     distance = 5f,
                 )
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = SpacingXL)
+                ) {
 
 //                description?.takeIf { it.isNotBlank() }?.let { description ->
 //                    Spacer(Modifier.height(SpacingM))
@@ -87,11 +95,12 @@ fun PostOverlay(
                 Spacer(Modifier.height(SpacingM))
 
 //                PostOverlayProduct(product = product)
-//
-//                PostOverlayButton(
-//                    onClick = { onAction(PostOverlayActionEnum.OPEN_CALENDAR) },
-//                    title = "Intervale disponibile"
-//                )
+
+//                    PostOverlayButton(
+//                        onClick = { onAction(PostOverlayActionEnum.OPEN_CALENDAR) },
+//                        title = "Intervale disponibile"
+//                    )
+                }
             }
 
             PostOverlayActions(
