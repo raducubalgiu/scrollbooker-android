@@ -44,7 +44,6 @@ fun FeedNavHost(
         ) { backStackEntry ->
             FeedScreen(
                 viewModel = mainViewModel,
-                bookNowPosts = bookNowPosts,
                 onOpenDrawer = onOpenDrawer,
                 onNavigateSearch = { navController.navigate(MainRoute.FeedSearchNavigator.route) },
                 onNavigate = onNavigate,
