@@ -1,4 +1,5 @@
 package com.example.scrollbooker.ui.appointments
+import BottomBar
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -40,6 +42,9 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointment
+import com.example.scrollbooker.navigation.bottomBar.MainTab
+import com.example.scrollbooker.navigation.host.AppointmentsNavHost
+import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.appointments.components.AppointmentCard.AppointmentCard
 import com.example.scrollbooker.ui.appointments.components.AppointmentFilter
 import com.example.scrollbooker.ui.appointments.components.AppointmentFilterTitleEnum
@@ -52,7 +57,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun AppointmentsScreen(
     viewModel: AppointmentsViewModel,
-    navigateToAppointmentDetails: (Appointment) -> Unit
+    navigateToAppointmentDetails: (Appointment) -> Unit,
+    appointmentsNumber: Int,
+    onNavigate: (MainTab) -> Unit
 ) {
     val appointments = viewModel.appointments.collectAsLazyPagingItems()
 
@@ -143,75 +150,86 @@ fun AppointmentsScreen(
         }
     }
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-    ) {
-        AppointmentsHeader()
+    Scaffold(
+        bottomBar = {
+            BottomBar(
+                appointmentsNumber = appointmentsNumber,
+                currentTab = MainTab.Appointments,
+                currentRoute = MainRoute.Appointments.route,
+                onNavigate = onNavigate
+            )
+        }
+    ) { innerPadding ->
+        Box(Modifier.fillMaxSize().padding(innerPadding)) {
+            Column(Modifier.fillMaxSize()) {
+                AppointmentsHeader()
 
-        ArrowButton(
-            title = selectedFilter?.title?.getLabel() ?: AppointmentFilterTitleEnum.ALL.getLabel(),
-            onClick = {
-                coroutineScope.launch {
-                    sheetState.show()
-                }
-            }
-        )
+                ArrowButton(
+                    title = selectedFilter?.title?.getLabel() ?: AppointmentFilterTitleEnum.ALL.getLabel(),
+                    onClick = {
+                        coroutineScope.launch {
+                            sheetState.show()
+                        }
+                    }
+                )
 
-        Spacer(Modifier.height(BasePadding))
+                Spacer(Modifier.height(BasePadding))
 
-        when(appointments.loadState.refresh) {
-            is LoadState.Loading -> LoadingScreen()
-            is LoadState.Error -> ErrorScreen()
-            is LoadState.NotLoading -> {
-                LazyColumn(Modifier.fillMaxSize()) {
-                    item { Spacer(Modifier.height(BasePadding)) }
+                when(appointments.loadState.refresh) {
+                    is LoadState.Loading -> LoadingScreen()
+                    is LoadState.Error -> ErrorScreen()
+                    is LoadState.NotLoading -> {
+                        LazyColumn(Modifier.fillMaxSize()) {
+                            item { Spacer(Modifier.height(BasePadding)) }
 
-                    items(appointments.itemCount) { index ->
-                        appointments[index]?.let { appointment ->
-                            AppointmentCard(
-                                appointment = appointment,
-                                navigateToAppointmentDetails = navigateToAppointmentDetails
-                            )
+                            items(appointments.itemCount) { index ->
+                                appointments[index]?.let { appointment ->
+                                    AppointmentCard(
+                                        appointment = appointment,
+                                        navigateToAppointmentDetails = navigateToAppointmentDetails
+                                    )
 
-                            if(index < appointments.itemCount - 1) {
-                                HorizontalDivider(
-                                    modifier = Modifier
-                                        .padding(
-                                            horizontal = BasePadding,
-                                            vertical = SpacingXL
-                                        ),
-                                    color = Divider,
-                                    thickness = 0.55.dp
-                                )
+                                    if(index < appointments.itemCount - 1) {
+                                        HorizontalDivider(
+                                            modifier = Modifier
+                                                .padding(
+                                                    horizontal = BasePadding,
+                                                    vertical = SpacingXL
+                                                ),
+                                            color = Divider,
+                                            thickness = 0.55.dp
+                                        )
+                                    }
+                                }
+                            }
+
+                            item {
+                                when (appointments.loadState.append) {
+                                    is LoadState.Loading -> LoadMoreSpinner()
+                                    is LoadState.Error -> Text("Ceva nu a mers cum trebuie")
+                                    is LoadState.NotLoading -> Unit
+                                }
+
+                                Spacer(Modifier.height(BasePadding))
                             }
                         }
                     }
+                }
+            }
 
-                    item {
-                        when (appointments.loadState.append) {
-                            is LoadState.Loading -> LoadMoreSpinner()
-                            is LoadState.Error -> Text("Ceva nu a mers cum trebuie")
-                            is LoadState.NotLoading -> Unit
+            Box {
+                when(appointments.loadState.refresh) {
+                    is LoadState.NotLoading -> {
+                        if(appointments.itemCount == 0) {
+                            MessageScreen(
+                                message = stringResource(R.string.dontHaveAppointmentsYet),
+                                icon = painterResource(R.drawable.ic_calendar_outline)
+                            )
                         }
-
-                        Spacer(Modifier.height(BasePadding))
                     }
+                    else -> Unit
                 }
             }
-        }
-    }
-
-    Box {
-        when(appointments.loadState.refresh) {
-            is LoadState.NotLoading -> {
-                if(appointments.itemCount == 0) {
-                    MessageScreen(
-                        message = stringResource(R.string.dontHaveAppointmentsYet),
-                        icon = painterResource(R.drawable.ic_calendar_outline)
-                    )
-                }
-            }
-            else -> Unit
         }
     }
 }

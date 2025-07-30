@@ -2,7 +2,6 @@ package com.example.scrollbooker.navigation.host
 import BottomBar
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
@@ -101,20 +100,11 @@ fun MainNavHost(
                 }
 
                 is MainTab.Inbox -> {
-                    Scaffold(
-                        bottomBar = {
-                            BottomBar(
-                                appointmentsNumber = mainViewModel.appointmentsState,
-                                currentTab = currentTab,
-                                currentRoute = currentRoute,
-                                onNavigate = { currentTab = it }
-                            )
-                        }
-                    ) { innerPadding ->
-                        Box(Modifier.fillMaxSize().padding(innerPadding)) {
-                            InboxNavHost(navController = navControllers[MainTab.Inbox]!!)
-                        }
-                    }
+                    InboxNavHost(
+                        navController = navControllers[MainTab.Inbox]!!,
+                        appointmentsNumber = mainViewModel.appointmentsState,
+                        onChangeTab = { currentTab = it }
+                    )
                 }
 
                 is MainTab.Search -> {
@@ -143,23 +133,12 @@ fun MainNavHost(
                 }
 
                 is MainTab.Appointments -> {
-                    Scaffold(
-                        bottomBar = {
-                            BottomBar(
-                                appointmentsNumber = mainViewModel.appointmentsState,
-                                currentTab = currentTab,
-                                currentRoute = currentRoute,
-                                onNavigate = { currentTab = it }
-                            )
-                        }
-                    ) { innerPadding ->
-                        Box(Modifier.fillMaxSize().padding(innerPadding)) {
-                            AppointmentsNavHost(
-                                navController = navControllers[MainTab.Appointments]!!,
-                                mainViewModel = mainViewModel
-                            )
-                        }
-                    }
+                    AppointmentsNavHost(
+                        navController = navControllers[MainTab.Appointments]!!,
+                        mainViewModel = mainViewModel,
+                        appointmentsNumber = mainViewModel.appointmentsState,
+                        onNavigate = { currentTab = it }
+                    )
                 }
                 is MainTab.Profile -> {
                     MyProfileScreen(

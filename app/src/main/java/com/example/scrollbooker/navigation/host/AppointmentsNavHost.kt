@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
@@ -22,7 +23,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun AppointmentsNavHost(
     navController: NavHostController,
-    mainViewModel: MainUIViewModel
+    mainViewModel: MainUIViewModel,
+    appointmentsNumber: Int,
+    onNavigate: (MainTab) -> Unit
 ) {
     NavHost(
         navController = navController,
@@ -52,7 +55,9 @@ fun AppointmentsNavHost(
                     navigateToAppointmentDetails = {
                         viewModel.setAppointment(it)
                         navController.navigate(MainRoute.AppointmentDetails.route)
-                    }
+                    },
+                    appointmentsNumber = appointmentsNumber,
+                    onNavigate = onNavigate
                 )
             }
 
