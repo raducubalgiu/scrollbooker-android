@@ -11,6 +11,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -18,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
@@ -37,10 +39,15 @@ import com.example.scrollbooker.ui.sharedModules.reviews.summary.ReviewsSummaryS
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun ReviewsListSheet(
-    viewModel: ReviewsViewModel,
-    onClose: () -> Unit,
-    onRatingClick: (Int) -> Unit
+    userId: Int,
+    onClose: () -> Unit
 ) {
+    val viewModel: ReviewsViewModel = hiltViewModel()
+
+    LaunchedEffect(userId) {
+        viewModel.setUserId(userId)
+    }
+
     val reviewsSummary by viewModel.userReviewsSummary.collectAsState()
     val reviews = viewModel.userReviews.collectAsLazyPagingItems()
     val selectedRatings = viewModel.selectedRatings.value
@@ -64,7 +71,7 @@ fun ReviewsListSheet(
 
                         ReviewsSummarySection(
                             summary = summary,
-                            onRatingClick = onRatingClick,
+                            onRatingClick = { viewModel.toggleRatings(it) },
                             selectedRatings = selectedRatings,
                         )
                     }

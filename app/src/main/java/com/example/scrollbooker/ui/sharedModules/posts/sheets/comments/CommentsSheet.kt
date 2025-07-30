@@ -1,8 +1,11 @@
 package com.example.scrollbooker.ui.sharedModules.posts.sheets.comments
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.LoadState
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.ErrorScreen
@@ -13,11 +16,16 @@ import com.example.scrollbooker.ui.sharedModules.posts.sheets.comments.component
 
 @Composable
 fun CommentsSheet(
-    viewModel: CommentsViewModel,
     postId: Int,
     isSheetVisible: Boolean,
     onClose: () -> Unit
 ) {
+    val viewModel: CommentsViewModel = hiltViewModel()
+
+    LaunchedEffect(postId) {
+        viewModel.setPostId(newPostId = postId)
+    }
+
     val comments = viewModel.commentsState.collectAsLazyPagingItems()
     val newComments by viewModel.newComments.collectAsState()
 
