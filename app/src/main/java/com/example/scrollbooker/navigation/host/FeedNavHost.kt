@@ -9,12 +9,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.feed.FeedScreen
-import com.example.scrollbooker.ui.feed.FeedViewModel
 import com.example.scrollbooker.ui.feed.search.FeedSearchResultsScreen
 import com.example.scrollbooker.ui.feed.search.FeedSearchScreen
 import com.example.scrollbooker.ui.feed.search.FeedSearchViewModel
 import com.example.scrollbooker.ui.main.MainUIViewModel
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.bottomBar.MainTab
@@ -25,7 +25,6 @@ import com.example.scrollbooker.navigation.transition.slideOutToRight
 
 @Composable
 fun FeedNavHost(
-    feedViewModel: FeedViewModel,
     mainViewModel: MainUIViewModel,
     rootNavController: NavHostController,
     navController: NavHostController,
@@ -44,7 +43,7 @@ fun FeedNavHost(
             popExitTransition = { slideOutToRight() }
         ) { backStackEntry ->
             FeedScreen(
-                viewModel = feedViewModel,
+                viewModel = mainViewModel,
                 bookNowPosts = bookNowPosts,
                 onOpenDrawer = onOpenDrawer,
                 onNavigateSearch = { navController.navigate(MainRoute.FeedSearchNavigator.route) },

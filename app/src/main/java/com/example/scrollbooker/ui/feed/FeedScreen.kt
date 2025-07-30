@@ -34,18 +34,18 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
-import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.feed.components.FeedTabs
+import com.example.scrollbooker.ui.main.MainUIViewModel
 import com.example.scrollbooker.ui.sharedModules.posts.PostsPager
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun FeedScreen(
-    viewModel: FeedViewModel,
+    viewModel: MainUIViewModel,
     bookNowPosts: LazyPagingItems<Post>,
     appointmentsNumber: Int,
     onOpenDrawer: () -> Unit,

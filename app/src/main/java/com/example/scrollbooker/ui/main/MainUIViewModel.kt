@@ -23,6 +23,7 @@ import com.example.scrollbooker.entity.search.domain.useCase.DeleteUserSearchUse
 import com.example.scrollbooker.entity.search.domain.useCase.GetUserSearchUseCase
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetBookNowPostsUseCase
+import com.example.scrollbooker.entity.social.post.domain.useCase.GetFollowingPostsUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserProfileUseCase
 import com.example.scrollbooker.store.AuthDataStore
@@ -50,6 +51,7 @@ class MainUIViewModel @Inject constructor(
     private val createUserSearchUseCase: CreateUserSearchUseCase,
     private val deleteUserSearchUseCase: DeleteUserSearchUseCase,
     private val getBookNowPostsUseCase: GetBookNowPostsUseCase,
+    private val getFollowingPostsUseCase: GetFollowingPostsUseCase,
     private val authDataStore: AuthDataStore,
 ): ViewModel() {
     private val _userProfileState = MutableStateFlow<FeatureState<UserProfile>>(FeatureState.Loading)
@@ -86,6 +88,12 @@ class MainUIViewModel @Inject constructor(
             getBookNowPostsUseCase(selectedTypes)
         }
         .cachedIn(viewModelScope)
+
+    private val _followingPosts: Flow<PagingData<Post>> by lazy {
+        getFollowingPostsUseCase()
+            .cachedIn(viewModelScope)
+    }
+    val followingPosts: Flow<PagingData<Post>> get() = _followingPosts
 
     fun updateBusinessTypes() {
         _filteredBusinessTypes.value = _selectedBusinessTypes.value

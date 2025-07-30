@@ -29,7 +29,6 @@ import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.navigation.containers.DefaultTabContainer
 import com.example.scrollbooker.navigation.routes.MainRoute
-import com.example.scrollbooker.ui.feed.FeedViewModel
 import com.example.scrollbooker.ui.main.MainDrawer
 import com.example.scrollbooker.ui.main.MainUIViewModel
 import com.example.scrollbooker.ui.profile.myProfile.MyProfileScreen
@@ -47,8 +46,6 @@ fun MainNavHost(
     mainViewModel: MainUIViewModel,
     myProfileData: FeatureState<UserProfile>
 ) {
-    val feedViewModel: FeedViewModel = hiltViewModel()
-
     val bookNowPosts = mainViewModel.bookNowPosts.collectAsLazyPagingItems()
     val businessTypesState by mainViewModel.businessTypesState.collectAsState()
     val businessDomainsState by mainViewModel.businessDomainsState.collectAsState()
@@ -93,7 +90,6 @@ fun MainNavHost(
                         gesturesEnabled = drawerState.currentValue == DrawerValue.Open,
                     ) {
                         FeedNavHost(
-                            feedViewModel = feedViewModel,
                             mainViewModel = mainViewModel,
                             bookNowPosts = bookNowPosts,
                             rootNavController = rootNavController,
