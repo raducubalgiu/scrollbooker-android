@@ -77,12 +77,12 @@ fun PostOverlay(
                     Spacer(Modifier.height(SpacingM))
                 }
 
-                PostOverlayProduct(product = product)
-
-                PostOverlayButton(
-                    onClick = { onAction(PostOverlayActionEnum.OPEN_CALENDAR) },
-                    title = "Intervale disponibile"
-                )
+//                PostOverlayProduct(product = product)
+//
+//                PostOverlayButton(
+//                    onClick = { onAction(PostOverlayActionEnum.OPEN_CALENDAR) },
+//                    title = "Intervale disponibile"
+//                )
             }
 
             PostOverlayActions(

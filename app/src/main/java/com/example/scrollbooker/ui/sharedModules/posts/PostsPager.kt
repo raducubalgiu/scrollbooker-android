@@ -74,6 +74,7 @@ fun PostsPager(
     posts: LazyPagingItems<Post>,
     isVisibleTab: Boolean,
     paddingBottom: Dp = 90.dp,
+    onSetFirstPost: (Boolean) -> Unit
 ) {
     val pagerState = rememberPagerState(initialPage = 0) { posts.itemCount }
 
@@ -90,6 +91,14 @@ fun PostsPager(
     fun handleClose() {
         sheetContent = PostSheetsContent.None
         coroutineScope.launch { sheetState.hide() }
+    }
+
+    LaunchedEffect(pagerState.currentPage) {
+        if(pagerState.currentPage == 0) {
+            onSetFirstPost(true)
+        } else {
+            onSetFirstPost(false)
+        }
     }
 
     if(sheetState.isVisible) {

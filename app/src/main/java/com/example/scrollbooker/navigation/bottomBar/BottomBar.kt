@@ -1,8 +1,11 @@
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.NavigationBar
@@ -28,8 +31,6 @@ fun BottomBar(
     val allTabs = MainTab.allTabs
     val isFeedTab = currentTab == MainTab.Feed
 
-    Timber.tag("CURRENT ROUTE!!!").e("CURRENT ROUTE!! $currentRoute")
-
     val visibleRoutes = listOf(
         MainRoute.Feed.route,
         MainRoute.Inbox.route,
@@ -46,7 +47,10 @@ fun BottomBar(
     val containerColor = if(isFeedTab) Color(0xFF121212) else Background
 
     if(isVisible) {
-        Column(Modifier.height(90.dp)) {
+        Column(
+            modifier = Modifier
+                .height(90.dp)
+        ) {
             HorizontalDivider(color = dividerColor, thickness = 1.dp)
             NavigationBar(
                 tonalElevation = 0.dp,

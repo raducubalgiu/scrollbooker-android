@@ -1,7 +1,11 @@
 package com.example.scrollbooker.ui.feed.components
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ShapeDefaults
@@ -49,7 +54,8 @@ fun FeedTabs(
     selectedTabIndex: Int,
     onOpenDrawer: () -> Unit,
     onChangeTab: (Int) -> Unit,
-    onNavigateSearch: () -> Unit
+    onNavigateSearch: () -> Unit,
+    isFirstPost: Boolean
 ) {
     val tabs = listOf(stringResource(R.string.following), stringResource(R.string.book))
 
@@ -71,12 +77,18 @@ fun FeedTabs(
                     modifier = Modifier.padding(BasePadding),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        modifier = Modifier.size(30.dp),
-                        imageVector = Icons.Outlined.Menu,
-                        contentDescription = null,
-                        tint = Color(0xFFE0E0E0)
-                    )
+                    AnimatedContent(
+                        targetState = isFirstPost,
+                        transitionSpec = { fadeIn(tween(300)) togetherWith fadeOut(tween(300)) },
+                        label = "label"
+                    ) { isFirst ->
+                        Icon(
+                            modifier = Modifier.size(30.dp),
+                            imageVector = if(isFirst) Icons.Outlined.Menu else Icons.Default.Close ,
+                            contentDescription = null,
+                            tint = Color(0xFFE0E0E0)
+                        )
+                    }
                 }
             }
 

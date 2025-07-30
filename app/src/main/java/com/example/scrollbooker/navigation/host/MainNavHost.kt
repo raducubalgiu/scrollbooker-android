@@ -92,32 +92,15 @@ fun MainNavHost(
                         drawerState = drawerState,
                         gesturesEnabled = drawerState.currentValue == DrawerValue.Open,
                     ) {
-                        Scaffold(
-                            bottomBar = {
-                                BottomBar(
-                                    appointmentsNumber = mainViewModel.appointmentsState,
-                                    currentTab = currentTab,
-                                    currentRoute = currentRoute,
-                                    onNavigate = { currentTab = it }
-                                )
-                            }
-                        ) { innerPadding ->
-                            DefaultTabContainer(
-                                navController = navControllers[MainTab.Inbox]!!,
-                                enablePadding = false,
-                                innerPadding = innerPadding,
-                                content = {
-                                    FeedNavHost(
-                                        feedViewModel = feedViewModel,
-                                        mainViewModel = mainViewModel,
-                                        bookNowPosts = bookNowPosts,
-                                        rootNavController = rootNavController,
-                                        navController = navControllers[MainTab.Feed]!!,
-                                        onOpenDrawer = { scope.launch { drawerState.open() } }
-                                    )
-                                }
-                            )
-                        }
+                        FeedNavHost(
+                            feedViewModel = feedViewModel,
+                            mainViewModel = mainViewModel,
+                            bookNowPosts = bookNowPosts,
+                            rootNavController = rootNavController,
+                            navController = navControllers[MainTab.Feed]!!,
+                            onOpenDrawer = { scope.launch { drawerState.open() } },
+                            onNavigate = { currentTab = it }
+                        )
                     }
                 }
 

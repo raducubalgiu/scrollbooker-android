@@ -17,6 +17,7 @@ import com.example.scrollbooker.ui.main.MainUIViewModel
 import androidx.compose.runtime.getValue
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.entity.social.post.domain.model.Post
+import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
@@ -29,7 +30,8 @@ fun FeedNavHost(
     rootNavController: NavHostController,
     navController: NavHostController,
     bookNowPosts: LazyPagingItems<Post>,
-    onOpenDrawer: () -> Unit
+    onOpenDrawer: () -> Unit,
+    onNavigate: (MainTab) -> Unit
 ) {
     val userSearch by mainViewModel.userSearch.collectAsState()
 
@@ -47,7 +49,8 @@ fun FeedNavHost(
                 onOpenDrawer = onOpenDrawer,
                 onNavigateSearch = {
                     navController.navigate(MainRoute.FeedSearchNavigator.route)
-                }
+                },
+                onNavigate = onNavigate
             )
         }
 
