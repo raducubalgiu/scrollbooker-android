@@ -30,11 +30,14 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -65,6 +68,7 @@ import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.titleMedium
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalCoroutinesApi::class)
@@ -74,7 +78,7 @@ fun PostsPager(
     posts: LazyPagingItems<Post>,
     isVisibleTab: Boolean,
     paddingBottom: Dp = 90.dp,
-    onSetFirstPost: (Boolean) -> Unit
+    onDisplayBottomBar: (Boolean) -> Unit
 ) {
     val pagerState = rememberPagerState(initialPage = 0) { posts.itemCount }
 
@@ -93,12 +97,15 @@ fun PostsPager(
         coroutineScope.launch { sheetState.hide() }
     }
 
-    LaunchedEffect(pagerState.currentPage) {
-        if(pagerState.currentPage == 0) {
-            onSetFirstPost(true)
-        } else {
-            onSetFirstPost(false)
-        }
+    LaunchedEffect(Unit) {
+        var previousPage = pagerState.currentPage
+        snapshotFlow { pagerState.currentPage }
+            .distinctUntilChanged()
+            .collect { currentPage ->
+                val shouldShow = currentPage == 0 || currentPage < previousPage
+                onDisplayBottomBar(shouldShow)
+                previousPage = currentPage
+            }
     }
 
     if(sheetState.isVisible) {

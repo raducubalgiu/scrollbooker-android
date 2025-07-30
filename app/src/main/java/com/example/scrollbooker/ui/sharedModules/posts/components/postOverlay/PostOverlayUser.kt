@@ -67,7 +67,7 @@ fun PostOverlayUser(
                         letterSpacing = 0.5.sp
                     ),
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFFFFC107).copy(alpha = 0.85f)
+                    color = Color.Gray.copy(alpha = 0.85f)
                 )
                 distance?.let {
                     Spacer(Modifier.width(SpacingM))

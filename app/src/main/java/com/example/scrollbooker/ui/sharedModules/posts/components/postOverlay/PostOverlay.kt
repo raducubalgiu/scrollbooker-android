@@ -66,16 +66,25 @@ fun PostOverlay(
                     distance = 5f,
                 )
 
-                description?.takeIf { it.isNotBlank() }?.let { description ->
-                    Spacer(Modifier.height(SpacingM))
-                    Text(
-                        text = description,
-                        color = Color.White,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Spacer(Modifier.height(SpacingM))
-                }
+//                description?.takeIf { it.isNotBlank() }?.let { description ->
+//                    Spacer(Modifier.height(SpacingM))
+//                    Text(
+//                        text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's ",
+//                        color = Color.White,
+//                        maxLines = 2,
+//                        overflow = TextOverflow.Ellipsis
+//                    )
+//                    Spacer(Modifier.height(SpacingM))
+//                }
+
+                Spacer(Modifier.height(SpacingM))
+                Text(
+                    text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's ",
+                    color = Color.White,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Spacer(Modifier.height(SpacingM))
 
 //                PostOverlayProduct(product = product)
 //

@@ -166,29 +166,18 @@ fun MainNavHost(
                     }
                 }
                 is MainTab.Profile -> {
-                    Scaffold(
-                        bottomBar = {
-                            BottomBar(
-                                appointmentsNumber = mainViewModel.appointmentsState,
-                                currentTab = currentTab,
-                                currentRoute = currentRoute,
-                                onNavigate = { currentTab = it }
+                    MyProfileScreen(
+                        myProfileData = myProfileData,
+                        viewModel = hiltViewModel(),
+                        onNavigate = { rootNavController.navigate(it) },
+                        onNavigateToCalendar = {
+                            rootNavController.navigate(
+                                "${MainRoute.Calendar.route}/${it.userId}/${it.duration}/${it.id}/${it.name}"
                             )
-                        }
-                    ) { innerPadding ->
-                        Box(Modifier.fillMaxSize().padding(innerPadding)) {
-                            MyProfileScreen(
-                                myProfileData = myProfileData,
-                                viewModel = hiltViewModel(),
-                                onNavigate = { rootNavController.navigate(it) },
-                                onNavigateToCalendar = {
-                                    rootNavController.navigate(
-                                        "${MainRoute.Calendar.route}/${it.userId}/${it.duration}/${it.id}/${it.name}"
-                                    )
-                                }
-                            )
-                        }
-                    }
+                        },
+                        appointmentsNumber = mainViewModel.appointmentsState,
+                        onChangeTab = { currentTab = it }
+                    )
                 }
             }
         }

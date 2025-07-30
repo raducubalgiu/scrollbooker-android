@@ -40,7 +40,7 @@ fun PostOverlayMoreProducts(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.Black.copy(alpha = 0.3f))
+            .background(Color.Black.copy(alpha = 0.2f))
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
@@ -62,12 +62,12 @@ fun PostOverlayMoreProducts(
                     modifier = Modifier.size(20.dp),
                     painter = painterResource(R.drawable.ic_shopping_outline),
                     contentDescription = null,
-                    tint = OnError
+                    tint = OnError.copy(alpha = 0.8f)
                 )
                 Spacer(Modifier.width(SpacingS))
                 Text(
                     text = "${stringResource(R.string.seeAllProducts)} ${fullName}",
-                    color = OnError,
+                    color = OnError.copy(alpha = 0.8f),
                     style = bodyMedium,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -76,7 +76,7 @@ fun PostOverlayMoreProducts(
                 modifier = Modifier.size(15.dp),
                 imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
                 contentDescription = null,
-                tint = OnError
+                tint = OnError.copy(alpha = 0.8f)
             )
         }
     }

@@ -2,17 +2,16 @@ package com.example.scrollbooker.ui.feed
 import BottomBar
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
@@ -27,17 +26,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingM
+import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.bottomBar.MainTab
-import com.example.scrollbooker.navigation.containers.DefaultTabContainer
-import com.example.scrollbooker.navigation.host.FeedNavHost
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.feed.components.FeedTabs
 import com.example.scrollbooker.ui.sharedModules.posts.PostsPager
@@ -48,6 +47,7 @@ import kotlinx.coroutines.launch
 fun FeedScreen(
     viewModel: FeedViewModel,
     bookNowPosts: LazyPagingItems<Post>,
+    appointmentsNumber: Int,
     onOpenDrawer: () -> Unit,
     onNavigateSearch: () -> Unit,
     onNavigate: (MainTab) -> Unit
@@ -57,7 +57,7 @@ fun FeedScreen(
     val coroutineScope = rememberCoroutineScope()
 
     var isUserSwiping by remember { mutableStateOf(false) }
-    var isFirstPost by remember { mutableStateOf(false) }
+    var shouldDisplayBottomBar by remember { mutableStateOf(true) }
 
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPageOffsetFraction }
@@ -70,14 +70,13 @@ fun FeedScreen(
     Scaffold(
         bottomBar = {
             AnimatedContent(
-                targetState = isFirstPost,
+                targetState = shouldDisplayBottomBar,
                 transitionSpec = { fadeIn(tween(300)) togetherWith fadeOut(tween(300)) },
                 label = "label"
-            ) { isFirst ->
-                if(isFirst) {
+            ) { display ->
+                if(display) {
                     BottomBar(
-                        //appointmentsNumber = mainViewModel.appointmentsState,
-                        appointmentsNumber = 0,
+                        appointmentsNumber = appointmentsNumber,
                         currentTab = MainTab.Feed,
                         currentRoute = MainRoute.Feed.route,
                         onNavigate = onNavigate
@@ -89,6 +88,8 @@ fun FeedScreen(
                         modifier = Modifier
                             .padding(horizontal = BasePadding)
                             .padding(bottom = bottomPadding),
+                        contentPadding = PaddingValues(SpacingM),
+                        leadingIcon = R.drawable.ic_calendar_outline,
                         onClick = {},
                         title = "Intervale disponibile"
                     )
@@ -104,7 +105,7 @@ fun FeedScreen(
                 selectedTabIndex = selectedTabIndex,
                 onOpenDrawer = onOpenDrawer,
                 onNavigateSearch = onNavigateSearch,
-                isFirstPost = isFirstPost,
+                shouldDisplayBottomBar = shouldDisplayBottomBar,
                 onChangeTab = {
                     coroutineScope.launch {
                         pagerState.animateScrollToPage(it)
@@ -126,14 +127,14 @@ fun FeedScreen(
                         PostsPager(
                             posts = posts,
                             isVisibleTab = pagerState.currentPage == page && !isUserSwiping,
-                            onSetFirstPost = { isFirstPost = it }
+                            onDisplayBottomBar = { shouldDisplayBottomBar = it }
                         )
                     }
                     1 -> {
                         PostsPager(
                             posts = bookNowPosts,
                             isVisibleTab = pagerState.currentPage == page && !isUserSwiping,
-                            onSetFirstPost = { isFirstPost = it }
+                            onDisplayBottomBar = { shouldDisplayBottomBar = it }
                         )
                     }
                 }

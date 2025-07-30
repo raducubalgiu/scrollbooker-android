@@ -55,7 +55,7 @@ fun FeedTabs(
     onOpenDrawer: () -> Unit,
     onChangeTab: (Int) -> Unit,
     onNavigateSearch: () -> Unit,
-    isFirstPost: Boolean
+    shouldDisplayBottomBar: Boolean
 ) {
     val tabs = listOf(stringResource(R.string.following), stringResource(R.string.book))
 
@@ -78,13 +78,13 @@ fun FeedTabs(
                     contentAlignment = Alignment.Center
                 ) {
                     AnimatedContent(
-                        targetState = isFirstPost,
+                        targetState = shouldDisplayBottomBar,
                         transitionSpec = { fadeIn(tween(300)) togetherWith fadeOut(tween(300)) },
                         label = "label"
-                    ) { isFirst ->
+                    ) { display ->
                         Icon(
                             modifier = Modifier.size(30.dp),
-                            imageVector = if(isFirst) Icons.Outlined.Menu else Icons.Default.Close ,
+                            imageVector = if(display) Icons.Outlined.Menu else Icons.Default.Close ,
                             contentDescription = null,
                             tint = Color(0xFFE0E0E0)
                         )

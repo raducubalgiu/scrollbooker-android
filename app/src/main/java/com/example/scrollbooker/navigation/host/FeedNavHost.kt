@@ -47,10 +47,9 @@ fun FeedNavHost(
                 viewModel = feedViewModel,
                 bookNowPosts = bookNowPosts,
                 onOpenDrawer = onOpenDrawer,
-                onNavigateSearch = {
-                    navController.navigate(MainRoute.FeedSearchNavigator.route)
-                },
-                onNavigate = onNavigate
+                onNavigateSearch = { navController.navigate(MainRoute.FeedSearchNavigator.route) },
+                onNavigate = onNavigate,
+                appointmentsNumber = mainViewModel.appointmentsState
             )
         }
 
