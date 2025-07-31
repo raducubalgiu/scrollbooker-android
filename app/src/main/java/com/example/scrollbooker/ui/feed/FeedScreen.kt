@@ -30,7 +30,6 @@ import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.main.MainUIViewModel
-import androidx.core.net.toUri
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.AspectRatioFrameLayout
 
@@ -77,10 +76,17 @@ fun FeedScreen(
                     is LoadState.NotLoading -> {
 
                         LaunchedEffect(pagerState) {
-                            snapshotFlow { pagerState.settledPage }.collect { page ->
+                            snapshotFlow { pagerState.currentPage }.collect { page ->
                                 val post = posts[page]
-                                if(post != null) {
-                                    feedViewModel.changePlayerItem(post = post)
+                                val previousPost = if(page > 1) posts[page - 1] else null
+                                val nextPost = if(page < posts.itemCount - 1) posts[page + 1] else null
+
+                                post?.let {
+                                    feedViewModel.changePlayerItem(
+                                        post = post,
+                                        previousPost = previousPost,
+                                        nextPost = nextPost
+                                    )
                                     feedViewModel.pauseUnusedPlayers(visiblePostId = post.id)
                                 }
                             }

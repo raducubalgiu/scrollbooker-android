@@ -58,10 +58,16 @@ class FeedScreenViewModel @Inject constructor(
                 .setPrioritizeTimeOverSizeThresholds(true).build()
     }
 
-    fun changePlayerItem(post: Post?) {
+    fun changePlayerItem(post: Post?, previousPost: Post?, nextPost: Post?) {
         if (post == null) return
         val player = getOrCreatePlayer(post = post)
-//        val newMediaItem = MediaItem.fromUri(post.mediaFiles.first().url)
+
+        val newMediaItem = MediaItem.fromUri(post.mediaFiles.first().url)
+
+        if(player.currentMediaItem?.localConfiguration?.uri != newMediaItem.localConfiguration?.uri) {
+            player.setMediaItem(newMediaItem)
+            player.prepare()
+        }
 //
 //        val currentItem = currentMediaItemMap[post.id]
 //
@@ -71,14 +77,17 @@ class FeedScreenViewModel @Inject constructor(
 //            player.prepare()
 //        }
 
-        val mediaItem = MediaItem.fromUri(post.mediaFiles.first().url)
-        player.setMediaItem(mediaItem)
+//        val mediaItem = MediaItem.fromUri(post.mediaFiles.first().url)
+//        player.setMediaItem(mediaItem)
 
-        player.prepare()
+        //player.prepare()
         player.playWhenReady = true
 
         playbackStartTimeMs = System.currentTimeMillis()
         Timber.tag("PreloadManager").d("Video Playing $post ")
+
+        preloadVideo(previousPost)
+        preloadVideo(nextPost)
     }
 
     fun getOrCreatePlayer(post: Post): ExoPlayer {
@@ -94,6 +103,19 @@ class FeedScreenViewModel @Inject constructor(
                     it.addListener(firstFrameListener)
                 }
         }
+    }
+
+    private fun preloadVideo(post: Post?) {
+        if(post == null) return
+
+        val player = getOrCreatePlayer(post)
+        val mediaItem = MediaItem.fromUri(post.mediaFiles.first().url)
+
+        if(player.currentMediaItem?.localConfiguration?.uri == mediaItem.localConfiguration?.uri) return
+
+        player.setMediaItem(mediaItem)
+        player.prepare()
+        player.playWhenReady = false
     }
 
     fun pauseUnusedPlayers(visiblePostId: Int) {
