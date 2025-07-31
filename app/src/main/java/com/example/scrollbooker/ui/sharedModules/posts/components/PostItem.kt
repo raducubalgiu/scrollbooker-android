@@ -81,31 +81,31 @@ fun PostItem(
             modifier = Modifier.fillMaxSize()
         )
 
-        PostOverlay(
-            interactionState = interactionState,
-            product = post.product,
-            counters = post.counters,
-            user = post.user,
-            description = post.description,
-            onAction = {
-                when(it) {
-                    PostOverlayActionEnum.OPEN_REVIEWS -> {
-                        onOpenReviews()
-                    }
-                    PostOverlayActionEnum.OPEN_COMMENTS -> {
-                        onOpenComments()
-                    }
-                    PostOverlayActionEnum.OPEN_LOCATION -> {
-                        onOpenLocation()
-                    }
-                    PostOverlayActionEnum.OPEN_CALENDAR -> {
-                        onOpenCalendar()
-                    }
-                    PostOverlayActionEnum.LIKE -> { viewModel.toggleLike(post.id) }
-                    PostOverlayActionEnum.BOOKMARK -> { viewModel.toggleBookmark(post.id) }
-                    PostOverlayActionEnum.SHARE -> {}
-                }
-            },
-        )
+//        PostOverlay(
+//            interactionState = interactionState,
+//            product = post.product,
+//            counters = post.counters,
+//            user = post.user,
+//            description = post.description,
+//            onAction = {
+//                when(it) {
+//                    PostOverlayActionEnum.OPEN_REVIEWS -> {
+//                        onOpenReviews()
+//                    }
+//                    PostOverlayActionEnum.OPEN_COMMENTS -> {
+//                        onOpenComments()
+//                    }
+//                    PostOverlayActionEnum.OPEN_LOCATION -> {
+//                        onOpenLocation()
+//                    }
+//                    PostOverlayActionEnum.OPEN_CALENDAR -> {
+//                        onOpenCalendar()
+//                    }
+//                    PostOverlayActionEnum.LIKE -> { viewModel.toggleLike(post.id) }
+//                    PostOverlayActionEnum.BOOKMARK -> { viewModel.toggleBookmark(post.id) }
+//                    PostOverlayActionEnum.SHARE -> {}
+//                }
+//            },
+//        )
     }
 }

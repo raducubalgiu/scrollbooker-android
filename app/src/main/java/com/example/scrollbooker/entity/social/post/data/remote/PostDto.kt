@@ -9,7 +9,7 @@ data class PostDto(
 
     val user: UserSocialDto,
 
-    val product: PostProductDto,
+    val product: PostProductDto?,
     val counters: PostCountersDto,
 
     @SerializedName("user_actions")

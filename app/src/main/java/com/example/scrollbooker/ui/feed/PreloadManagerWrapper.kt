@@ -88,6 +88,11 @@ private constructor(
         preloadNextItems()
     }
 
+    fun getMediaIndexForPostId(postId: Int): Int? {
+        return mediaItemsList.indexOfFirst { it.id == postId }
+            .takeIf { it != -1 }
+    }
+
     /** Sets the index of the current playing media. */
     fun setCurrentPlayingIndex(currentPlayingItemIndex: Int) {
         currentPlayingIndex = currentPlayingItemIndex

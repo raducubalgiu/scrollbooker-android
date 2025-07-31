@@ -6,7 +6,7 @@ data class Post(
     val id: Int,
     val description: String?,
     val user: UserSocialDto,
-    val product: PostProduct,
+    val product: PostProduct?,
     val userActions: UserPostActions,
     val mediaFiles: List<PostMediaFile>,
     val counters: PostCounters,

@@ -22,7 +22,7 @@ fun PostDto.toDomain(): Post {
         id = id,
         description = description,
         user = user,
-        product = product.toDomain(),
+        product = product?.toDomain(),
         userActions = userActions.toDomain(),
         mediaFiles = mediaFiles.map { it.toDomain() },
         counters = counters.toDomain(),
