@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.annotation.OptIn
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -11,6 +13,7 @@ import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -21,7 +24,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LifecycleStartEffect
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.media3.ui.PlayerView
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -69,6 +75,30 @@ fun FeedScreen(
                 }
             }
 
+//            val lifecycleOwner = LocalLifecycleOwner.current
+//            val postId = posts[pagerState.currentPage]?.id
+//
+//            DisposableEffect(lifecycleOwner, postId) {
+//                val observer = LifecycleEventObserver { _, event ->
+//                    if(postId != null) {
+//                        when(event) {
+//                            Lifecycle.Event.ON_STOP, Lifecycle.Event.ON_PAUSE -> {
+//                                feedViewModel.pauseIfPlaying(postId)
+//                            }
+//                            Lifecycle.Event.ON_RESUME -> {
+//                                feedViewModel.resumeIfPlaying(postId)
+//                            }
+//                            else -> {}
+//                        }
+//                    }
+//                }
+//
+//                lifecycleOwner.lifecycle.addObserver(observer)
+//                onDispose {
+//                    lifecycleOwner.lifecycle.removeObserver(observer)
+//                }
+//            }
+
             posts.apply {
                 when(loadState.refresh) {
                     is LoadState.Error -> ErrorScreen()
@@ -105,7 +135,14 @@ fun FeedScreen(
                                     feedViewModel.getOrCreatePlayer(post)
                                 }
 
-                                Box(modifier = Modifier.fillMaxSize()) {
+                                Box(modifier = Modifier
+                                    .fillMaxSize()
+                                    .clickable(
+                                        interactionSource = remember { MutableInteractionSource() },
+                                        indication = null,
+                                        onClick = { feedViewModel.togglePlayer(post.id) }
+                                    )
+                                ) {
                                     AndroidView(
                                         factory = { PlayerView(it) },
                                         update = { playerView ->

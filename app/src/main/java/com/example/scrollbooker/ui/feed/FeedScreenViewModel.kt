@@ -1,12 +1,11 @@
 package com.example.scrollbooker.ui.feed
 
 import android.content.Context
-import android.net.Uri
 import android.os.HandlerThread
 import android.os.Process
-import androidx.annotation.OptIn
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
@@ -38,11 +37,11 @@ class FeedScreenViewModel @Inject constructor(
     val followingPosts: Flow<PagingData<Post>> get() = _followingPosts
 
     private val playerPool = mutableMapOf<Int, ExoPlayer>()
-    private val currentMediaItemMap = mutableMapOf<Int, MediaItem>()
 
     private var playerThread: HandlerThread = HandlerThread("ExoPlayer Thread", Process.THREAD_PRIORITY_AUDIO).apply { start() }
-
     var playbackStartTimeMs = C.TIME_UNSET
+
+    val MAX_PLAYERS = 5
 
     private val firstFrameListener = object : Player.Listener {
         override fun onRenderedFirstFrame() {
@@ -54,13 +53,37 @@ class FeedScreenViewModel @Inject constructor(
 
     private fun createLoadControl(): DefaultLoadControl {
         return DefaultLoadControl.Builder()
-            .setBufferDurationsMs(5_000, 20_000, 5_00, DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS)
-                .setPrioritizeTimeOverSizeThresholds(true).build()
+            .setBufferDurationsMs(
+                1500,
+                5000,
+                500,
+                1500
+            )
+            .setTargetBufferBytes(C.LENGTH_UNSET)
+            .setPrioritizeTimeOverSizeThresholds(true)
+            .build()
     }
 
-    fun changePlayerItem(post: Post?, previousPost: Post?, nextPost: Post?) {
+    private fun limitPlayerPoolSize(postId: Int) {
+        if(playerPool.size > MAX_PLAYERS) {
+            playerPool.entries
+                .filter { it.key != postId }
+                .take(playerPool.size - MAX_PLAYERS)
+                .forEach {
+                    it.value.release()
+                    playerPool.remove(it.key)
+                }
+        }
+    }
+
+    fun changePlayerItem(
+        post: Post?,
+        previousPost: Post?,
+        nextPost: Post?
+    ) {
         if (post == null) return
         val player = getOrCreatePlayer(post = post)
+        limitPlayerPoolSize(post.id)
 
         val newMediaItem = MediaItem.fromUri(post.mediaFiles.first().url)
 
@@ -68,26 +91,13 @@ class FeedScreenViewModel @Inject constructor(
             player.setMediaItem(newMediaItem)
             player.prepare()
         }
-//
-//        val currentItem = currentMediaItemMap[post.id]
-//
-//        if(currentItem != newMediaItem) {
-//            player.setMediaItem(newMediaItem)
-//            currentMediaItemMap[post.id] = newMediaItem
-//            player.prepare()
-//        }
-
-//        val mediaItem = MediaItem.fromUri(post.mediaFiles.first().url)
-//        player.setMediaItem(mediaItem)
-
-        //player.prepare()
         player.playWhenReady = true
-
-        playbackStartTimeMs = System.currentTimeMillis()
-        Timber.tag("PreloadManager").d("Video Playing $post ")
 
         preloadVideo(previousPost)
         preloadVideo(nextPost)
+
+        playbackStartTimeMs = System.currentTimeMillis()
+        Timber.tag("PreloadManager").d("Video Playing $post ")
     }
 
     fun getOrCreatePlayer(post: Post): ExoPlayer {
@@ -96,6 +106,13 @@ class FeedScreenViewModel @Inject constructor(
                 .setLoadControl(createLoadControl())
                 .setPlaybackLooper(playerThread.looper)
                 .setMediaSourceFactory(DefaultMediaSourceFactory(VideoPlayerCache.getFactory(application.applicationContext)))
+                .setHandleAudioBecomingNoisy(true)
+                .setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setUsage(C.USAGE_MEDIA)
+                        .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
+                        .build(), true
+                )
                 .build()
                 .also {
                     it.repeatMode = ExoPlayer.REPEAT_MODE_ONE
@@ -116,6 +133,42 @@ class FeedScreenViewModel @Inject constructor(
         player.setMediaItem(mediaItem)
         player.prepare()
         player.playWhenReady = false
+    }
+
+    fun togglePlayer(postId: Int) {
+        val player = playerPool[postId] ?: return
+
+        if(player.isPlaying) {
+            player.pause()
+            player.playWhenReady = false
+        } else {
+            player.playWhenReady = true
+        }
+    }
+
+    fun pauseIfPlaying(postId: Int) {
+        val player = playerPool[postId]
+        if(player?.isPlaying == true) {
+            player.pause()
+            player.playWhenReady = false
+        }
+    }
+
+    fun resumeIfPlaying(postId: Int) {
+        val player = playerPool[postId]
+        if(player != null && !player.isPlaying) {
+            player.playWhenReady = true
+        }
+    }
+
+    fun releaseInactivePlayers(postId: Int) {
+        playerPool.forEach { (id, player) ->
+            if(id != postId) {
+                player.release()
+            }
+        }
+        playerPool.clear()
+        playerPool[postId]?.let { playerPool[postId] = it }
     }
 
     fun pauseUnusedPlayers(visiblePostId: Int) {
