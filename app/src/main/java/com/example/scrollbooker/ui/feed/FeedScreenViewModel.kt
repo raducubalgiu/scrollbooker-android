@@ -178,6 +178,8 @@ class FeedScreenViewModel @Inject constructor(
 
     fun releasePlayer() {
         playerPool.forEach { (_, player) ->
+            player.playWhenReady = false
+            player.pause()
             player.removeListener(firstFrameListener)
             player.release()
         }

@@ -3,30 +3,46 @@ import BottomBar
 import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.annotation.OptIn
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LifecycleStartEffect
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.media3.common.Player
 import androidx.media3.ui.PlayerView
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -37,9 +53,11 @@ import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.main.MainUIViewModel
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.AspectRatioFrameLayout
+import com.example.scrollbooker.R
 import com.example.scrollbooker.ui.feed.components.FeedTabs
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
+import timber.log.Timber
 
 @OptIn(UnstableApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -140,6 +158,36 @@ fun FeedScreen(
                                 val player = remember(post.id) {
                                     feedViewModel.getOrCreatePlayer(post)
                                 }
+                                var isPlaying by remember { mutableStateOf(player.isPlaying) }
+                                var isBuffering by remember { mutableStateOf(false) }
+                                var isFirstFrameRendered by remember { mutableStateOf(false) }
+                                var hasStartedPlayback by remember { mutableStateOf(false) }
+
+                                DisposableEffect(player) {
+                                    val listener = object : Player.Listener {
+                                        override fun onIsPlayingChanged(playing: Boolean) {
+                                            isPlaying = playing
+                                            if(isPlaying) hasStartedPlayback = true
+                                        }
+
+                                        override fun onPlaybackStateChanged(state: Int) {
+                                            isBuffering = state == Player.STATE_BUFFERING
+                                        }
+
+                                        override fun onRenderedFirstFrame() {
+                                            isFirstFrameRendered = true
+                                        }
+                                    }
+
+                                    player.addListener(listener)
+                                    onDispose {
+                                        player.removeListener(listener)
+                                        isPlaying = false
+                                        isBuffering = false
+                                        isFirstFrameRendered = false
+                                        hasStartedPlayback = false
+                                    }
+                                }
 
                                 Box(modifier = Modifier
                                     .fillMaxSize()
@@ -149,6 +197,12 @@ fun FeedScreen(
                                         onClick = { feedViewModel.togglePlayer(post.id) }
                                     )
                                 ) {
+                                    if(isBuffering) {
+                                        CircularProgressIndicator(
+                                            modifier = Modifier.align(Alignment.Center)
+                                        )
+                                    }
+
                                     AndroidView(
                                         factory = { PlayerView(it) },
                                         update = { playerView ->
@@ -162,6 +216,25 @@ fun FeedScreen(
                                         },
                                         modifier = Modifier.fillMaxSize(),
                                     )
+
+                                    AnimatedVisibility(
+                                        visible = hasStartedPlayback && !isPlaying && !isBuffering,
+                                        enter = fadeIn(),
+                                        exit = fadeOut()
+                                    ) {
+                                        Box(modifier = Modifier
+                                            .fillMaxSize()
+                                            .zIndex(5f),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Icon(
+                                                modifier = Modifier.size(75.dp),
+                                                painter = painterResource(R.drawable.ic_play_solid),
+                                                contentDescription = null,
+                                                tint = Color.White.copy(0.5f)
+                                            )
+                                        }
+                                    }
                                 }
                             }
                         }
