@@ -86,8 +86,6 @@ fun MyProfileScreen(
     val state = rememberPullToRefreshState()
     var isRefreshing by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
-
-    val posts = mainViewModel.userPosts.collectAsLazyPagingItems()
     val isInitLoading by mainViewModel.isInitLoading.collectAsState()
 
     BottomSheet(
@@ -131,197 +129,102 @@ fun MyProfileScreen(
             )
         }
     ) { innerPadding ->
-        Box(Modifier.fillMaxSize().padding(innerPadding)) {
-//            when(myProfileData) {
-//                is FeatureState.Error -> ErrorScreen()
-//                is FeatureState.Loading -> ProfileShimmer()
-//                is FeatureState.Success -> {
-//                    val user = myProfileData.data
-//
-//                    val tabs = remember(user.isBusinessOrEmployee) {
-//                        ProfileTab.getTabs(user.isBusinessOrEmployee)
-//                    }
-//
-//                    val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
-//
-//                    Column(Modifier.fillMaxSize()) {
-//                        MyProfileHeader(
-//                            username = user.username,
-//                            onOpenBottomSheet = { scope.launch { sheetState.show() } }
-//                        )
-//
-//                        PullToRefreshBox(
-//                            state = state,
-//                            isRefreshing = isRefreshing,
-//                            onRefresh = {
-//                                scope.launch {
-//                                    isRefreshing = true
-//                                    delay(300)
-//                                    isRefreshing = false
-//                                }
-//                            }
-//                        ) {
-//                            LazyColumn {
-//                                item {
-//                                    ProfileCounters(
-//                                        counters = user.counters,
-//                                        isBusinessOrEmployee = user.isBusinessOrEmployee,
-//                                        onNavigate = {
-//                                            onNavigate("$it/${user.id}/${user.username}/${user.isBusinessOrEmployee}")
-//                                        }
-//                                    )
-//
-//                                    ProfileUserInfo(
-//                                        user = user,
-//                                        actions = {
-//                                            MyProfileActions(
-//                                                onEditProfile = { onNavigate(MainRoute.EditProfile.route) },
-//                                            )
-//                                        },
-//                                        onOpenScheduleSheet = { showScheduleSheet = true },
-//                                        onNavigateToBusinessOwner = { onNavigate("${MainRoute.UserProfile.route}/${it}") }
-//                                    )
-//                                }
-//
-//                                stickyHeader { ProfileTabRow(pagerState, tabs) }
-//
-//                                item {
-//                                    HorizontalPager(
-//                                        state = pagerState,
-//                                        beyondViewportPageCount = 0,
-//                                        modifier = Modifier
-//                                            .fillMaxWidth()
-//                                            .height(LocalConfiguration.current.screenHeightDp.dp - 150.dp)
-//                                    ) { page ->
-//                                        when(tabs[page]) {
-//                                            ProfileTab.Posts -> {
-//                                                Box(Modifier.fillMaxSize())
-////                                        ProfilePostsTab(
-////                                            userId = user.id,
-////                                            isOwnProfile = user.isOwnProfile,
-////                                            onNavigate = onNavigate
-////                                        )
-//                                            }
-//                                            ProfileTab.Products -> ProfileProductsTab(
-//                                                userId = user.id,
-//                                                isOwnProfile = user.isOwnProfile,
-//                                                businessId = user.businessId,
-//                                                onNavigateToCalendar = onNavigateToCalendar
-//                                            )
-//                                            ProfileTab.Reposts -> ProfileRepostsTab(
-//                                                userId = user.id,
-//                                                isOwnProfile = user.isOwnProfile,
-//                                                onNavigate = onNavigate
-//                                            )
-//                                            ProfileTab.Bookmarks -> ProfileBookmarksTab(
-//                                                userId = user.id,
-//                                                isOwnProfile = user.isOwnProfile,
-//                                                onNavigate = onNavigate
-//                                            )
-//                                            ProfileTab.Info -> ProfileInfoTab()
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
+        ) {
+            if (isInitLoading) {
+                ProfileShimmer()
+                LoadingScreen()
+            } else {
+                when (val profileData = myProfileData) {
+                    is FeatureState.Error -> ErrorScreen()
+                    is FeatureState.Loading -> Unit
+                    is FeatureState.Success -> {
+                        val user = profileData.data
 
-            Column(modifier = Modifier.fillMaxSize()) {
-                if (isInitLoading) {
-                    ProfileShimmer()
-                    LoadingScreen()
-                } else {
-                    when (val profileData = myProfileData) {
-                        is FeatureState.Error -> ErrorScreen()
-                        is FeatureState.Loading -> Unit
-                        is FeatureState.Success -> {
-                            val user = profileData.data
+                        val tabs = remember(user.isBusinessOrEmployee) {
+                            ProfileTab.getTabs(user.isBusinessOrEmployee)
+                        }
 
-                            val tabs = remember(user.isBusinessOrEmployee) {
-                                ProfileTab.getTabs(user.isBusinessOrEmployee)
-                            }
+                        val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
 
-                            val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
+                        Column(Modifier.fillMaxSize()) {
+                            MyProfileHeader(
+                                username = user.username,
+                                onOpenBottomSheet = { scope.launch { sheetState.show() } }
+                            )
 
-                            Column(Modifier.fillMaxSize()) {
-                                MyProfileHeader(
-                                    username = user.username,
-                                    onOpenBottomSheet = { scope.launch { sheetState.show() } }
-                                )
-
-                                PullToRefreshBox(
-                                    state = state,
-                                    isRefreshing = isRefreshing,
-                                    onRefresh = {
-                                        scope.launch {
-                                            isRefreshing = true
-                                            //viewModel.loadUserProfile(user.id)
-                                            isRefreshing = false
-                                        }
+                            PullToRefreshBox(
+                                state = state,
+                                isRefreshing = isRefreshing,
+                                onRefresh = {
+                                    scope.launch {
+                                        isRefreshing = true
+                                        mainViewModel.loadUserProfile()
+                                        isRefreshing = false
                                     }
-                                ) {
-                                    LazyColumn {
-                                        item {
-                                            ProfileCounters(
-                                                counters = user.counters,
-                                                isBusinessOrEmployee = user.isBusinessOrEmployee,
-                                                onNavigate = {
-                                                    onNavigate("$it/${user.id}/${user.username}/${user.isBusinessOrEmployee}")
-                                                }
-                                            )
+                                }
+                            ) {
+                                LazyColumn {
+                                    item {
+                                        ProfileCounters(
+                                            counters = user.counters,
+                                            isBusinessOrEmployee = user.isBusinessOrEmployee,
+                                            onNavigate = {
+                                                onNavigate("$it/${user.id}/${user.username}/${user.isBusinessOrEmployee}")
+                                            }
+                                        )
 
-                                            ProfileUserInfo(
-                                                user = user,
-                                                actions = {
-                                                    MyProfileActions(
-                                                        onEditProfile = {}
-                                                    )
-                                                },
-                                                onOpenScheduleSheet = { },
-                                                onNavigateToBusinessOwner = { onNavigate("${MainRoute.UserProfile.route}/${it}") }
-                                            )
-                                        }
+                                        ProfileUserInfo(
+                                            user = user,
+                                            actions = {
+                                                MyProfileActions(
+                                                    onEditProfile = {}
+                                                )
+                                            },
+                                            onOpenScheduleSheet = { },
+                                            onNavigateToBusinessOwner = { onNavigate("${MainRoute.UserProfile.route}/${it}") }
+                                        )
+                                    }
 
-                                        stickyHeader { ProfileTabRow(pagerState, tabs) }
+                                    stickyHeader { ProfileTabRow(pagerState, tabs) }
 
-                                        item {
-                                            HorizontalPager(
-                                                state = pagerState,
-                                                beyondViewportPageCount = 0,
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .height(LocalConfiguration.current.screenHeightDp.dp - 150.dp)
-                                            ) { page ->
-                                                when (tabs[page]) {
-                                                    ProfileTab.Posts -> ProfilePostsTab(
-                                                        isOwnProfile = user.isOwnProfile,
-                                                        posts = posts,
-                                                        onNavigate = onNavigate
-                                                    )
+                                    item {
+                                        HorizontalPager(
+                                            state = pagerState,
+                                            beyondViewportPageCount = 0,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .height(LocalConfiguration.current.screenHeightDp.dp - 150.dp)
+                                        ) { page ->
+                                            when (tabs[page]) {
+                                                ProfileTab.Posts -> ProfilePostsTab(
+                                                    isOwnProfile = user.isOwnProfile,
+                                                    posts = myPosts,
+                                                    onNavigate = onNavigate
+                                                )
 
-                                                    ProfileTab.Products -> ProfileProductsTab(
-                                                        userId = user.id,
-                                                        isOwnProfile = user.isOwnProfile,
-                                                        businessId = user.businessId,
-                                                        onNavigateToCalendar = onNavigateToCalendar
-                                                    )
+                                                ProfileTab.Products -> ProfileProductsTab(
+                                                    userId = user.id,
+                                                    isOwnProfile = user.isOwnProfile,
+                                                    businessId = user.businessId,
+                                                    onNavigateToCalendar = onNavigateToCalendar
+                                                )
 
-                                                    ProfileTab.Reposts -> ProfileRepostsTab(
-                                                        userId = user.id,
-                                                        isOwnProfile = user.isOwnProfile,
-                                                        onNavigate = onNavigate
-                                                    )
+                                                ProfileTab.Reposts -> ProfileRepostsTab(
+                                                    userId = user.id,
+                                                    isOwnProfile = user.isOwnProfile,
+                                                    onNavigate = onNavigate
+                                                )
 
-                                                    ProfileTab.Bookmarks -> ProfileBookmarksTab(
-                                                        userId = user.id,
-                                                        isOwnProfile = user.isOwnProfile,
-                                                        onNavigate = onNavigate
-                                                    )
+                                                ProfileTab.Bookmarks -> ProfileBookmarksTab(
+                                                    userId = user.id,
+                                                    isOwnProfile = user.isOwnProfile,
+                                                    onNavigate = onNavigate
+                                                )
 
-                                                    ProfileTab.Info -> ProfileInfoTab()
-                                                }
+                                                ProfileTab.Info -> ProfileInfoTab()
                                             }
                                         }
                                     }

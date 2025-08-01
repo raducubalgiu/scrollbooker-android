@@ -113,15 +113,22 @@ class MainUIViewModel @Inject constructor(
         .cachedIn(viewModelScope)
         .stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
 
-//    fun loadUserProfile(userId: Int) {
-//        viewModelScope.launch {
-//            _userProfileState.value = FeatureState.Loading
-//
-//            val response = withVisibleLoading { getUserProfileUseCase(userId) }
-//
-//            _userProfileState.value = response
-//        }
-//    }
+    fun loadUserProfile() {
+        viewModelScope.launch {
+            val userId = authDataStore.getUserId().firstOrNull()
+
+            if(userId == null) {
+                Timber.tag("Refetch UserProfile").e("ERROR: on Refetching User Profile. User Id not found ")
+                throw IllegalStateException("User id not found in datastore")
+            }
+
+            _userProfileState.value = FeatureState.Loading
+
+            val response = withVisibleLoading { getUserProfileUseCase(userId) }
+
+            _userProfileState.value = response
+        }
+    }
 
     fun updateBusinessTypes() {
         _filteredBusinessTypes.value = _selectedBusinessTypes.value
@@ -164,16 +171,6 @@ class MainUIViewModel @Inject constructor(
             _businessTypesByBusinessDomainState.update { current ->
                 current + (businessDomainId to result)
             }
-        }
-    }
-
-    fun loadUserProfile() {
-        viewModelScope.launch {
-            _userProfileState.value = FeatureState.Loading
-            val userId = authDataStore.getUserId().firstOrNull()
-
-            val response = getUserProfileUseCase(userId)
-            _userProfileState.value = response
         }
     }
 
