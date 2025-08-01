@@ -1,10 +1,11 @@
 package com.example.scrollbooker.ui.inbox
 import BottomBar
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -13,12 +14,11 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.headers.Header
-import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.core.layout.MessageScreen
+import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.navigation.bottomBar.MainTab
-import com.example.scrollbooker.navigation.host.InboxNavHost
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.inbox.components.NotificationsList
 
@@ -31,6 +31,7 @@ fun InboxScreen(
 ) {
     val notifications = viewModel.notifications.collectAsLazyPagingItems()
     val refreshState = notifications.loadState.refresh
+    val appendState = notifications.loadState.append
 
     Scaffold(
         bottomBar = {
@@ -42,30 +43,39 @@ fun InboxScreen(
             )
         }
     ) { innerPadding ->
-        Box(Modifier.fillMaxSize().padding(innerPadding)) {
-            Header(
-                title = stringResource(id = R.string.inbox),
-                enableBack = false
-            )
-
-            if(refreshState is LoadState.NotLoading) {
-                NotificationsList(
-                    notifications=notifications,
-                    onNavigate = onNavigate
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
+        ) {
+            Column(Modifier.fillMaxSize()) {
+                Header(
+                    title = stringResource(id = R.string.inbox),
+                    enableBack = false
                 )
-            }
 
-            when(refreshState) {
-                is LoadState.Loading -> { LoadingScreen() }
-                is LoadState.Error -> ErrorScreen()
-                is LoadState.NotLoading -> {
-                    if(notifications.itemCount == 0) {
-                        MessageScreen(
-                            message = "Nu ai nici o notificare",
-                            icon = painterResource(R.drawable.ic_notifications_alert_outline)
+                when(refreshState) {
+                    is LoadState.Loading -> { LoadingScreen() }
+                    is LoadState.Error -> ErrorScreen()
+                    is LoadState.NotLoading -> {
+                        NotificationsList(
+                            notifications=notifications,
+                            onNavigate = onNavigate
                         )
                     }
                 }
+
+                when(appendState) {
+                    is LoadState.Error -> Text("A aparut o eroare")
+                    is LoadState.Loading -> LoadMoreSpinner()
+                    is LoadState.NotLoading -> Unit
+                }
+            }
+
+            if(refreshState is LoadState.NotLoading && notifications.itemCount == 0) {
+                MessageScreen(
+                    message = stringResource(R.string.dontHaveAnyNotification),
+                    icon = painterResource(R.drawable.ic_notifications_alert_outline)
+                )
             }
         }
     }
