@@ -3,7 +3,6 @@ import BottomBar
 import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.annotation.OptIn
-import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -12,11 +11,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
@@ -26,10 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LifecycleStartEffect
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.media3.ui.PlayerView
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -41,12 +38,15 @@ import com.example.scrollbooker.ui.main.MainUIViewModel
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.AspectRatioFrameLayout
 import com.example.scrollbooker.ui.feed.components.FeedTabs
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
 
 @OptIn(UnstableApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun FeedScreen(
     viewModel: MainUIViewModel,
+    drawerState: DrawerState,
     appointmentsNumber: Int,
     onOpenDrawer: () -> Unit,
     onNavigateSearch: () -> Unit,
@@ -78,7 +78,7 @@ fun FeedScreen(
             )
 
             val pagerState = rememberPagerState(pageCount = { posts.itemCount })
-            val currentOnReleasePlayer by rememberUpdatedState { feedViewModel.releasePlayer() }
+            val currentOnReleasePlayer by rememberUpdatedState(feedViewModel::releasePlayer)
 
             LifecycleStartEffect(true) {
                 onStopOrDispose {
@@ -86,38 +86,33 @@ fun FeedScreen(
                 }
             }
 
-//            val lifecycleOwner = LocalLifecycleOwner.current
-//            val postId = posts[pagerState.currentPage]?.id
-//
-//            DisposableEffect(lifecycleOwner, postId) {
-//                val observer = LifecycleEventObserver { _, event ->
-//                    if(postId != null) {
-//                        when(event) {
-//                            Lifecycle.Event.ON_STOP, Lifecycle.Event.ON_PAUSE -> {
-//                                feedViewModel.pauseIfPlaying(postId)
-//                            }
-//                            Lifecycle.Event.ON_RESUME -> {
-//                                feedViewModel.resumeIfPlaying(postId)
-//                            }
-//                            else -> {}
-//                        }
-//                    }
-//                }
-//
-//                lifecycleOwner.lifecycle.addObserver(observer)
-//                onDispose {
-//                    lifecycleOwner.lifecycle.removeObserver(observer)
-//                }
-//            }
-
             posts.apply {
                 when(loadState.refresh) {
                     is LoadState.Error -> ErrorScreen()
                     is LoadState.Loading -> LoadingScreen()
                     is LoadState.NotLoading -> {
 
+                        val postId by remember {
+                            derivedStateOf { posts[pagerState.currentPage]?.id }
+                        }
+
+                        LaunchedEffect(Unit) {
+                            snapshotFlow { drawerState.currentValue }
+                                .collectLatest { drawerValue ->
+                                    postId?.let {
+                                        if(drawerValue == DrawerValue.Open) {
+                                            feedViewModel.pauseIfPlaying(postId!!)
+                                        } else {
+                                            feedViewModel.resumeIfPlaying(postId!!)
+                                        }
+                                    }
+                                }
+                        }
+
                         LaunchedEffect(pagerState) {
-                            snapshotFlow { pagerState.currentPage }.collect { page ->
+                            snapshotFlow { pagerState.currentPage }
+                                .debounce(150)
+                                .collectLatest { page ->
                                 val post = posts[page]
                                 val previousPost = if(page > 1) posts[page - 1] else null
                                 val nextPost = if(page < posts.itemCount - 1) posts[page + 1] else null

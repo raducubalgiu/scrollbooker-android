@@ -1,4 +1,5 @@
 package com.example.scrollbooker.navigation.host
+import androidx.compose.material3.DrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
@@ -30,6 +31,7 @@ fun FeedNavHost(
     navController: NavHostController,
     bookNowPosts: LazyPagingItems<Post>,
     onOpenDrawer: () -> Unit,
+    drawerState: DrawerState,
     onNavigate: (MainTab) -> Unit
 ) {
     val userSearch by mainViewModel.userSearch.collectAsState()
@@ -44,6 +46,7 @@ fun FeedNavHost(
         ) { backStackEntry ->
             FeedScreen(
                 viewModel = mainViewModel,
+                drawerState = drawerState,
                 onOpenDrawer = onOpenDrawer,
                 onNavigateSearch = { navController.navigate(MainRoute.FeedSearchNavigator.route) },
                 onNavigate = onNavigate,

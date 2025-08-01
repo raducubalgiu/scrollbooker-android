@@ -97,6 +97,7 @@ fun MainNavHost(
                             rootNavController = rootNavController,
                             navController = navControllers[MainTab.Feed]!!,
                             onOpenDrawer = { scope.launch { drawerState.open() } },
+                            drawerState = drawerState,
                             onNavigate = { currentTab = it }
                         )
                     }

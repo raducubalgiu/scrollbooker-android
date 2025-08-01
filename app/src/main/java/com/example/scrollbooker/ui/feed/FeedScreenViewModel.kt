@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.HandlerThread
 import android.os.Process
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
@@ -13,22 +12,17 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
 import com.example.scrollbooker.core.util.VideoPlayerCache
 import com.example.scrollbooker.entity.social.post.domain.model.Post
-import com.example.scrollbooker.entity.social.post.domain.useCase.GetFollowingPostsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
 import javax.inject.Inject
 
 @UnstableApi
 @HiltViewModel
 class FeedScreenViewModel @Inject constructor(
-    @ApplicationContext private val application: Context,
-    private val getFollowingPostsUseCase: GetFollowingPostsUseCase
+    @ApplicationContext private val application: Context
 ) : ViewModel() {
     private val playerPool = mutableMapOf<Int, ExoPlayer>()
 
@@ -65,6 +59,7 @@ class FeedScreenViewModel @Inject constructor(
                 .filter { it.key != postId }
                 .take(playerPool.size - MAX_PLAYERS)
                 .forEach {
+                    Timber.d("Release player for postId: $postId")
                     it.value.release()
                     playerPool.remove(it.key)
                 }
@@ -157,13 +152,19 @@ class FeedScreenViewModel @Inject constructor(
     }
 
     fun releaseInactivePlayers(postId: Int) {
-        playerPool.forEach { (id, player) ->
-            if(id != postId) {
-                player.release()
+        val currentPlayer = playerPool[postId]
+
+        playerPool.entries
+            .filter { it.key != postId }
+            .forEach {
+                it.value.release()
             }
-        }
+
         playerPool.clear()
-        playerPool[postId]?.let { playerPool[postId] = it }
+
+        if(currentPlayer != null) {
+            playerPool[postId] = currentPlayer
+        }
     }
 
     fun pauseUnusedPlayers(visiblePostId: Int) {
