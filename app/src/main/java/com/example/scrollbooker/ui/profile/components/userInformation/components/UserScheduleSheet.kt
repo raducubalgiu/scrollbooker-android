@@ -28,8 +28,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.shimmer.rememberShimmerBrush
-import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.components.core.layout.ErrorScreen
+import com.example.scrollbooker.components.core.sheet.SheetHeader
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.formatTime
 import com.example.scrollbooker.core.util.translateDayOfWeek
@@ -69,10 +69,9 @@ fun UserScheduleSheet() {
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = SpacingXXL)
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(bottom = BasePadding)
     ) {
         when(state) {
             is FeatureState.Loading -> {
@@ -128,8 +127,7 @@ fun UserScheduleSheet() {
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Row( verticalAlignment = Alignment.CenterVertically
-                        ) {
+                        Row( verticalAlignment = Alignment.CenterVertically) {
                             Box(
                                 modifier = Modifier
                                     .clip(CircleShape)

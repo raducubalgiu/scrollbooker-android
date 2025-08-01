@@ -19,7 +19,8 @@ import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun MyProfileActions(
-    onEditProfile: () -> Unit
+    onEditProfile: () -> Unit,
+    isBusinessOrEmployee: Boolean
 ) {
     Row(modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
@@ -36,23 +37,46 @@ fun MyProfileActions(
             )
         }
 
+
         Spacer(Modifier.width(SpacingS))
-        ProfileActionButton(
-            modifier = Modifier.weight(0.5f),
-            onClick = {}
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_calendar_outline),
-                    contentDescription = null
-                )
-                Spacer(Modifier.width(SpacingS))
-                Text(
-                    text = "Calendar",
-                    style = titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = OnBackground
-                )
+
+        if(isBusinessOrEmployee) {
+            ProfileActionButton(
+                modifier = Modifier.weight(0.5f),
+                onClick = {}
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_calendar_outline),
+                        contentDescription = null
+                    )
+                    Spacer(Modifier.width(SpacingS))
+                    Text(
+                        text = "Calendar",
+                        style = titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = OnBackground
+                    )
+                }
+            }
+        } else {
+            ProfileActionButton(
+                modifier = Modifier.weight(0.5f),
+                onClick = {}
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_calendar_outline),
+                        contentDescription = null
+                    )
+                    Spacer(Modifier.width(SpacingS))
+                    Text(
+                        text = "Share profile",
+                        style = titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = OnBackground
+                    )
+                }
             }
         }
     }

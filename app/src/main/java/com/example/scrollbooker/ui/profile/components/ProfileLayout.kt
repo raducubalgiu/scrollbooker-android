@@ -32,7 +32,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.sheet.BottomSheet
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
@@ -73,7 +75,7 @@ fun ProfileLayout(
         enableCloseButton = true,
         showBottomSheet = showScheduleSheet,
         showHeader = true,
-        headerTitle = "Program"
+        headerTitle = stringResource(R.string.scheduleShort)
     ) { UserScheduleSheet() }
 
     PullToRefreshBox(

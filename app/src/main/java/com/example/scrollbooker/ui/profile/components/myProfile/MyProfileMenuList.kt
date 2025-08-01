@@ -1,38 +1,48 @@
 package com.example.scrollbooker.ui.profile.components.myProfile
-
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.list.ItemList
+import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.navigation.routes.MainRoute
 
 @Composable
 fun MyProfileMenuList(
     onNavigate: (String) -> Unit
 ) {
-    ItemList(
-        headLine = "Creaza o postare",
-        leftIcon = painterResource(R.drawable.ic_camera_outline),
-        displayRightIcon = false,
-        onClick = {  }
-    )
-    ItemList(
-        headLine = stringResource(id = R.string.calendar),
-        leftIcon = painterResource(R.drawable.ic_calendar_outline),
-        displayRightIcon = false,
-        onClick = { onNavigate(MainRoute.MyCalendar.route) }
-    )
-    ItemList(
-        headLine = stringResource(id = R.string.myBusiness),
-        leftIcon = painterResource(R.drawable.ic_business_outline),
-        displayRightIcon = false,
-        onClick = { onNavigate(MainRoute.MyBusiness.route) }
-    )
-    ItemList(
-        headLine = stringResource(id = R.string.settings),
-        leftIcon = painterResource(R.drawable.ic_settings_outline),
-        displayRightIcon = false,
-        onClick = { onNavigate(MainRoute.Settings.route) }
-    )
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = BasePadding)
+    ) {
+        ItemList(
+            headLine = "Creaza o postare",
+            leftIcon = painterResource(R.drawable.ic_camera_outline),
+            displayRightIcon = false,
+            onClick = {  }
+        )
+        ItemList(
+            headLine = stringResource(id = R.string.calendar),
+            leftIcon = painterResource(R.drawable.ic_calendar_outline),
+            displayRightIcon = false,
+            onClick = { onNavigate(MainRoute.MyCalendar.route) }
+        )
+        ItemList(
+            headLine = stringResource(id = R.string.myBusiness),
+            leftIcon = painterResource(R.drawable.ic_business_outline),
+            displayRightIcon = false,
+            onClick = { onNavigate(MainRoute.MyBusiness.route) }
+        )
+        ItemList(
+            headLine = stringResource(id = R.string.settings),
+            leftIcon = painterResource(R.drawable.ic_settings_outline),
+            displayRightIcon = false,
+            onClick = { onNavigate(MainRoute.Settings.route) }
+        )
+    }
 }

@@ -1,15 +1,11 @@
 package com.example.scrollbooker.ui.profile.myProfile
 import BottomBar
 import android.annotation.SuppressLint
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -29,17 +25,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
-import com.example.scrollbooker.components.core.sheet.BottomSheet
 import com.example.scrollbooker.components.core.sheet.Sheet
-import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingXXL
+import com.example.scrollbooker.components.core.sheet.SheetHeader
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.social.post.domain.model.Post
@@ -54,7 +45,6 @@ import com.example.scrollbooker.ui.profile.components.userInformation.ProfileShi
 import com.example.scrollbooker.ui.profile.components.userInformation.ProfileUserInfo
 import com.example.scrollbooker.ui.profile.components.userInformation.components.ProfileCounters
 import com.example.scrollbooker.ui.profile.components.userInformation.components.UserScheduleSheet
-import com.example.scrollbooker.ui.profile.components.userProfile.UserProfileActions
 import com.example.scrollbooker.ui.profile.tab.ProfileTab
 import com.example.scrollbooker.ui.profile.tab.ProfileTabRow
 import com.example.scrollbooker.ui.profile.tab.bookmarks.ProfileBookmarksTab
@@ -62,9 +52,6 @@ import com.example.scrollbooker.ui.profile.tab.info.ProfileInfoTab
 import com.example.scrollbooker.ui.profile.tab.posts.ProfilePostsTab
 import com.example.scrollbooker.ui.profile.tab.products.ProfileProductsTab
 import com.example.scrollbooker.ui.profile.tab.reposts.ProfileRepostsTab
-import com.example.scrollbooker.ui.profile.userProfile.ProfileViewModel
-import com.example.scrollbooker.ui.theme.Background
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @SuppressLint("ConfigurationScreenWidthHeight")
@@ -80,42 +67,43 @@ fun MyProfileScreen(
     appointmentsNumber: Int,
     onChangeTab: (MainTab) -> Unit
 ) {
-    val sheetState = rememberModalBottomSheetState()
-    var showScheduleSheet by remember { mutableStateOf(false) }
+    val menuSheetState = rememberModalBottomSheetState()
+    val scheduleSheetState = rememberModalBottomSheetState()
 
     val state = rememberPullToRefreshState()
     var isRefreshing by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val isInitLoading by mainViewModel.isInitLoading.collectAsState()
 
-    BottomSheet(
-        onDismiss = { showScheduleSheet = false },
-        enableCloseButton = true,
-        showBottomSheet = showScheduleSheet,
-        showHeader = true,
-        headerTitle = stringResource(R.string.schedule)
-    ) { UserScheduleSheet() }
-
-    if(sheetState.isVisible) {
+    if(scheduleSheetState.isVisible) {
         Sheet(
-            sheetState = sheetState,
-            onClose = { scope.launch { sheetState.hide() } }
+            sheetState = scheduleSheetState,
+            onClose = { scope.launch { scheduleSheetState.hide() } }
         ) {
-            Spacer(Modifier.height(BasePadding))
+            SheetHeader(
+                title = stringResource(R.string.scheduleShort),
+                onClose = { scope.launch { scheduleSheetState.hide() } }
+            )
+            UserScheduleSheet()
+        }
+    }
 
+    if(menuSheetState.isVisible) {
+        Sheet(
+            sheetState = menuSheetState,
+            onClose = { scope.launch { menuSheetState.hide() } }
+        ) {
             MyProfileMenuList(
                 onNavigate = {
                     scope.launch {
-                        sheetState.hide()
+                        menuSheetState.hide()
 
-                        if(!sheetState.isVisible) {
+                        if(!menuSheetState.isVisible) {
                             onNavigate(it)
                         }
                     }
                 }
             )
-
-            Spacer(Modifier.height(SpacingXXL))
         }
     }
 
@@ -152,7 +140,7 @@ fun MyProfileScreen(
                         Column(Modifier.fillMaxSize()) {
                             MyProfileHeader(
                                 username = user.username,
-                                onOpenBottomSheet = { scope.launch { sheetState.show() } }
+                                onOpenBottomSheet = { scope.launch { menuSheetState.show() } }
                             )
 
                             PullToRefreshBox(
@@ -180,11 +168,18 @@ fun MyProfileScreen(
                                             user = user,
                                             actions = {
                                                 MyProfileActions(
-                                                    onEditProfile = {}
+                                                    onEditProfile = {},
+                                                    isBusinessOrEmployee = user.isBusinessOrEmployee
                                                 )
                                             },
-                                            onOpenScheduleSheet = { },
-                                            onNavigateToBusinessOwner = { onNavigate("${MainRoute.UserProfile.route}/${it}") }
+                                            onOpenScheduleSheet = {
+                                                scope.launch {
+                                                    scheduleSheetState.show()
+                                                }
+                                            },
+                                            onNavigateToBusinessOwner = {
+                                                onNavigate("${MainRoute.UserProfile.route}/${it}")
+                                            }
                                         )
                                     }
 
