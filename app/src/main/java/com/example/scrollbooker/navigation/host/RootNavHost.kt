@@ -9,9 +9,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
-import androidx.navigation.navigation
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.navigation.navigators.calendarGraph
 import com.example.scrollbooker.navigation.navigators.myBusinessGraph
 import com.example.scrollbooker.navigation.navigators.settingsGraph
 import com.example.scrollbooker.navigation.routes.GlobalRoute
@@ -21,9 +21,6 @@ import com.example.scrollbooker.navigation.transition.slideInFromRight
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.ui.auth.AuthViewModel
-import com.example.scrollbooker.ui.main.MainUIViewModel
-import com.example.scrollbooker.ui.calendar.AppointmentConfirmationScreen
-import com.example.scrollbooker.ui.calendar.CalendarScreen
 import com.example.scrollbooker.ui.profile.myProfile.ProfileSharedViewModel
 import com.example.scrollbooker.ui.profile.myProfile.edit.EditBioScreen
 import com.example.scrollbooker.ui.profile.myProfile.edit.EditFullNameScreen
@@ -37,7 +34,6 @@ import com.example.scrollbooker.ui.profile.social.UserSocialViewModel
 import com.example.scrollbooker.ui.profile.tab.posts.ProfilePostsTabViewModel
 import com.example.scrollbooker.ui.profile.userProfile.ProfileViewModel
 import com.example.scrollbooker.ui.profile.userProfile.UserProfileScreen
-import com.example.scrollbooker.ui.sharedModules.calendar.CalendarViewModel
 
 @Composable
 fun RootNavHost(
@@ -208,67 +204,7 @@ fun RootNavHost(
                 )
             }
 
-            navigation(
-                route = MainRoute.CalendarNavigator.route,
-                startDestination = "${MainRoute.Calendar.route}/{userId}/{slotDuration}/{productId}/{productName}",
-            ) {
-                composable(
-                    route = "${MainRoute.Calendar.route}/{userId}/{slotDuration}/{productId}/{productName}",
-                    arguments = listOf(
-                        navArgument("userId") { type = NavType.IntType },
-                        navArgument("slotDuration") { type = NavType.IntType },
-                        navArgument("productId") { type = NavType.IntType },
-                        navArgument("productName") { type = NavType.StringType }
-                    ),
-                    enterTransition = { slideInFromRight() },
-                    exitTransition = { slideOutToLeft() },
-                    popEnterTransition = { slideInFromLeft() },
-                    popExitTransition = { slideOutToRight() }
-                ) { backStackEntry ->
-                    val parentEntry = remember(backStackEntry) {
-                        navController.getBackStackEntry(MainRoute.CalendarNavigator.route)
-                    }
-
-                    val viewModel: CalendarViewModel = hiltViewModel(parentEntry)
-
-                    val userId = backStackEntry.arguments?.getInt("userId") ?: return@composable
-                    val slotDuration = backStackEntry.arguments?.getInt("slotDuration") ?: return@composable
-                    val productId = backStackEntry.arguments?.getInt("productId") ?: return@composable
-                    val productName = backStackEntry.arguments?.getString("productName") ?: return@composable
-
-                    CalendarScreen(
-                        viewModel = viewModel,
-                        userId = userId,
-                        slotDuration = slotDuration,
-                        productId = productId,
-                        productName = productName,
-                        onBack = { navController.popBackStack() },
-                        onNavigateToConfirmation = {
-                            navController.navigate(MainRoute.AppointmentConfirmation.route)
-                        }
-                    )
-                }
-
-                composable(
-                    route = MainRoute.AppointmentConfirmation.route,
-                    enterTransition = { slideInFromRight() },
-                    exitTransition = { slideOutToLeft() },
-                    popEnterTransition = { slideInFromLeft() },
-                    popExitTransition = { slideOutToRight() }
-                ) { backStackEntry ->
-                    val parentEntry = remember(backStackEntry) {
-                        navController.getBackStackEntry(MainRoute.CalendarNavigator.route)
-                    }
-
-                    val viewModel: CalendarViewModel = hiltViewModel(parentEntry)
-
-                    AppointmentConfirmationScreen(
-                        viewModel = viewModel,
-                        onBack = { navController.popBackStack() }
-                    )
-                }
-            }
-
+            calendarGraph(navController)
             myBusinessGraph(navController)
             settingsGraph(
                 navController = navController,
