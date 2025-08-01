@@ -41,11 +41,14 @@ val MainTabSaver: Saver<MainTab, String> = Saver(
 
 @Composable
 fun MainNavHost(
-    rootNavController: NavHostController,
-    mainViewModel: MainUIViewModel,
-    myProfileData: FeatureState<UserProfile>
+    rootNavController: NavHostController
 ) {
+    val mainViewModel: MainUIViewModel = hiltViewModel()
+    val myProfileData by mainViewModel.userProfileState.collectAsState()
+    val myPosts = mainViewModel.userPosts.collectAsLazyPagingItems()
+
     val bookNowPosts = mainViewModel.bookNowPosts.collectAsLazyPagingItems()
+
     val businessTypesState by mainViewModel.businessTypesState.collectAsState()
     val businessDomainsState by mainViewModel.businessDomainsState.collectAsState()
 
@@ -143,6 +146,8 @@ fun MainNavHost(
                 is MainTab.Profile -> {
                     MyProfileScreen(
                         myProfileData = myProfileData,
+                        myPosts = myPosts,
+                        mainViewModel = mainViewModel,
                         viewModel = hiltViewModel(),
                         onNavigate = { rootNavController.navigate(it) },
                         onNavigateToCalendar = {

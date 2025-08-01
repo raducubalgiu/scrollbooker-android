@@ -30,12 +30,6 @@ class FeedScreenViewModel @Inject constructor(
     @ApplicationContext private val application: Context,
     private val getFollowingPostsUseCase: GetFollowingPostsUseCase
 ) : ViewModel() {
-    private val _followingPosts: Flow<PagingData<Post>> by lazy {
-        getFollowingPostsUseCase()
-            .cachedIn(viewModelScope)
-    }
-    val followingPosts: Flow<PagingData<Post>> get() = _followingPosts
-
     private val playerPool = mutableMapOf<Int, ExoPlayer>()
 
     private var playerThread: HandlerThread = HandlerThread("ExoPlayer Thread", Process.THREAD_PRIORITY_AUDIO)

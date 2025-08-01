@@ -25,7 +25,6 @@ class ProfileSharedViewModel @Inject constructor(
     private val updateBioUseCase: UpdateBioUseCase,
     private val updateGenderUseCase: UpdateGenderUseCase
 ): ViewModel() {
-
     private val _userProfileState = MutableStateFlow<FeatureState<UserProfile>>(FeatureState.Loading)
     val userProfileState: StateFlow<FeatureState<UserProfile>> = _userProfileState
 

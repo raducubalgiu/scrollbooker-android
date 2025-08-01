@@ -44,9 +44,7 @@ fun RootNavHost(
     navController: NavHostController,
     viewModel: AuthViewModel
 ) {
-    val mainViewModel: MainUIViewModel = hiltViewModel()
     val authState by viewModel.authState.collectAsState()
-    val myProfileData by mainViewModel.userProfileState.collectAsState()
 
     val startDestination = when(val state = authState) {
         is FeatureState.Success -> {
@@ -70,11 +68,7 @@ fun RootNavHost(
             }
 
             composable(GlobalRoute.MAIN) {
-                MainNavHost(
-                    rootNavController = navController,
-                    mainViewModel = mainViewModel,
-                    myProfileData = myProfileData
-                )
+                MainNavHost(rootNavController = navController)
             }
 
             composable("${MainRoute.UserProfile.route}/{userId}",

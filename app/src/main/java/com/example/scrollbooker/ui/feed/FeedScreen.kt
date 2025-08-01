@@ -40,6 +40,7 @@ import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.main.MainUIViewModel
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.AspectRatioFrameLayout
+import com.example.scrollbooker.ui.feed.components.FeedTabs
 
 @OptIn(UnstableApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -68,6 +69,14 @@ fun FeedScreen(
             .fillMaxSize()
             .background(Color(0xFF121212))
         ) {
+            FeedTabs(
+                selectedTabIndex = 0,
+                shouldDisplayBottomBar = true,
+                onChangeTab = {},
+                onOpenDrawer = onOpenDrawer,
+                onNavigateSearch = onNavigateSearch,
+            )
+
             val pagerState = rememberPagerState(pageCount = { posts.itemCount })
             val currentOnReleasePlayer by rememberUpdatedState { feedViewModel.releasePlayer() }
 

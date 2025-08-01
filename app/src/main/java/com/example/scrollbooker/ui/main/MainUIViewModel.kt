@@ -10,8 +10,6 @@ import androidx.paging.cachedIn
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.GetUserAppointmentsNumberUseCase
-import com.example.scrollbooker.entity.booking.business.domain.model.RecommendedBusiness
-import com.example.scrollbooker.entity.booking.business.domain.useCase.GetRecommendedBusinessesUseCase
 import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.BusinessDomain
 import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.useCase.GetAllBusinessDomainsUseCase
 import com.example.scrollbooker.entity.nomenclature.businessType.domain.model.BusinessType
@@ -24,6 +22,7 @@ import com.example.scrollbooker.entity.search.domain.useCase.GetUserSearchUseCas
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetBookNowPostsUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetFollowingPostsUseCase
+import com.example.scrollbooker.entity.social.post.domain.useCase.GetUserPostsUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserProfileUseCase
 import com.example.scrollbooker.store.AuthDataStore
@@ -31,10 +30,15 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -52,6 +56,7 @@ class MainUIViewModel @Inject constructor(
     private val deleteUserSearchUseCase: DeleteUserSearchUseCase,
     private val getBookNowPostsUseCase: GetBookNowPostsUseCase,
     private val getFollowingPostsUseCase: GetFollowingPostsUseCase,
+    private val getUserPostsUseCase: GetUserPostsUseCase,
     private val authDataStore: AuthDataStore,
 ): ViewModel() {
     private val _userProfileState = MutableStateFlow<FeatureState<UserProfile>>(FeatureState.Loading)
@@ -94,6 +99,29 @@ class MainUIViewModel @Inject constructor(
             .cachedIn(viewModelScope)
     }
     val followingPosts: Flow<PagingData<Post>> get() = _followingPosts
+
+    private val _initCompleted = MutableStateFlow(false)
+    val isInitLoading = combine(_userProfileState, _initCompleted) { profile, done ->
+        (profile is FeatureState.Loading || !done)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, true)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val userPosts: StateFlow<PagingData<Post>> = authDataStore.getUserId()
+        .filterNotNull()
+        .flatMapLatest { userId -> getUserPostsUseCase(userId) }
+        .onEach { _initCompleted.value = true }
+        .cachedIn(viewModelScope)
+        .stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
+
+//    fun loadUserProfile(userId: Int) {
+//        viewModelScope.launch {
+//            _userProfileState.value = FeatureState.Loading
+//
+//            val response = withVisibleLoading { getUserProfileUseCase(userId) }
+//
+//            _userProfileState.value = response
+//        }
+//    }
 
     fun updateBusinessTypes() {
         _filteredBusinessTypes.value = _selectedBusinessTypes.value
