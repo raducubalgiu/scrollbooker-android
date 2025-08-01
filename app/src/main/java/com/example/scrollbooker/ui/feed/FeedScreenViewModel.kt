@@ -38,7 +38,8 @@ class FeedScreenViewModel @Inject constructor(
 
     private val playerPool = mutableMapOf<Int, ExoPlayer>()
 
-    private var playerThread: HandlerThread = HandlerThread("ExoPlayer Thread", Process.THREAD_PRIORITY_AUDIO).apply { start() }
+    private var playerThread: HandlerThread = HandlerThread("ExoPlayer Thread", Process.THREAD_PRIORITY_AUDIO)
+        .apply { start() }
     var playbackStartTimeMs = C.TIME_UNSET
 
     val MAX_PLAYERS = 5

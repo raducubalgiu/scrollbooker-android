@@ -3,6 +3,7 @@ import BottomBar
 import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.annotation.OptIn
+import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -13,6 +14,7 @@ import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -50,7 +52,7 @@ fun FeedScreen(
     onNavigate: (MainTab) -> Unit
 ) {
     val feedViewModel: FeedScreenViewModel = hiltViewModel()
-    val posts = feedViewModel.followingPosts.collectAsLazyPagingItems()
+    val posts = viewModel.bookNowPosts.collectAsLazyPagingItems()
 
     Scaffold(
         bottomBar = {
