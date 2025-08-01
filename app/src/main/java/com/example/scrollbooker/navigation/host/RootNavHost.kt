@@ -31,7 +31,6 @@ import com.example.scrollbooker.ui.profile.myProfile.edit.EditUsernameScreen
 import com.example.scrollbooker.ui.profile.postDetail.ProfilePostDetailScreen
 import com.example.scrollbooker.ui.profile.social.UserSocialScreen
 import com.example.scrollbooker.ui.profile.social.UserSocialViewModel
-import com.example.scrollbooker.ui.profile.tab.posts.ProfilePostsTabViewModel
 import com.example.scrollbooker.ui.profile.userProfile.ProfileViewModel
 import com.example.scrollbooker.ui.profile.userProfile.UserProfileScreen
 
@@ -96,13 +95,13 @@ fun RootNavHost(
                 popExitTransition = { slideOutToRight() }
             ) { backStackEntry ->
                 val postId = backStackEntry.arguments?.getInt("postId")
-                val viewModel = hiltViewModel<ProfilePostsTabViewModel>(backStackEntry)
+                //val viewModel = hiltViewModel<ProfilePostsTabViewModel>(backStackEntry)
 
-                ProfilePostDetailScreen(
-                    postId = postId,
-                    posts = viewModel.userPosts.collectAsLazyPagingItems(),
-                    onBack = { navController.popBackStack() }
-                )
+//                ProfilePostDetailScreen(
+//                    postId = postId,
+//                    posts = viewModel.userPosts.collectAsLazyPagingItems(),
+//                    onBack = { navController.popBackStack() }
+//                )
             }
 
             composable(route = "${MainRoute.UserSocial.route}/{initialPage}/{userId}/{username}/{isBusinessOrEmployee}",

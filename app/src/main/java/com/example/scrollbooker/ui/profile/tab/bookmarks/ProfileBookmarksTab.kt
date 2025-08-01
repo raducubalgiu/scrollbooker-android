@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
@@ -22,15 +21,15 @@ import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.LoadMoreSpinner
+import com.example.scrollbooker.ui.profile.tab.ProfileTabViewModel
 
 @Composable
 fun ProfileBookmarksTab(
+    viewModel: ProfileTabViewModel,
     userId: Int,
     isOwnProfile: Boolean,
     onNavigate: (String) -> Unit
 ) {
-    val viewModel: ProfileBookmarkTabViewModel = hiltViewModel()
-
     LaunchedEffect(userId) {
         viewModel.setUserId(userId)
     }

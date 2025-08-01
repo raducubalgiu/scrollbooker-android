@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.ErrorScreen
@@ -47,6 +48,7 @@ import com.example.scrollbooker.ui.profile.components.userInformation.components
 import com.example.scrollbooker.ui.profile.components.userInformation.components.UserScheduleSheet
 import com.example.scrollbooker.ui.profile.tab.ProfileTab
 import com.example.scrollbooker.ui.profile.tab.ProfileTabRow
+import com.example.scrollbooker.ui.profile.tab.ProfileTabViewModel
 import com.example.scrollbooker.ui.profile.tab.bookmarks.ProfileBookmarksTab
 import com.example.scrollbooker.ui.profile.tab.info.ProfileInfoTab
 import com.example.scrollbooker.ui.profile.tab.posts.ProfilePostsTab
@@ -193,6 +195,8 @@ fun MyProfileScreen(
                                                 .fillMaxWidth()
                                                 .height(LocalConfiguration.current.screenHeightDp.dp - 150.dp)
                                         ) { page ->
+                                            val viewModel: ProfileTabViewModel = hiltViewModel()
+
                                             when (tabs[page]) {
                                                 ProfileTab.Posts -> ProfilePostsTab(
                                                     isOwnProfile = user.isOwnProfile,
@@ -208,12 +212,14 @@ fun MyProfileScreen(
                                                 )
 
                                                 ProfileTab.Reposts -> ProfileRepostsTab(
+                                                    viewModel = viewModel,
                                                     userId = user.id,
                                                     isOwnProfile = user.isOwnProfile,
                                                     onNavigate = onNavigate
                                                 )
 
                                                 ProfileTab.Bookmarks -> ProfileBookmarksTab(
+                                                    viewModel = viewModel,
                                                     userId = user.id,
                                                     isOwnProfile = user.isOwnProfile,
                                                     onNavigate = onNavigate

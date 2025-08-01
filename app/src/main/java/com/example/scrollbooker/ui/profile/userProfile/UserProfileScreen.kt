@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.layout.ErrorScreen
@@ -35,13 +36,13 @@ import com.example.scrollbooker.ui.profile.components.userInformation.components
 import com.example.scrollbooker.ui.profile.components.userProfile.UserProfileActions
 import com.example.scrollbooker.ui.profile.tab.ProfileTab
 import com.example.scrollbooker.ui.profile.tab.ProfileTabRow
+import com.example.scrollbooker.ui.profile.tab.ProfileTabViewModel
 import com.example.scrollbooker.ui.profile.tab.bookmarks.ProfileBookmarksTab
 import com.example.scrollbooker.ui.profile.tab.info.ProfileInfoTab
 import com.example.scrollbooker.ui.profile.tab.posts.ProfilePostsTab
 import com.example.scrollbooker.ui.profile.tab.products.ProfileProductsTab
 import com.example.scrollbooker.ui.profile.tab.reposts.ProfileRepostsTab
 import com.example.scrollbooker.ui.theme.Background
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @SuppressLint("ConfigurationScreenWidthHeight")
@@ -133,6 +134,8 @@ fun UserProfileScreen(
                                             .fillMaxWidth()
                                             .height(LocalConfiguration.current.screenHeightDp.dp - 150.dp)
                                     ) { page ->
+                                        val viewModel: ProfileTabViewModel = hiltViewModel()
+
                                         when(tabs[page]) {
                                             ProfileTab.Posts -> ProfilePostsTab(
                                                 isOwnProfile = user.isOwnProfile,
@@ -146,11 +149,13 @@ fun UserProfileScreen(
                                                 onNavigateToCalendar = onNavigateToCalendar
                                             )
                                             ProfileTab.Reposts -> ProfileRepostsTab(
+                                                viewModel = viewModel,
                                                 userId = user.id,
                                                 isOwnProfile = user.isOwnProfile,
                                                 onNavigate = onNavigate
                                             )
                                             ProfileTab.Bookmarks -> ProfileBookmarksTab(
+                                                viewModel = viewModel,
                                                 userId = user.id,
                                                 isOwnProfile = user.isOwnProfile,
                                                 onNavigate = onNavigate

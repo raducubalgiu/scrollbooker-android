@@ -23,6 +23,7 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.entity.social.post.domain.model.Post
+import com.example.scrollbooker.ui.profile.tab.ProfileTabViewModel
 
 @Composable
 fun ProfilePostsTab(
