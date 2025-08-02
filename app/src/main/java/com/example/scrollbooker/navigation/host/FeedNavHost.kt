@@ -1,4 +1,5 @@
 package com.example.scrollbooker.navigation.host
+import androidx.annotation.OptIn
 import androidx.compose.material3.DrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -16,6 +17,7 @@ import com.example.scrollbooker.ui.feed.search.FeedSearchViewModel
 import com.example.scrollbooker.ui.main.MainUIViewModel
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.media3.common.util.UnstableApi
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.bottomBar.MainTab
@@ -23,9 +25,12 @@ import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
+import com.example.scrollbooker.ui.feed.FeedScreenViewModel
 
+@OptIn(UnstableApi::class)
 @Composable
 fun FeedNavHost(
+    feedViewModel: FeedScreenViewModel,
     mainViewModel: MainUIViewModel,
     rootNavController: NavHostController,
     navController: NavHostController,
@@ -45,7 +50,9 @@ fun FeedNavHost(
             popExitTransition = { slideOutToRight() }
         ) { backStackEntry ->
             FeedScreen(
+                feedViewModel = feedViewModel,
                 viewModel = mainViewModel,
+                posts = bookNowPosts,
                 drawerState = drawerState,
                 onOpenDrawer = onOpenDrawer,
                 onNavigateSearch = { navController.navigate(MainRoute.FeedSearchNavigator.route) },

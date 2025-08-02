@@ -3,14 +3,21 @@ import BottomBar
 import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.annotation.OptIn
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.VerticalPager
@@ -28,6 +35,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -37,50 +45,81 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LifecycleStartEffect
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.media3.common.Player
 import androidx.media3.ui.PlayerView
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.components.core.layout.ErrorScreen
-import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.main.MainUIViewModel
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.AspectRatioFrameLayout
+import androidx.media3.ui.PlayerView.SHOW_BUFFERING_NEVER
+import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
+import com.example.scrollbooker.components.core.buttons.MainButton
+import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingM
+import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.ui.feed.components.FeedTabs
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
-import timber.log.Timber
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 @OptIn(UnstableApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun FeedScreen(
+    feedViewModel: FeedScreenViewModel,
     viewModel: MainUIViewModel,
+    posts: LazyPagingItems<Post>,
     drawerState: DrawerState,
     appointmentsNumber: Int,
     onOpenDrawer: () -> Unit,
     onNavigateSearch: () -> Unit,
     onNavigate: (MainTab) -> Unit
 ) {
-    val feedViewModel: FeedScreenViewModel = hiltViewModel()
-    val posts = viewModel.bookNowPosts.collectAsLazyPagingItems()
+    val pagerState = rememberPagerState(pageCount = { posts.itemCount })
+    val currentOnReleasePlayer by rememberUpdatedState(feedViewModel::releasePlayer)
+
+    LifecycleStartEffect(true) {
+        onStopOrDispose {
+            currentOnReleasePlayer(posts[pagerState.currentPage]?.id)
+        }
+    }
+
+    var shouldDisplayBottomBar by rememberSaveable { mutableStateOf(true) }
 
     Scaffold(
         bottomBar = {
-            BottomBar(
-                appointmentsNumber = appointmentsNumber,
-                currentTab = MainTab.Feed,
-                currentRoute = MainRoute.Feed.route,
-                onNavigate = onNavigate
-            )
+            AnimatedContent(
+                targetState = shouldDisplayBottomBar,
+                transitionSpec = { fadeIn(tween(300)) togetherWith fadeOut(tween(300)) },
+                label = "label"
+            ) { display ->
+                if(display) {
+                    BottomBar(
+                        appointmentsNumber = appointmentsNumber,
+                        currentTab = MainTab.Feed,
+                        currentRoute = MainRoute.Feed.route,
+                        onNavigate = onNavigate
+                    )
+                } else {
+                    val bottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+
+                    MainButton(
+                        modifier = Modifier
+                            .padding(horizontal = BasePadding)
+                            .padding(bottom = bottomPadding),
+                        contentPadding = PaddingValues(SpacingM),
+                        leadingIcon = R.drawable.ic_calendar_outline,
+                        onClick = {},
+                        title = "Intervale disponibile"
+                    )
+                }
+            }
         },
     ) {
         Box(modifier = Modifier
@@ -89,25 +128,17 @@ fun FeedScreen(
         ) {
             FeedTabs(
                 selectedTabIndex = 0,
-                shouldDisplayBottomBar = true,
+                shouldDisplayBottomBar = shouldDisplayBottomBar,
                 onChangeTab = {},
                 onOpenDrawer = onOpenDrawer,
                 onNavigateSearch = onNavigateSearch,
+                onShowBottomBar = { shouldDisplayBottomBar = true }
             )
-
-            val pagerState = rememberPagerState(pageCount = { posts.itemCount })
-            val currentOnReleasePlayer by rememberUpdatedState(feedViewModel::releasePlayer)
-
-            LifecycleStartEffect(true) {
-                onStopOrDispose {
-                    currentOnReleasePlayer()
-                }
-            }
 
             posts.apply {
                 when(loadState.refresh) {
                     is LoadState.Error -> ErrorScreen()
-                    is LoadState.Loading -> LoadingScreen()
+                    is LoadState.Loading -> Unit
                     is LoadState.NotLoading -> {
 
                         val postId by remember {
@@ -144,6 +175,17 @@ fun FeedScreen(
                                     feedViewModel.pauseUnusedPlayers(visiblePostId = post.id)
                                 }
                             }
+                        }
+
+                        LaunchedEffect(Unit) {
+                            var previousPage = pagerState.currentPage
+                            snapshotFlow { pagerState.currentPage }
+                                .distinctUntilChanged()
+                                .collect { currentPage ->
+                                    val shouldShow = currentPage == 0 || currentPage < previousPage
+                                    shouldDisplayBottomBar = shouldShow
+                                    previousPage = currentPage
+                                }
                         }
 
                         VerticalPager(
@@ -199,26 +241,35 @@ fun FeedScreen(
                                 ) {
                                     if(isBuffering) {
                                         CircularProgressIndicator(
-                                            modifier = Modifier.align(Alignment.Center)
+                                            modifier = Modifier.size(50.dp).align(Alignment.Center),
+                                            color = Color.White.copy(0.5f)
                                         )
                                     }
 
                                     AndroidView(
-                                        factory = { PlayerView(it) },
+                                        factory = { context ->
+                                            PlayerView(context).apply {
+                                                useController = false
+                                                controllerAutoShow = false
+                                                controllerShowTimeoutMs = 0
+
+                                                setShowBuffering(SHOW_BUFFERING_NEVER)
+
+                                                layoutParams = ViewGroup.LayoutParams(
+                                                    ViewGroup.LayoutParams.MATCH_PARENT,
+                                                    ViewGroup.LayoutParams.MATCH_PARENT,
+                                                )
+                                            }
+                                        },
                                         update = { playerView ->
                                             playerView.player = player
                                             playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
-                                            playerView.useController = false
-                                            playerView.layoutParams = ViewGroup.LayoutParams(
-                                                ViewGroup.LayoutParams.MATCH_PARENT,
-                                                ViewGroup.LayoutParams.MATCH_PARENT,
-                                            )
                                         },
                                         modifier = Modifier.fillMaxSize(),
                                     )
 
                                     AnimatedVisibility(
-                                        visible = hasStartedPlayback && !isPlaying && !isBuffering,
+                                        visible = hasStartedPlayback && !isPlaying && !isBuffering && !drawerState.isOpen,
                                         enter = fadeIn(),
                                         exit = fadeOut()
                                     ) {
@@ -235,6 +286,26 @@ fun FeedScreen(
                                             )
                                         }
                                     }
+
+//                                    var progress by remember(post.id) { mutableFloatStateOf(0f) }
+//
+//                                    LaunchedEffect(player) {
+//                                        while (true) {
+//                                            val duration = player.duration.takeIf { it > 0 } ?: 1L
+//                                            val position = player.currentPosition
+//                                            progress = (position / duration.toFloat()).coerceIn(0f, 1f)
+//                                            delay(100)
+//                                        }
+//                                    }
+//
+//                                    VideoSlider(
+//                                        progress = progress,
+//                                        isPlaying = isPlaying,
+//                                        onSeek = {},
+//                                        modifier = Modifier
+//                                            .align(Alignment.BottomCenter)
+//                                            .fillMaxWidth()
+//                                    )
                                 }
                             }
                         }

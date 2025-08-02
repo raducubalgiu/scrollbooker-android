@@ -176,22 +176,27 @@ class FeedScreenViewModel @Inject constructor(
         }
     }
 
-    fun releasePlayer() {
-        playerPool.forEach { (_, player) ->
-            player.playWhenReady = false
-            player.pause()
-            player.removeListener(firstFrameListener)
-            player.release()
-        }
+    fun releasePlayer(postId: Int?) {
+        postId?.let { id ->
+            playerPool[id]?.apply {
+                playWhenReady = false
+                pause()
+                removeListener(firstFrameListener)
+            }
 
-        playerPool.clear()
-        playerThread.quitSafely()
+            releaseInactivePlayers(postId)
+        }
     }
 
     override fun onCleared() {
         super.onCleared()
 
-        releasePlayer()
+        playerPool.values.forEach { it.release() }
+        playerPool.clear()
         playerThread.quitSafely()
+    }
+
+    init {
+        Timber.tag("Feed View Model").d("Create Feed View Model")
     }
 }

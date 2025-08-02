@@ -1,5 +1,6 @@
 package com.example.scrollbooker.navigation.host
 import BottomBar
+import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.DrawerValue
@@ -19,6 +20,7 @@ import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -28,6 +30,7 @@ import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.navigation.containers.DefaultTabContainer
 import com.example.scrollbooker.navigation.routes.MainRoute
+import com.example.scrollbooker.ui.feed.FeedScreenViewModel
 import com.example.scrollbooker.ui.main.MainDrawer
 import com.example.scrollbooker.ui.main.MainUIViewModel
 import com.example.scrollbooker.ui.profile.myProfile.MyProfileScreen
@@ -39,10 +42,13 @@ val MainTabSaver: Saver<MainTab, String> = Saver(
     restore = { route -> MainTab.fromRoute(route) }
 )
 
+@OptIn(UnstableApi::class)
 @Composable
 fun MainNavHost(
     rootNavController: NavHostController
 ) {
+    val feedViewModel: FeedScreenViewModel = hiltViewModel()
+
     val mainViewModel: MainUIViewModel = hiltViewModel()
     val myProfileData by mainViewModel.userProfileState.collectAsState()
     val myPosts = mainViewModel.userPosts.collectAsLazyPagingItems()
@@ -92,6 +98,7 @@ fun MainNavHost(
                         gesturesEnabled = drawerState.currentValue == DrawerValue.Open,
                     ) {
                         FeedNavHost(
+                            feedViewModel = feedViewModel,
                             mainViewModel = mainViewModel,
                             bookNowPosts = bookNowPosts,
                             rootNavController = rootNavController,

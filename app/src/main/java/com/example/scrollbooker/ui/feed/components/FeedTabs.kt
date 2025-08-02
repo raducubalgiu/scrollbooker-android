@@ -37,6 +37,7 @@ fun FeedTabs(
     onOpenDrawer: () -> Unit,
     onNavigateSearch: () -> Unit,
     shouldDisplayBottomBar: Boolean,
+    onShowBottomBar: () -> Unit,
     onChangeTab: (Int) -> Unit,
 ) {
     val tabs = listOf(stringResource(R.string.following), stringResource(R.string.explore))
@@ -54,22 +55,38 @@ fun FeedTabs(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
-            Box(modifier = Modifier.clickable(onClick = onOpenDrawer)) {
-                Box(
-                    modifier = Modifier.padding(BasePadding),
-                    contentAlignment = Alignment.Center
-                ) {
-                    AnimatedContent(
-                        targetState = shouldDisplayBottomBar,
-                        transitionSpec = { fadeIn(tween(300)) togetherWith fadeOut(tween(300)) },
-                        label = "label"
-                    ) { display ->
-                        Icon(
-                            modifier = Modifier.size(30.dp),
-                            imageVector = if(display) Icons.Outlined.Menu else Icons.Default.Close ,
-                            contentDescription = null,
-                            tint = Color(0xFFE0E0E0)
-                        )
+            AnimatedContent(
+                targetState = shouldDisplayBottomBar,
+                transitionSpec = { fadeIn(tween(300)) togetherWith fadeOut(tween(300)) },
+                label = "label"
+            ) { display ->
+                if(display) {
+                    Box(modifier = Modifier.clickable(onClick = onOpenDrawer)) {
+                        Box(
+                            modifier = Modifier.padding(BasePadding),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(30.dp),
+                                imageVector = Icons.Outlined.Menu ,
+                                contentDescription = null,
+                                tint = Color(0xFFE0E0E0)
+                            )
+                        }
+                    }
+                } else {
+                    Box(modifier = Modifier.clickable(onClick = onShowBottomBar)) {
+                        Box(
+                            modifier = Modifier.padding(BasePadding),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(30.dp),
+                                imageVector = Icons.Default.Close ,
+                                contentDescription = null,
+                                tint = Color(0xFFE0E0E0)
+                            )
+                        }
                     }
                 }
             }
