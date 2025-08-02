@@ -1,23 +1,15 @@
 package com.example.scrollbooker.ui.feed
-import BottomBar
 import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.annotation.OptIn
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.VerticalPager
@@ -49,21 +41,17 @@ import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.media3.common.Player
 import androidx.media3.ui.PlayerView
 import androidx.paging.LoadState
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.navigation.bottomBar.MainTab
-import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.main.MainUIViewModel
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView.SHOW_BUFFERING_NEVER
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.buttons.MainButton
-import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.ui.feed.components.FeedTabs
+import com.example.scrollbooker.ui.sharedModules.posts.components.PostBottomBar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -79,7 +67,7 @@ fun FeedScreen(
     appointmentsNumber: Int,
     onOpenDrawer: () -> Unit,
     onNavigateSearch: () -> Unit,
-    onNavigate: (MainTab) -> Unit
+    onChangeTab: (MainTab) -> Unit
 ) {
     val pagerState = rememberPagerState(pageCount = { posts.itemCount })
     val currentOnReleasePlayer by rememberUpdatedState(feedViewModel::releasePlayer)
@@ -94,32 +82,13 @@ fun FeedScreen(
 
     Scaffold(
         bottomBar = {
-            AnimatedContent(
-                targetState = shouldDisplayBottomBar,
-                transitionSpec = { fadeIn(tween(300)) togetherWith fadeOut(tween(300)) },
-                label = "label"
-            ) { display ->
-                if(display) {
-                    BottomBar(
-                        appointmentsNumber = appointmentsNumber,
-                        currentTab = MainTab.Feed,
-                        currentRoute = MainRoute.Feed.route,
-                        onNavigate = onNavigate
-                    )
-                } else {
-                    val bottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-
-                    MainButton(
-                        modifier = Modifier
-                            .padding(horizontal = BasePadding)
-                            .padding(bottom = bottomPadding),
-                        contentPadding = PaddingValues(SpacingM),
-                        leadingIcon = R.drawable.ic_calendar_outline,
-                        onClick = {},
-                        title = "Intervale disponibile"
-                    )
-                }
-            }
+            PostBottomBar(
+                actionButtonTitle = "Intervale disponibile",
+                onAction = {},
+                shouldDisplayBottomBar = shouldDisplayBottomBar,
+                appointmentsNumber = appointmentsNumber,
+                onChangeTab = onChangeTab
+            )
         },
     ) {
         Box(modifier = Modifier
