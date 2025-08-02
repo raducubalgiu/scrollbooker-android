@@ -1,8 +1,6 @@
 package com.example.scrollbooker.ui.profile.myProfile.edit
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.headers.HeaderEdit
 import com.example.scrollbooker.components.core.inputs.InputRadio
+import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.core.enums.GenderTypeEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
@@ -56,17 +55,21 @@ fun EditGenderScreen(
         }
     }
 
-    Column(Modifier.fillMaxSize().statusBarsPadding()) {
-        HeaderEdit(
-            onBack = onBack,
-            title = stringResource(R.string.gender),
-            modifier = Modifier.padding(horizontal = BasePadding),
-            onAction = { viewModel.updateGender(newGender) },
-            actionTitle = stringResource(R.string.save),
-            isLoading = isLoading,
-            isEnabled = isEnabled
-        )
-
+    Layout(
+        modifier = Modifier.statusBarsPadding(),
+        enablePaddingH = false,
+        header =  {
+            HeaderEdit(
+                onBack = onBack,
+                title = stringResource(R.string.gender),
+                modifier = Modifier.padding(horizontal = BasePadding),
+                onAction = { viewModel.updateGender(newGender) },
+                actionTitle = stringResource(R.string.save),
+                isLoading = isLoading,
+                isEnabled = isEnabled
+            )
+        }
+    ) {
         LazyColumn {
             itemsIndexed(genders) { index, gender ->
                 InputRadio(

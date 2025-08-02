@@ -1,4 +1,5 @@
 package com.example.scrollbooker.ui.profile.myProfile.edit
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
@@ -19,6 +20,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.checkLength
 import com.example.scrollbooker.ui.profile.myProfile.MyProfileViewModel
+import com.example.scrollbooker.ui.theme.Background
 
 @Composable
 fun EditBioScreen(
