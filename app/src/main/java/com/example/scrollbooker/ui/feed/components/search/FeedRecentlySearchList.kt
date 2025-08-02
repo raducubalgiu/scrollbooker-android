@@ -32,7 +32,6 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.search.domain.model.RecentlySearch
 import com.example.scrollbooker.entity.search.domain.model.UserSearch
-import com.example.scrollbooker.ui.feed.components.FeedSearchRecommendedBusiness
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.titleMedium
 

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.feed.search.tab
+package com.example.scrollbooker.ui.feed.searchResults.tab
 
 sealed class FeedSearchTab(val route: String) {
     object ForYou: FeedSearchTab(route = "For You")

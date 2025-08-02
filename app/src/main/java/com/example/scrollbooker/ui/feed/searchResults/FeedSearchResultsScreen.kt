@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.feed.search
+package com.example.scrollbooker.ui.feed.searchResults
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,11 +19,13 @@ import kotlinx.coroutines.launch
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.scrollbooker.ui.feed.components.FeedSearchResultsTabRow
-import com.example.scrollbooker.ui.feed.search.tab.FeedSearchTab
-import com.example.scrollbooker.ui.feed.search.tab.forYou.FeedSearchForYouTab
-import com.example.scrollbooker.ui.feed.search.tab.users.FeedSearchUsersTab
-import com.example.scrollbooker.ui.feed.search.tab.users.FeedSearchUsersViewModel
+import com.example.scrollbooker.ui.feed.components.search.FeedSearchResultsTabRow
+import com.example.scrollbooker.ui.feed.components.search.FeedSearchHeader
+import com.example.scrollbooker.ui.feed.search.FeedSearchViewModel
+import com.example.scrollbooker.ui.feed.searchResults.tab.FeedSearchTab
+import com.example.scrollbooker.ui.feed.searchResults.tab.forYou.FeedSearchForYouTab
+import com.example.scrollbooker.ui.feed.searchResults.tab.users.FeedSearchUsersTab
+import com.example.scrollbooker.ui.feed.searchResults.tab.users.FeedSearchUsersViewModel
 
 @Composable
 fun FeedSearchResultsScreen(

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.feed.search.tab.users
+package com.example.scrollbooker.ui.feed.searchResults.tab.users
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState

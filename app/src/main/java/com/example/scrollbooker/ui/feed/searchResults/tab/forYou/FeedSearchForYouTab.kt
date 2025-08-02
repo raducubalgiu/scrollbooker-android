@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.feed.search.tab.forYou
+package com.example.scrollbooker.ui.feed.searchResults.tab.forYou
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

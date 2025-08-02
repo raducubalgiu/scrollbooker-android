@@ -11,7 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.feed.FeedScreen
-import com.example.scrollbooker.ui.feed.search.FeedSearchResultsScreen
+import com.example.scrollbooker.ui.feed.searchResults.FeedSearchResultsScreen
 import com.example.scrollbooker.ui.feed.search.FeedSearchScreen
 import com.example.scrollbooker.ui.feed.search.FeedSearchViewModel
 import com.example.scrollbooker.ui.main.MainUIViewModel

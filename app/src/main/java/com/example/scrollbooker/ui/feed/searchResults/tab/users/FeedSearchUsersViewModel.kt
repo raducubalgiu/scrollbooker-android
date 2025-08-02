@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.feed.search.tab.users
+package com.example.scrollbooker.ui.feed.searchResults.tab.users
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

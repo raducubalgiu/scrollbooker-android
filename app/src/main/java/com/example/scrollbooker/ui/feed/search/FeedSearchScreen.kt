@@ -20,6 +20,7 @@ import com.example.scrollbooker.navigation.LocalRootNavController
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.feed.components.search.FeedSearchList
 import com.example.scrollbooker.ui.feed.components.search.FeedRecentlySearchList
+import com.example.scrollbooker.ui.feed.components.search.FeedSearchHeader
 import com.example.scrollbooker.ui.theme.Background
 import kotlinx.coroutines.delay
 

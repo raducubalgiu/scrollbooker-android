@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.feed.search
+package com.example.scrollbooker.ui.feed.components.search
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.feed.search.tab.locations
+package com.example.scrollbooker.ui.feed.searchResults.tab.locations
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
