@@ -1,8 +1,4 @@
 package com.example.scrollbooker.navigation.host
-
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -14,6 +10,10 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.navigation.routes.MainRoute
+import com.example.scrollbooker.navigation.transition.slideInFromLeft
+import com.example.scrollbooker.navigation.transition.slideInFromRight
+import com.example.scrollbooker.navigation.transition.slideOutToLeft
+import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.ui.inbox.InboxScreen
 import com.example.scrollbooker.ui.inbox.InboxViewModel
 import com.example.scrollbooker.ui.inbox.employmentRequestRespond.EmploymentRequestRespondConsentScreen
@@ -49,42 +49,10 @@ fun InboxNavHost(
         ) {
             composable(route = "${MainRoute.EmploymentRequestRespond.route}/{employmentId}",
                 arguments = listOf(navArgument("employmentId") { type = NavType.IntType }),
-                enterTransition = {
-                    slideIntoContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Left,
-                        animationSpec = tween(
-                            durationMillis = 250,
-                            easing = FastOutSlowInEasing
-                        )
-                    )
-                },
-                exitTransition = {
-                    slideOutOfContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Left,
-                        animationSpec = tween(
-                            durationMillis = 250,
-                            easing = FastOutSlowInEasing
-                        )
-                    )
-                },
-                popEnterTransition = {
-                    slideIntoContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Right,
-                        animationSpec = tween(
-                            durationMillis = 250,
-                            easing = FastOutSlowInEasing
-                        )
-                    )
-                },
-                popExitTransition = {
-                    slideOutOfContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Right,
-                        animationSpec = tween(
-                            durationMillis = 250,
-                            easing = FastOutSlowInEasing
-                        )
-                    )
-                }
+                enterTransition = { slideInFromRight() },
+                exitTransition = { slideOutToLeft() },
+                popEnterTransition = { slideInFromLeft() },
+                popExitTransition = { slideOutToRight() }
             ) { backStackEntry ->
                 val employmentId = backStackEntry.arguments?.getInt("employmentId") ?: -1
 
@@ -106,42 +74,10 @@ fun InboxNavHost(
 
             composable(route = "${MainRoute.EmploymentRequestRespondConsent.route}/{employmentId}",
                 arguments = listOf(navArgument("employmentId") { type = NavType.IntType }),
-                enterTransition = {
-                    slideIntoContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Left,
-                        animationSpec = tween(
-                            durationMillis = 250,
-                            easing = FastOutSlowInEasing
-                        )
-                    )
-                },
-                exitTransition = {
-                    slideOutOfContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Left,
-                        animationSpec = tween(
-                            durationMillis = 250,
-                            easing = FastOutSlowInEasing
-                        )
-                    )
-                },
-                popEnterTransition = {
-                    slideIntoContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Right,
-                        animationSpec = tween(
-                            durationMillis = 250,
-                            easing = FastOutSlowInEasing
-                        )
-                    )
-                },
-                popExitTransition = {
-                    slideOutOfContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Right,
-                        animationSpec = tween(
-                            durationMillis = 250,
-                            easing = FastOutSlowInEasing
-                        )
-                    )
-                }
+                enterTransition = { slideInFromRight() },
+                exitTransition = { slideOutToLeft() },
+                popEnterTransition = { slideInFromLeft() },
+                popExitTransition = { slideOutToRight() }
             ) { backStackEntry ->
                 val employmentId = backStackEntry.arguments?.getInt("employmentId") ?: -1
 

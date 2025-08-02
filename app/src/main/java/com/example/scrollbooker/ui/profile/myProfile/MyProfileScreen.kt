@@ -60,10 +60,9 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyProfileScreen(
+    viewModel: MyProfileViewModel,
     myProfileData: FeatureState<UserProfile>,
     myPosts: LazyPagingItems<Post>,
-    mainViewModel: MainUIViewModel,
-    viewModel: ProfileSharedViewModel,
     onNavigate: (String) -> Unit,
     onNavigateToCalendar: (Product) -> Unit,
     appointmentsNumber: Int,
@@ -75,7 +74,7 @@ fun MyProfileScreen(
     val state = rememberPullToRefreshState()
     var isRefreshing by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
-    val isInitLoading by mainViewModel.isInitLoading.collectAsState()
+    val isInitLoading by viewModel.isInitLoading.collectAsState()
 
     if(scheduleSheetState.isVisible) {
         Sheet(
@@ -151,7 +150,7 @@ fun MyProfileScreen(
                                 onRefresh = {
                                     scope.launch {
                                         isRefreshing = true
-                                        mainViewModel.loadUserProfile()
+                                        viewModel.loadUserProfile()
                                         isRefreshing = false
                                     }
                                 }
@@ -170,7 +169,7 @@ fun MyProfileScreen(
                                             user = user,
                                             actions = {
                                                 MyProfileActions(
-                                                    onEditProfile = {},
+                                                    onEditProfile = { onNavigate(MainRoute.EditProfile.route) },
                                                     isBusinessOrEmployee = user.isBusinessOrEmployee
                                                 )
                                             },

@@ -19,11 +19,11 @@ import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.components.core.inputs.EditInput
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.ui.profile.myProfile.ProfileSharedViewModel
+import com.example.scrollbooker.ui.profile.myProfile.MyProfileViewModel
 
 @Composable
 fun EditUsernameScreen(
-    viewModel: ProfileSharedViewModel,
+    viewModel: MyProfileViewModel,
     onBack: () -> Unit
 ) {
     val userState by viewModel.userProfileState.collectAsState()

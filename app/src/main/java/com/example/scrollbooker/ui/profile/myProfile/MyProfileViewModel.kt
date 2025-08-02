@@ -4,29 +4,82 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
+import com.example.scrollbooker.entity.social.post.domain.model.Post
+import com.example.scrollbooker.entity.social.post.domain.useCase.GetUserPostsUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
+import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserProfileUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateBioUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateFullNameUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateGenderUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateUsernameUseCase
+import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileSharedViewModel @Inject constructor(
+class MyProfileViewModel @Inject constructor(
     private val updateFullNameUseCase: UpdateFullNameUseCase,
     private val updateUsernameUseCase: UpdateUsernameUseCase,
     private val updateBioUseCase: UpdateBioUseCase,
-    private val updateGenderUseCase: UpdateGenderUseCase
+    private val updateGenderUseCase: UpdateGenderUseCase,
+    private val getUserPostsUseCase: GetUserPostsUseCase,
+    private val getUserProfileUseCase: GetUserProfileUseCase,
+    private val authDataStore: AuthDataStore
 ): ViewModel() {
     private val _userProfileState = MutableStateFlow<FeatureState<UserProfile>>(FeatureState.Loading)
     val userProfileState: StateFlow<FeatureState<UserProfile>> = _userProfileState
+
+    private val _initCompleted = MutableStateFlow(false)
+    val isInitLoading = combine(_userProfileState, _initCompleted) { profile, done ->
+        (profile is FeatureState.Loading || !done)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, true)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val userPosts: StateFlow<PagingData<Post>> = authDataStore.getUserId()
+        .filterNotNull()
+        .flatMapLatest { userId -> getUserPostsUseCase(userId) }
+        .onEach { _initCompleted.value = true }
+        .cachedIn(viewModelScope)
+        .stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
+
+    fun loadUserProfile() {
+        viewModelScope.launch {
+            val userId = authDataStore.getUserId().firstOrNull()
+
+            if(userId == null) {
+                Timber.tag("Refetch UserProfile").e("ERROR: on Refetching User Profile. User Id not found ")
+                throw IllegalStateException("User id not found in datastore")
+            }
+
+            _userProfileState.value = FeatureState.Loading
+
+            val response = withVisibleLoading { getUserProfileUseCase(userId) }
+
+            _userProfileState.value = response
+        }
+    }
+
+    init {
+        viewModelScope.launch {
+            loadUserProfile()
+        }
+    }
 
     private val _editState = MutableStateFlow<FeatureState<Unit>?>(null)
     val editState: StateFlow<FeatureState<Unit>?> = _editState

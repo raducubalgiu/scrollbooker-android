@@ -19,7 +19,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.navigation.routes.MainRoute
-import com.example.scrollbooker.ui.profile.myProfile.ProfileSharedViewModel
+import com.example.scrollbooker.ui.profile.myProfile.MyProfileViewModel
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.titleMedium
 
@@ -27,7 +27,7 @@ import com.example.scrollbooker.ui.theme.titleMedium
 fun EditProfileScreen(
     onBack: () -> Unit,
     onNavigate: (String) -> Unit,
-    viewModel: ProfileSharedViewModel
+    viewModel: MyProfileViewModel
 ) {
     val userState by viewModel.userProfileState.collectAsState()
     val user = (userState as? FeatureState.Success)?.data

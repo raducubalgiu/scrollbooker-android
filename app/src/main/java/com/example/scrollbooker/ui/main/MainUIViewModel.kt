@@ -50,17 +50,13 @@ class MainUIViewModel @Inject constructor(
     private val getAllBusinessTypesUseCase: GetAllBusinessTypesUseCase,
     private val getAllBusinessDomainsUseCase: GetAllBusinessDomainsUseCase,
     private val getAllBusinessTypesByBusinessDomainUseCase: GetAllBusinessTypesByBusinessDomainUseCase,
-    private val getUserProfileUseCase: GetUserProfileUseCase,
     private val getUserSearchUseCase: GetUserSearchUseCase,
     private val createUserSearchUseCase: CreateUserSearchUseCase,
     private val deleteUserSearchUseCase: DeleteUserSearchUseCase,
     private val getBookNowPostsUseCase: GetBookNowPostsUseCase,
     private val getFollowingPostsUseCase: GetFollowingPostsUseCase,
-    private val getUserPostsUseCase: GetUserPostsUseCase,
-    private val authDataStore: AuthDataStore,
 ): ViewModel() {
-    private val _userProfileState = MutableStateFlow<FeatureState<UserProfile>>(FeatureState.Loading)
-    val userProfileState: StateFlow<FeatureState<UserProfile>> = _userProfileState
+
 
     var appointmentsState by mutableIntStateOf(0)
         private set
@@ -100,35 +96,7 @@ class MainUIViewModel @Inject constructor(
     }
     val followingPosts: Flow<PagingData<Post>> get() = _followingPosts
 
-    private val _initCompleted = MutableStateFlow(false)
-    val isInitLoading = combine(_userProfileState, _initCompleted) { profile, done ->
-        (profile is FeatureState.Loading || !done)
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, true)
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val userPosts: StateFlow<PagingData<Post>> = authDataStore.getUserId()
-        .filterNotNull()
-        .flatMapLatest { userId -> getUserPostsUseCase(userId) }
-        .onEach { _initCompleted.value = true }
-        .cachedIn(viewModelScope)
-        .stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
-
-    fun loadUserProfile() {
-        viewModelScope.launch {
-            val userId = authDataStore.getUserId().firstOrNull()
-
-            if(userId == null) {
-                Timber.tag("Refetch UserProfile").e("ERROR: on Refetching User Profile. User Id not found ")
-                throw IllegalStateException("User id not found in datastore")
-            }
-
-            _userProfileState.value = FeatureState.Loading
-
-            val response = withVisibleLoading { getUserProfileUseCase(userId) }
-
-            _userProfileState.value = response
-        }
-    }
 
     fun updateBusinessTypes() {
         _filteredBusinessTypes.value = _selectedBusinessTypes.value
@@ -257,7 +225,6 @@ class MainUIViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            launch { loadUserProfile() }
             launch { loadAppointmentsNumber() }
             launch { loadAllBusinessTypes() }
             launch { loadAllBusinessDomains() }

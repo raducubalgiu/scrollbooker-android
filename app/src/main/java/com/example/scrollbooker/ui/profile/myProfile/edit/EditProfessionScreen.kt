@@ -12,13 +12,13 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.components.core.inputs.Option
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
-import com.example.scrollbooker.ui.profile.myProfile.ProfileSharedViewModel
+import com.example.scrollbooker.ui.profile.myProfile.MyProfileViewModel
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.headlineLarge
 
 @Composable
 fun EditProfessionScreen(
-    viewModel: ProfileSharedViewModel,
+    viewModel: MyProfileViewModel,
     onBack: () -> Unit
 ) {
     val options = listOf(

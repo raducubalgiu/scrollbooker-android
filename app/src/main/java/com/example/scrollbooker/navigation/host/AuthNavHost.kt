@@ -1,7 +1,4 @@
 package com.example.scrollbooker.navigation.host
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,6 +21,10 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.auth.data.remote.RoleNameEnum
 import com.example.scrollbooker.navigation.routes.AuthRoute
+import com.example.scrollbooker.navigation.transition.slideInFromLeft
+import com.example.scrollbooker.navigation.transition.slideInFromRight
+import com.example.scrollbooker.navigation.transition.slideOutToLeft
+import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessServices.MyServicesScreen
 import com.example.scrollbooker.ui.auth.AuthViewModel
 import com.example.scrollbooker.ui.auth.LoginScreen
@@ -117,42 +118,10 @@ fun AuthNavHost(authViewModel: AuthViewModel) {
 
             composable(
                 AuthRoute.RegisterBusiness.route,
-                enterTransition = {
-                    slideIntoContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Left,
-                        animationSpec = tween(
-                            durationMillis = 250,
-                            easing = FastOutSlowInEasing
-                        )
-                    )
-                },
-                exitTransition = {
-                    slideOutOfContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Left,
-                        animationSpec = tween(
-                            durationMillis = 250,
-                            easing = FastOutSlowInEasing
-                        )
-                    )
-                },
-                popEnterTransition = {
-                    slideIntoContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Right,
-                        animationSpec = tween(
-                            durationMillis = 250,
-                            easing = FastOutSlowInEasing
-                        )
-                    )
-                },
-                popExitTransition = {
-                    slideOutOfContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Right,
-                        animationSpec = tween(
-                            durationMillis = 250,
-                            easing = FastOutSlowInEasing
-                        )
-                    )
-                }
+                enterTransition = { slideInFromRight() },
+                exitTransition = { slideOutToLeft() },
+                popEnterTransition = { slideInFromLeft() },
+                popExitTransition = { slideOutToRight() }
             ) {
                 RegisterBusinessScreen(
                     viewModel = authViewModel,

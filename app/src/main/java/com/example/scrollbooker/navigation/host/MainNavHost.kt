@@ -25,15 +25,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.navigation.containers.DefaultTabContainer
-import com.example.scrollbooker.navigation.routes.MainRoute
+import com.example.scrollbooker.ui.auth.AuthViewModel
 import com.example.scrollbooker.ui.feed.FeedScreenViewModel
 import com.example.scrollbooker.ui.main.MainDrawer
 import com.example.scrollbooker.ui.main.MainUIViewModel
-import com.example.scrollbooker.ui.profile.myProfile.MyProfileScreen
+import com.example.scrollbooker.ui.profile.myProfile.MyProfileViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -45,13 +43,15 @@ val MainTabSaver: Saver<MainTab, String> = Saver(
 @OptIn(UnstableApi::class)
 @Composable
 fun MainNavHost(
+    authViewModel: AuthViewModel,
     rootNavController: NavHostController
 ) {
     val feedViewModel: FeedScreenViewModel = hiltViewModel()
+    val myProfileViewModel: MyProfileViewModel = hiltViewModel()
 
     val mainViewModel: MainUIViewModel = hiltViewModel()
-    val myProfileData by mainViewModel.userProfileState.collectAsState()
-    val myPosts = mainViewModel.userPosts.collectAsLazyPagingItems()
+    val myProfileData by myProfileViewModel.userProfileState.collectAsState()
+    val myPosts = myProfileViewModel.userPosts.collectAsLazyPagingItems()
 
     val bookNowPosts = mainViewModel.bookNowPosts.collectAsLazyPagingItems()
 
@@ -152,17 +152,12 @@ fun MainNavHost(
                     )
                 }
                 is MainTab.Profile -> {
-                    MyProfileScreen(
+                    MyProfileNavHost(
+                        viewModel = myProfileViewModel,
+                        authViewModel = authViewModel,
                         myProfileData = myProfileData,
                         myPosts = myPosts,
-                        mainViewModel = mainViewModel,
-                        viewModel = hiltViewModel(),
-                        onNavigate = { rootNavController.navigate(it) },
-                        onNavigateToCalendar = {
-                            rootNavController.navigate(
-                                "${MainRoute.Calendar.route}/${it.userId}/${it.duration}/${it.id}/${it.name}"
-                            )
-                        },
+                        navController = navControllers[MainTab.Profile]!!,
                         appointmentsNumber = mainViewModel.appointmentsState,
                         onChangeTab = { currentTab = it }
                     )

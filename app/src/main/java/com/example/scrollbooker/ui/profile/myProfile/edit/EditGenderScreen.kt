@@ -26,12 +26,12 @@ import com.example.scrollbooker.core.enums.GenderTypeEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.ui.profile.myProfile.ProfileSharedViewModel
+import com.example.scrollbooker.ui.profile.myProfile.MyProfileViewModel
 import com.example.scrollbooker.ui.theme.Divider
 
 @Composable
 fun EditGenderScreen(
-    viewModel: ProfileSharedViewModel,
+    viewModel: MyProfileViewModel,
     onBack: () -> Unit
 ) {
     val userState by viewModel.userProfileState.collectAsState()
