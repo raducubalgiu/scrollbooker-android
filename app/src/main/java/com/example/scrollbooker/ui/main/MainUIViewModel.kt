@@ -22,23 +22,13 @@ import com.example.scrollbooker.entity.search.domain.useCase.GetUserSearchUseCas
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetBookNowPostsUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetFollowingPostsUseCase
-import com.example.scrollbooker.entity.social.post.domain.useCase.GetUserPostsUseCase
-import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
-import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserProfileUseCase
-import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -56,8 +46,6 @@ class MainUIViewModel @Inject constructor(
     private val getBookNowPostsUseCase: GetBookNowPostsUseCase,
     private val getFollowingPostsUseCase: GetFollowingPostsUseCase,
 ): ViewModel() {
-
-
     var appointmentsState by mutableIntStateOf(0)
         private set
 
@@ -85,9 +73,7 @@ class MainUIViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     val bookNowPosts: Flow<PagingData<Post>> = filteredBusinessTypes
         .map { it.toList() }
-        .flatMapLatest { selectedTypes ->
-            getBookNowPostsUseCase(selectedTypes)
-        }
+        .flatMapLatest { selectedTypes -> getBookNowPostsUseCase(selectedTypes) }
         .cachedIn(viewModelScope)
 
     private val _followingPosts: Flow<PagingData<Post>> by lazy {
@@ -95,8 +81,6 @@ class MainUIViewModel @Inject constructor(
             .cachedIn(viewModelScope)
     }
     val followingPosts: Flow<PagingData<Post>> get() = _followingPosts
-
-
 
     fun updateBusinessTypes() {
         _filteredBusinessTypes.value = _selectedBusinessTypes.value

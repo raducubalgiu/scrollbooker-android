@@ -1,3 +1,5 @@
+@file:kotlin.OptIn(FlowPreview::class)
+
 package com.example.scrollbooker.ui.feed
 import android.annotation.SuppressLint
 import android.view.ViewGroup
@@ -51,6 +53,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.ui.feed.components.FeedTabs
 import com.example.scrollbooker.ui.sharedModules.posts.components.PostBottomBar
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -94,11 +97,9 @@ fun FeedScreen(
         ) {
             FeedTabs(
                 selectedTabIndex = 0,
-                //shouldDisplayBottomBar = shouldDisplayBottomBar,
                 onChangeTab = {},
                 onOpenDrawer = onOpenDrawer,
-                onNavigateSearch = onNavigateSearch,
-                //onShowBottomBar = { shouldDisplayBottomBar = true }
+                onNavigateSearch = onNavigateSearch
             )
 
             posts.apply {
