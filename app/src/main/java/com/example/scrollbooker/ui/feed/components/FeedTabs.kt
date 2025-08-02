@@ -33,8 +33,6 @@ fun FeedTabs(
     selectedTabIndex: Int,
     onOpenDrawer: () -> Unit,
     onNavigateSearch: () -> Unit,
-    shouldDisplayBottomBar: Boolean,
-    onShowBottomBar: () -> Unit,
     onChangeTab: (Int) -> Unit,
 ) {
     val tabs = listOf(stringResource(R.string.following), stringResource(R.string.explore))
@@ -52,32 +50,13 @@ fun FeedTabs(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
-            AnimatedContent(
-                targetState = shouldDisplayBottomBar,
-                transitionSpec = {
-                    fadeIn() togetherWith fadeOut()
-                },
-                label = "label"
-            ) { display ->
-                if(display) {
-                    Box(modifier = Modifier.clickable(onClick = onOpenDrawer)) {
-                        ShadowedIcon(
-                            modifier = Modifier.padding(BasePadding),
-                            painter = painterResource(R.drawable.ic_menu_solid),
-                            contentDescription = "Menu",
-                            iconTintColor = Color(0xFFE0E0E0)
-                        )
-                    }
-                } else {
-                    Box(modifier = Modifier.clickable(onClick = onShowBottomBar)) {
-                        ShadowedIcon(
-                            modifier = Modifier.padding(BasePadding),
-                            painter = painterResource(R.drawable.ic_close_solid),
-                            contentDescription = "Close",
-                            iconTintColor = Color(0xFFE0E0E0)
-                        )
-                    }
-                }
+            Box(modifier = Modifier.clickable(onClick = onOpenDrawer)) {
+                ShadowedIcon(
+                    modifier = Modifier.padding(BasePadding),
+                    painter = painterResource(R.drawable.ic_menu_solid),
+                    contentDescription = "Menu",
+                    iconTintColor = Color(0xFFE0E0E0)
+                )
             }
 
             TabRow(

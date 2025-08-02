@@ -20,8 +20,8 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,7 +38,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.LifecycleStartEffect
-import androidx.media3.common.Player
 import androidx.media3.ui.PlayerView
 import androidx.paging.LoadState
 import com.example.scrollbooker.components.core.layout.ErrorScreen
@@ -80,28 +79,26 @@ fun FeedScreen(
 
     var shouldDisplayBottomBar by rememberSaveable { mutableStateOf(true) }
 
-    Scaffold(
-        bottomBar = {
-            PostBottomBar(
-                actionButtonTitle = "Intervale disponibile",
-                onAction = {},
-                shouldDisplayBottomBar = shouldDisplayBottomBar,
-                appointmentsNumber = appointmentsNumber,
-                onChangeTab = onChangeTab
-            )
-        },
-    ) {
+    Scaffold(bottomBar = {
+        PostBottomBar(
+            actionButtonTitle = "Intervale disponibile",
+            onAction = {},
+            shouldDisplayBottomBar = shouldDisplayBottomBar,
+            appointmentsNumber = appointmentsNumber,
+            onChangeTab = onChangeTab,
+        )
+    }) {
         Box(modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFF121212))
         ) {
             FeedTabs(
                 selectedTabIndex = 0,
-                shouldDisplayBottomBar = shouldDisplayBottomBar,
+                //shouldDisplayBottomBar = shouldDisplayBottomBar,
                 onChangeTab = {},
                 onOpenDrawer = onOpenDrawer,
                 onNavigateSearch = onNavigateSearch,
-                onShowBottomBar = { shouldDisplayBottomBar = true }
+                //onShowBottomBar = { shouldDisplayBottomBar = true }
             )
 
             posts.apply {
@@ -109,12 +106,11 @@ fun FeedScreen(
                     is LoadState.Error -> ErrorScreen()
                     is LoadState.Loading -> Unit
                     is LoadState.NotLoading -> {
-
                         val postId by remember {
                             derivedStateOf { posts[pagerState.currentPage]?.id }
                         }
 
-                        LaunchedEffect(Unit) {
+                        LaunchedEffect(drawerState.currentValue) {
                             snapshotFlow { drawerState.currentValue }
                                 .collectLatest { drawerValue ->
                                     postId?.let {
@@ -146,7 +142,7 @@ fun FeedScreen(
                             }
                         }
 
-                        LaunchedEffect(Unit) {
+                        LaunchedEffect(pagerState.currentPage) {
                             var previousPage = pagerState.currentPage
                             snapshotFlow { pagerState.currentPage }
                                 .distinctUntilChanged()
@@ -169,36 +165,7 @@ fun FeedScreen(
                                 val player = remember(post.id) {
                                     feedViewModel.getOrCreatePlayer(post)
                                 }
-                                var isPlaying by remember { mutableStateOf(player.isPlaying) }
-                                var isBuffering by remember { mutableStateOf(false) }
-                                var isFirstFrameRendered by remember { mutableStateOf(false) }
-                                var hasStartedPlayback by remember { mutableStateOf(false) }
-
-                                DisposableEffect(player) {
-                                    val listener = object : Player.Listener {
-                                        override fun onIsPlayingChanged(playing: Boolean) {
-                                            isPlaying = playing
-                                            if(isPlaying) hasStartedPlayback = true
-                                        }
-
-                                        override fun onPlaybackStateChanged(state: Int) {
-                                            isBuffering = state == Player.STATE_BUFFERING
-                                        }
-
-                                        override fun onRenderedFirstFrame() {
-                                            isFirstFrameRendered = true
-                                        }
-                                    }
-
-                                    player.addListener(listener)
-                                    onDispose {
-                                        player.removeListener(listener)
-                                        isPlaying = false
-                                        isBuffering = false
-                                        isFirstFrameRendered = false
-                                        hasStartedPlayback = false
-                                    }
-                                }
+                                val playerState by feedViewModel.getPlayerState(post.id).collectAsState()
 
                                 Box(modifier = Modifier
                                     .fillMaxSize()
@@ -208,7 +175,7 @@ fun FeedScreen(
                                         onClick = { feedViewModel.togglePlayer(post.id) }
                                     )
                                 ) {
-                                    if(isBuffering) {
+                                    if(playerState.isBuffering) {
                                         CircularProgressIndicator(
                                             modifier = Modifier.size(50.dp).align(Alignment.Center),
                                             color = Color.White.copy(0.5f)
@@ -238,7 +205,10 @@ fun FeedScreen(
                                     )
 
                                     AnimatedVisibility(
-                                        visible = hasStartedPlayback && !isPlaying && !isBuffering && !drawerState.isOpen,
+                                        visible = playerState.hasStartedPlayback &&
+                                                !playerState.isPlaying &&
+                                                !playerState.isBuffering &&
+                                                !drawerState.isOpen,
                                         enter = fadeIn(),
                                         exit = fadeOut()
                                     ) {

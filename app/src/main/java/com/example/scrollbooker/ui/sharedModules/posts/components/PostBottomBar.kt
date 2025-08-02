@@ -7,11 +7,17 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
@@ -28,30 +34,41 @@ fun PostBottomBar(
     appointmentsNumber: Int,
     onChangeTab: (MainTab) -> Unit
 ) {
+    val currentOnAction by rememberUpdatedState(onAction)
+    val currentOnChangeTab by rememberUpdatedState(onChangeTab)
+
     AnimatedContent(
         targetState = shouldDisplayBottomBar,
         transitionSpec = { fadeIn(tween(300)) togetherWith fadeOut(tween(300)) },
         label = "PostBottomBar"
     ) { display ->
-        if(display) {
-            BottomBar(
-                appointmentsNumber = appointmentsNumber,
-                currentTab = MainTab.Feed,
-                currentRoute = MainRoute.Feed.route,
-                onNavigate = onChangeTab
-            )
-        } else {
-            val bottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+        key(display) {
+            if(display) {
+                BottomBar(
+                    appointmentsNumber = appointmentsNumber,
+                    currentTab = MainTab.Feed,
+                    currentRoute = MainRoute.Feed.route,
+                    onNavigate = currentOnChangeTab
+                )
+            } else {
+                val bottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
-            MainButton(
-                modifier = Modifier
-                    .padding(horizontal = BasePadding)
-                    .padding(bottom = bottomPadding),
-                contentPadding = PaddingValues(SpacingM),
-                leadingIcon = R.drawable.ic_calendar_outline,
-                onClick = onAction,
-                title = actionButtonTitle
-            )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = BasePadding)
+                        .padding(bottom = bottomPadding),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    MainButton(
+                        fullWidth = false,
+                        contentPadding = PaddingValues(SpacingM),
+                        leadingIcon = R.drawable.ic_calendar_outline,
+                        onClick = currentOnAction,
+                        title = actionButtonTitle
+                    )
+                }
+            }
         }
     }
 }

@@ -16,8 +16,17 @@ import com.example.scrollbooker.core.util.VideoPlayerCache
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import timber.log.Timber
 import javax.inject.Inject
+
+data class PlayerUIState(
+    val isPlaying: Boolean = false,
+    val isBuffering: Boolean = false,
+    val isFirstFrameRendered: Boolean = false,
+    val hasStartedPlayback: Boolean = false
+)
 
 @UnstableApi
 @HiltViewModel
@@ -25,6 +34,8 @@ class FeedScreenViewModel @Inject constructor(
     @ApplicationContext private val application: Context
 ) : ViewModel() {
     private val playerPool = mutableMapOf<Int, ExoPlayer>()
+
+    private val _playerStates = mutableMapOf<Int, MutableStateFlow<PlayerUIState>>()
 
     private var playerThread: HandlerThread = HandlerThread("ExoPlayer Thread", Process.THREAD_PRIORITY_AUDIO)
         .apply { start() }
@@ -66,13 +77,66 @@ class FeedScreenViewModel @Inject constructor(
         }
     }
 
+    fun getPlayerState(postId: Int): StateFlow<PlayerUIState> {
+        return _playerStates.getOrPut(postId) { MutableStateFlow(PlayerUIState()) }
+    }
+
+    private fun updatePlayerState(
+        postId: Int,
+        transform: (PlayerUIState) -> PlayerUIState
+    ) {
+        _playerStates[postId]?.let { mutableFlow ->
+            mutableFlow.value = transform(mutableFlow.value)
+        }
+    }
+
+    private val playerListeners = mutableMapOf<Int, Player.Listener>()
+
+    private fun attachPlayerStateListener(postId: Int, player: ExoPlayer) {
+        val listener = object : Player.Listener {
+            override fun onIsPlayingChanged(isPlaying: Boolean) {
+                updatePlayerState(postId) { it.copy(
+                    isPlaying = isPlaying,
+                    hasStartedPlayback = isPlaying || it.hasStartedPlayback)
+                }
+            }
+
+            override fun onPlaybackStateChanged(state: Int) {
+                updatePlayerState(postId) { it.copy(
+                    isBuffering = state == Player.STATE_BUFFERING
+                )}
+            }
+
+            override fun onRenderedFirstFrame() {
+                updatePlayerState(postId) { it.copy(
+                    isFirstFrameRendered = true
+                )}
+            }
+        }
+
+        player.addListener(listener)
+        playerListeners[postId] = listener
+    }
+
+    fun resetInactivePlayerStates(postId: Int) {
+        _playerStates
+            .filterKeys { it != postId }
+            .forEach { (_, state) ->
+                state.value = PlayerUIState()
+            }
+    }
+
     fun changePlayerItem(
         post: Post?,
         previousPost: Post?,
         nextPost: Post?
     ) {
         if (post == null) return
+
         val player = getOrCreatePlayer(post = post)
+
+        resetInactivePlayerStates(post.id)
+
         limitPlayerPoolSize(post.id)
 
         val newMediaItem = MediaItem.fromUri(post.mediaFiles.first().url)
@@ -108,6 +172,7 @@ class FeedScreenViewModel @Inject constructor(
                     it.repeatMode = ExoPlayer.REPEAT_MODE_ONE
                     it.playWhenReady = false
                     it.addListener(firstFrameListener)
+                    attachPlayerStateListener(post.id, it)
                 }
         }
     }
@@ -181,9 +246,12 @@ class FeedScreenViewModel @Inject constructor(
             playerPool[id]?.apply {
                 playWhenReady = false
                 pause()
+                playerListeners.remove(id)?.let { removeListener(it) }
                 removeListener(firstFrameListener)
             }
+            _playerStates.remove(id)
 
+            resetInactivePlayerStates(postId)
             releaseInactivePlayers(postId)
         }
     }
@@ -191,7 +259,9 @@ class FeedScreenViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
 
-        playerPool.values.forEach { it.release() }
+        playerPool.values.forEach {
+            it.release()
+        }
         playerPool.clear()
         playerThread.quitSafely()
     }
