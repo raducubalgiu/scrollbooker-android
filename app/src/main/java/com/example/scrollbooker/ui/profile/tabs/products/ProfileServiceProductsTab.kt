@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.tab.products
+package com.example.scrollbooker.ui.profile.tabs.products
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.animateColorAsState
@@ -54,13 +54,14 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.model.ProductCardEnum
+import com.example.scrollbooker.ui.profile.tabs.ProfileTabViewModel
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Primary
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun ProfileServiceProductsTab(
-    viewModel: ProfileProductsTabViewModel,
+    viewModel: ProfileTabViewModel,
     serviceId: Int,
     userId: Int,
     onNavigateToCalendar: (Product) -> Unit

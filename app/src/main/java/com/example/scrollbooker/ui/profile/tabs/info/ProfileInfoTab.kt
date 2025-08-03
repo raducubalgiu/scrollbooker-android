@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.tab.info
+package com.example.scrollbooker.ui.profile.tabs.info
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

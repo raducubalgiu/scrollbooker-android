@@ -44,14 +44,14 @@ import com.example.scrollbooker.ui.profile.components.myProfile.MyProfileMenuLis
 import com.example.scrollbooker.ui.profile.components.profileHeader.ProfileHeader
 import com.example.scrollbooker.ui.profile.components.profileHeader.ProfileShimmer
 import com.example.scrollbooker.ui.profile.components.profileHeader.components.UserScheduleSheet
-import com.example.scrollbooker.ui.profile.tab.ProfileTab
-import com.example.scrollbooker.ui.profile.tab.ProfileTabRow
-import com.example.scrollbooker.ui.profile.tab.ProfileTabViewModel
-import com.example.scrollbooker.ui.profile.tab.bookmarks.ProfileBookmarksTab
-import com.example.scrollbooker.ui.profile.tab.info.ProfileInfoTab
-import com.example.scrollbooker.ui.profile.tab.posts.ProfilePostsTab
-import com.example.scrollbooker.ui.profile.tab.products.ProfileProductsTab
-import com.example.scrollbooker.ui.profile.tab.reposts.ProfileRepostsTab
+import com.example.scrollbooker.ui.profile.tabs.ProfileTab
+import com.example.scrollbooker.ui.profile.tabs.ProfileTabRow
+import com.example.scrollbooker.ui.profile.tabs.ProfileTabViewModel
+import com.example.scrollbooker.ui.profile.tabs.bookmarks.ProfileBookmarksTab
+import com.example.scrollbooker.ui.profile.tabs.info.ProfileInfoTab
+import com.example.scrollbooker.ui.profile.tabs.posts.ProfilePostsTab
+import com.example.scrollbooker.ui.profile.tabs.products.ProfileProductsTab
+import com.example.scrollbooker.ui.profile.tabs.reposts.ProfileRepostsTab
 import kotlinx.coroutines.launch
 
 @SuppressLint("ConfigurationScreenWidthHeight")
@@ -213,6 +213,7 @@ fun MyProfileScreen(
                                                 )
 
                                                 ProfileTab.Products -> ProfileProductsTab(
+                                                    viewModel = viewModel,
                                                     userId = user.id,
                                                     isOwnProfile = user.isOwnProfile,
                                                     businessId = user.businessId,

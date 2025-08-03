@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.tab.products
+package com.example.scrollbooker.ui.profile.tabs.products
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -30,6 +30,7 @@ import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
+import com.example.scrollbooker.ui.profile.tabs.ProfileTabViewModel
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
@@ -39,12 +40,13 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileProductsTab(
+    viewModel: ProfileTabViewModel,
     userId: Int,
     isOwnProfile: Boolean,
     businessId: Int?,
     onNavigateToCalendar: (Product) -> Unit
 ) {
-    val viewModel: ProfileProductsTabViewModel = hiltViewModel()
+    //val viewModel: ProfileProductsTabViewModel = hiltViewModel()
     val servicesState by viewModel.servicesState.collectAsState()
 
     LaunchedEffect(businessId) {

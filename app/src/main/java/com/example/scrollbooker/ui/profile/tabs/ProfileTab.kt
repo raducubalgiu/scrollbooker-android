@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.tab
+package com.example.scrollbooker.ui.profile.tabs
 
 import com.example.scrollbooker.R
 
