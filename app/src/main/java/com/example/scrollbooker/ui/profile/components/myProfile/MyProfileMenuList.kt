@@ -9,11 +9,12 @@ import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.list.ItemList
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.navigation.routes.MainRoute
 
 @Composable
 fun MyProfileMenuList(
-    onNavigate: (String) -> Unit
+    onNavigateToMyBusiness: () -> Unit,
+    onNavigateToSettings: () -> Unit,
+    onNavigateToCreatePost: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -24,25 +25,19 @@ fun MyProfileMenuList(
             headLine = "Creaza o postare",
             leftIcon = painterResource(R.drawable.ic_camera_outline),
             displayRightIcon = false,
-            onClick = {  }
-        )
-        ItemList(
-            headLine = stringResource(id = R.string.calendar),
-            leftIcon = painterResource(R.drawable.ic_calendar_outline),
-            displayRightIcon = false,
-            onClick = { onNavigate(MainRoute.MyCalendar.route) }
+            onClick = onNavigateToCreatePost
         )
         ItemList(
             headLine = stringResource(id = R.string.myBusiness),
             leftIcon = painterResource(R.drawable.ic_business_outline),
             displayRightIcon = false,
-            onClick = { onNavigate(MainRoute.MyBusiness.route) }
+            onClick = onNavigateToMyBusiness
         )
         ItemList(
             headLine = stringResource(id = R.string.settings),
             leftIcon = painterResource(R.drawable.ic_settings_outline),
             displayRightIcon = false,
-            onClick = { onNavigate(MainRoute.Settings.route) }
+            onClick = onNavigateToSettings
         )
     }
 }

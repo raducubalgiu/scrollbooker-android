@@ -24,7 +24,7 @@ import com.example.scrollbooker.entity.social.post.domain.model.Post
 fun ProfilePostsTab(
     isOwnProfile: Boolean,
     posts: LazyPagingItems<Post>,
-    onNavigate: (String) -> Unit
+    onNavigateToPostDetail: (String) -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         when(posts.loadState.refresh) {
@@ -40,7 +40,7 @@ fun ProfilePostsTab(
                     items(posts.itemCount) { index ->
                         val post = posts[index]
                         if(post != null) {
-                            PostGrid(post = post, onNavigateToPost = onNavigate)
+                            PostGrid(post = post, onNavigateToPost = onNavigateToPostDetail)
                         }
                     }
                 }

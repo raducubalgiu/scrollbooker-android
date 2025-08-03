@@ -13,7 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
-import com.example.scrollbooker.ui.profile.components.userInformation.components.UserScheduleSheet
+import com.example.scrollbooker.ui.profile.components.profileHeader.components.UserScheduleSheet
 import com.example.scrollbooker.ui.theme.headlineMedium
 
 @Composable

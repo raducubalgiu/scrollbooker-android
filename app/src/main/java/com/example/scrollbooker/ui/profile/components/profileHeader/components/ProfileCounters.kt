@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.components.userInformation.components
+package com.example.scrollbooker.ui.profile.components.profileHeader.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -19,7 +19,7 @@ import com.example.scrollbooker.navigation.routes.MainRoute
 fun ProfileCounters(
     counters: UserCounters,
     isBusinessOrEmployee: Boolean,
-    onNavigate: (String) -> Unit
+    onNavigateToSocial: (tabIndex: Int) -> Unit
 ) {
     Row(modifier = Modifier
         .fillMaxWidth()
@@ -33,19 +33,19 @@ fun ProfileCounters(
         CounterItem(
             counter = counters.ratingsCount,
             label = if(!isBusinessOrEmployee) stringResource(R.string.bookings) else stringResource(R.string.reviews),
-            onNavigate = { onNavigate("${MainRoute.UserSocial.route}/0") }
+            onNavigate = { onNavigateToSocial(0) }
         )
         VerticalDivider()
         CounterItem(
             counter = counters.followersCount,
             label = stringResource(R.string.followers),
-            onNavigate = { onNavigate("${MainRoute.UserSocial.route}/1") }
+            onNavigate = { onNavigateToSocial(1) }
         )
         VerticalDivider()
         CounterItem(
             counter = counters.followingsCount,
             label = stringResource(R.string.following),
-            onNavigate = { onNavigate("${MainRoute.UserSocial.route}/2") }
+            onNavigate = { onNavigateToSocial(2) }
         )
     }
 }

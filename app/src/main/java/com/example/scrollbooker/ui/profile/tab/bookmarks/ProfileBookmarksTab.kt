@@ -26,7 +26,7 @@ import com.example.scrollbooker.ui.profile.tab.ProfileTabViewModel
 fun ProfileBookmarksTab(
     viewModel: ProfileTabViewModel,
     isOwnProfile: Boolean,
-    onNavigate: (String) -> Unit
+    onNavigateToPostDetail: (String) -> Unit
 ) {
     val posts = viewModel.userBookmarkedPosts.collectAsLazyPagingItems()
 
@@ -52,7 +52,7 @@ fun ProfileBookmarksTab(
                     items(posts.itemCount) { index ->
                         val post = posts[index]
                         if(post != null) {
-                            PostGrid(post = post, onNavigateToPost = onNavigate)
+                            PostGrid(post = post, onNavigateToPost = onNavigateToPostDetail)
                         }
                     }
                 }

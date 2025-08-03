@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.components.userInformation.components
+package com.example.scrollbooker.ui.profile.components.profileHeader.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,7 +29,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.shimmer.rememberShimmerBrush
 import com.example.scrollbooker.components.core.layout.ErrorScreen
-import com.example.scrollbooker.components.core.sheet.SheetHeader
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.formatTime
 import com.example.scrollbooker.core.util.translateDayOfWeek

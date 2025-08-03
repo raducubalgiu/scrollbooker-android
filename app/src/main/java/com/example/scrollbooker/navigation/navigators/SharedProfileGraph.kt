@@ -1,5 +1,6 @@
 package com.example.scrollbooker.navigation.navigators
 
+import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -11,6 +12,7 @@ import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
+import com.example.scrollbooker.ui.profile.ProfileNavigator
 import com.example.scrollbooker.ui.profile.social.UserSocialScreen
 import com.example.scrollbooker.ui.profile.social.UserSocialViewModel
 import com.example.scrollbooker.ui.profile.userProfile.ProfileViewModel
@@ -27,16 +29,12 @@ fun NavGraphBuilder.sharedProfileGraph(
         popExitTransition = { slideOutToRight() }
     ) { backStackEntry ->
         val viewModel = hiltViewModel<ProfileViewModel>(backStackEntry)
+        val profileNavigate = remember(navController) { ProfileNavigator(navController) }
 
         UserProfileScreen(
             viewModel = viewModel,
-            onNavigate = { navController.navigate(it) },
             onBack = { navController.popBackStack() },
-            onNavigateToCalendar = {
-                navController.navigate(
-                    "${MainRoute.Calendar.route}/${it.userId}/${it.duration}/${it.id}/${it.name}"
-                )
-            }
+            profileNavigate = profileNavigate
         )
     }
 

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.components.userInformation
+package com.example.scrollbooker.ui.profile.components.profileHeader
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -31,11 +31,11 @@ import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
-import com.example.scrollbooker.ui.profile.components.userInformation.components.ProfileBio
-import com.example.scrollbooker.ui.profile.components.userInformation.components.ProfileBusinessEmployee
-import com.example.scrollbooker.ui.profile.components.userInformation.components.ProfileIntentActionsList
-import com.example.scrollbooker.ui.profile.components.userInformation.components.ProfileLocationDistance
-import com.example.scrollbooker.ui.profile.components.userInformation.components.ProfileOpeningHours
+import com.example.scrollbooker.ui.profile.components.profileHeader.components.ProfileBio
+import com.example.scrollbooker.ui.profile.components.profileHeader.components.ProfileBusinessEmployee
+import com.example.scrollbooker.ui.profile.components.profileHeader.components.ProfileIntentActionsList
+import com.example.scrollbooker.ui.profile.components.profileHeader.components.ProfileLocationDistance
+import com.example.scrollbooker.ui.profile.components.profileHeader.components.ProfileOpeningHours
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.titleMedium

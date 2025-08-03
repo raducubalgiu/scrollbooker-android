@@ -29,12 +29,9 @@ import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.entity.booking.products.domain.model.Product
-import com.example.scrollbooker.navigation.routes.MainRoute
-import com.example.scrollbooker.ui.profile.components.userInformation.ProfileShimmer
-import com.example.scrollbooker.ui.profile.components.userInformation.ProfileUserInfo
-import com.example.scrollbooker.ui.profile.components.userInformation.components.ProfileCounters
-import com.example.scrollbooker.ui.profile.components.userProfile.UserProfileActions
+import com.example.scrollbooker.ui.profile.ProfileNavigator
+import com.example.scrollbooker.ui.profile.components.profileHeader.ProfileHeader
+import com.example.scrollbooker.ui.profile.components.profileHeader.ProfileShimmer
 import com.example.scrollbooker.ui.profile.tab.ProfileTab
 import com.example.scrollbooker.ui.profile.tab.ProfileTabRow
 import com.example.scrollbooker.ui.profile.tab.ProfileTabViewModel
@@ -51,9 +48,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun UserProfileScreen(
     viewModel: ProfileViewModel,
-    onNavigate: (String) -> Unit,
     onBack: () -> Unit,
-    onNavigateToCalendar: (Product) -> Unit
+    profileNavigate: ProfileNavigator
 ) {
     val userProfileState by viewModel.userProfileState.collectAsState()
     val posts = viewModel.userPosts.collectAsLazyPagingItems()
@@ -104,24 +100,16 @@ fun UserProfileScreen(
                         ) {
                             LazyColumn {
                                 item {
-                                    ProfileCounters(
-                                        counters = user.counters,
-                                        isBusinessOrEmployee = user.isBusinessOrEmployee,
-                                        onNavigate = {
-                                            onNavigate("$it/${user.id}/${user.username}/${user.isBusinessOrEmployee}")
-                                        }
-                                    )
-
-                                    ProfileUserInfo(
+                                    ProfileHeader(
                                         user = user,
-                                        actions = {
-                                            UserProfileActions(
-                                                isFollow = user.isFollow,
-                                                onNavigateToCalendar = { onNavigate(MainRoute.Calendar.route) }
-                                            )
-                                        },
-                                        onOpenScheduleSheet = {  },
-                                        onNavigateToBusinessOwner = { onNavigate("${MainRoute.UserProfile.route}/${it}") }
+                                        onOpenScheduleSheet = {},
+                                        onNavigateToSocial = { profileNavigate.toSocial(it) },
+                                        onNavigateToEditProfile = { profileNavigate.toEditProfile() },
+                                        onNavigateToBusinessOwner = { ownerId ->
+                                            ownerId?.let {
+                                                profileNavigate.toBusinessOwner(ownerId)
+                                            }
+                                        }
                                     )
                                 }
 
@@ -141,28 +129,32 @@ fun UserProfileScreen(
                                             viewModel.setUserId(user.id)
                                         }
 
-                                        when(tabs[page]) {
+                                        when (tabs[page]) {
                                             ProfileTab.Posts -> ProfilePostsTab(
                                                 isOwnProfile = user.isOwnProfile,
                                                 posts = posts,
-                                                onNavigate = onNavigate
+                                                onNavigateToPostDetail = { profileNavigate.toPostDetail() }
                                             )
+
                                             ProfileTab.Products -> ProfileProductsTab(
                                                 userId = user.id,
                                                 isOwnProfile = user.isOwnProfile,
                                                 businessId = user.businessId,
-                                                onNavigateToCalendar = onNavigateToCalendar
+                                                onNavigateToCalendar = { profileNavigate.toCalendar(it) }
                                             )
+
                                             ProfileTab.Reposts -> ProfileRepostsTab(
                                                 viewModel = viewModel,
                                                 isOwnProfile = user.isOwnProfile,
-                                                onNavigate = onNavigate
+                                                onNavigateToPostDetail = { profileNavigate.toPostDetail() }
                                             )
+
                                             ProfileTab.Bookmarks -> ProfileBookmarksTab(
                                                 viewModel = viewModel,
                                                 isOwnProfile = user.isOwnProfile,
-                                                onNavigate = onNavigate
+                                                onNavigateToPostDetail = { profileNavigate.toPostDetail() }
                                             )
+
                                             ProfileTab.Info -> ProfileInfoTab()
                                         }
                                     }

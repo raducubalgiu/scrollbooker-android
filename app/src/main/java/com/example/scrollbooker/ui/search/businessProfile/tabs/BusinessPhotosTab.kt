@@ -29,7 +29,7 @@ import com.example.scrollbooker.components.core.divider.VerticalDivider
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.ui.profile.components.userInformation.components.CounterItem
+import com.example.scrollbooker.ui.profile.components.profileHeader.components.CounterItem
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.titleLarge
 

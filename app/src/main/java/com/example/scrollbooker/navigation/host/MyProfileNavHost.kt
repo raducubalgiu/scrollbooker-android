@@ -1,5 +1,6 @@
 package com.example.scrollbooker.navigation.host
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,6 +20,7 @@ import com.example.scrollbooker.navigation.transition.slideInFromRight
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.ui.auth.AuthViewModel
+import com.example.scrollbooker.ui.profile.ProfileNavigator
 import com.example.scrollbooker.ui.profile.myProfile.MyProfileScreen
 import com.example.scrollbooker.ui.profile.myProfile.MyProfileViewModel
 
@@ -49,14 +51,15 @@ fun MyProfileNavHost(
                 popEnterTransition = { slideInFromLeft() },
                 popExitTransition = { slideOutToRight() }
             ) {
+                val profileNavigate = remember(navController) { ProfileNavigator(navController) }
+
                 MyProfileScreen(
                     viewModel = viewModel,
                     myProfileData = myProfileData,
                     myPosts = myPosts,
-                    onNavigate = { navController.navigate(it) },
-                    onNavigateToCalendar = {},
                     appointmentsNumber = appointmentsNumber,
-                    onChangeTab = onChangeTab
+                    onChangeTab = onChangeTab,
+                    profileNavigate = profileNavigate
                 )
             }
 
