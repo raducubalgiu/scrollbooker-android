@@ -26,14 +26,9 @@ import com.example.scrollbooker.ui.profile.tab.ProfileTabViewModel
 @Composable
 fun ProfileRepostsTab(
     viewModel: ProfileTabViewModel,
-    userId: Int,
     isOwnProfile: Boolean,
     onNavigate: (String) -> Unit
 ) {
-
-    LaunchedEffect(userId) {
-        viewModel.setUserId(userId)
-    }
 
     val posts = viewModel.userReposts.collectAsLazyPagingItems()
 
@@ -59,11 +54,7 @@ fun ProfileRepostsTab(
                     items(posts.itemCount) { index ->
                         val post = posts[index]
                         if(post != null) {
-                            PostGrid(
-                                post = post,
-                                columnIndex = index,
-                                onNavigateToPost = onNavigate
-                            )
+                            PostGrid(post = post, onNavigateToPost = onNavigate)
                         }
                     }
                 }

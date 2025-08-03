@@ -8,10 +8,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.AvatarSizeS
 import com.example.scrollbooker.ui.theme.Divider
@@ -19,7 +22,12 @@ import com.example.scrollbooker.ui.theme.Divider
 @Composable
 fun Avatar(url: String, size: Dp = AvatarSizeS ) {
     AsyncImage(
-        model = url,
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(url)
+            .diskCachePolicy(CachePolicy.ENABLED)
+            .memoryCachePolicy(CachePolicy.ENABLED)
+            .crossfade(true)
+            .build(),
         contentDescription = "User Avatar",
         modifier = Modifier
             .size(size)
@@ -31,12 +39,3 @@ fun Avatar(url: String, size: Dp = AvatarSizeS ) {
         contentScale = ContentScale.Crop,
     )
 }
-
-//@Preview(name = "Light", showBackground = true)
-//@Preview(name = "Dark", showBackground = true, uiMode = UI_MODE_NIGHT_YES)
-//@Composable
-//fun AvatarPreview() {
-//    ScrollBookerTheme() {
-//        Avatar(url = "")
-//    }
-//}

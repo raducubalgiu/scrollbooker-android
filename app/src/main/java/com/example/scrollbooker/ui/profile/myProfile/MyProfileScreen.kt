@@ -15,6 +15,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -196,6 +197,10 @@ fun MyProfileScreen(
                                         ) { page ->
                                             val viewModel: ProfileTabViewModel = hiltViewModel()
 
+                                            LaunchedEffect(user.id) {
+                                                viewModel.setUserId(userId = user.id)
+                                            }
+
                                             when (tabs[page]) {
                                                 ProfileTab.Posts -> ProfilePostsTab(
                                                     isOwnProfile = user.isOwnProfile,
@@ -212,14 +217,12 @@ fun MyProfileScreen(
 
                                                 ProfileTab.Reposts -> ProfileRepostsTab(
                                                     viewModel = viewModel,
-                                                    userId = user.id,
                                                     isOwnProfile = user.isOwnProfile,
                                                     onNavigate = onNavigate
                                                 )
 
                                                 ProfileTab.Bookmarks -> ProfileBookmarksTab(
                                                     viewModel = viewModel,
-                                                    userId = user.id,
                                                     isOwnProfile = user.isOwnProfile,
                                                     onNavigate = onNavigate
                                                 )

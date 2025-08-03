@@ -36,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
@@ -50,6 +51,8 @@ import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView.SHOW_BUFFERING_NEVER
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
+import com.example.scrollbooker.components.core.layout.EmptyScreen
+import com.example.scrollbooker.core.util.getOrNull
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.ui.feed.components.FeedTabs
 import com.example.scrollbooker.ui.sharedModules.posts.components.PostBottomBar
@@ -57,6 +60,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
 
 @OptIn(UnstableApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -108,7 +112,9 @@ fun FeedScreen(
                     is LoadState.Loading -> Unit
                     is LoadState.NotLoading -> {
                         val postId by remember {
-                            derivedStateOf { posts[pagerState.currentPage]?.id }
+                            derivedStateOf {
+                                posts.getOrNull(pagerState.currentPage)?.id
+                            }
                         }
 
                         LaunchedEffect(drawerState.currentValue) {
@@ -116,9 +122,9 @@ fun FeedScreen(
                                 .collectLatest { drawerValue ->
                                     postId?.let {
                                         if(drawerValue == DrawerValue.Open) {
-                                            feedViewModel.pauseIfPlaying(postId!!)
+                                            feedViewModel.pauseIfPlaying(it)
                                         } else {
-                                            feedViewModel.resumeIfPlaying(postId!!)
+                                            feedViewModel.resumeIfPlaying(it)
                                         }
                                     }
                                 }
@@ -226,7 +232,6 @@ fun FeedScreen(
                                             )
                                         }
                                     }
-
 //                                    var progress by remember(post.id) { mutableFloatStateOf(0f) }
 //
 //                                    LaunchedEffect(player) {

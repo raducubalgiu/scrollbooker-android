@@ -8,7 +8,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -26,14 +25,9 @@ import com.example.scrollbooker.ui.profile.tab.ProfileTabViewModel
 @Composable
 fun ProfileBookmarksTab(
     viewModel: ProfileTabViewModel,
-    userId: Int,
     isOwnProfile: Boolean,
     onNavigate: (String) -> Unit
 ) {
-    LaunchedEffect(userId) {
-        viewModel.setUserId(userId)
-    }
-
     val posts = viewModel.userBookmarkedPosts.collectAsLazyPagingItems()
 
     Box(
@@ -58,11 +52,7 @@ fun ProfileBookmarksTab(
                     items(posts.itemCount) { index ->
                         val post = posts[index]
                         if(post != null) {
-                            PostGrid(
-                                post = post,
-                                columnIndex = index,
-                                onNavigateToPost = onNavigate
-                            )
+                            PostGrid(post = post, onNavigateToPost = onNavigate)
                         }
                     }
                 }

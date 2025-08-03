@@ -64,19 +64,12 @@ fun MyProfileActions(
                 modifier = Modifier.weight(0.5f),
                 onClick = {}
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_calendar_outline),
-                        contentDescription = null
-                    )
-                    Spacer(Modifier.width(SpacingS))
-                    Text(
-                        text = "Share profile",
-                        style = titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = OnBackground
-                    )
-                }
+                Text(
+                    text = stringResource(R.string.shareProfile),
+                    style = titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = OnBackground
+                )
             }
         }
     }
