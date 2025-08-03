@@ -2,7 +2,7 @@ package com.example.scrollbooker.ui.profile.components.profileHeader
 
 import androidx.compose.runtime.Composable
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
-import com.example.scrollbooker.ui.profile.NavigateSocialParam
+import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
 import com.example.scrollbooker.ui.profile.components.myProfile.MyProfileActions
 import com.example.scrollbooker.ui.profile.components.profileHeader.components.ProfileCounters
 

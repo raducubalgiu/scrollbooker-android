@@ -1,4 +1,4 @@
-package com.example.scrollbooker.navigation.navigators
+package com.example.scrollbooker.navigation.graphs
 
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel

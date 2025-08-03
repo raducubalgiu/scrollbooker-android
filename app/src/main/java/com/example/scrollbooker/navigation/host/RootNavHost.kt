@@ -6,8 +6,8 @@ import androidx.navigation.compose.composable
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavHostController
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.navigation.navigators.calendarGraph
-import com.example.scrollbooker.navigation.navigators.sharedProfileGraph
+import com.example.scrollbooker.navigation.graphs.calendarGraph
+import com.example.scrollbooker.navigation.graphs.sharedProfileGraph
 import com.example.scrollbooker.navigation.routes.GlobalRoute
 import com.example.scrollbooker.ui.auth.AuthViewModel
 

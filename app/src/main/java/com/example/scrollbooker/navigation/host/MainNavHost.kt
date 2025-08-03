@@ -1,5 +1,6 @@
 package com.example.scrollbooker.navigation.host
 import BottomBar
+import android.annotation.SuppressLint
 import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,7 +27,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.navigation.bottomBar.MainTab
-import com.example.scrollbooker.navigation.containers.DefaultTabContainer
 import com.example.scrollbooker.ui.auth.AuthViewModel
 import com.example.scrollbooker.ui.feed.FeedScreenViewModel
 import com.example.scrollbooker.ui.main.MainDrawer
@@ -40,6 +40,7 @@ val MainTabSaver: Saver<MainTab, String> = Saver(
     restore = { route -> MainTab.fromRoute(route) }
 )
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(UnstableApi::class)
 @Composable
 fun MainNavHost(
@@ -128,17 +129,10 @@ fun MainNavHost(
                                 onNavigate = { currentTab = it }
                             )
                         }
-                    ) { innerPadding ->
-                        DefaultTabContainer(
-                            navController = navControllers[MainTab.Inbox]!!,
-                            enablePadding = false,
-                            innerPadding = innerPadding,
-                            content = {
-                                SearchNavHost(
-                                    businessTypesState = businessTypesState,
-                                    navController = navControllers[MainTab.Search]!!
-                                )
-                            }
+                    ) {
+                        SearchNavHost(
+                            businessTypesState = businessTypesState,
+                            navController = navControllers[MainTab.Search]!!
                         )
                     }
                 }

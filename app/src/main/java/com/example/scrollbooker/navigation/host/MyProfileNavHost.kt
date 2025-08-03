@@ -10,17 +10,17 @@ import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.navigation.bottomBar.MainTab
-import com.example.scrollbooker.navigation.navigators.editProfileGraph
-import com.example.scrollbooker.navigation.navigators.myBusinessGraph
-import com.example.scrollbooker.navigation.navigators.settingsGraph
-import com.example.scrollbooker.navigation.navigators.sharedProfileGraph
+import com.example.scrollbooker.navigation.graphs.editProfileGraph
+import com.example.scrollbooker.navigation.graphs.myBusinessGraph
+import com.example.scrollbooker.navigation.graphs.settingsGraph
+import com.example.scrollbooker.navigation.graphs.sharedProfileGraph
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.ui.auth.AuthViewModel
-import com.example.scrollbooker.ui.profile.ProfileNavigator
+import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.profile.myProfile.MyProfileScreen
 import com.example.scrollbooker.ui.profile.myProfile.MyProfileViewModel
 

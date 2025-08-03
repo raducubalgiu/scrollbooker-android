@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile
+package com.example.scrollbooker.navigation.navigators
 
 import androidx.navigation.NavHostController
 import com.example.scrollbooker.entity.booking.products.domain.model.Product

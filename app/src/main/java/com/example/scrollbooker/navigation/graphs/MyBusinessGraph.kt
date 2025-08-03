@@ -1,4 +1,4 @@
-package com.example.scrollbooker.navigation.navigators
+package com.example.scrollbooker.navigation.graphs
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.FastOutSlowInEasing
