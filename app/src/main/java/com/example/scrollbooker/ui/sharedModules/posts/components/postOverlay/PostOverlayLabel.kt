@@ -33,7 +33,7 @@ fun PostOverlayLabel(
     Row(
         modifier = Modifier
             .clip(CircleShape)
-            .background(containerColor.copy(alpha = 0.8f))
+            .background(containerColor.copy(alpha = 0.9f))
             .padding(vertical = SpacingXS, horizontal = SpacingM),
         verticalAlignment = Alignment.CenterVertically
     ) {

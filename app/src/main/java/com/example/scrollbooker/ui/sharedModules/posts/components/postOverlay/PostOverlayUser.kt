@@ -26,6 +26,7 @@ import com.example.scrollbooker.components.core.avatar.AvatarWithRating
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
+import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge
 
 @Composable
@@ -39,11 +40,6 @@ fun PostOverlayUser(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        AvatarWithRating(
-            rating = ratingsAverage,
-            size = 50.dp
-        )
-        Spacer(Modifier.width(SpacingM))
         Column {
             Text(
                 text = fullName,
@@ -67,7 +63,7 @@ fun PostOverlayUser(
                         letterSpacing = 0.5.sp
                     ),
                     fontWeight = FontWeight.SemiBold,
-                    color = Color.Gray.copy(alpha = 0.85f)
+                    color = Primary.copy(alpha = 0.85f)
                 )
                 distance?.let {
                     Spacer(Modifier.width(SpacingM))
@@ -75,7 +71,7 @@ fun PostOverlayUser(
                         Icon(
                             painter = painterResource(R.drawable.ic_location_outline),
                             contentDescription = null,
-                            tint = Color.Gray.copy(alpha = 0.85f)
+                            tint = Color.White.copy(alpha = 0.85f)
                         )
                         Spacer(Modifier.width(SpacingXS))
                         Text(
@@ -91,13 +87,13 @@ fun PostOverlayUser(
                                 letterSpacing = 0.5.sp
                             ),
                             fontWeight = FontWeight.SemiBold,
-                            color = Color.Gray.copy(alpha = 0.85f)
+                            color = Color.White.copy(alpha = 0.85f)
                         )
                         Spacer(Modifier.width(SpacingS))
                         Icon(
                             imageVector = Icons.Default.KeyboardArrowDown,
                             contentDescription = null,
-                            tint = Color.Gray.copy(alpha = 0.85f)
+                            tint = Color.White.copy(alpha = 0.85f),
                         )
                     }
                 }

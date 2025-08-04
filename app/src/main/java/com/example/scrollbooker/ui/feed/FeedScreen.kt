@@ -36,10 +36,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.media3.ui.PlayerView
 import androidx.paging.LoadState
@@ -51,16 +51,22 @@ import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView.SHOW_BUFFERING_NEVER
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.core.util.getOrNull
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.ui.feed.components.FeedTabs
+import com.example.scrollbooker.ui.sharedModules.posts.PostsPagerViewModel
 import com.example.scrollbooker.ui.sharedModules.posts.components.PostBottomBar
+import com.example.scrollbooker.ui.sharedModules.posts.components.postOverlay.PostOverlay
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterNotNull
+
+data class PostActionButtonUIModel(
+    val title: String,
+    val containerColor: Color = Color(0xFFFF6F00),
+    val contentColor: Color = Color(0xFFFFFFFF),
+    val icon: Int
+)
 
 @OptIn(UnstableApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -77,18 +83,78 @@ fun FeedScreen(
 ) {
     val pagerState = rememberPagerState(pageCount = { posts.itemCount })
     val currentOnReleasePlayer by rememberUpdatedState(feedViewModel::releasePlayer)
+    val pagerViewModel: PostsPagerViewModel = hiltViewModel()
 
     LifecycleStartEffect(true) {
         onStopOrDispose {
-            currentOnReleasePlayer(posts[pagerState.currentPage]?.id)
+            currentOnReleasePlayer(posts.getOrNull(pagerState.currentPage)?.id)
         }
     }
 
     var shouldDisplayBottomBar by rememberSaveable { mutableStateOf(true) }
 
+    val currentPost by remember {
+        derivedStateOf {
+            posts.getOrNull(pagerState.currentPage)
+        }
+    }
+
+    val isFirstPage by remember(pagerState.currentPage) {
+        derivedStateOf {
+            pagerState.currentPage == 0
+        }
+    }
+
+    LaunchedEffect(isFirstPage) {
+        shouldDisplayBottomBar = isFirstPage
+    }
+
+    val buttonUIModel by remember(currentPost) {
+        derivedStateOf {
+            currentPost?.let { post ->
+                when {
+                    post.lastMinute.isLastMinute -> {
+                        PostActionButtonUIModel(
+                            title = "Profita de reducere",
+                            icon = R.drawable.ic_bolt_solid
+                        )
+                    }
+                    post.product?.discount?.toInt()?.let { it > 0 } == true -> {
+                        PostActionButtonUIModel(
+                            title = "Profita de reducere",
+                            icon = R.drawable.ic_percent_badge_outline
+                        )
+                    }
+                    else -> {
+                        PostActionButtonUIModel(
+                            title = "Intervale disponibile",
+                            icon = R.drawable.ic_calendar_outline
+                        )
+                    }
+                }
+
+//                post.product?.discount?.let {
+//                    if(it.toInt() > 0) {
+//                        PostActionButtonUIModel(
+//                            title = "Profita de reducere",
+//                            containerColor = Color(0xFFD32F2F),
+//                            icon = R.drawable.ic_percent_badge_outline
+//                        )
+//                    } else {
+//                        PostActionButtonUIModel(
+//                            title = "Intervale disponibile",
+//                            containerColor = Color(0xFFFF6F00),
+//                            icon = R.drawable.ic_calendar_outline
+//                        )
+//                    }
+//                }
+            }
+        }
+    }
+
     Scaffold(bottomBar = {
         PostBottomBar(
-            actionButtonTitle = "Intervale disponibile",
+            uiModel = buttonUIModel,
             onAction = {},
             shouldDisplayBottomBar = shouldDisplayBottomBar,
             appointmentsNumber = appointmentsNumber,
@@ -149,16 +215,16 @@ fun FeedScreen(
                             }
                         }
 
-                        LaunchedEffect(pagerState.currentPage) {
-                            var previousPage = pagerState.currentPage
-                            snapshotFlow { pagerState.currentPage }
-                                .distinctUntilChanged()
-                                .collect { currentPage ->
-                                    val shouldShow = currentPage == 0 || currentPage < previousPage
-                                    shouldDisplayBottomBar = shouldShow
-                                    previousPage = currentPage
-                                }
-                        }
+//                        LaunchedEffect(pagerState.currentPage) {
+//                            var previousPage = pagerState.currentPage
+//                            snapshotFlow { pagerState.currentPage }
+//                                .distinctUntilChanged()
+//                                .collect { currentPage ->
+//                                    val shouldShow = currentPage == 0 || currentPage < previousPage
+//                                    shouldDisplayBottomBar = shouldShow
+//                                    previousPage = currentPage
+//                                }
+//                        }
 
                         VerticalPager(
                             state = pagerState,
@@ -168,7 +234,21 @@ fun FeedScreen(
                         ) { page ->
                             val post = posts[page]
 
+                            LaunchedEffect(post) {
+                                if(post != null) {
+                                    pagerViewModel.setInitialState(
+                                        postId = post.id,
+                                        isLiked = post.userActions.isLiked,
+                                        likeCount = post.counters.likeCount,
+                                        isBookmarked = post.userActions.isBookmarked,
+                                        bookmarkCount = post.counters.bookmarkCount
+                                    )
+                                }
+                            }
+
                             if(post != null) {
+                                val interactionState by pagerViewModel.interactionState(post.id).collectAsState()
+
                                 val player = remember(post.id) {
                                     feedViewModel.getOrCreatePlayer(post)
                                 }
@@ -209,6 +289,18 @@ fun FeedScreen(
                                             playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
                                         },
                                         modifier = Modifier.fillMaxSize(),
+                                    )
+
+                                    PostOverlay(
+                                        interactionState = interactionState,
+                                        product = post.product,
+                                        lastMinute = post.lastMinute,
+                                        counters = post.counters,
+                                        user = post.user,
+                                        description = post.description,
+                                        onAction = {},
+                                        shouldDisplayBottomBar = shouldDisplayBottomBar,
+                                        onShowBottomBar = { shouldDisplayBottomBar = !shouldDisplayBottomBar }
                                     )
 
                                     AnimatedVisibility(

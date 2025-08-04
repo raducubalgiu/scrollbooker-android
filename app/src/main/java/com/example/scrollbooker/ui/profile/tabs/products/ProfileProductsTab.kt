@@ -49,9 +49,9 @@ fun ProfileProductsTab(
     //val viewModel: ProfileProductsTabViewModel = hiltViewModel()
     val servicesState by viewModel.servicesState.collectAsState()
 
-    LaunchedEffect(businessId) {
-        viewModel.loadServices(businessId)
-    }
+//    LaunchedEffect(businessId) {
+//        viewModel.loadServices(businessId)
+//    }
 
     when(servicesState) {
         is FeatureState.Loading -> {

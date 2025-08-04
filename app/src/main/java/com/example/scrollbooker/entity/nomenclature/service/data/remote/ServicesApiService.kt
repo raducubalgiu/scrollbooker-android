@@ -12,4 +12,9 @@ interface ServicesApiService {
     suspend fun getServicesByBusinessTypeId(
         @Path("businessTypeId") businessTypeId: Int
     ): List<ServiceDto>
+
+    @GET("users/{userId}/services")
+    suspend fun getServicesByUserId(
+        @Path("userId") userId: Int
+    ): List<ServiceDto>
 }

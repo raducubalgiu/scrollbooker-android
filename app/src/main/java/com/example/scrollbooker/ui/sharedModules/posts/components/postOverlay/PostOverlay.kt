@@ -20,6 +20,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
+import com.example.scrollbooker.entity.social.post.domain.model.LastMinute
 import com.example.scrollbooker.entity.social.post.domain.model.PostCounters
 import com.example.scrollbooker.entity.social.post.domain.model.PostProduct
 import com.example.scrollbooker.entity.user.userSocial.data.remote.UserSocialDto
@@ -28,13 +29,18 @@ import java.math.BigDecimal
 
 @Composable
 fun PostOverlay(
-    product: PostProduct,
+    product: PostProduct?,
+    lastMinute: LastMinute,
     counters: PostCounters,
     user: UserSocialDto,
     description: String?,
     interactionState: PostInteractionState,
     onAction: (PostOverlayActionEnum) -> Unit,
+    shouldDisplayBottomBar: Boolean,
+    onShowBottomBar: () -> Unit
 ) {
+    val discount = product?.discount
+
     Column(modifier = Modifier
         .fillMaxSize()
         .zIndex(3f)
@@ -52,12 +58,23 @@ fun PostOverlay(
         ) {
             Column(modifier = Modifier
                 .weight(1f)
+                .padding(end = SpacingXL)
             ) {
-                if(product.discount > BigDecimal.ZERO) {
-                    PostOverlayLabel(
-                        icon = R.drawable.ic_percent_badge_solid,
-                        title = "Reducere"
-                    )
+                when {
+                    lastMinute.isLastMinute -> {
+                        PostOverlayLabel(
+                            icon = R.drawable.ic_bolt_solid,
+                            title = "Last Minute",
+                            containerColor = Color(0xFF00BCD4)
+                        )
+                    }
+
+                    discount?.let { it > BigDecimal.ZERO } == true -> {
+                        PostOverlayLabel(
+                            icon = R.drawable.ic_percent_badge_solid,
+                            title = "Reducere"
+                        )
+                    }
                 }
 
                 Spacer(Modifier.height(SpacingM))
@@ -68,38 +85,21 @@ fun PostOverlay(
                     ratingsAverage = "4.5",
                     distance = 5f,
                 )
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(end = SpacingXL)
-                ) {
-
-//                description?.takeIf { it.isNotBlank() }?.let { description ->
-//                    Spacer(Modifier.height(SpacingM))
-//                    Text(
-//                        text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's ",
-//                        color = Color.White,
-//                        maxLines = 2,
-//                        overflow = TextOverflow.Ellipsis
-//                    )
-//                    Spacer(Modifier.height(SpacingM))
-//                }
 
                 Spacer(Modifier.height(SpacingM))
-                Text(
-                    text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's ",
-                    color = Color.White,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Spacer(Modifier.height(SpacingM))
 
-//                PostOverlayProduct(product = product)
+                description?.takeIf { it.isNotBlank() }?.let { description ->
+                    Text(
+                        text = description,
+                        color = Color.White,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Spacer(Modifier.height(SpacingM))
+                }
 
-//                    PostOverlayButton(
-//                        onClick = { onAction(PostOverlayActionEnum.OPEN_CALENDAR) },
-//                        title = "Intervale disponibile"
-//                    )
+                product?.let {
+                    PostOverlayProduct(product = product)
                 }
             }
 
@@ -107,15 +107,10 @@ fun PostOverlay(
                 interactionState = interactionState,
                 onAction = onAction,
                 commentCount = counters.commentCount,
-                shareCount = counters.shareCount
+                shareCount = counters.shareCount,
+                shouldDisplayBottomBar = shouldDisplayBottomBar,
+                onShowBottomBar = onShowBottomBar
             )
         }
-
-        Spacer(Modifier.height(SpacingS))
-
-        PostOverlayMoreProducts(
-            fullName = user.fullName,
-            onClick = {}
-        )
     }
 }
