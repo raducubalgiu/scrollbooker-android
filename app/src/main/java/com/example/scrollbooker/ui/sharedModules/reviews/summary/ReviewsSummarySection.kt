@@ -3,6 +3,7 @@ package com.example.scrollbooker.ui.sharedModules.reviews.summary
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -87,28 +88,26 @@ fun ReviewsSummarySection(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Column {
-                    Checkbox(
-                        checked = item.rating in selectedRatings,
-                        onCheckedChange = {
-                            onRatingClick(item.rating)
-                        },
-                        colors = CheckboxColors(
-                            checkedCheckmarkColor = Color.White,
-                            uncheckedCheckmarkColor = Color.Transparent,
-                            checkedBoxColor = Primary,
-                            uncheckedBoxColor = Color.Transparent,
-                            disabledCheckedBoxColor = Divider,
-                            disabledUncheckedBoxColor = Divider,
-                            disabledIndeterminateBoxColor = Divider,
-                            checkedBorderColor = Primary,
-                            uncheckedBorderColor = Divider,
-                            disabledBorderColor = Divider,
-                            disabledUncheckedBorderColor = Divider,
-                            disabledIndeterminateBorderColor = Divider
-                        )
+                Checkbox(
+                    checked = item.rating in selectedRatings,
+                    onCheckedChange = {
+                        onRatingClick(item.rating)
+                    },
+                    colors = CheckboxColors(
+                        checkedCheckmarkColor = Color.White,
+                        uncheckedCheckmarkColor = Color.Transparent,
+                        checkedBoxColor = Primary,
+                        uncheckedBoxColor = Color.Transparent,
+                        disabledCheckedBoxColor = Divider,
+                        disabledUncheckedBoxColor = Divider,
+                        disabledIndeterminateBoxColor = Divider,
+                        checkedBorderColor = Primary,
+                        uncheckedBorderColor = Divider,
+                        disabledBorderColor = Divider,
+                        disabledUncheckedBorderColor = Divider,
+                        disabledIndeterminateBorderColor = Divider
                     )
-                }
+                )
 
                 Text(
                     text = "${item.rating}",
@@ -118,14 +117,31 @@ fun ReviewsSummarySection(
 
                 Spacer(Modifier.width(BasePadding))
 
-                LinearProgressIndicator(
-                    modifier = Modifier
-                        .height(5.dp)
-                        .weight(1f),
-                    progress = { progress },
-                    color = Primary,
-                    trackColor = Color.Gray.copy(alpha = 0.4f)
-                )
+                Box(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(5.dp)
+                            .background(Color.Gray.copy(alpha = 0.4f))
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(fraction = progress)
+                            .height(5.dp)
+                            .background(Primary)
+                    )
+                }
+//
+//                LinearProgressIndicator(
+//                    modifier = Modifier
+//                        .height(5.dp)
+//                        .weight(1f),
+//                    progress = { progress },
+//                    color = Primary,
+//                    trackColor = Color.Gray.copy(alpha = 0.4f)
+//                )
 
                 Spacer(Modifier.width(8.dp))
 
