@@ -40,9 +40,14 @@ import com.example.scrollbooker.ui.theme.headlineMedium
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.bodyMedium
+import com.example.scrollbooker.ui.theme.headlineSmall
+import com.example.scrollbooker.ui.theme.titleMedium
+import com.example.scrollbooker.ui.theme.titleSmall
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
@@ -83,6 +88,14 @@ fun MainDrawer(
                                         text = stringResource(R.string.chooseWhatDoYouWantToSeeInFeed)
                                     )
                                     Spacer(Modifier.height(40.dp))
+
+                                    Text(
+                                        modifier = Modifier.padding(bottom = BasePadding),
+                                        style = headlineSmall,
+                                        color = Color(0xFFE0E0E0).copy(0.8f),
+                                        fontWeight = FontWeight.SemiBold,
+                                        text = stringResource(R.string.categories)
+                                    )
                                 }
 
                                 itemsIndexed(businessDomains.data) { index, businessDomain ->

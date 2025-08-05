@@ -250,4 +250,5 @@
     <string name="confirmReservation">Confirmă rezervarea</string>
     <string name="explore">Explorează</string>
     <string name="dontHaveAnyNotification">Nu ai nici o notificare</string>
+    <string name="categories">Categorii</string>
 </resources>
