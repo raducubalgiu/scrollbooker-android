@@ -40,7 +40,10 @@ fun ProfilePostsTab(
                     items(posts.itemCount) { index ->
                         val post = posts[index]
                         if(post != null) {
-                            PostGrid(post = post, onNavigateToPost = onNavigateToPostDetail)
+                            PostGrid(
+                                post = post,
+                                onNavigateToPost = onNavigateToPostDetail
+                            )
                         }
                     }
                 }

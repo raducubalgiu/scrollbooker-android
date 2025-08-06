@@ -27,18 +27,13 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.model.ProductCardEnum
+import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
 import java.math.BigDecimal
-
-data class ProductCardNavigationData(
-    val userId: Int,
-    val slotDuration: Int,
-    val productName: String
-)
 
 @Composable
 fun ProductCard(
@@ -47,7 +42,7 @@ fun ProductCard(
     onNavigateToEdit: (Int) -> Unit,
     isLoadingDelete: Boolean,
     onDeleteProduct: (productId: Int) -> Unit,
-    onNavigateToCalendar: (Product) -> Unit
+    onNavigateToCalendar: (NavigateCalendarParam) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.padding(BasePadding)) {
@@ -119,7 +114,16 @@ fun ProductCard(
                 if(mode == ProductCardEnum.CLIENT) {
                     MainButtonOutlined(
                         title = stringResource(R.string.book),
-                        onClick = { onNavigateToCalendar(product) },
+                        onClick = {
+                            onNavigateToCalendar(
+                                NavigateCalendarParam(
+                                    userId = product.userId,
+                                    slotDuration = product.duration,
+                                    productId = product.id,
+                                    productName = product.name
+                                )
+                            )
+                        },
                     )
                 }
             }

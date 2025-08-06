@@ -1,4 +1,5 @@
 package com.example.scrollbooker.ui.profile.tabs.products
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,7 +14,6 @@ import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -24,12 +24,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
+import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
 import com.example.scrollbooker.ui.profile.tabs.ProfileTabViewModel
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
@@ -38,20 +38,16 @@ import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
 import kotlinx.coroutines.launch
 
+@SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun ProfileProductsTab(
     viewModel: ProfileTabViewModel,
     userId: Int,
     isOwnProfile: Boolean,
     businessId: Int?,
-    onNavigateToCalendar: (Product) -> Unit
+    onNavigateToCalendar: (NavigateCalendarParam) -> Unit
 ) {
-    //val viewModel: ProfileProductsTabViewModel = hiltViewModel()
     val servicesState by viewModel.servicesState.collectAsState()
-
-//    LaunchedEffect(businessId) {
-//        viewModel.loadServices(businessId)
-//    }
 
     when(servicesState) {
         is FeatureState.Loading -> {
@@ -83,7 +79,7 @@ fun ProfileProductsTab(
                         )
                     }
                 ) {
-                    services.forEachIndexed { index, service ->
+                    services.forEachIndexed { index, serv ->
                         val isSelected = selectedTabIndex == index
 
                         Box(modifier = Modifier
@@ -105,7 +101,7 @@ fun ProfileProductsTab(
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = "${service.name} 100",
+                                    text = "${serv.service.name} ${serv.productsCount}",
                                     style = bodyLarge,
                                     fontSize = 16.sp,
                                     color = if (isSelected) OnSurfaceBG else Color.Gray,
@@ -121,10 +117,12 @@ fun ProfileProductsTab(
                     beyondViewportPageCount = 0,
                     modifier = Modifier.fillMaxSize()
                 ) { page ->
-                    val serviceId = services[page].id
+                    val serviceId = services[page].service.id
+                    val employees = services[page].employees
 
                     ProfileServiceProductsTab(
                         viewModel = viewModel,
+                        employees = employees,
                         userId = userId,
                         serviceId = serviceId,
                         onNavigateToCalendar = onNavigateToCalendar

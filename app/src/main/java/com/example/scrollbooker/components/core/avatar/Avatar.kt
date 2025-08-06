@@ -18,6 +18,7 @@ import coil.request.ImageRequest
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.AvatarSizeS
 import com.example.scrollbooker.ui.theme.Divider
+import timber.log.Timber
 
 @Composable
 fun Avatar(url: String, size: Dp = AvatarSizeS ) {
@@ -37,5 +38,6 @@ fun Avatar(url: String, size: Dp = AvatarSizeS ) {
         placeholder = painterResource(R.drawable.ic_user),
         error = painterResource(R.drawable.ic_user),
         contentScale = ContentScale.Crop,
+        onError = { Timber.tag("Avatar Error").e("ERROR: ${it.result.throwable.message}") }
     )
 }

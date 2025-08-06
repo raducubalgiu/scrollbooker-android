@@ -54,6 +54,8 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.model.ProductCardEnum
+import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
+import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
 import com.example.scrollbooker.ui.profile.tabs.ProfileTabViewModel
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Primary
@@ -62,11 +64,13 @@ import com.example.scrollbooker.ui.theme.Primary
 @Composable
 fun ProfileServiceProductsTab(
     viewModel: ProfileTabViewModel,
+    employees: List<UserSocial>,
     serviceId: Int,
     userId: Int,
-    onNavigateToCalendar: (Product) -> Unit
+    onNavigateToCalendar: (NavigateCalendarParam) -> Unit
 ) {
-    val productsState = viewModel.loadProducts(serviceId, userId).collectAsLazyPagingItems()
+    val productsState = viewModel.loadProducts(serviceId, userId)
+        .collectAsLazyPagingItems()
     val lazyRowListState = rememberLazyListState()
 
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
@@ -87,24 +91,71 @@ fun ProfileServiceProductsTab(
         )
     }
 
-    data class Emp(
-        val avatar: String,
-        val fullName: String,
-        val rating: String
-    )
-
-    val employees = listOf(
-        Emp(avatar = "https://media.scrollbooker.ro/avatar-male-9.jpeg", fullName ="Cristian Ionel", rating= "4.9"),
-        Emp(avatar = "https://media.scrollbooker.ro/avatar-male-10.jpg", fullName ="Radu Dan", rating = "4.3"),
-        Emp(avatar = "https://media.scrollbooker.ro/avatar-male-11.jpeg", fullName ="Laur Oprea", rating = "4.2"),
-        Emp(avatar = "https://media.scrollbooker.ro/avatar-male-12.jpg", fullName ="Mihai Gandac", rating = "4.9"),
-        Emp(avatar = "https://media.scrollbooker.ro/avatar-male-14.jpeg", fullName ="Gigi Corsicanu", rating = "3.2"),
-    )
-
     Column(Modifier.fillMaxSize()) {
+        if(employees.isNotEmpty()) {
+            LazyRow(
+                state = lazyRowListState,
+                modifier = Modifier.padding(vertical = BasePadding)
+            ) {
+                item { Spacer(Modifier.width(BasePadding)) }
+
+                itemsIndexed(employees) { index, emp ->
+                    val isSelected = selectedEmployeesIndex == index
+
+                    val animatedBgColor by animateColorAsState(
+                        targetValue = if(isSelected) Primary.copy(alpha = 0.2f) else Color.Transparent,
+                        animationSpec = tween(durationMillis = 300),
+                        label = "Card Selection Background"
+                    )
+
+                    Box(
+                        modifier = Modifier
+                            .width(cardWidth)
+                            .clip(ShapeDefaults.Medium)
+                            .background(animatedBgColor)
+                            .padding(vertical = SpacingS)
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null
+                            ) {
+                                selectedEmployeesIndex = index
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            AvatarWithRating(
+                                modifier = Modifier.size(90.dp),
+                                url = "${emp.avatar}",
+                                rating = "${emp.ratingsAverage}"
+                            )
+                            Spacer(Modifier.height(SpacingM))
+                            Text(
+                                text = emp.fullName,
+                                fontWeight = FontWeight.SemiBold,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+                    }
+
+                    Spacer(Modifier.width(BasePadding))
+                }
+            }
+
+            HorizontalDivider(color = Divider, thickness = 0.55.dp)
+        }
+
         productsState.apply {
             when (loadState.refresh) {
-                is LoadState.Loading -> LoadingScreen()
+                is LoadState.Loading -> {
+                    LoadingScreen(
+                        modifier = Modifier.padding(top = 50.dp),
+                        arrangement = Arrangement.Top
+                    )
+                }
                 is LoadState.Error -> ErrorScreen()
                 is LoadState.NotLoading -> {
                     if(productsState.itemCount == 0) {
@@ -115,60 +166,6 @@ fun ProfileServiceProductsTab(
                             icon = painterResource(R.drawable.ic_shopping_outline)
                         )
                     }
-
-                    LazyRow(
-                        state = lazyRowListState,
-                        modifier = Modifier.padding(vertical = BasePadding)
-                    ) {
-                        item { Spacer(Modifier.width(BasePadding)) }
-
-                        itemsIndexed(employees) { index, emp ->
-                            val isSelected = selectedEmployeesIndex == index
-
-                            val animatedBgColor by animateColorAsState(
-                                targetValue = if(isSelected) Primary.copy(alpha = 0.2f) else Color.Transparent,
-                                animationSpec = tween(durationMillis = 300),
-                                label = "Card Selection Background"
-                            )
-
-                            Box(
-                                modifier = Modifier
-                                    .width(cardWidth)
-                                    .clip(ShapeDefaults.Medium)
-                                    .background(animatedBgColor)
-                                    .padding(vertical = SpacingS)
-                                    .clickable(
-                                        interactionSource = remember { MutableInteractionSource() },
-                                        indication = null
-                                    ) {
-                                        selectedEmployeesIndex = index
-                                    },
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.Center
-                                ) {
-                                    AvatarWithRating(
-                                        modifier = Modifier.size(90.dp),
-                                        url = emp.avatar,
-                                        rating = emp.rating
-                                    )
-                                    Spacer(Modifier.height(SpacingM))
-                                    Text(
-                                        text = emp.fullName,
-                                        fontWeight = FontWeight.SemiBold,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                }
-                            }
-
-                            Spacer(Modifier.width(BasePadding))
-                        }
-                    }
-
-                    HorizontalDivider(color = Divider, thickness = 0.55.dp)
 
                     LazyColumn(Modifier.weight(1f)) {
                         items(productsState.itemCount) { index ->

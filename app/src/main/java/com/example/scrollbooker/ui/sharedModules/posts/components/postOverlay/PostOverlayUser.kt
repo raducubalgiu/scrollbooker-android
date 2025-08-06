@@ -1,6 +1,8 @@
 package com.example.scrollbooker.ui.sharedModules.posts.components.postOverlay
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,7 +10,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,12 +27,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.avatar.AvatarWithRating
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
+import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge
+import com.example.scrollbooker.ui.theme.titleMedium
+import com.example.scrollbooker.ui.theme.titleSmall
 
 @Composable
 fun PostOverlayUser(
@@ -41,13 +48,15 @@ fun PostOverlayUser(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column {
-            Text(
-                text = fullName,
-                style = bodyLarge,
-                fontWeight = FontWeight.SemiBold,
-                color = Color.White,
-                fontSize = 18.sp
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = fullName,
+                    style = bodyLarge,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.White,
+                    fontSize = 18.sp
+                )
+            }
             Spacer(Modifier.height(4.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(

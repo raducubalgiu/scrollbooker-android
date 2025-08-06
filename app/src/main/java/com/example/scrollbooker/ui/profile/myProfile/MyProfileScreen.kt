@@ -189,9 +189,9 @@ fun MyProfileScreen(
                                         )
                                     }
 
-                                    stickyHeader { ProfileTabRow(pagerState, tabs) }
+                                    stickyHeader {
+                                        ProfileTabRow(pagerState, tabs)
 
-                                    item {
                                         HorizontalPager(
                                             state = pagerState,
                                             beyondViewportPageCount = 0,

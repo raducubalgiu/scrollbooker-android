@@ -34,6 +34,7 @@ import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
+import timber.log.Timber
 
 @Composable
 fun PostGrid(
@@ -54,6 +55,7 @@ fun PostGrid(
                 .build(),
             contentDescription = "Post Grid",
             contentScale = ContentScale.Crop,
+            onError = { Timber.tag("Post Grid Error").e("ERROR: ${it.result.throwable.message}") },
             modifier = Modifier.fillMaxSize()
         )
 

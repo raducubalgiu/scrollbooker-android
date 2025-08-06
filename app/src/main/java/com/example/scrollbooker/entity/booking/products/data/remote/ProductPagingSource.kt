@@ -2,6 +2,7 @@ package com.example.scrollbooker.entity.booking.products.data.remote
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.products.data.mappers.toDomain
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import timber.log.Timber
@@ -25,7 +26,9 @@ class ProductPagingSource(
         val limit = 10
 
         return try {
-            val response = api.getUserProducts(userId, serviceId, page, limit)
+            val response = withVisibleLoading {
+                api.getUserProducts(userId, serviceId, page, limit)
+            }
             val products = response.results.map { it.toDomain() }
 
             val totalLoaded = page * limit

@@ -8,7 +8,7 @@ import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByUserIdAndServiceIdUseCase
-import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
+import com.example.scrollbooker.entity.nomenclature.service.domain.model.ServiceWithEmployees
 import com.example.scrollbooker.entity.nomenclature.service.domain.useCase.GetServicesByUserIdUseCase
 import com.example.scrollbooker.entity.social.bookmark.domain.useCase.GetUserBookmarkedPostsUseCase
 import com.example.scrollbooker.entity.social.post.domain.model.Post
@@ -38,6 +38,7 @@ class ProfileTabViewModel @Inject constructor(
     private val getProductsByUserIdAndServiceIdUseCase: GetProductsByUserIdAndServiceIdUseCase
 ): ViewModel() {
     private val userIdState = MutableStateFlow<Int?>(null)
+    private val employeeIdState = MutableStateFlow<Int?>(null)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val userPosts: StateFlow<PagingData<Post>> = userIdState
@@ -77,7 +78,7 @@ class ProfileTabViewModel @Inject constructor(
     private val productsFlowCache = mutableMapOf<Int, Flow<PagingData<Product>>>()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val servicesState: StateFlow<FeatureState<List<Service>>> = userIdState
+    val servicesState: StateFlow<FeatureState<List<ServiceWithEmployees>>> = userIdState
         .filterNotNull()
         .distinctUntilChanged()
         .flatMapLatest { userId ->

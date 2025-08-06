@@ -11,6 +11,13 @@ data class NavigateSocialParam(
     val isBusinessOrEmployee: Boolean
 )
 
+data class NavigateCalendarParam(
+    val userId: Int,
+    val slotDuration: Int,
+    val productId: Int,
+    val productName: String
+)
+
 class ProfileNavigator (
     private val navController: NavHostController
 ) {
@@ -26,11 +33,14 @@ class ProfileNavigator (
     fun toBusinessOwner(ownerId: Int) {
         navController.navigate("${MainRoute.UserProfile.route}/${ownerId}")
     }
-    fun toPostDetail() {
 
-    }
-    fun toCalendar (product: Product) {
-        navController.navigate("${MainRoute.UserProfile.route}/${product}")
+    fun toPostDetail() {}
+
+    fun toCalendar (calendarParams: NavigateCalendarParam) {
+        val (userId, slotDuration, productId, productName) = calendarParams
+        navController.navigate(
+            "${MainRoute.Calendar.route}/${userId}/${slotDuration}/${productId}/${productName}"
+        )
     }
     fun toMyBusiness() {
         navController.navigate(MainRoute.MyBusinessNavigator.route)

@@ -16,5 +16,5 @@ interface ServicesApiService {
     @GET("users/{userId}/services")
     suspend fun getServicesByUserId(
         @Path("userId") userId: Int
-    ): List<ServiceDto>
+    ): List<ServiceWithEmployeesDto>
 }
