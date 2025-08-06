@@ -1,15 +1,15 @@
 package com.example.scrollbooker.entity.booking.appointment.data.remote
 
 import com.google.gson.annotations.SerializedName
-import org.threeten.bp.OffsetDateTime
+import org.threeten.bp.ZonedDateTime
 import java.math.BigDecimal
 
 data class AppointmentCreateDto(
     @SerializedName("start_date")
-    val startDate: OffsetDateTime,
+    val startDate: String,
 
     @SerializedName("end_date")
-    val endDate: OffsetDateTime,
+    val endDate: String,
 
     @SerializedName("user_id")
     val userId: Int,
@@ -33,10 +33,7 @@ data class AppointmentCreateDto(
     val channel: String,
 
     @SerializedName("customer_fullname")
-    val fullname: String,
-
-    @SerializedName("service_name")
-    val serviceName: String,
+    val customerFullName: String,
 
     @SerializedName("product_name")
     val productName: String,

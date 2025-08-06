@@ -1,10 +1,9 @@
 package com.example.scrollbooker.entity.booking.appointment.domain.model
-import org.threeten.bp.OffsetDateTime
 import java.math.BigDecimal
 
 data class AppointmentCreate(
-    val startDate: OffsetDateTime,
-    val endDate: OffsetDateTime,
+    val startDate: String,
+    val endDate: String,
     val userId: Int,
     val businessId: Int,
     val customerId: Int?,
@@ -12,8 +11,8 @@ data class AppointmentCreate(
     val serviceId: Int,
     val productId: Int?,
     val channel: String,
-    val fullname: String,
-    val serviceName: String,
+
+    val customerFullName: String,
     val productName: String,
     val productPrice: BigDecimal,
     val productPriceWithDiscount: BigDecimal,

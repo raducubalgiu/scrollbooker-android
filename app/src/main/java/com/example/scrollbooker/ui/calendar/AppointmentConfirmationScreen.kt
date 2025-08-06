@@ -30,7 +30,6 @@ import com.example.scrollbooker.components.core.divider.VerticalDivider
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.FeatureState
@@ -43,10 +42,10 @@ import com.example.scrollbooker.ui.theme.titleMedium
 @Composable
 fun AppointmentConfirmationScreen(
     viewModel: CalendarViewModel,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onSubmit: () -> Unit
 ) {
     val productState by viewModel.product.collectAsState()
-    val selectedSlot by viewModel.selectedSlot.collectAsState()
 
     Layout(
         modifier = Modifier.safeDrawingPadding(),
@@ -198,7 +197,7 @@ fun AppointmentConfirmationScreen(
                 MainButton(
                     modifier = Modifier.padding(horizontal = BasePadding),
                     title = stringResource(R.string.book),
-                    onClick = {}
+                    onClick = onSubmit
                 )
             }
         }

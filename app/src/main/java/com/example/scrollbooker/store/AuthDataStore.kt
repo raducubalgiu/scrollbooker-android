@@ -17,6 +17,8 @@ class AuthDataStore(private val context: Context) {
         val REFRESH_TOKEN = stringPreferencesKey("refreshToken")
         val PERMISSIONS = stringSetPreferencesKey("permissions")
         val USER_ID = intPreferencesKey("userId")
+        val USERNAME = stringPreferencesKey("username")
+        val FULLNAME = stringPreferencesKey("fullName")
         val BUSINESS_ID = intPreferencesKey("businessId")
         val BUSINESS_TYPE_ID = intPreferencesKey("businessTypeId")
     }
@@ -26,6 +28,8 @@ class AuthDataStore(private val context: Context) {
         accessToken: String,
         refreshToken: String,
         userId: Int,
+        username: String,
+        fullName: String,
         businessId: Int?,
         businessTypeId: Int?,
         permissions: List<String>,
@@ -34,6 +38,8 @@ class AuthDataStore(private val context: Context) {
             prefs[ACCESS_TOKEN] = accessToken
             prefs[REFRESH_TOKEN] = refreshToken
             prefs[USER_ID] = userId
+            prefs[USERNAME] = username
+            prefs[FULLNAME] = fullName
             prefs[BUSINESS_ID] = businessId ?: prefs.remove(BUSINESS_ID)
             prefs[BUSINESS_TYPE_ID] = businessTypeId ?: prefs.remove(BUSINESS_TYPE_ID)
             prefs[PERMISSIONS] = permissions.toSet()
@@ -61,6 +67,8 @@ class AuthDataStore(private val context: Context) {
     fun getAccessToken(): Flow<String?> = context.dataStore.data.map { it[ACCESS_TOKEN] }
     fun getRefreshToken(): Flow<String?> = context.dataStore.data.map { it[REFRESH_TOKEN] }
     fun getUserId(): Flow<Int?> = context.dataStore.data.map { it[USER_ID] }
+    fun getUsername(): Flow<String?> = context.dataStore.data.map { it[USERNAME] }
+    fun getFullName(): Flow<String?> = context.dataStore.data.map { it[FULLNAME] }
     fun getBusinessId(): Flow<Int?> = context.dataStore.data.map { it[BUSINESS_ID] }
     fun getBusinessTypeId(): Flow<Int?> = context.dataStore.data.map { it[BUSINESS_TYPE_ID] }
     fun getUserPermissions(): Flow<List<String>> = context.dataStore.data

@@ -30,6 +30,8 @@ class SaveSessionUseCase @Inject constructor(
                 accessToken = authResponse.accessToken,
                 refreshToken = authResponse.refreshToken,
                 userId = userInfo.id,
+                username = userInfo.username,
+                fullName = userInfo.fullname,
                 businessId = userInfo.businessId,
                 businessTypeId = userInfo.businessTypeId,
                 permissions = userPermissions

@@ -1,4 +1,5 @@
 package com.example.scrollbooker.ui.appointments
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,6 +29,7 @@ import com.example.scrollbooker.components.core.inputs.EditInput
 import com.example.scrollbooker.components.core.inputs.InputRadio
 import com.example.scrollbooker.core.util.checkLength
 import com.example.scrollbooker.ui.appointments.components.AppointmentCancelEnum
+import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnPrimary
@@ -54,7 +56,12 @@ fun AppointmentCancelScreen(
     val checkMessage = checkLength(LocalContext.current, maxLength = 100, field = message)
     val isMessageValid = checkMessage.isNullOrEmpty()
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Background)
+            .safeDrawingPadding()
+    ) {
         Header(
             modifier = Modifier.statusBarsPadding(),
             title = "",

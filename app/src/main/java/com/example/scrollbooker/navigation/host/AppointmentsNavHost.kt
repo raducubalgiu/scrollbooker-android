@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
@@ -19,6 +20,7 @@ import com.example.scrollbooker.ui.appointments.AppointmentsScreen
 import com.example.scrollbooker.ui.appointments.AppointmentsViewModel
 import com.example.scrollbooker.ui.main.MainUIViewModel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @Composable
 fun AppointmentsNavHost(
@@ -103,6 +105,9 @@ fun AppointmentsNavHost(
                                 .onSuccess {
                                     mainViewModel.decreaseAppointmentsNumber()
                                     navController.popBackStack()
+                                }
+                                .onFailure { e ->
+                                    Timber.tag("Appointment").e("ERROR: onCreating Appointment $e")
                                 }
                         }
                     }

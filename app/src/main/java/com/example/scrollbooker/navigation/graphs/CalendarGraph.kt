@@ -2,6 +2,7 @@ package com.example.scrollbooker.navigation.graphs
 
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -16,6 +17,7 @@ import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.ui.calendar.AppointmentConfirmationScreen
 import com.example.scrollbooker.ui.calendar.CalendarScreen
 import com.example.scrollbooker.ui.sharedModules.calendar.CalendarViewModel
+import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.calendarGraph(navController: NavHostController) {
     navigation(
@@ -74,7 +76,16 @@ fun NavGraphBuilder.calendarGraph(navController: NavHostController) {
 
             AppointmentConfirmationScreen(
                 viewModel = viewModel,
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+                onSubmit = {
+                    navController.currentBackStackEntry?.lifecycleScope?.launch {
+                        val createAppointment = viewModel.createAppointment()
+
+                        createAppointment.onSuccess {
+                            //rootNavController.navigate(MainRoute.Appointments.route)
+                        }
+                    }
+                }
             )
         }
     }

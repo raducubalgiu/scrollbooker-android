@@ -4,6 +4,9 @@ import com.google.gson.annotations.SerializedName
 data class UserInfoDto(
     val id: Int,
 
+    val username: String,
+    val fullname: String,
+
     @SerializedName("business_id")
     val businessId: Int,
 

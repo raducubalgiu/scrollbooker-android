@@ -35,6 +35,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.ui.appointments.components.AppointmentCard.AppointmentCard
+import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyMedium
@@ -50,7 +51,11 @@ fun AppointmentDetailsScreen(
     val status = AppointmentStatusEnum.fromKey(appointment?.status)
 
     Column(
-        modifier = Modifier.fillMaxSize()) {
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Background)
+            .safeDrawingPadding()
+    ) {
         Header(
             title = "",
             onBack = onBack
