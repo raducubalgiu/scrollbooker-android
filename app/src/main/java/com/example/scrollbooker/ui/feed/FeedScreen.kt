@@ -39,7 +39,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.media3.ui.PlayerView
 import androidx.paging.LoadState
@@ -53,8 +52,9 @@ import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.getOrNull
 import com.example.scrollbooker.entity.social.post.domain.model.Post
+import com.example.scrollbooker.navigation.navigators.FeedNavigator
+import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
 import com.example.scrollbooker.ui.feed.components.FeedTabs
-import com.example.scrollbooker.ui.sharedModules.posts.PostsPagerViewModel
 import com.example.scrollbooker.ui.sharedModules.posts.components.PostBottomBar
 import com.example.scrollbooker.ui.sharedModules.posts.components.postOverlay.PostOverlay
 import kotlinx.coroutines.FlowPreview
@@ -79,8 +79,8 @@ fun FeedScreen(
     drawerState: DrawerState,
     appointmentsNumber: Int,
     onOpenDrawer: () -> Unit,
-    onNavigateSearch: () -> Unit,
-    onChangeTab: (MainTab) -> Unit
+    onChangeTab: (MainTab) -> Unit,
+    feedNavigate: FeedNavigator
 ) {
     val pagerState = rememberPagerState(pageCount = { posts.itemCount })
     val currentOnReleasePlayer by rememberUpdatedState(feedViewModel::releasePlayer)
@@ -152,7 +152,16 @@ fun FeedScreen(
     Scaffold(bottomBar = {
         PostBottomBar(
             uiModel = buttonUIModel,
-            onAction = {},
+            onAction = {
+                val userId = currentPost?.user?.id
+                val slotDuration = currentPost?.product?.duration
+                val productId = currentPost?.product?.id
+                val productName = currentPost?.product?.name
+
+                if(userId != null && slotDuration != null && productId != null && productName != null) {
+                    feedNavigate.toCalendar(NavigateCalendarParam(userId, slotDuration, productId, productName))
+                }
+            },
             shouldDisplayBottomBar = shouldDisplayBottomBar,
             appointmentsNumber = appointmentsNumber,
             onChangeTab = onChangeTab,
@@ -166,7 +175,7 @@ fun FeedScreen(
                 selectedTabIndex = 0,
                 onChangeTab = {},
                 onOpenDrawer = onOpenDrawer,
-                onNavigateSearch = onNavigateSearch
+                onNavigateSearch = { feedNavigate.toFeedSearch() }
             )
 
             posts.apply {
@@ -196,6 +205,7 @@ fun FeedScreen(
 
                         VerticalPager(
                             state = pagerState,
+                            beyondViewportPageCount = 1,
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(bottom = 90.dp)
@@ -218,7 +228,9 @@ fun FeedScreen(
                                 ) {
                                     if(playerState.isBuffering) {
                                         CircularProgressIndicator(
-                                            modifier = Modifier.size(50.dp).align(Alignment.Center),
+                                            modifier = Modifier
+                                                .size(50.dp)
+                                                .align(Alignment.Center),
                                             color = Color.White.copy(0.5f)
                                         )
                                     }
@@ -249,9 +261,8 @@ fun FeedScreen(
                                         post=post,
                                         onAction = {},
                                         shouldDisplayBottomBar = shouldDisplayBottomBar,
-                                        onShowBottomBar = {
-                                            shouldDisplayBottomBar = !shouldDisplayBottomBar
-                                        }
+                                        onShowBottomBar = { shouldDisplayBottomBar = !shouldDisplayBottomBar },
+                                        onNavigateToUserProfile = { feedNavigate.toUserProfile(it) }
                                     )
 
                                     AnimatedVisibility(

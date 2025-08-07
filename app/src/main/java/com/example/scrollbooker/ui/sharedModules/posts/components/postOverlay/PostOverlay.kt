@@ -42,7 +42,8 @@ fun PostOverlay(
     post: Post,
     onAction: (PostOverlayActionEnum) -> Unit,
     shouldDisplayBottomBar: Boolean,
-    onShowBottomBar: () -> Unit
+    onShowBottomBar: () -> Unit,
+    onNavigateToUserProfile: (Int) -> Unit
 ) {
     val discount = post.product?.discount
 
@@ -85,10 +86,12 @@ fun PostOverlay(
                 Spacer(Modifier.height(SpacingM))
 
                 PostOverlayUser(
+                    userId = post.user.id,
                     fullName = post.user.fullName,
                     profession = post.user.profession ?: "",
                     ratingsAverage = "4.5",
                     distance = 5f,
+                    onNavigateToUserProfile = onNavigateToUserProfile
                 )
 
                 Spacer(Modifier.height(SpacingM))

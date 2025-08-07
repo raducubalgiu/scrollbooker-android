@@ -1,22 +1,7 @@
 package com.example.scrollbooker.navigation.navigators
 
 import androidx.navigation.NavHostController
-import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.navigation.routes.MainRoute
-
-data class NavigateSocialParam(
-    val tabIndex: Int,
-    val userId: Int,
-    val username: String,
-    val isBusinessOrEmployee: Boolean
-)
-
-data class NavigateCalendarParam(
-    val userId: Int,
-    val slotDuration: Int,
-    val productId: Int,
-    val productName: String
-)
 
 class ProfileNavigator (
     private val navController: NavHostController
