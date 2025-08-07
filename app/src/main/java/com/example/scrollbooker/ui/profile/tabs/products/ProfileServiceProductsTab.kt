@@ -1,65 +1,39 @@
 package com.example.scrollbooker.ui.profile.tabs.products
 
 import android.annotation.SuppressLint
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.avatar.AvatarWithRating
 import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.customized.ProductCard
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingM
-import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.LoadMoreSpinner
-import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.model.ProductCardEnum
 import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
 import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
 import com.example.scrollbooker.ui.profile.tabs.ProfileTabViewModel
 import com.example.scrollbooker.ui.profile.tabs.products.components.EmployeesList
 import com.example.scrollbooker.ui.theme.Divider
-import com.example.scrollbooker.ui.theme.Primary
+import androidx.compose.runtime.getValue
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
@@ -70,8 +44,8 @@ fun ProfileServiceProductsTab(
     userId: Int,
     onNavigateToCalendar: (NavigateCalendarParam) -> Unit
 ) {
-    val productsState = viewModel.loadProducts(serviceId, userId, employeeId = employees.firstOrNull()?.id)
-        .collectAsLazyPagingItems()
+    val firstEmployeesId = employees.firstOrNull()?.id
+    val productsState = viewModel.loadProducts(serviceId, userId, firstEmployeesId).collectAsLazyPagingItems()
 
     Column(Modifier.fillMaxSize()) {
         productsState.apply {
@@ -94,7 +68,20 @@ fun ProfileServiceProductsTab(
                     }
 
                     LazyColumn(Modifier.weight(1f)) {
-                        item { if(employees.isNotEmpty()) EmployeesList(employees) }
+                        item {
+                            if(employees.isNotEmpty()) {
+                                EmployeesList(
+                                    employees = employees,
+                                    onSetEmployee = {
+                                        viewModel.loadProducts(
+                                            serviceId = serviceId,
+                                            userId = userId,
+                                            employeeId = it
+                                        )
+                                    }
+                                )
+                            }
+                        }
 
                         items(productsState.itemCount) { index ->
                             productsState[index]?.let { product ->

@@ -23,7 +23,10 @@ import com.example.scrollbooker.ui.theme.Divider
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
-fun EmployeesList(employees: List<UserSocial>) {
+fun EmployeesList(
+    employees: List<UserSocial>,
+    onSetEmployee: (Int) -> Unit
+) {
     val lazyRowListState = rememberLazyListState()
 
     var selectedEmployeesIndex by remember { mutableIntStateOf(0) }
@@ -54,6 +57,7 @@ fun EmployeesList(employees: List<UserSocial>) {
                 ratingsAverage = emp.ratingsAverage,
                 onSelectedEmployee = {
                     selectedEmployeesIndex = index
+                    onSetEmployee(emp.id)
                 }
             )
 

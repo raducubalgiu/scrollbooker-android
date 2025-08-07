@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
@@ -37,17 +38,17 @@ class ProfileTabViewModel @Inject constructor(
     private val getServicesByUserIdUseCase: GetServicesByUserIdUseCase,
     private val getProductsByUserIdAndServiceIdUseCase: GetProductsByUserIdAndServiceIdUseCase
 ): ViewModel() {
-    private val userIdState = MutableStateFlow<Int?>(null)
+    private val userIdFlow = MutableStateFlow<Int?>(null)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val userPosts: StateFlow<PagingData<Post>> = userIdState
+    val userPosts: StateFlow<PagingData<Post>> = userIdFlow
         .filterNotNull()
         .flatMapLatest { userId -> getUserPostsUseCase(userId) }
         .cachedIn(viewModelScope)
         .stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val userReposts: StateFlow<PagingData<Post>> = userIdState
+    val userReposts: StateFlow<PagingData<Post>> = userIdFlow
         .filterNotNull()
         .flatMapLatest { userId ->
             getUserRepostsUseCase(userId)
@@ -60,7 +61,7 @@ class ProfileTabViewModel @Inject constructor(
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val userBookmarkedPosts: StateFlow<PagingData<Post>> = userIdState
+    val userBookmarkedPosts: StateFlow<PagingData<Post>> = userIdFlow
         .filterNotNull()
         .flatMapLatest { userId ->
             getUserBookmarkedPostsUseCase(userId)
@@ -69,15 +70,15 @@ class ProfileTabViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
 
     fun setUserId(userId: Int) {
-        if(userIdState.value != userId) {
-            userIdState.value = userId
+        if(userIdFlow.value != userId) {
+            userIdFlow.value = userId
         }
     }
 
     private val productsFlowCache = mutableMapOf<Int, Flow<PagingData<Product>>>()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val servicesState: StateFlow<FeatureState<List<ServiceWithEmployees>>> = userIdState
+    val servicesState: StateFlow<FeatureState<List<ServiceWithEmployees>>> = userIdFlow
         .filterNotNull()
         .distinctUntilChanged()
         .flatMapLatest { userId ->
