@@ -175,9 +175,6 @@ fun ProfileServiceProductsTab(
                                 ProductCard(
                                     product = product,
                                     mode = ProductCardEnum.CLIENT,
-                                    onNavigateToEdit = {},
-                                    isLoadingDelete = false,
-                                    onDeleteProduct = {},
                                     onNavigateToCalendar = onNavigateToCalendar
                                 )
 
@@ -196,10 +193,7 @@ fun ProfileServiceProductsTab(
                         item {
                             productsState.apply {
                                 when (loadState.append) {
-                                    is LoadState.Loading -> {
-                                        LoadMoreSpinner()
-                                    }
-
+                                    is LoadState.Loading -> LoadMoreSpinner()
                                     is LoadState.Error -> {
                                         Text("Eroare la incarcare")
                                     }

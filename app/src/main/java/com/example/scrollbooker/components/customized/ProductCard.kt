@@ -39,9 +39,9 @@ import java.math.BigDecimal
 fun ProductCard(
     product: Product,
     mode: ProductCardEnum,
-    onNavigateToEdit: (Int) -> Unit,
-    isLoadingDelete: Boolean,
-    onDeleteProduct: (productId: Int) -> Unit,
+    onNavigateToEdit: ((Int) -> Unit)? = null,
+    isLoadingDelete: Boolean = false,
+    onDeleteProduct: ((productId: Int) -> Unit)? = null,
     onNavigateToCalendar: (NavigateCalendarParam) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
@@ -142,7 +142,7 @@ fun ProductCard(
                             .weight(0.5f)
                             .clip(shape = ShapeDefaults.ExtraLarge),
                         title = stringResource(R.string.edit),
-                        onClick = { onNavigateToEdit(product.id) },
+                        onClick = { onNavigateToEdit?.invoke(product.id) },
                         icon = painterResource(R.drawable.ic_edit_outline),
                         iconColor = Color.Gray
                     )
@@ -156,9 +156,7 @@ fun ProductCard(
                         title = stringResource(R.string.delete),
                         isLoading = isLoadingDelete,
                         isEnabled = !isLoadingDelete,
-                        onClick = {
-                            onDeleteProduct(product.id)
-                        },
+                        onClick = { onDeleteProduct?.invoke(product.id) },
                         icon = painterResource(R.drawable.ic_delete_outline),
                         iconColor = Error
                     )
