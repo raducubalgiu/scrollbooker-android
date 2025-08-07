@@ -70,6 +70,7 @@ fun PostOverlayActions(
         PostActionButton(
             counter = commentCount,
             icon = painterResource(R.drawable.ic_comment_solid),
+            tint = Color.White,
             onClick = { onAction(PostOverlayActionEnum.OPEN_COMMENTS) }
         )
         PostActionButton(
@@ -82,6 +83,7 @@ fun PostOverlayActions(
         PostActionButton(
             counter = shareCount,
             icon = painterResource(R.drawable.ic_send_solid),
+            tint = Color.White,
             onClick = { onAction(PostOverlayActionEnum.SHARE) }
         )
 

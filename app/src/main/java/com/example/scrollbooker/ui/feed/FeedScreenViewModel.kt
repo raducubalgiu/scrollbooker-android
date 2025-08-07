@@ -34,14 +34,11 @@ class FeedScreenViewModel @Inject constructor(
     @ApplicationContext private val application: Context
 ) : ViewModel() {
     private val playerPool = mutableMapOf<Int, ExoPlayer>()
-
     private val _playerStates = mutableMapOf<Int, MutableStateFlow<PlayerUIState>>()
 
     private var playerThread: HandlerThread = HandlerThread("ExoPlayer Thread", Process.THREAD_PRIORITY_AUDIO)
         .apply { start() }
     var playbackStartTimeMs = C.TIME_UNSET
-
-    val MAX_PLAYERS = 5
 
     private val firstFrameListener = object : Player.Listener {
         override fun onRenderedFirstFrame() {
@@ -62,19 +59,6 @@ class FeedScreenViewModel @Inject constructor(
             .setTargetBufferBytes(C.LENGTH_UNSET)
             .setPrioritizeTimeOverSizeThresholds(true)
             .build()
-    }
-
-    private fun limitPlayerPoolSize(postId: Int) {
-        if(playerPool.size > MAX_PLAYERS) {
-            playerPool.entries
-                .filter { it.key != postId }
-                .take(playerPool.size - MAX_PLAYERS)
-                .forEach {
-                    Timber.d("Release player for postId: $postId")
-                    it.value.release()
-                    playerPool.remove(it.key)
-                }
-        }
     }
 
     fun getPlayerState(postId: Int): StateFlow<PlayerUIState> {
@@ -118,7 +102,7 @@ class FeedScreenViewModel @Inject constructor(
         playerListeners[postId] = listener
     }
 
-    fun resetInactivePlayerStates(postId: Int) {
+    private fun resetInactivePlayerStates(postId: Int) {
         _playerStates
             .filterKeys { it != postId }
             .forEach { (_, state) ->
@@ -126,18 +110,29 @@ class FeedScreenViewModel @Inject constructor(
             }
     }
 
-    fun changePlayerItem(
+    private fun preloadVideo(post: Post?) {
+        if(post == null) return
+
+        val player = getOrCreatePlayer(post)
+        val mediaItem = MediaItem.fromUri(post.mediaFiles.first().url)
+
+        if(player.currentMediaItem?.localConfiguration?.uri == mediaItem.localConfiguration?.uri) return
+
+        player.setMediaItem(mediaItem)
+        player.prepare()
+        player.playWhenReady = false
+    }
+
+    fun initializePlayer(
         post: Post?,
         previousPost: Post?,
         nextPost: Post?
     ) {
         if (post == null) return
-
         val player = getOrCreatePlayer(post = post)
 
+        pauseUnusedPlayers(post.id)
         resetInactivePlayerStates(post.id)
-
-        limitPlayerPoolSize(post.id)
 
         val newMediaItem = MediaItem.fromUri(post.mediaFiles.first().url)
 
@@ -177,19 +172,6 @@ class FeedScreenViewModel @Inject constructor(
         }
     }
 
-    private fun preloadVideo(post: Post?) {
-        if(post == null) return
-
-        val player = getOrCreatePlayer(post)
-        val mediaItem = MediaItem.fromUri(post.mediaFiles.first().url)
-
-        if(player.currentMediaItem?.localConfiguration?.uri == mediaItem.localConfiguration?.uri) return
-
-        player.setMediaItem(mediaItem)
-        player.prepare()
-        player.playWhenReady = false
-    }
-
     fun togglePlayer(postId: Int) {
         val player = playerPool[postId] ?: return
 
@@ -216,6 +198,15 @@ class FeedScreenViewModel @Inject constructor(
         }
     }
 
+    fun pauseUnusedPlayers(visiblePostId: Int) {
+        playerPool.forEach { (postId, player) ->
+            if(postId != visiblePostId) {
+                player.playWhenReady = false
+                player.pause()
+            }
+        }
+    }
+
     fun releaseInactivePlayers(postId: Int) {
         val currentPlayer = playerPool[postId]
 
@@ -232,12 +223,16 @@ class FeedScreenViewModel @Inject constructor(
         }
     }
 
-    fun pauseUnusedPlayers(visiblePostId: Int) {
-        playerPool.forEach { (postId, player) ->
-            if(postId != visiblePostId) {
-                player.playWhenReady = false
-                player.pause()
-            }
+    private fun limitPlayerPoolSize(postId: Int) {
+        if(playerPool.size > 5) {
+            playerPool.entries
+                .filter { it.key != postId }
+                .take(playerPool.size - 5)
+                .forEach {
+                    Timber.d("Release player for postId: $postId")
+                    it.value.release()
+                    playerPool.remove(it.key)
+                }
         }
     }
 
@@ -251,22 +246,18 @@ class FeedScreenViewModel @Inject constructor(
             }
             _playerStates.remove(id)
 
-            resetInactivePlayerStates(postId)
-            releaseInactivePlayers(postId)
+            //resetInactivePlayerStates(postId)
+            limitPlayerPoolSize(postId)
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-
-        playerPool.values.forEach {
-            it.release()
-        }
-        playerPool.clear()
-        playerThread.quitSafely()
-    }
-
-    init {
-        Timber.tag("Feed View Model").d("Create Feed View Model")
-    }
+//    override fun onCleared() {
+//        super.onCleared()
+//
+//        playerPool.values.forEach {
+//            it.release()
+//        }
+//        playerPool.clear()
+//        playerThread.quitSafely()
+//    }
 }

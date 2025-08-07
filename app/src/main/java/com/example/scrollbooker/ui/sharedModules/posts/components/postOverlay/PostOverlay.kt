@@ -1,4 +1,9 @@
 package com.example.scrollbooker.ui.sharedModules.posts.components.postOverlay
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,38 +13,38 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.zIndex
 import com.example.scrollbooker.R
+import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
-import com.example.scrollbooker.entity.social.post.domain.model.LastMinute
-import com.example.scrollbooker.entity.social.post.domain.model.PostCounters
-import com.example.scrollbooker.entity.social.post.domain.model.PostProduct
-import com.example.scrollbooker.entity.user.userSocial.data.remote.UserSocialDto
+import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.ui.sharedModules.posts.PostInteractionState
+import com.example.scrollbooker.ui.theme.OnPrimary
+import com.example.scrollbooker.ui.theme.Primary
+import com.example.scrollbooker.ui.theme.bodyLarge
 import java.math.BigDecimal
 
 @Composable
 fun PostOverlay(
-    product: PostProduct?,
-    lastMinute: LastMinute,
-    counters: PostCounters,
-    user: UserSocialDto,
-    description: String?,
-    interactionState: PostInteractionState,
+    post: Post,
     onAction: (PostOverlayActionEnum) -> Unit,
     shouldDisplayBottomBar: Boolean,
     onShowBottomBar: () -> Unit
 ) {
-    val discount = product?.discount
+    val discount = post.product?.discount
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -61,7 +66,7 @@ fun PostOverlay(
                 .padding(end = SpacingXL)
             ) {
                 when {
-                    lastMinute.isLastMinute -> {
+                    post.lastMinute.isLastMinute -> {
                         PostOverlayLabel(
                             icon = R.drawable.ic_bolt_solid,
                             title = "Last Minute",
@@ -80,15 +85,15 @@ fun PostOverlay(
                 Spacer(Modifier.height(SpacingM))
 
                 PostOverlayUser(
-                    fullName = user.fullName,
-                    profession = user.profession ?: "",
+                    fullName = post.user.fullName,
+                    profession = post.user.profession ?: "",
                     ratingsAverage = "4.5",
                     distance = 5f,
                 )
 
                 Spacer(Modifier.height(SpacingM))
 
-                description?.takeIf { it.isNotBlank() }?.let { description ->
+                post.description?.takeIf { it.isNotBlank() }?.let { description ->
                     Text(
                         text = description,
                         color = Color.White,
@@ -98,16 +103,52 @@ fun PostOverlay(
                     Spacer(Modifier.height(SpacingM))
                 }
 
-                product?.let {
-                    PostOverlayProduct(product = product)
+                post.product?.let {
+                    PostOverlayProduct(product = post.product)
+                }
+
+                AnimatedContent(
+                    targetState = shouldDisplayBottomBar,
+                    transitionSpec = { fadeIn(tween(300)) togetherWith fadeOut(tween(300)) },
+                    label = "HeaderTransition"
+                ) { target ->
+                    if(target) {
+                        Button(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = BasePadding),
+                            onClick = {},
+                            shape = ShapeDefaults.Medium,
+                            colors = ButtonColors(
+                                containerColor = Primary,
+                                contentColor = OnPrimary,
+                                disabledContainerColor = Primary,
+                                disabledContentColor = OnPrimary
+                            )
+                        ) {
+                            Text(
+                                text = "Intervale disponibile",
+                                style = bodyLarge,
+                                fontWeight = FontWeight.SemiBold,
+                                color = OnPrimary
+                            )
+                        }
+                    }
                 }
             }
 
             PostOverlayActions(
-                interactionState = interactionState,
+                interactionState = PostInteractionState(
+                    isLiked = post.userActions.isLiked,
+                    likeCount = post.counters.likeCount,
+                    isLiking = false,
+                    isBookmarked = post.userActions.isBookmarked,
+                    bookmarkCount = post.counters.bookmarkCount,
+                    isBookmarking = false
+                ),
                 onAction = onAction,
-                commentCount = counters.commentCount,
-                shareCount = counters.shareCount,
+                commentCount = post.counters.commentCount,
+                shareCount = post.counters.shareCount,
                 shouldDisplayBottomBar = shouldDisplayBottomBar,
                 onShowBottomBar = onShowBottomBar
             )

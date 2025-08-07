@@ -2,8 +2,6 @@ package com.example.scrollbooker.ui.sharedModules.posts.components
 
 import BottomBar
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -22,14 +20,12 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.feed.PostActionButtonUIModel
-import com.example.scrollbooker.ui.theme.Primary
 
 @Composable
 fun PostBottomBar(
@@ -41,15 +37,6 @@ fun PostBottomBar(
 ) {
     val currentOnAction by rememberUpdatedState(onAction)
     val currentOnChangeTab by rememberUpdatedState(onChangeTab)
-
-    val animatedContainerColor by animateColorAsState(
-        targetValue = uiModel?.containerColor ?: Primary,
-        animationSpec = tween(
-            durationMillis = 300,
-            easing = FastOutSlowInEasing
-        ),
-        label = "Button Color Animation"
-    )
 
     AnimatedContent(
         targetState = shouldDisplayBottomBar,
@@ -82,7 +69,7 @@ fun PostBottomBar(
                             onClick = currentOnAction,
                             title = uiModel.title,
                             colors = ButtonColors(
-                                containerColor = animatedContainerColor,
+                                containerColor = uiModel.containerColor,
                                 contentColor = uiModel.contentColor,
                                 disabledContainerColor = uiModel.containerColor,
                                 disabledContentColor = uiModel.contentColor
