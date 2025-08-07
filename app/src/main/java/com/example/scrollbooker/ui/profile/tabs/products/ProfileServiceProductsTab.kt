@@ -69,7 +69,7 @@ fun ProfileServiceProductsTab(
     userId: Int,
     onNavigateToCalendar: (NavigateCalendarParam) -> Unit
 ) {
-    val productsState = viewModel.loadProducts(serviceId, userId)
+    val productsState = viewModel.loadProducts(serviceId, userId, employeeId = employees.firstOrNull()?.id)
         .collectAsLazyPagingItems()
     val lazyRowListState = rememberLazyListState()
 
@@ -92,62 +92,6 @@ fun ProfileServiceProductsTab(
     }
 
     Column(Modifier.fillMaxSize()) {
-        if(employees.isNotEmpty()) {
-            LazyRow(
-                state = lazyRowListState,
-                modifier = Modifier.padding(vertical = BasePadding)
-            ) {
-                item { Spacer(Modifier.width(BasePadding)) }
-
-                itemsIndexed(employees) { index, emp ->
-                    val isSelected = selectedEmployeesIndex == index
-
-                    val animatedBgColor by animateColorAsState(
-                        targetValue = if(isSelected) Primary.copy(alpha = 0.2f) else Color.Transparent,
-                        animationSpec = tween(durationMillis = 300),
-                        label = "Card Selection Background"
-                    )
-
-                    Box(
-                        modifier = Modifier
-                            .width(cardWidth)
-                            .clip(ShapeDefaults.Medium)
-                            .background(animatedBgColor)
-                            .padding(vertical = SpacingS)
-                            .clickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null
-                            ) {
-                                selectedEmployeesIndex = index
-                            },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            AvatarWithRating(
-                                modifier = Modifier.size(90.dp),
-                                url = "${emp.avatar}",
-                                rating = "${emp.ratingsAverage}"
-                            )
-                            Spacer(Modifier.height(SpacingM))
-                            Text(
-                                text = emp.fullName,
-                                fontWeight = FontWeight.SemiBold,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        }
-                    }
-
-                    Spacer(Modifier.width(BasePadding))
-                }
-            }
-
-            HorizontalDivider(color = Divider, thickness = 0.55.dp)
-        }
-
         productsState.apply {
             when (loadState.refresh) {
                 is LoadState.Loading -> {
@@ -168,6 +112,64 @@ fun ProfileServiceProductsTab(
                     }
 
                     LazyColumn(Modifier.weight(1f)) {
+                        item {
+                            if(employees.isNotEmpty()) {
+                                LazyRow(
+                                    state = lazyRowListState,
+                                    modifier = Modifier.padding(vertical = BasePadding)
+                                ) {
+                                    item { Spacer(Modifier.width(BasePadding)) }
+
+                                    itemsIndexed(employees) { index, emp ->
+                                        val isSelected = selectedEmployeesIndex == index
+
+                                        val animatedBgColor by animateColorAsState(
+                                            targetValue = if(isSelected) Primary.copy(alpha = 0.2f) else Color.Transparent,
+                                            animationSpec = tween(durationMillis = 300),
+                                            label = "Card Selection Background"
+                                        )
+
+                                        Box(
+                                            modifier = Modifier
+                                                .width(cardWidth)
+                                                .clip(ShapeDefaults.Medium)
+                                                .background(animatedBgColor)
+                                                .padding(vertical = SpacingS)
+                                                .clickable(
+                                                    interactionSource = remember { MutableInteractionSource() },
+                                                    indication = null
+                                                ) {
+                                                    selectedEmployeesIndex = index
+                                                },
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Column(
+                                                horizontalAlignment = Alignment.CenterHorizontally,
+                                                verticalArrangement = Arrangement.Center
+                                            ) {
+                                                AvatarWithRating(
+                                                    modifier = Modifier.size(90.dp),
+                                                    url = "${emp.avatar}",
+                                                    rating = "${emp.ratingsAverage}"
+                                                )
+                                                Spacer(Modifier.height(SpacingM))
+                                                Text(
+                                                    text = emp.fullName,
+                                                    fontWeight = FontWeight.SemiBold,
+                                                    maxLines = 1,
+                                                    overflow = TextOverflow.Ellipsis
+                                                )
+                                            }
+                                        }
+
+                                        Spacer(Modifier.width(BasePadding))
+                                    }
+                                }
+
+                                HorizontalDivider(color = Divider, thickness = 0.55.dp)
+                            }
+                        }
+
                         items(productsState.itemCount) { index ->
                             productsState[index]?.let { product ->
                                 ProductCard(

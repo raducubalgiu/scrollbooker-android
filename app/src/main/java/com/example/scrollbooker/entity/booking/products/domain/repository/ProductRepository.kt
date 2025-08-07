@@ -6,7 +6,7 @@ import com.example.scrollbooker.entity.booking.products.domain.model.ProductCrea
 import kotlinx.coroutines.flow.Flow
 
 interface ProductRepository {
-    fun getUserProducts(userId: Int, serviceId: Int): Flow<PagingData<Product>>
+    fun getUserProducts(userId: Int, serviceId: Int, employeeId: Int?): Flow<PagingData<Product>>
     suspend fun getProduct(productId: Int): Product
     suspend fun createProduct(productCreate: ProductCreate, subFilters: List<Int>): Product
     suspend fun deleteProduct(productId: Int)

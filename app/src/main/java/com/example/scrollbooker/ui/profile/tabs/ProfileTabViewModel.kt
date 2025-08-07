@@ -38,7 +38,6 @@ class ProfileTabViewModel @Inject constructor(
     private val getProductsByUserIdAndServiceIdUseCase: GetProductsByUserIdAndServiceIdUseCase
 ): ViewModel() {
     private val userIdState = MutableStateFlow<Int?>(null)
-    private val employeeIdState = MutableStateFlow<Int?>(null)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val userPosts: StateFlow<PagingData<Post>> = userIdState
@@ -107,9 +106,9 @@ class ProfileTabViewModel @Inject constructor(
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun loadProducts(serviceId: Int, userId: Int): Flow<PagingData<Product>> {
+    fun loadProducts(serviceId: Int, userId: Int, employeeId: Int?): Flow<PagingData<Product>> {
         return productsFlowCache.getOrPut(serviceId) {
-            getProductsByUserIdAndServiceIdUseCase(userId, serviceId)
+            getProductsByUserIdAndServiceIdUseCase(userId, serviceId, employeeId)
                 .cachedIn(viewModelScope)
                 .shareIn(viewModelScope, SharingStarted.Lazily, replay = 1)
         }

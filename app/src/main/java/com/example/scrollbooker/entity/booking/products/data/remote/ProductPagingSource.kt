@@ -11,7 +11,8 @@ import java.lang.Exception
 class ProductPagingSource(
     private val api: ProductsApiService,
     private val userId: Int,
-    private val serviceId: Int
+    private val serviceId: Int,
+    private val employeeId: Int?
 ) : PagingSource<Int, Product>() {
 
     override fun getRefreshKey(state: PagingState<Int, Product>): Int? {
@@ -27,7 +28,7 @@ class ProductPagingSource(
 
         return try {
             val response = withVisibleLoading {
-                api.getUserProducts(userId, serviceId, page, limit)
+                api.getUserProducts(userId, serviceId, page, limit, employeeId)
             }
             val products = response.results.map { it.toDomain() }
 

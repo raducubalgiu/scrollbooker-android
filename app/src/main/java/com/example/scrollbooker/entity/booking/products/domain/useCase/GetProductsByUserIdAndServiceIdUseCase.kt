@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 class GetProductsByUserIdAndServiceIdUseCase(
     private val repository: ProductRepository
 ) {
-    operator fun invoke(userId: Int, serviceId: Int): Flow<PagingData<Product>> {
-        return repository.getUserProducts(userId, serviceId)
+    operator fun invoke(userId: Int, serviceId: Int, employeeId: Int?): Flow<PagingData<Product>> {
+        return repository.getUserProducts(userId, serviceId, employeeId)
     }
 }

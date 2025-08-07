@@ -40,7 +40,7 @@ fun ProductsTab(
     val reloadKey by myProductsViewModel.productsReloadTrigger
 
     val productsState = remember(reloadKey) {
-        myProductsViewModel.loadProducts(serviceId)
+        myProductsViewModel.loadProducts(serviceId, employeeId = null)
     }.collectAsLazyPagingItems()
 
     val selectedProduct by myProductsViewModel.selectedProduct.collectAsState()

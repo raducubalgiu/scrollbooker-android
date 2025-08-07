@@ -89,10 +89,10 @@ class MyProductsViewModel @Inject constructor(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun loadProducts(serviceId: Int): Flow<PagingData<Product>> {
+    fun loadProducts(serviceId: Int, employeeId: Int?): Flow<PagingData<Product>> {
         return productsFlowCache.getOrPut(serviceId) {
             userIdFlow.flatMapLatest { userId ->
-                getProductsByUserIdAndServiceIdUseCase(userId, serviceId)
+                getProductsByUserIdAndServiceIdUseCase(userId, serviceId, employeeId)
                     .cachedIn(viewModelScope)
             }.shareIn(viewModelScope, SharingStarted.Lazily, replay = 1)
         }
