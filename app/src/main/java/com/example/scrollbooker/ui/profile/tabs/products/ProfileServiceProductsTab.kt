@@ -57,6 +57,7 @@ import com.example.scrollbooker.entity.booking.products.domain.model.ProductCard
 import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
 import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
 import com.example.scrollbooker.ui.profile.tabs.ProfileTabViewModel
+import com.example.scrollbooker.ui.profile.tabs.products.components.EmployeesList
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Primary
 
@@ -71,25 +72,6 @@ fun ProfileServiceProductsTab(
 ) {
     val productsState = viewModel.loadProducts(serviceId, userId, employeeId = employees.firstOrNull()?.id)
         .collectAsLazyPagingItems()
-    val lazyRowListState = rememberLazyListState()
-
-    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
-
-    val cardWidth = remember {
-        (screenWidth / 3 - BasePadding)
-    }
-
-    var selectedEmployeesIndex by remember { mutableIntStateOf(0) }
-    val scrollOffset = with(LocalDensity.current) {
-        -BasePadding.roundToPx()
-    }
-
-    LaunchedEffect(selectedEmployeesIndex) {
-        lazyRowListState.animateScrollToItem(
-            index = selectedEmployeesIndex,
-            scrollOffset = scrollOffset
-        )
-    }
 
     Column(Modifier.fillMaxSize()) {
         productsState.apply {
@@ -112,63 +94,7 @@ fun ProfileServiceProductsTab(
                     }
 
                     LazyColumn(Modifier.weight(1f)) {
-                        item {
-                            if(employees.isNotEmpty()) {
-                                LazyRow(
-                                    state = lazyRowListState,
-                                    modifier = Modifier.padding(vertical = BasePadding)
-                                ) {
-                                    item { Spacer(Modifier.width(BasePadding)) }
-
-                                    itemsIndexed(employees) { index, emp ->
-                                        val isSelected = selectedEmployeesIndex == index
-
-                                        val animatedBgColor by animateColorAsState(
-                                            targetValue = if(isSelected) Primary.copy(alpha = 0.2f) else Color.Transparent,
-                                            animationSpec = tween(durationMillis = 300),
-                                            label = "Card Selection Background"
-                                        )
-
-                                        Box(
-                                            modifier = Modifier
-                                                .width(cardWidth)
-                                                .clip(ShapeDefaults.Medium)
-                                                .background(animatedBgColor)
-                                                .padding(vertical = SpacingS)
-                                                .clickable(
-                                                    interactionSource = remember { MutableInteractionSource() },
-                                                    indication = null
-                                                ) {
-                                                    selectedEmployeesIndex = index
-                                                },
-                                            contentAlignment = Alignment.Center
-                                        ) {
-                                            Column(
-                                                horizontalAlignment = Alignment.CenterHorizontally,
-                                                verticalArrangement = Arrangement.Center
-                                            ) {
-                                                AvatarWithRating(
-                                                    modifier = Modifier.size(90.dp),
-                                                    url = "${emp.avatar}",
-                                                    rating = "${emp.ratingsAverage}"
-                                                )
-                                                Spacer(Modifier.height(SpacingM))
-                                                Text(
-                                                    text = emp.fullName,
-                                                    fontWeight = FontWeight.SemiBold,
-                                                    maxLines = 1,
-                                                    overflow = TextOverflow.Ellipsis
-                                                )
-                                            }
-                                        }
-
-                                        Spacer(Modifier.width(BasePadding))
-                                    }
-                                }
-
-                                HorizontalDivider(color = Divider, thickness = 0.55.dp)
-                            }
-                        }
+                        item { if(employees.isNotEmpty()) EmployeesList(employees) }
 
                         items(productsState.itemCount) { index ->
                             productsState[index]?.let { product ->
