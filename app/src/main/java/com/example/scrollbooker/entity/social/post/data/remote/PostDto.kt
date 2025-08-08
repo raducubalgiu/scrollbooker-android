@@ -1,4 +1,5 @@
 package com.example.scrollbooker.entity.social.post.data.remote
+import com.example.scrollbooker.entity.booking.products.data.remote.ProductDto
 import com.example.scrollbooker.entity.user.userSocial.data.remote.UserSocialDto
 import com.google.gson.annotations.SerializedName
 import java.math.BigDecimal
@@ -9,7 +10,7 @@ data class PostDto(
 
     val user: UserSocialDto,
 
-    val product: PostProductDto?,
+    val product: ProductDto?,
     val counters: PostCountersDto,
 
     @SerializedName("user_actions")
@@ -74,20 +75,6 @@ data class HashtagDto(
     val updatedAt: String
 )
 
-data class PostProductDto(
-    val id: Int?,
-    val name: String,
-    val description: String?,
-    val duration: Int,
-    val price: BigDecimal,
-
-    @SerializedName("price_with_discount")
-    val priceWithDiscount: BigDecimal,
-
-    val discount: BigDecimal,
-    val currency: String,
-)
-
 data class PostCountersDto(
     @SerializedName("comment_count")
     val commentCount: Int,
@@ -99,7 +86,10 @@ data class PostCountersDto(
     val bookmarkCount: Int,
 
     @SerializedName("share_count")
-    val shareCount: Int
+    val shareCount: Int,
+
+    @SerializedName("bookings_count")
+    val bookingsCount: Int
 )
 
 data class FixedSlotsDto(

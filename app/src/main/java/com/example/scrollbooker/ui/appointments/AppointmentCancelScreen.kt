@@ -19,7 +19,6 @@ import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
@@ -27,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.inputs.EditInput
 import com.example.scrollbooker.components.core.inputs.InputRadio
+import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.checkLength
 import com.example.scrollbooker.ui.appointments.components.AppointmentCancelEnum
 import com.example.scrollbooker.ui.theme.Background
@@ -44,14 +44,14 @@ fun AppointmentCancelScreen(
     val isSaving by viewModel.isSaving.collectAsState()
 
     val reasons = listOf(
-        AppointmentCancelEnum.CANNOT_ARRIVE.key,
-        AppointmentCancelEnum.FOUND_BETTER_OFFER.key,
-        AppointmentCancelEnum.BOOKED_BY_MISTAKE.key,
-        AppointmentCancelEnum.OTHER_REASON.key
+        "Nu mai pot ajunge la programare",
+        "Am găsit o ofertă mai bună",
+        "Am rezervat din greșeală",
+        "Alt motiv"
     )
 
-    var message by remember { mutableStateOf("") }
-    var selectedReason by rememberSaveable { mutableStateOf(AppointmentCancelEnum.OTHER_REASON.key) }
+    var message by rememberSaveable { mutableStateOf("") }
+    var selectedReason by rememberSaveable { mutableStateOf("Alt Motiv") }
 
     val checkMessage = checkLength(LocalContext.current, maxLength = 100, field = message)
     val isMessageValid = checkMessage.isNullOrEmpty()
@@ -64,7 +64,7 @@ fun AppointmentCancelScreen(
     ) {
         Header(
             modifier = Modifier.statusBarsPadding(),
-            title = "",
+            title = stringResource(R.string.cancelAppointment),
             onBack = onBack
         )
         Column(
@@ -82,16 +82,12 @@ fun AppointmentCancelScreen(
                                 message = ""
                             }
                         },
-                        headLine = stringResource(
-                            AppointmentCancelEnum.label(
-                                AppointmentCancelEnum.fromKey(reason)
-                            )
-                        )
+                        headLine = reason
                     )
 
                     if(index < reasons.size) {
                         HorizontalDivider(
-                            modifier = Modifier.padding(horizontal = BasePadding),
+                            modifier = Modifier.padding(horizontal = SpacingXL),
                             color = Divider,
                             thickness = 0.55.dp
                         )
@@ -100,13 +96,14 @@ fun AppointmentCancelScreen(
 
                 item {
                     EditInput(
-                        modifier = Modifier.padding(horizontal = BasePadding),
+                        modifier = Modifier
+                            .padding(horizontal = BasePadding),
                         value = message,
                         onValueChange = { message = it },
                         singleLine = false,
                         placeholder = stringResource(R.string.writeCancelReason),
-                        minLines = 3,
-                        maxLines = 3,
+                        minLines = 5,
+                        maxLines = 5,
                         isEnabled = selectedReason == AppointmentCancelEnum.OTHER_REASON.key,
                         isInputValid = isMessageValid,
                         errorMessage = checkMessage.toString(),
@@ -116,7 +113,7 @@ fun AppointmentCancelScreen(
 
             MainButton(
                 title = stringResource(R.string.cancelAppointment),
-                enabled = message.isNotEmpty() && isMessageValid && !isSaving,
+                enabled = (message.isNotEmpty() || selectedReason != "Alt Motiv") && isMessageValid && !isSaving,
                 isLoading = isSaving,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Error,
@@ -127,7 +124,11 @@ fun AppointmentCancelScreen(
                     .padding(bottom = BasePadding),
                 onClick = {
                     appointment?.id?.let {
-                        onCancelAppointment(appointment!!.id, message)
+                        if(selectedReason == "Alt Motiv") {
+                            onCancelAppointment(appointment!!.id, message)
+                        } else {
+                            onCancelAppointment(appointment!!.id, selectedReason)
+                        }
                     }
                 }
             )

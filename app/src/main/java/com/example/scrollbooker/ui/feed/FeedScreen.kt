@@ -1,6 +1,7 @@
 @file:kotlin.OptIn(FlowPreview::class)
 
 package com.example.scrollbooker.ui.feed
+import BottomBar
 import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.annotation.OptIn
@@ -54,8 +55,10 @@ import com.example.scrollbooker.core.util.getOrNull
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
+import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.feed.components.FeedTabs
 import com.example.scrollbooker.ui.sharedModules.posts.components.PostBottomBar
+import com.example.scrollbooker.ui.sharedModules.posts.components.postOverlay.PostControls
 import com.example.scrollbooker.ui.sharedModules.posts.components.postOverlay.PostOverlay
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
@@ -101,19 +104,6 @@ fun FeedScreen(
 
     LaunchedEffect(isFirstPage) {
         shouldDisplayBottomBar = isFirstPage
-    }
-
-    LaunchedEffect(drawerState.currentValue) {
-        snapshotFlow { drawerState.currentValue }
-            .collectLatest { drawerValue ->
-                currentPost?.id?.let {
-                    if(drawerValue == DrawerValue.Open) {
-                        feedViewModel.pauseIfPlaying(it)
-                    } else {
-                        feedViewModel.resumeIfPlaying(it)
-                    }
-                }
-            }
     }
 
     LifecycleStartEffect(true) {
@@ -183,26 +173,6 @@ fun FeedScreen(
                     is LoadState.Error -> ErrorScreen()
                     is LoadState.Loading -> Unit
                     is LoadState.NotLoading -> {
-
-                        LaunchedEffect(pagerState) {
-                            snapshotFlow { pagerState.currentPage }
-                                .filterNotNull()
-                                .debounce(150)
-                                .collectLatest { page ->
-                                    val post = posts[page]
-                                    val previousPost = if(page > 1) posts[page - 1] else null
-                                    val nextPost = if(page < posts.itemCount - 1) posts[page + 1] else null
-
-                                    post?.let {
-                                        feedViewModel.initializePlayer(
-                                            post = post,
-                                            previousPost = previousPost,
-                                            nextPost = nextPost
-                                        )
-                                    }
-                                }
-                        }
-
                         VerticalPager(
                             state = pagerState,
                             beyondViewportPageCount = 1,
@@ -212,10 +182,40 @@ fun FeedScreen(
                         ) { page ->
                             val post = posts[page]
 
+                            LaunchedEffect(drawerState.currentValue) {
+                                snapshotFlow { drawerState.currentValue }
+                                    .collectLatest { drawerValue ->
+                                        post?.id?.let {
+                                            if(drawerValue == DrawerValue.Open) {
+                                                feedViewModel.pauseIfPlaying(it)
+                                            } else {
+                                                feedViewModel.resumeIfPlaying(it)
+                                            }
+                                        }
+                                    }
+                            }
+
+                            LaunchedEffect(pagerState) {
+                                snapshotFlow { pagerState.currentPage }
+                                    .filterNotNull()
+                                    .debounce(150)
+                                    .collectLatest { page ->
+                                        val post = posts[page]
+                                        val previousPost = if(page > 1) posts[page - 1] else null
+                                        val nextPost = if(page < posts.itemCount - 1) posts[page + 1] else null
+
+                                        post?.let {
+                                            feedViewModel.initializePlayer(
+                                                post = post,
+                                                previousPost = previousPost,
+                                                nextPost = nextPost
+                                            )
+                                        }
+                                    }
+                            }
+
                             if(post != null) {
-                                val player = remember(post.id) {
-                                    feedViewModel.getOrCreatePlayer(post)
-                                }
+                                val player = remember(post.id) { feedViewModel.getOrCreatePlayer(post) }
                                 val playerState by feedViewModel.getPlayerState(post.id).collectAsState()
 
                                 Box(modifier = Modifier
@@ -262,49 +262,17 @@ fun FeedScreen(
                                         onAction = {},
                                         shouldDisplayBottomBar = shouldDisplayBottomBar,
                                         onShowBottomBar = { shouldDisplayBottomBar = !shouldDisplayBottomBar },
-                                        onNavigateToUserProfile = { feedNavigate.toUserProfile(it) }
+                                        onNavigateToUserProfile = {
+                                            feedNavigate.toUserProfile(it)
+                                        }
                                     )
 
-                                    AnimatedVisibility(
+                                    PostControls(
                                         visible = playerState.hasStartedPlayback &&
                                                 !playerState.isPlaying &&
                                                 !playerState.isBuffering &&
-                                                !drawerState.isOpen,
-                                        enter = fadeIn(),
-                                        exit = fadeOut()
-                                    ) {
-                                        Box(modifier = Modifier
-                                            .fillMaxSize()
-                                            .zIndex(5f),
-                                            contentAlignment = Alignment.Center
-                                        ) {
-                                            Icon(
-                                                modifier = Modifier.size(75.dp),
-                                                painter = painterResource(R.drawable.ic_play_solid),
-                                                contentDescription = null,
-                                                tint = Color.White.copy(0.5f)
-                                            )
-                                        }
-                                    }
-//                                    var progress by remember(post.id) { mutableFloatStateOf(0f) }
-//
-//                                    LaunchedEffect(player) {
-//                                        while (true) {
-//                                            val duration = player.duration.takeIf { it > 0 } ?: 1L
-//                                            val position = player.currentPosition
-//                                            progress = (position / duration.toFloat()).coerceIn(0f, 1f)
-//                                            delay(100)
-//                                        }
-//                                    }
-//
-//                                    VideoSlider(
-//                                        progress = progress,
-//                                        isPlaying = isPlaying,
-//                                        onSeek = {},
-//                                        modifier = Modifier
-//                                            .align(Alignment.BottomCenter)
-//                                            .fillMaxWidth()
-//                                    )
+                                                !drawerState.isOpen
+                                    )
                                 }
                             }
                         }

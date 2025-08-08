@@ -86,12 +86,11 @@ fun PostOverlay(
                 Spacer(Modifier.height(SpacingM))
 
                 PostOverlayUser(
-                    userId = post.user.id,
                     fullName = post.user.fullName,
                     profession = post.user.profession ?: "",
                     ratingsAverage = "4.5",
                     distance = 5f,
-                    onNavigateToUserProfile = onNavigateToUserProfile
+                    onNavigateToUser = { onNavigateToUserProfile(post.user.id) }
                 )
 
                 Spacer(Modifier.height(SpacingM))
@@ -153,7 +152,8 @@ fun PostOverlay(
                 commentCount = post.counters.commentCount,
                 shareCount = post.counters.shareCount,
                 shouldDisplayBottomBar = shouldDisplayBottomBar,
-                onShowBottomBar = onShowBottomBar
+                onShowBottomBar = onShowBottomBar,
+                onNavigateToUser = { onNavigateToUserProfile(post.user.id) }
             )
         }
     }

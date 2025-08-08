@@ -1,6 +1,9 @@
 package com.example.scrollbooker.ui.sharedModules.posts.components.postOverlay
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -12,6 +15,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -33,8 +37,11 @@ fun PostOverlayActions(
     commentCount: Int,
     shareCount: Int,
     shouldDisplayBottomBar: Boolean,
-    onShowBottomBar: () -> Unit
+    onShowBottomBar: () -> Unit,
+    onNavigateToUser: () -> Unit
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+
     val rotation by animateFloatAsState(
         targetValue = if(shouldDisplayBottomBar) 180f else 0f,
         label = "ArrowRotation"
@@ -44,11 +51,20 @@ fun PostOverlayActions(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        AvatarWithRating(
-            url = "https://media.scrollbooker.ro/avatar-men-22.jpg",
-            rating = "4.5",
-            size = 55.dp
-        )
+        Box(
+            modifier = Modifier
+                .clickable(
+                    onClick = onNavigateToUser,
+                    interactionSource = interactionSource,
+                    indication = null
+                )
+        ) {
+            AvatarWithRating(
+                url = "https://media.scrollbooker.ro/avatar-men-22.jpg",
+                rating = "4.5",
+                size = 55.dp
+            )
+        }
 
         Spacer(Modifier.height(SpacingS))
 

@@ -1,12 +1,12 @@
 package com.example.scrollbooker.entity.social.post.domain.model
+import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.user.userSocial.data.remote.UserSocialDto
-import java.math.BigDecimal
 
 data class Post(
     val id: Int,
     val description: String?,
     val user: UserSocialDto,
-    val product: PostProduct?,
+    val product: Product?,
     val userActions: UserPostActions,
     val mediaFiles: List<PostMediaFile>,
     val counters: PostCounters,
@@ -42,22 +42,12 @@ data class Hashtag(
     val updatedAt: String
 )
 
-data class PostProduct(
-    val id: Int?,
-    val name: String,
-    val description: String?,
-    val duration: Int,
-    val price: BigDecimal,
-    val priceWithDiscount: BigDecimal,
-    val discount: BigDecimal,
-    val currency: String,
-)
-
 data class PostCounters(
     val commentCount: Int,
     val likeCount: Int,
     val bookmarkCount: Int,
-    val shareCount: Int
+    val shareCount: Int,
+    val bookingsCount: Int
 )
 
 data class FixedSlots(

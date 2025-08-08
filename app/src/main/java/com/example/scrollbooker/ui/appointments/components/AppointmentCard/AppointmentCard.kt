@@ -86,23 +86,6 @@ fun AppointmentCard(
                     AppointmentCardDate(day, month, startTime)
                 }
             }
-
-            if(AppointmentStatusEnum.fromKey(appointment.status) == AppointmentStatusEnum.FINISHED) {
-                Spacer(Modifier.padding(vertical = SpacingM))
-
-                MainButtonOutlined(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = BasePadding),
-                    shape = ShapeDefaults.Small,
-                    contentPadding = PaddingValues(
-                        horizontal = 20.dp,
-                        vertical = 15.dp
-                    ),
-                    title = stringResource(R.string.bookAgain),
-                    onClick = {}
-                )
-            }
         }
     }
 }

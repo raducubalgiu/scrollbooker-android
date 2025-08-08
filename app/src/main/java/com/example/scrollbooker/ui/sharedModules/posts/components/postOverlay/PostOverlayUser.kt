@@ -32,12 +32,11 @@ import com.example.scrollbooker.ui.theme.bodyLarge
 
 @Composable
 fun PostOverlayUser(
-    userId: Int,
     fullName: String,
     profession: String,
     ratingsAverage: String,
     distance: Float?,
-    onNavigateToUserProfile: (Int) -> Unit
+    onNavigateToUser: () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -49,7 +48,7 @@ fun PostOverlayUser(
             Column(
                 modifier = Modifier
                     .clickable(
-                        onClick = { onNavigateToUserProfile(userId) },
+                        onClick = onNavigateToUser,
                         interactionSource = interactionSource,
                         indication = null
                     )
