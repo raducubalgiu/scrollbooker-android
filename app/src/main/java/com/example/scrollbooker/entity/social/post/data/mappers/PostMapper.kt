@@ -7,6 +7,8 @@ import com.example.scrollbooker.entity.social.post.data.remote.LastMinuteDto
 import com.example.scrollbooker.entity.social.post.data.remote.PostCountersDto
 import com.example.scrollbooker.entity.social.post.data.remote.PostDto
 import com.example.scrollbooker.entity.social.post.data.remote.PostMediaFileDto
+import com.example.scrollbooker.entity.social.post.data.remote.PostProductCurrencyDto
+import com.example.scrollbooker.entity.social.post.data.remote.PostProductDto
 import com.example.scrollbooker.entity.social.post.data.remote.UserPostActionsDto
 import com.example.scrollbooker.entity.social.post.domain.model.FixedSlots
 import com.example.scrollbooker.entity.social.post.domain.model.Hashtag
@@ -14,6 +16,8 @@ import com.example.scrollbooker.entity.social.post.domain.model.LastMinute
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.social.post.domain.model.PostCounters
 import com.example.scrollbooker.entity.social.post.domain.model.PostMediaFile
+import com.example.scrollbooker.entity.social.post.domain.model.PostProduct
+import com.example.scrollbooker.entity.social.post.domain.model.PostProductCurrency
 import com.example.scrollbooker.entity.social.post.domain.model.UserPostActions
 
 fun PostDto.toDomain(): Post {
@@ -32,6 +36,26 @@ fun PostDto.toDomain(): Post {
         instantBooking = instantBooking,
         lastMinute = lastMinute.toDomain(),
         createdAt = createdAt,
+    )
+}
+
+fun PostProductDto.toDomain(): PostProduct {
+    return PostProduct(
+        id = id,
+        name = name,
+        description = description,
+        duration = duration,
+        price = price,
+        priceWithDiscount = priceWithDiscount,
+        discount = discount,
+        currency = currency.toDomain()
+    )
+}
+
+fun PostProductCurrencyDto.toDomain(): PostProductCurrency {
+    return PostProductCurrency(
+        id = id,
+        name = name,
     )
 }
 

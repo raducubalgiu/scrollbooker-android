@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.entity.booking.products.domain.model.Product
+import com.example.scrollbooker.entity.social.post.domain.model.PostProduct
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.bodyLarge
@@ -31,7 +31,7 @@ import com.example.scrollbooker.ui.theme.titleMedium
 import java.math.BigDecimal
 
 @Composable
-fun PostOverlayProduct(product: Product) {
+fun PostOverlayProduct(product: PostProduct) {
     HorizontalDivider(color = Divider, thickness = 0.55.dp)
     Spacer(Modifier.height(SpacingM))
 
@@ -58,7 +58,7 @@ fun PostOverlayProduct(product: Product) {
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = "${product.priceWithDiscount} ${product.currencyId}",
+                        text = "${product.priceWithDiscount} ${product.currency.name}",
                         style = titleMedium,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.SemiBold,
