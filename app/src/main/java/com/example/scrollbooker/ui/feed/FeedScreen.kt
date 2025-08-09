@@ -185,7 +185,7 @@ fun FeedScreen(
                             overscrollEffect = null,
                             flingBehavior = PagerDefaults.flingBehavior(
                                 state = pagerState,
-                                snapAnimationSpec = tween(200)
+                                snapAnimationSpec = tween(250)
                             ),
                             pageSize = PageSize.Fill,
                             pageSpacing = 0.dp

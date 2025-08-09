@@ -1,7 +1,4 @@
 package com.example.scrollbooker.navigation.host
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.navigation.compose.NavHost
@@ -15,6 +12,10 @@ import com.example.scrollbooker.navigation.graphs.calendarGraph
 import com.example.scrollbooker.navigation.graphs.sharedProfileGraph
 import com.example.scrollbooker.navigation.routes.GlobalRoute
 import com.example.scrollbooker.navigation.routes.MainRoute
+import com.example.scrollbooker.navigation.transition.slideInFromLeft
+import com.example.scrollbooker.navigation.transition.slideInFromRight
+import com.example.scrollbooker.navigation.transition.slideOutToLeft
+import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.ui.auth.AuthViewModel
 import com.example.scrollbooker.ui.shared.userProducts.UserProductsScreen
 
@@ -56,45 +57,21 @@ fun RootNavHost(
             composable(
                 route = "${MainRoute.UserProducts.route}/{userId}",
                 arguments = listOf(navArgument("userId") { type = NavType.IntType }),
-                enterTransition = {
-                    slideIntoContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Left,
-                        animationSpec = tween(
-                            durationMillis = 300,
-                            easing = LinearOutSlowInEasing
-                        )
-                    )
-                },
-                exitTransition = {
-                    slideOutOfContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Left,
-                        animationSpec = tween(
-                            durationMillis = 300,
-                            easing = LinearOutSlowInEasing
-                        )
-                    )
-                },
-                popEnterTransition = {
-                    slideIntoContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Right,
-                        animationSpec = tween(
-                            durationMillis = 300,
-                            easing = LinearOutSlowInEasing
-                        )
-                    )
-                },
-                popExitTransition = {
-                    slideOutOfContainer(
-                        AnimatedContentTransitionScope.SlideDirection.Right,
-                        animationSpec = tween(
-                            durationMillis = 300,
-                            easing = LinearOutSlowInEasing
-                        )
-                    )
-                }
-            ) {
+                enterTransition = { slideInFromRight() },
+                exitTransition = { slideOutToLeft() },
+                popEnterTransition = { slideInFromLeft() },
+                popExitTransition = { slideOutToRight() }
+            ) { backStackEntry ->
+                val userId = backStackEntry.arguments?.getInt("userId") ?: return@composable
+
                 UserProductsScreen(
-                    onBack = { navController.popBackStack() }
+                    userId = userId,
+                    onBack = { navController.popBackStack() },
+                    onNavigateToCalendar = { (userId, slotDuration, productId, productName) ->
+                        navController.navigate(
+                            "${MainRoute.Calendar.route}/$userId/$slotDuration/$productId/$productName"
+                        )
+                    }
                 )
             }
 

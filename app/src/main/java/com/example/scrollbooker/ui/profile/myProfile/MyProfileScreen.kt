@@ -52,6 +52,7 @@ import com.example.scrollbooker.ui.profile.tabs.info.ProfileInfoTab
 import com.example.scrollbooker.ui.profile.tabs.posts.ProfilePostsTab
 import com.example.scrollbooker.ui.profile.tabs.products.ProfileProductsTab
 import com.example.scrollbooker.ui.profile.tabs.reposts.ProfileRepostsTab
+import com.example.scrollbooker.ui.shared.modules.products.UserProductsServiceTabs
 import kotlinx.coroutines.launch
 
 @SuppressLint("ConfigurationScreenWidthHeight")
@@ -212,13 +213,12 @@ fun MyProfileScreen(
                                                     onNavigateToPostDetail = { profileNavigate.toPostDetail() }
                                                 )
 
-                                                ProfileTab.Products -> ProfileProductsTab(
-                                                    viewModel = viewModel,
-                                                    userId = user.id,
-                                                    isOwnProfile = user.isOwnProfile,
-                                                    businessId = user.businessId,
-                                                    onNavigateToCalendar = { profileNavigate.toCalendar(it) }
-                                                )
+                                                ProfileTab.Products -> {
+                                                    UserProductsServiceTabs(
+                                                        userId = user.id,
+                                                        onNavigateToCalendar = { profileNavigate.toCalendar(it) }
+                                                    )
+                                                }
 
                                                 ProfileTab.Reposts -> ProfileRepostsTab(
                                                     viewModel = viewModel,
