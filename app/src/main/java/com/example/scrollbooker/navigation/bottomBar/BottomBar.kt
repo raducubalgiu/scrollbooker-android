@@ -1,11 +1,8 @@
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.NavigationBar
@@ -19,7 +16,6 @@ import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
-import timber.log.Timber
 
 @Composable
 fun BottomBar(
@@ -75,35 +71,4 @@ fun BottomBar(
             }
         }
     }
-
-//    AnimatedVisibility(
-//        visible = isVisible,
-//        enter = fadeIn() + slideInVertically { it },
-//        exit = fadeOut() + slideOutVertically { it }
-//    ) {
-//        Column(Modifier.height(90.dp)) {
-//            HorizontalDivider(color = dividerColor, thickness = 1.dp)
-//            NavigationBar(
-//                tonalElevation = 0.dp,
-//                modifier = Modifier.fillMaxWidth(),
-//                containerColor = containerColor
-//            ) {
-//                Row(modifier = Modifier
-//                    .fillMaxSize()
-//                    .padding(vertical = 5.dp)
-//                ) {
-//                    allTabs.forEach { tab ->
-//                        BottomBarItem(
-//                            appointmentsNumber = appointmentsNumber,
-//                            modifier = Modifier.then(Modifier.weight(1f)),
-//                            onNavigate = { onNavigate(tab) },
-//                            isSelected = currentTab == tab,
-//                            isFeedTab = isFeedTab,
-//                            tab = tab
-//                        )
-//                    }
-//                }
-//            }
-//        }
-//    }
 }
