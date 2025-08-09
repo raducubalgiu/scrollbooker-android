@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.calendar
+package com.example.scrollbooker.ui.shared.userCalendar
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

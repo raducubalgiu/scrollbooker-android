@@ -8,6 +8,10 @@ class FeedNavigator (private val navController: NavHostController) {
         navController.navigate(MainRoute.FeedSearch.route)
     }
 
+    fun toUserProducts(userId: Int) {
+        navController.navigate("${MainRoute.UserProducts.route}/${userId}")
+    }
+
     fun toUserProfile(userId: Int) {
         navController.navigate("${MainRoute.UserProfile.route}/${userId}")
     }

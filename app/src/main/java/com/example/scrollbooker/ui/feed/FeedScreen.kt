@@ -1,7 +1,6 @@
 @file:kotlin.OptIn(FlowPreview::class)
 
 package com.example.scrollbooker.ui.feed
-import BottomBar
 import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.annotation.OptIn
@@ -9,11 +8,9 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -21,7 +18,6 @@ import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.PagerDefaults
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
@@ -57,17 +53,15 @@ import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView.SHOW_BUFFERING_NEVER
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.buttons.MainButton
-import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.getOrNull
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
-import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.feed.components.FeedTabs
 import com.example.scrollbooker.ui.sharedModules.posts.PostsPagerViewModel
 import com.example.scrollbooker.ui.sharedModules.posts.components.PostBottomBar
 import com.example.scrollbooker.ui.sharedModules.posts.components.postOverlay.PostOverlay
+import com.example.scrollbooker.ui.sharedModules.posts.util.mapPostToButtonUI
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
@@ -107,28 +101,7 @@ fun FeedScreen(
 
     val buttonUIModel by remember(currentPost) {
         derivedStateOf {
-            currentPost?.let { post ->
-                when {
-                    post.lastMinute.isLastMinute -> {
-                        PostActionButtonUIModel(
-                            title = "Profita de reducere",
-                            icon = R.drawable.ic_bolt_solid
-                        )
-                    }
-                    post.product?.discount?.toInt()?.let { it > 0 } == true -> {
-                        PostActionButtonUIModel(
-                            title = "Profita de reducere",
-                            icon = R.drawable.ic_percent_badge_outline
-                        )
-                    }
-                    else -> {
-                        PostActionButtonUIModel(
-                            title = "Intervale disponibile",
-                            icon = R.drawable.ic_calendar_outline
-                        )
-                    }
-                }
-            }
+            currentPost?.let { post -> mapPostToButtonUI(post) }
         }
     }
 
@@ -151,12 +124,6 @@ fun FeedScreen(
                 appointmentsNumber = appointmentsNumber,
                 onChangeTab = onChangeTab,
             )
-//            BottomBar(
-//                appointmentsNumber = appointmentsNumber,
-//                currentTab = MainTab.Feed,
-//                currentRoute = MainRoute.Feed.route,
-//                onNavigate = onChangeTab
-//            )
         }
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -274,12 +241,12 @@ fun FeedScreen(
                                     PostOverlay(
                                         post = post,
                                         onAction = {},
+                                        buttonUIModel = buttonUIModel,
                                         shouldDisplayBottomBar = shouldDisplayBottomBar,
-                                        onShowBottomBar = {
-                                            shouldDisplayBottomBar = !shouldDisplayBottomBar
-                                        },
+                                        onShowBottomBar = { shouldDisplayBottomBar = !shouldDisplayBottomBar },
                                         onNavigateToUserProfile = { feedNavigate.toUserProfile(it) },
-                                        onNavigateToCalendar = { feedNavigate.toCalendar(it) }
+                                        onNavigateToCalendar = { feedNavigate.toCalendar(it) },
+                                        onNavigateToProducts = { feedNavigate.toUserProducts(userId = post.user.id) }
                                     )
 
                                     AnimatedVisibility(

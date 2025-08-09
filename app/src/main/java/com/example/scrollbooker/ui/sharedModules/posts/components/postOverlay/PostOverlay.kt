@@ -13,39 +13,35 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.zIndex
 import com.example.scrollbooker.R
-import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
+import com.example.scrollbooker.ui.feed.PostActionButtonUIModel
 import com.example.scrollbooker.ui.sharedModules.posts.PostInteractionState
-import com.example.scrollbooker.ui.theme.OnPrimary
-import com.example.scrollbooker.ui.theme.Primary
-import com.example.scrollbooker.ui.theme.bodyLarge
+import com.example.scrollbooker.ui.sharedModules.posts.components.PostActionButtonSmall
 import java.math.BigDecimal
 
 @Composable
 fun PostOverlay(
     post: Post,
     onAction: (PostOverlayActionEnum) -> Unit,
+    buttonUIModel: PostActionButtonUIModel?,
     shouldDisplayBottomBar: Boolean,
     onShowBottomBar: () -> Unit,
     onNavigateToUserProfile: (Int) -> Unit,
-    onNavigateToCalendar: (NavigateCalendarParam) -> Unit
+    onNavigateToCalendar: (NavigateCalendarParam) -> Unit,
+    onNavigateToProducts: () -> Unit
 ) {
     val discount = post.product?.discount
 
@@ -116,68 +112,14 @@ fun PostOverlay(
                     transitionSpec = { fadeIn(tween(300)) togetherWith fadeOut(tween(300)) },
                     label = "HeaderTransition"
                 ) { target ->
-                    if(target) {
-                        Button(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = BasePadding),
-                            onClick = {},
-                            shape = ShapeDefaults.Medium,
-                            colors = ButtonColors(
-                                containerColor = Primary,
-                                contentColor = OnPrimary,
-                                disabledContainerColor = Primary,
-                                disabledContentColor = OnPrimary
-                            )
-                        ) {
-                            Text(
-                                text = "Intervale disponibile",
-                                style = bodyLarge,
-                                fontWeight = FontWeight.SemiBold,
-                                color = OnPrimary
-                            )
-                        }
+                    if(target && buttonUIModel != null) {
+                        PostActionButtonSmall(
+                            buttonUIModel = buttonUIModel,
+                            onNavigateToCalendar = {},
+                            onNavigateToProducts = onNavigateToProducts
+                        )
                     }
                 }
-
-//                AnimatedContent(
-//                    targetState = shouldDisplayBottomBar,
-//                    transitionSpec = { fadeIn(tween(300)) togetherWith fadeOut(tween(300)) },
-//                    label = "HeaderTransition"
-//                ) { target ->
-//                    if(target) {
-//                        Button(
-//                            modifier = Modifier
-//                                .fillMaxWidth()
-//                                .padding(bottom = BasePadding),
-//                            onClick = {
-//                                post.product?.let {
-//                                    onNavigateToCalendar(
-//                                        NavigateCalendarParam(
-//                                            userId = post.user.id,
-//                                            slotDuration = post.product.duration,
-//                                            productId = post.product.id,
-//                                            productName = post.product.name)
-//                                    )
-//                                }
-//                            },
-//                            shape = ShapeDefaults.Medium,
-//                            colors = ButtonColors(
-//                                containerColor = Primary,
-//                                contentColor = OnPrimary,
-//                                disabledContainerColor = Primary,
-//                                disabledContentColor = OnPrimary
-//                            )
-//                        ) {
-//                            Text(
-//                                text = "Locuri libere",
-//                                style = bodyLarge,
-//                                fontWeight = FontWeight.SemiBold,
-//                                color = OnPrimary
-//                            )
-//                        }
-//                    }
-//                }
             }
 
             PostOverlayActions(

@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
+import com.example.scrollbooker.ui.sharedModules.posts.util.formatCounters
 
 @Composable
 fun PostActionButton(

@@ -14,8 +14,8 @@ import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
-import com.example.scrollbooker.ui.calendar.AppointmentConfirmationScreen
-import com.example.scrollbooker.ui.calendar.CalendarScreen
+import com.example.scrollbooker.ui.shared.userCalendar.AppointmentConfirmationScreen
+import com.example.scrollbooker.ui.shared.userCalendar.CalendarScreen
 import com.example.scrollbooker.ui.sharedModules.calendar.CalendarViewModel
 import kotlinx.coroutines.launch
 
