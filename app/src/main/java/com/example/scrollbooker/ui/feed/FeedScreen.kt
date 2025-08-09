@@ -6,17 +6,22 @@ import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.PagerDefaults
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
@@ -40,6 +45,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.media3.ui.PlayerView
 import androidx.paging.LoadState
@@ -51,19 +57,20 @@ import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView.SHOW_BUFFERING_NEVER
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
+import com.example.scrollbooker.components.core.buttons.MainButton
+import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.getOrNull
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.feed.components.FeedTabs
+import com.example.scrollbooker.ui.sharedModules.posts.PostsPagerViewModel
 import com.example.scrollbooker.ui.sharedModules.posts.components.PostBottomBar
-import com.example.scrollbooker.ui.sharedModules.posts.components.postOverlay.PostControls
 import com.example.scrollbooker.ui.sharedModules.posts.components.postOverlay.PostOverlay
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.filterNotNull
 
 data class PostActionButtonUIModel(
     val title: String,
@@ -87,30 +94,16 @@ fun FeedScreen(
 ) {
     val pagerState = rememberPagerState(pageCount = { posts.itemCount })
     val currentOnReleasePlayer by rememberUpdatedState(feedViewModel::releasePlayer)
-
-    var shouldDisplayBottomBar by rememberSaveable { mutableStateOf(true) }
-
-    val currentPost by remember {
-        derivedStateOf {
-            posts.getOrNull(pagerState.currentPage)
-        }
-    }
-
-    val isFirstPage by remember(pagerState.currentPage) {
-        derivedStateOf {
-            pagerState.currentPage == 0
-        }
-    }
-
-    LaunchedEffect(isFirstPage) {
-        shouldDisplayBottomBar = isFirstPage
-    }
+    val pagerViewModel: PostsPagerViewModel = hiltViewModel()
 
     LifecycleStartEffect(true) {
         onStopOrDispose {
-            currentOnReleasePlayer(currentPost?.id)
+            currentOnReleasePlayer(posts.getOrNull(pagerState.currentPage)?.id)
         }
     }
+
+    var shouldDisplayBottomBar by rememberSaveable { mutableStateOf(true) }
+    val currentPost by feedViewModel.currentPost.collectAsState()
 
     val buttonUIModel by remember(currentPost) {
         derivedStateOf {
@@ -139,86 +132,108 @@ fun FeedScreen(
         }
     }
 
-    Scaffold(bottomBar = {
-        PostBottomBar(
-            uiModel = buttonUIModel,
-            onAction = {
-                val userId = currentPost?.user?.id
-                val slotDuration = currentPost?.product?.duration
-                val productId = currentPost?.product?.id
-                val productName = currentPost?.product?.name
+    Scaffold(
+        containerColor = Color(0xFF121212),
+        bottomBar = {
+            PostBottomBar(
+                uiModel = buttonUIModel,
+                onAction = {
+                    val userId = currentPost?.user?.id
+                    val slotDuration = currentPost?.product?.duration
+                    val productId = currentPost?.product?.id
+                    val productName = currentPost?.product?.name
 
-                if(userId != null && slotDuration != null && productId != null && productName != null) {
-                    feedNavigate.toCalendar(NavigateCalendarParam(userId, slotDuration, productId, productName))
-                }
-            },
-            shouldDisplayBottomBar = shouldDisplayBottomBar,
-            appointmentsNumber = appointmentsNumber,
-            onChangeTab = onChangeTab,
-        )
-    }) {
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF121212))
-        ) {
+                    if(userId != null && slotDuration != null && productId != null && productName != null) {
+                        feedNavigate.toCalendar(NavigateCalendarParam(userId, slotDuration, productId, productName))
+                    }
+                },
+                shouldDisplayBottomBar = shouldDisplayBottomBar,
+                appointmentsNumber = appointmentsNumber,
+                onChangeTab = onChangeTab,
+            )
+//            BottomBar(
+//                appointmentsNumber = appointmentsNumber,
+//                currentTab = MainTab.Feed,
+//                currentRoute = MainRoute.Feed.route,
+//                onNavigate = onChangeTab
+//            )
+        }
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
             FeedTabs(
                 selectedTabIndex = 0,
                 onChangeTab = {},
                 onOpenDrawer = onOpenDrawer,
-                onNavigateSearch = { feedNavigate.toFeedSearch() }
+                onNavigateSearch = {}
             )
 
             posts.apply {
-                when(loadState.refresh) {
+                when (loadState.refresh) {
                     is LoadState.Error -> ErrorScreen()
                     is LoadState.Loading -> Unit
                     is LoadState.NotLoading -> {
+                        val postId by remember {
+                            derivedStateOf {
+                                posts.getOrNull(pagerState.currentPage)?.id
+                            }
+                        }
+
+                        LaunchedEffect(drawerState.currentValue) {
+                            snapshotFlow { drawerState.currentValue }
+                                .collectLatest { drawerValue ->
+                                    postId?.let {
+                                        if (drawerValue == DrawerValue.Open) {
+                                            feedViewModel.pauseIfPlaying(it)
+                                        } else {
+                                            feedViewModel.resumeIfPlaying(it)
+                                        }
+                                    }
+                                }
+                        }
+
+                        LaunchedEffect(pagerState) {
+                            snapshotFlow { pagerState.currentPage }
+                                .debounce(150)
+                                .collectLatest { page ->
+                                    val post = posts.getOrNull(page)
+                                    val previousPost = posts.getOrNull(page - 1)
+                                    val nextPost = posts.getOrNull(page + 1)
+
+                                    post?.let {
+                                        feedViewModel.initializePlayer(
+                                            post = post,
+                                            previousPost = previousPost,
+                                            nextPost = nextPost
+                                        )
+                                        feedViewModel.pauseUnusedPlayers(visiblePostId = post.id)
+                                    }
+                                }
+                        }
+
                         VerticalPager(
                             state = pagerState,
-                            beyondViewportPageCount = 1,
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(bottom = 90.dp)
+                                .padding(bottom = 90.dp),
+                            overscrollEffect = null,
+                            flingBehavior = PagerDefaults.flingBehavior(
+                                state = pagerState,
+                                snapAnimationSpec = tween(200)
+                            ),
+                            pageSize = PageSize.Fill,
+                            pageSpacing = 0.dp
                         ) { page ->
                             val post = posts[page]
 
-                            LaunchedEffect(drawerState.currentValue) {
-                                snapshotFlow { drawerState.currentValue }
-                                    .collectLatest { drawerValue ->
-                                        post?.id?.let {
-                                            if(drawerValue == DrawerValue.Open) {
-                                                feedViewModel.pauseIfPlaying(it)
-                                            } else {
-                                                feedViewModel.resumeIfPlaying(it)
-                                            }
-                                        }
-                                    }
-                            }
+                            if (post != null) {
+                                val player = remember(post.id) {
+                                    feedViewModel.getOrCreatePlayer(post)
+                                }
+                                val playerState by feedViewModel.getPlayerState(post.id)
+                                    .collectAsState()
 
-                            LaunchedEffect(pagerState) {
-                                snapshotFlow { pagerState.currentPage }
-                                    .filterNotNull()
-                                    .debounce(150)
-                                    .collectLatest { page ->
-                                        val post = posts[page]
-                                        val previousPost = if(page > 1) posts[page - 1] else null
-                                        val nextPost = if(page < posts.itemCount - 1) posts[page + 1] else null
-
-                                        post?.let {
-                                            feedViewModel.initializePlayer(
-                                                post = post,
-                                                previousPost = previousPost,
-                                                nextPost = nextPost
-                                            )
-                                        }
-                                    }
-                            }
-
-                            if(post != null) {
-                                val player = remember(post.id) { feedViewModel.getOrCreatePlayer(post) }
-                                val playerState by feedViewModel.getPlayerState(post.id).collectAsState()
-
-                                Box(modifier = Modifier
+                                Box(
+                                    modifier = Modifier
                                     .fillMaxSize()
                                     .clickable(
                                         interactionSource = remember { MutableInteractionSource() },
@@ -226,11 +241,9 @@ fun FeedScreen(
                                         onClick = { feedViewModel.togglePlayer(post.id) }
                                     )
                                 ) {
-                                    if(playerState.isBuffering) {
+                                    if (playerState.isBuffering) {
                                         CircularProgressIndicator(
-                                            modifier = Modifier
-                                                .size(50.dp)
-                                                .align(Alignment.Center),
+                                            modifier = Modifier.size(50.dp).align(Alignment.Center),
                                             color = Color.White.copy(0.5f)
                                         )
                                     }
@@ -252,27 +265,64 @@ fun FeedScreen(
                                         },
                                         update = { playerView ->
                                             playerView.player = player
-                                            playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
+                                            playerView.resizeMode =
+                                                AspectRatioFrameLayout.RESIZE_MODE_FILL
                                         },
                                         modifier = Modifier.fillMaxSize(),
                                     )
 
                                     PostOverlay(
-                                        post=post,
+                                        post = post,
                                         onAction = {},
                                         shouldDisplayBottomBar = shouldDisplayBottomBar,
-                                        onShowBottomBar = { shouldDisplayBottomBar = !shouldDisplayBottomBar },
-                                        onNavigateToUserProfile = {
-                                            feedNavigate.toUserProfile(it)
-                                        }
+                                        onShowBottomBar = {
+                                            shouldDisplayBottomBar = !shouldDisplayBottomBar
+                                        },
+                                        onNavigateToUserProfile = { feedNavigate.toUserProfile(it) },
+                                        onNavigateToCalendar = { feedNavigate.toCalendar(it) }
                                     )
 
-                                    PostControls(
+                                    AnimatedVisibility(
                                         visible = playerState.hasStartedPlayback &&
                                                 !playerState.isPlaying &&
                                                 !playerState.isBuffering &&
-                                                !drawerState.isOpen
-                                    )
+                                                !drawerState.isOpen,
+                                        enter = fadeIn(),
+                                        exit = fadeOut()
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .zIndex(5f),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Icon(
+                                                modifier = Modifier.size(75.dp),
+                                                painter = painterResource(R.drawable.ic_play_solid),
+                                                contentDescription = null,
+                                                tint = Color.White.copy(0.5f)
+                                            )
+                                        }
+                                    }
+//                                    var progress by remember(post.id) { mutableFloatStateOf(0f) }
+//
+//                                    LaunchedEffect(player) {
+//                                        while (true) {
+//                                            val duration = player.duration.takeIf { it > 0 } ?: 1L
+//                                            val position = player.currentPosition
+//                                            progress = (position / duration.toFloat()).coerceIn(0f, 1f)
+//                                            delay(100)
+//                                        }
+//                                    }
+//
+//                                    VideoSlider(
+//                                        progress = progress,
+//                                        isPlaying = isPlaying,
+//                                        onSeek = {},
+//                                        modifier = Modifier
+//                                            .align(Alignment.BottomCenter)
+//                                            .fillMaxWidth()
+//                                    )
                                 }
                             }
                         }
@@ -281,109 +331,5 @@ fun FeedScreen(
             }
         }
     }
-
-//    val pagerState = rememberPagerState(initialPage = 1) { 2 }
-//    val selectedTabIndex = pagerState.currentPage
-//    val coroutineScope = rememberCoroutineScope()
-//
-//    var isUserSwiping by remember { mutableStateOf(false) }
-//    var shouldDisplayBottomBar by remember { mutableStateOf(true) }
-//
-//    LaunchedEffect(pagerState) {
-//        snapshotFlow { pagerState.currentPageOffsetFraction }
-//            .collect { offset ->
-//                isUserSwiping = offset != 0f
-//            }
-//    }
-//
-//
-//    Scaffold(
-//        bottomBar = {
-//            AnimatedContent(
-//                targetState = shouldDisplayBottomBar,
-//                transitionSpec = { fadeIn(tween(300)) togetherWith fadeOut(tween(300)) },
-//                label = "label"
-//            ) { display ->
-//                if(display) {
-//                    BottomBar(
-//                        appointmentsNumber = appointmentsNumber,
-//                        currentTab = MainTab.Feed,
-//                        currentRoute = MainRoute.Feed.route,
-//                        onNavigate = onNavigate
-//                    )
-//                } else {
-//                    val bottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-//
-//                    MainButton(
-//                        modifier = Modifier
-//                            .padding(horizontal = BasePadding)
-//                            .padding(bottom = bottomPadding),
-//                        contentPadding = PaddingValues(SpacingM),
-//                        leadingIcon = R.drawable.ic_calendar_outline,
-//                        onClick = {},
-//                        title = "Intervale disponibile"
-//                    )
-//                }
-//            }
-//        }
-//    ) {
-//        Box(modifier = Modifier
-//            .fillMaxSize()
-//            .background(Color(0xFF121212))
-//        ) {
-//            FeedTabs(
-//                selectedTabIndex = selectedTabIndex,
-//                onOpenDrawer = onOpenDrawer,
-//                onNavigateSearch = onNavigateSearch,
-//                shouldDisplayBottomBar = shouldDisplayBottomBar,
-//                onChangeTab = {
-//                    coroutineScope.launch {
-//                        pagerState.animateScrollToPage(it)
-//                    }
-//                }
-//            )
-//
-//            HorizontalPager(
-//                state = pagerState,
-//                beyondViewportPageCount = 1,
-//                pageSize = PageSize.Fill,
-//                key = { it },
-//                modifier = Modifier.fillMaxSize()
-//            ) { page ->
-//                when(page) {
-//                    0 -> {
-//                        val posts = viewModel.followingPosts.collectAsLazyPagingItems()
-//
-//                        PostsPager(
-//                            posts = posts,
-//                            isVisibleTab = pagerState.currentPage == page && !isUserSwiping,
-//                            onDisplayBottomBar = { shouldDisplayBottomBar = it }
-//                        )
-//                    }
-//                    1 -> {
-//                        PostsPager(
-//                            posts = bookNowPosts,
-//                            isVisibleTab = pagerState.currentPage == page && !isUserSwiping,
-//                            onDisplayBottomBar = { shouldDisplayBottomBar = it }
-//                        )
-//                    }
-//                }
-//            }
-//        }
-//    }
 }
-//
-//@SuppressLint("RememberReturnType")
-//@OptIn(UnstableApi::class)
-//@Composable
-//fun FollowingPager(
-//    modifier: Modifier = Modifier,
-//    viewModel: FeedScreenViewModel,
-//    posts: LazyPagingItems<Post>,
-//    //player: Player?,
-//    onReleasePlayer: () -> Unit,
-//    onChangePlayerItem: (post: Post) -> Unit
-//) {
-//
-//}
 

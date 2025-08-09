@@ -18,6 +18,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -38,15 +39,9 @@ class FeedScreenViewModel @Inject constructor(
 
     private var playerThread: HandlerThread = HandlerThread("ExoPlayer Thread", Process.THREAD_PRIORITY_AUDIO)
         .apply { start() }
-    var playbackStartTimeMs = C.TIME_UNSET
 
-    private val firstFrameListener = object : Player.Listener {
-        override fun onRenderedFirstFrame() {
-            val timeToFirstFrameMs = System.currentTimeMillis() - playbackStartTimeMs
-            Timber.tag("PreloadManager").d("\t\tTime to first Frame = $timeToFirstFrameMs ")
-            super.onRenderedFirstFrame()
-        }
-    }
+    private val _currentPost = MutableStateFlow<Post?>(null)
+    val currentPost: StateFlow<Post?> = _currentPost.asStateFlow()
 
     private fun createLoadControl(): DefaultLoadControl {
         return DefaultLoadControl.Builder()
@@ -59,19 +54,6 @@ class FeedScreenViewModel @Inject constructor(
             .setTargetBufferBytes(C.LENGTH_UNSET)
             .setPrioritizeTimeOverSizeThresholds(true)
             .build()
-    }
-
-    fun getPlayerState(postId: Int): StateFlow<PlayerUIState> {
-        return _playerStates.getOrPut(postId) { MutableStateFlow(PlayerUIState()) }
-    }
-
-    private fun updatePlayerState(
-        postId: Int,
-        transform: (PlayerUIState) -> PlayerUIState
-    ) {
-        _playerStates[postId]?.let { mutableFlow ->
-            mutableFlow.value = transform(mutableFlow.value)
-        }
     }
 
     private val playerListeners = mutableMapOf<Int, Player.Listener>()
@@ -102,6 +84,40 @@ class FeedScreenViewModel @Inject constructor(
         playerListeners[postId] = listener
     }
 
+    fun getPlayerState(postId: Int): StateFlow<PlayerUIState> {
+        return _playerStates.getOrPut(postId) { MutableStateFlow(PlayerUIState()) }
+    }
+
+    private fun updatePlayerState(postId: Int, transform: (PlayerUIState) -> PlayerUIState) {
+        _playerStates[postId]?.let { mutableFlow ->
+            mutableFlow.value = transform(mutableFlow.value)
+        }
+    }
+
+    fun initializePlayer(
+        post: Post?,
+        previousPost: Post?,
+        nextPost: Post?
+    ) {
+        if (post == null) return
+        _currentPost.value = post
+
+        val player = getOrCreatePlayer(post = post)
+
+        resetInactivePlayerStates(post.id)
+
+        val newMediaItem = MediaItem.fromUri(post.mediaFiles.first().url)
+
+        if(player.currentMediaItem?.localConfiguration?.uri != newMediaItem.localConfiguration?.uri) {
+            player.setMediaItem(newMediaItem)
+            player.prepare()
+        }
+        player.playWhenReady = true
+
+        preloadVideo(previousPost)
+        preloadVideo(nextPost)
+    }
+
     private fun resetInactivePlayerStates(postId: Int) {
         _playerStates
             .filterKeys { it != postId }
@@ -123,32 +139,6 @@ class FeedScreenViewModel @Inject constructor(
         player.playWhenReady = false
     }
 
-    fun initializePlayer(
-        post: Post?,
-        previousPost: Post?,
-        nextPost: Post?
-    ) {
-        if (post == null) return
-        val player = getOrCreatePlayer(post = post)
-
-        pauseUnusedPlayers(post.id)
-        resetInactivePlayerStates(post.id)
-
-        val newMediaItem = MediaItem.fromUri(post.mediaFiles.first().url)
-
-        if(player.currentMediaItem?.localConfiguration?.uri != newMediaItem.localConfiguration?.uri) {
-            player.setMediaItem(newMediaItem)
-            player.prepare()
-        }
-        player.playWhenReady = true
-
-        preloadVideo(previousPost)
-        preloadVideo(nextPost)
-
-        playbackStartTimeMs = System.currentTimeMillis()
-        Timber.tag("PreloadManager").d("Video Playing $post ")
-    }
-
     fun getOrCreatePlayer(post: Post): ExoPlayer {
         return playerPool.getOrPut(post.id) {
             ExoPlayer.Builder(application.applicationContext)
@@ -166,7 +156,6 @@ class FeedScreenViewModel @Inject constructor(
                 .also {
                     it.repeatMode = ExoPlayer.REPEAT_MODE_ONE
                     it.playWhenReady = false
-                    it.addListener(firstFrameListener)
                     attachPlayerStateListener(post.id, it)
                 }
         }
@@ -242,22 +231,21 @@ class FeedScreenViewModel @Inject constructor(
                 playWhenReady = false
                 pause()
                 playerListeners.remove(id)?.let { removeListener(it) }
-                removeListener(firstFrameListener)
             }
             _playerStates.remove(id)
 
-            //resetInactivePlayerStates(postId)
+            resetInactivePlayerStates(postId)
             limitPlayerPoolSize(postId)
         }
     }
 
-//    override fun onCleared() {
-//        super.onCleared()
-//
-//        playerPool.values.forEach {
-//            it.release()
-//        }
-//        playerPool.clear()
-//        playerThread.quitSafely()
-//    }
+    override fun onCleared() {
+        super.onCleared()
+
+        playerPool.values.forEach {
+            it.release()
+        }
+        playerPool.clear()
+        playerThread.quitSafely()
+    }
 }

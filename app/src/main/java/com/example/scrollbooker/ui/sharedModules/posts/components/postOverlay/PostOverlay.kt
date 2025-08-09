@@ -31,6 +31,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.entity.social.post.domain.model.Post
+import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
 import com.example.scrollbooker.ui.sharedModules.posts.PostInteractionState
 import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.Primary
@@ -43,7 +44,8 @@ fun PostOverlay(
     onAction: (PostOverlayActionEnum) -> Unit,
     shouldDisplayBottomBar: Boolean,
     onShowBottomBar: () -> Unit,
-    onNavigateToUserProfile: (Int) -> Unit
+    onNavigateToUserProfile: (Int) -> Unit,
+    onNavigateToCalendar: (NavigateCalendarParam) -> Unit
 ) {
     val discount = post.product?.discount
 
@@ -137,6 +139,45 @@ fun PostOverlay(
                         }
                     }
                 }
+
+//                AnimatedContent(
+//                    targetState = shouldDisplayBottomBar,
+//                    transitionSpec = { fadeIn(tween(300)) togetherWith fadeOut(tween(300)) },
+//                    label = "HeaderTransition"
+//                ) { target ->
+//                    if(target) {
+//                        Button(
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .padding(bottom = BasePadding),
+//                            onClick = {
+//                                post.product?.let {
+//                                    onNavigateToCalendar(
+//                                        NavigateCalendarParam(
+//                                            userId = post.user.id,
+//                                            slotDuration = post.product.duration,
+//                                            productId = post.product.id,
+//                                            productName = post.product.name)
+//                                    )
+//                                }
+//                            },
+//                            shape = ShapeDefaults.Medium,
+//                            colors = ButtonColors(
+//                                containerColor = Primary,
+//                                contentColor = OnPrimary,
+//                                disabledContainerColor = Primary,
+//                                disabledContentColor = OnPrimary
+//                            )
+//                        ) {
+//                            Text(
+//                                text = "Locuri libere",
+//                                style = bodyLarge,
+//                                fontWeight = FontWeight.SemiBold,
+//                                color = OnPrimary
+//                            )
+//                        }
+//                    }
+//                }
             }
 
             PostOverlayActions(
