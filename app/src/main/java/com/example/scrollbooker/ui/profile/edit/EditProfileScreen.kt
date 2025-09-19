@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.myProfile.edit
+package com.example.scrollbooker.ui.profile.edit
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -19,7 +19,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.navigation.routes.MainRoute
-import com.example.scrollbooker.ui.profile.myProfile.MyProfileViewModel
+import com.example.scrollbooker.ui.profile.MyProfileViewModel
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.titleMedium
 

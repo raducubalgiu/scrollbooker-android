@@ -1,7 +1,9 @@
-package com.example.scrollbooker.ui.profile.myProfile.edit
-import androidx.compose.foundation.background
+package com.example.scrollbooker.ui.profile.edit
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AlternateEmail
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -10,7 +12,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.headers.HeaderEdit
@@ -18,29 +19,22 @@ import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.components.core.inputs.EditInput
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.core.util.checkLength
-import com.example.scrollbooker.ui.profile.myProfile.MyProfileViewModel
-import com.example.scrollbooker.ui.theme.Background
+import com.example.scrollbooker.ui.profile.MyProfileViewModel
 
 @Composable
-fun EditBioScreen(
+fun EditUsernameScreen(
     viewModel: MyProfileViewModel,
     onBack: () -> Unit
 ) {
     val userState by viewModel.userProfileState.collectAsState()
     val user = (userState as? FeatureState.Success)?.data
 
-    var newBio by rememberSaveable { mutableStateOf(user?.bio ?: "") }
+    var newUsername by rememberSaveable { mutableStateOf(user?.username ?: "") }
     val state = viewModel.editState.collectAsState().value
-
-    val checkBio = checkLength(LocalContext.current, newBio, maxLength = 100)
-    val isInputValid = checkBio.isNullOrBlank()
-
     val isLoading = state == FeatureState.Loading
-    val isError = state == FeatureState.Error(error = null)
-    val isEnabled = newBio != user?.bio && isInputValid
+    val isEnabled = isLoading || newUsername != user?.username
 
-    if(viewModel.isSaved) {
+    if (viewModel.isSaved) {
         LaunchedEffect(state) {
             onBack()
             viewModel.isSaved = false
@@ -52,9 +46,9 @@ fun EditBioScreen(
         header = {
             HeaderEdit(
                 onBack = onBack,
-                title = stringResource(R.string.biography),
+                title = stringResource(R.string.username),
                 modifier = Modifier.padding(horizontal = BasePadding),
-                onAction = { viewModel.updateBio(newBio) },
+                onAction = { viewModel.updateUsername(newUsername) },
                 actionTitle = stringResource(R.string.save),
                 isLoading = isLoading,
                 isEnabled = isEnabled
@@ -62,16 +56,15 @@ fun EditBioScreen(
         }
     ) {
         EditInput(
-            value = newBio,
-            onValueChange = { newBio = it },
-            placeholder = stringResource(R.string.yourBio),
-            singleLine = false,
-            minLines = 5,
-            maxLines = 5,
-            isError = isError,
-            isEnabled = !isLoading,
-            isInputValid = isInputValid,
-            errorMessage = checkBio.toString()
+            value = newUsername,
+            onValueChange = { newUsername = it },
+            placeholder = stringResource(R.string.username),
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.AlternateEmail,
+                    contentDescription = null
+                )
+            }
         )
     }
 }

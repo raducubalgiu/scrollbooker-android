@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.myProfile.edit
+package com.example.scrollbooker.ui.profile.edit
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -12,7 +12,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.components.core.inputs.Option
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
-import com.example.scrollbooker.ui.profile.myProfile.MyProfileViewModel
+import com.example.scrollbooker.ui.profile.MyProfileViewModel
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.headlineLarge
 

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.myProfile.edit
+package com.example.scrollbooker.ui.profile.edit
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,7 +25,7 @@ import com.example.scrollbooker.core.enums.GenderTypeEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.ui.profile.myProfile.MyProfileViewModel
+import com.example.scrollbooker.ui.profile.MyProfileViewModel
 import com.example.scrollbooker.ui.theme.Divider
 
 @Composable

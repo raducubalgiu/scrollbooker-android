@@ -15,7 +15,7 @@ import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.social.UserSocialScreen
 import com.example.scrollbooker.ui.social.UserSocialViewModel
-import com.example.scrollbooker.ui.profile.userProfile.ProfileViewModel
+import com.example.scrollbooker.ui.profile.ProfileViewModel
 import com.example.scrollbooker.ui.profile.userProfile.UserProfileScreen
 
 fun NavGraphBuilder.sharedProfileGraph(

@@ -1,4 +1,5 @@
-package com.example.scrollbooker.ui.profile.myProfile
+package com.example.scrollbooker.ui.profile
+
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -42,13 +43,14 @@ class MyProfileViewModel @Inject constructor(
     private val getUserProfileUseCase: GetUserProfileUseCase,
     private val authDataStore: AuthDataStore
 ): ViewModel() {
-    private val _userProfileState = MutableStateFlow<FeatureState<UserProfile>>(FeatureState.Loading)
+    private val _userProfileState =
+        MutableStateFlow<FeatureState<UserProfile>>(FeatureState.Loading)
     val userProfileState: StateFlow<FeatureState<UserProfile>> = _userProfileState
 
     private val _initCompleted = MutableStateFlow(false)
     val isInitLoading = combine(_userProfileState, _initCompleted) { profile, done ->
         (profile is FeatureState.Loading || !done)
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, true)
+    }.stateIn(viewModelScope, SharingStarted.Companion.Eagerly, true)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val userPosts: StateFlow<PagingData<Post>> = authDataStore.getUserId()
@@ -56,14 +58,14 @@ class MyProfileViewModel @Inject constructor(
         .flatMapLatest { userId -> getUserPostsUseCase(userId) }
         .onEach { _initCompleted.value = true }
         .cachedIn(viewModelScope)
-        .stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
+        .stateIn(viewModelScope, SharingStarted.Companion.Lazily, PagingData.Companion.empty())
 
     fun loadUserProfile() {
         viewModelScope.launch {
             val userId = authDataStore.getUserId().firstOrNull()
 
             if(userId == null) {
-                Timber.tag("Refetch UserProfile").e("ERROR: on Refetching User Profile. User Id not found ")
+                Timber.Forest.tag("Refetch UserProfile").e("ERROR: on Refetching User Profile. User Id not found ")
                 throw IllegalStateException("User id not found in datastore")
             }
 
@@ -108,7 +110,7 @@ class MyProfileViewModel @Inject constructor(
                     isSaved = true
                 }
                 .onFailure { error ->
-                    Timber.tag("EditProfile").e(error, "ERROR: on Edit FullName User Data")
+                    Timber.Forest.tag("EditProfile").e(error, "ERROR: on Edit FullName User Data")
                     _editState.value = FeatureState.Error(error = null)
                 }
         }
@@ -132,7 +134,7 @@ class MyProfileViewModel @Inject constructor(
                     isSaved = true
                 }
                 .onFailure { error ->
-                    Timber.tag("EditProfile").e(error, "ERROR: on Edit Username User Data")
+                    Timber.Forest.tag("EditProfile").e(error, "ERROR: on Edit Username User Data")
                     _editState.value = FeatureState.Error(error = null)
                 }
         }
@@ -157,7 +159,7 @@ class MyProfileViewModel @Inject constructor(
                     isSaved = true
                 }
                 .onFailure { error ->
-                    Timber.tag("EditProfile").e(error, "ERROR: on Edit Bio User Data")
+                    Timber.Forest.tag("EditProfile").e(error, "ERROR: on Edit Bio User Data")
                     _editState.value = FeatureState.Error(error = null)
                 }
         }
@@ -181,7 +183,7 @@ class MyProfileViewModel @Inject constructor(
                     isSaved = true
                 }
                 .onFailure { error ->
-                    Timber.tag("EditProfile").e(error, "ERROR: on Edit Gender User Data")
+                    Timber.Forest.tag("EditProfile").e(error, "ERROR: on Edit Gender User Data")
                     _editState.value = FeatureState.Error(error = null)
                 }
         }

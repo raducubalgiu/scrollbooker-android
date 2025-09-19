@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.myProfile.edit
+package com.example.scrollbooker.ui.profile.edit
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
@@ -18,7 +18,7 @@ import com.example.scrollbooker.components.core.inputs.EditInput
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.checkLength
-import com.example.scrollbooker.ui.profile.myProfile.MyProfileViewModel
+import com.example.scrollbooker.ui.profile.MyProfileViewModel
 
 @Composable
 fun EditFullNameScreen(

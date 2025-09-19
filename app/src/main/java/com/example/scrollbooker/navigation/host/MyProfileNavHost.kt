@@ -22,8 +22,8 @@ import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.ui.auth.AuthViewModel
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
-import com.example.scrollbooker.ui.profile.myProfile.MyProfileScreen
-import com.example.scrollbooker.ui.profile.myProfile.MyProfileViewModel
+import com.example.scrollbooker.ui.profile.MyProfileScreen
+import com.example.scrollbooker.ui.profile.MyProfileViewModel
 
 @Composable
 fun MyProfileNavHost(

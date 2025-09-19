@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.userProfile
+package com.example.scrollbooker.ui.profile
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -33,13 +33,14 @@ class ProfileViewModel @Inject constructor(
 ): ViewModel() {
     private val userId: StateFlow<Int?> = savedStateHandle.getStateFlow("userId", null)
 
-    private val _userProfileState = MutableStateFlow<FeatureState<UserProfile>>(FeatureState.Loading)
+    private val _userProfileState =
+        MutableStateFlow<FeatureState<UserProfile>>(FeatureState.Loading)
     val userProfileState: StateFlow<FeatureState<UserProfile>> = _userProfileState
 
     private val _initCompleted = MutableStateFlow(false)
     val isInitLoading = combine(_userProfileState, _initCompleted) { profile, done ->
         (profile is FeatureState.Loading || !done)
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, true)
+    }.stateIn(viewModelScope, SharingStarted.Companion.Eagerly, true)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val userPosts: StateFlow<PagingData<Post>> = userId
@@ -47,7 +48,7 @@ class ProfileViewModel @Inject constructor(
         .flatMapLatest { userId -> getUserPostsUseCase(userId) }
         .onEach { _initCompleted.value = true }
         .cachedIn(viewModelScope)
-        .stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
+        .stateIn(viewModelScope, SharingStarted.Companion.Lazily, PagingData.Companion.empty())
 
     init {
         userId.filterNotNull()

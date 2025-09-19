@@ -9,13 +9,13 @@ import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
-import com.example.scrollbooker.ui.profile.myProfile.MyProfileViewModel
-import com.example.scrollbooker.ui.profile.myProfile.edit.EditBioScreen
-import com.example.scrollbooker.ui.profile.myProfile.edit.EditFullNameScreen
-import com.example.scrollbooker.ui.profile.myProfile.edit.EditGenderScreen
-import com.example.scrollbooker.ui.profile.myProfile.edit.EditProfessionScreen
-import com.example.scrollbooker.ui.profile.myProfile.edit.EditProfileScreen
-import com.example.scrollbooker.ui.profile.myProfile.edit.EditUsernameScreen
+import com.example.scrollbooker.ui.profile.MyProfileViewModel
+import com.example.scrollbooker.ui.profile.edit.EditBioScreen
+import com.example.scrollbooker.ui.profile.edit.EditFullNameScreen
+import com.example.scrollbooker.ui.profile.edit.EditGenderScreen
+import com.example.scrollbooker.ui.profile.edit.EditProfessionScreen
+import com.example.scrollbooker.ui.profile.edit.EditProfileScreen
+import com.example.scrollbooker.ui.profile.edit.EditUsernameScreen
 
 fun NavGraphBuilder.editProfileGraph(
     navController: NavHostController,

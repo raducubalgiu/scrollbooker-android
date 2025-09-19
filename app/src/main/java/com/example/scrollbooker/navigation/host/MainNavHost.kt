@@ -31,7 +31,7 @@ import com.example.scrollbooker.ui.auth.AuthViewModel
 import com.example.scrollbooker.ui.feed.FeedScreenViewModel
 import com.example.scrollbooker.ui.MainDrawer
 import com.example.scrollbooker.ui.MainUIViewModel
-import com.example.scrollbooker.ui.profile.myProfile.MyProfileViewModel
+import com.example.scrollbooker.ui.profile.MyProfileViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
