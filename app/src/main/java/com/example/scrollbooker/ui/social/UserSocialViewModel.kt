@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.social
+package com.example.scrollbooker.ui.social
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf

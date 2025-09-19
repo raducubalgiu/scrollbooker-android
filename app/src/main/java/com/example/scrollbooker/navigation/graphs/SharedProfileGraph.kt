@@ -13,8 +13,8 @@ import com.example.scrollbooker.navigation.transition.slideInFromRight
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
-import com.example.scrollbooker.ui.profile.social.UserSocialScreen
-import com.example.scrollbooker.ui.profile.social.UserSocialViewModel
+import com.example.scrollbooker.ui.social.UserSocialScreen
+import com.example.scrollbooker.ui.social.UserSocialViewModel
 import com.example.scrollbooker.ui.profile.userProfile.ProfileViewModel
 import com.example.scrollbooker.ui.profile.userProfile.UserProfileScreen
 

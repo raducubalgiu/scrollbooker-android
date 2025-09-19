@@ -1,10 +1,10 @@
-package com.example.scrollbooker.ui.profile.social.tab.followers
+package com.example.scrollbooker.ui.social.tab
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.example.scrollbooker.ui.profile.social.UserSocialViewModel
-import com.example.scrollbooker.ui.profile.social.components.UserSocialList
+import com.example.scrollbooker.ui.social.UserSocialViewModel
+import com.example.scrollbooker.ui.social.components.UserSocialList
 
 @Composable
 fun UserFollowersTab(

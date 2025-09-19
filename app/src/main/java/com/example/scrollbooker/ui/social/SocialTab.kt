@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.social
+package com.example.scrollbooker.ui.social
 
 sealed class SocialTab(val route: String) {
     object Reviews: SocialTab(route = "Reviews")

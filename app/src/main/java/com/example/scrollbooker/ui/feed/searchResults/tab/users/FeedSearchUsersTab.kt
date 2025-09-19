@@ -4,7 +4,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.example.scrollbooker.ui.profile.social.components.UserSocialList
+import com.example.scrollbooker.ui.social.components.UserSocialList
 
 @Composable
 fun FeedSearchUsersTab(

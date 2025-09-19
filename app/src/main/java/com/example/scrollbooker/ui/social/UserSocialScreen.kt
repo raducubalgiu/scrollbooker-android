@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.social
+package com.example.scrollbooker.ui.social
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -19,9 +19,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.dp
-import com.example.scrollbooker.ui.profile.social.tab.bookings.BookingsTab
-import com.example.scrollbooker.ui.profile.social.tab.followers.UserFollowersTab
-import com.example.scrollbooker.ui.profile.social.tab.followings.UserFollowingsTab
+import com.example.scrollbooker.ui.social.tab.BookingsTab
+import com.example.scrollbooker.ui.social.tab.UserFollowersTab
+import com.example.scrollbooker.ui.social.tab.UserFollowingsTab
 import com.example.scrollbooker.ui.sharedModules.reviews.list.ReviewsList
 
 @Composable
