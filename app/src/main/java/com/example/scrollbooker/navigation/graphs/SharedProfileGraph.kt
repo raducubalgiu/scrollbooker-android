@@ -16,7 +16,7 @@ import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.social.UserSocialScreen
 import com.example.scrollbooker.ui.social.UserSocialViewModel
 import com.example.scrollbooker.ui.profile.ProfileViewModel
-import com.example.scrollbooker.ui.profile.userProfile.UserProfileScreen
+import com.example.scrollbooker.ui.profile.UserProfileScreen
 
 fun NavGraphBuilder.sharedProfileGraph(
     navController: NavHostController

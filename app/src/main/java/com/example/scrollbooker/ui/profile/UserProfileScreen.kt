@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.userProfile
+package com.example.scrollbooker.ui.profile
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -30,7 +30,6 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
-import com.example.scrollbooker.ui.profile.ProfileViewModel
 import com.example.scrollbooker.ui.profile.components.profileHeader.ProfileHeader
 import com.example.scrollbooker.ui.profile.components.profileHeader.ProfileShimmer
 import com.example.scrollbooker.ui.profile.tabs.ProfileTab
@@ -39,7 +38,6 @@ import com.example.scrollbooker.ui.profile.tabs.ProfileTabViewModel
 import com.example.scrollbooker.ui.profile.tabs.bookmarks.ProfileBookmarksTab
 import com.example.scrollbooker.ui.profile.tabs.info.ProfileInfoTab
 import com.example.scrollbooker.ui.profile.tabs.posts.ProfilePostsTab
-import com.example.scrollbooker.ui.profile.tabs.products.ProfileProductsTab
 import com.example.scrollbooker.ui.profile.tabs.reposts.ProfileRepostsTab
 import com.example.scrollbooker.ui.shared.modules.products.UserProductsServiceTabs
 import com.example.scrollbooker.ui.theme.Background
