@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.navigation.graphs.appointmentsGraph
 import com.example.scrollbooker.navigation.graphs.calendarGraph
 import com.example.scrollbooker.navigation.graphs.sharedProfileGraph
 import com.example.scrollbooker.navigation.routes.GlobalRoute
@@ -75,6 +76,11 @@ fun RootNavHost(
                 )
             }
 
+            appointmentsGraph(
+                navController,
+                appointmentsNumber = 0,
+                onChangeTab = {}
+            )
             sharedProfileGraph(navController)
             calendarGraph(navController)
         }

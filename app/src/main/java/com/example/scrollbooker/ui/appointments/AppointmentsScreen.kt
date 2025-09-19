@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,6 +31,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.ArrowButton
 import com.example.scrollbooker.components.core.buttons.MainButton
+import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.inputs.InputRadio
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
@@ -43,12 +43,10 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointment
 import com.example.scrollbooker.navigation.bottomBar.MainTab
-import com.example.scrollbooker.navigation.host.AppointmentsNavHost
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.appointments.components.AppointmentCard.AppointmentCard
 import com.example.scrollbooker.ui.appointments.components.AppointmentFilter
 import com.example.scrollbooker.ui.appointments.components.AppointmentFilterTitleEnum
-import com.example.scrollbooker.ui.appointments.components.AppointmentsHeader
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.titleMedium
 import kotlinx.coroutines.launch
@@ -59,7 +57,7 @@ fun AppointmentsScreen(
     viewModel: AppointmentsViewModel,
     navigateToAppointmentDetails: (Appointment) -> Unit,
     appointmentsNumber: Int,
-    onNavigate: (MainTab) -> Unit
+    onChangeTab: (MainTab) -> Unit
 ) {
     val appointments = viewModel.appointments.collectAsLazyPagingItems()
 
@@ -156,13 +154,13 @@ fun AppointmentsScreen(
                 appointmentsNumber = appointmentsNumber,
                 currentTab = MainTab.Appointments,
                 currentRoute = MainRoute.Appointments.route,
-                onNavigate = onNavigate
+                onNavigate = onChangeTab
             )
         }
     ) { innerPadding ->
         Box(Modifier.fillMaxSize().padding(innerPadding)) {
             Column(Modifier.fillMaxSize()) {
-                AppointmentsHeader()
+                Header(title = stringResource(R.string.appointments), enableBack = false)
 
                 ArrowButton(
                     title = selectedFilter?.title?.getLabel() ?: AppointmentFilterTitleEnum.ALL.getLabel(),

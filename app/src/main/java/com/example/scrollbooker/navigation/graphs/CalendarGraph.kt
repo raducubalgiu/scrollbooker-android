@@ -3,6 +3,7 @@ package com.example.scrollbooker.navigation.graphs
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -79,10 +80,14 @@ fun NavGraphBuilder.calendarGraph(navController: NavHostController) {
                 onBack = { navController.popBackStack() },
                 onSubmit = {
                     navController.currentBackStackEntry?.lifecycleScope?.launch {
-                        val createAppointment = viewModel.createAppointment()
+                        val result = viewModel.createAppointment()
 
-                        createAppointment.onSuccess {
-                            //rootNavController.navigate(MainRoute.Appointments.route)
+                        result.onSuccess {
+                            navController.navigate(MainRoute.Appointments.route) {
+                                popUpTo(navController.graph.findStartDestination().id) { inclusive = true }
+                                launchSingleTop = true
+                                restoreState = false
+                            }
                         }
                     }
                 }

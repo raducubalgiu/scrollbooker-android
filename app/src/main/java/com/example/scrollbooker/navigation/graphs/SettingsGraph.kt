@@ -9,16 +9,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.auth.AuthViewModel
-import com.example.scrollbooker.ui.profile.myProfile.settings.SettingsScreen
-import com.example.scrollbooker.ui.profile.myProfile.settings.account.AccountScreen
-import com.example.scrollbooker.ui.profile.myProfile.settings.display.DisplayScreen
-import com.example.scrollbooker.ui.profile.myProfile.settings.notifications.NotificationSettings
-import com.example.scrollbooker.ui.profile.myProfile.settings.privacy.PrivacyScreen
-import com.example.scrollbooker.ui.profile.myProfile.settings.reportProblem.presentation.ReportAProblemViewModel
-import com.example.scrollbooker.ui.profile.myProfile.settings.reportProblem.presentation.ReportProblemScreen
-import com.example.scrollbooker.ui.profile.myProfile.settings.security.SecurityScreen
-import com.example.scrollbooker.ui.profile.myProfile.settings.support.SupportScreen
-import com.example.scrollbooker.ui.profile.myProfile.settings.terms.TermsAndConditionsScreen
+import com.example.scrollbooker.ui.settings.SettingsScreen
+import com.example.scrollbooker.ui.settings.account.AccountScreen
+import com.example.scrollbooker.ui.settings.display.DisplayScreen
+import com.example.scrollbooker.ui.settings.notifications.NotificationSettings
+import com.example.scrollbooker.ui.settings.privacy.PrivacyScreen
+import com.example.scrollbooker.ui.settings.reportProblem.presentation.ReportAProblemViewModel
+import com.example.scrollbooker.ui.settings.reportProblem.presentation.ReportProblemScreen
+import com.example.scrollbooker.ui.settings.security.SecurityScreen
+import com.example.scrollbooker.ui.settings.support.SupportScreen
+import com.example.scrollbooker.ui.settings.terms.TermsAndConditionsScreen
 
 fun NavGraphBuilder.settingsGraph(
     navController: NavHostController,

@@ -80,7 +80,7 @@ fun PostGrid(
         ) {
             Box(modifier = Modifier
                 .background(
-                    color = Error,
+                    color = Color(0xFF00BCD4),
                     shape = RoundedCornerShape(4.dp)
                 )
                 .padding(2.5.dp)

@@ -49,6 +49,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
+import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.nomenclature.businessType.domain.model.BusinessType
@@ -313,7 +314,10 @@ fun SearchScreen(
                         ) {
                             items(100) {
                                 Box(Modifier.fillMaxWidth()) {
-                                    Text("Text")
+                                    MainButton(
+                                        onClick = onNavigateToBusinessProfile,
+                                        title = "Business Profile",
+                                    )
                                 }
                             }
                         }

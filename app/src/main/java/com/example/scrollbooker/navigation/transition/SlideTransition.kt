@@ -3,6 +3,7 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 
 private const val TRANSITION_DURATION = 300
@@ -12,7 +13,7 @@ fun AnimatedContentTransitionScope<*>.slideInFromRight(): EnterTransition {
         AnimatedContentTransitionScope.SlideDirection.Left,
         animationSpec = tween(
             durationMillis = TRANSITION_DURATION,
-            easing = FastOutSlowInEasing
+            easing = LinearOutSlowInEasing
         )
     )
 }
@@ -22,7 +23,7 @@ fun AnimatedContentTransitionScope<*>.slideOutToLeft(): ExitTransition {
         AnimatedContentTransitionScope.SlideDirection.Left,
         animationSpec = tween(
             durationMillis = TRANSITION_DURATION,
-            easing = FastOutSlowInEasing
+            easing = LinearOutSlowInEasing
         )
     )
 }
@@ -32,7 +33,7 @@ fun AnimatedContentTransitionScope<*>.slideInFromLeft(): EnterTransition {
         AnimatedContentTransitionScope.SlideDirection.Right,
         animationSpec = tween(
             durationMillis = TRANSITION_DURATION,
-            easing = FastOutSlowInEasing
+            easing = LinearOutSlowInEasing
         )
     )
 }
@@ -42,7 +43,7 @@ fun AnimatedContentTransitionScope<*>.slideOutToRight(): ExitTransition {
         AnimatedContentTransitionScope.SlideDirection.Right,
         animationSpec = tween(
             durationMillis = TRANSITION_DURATION,
-            easing = FastOutSlowInEasing
+            easing = LinearOutSlowInEasing
         )
     )
 }

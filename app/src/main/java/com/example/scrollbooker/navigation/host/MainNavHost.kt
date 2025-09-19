@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -142,7 +143,7 @@ fun MainNavHost(
                         navController = navControllers[MainTab.Appointments]!!,
                         mainViewModel = mainViewModel,
                         appointmentsNumber = mainViewModel.appointmentsState,
-                        onNavigate = { currentTab = it }
+                        onChangeTab = { currentTab = it }
                     )
                 }
                 is MainTab.Profile -> {
