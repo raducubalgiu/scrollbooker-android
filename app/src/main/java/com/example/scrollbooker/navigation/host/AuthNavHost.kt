@@ -30,6 +30,11 @@ import com.example.scrollbooker.ui.auth.AuthViewModel
 import com.example.scrollbooker.ui.auth.LoginScreen
 import com.example.scrollbooker.ui.auth.RegisterBusinessScreen
 import com.example.scrollbooker.ui.auth.RegisterClientScreen
+import com.example.scrollbooker.ui.myBusiness.myBusinessLocation.MyBusinessLocationScreen
+import com.example.scrollbooker.ui.myBusiness.myBusinessLocation.MyBusinessLocationViewModel
+import com.example.scrollbooker.ui.myBusiness.mySchedules.MySchedulesViewModel
+import com.example.scrollbooker.ui.myBusiness.mySchedules.SchedulesScreen
+import com.example.scrollbooker.ui.myBusiness.myServices.MyServicesViewModel
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessHasEmployeesScreen
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessHasEmployeesViewModel
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessTypeScreen
@@ -45,11 +50,6 @@ import com.example.scrollbooker.ui.onboarding.shared.collectLocationPermission.C
 import com.example.scrollbooker.ui.onboarding.shared.collectLocationPermission.CollectClientLocationPermissionViewModel
 import com.example.scrollbooker.ui.onboarding.shared.collectUsername.CollectUserUsernameScreen
 import com.example.scrollbooker.ui.onboarding.shared.collectUsername.CollectUserUsernameViewModel
-import com.example.scrollbooker.ui.profile.myProfile.myBusiness.myBusinessLocation.MyBusinessLocationScreen
-import com.example.scrollbooker.ui.profile.myProfile.myBusiness.myBusinessLocation.MyBusinessLocationViewModel
-import com.example.scrollbooker.ui.profile.myProfile.myBusiness.mySchedules.MySchedulesViewModel
-import com.example.scrollbooker.ui.profile.myProfile.myBusiness.mySchedules.SchedulesScreen
-import com.example.scrollbooker.ui.profile.myProfile.myBusiness.myServices.MyServicesViewModel
 import kotlinx.coroutines.launch
 
 enum class AuthTypeEnum {

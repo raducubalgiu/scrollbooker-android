@@ -19,7 +19,7 @@ import com.example.scrollbooker.components.core.layout.FormLayout
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.checkLength
-import com.example.scrollbooker.ui.profile.myProfile.myBusiness.myBusinessLocation.MyBusinessLocationViewModel
+import com.example.scrollbooker.ui.myBusiness.myBusinessLocation.MyBusinessLocationViewModel
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
