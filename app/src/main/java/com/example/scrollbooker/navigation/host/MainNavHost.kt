@@ -23,15 +23,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.ui.auth.AuthViewModel
 import com.example.scrollbooker.ui.feed.FeedScreenViewModel
-import com.example.scrollbooker.ui.main.MainDrawer
-import com.example.scrollbooker.ui.main.MainUIViewModel
+import com.example.scrollbooker.ui.MainDrawer
+import com.example.scrollbooker.ui.MainUIViewModel
 import com.example.scrollbooker.ui.profile.myProfile.MyProfileViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber

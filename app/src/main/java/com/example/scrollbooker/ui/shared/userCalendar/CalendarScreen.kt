@@ -13,8 +13,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.headers.Header
-import com.example.scrollbooker.ui.sharedModules.calendar.Calendar
-import com.example.scrollbooker.ui.sharedModules.calendar.CalendarViewModel
+import com.example.scrollbooker.ui.modules.calendar.Calendar
+import com.example.scrollbooker.ui.modules.calendar.CalendarViewModel
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.titleMedium

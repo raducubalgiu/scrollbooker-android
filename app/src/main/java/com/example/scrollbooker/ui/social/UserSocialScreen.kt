@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.ui.social.tab.BookingsTab
 import com.example.scrollbooker.ui.social.tab.UserFollowersTab
 import com.example.scrollbooker.ui.social.tab.UserFollowingsTab
-import com.example.scrollbooker.ui.sharedModules.reviews.list.ReviewsList
+import com.example.scrollbooker.ui.modules.reviews.list.ReviewsList
 
 @Composable
 fun UserSocialScreen(

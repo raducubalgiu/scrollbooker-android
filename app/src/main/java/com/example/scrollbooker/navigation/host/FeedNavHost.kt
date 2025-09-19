@@ -14,14 +14,13 @@ import com.example.scrollbooker.ui.feed.FeedScreen
 import com.example.scrollbooker.ui.feed.searchResults.FeedSearchResultsScreen
 import com.example.scrollbooker.ui.feed.search.FeedSearchScreen
 import com.example.scrollbooker.ui.feed.search.FeedSearchViewModel
-import com.example.scrollbooker.ui.main.MainUIViewModel
+import com.example.scrollbooker.ui.MainUIViewModel
 import androidx.compose.runtime.getValue
 import androidx.media3.common.util.UnstableApi
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
-import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
 import com.example.scrollbooker.navigation.transition.slideOutToLeft

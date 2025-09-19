@@ -47,7 +47,7 @@ import androidx.media3.ui.PlayerView
 import androidx.paging.LoadState
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.navigation.bottomBar.MainTab
-import com.example.scrollbooker.ui.main.MainUIViewModel
+import com.example.scrollbooker.ui.MainUIViewModel
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView.SHOW_BUFFERING_NEVER
@@ -58,10 +58,10 @@ import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
 import com.example.scrollbooker.ui.feed.components.FeedTabs
-import com.example.scrollbooker.ui.sharedModules.posts.PostsPagerViewModel
-import com.example.scrollbooker.ui.sharedModules.posts.components.PostBottomBar
-import com.example.scrollbooker.ui.sharedModules.posts.components.postOverlay.PostOverlay
-import com.example.scrollbooker.ui.sharedModules.posts.util.mapPostToButtonUI
+import com.example.scrollbooker.ui.modules.posts.PostsPagerViewModel
+import com.example.scrollbooker.ui.modules.posts.components.PostBottomBar
+import com.example.scrollbooker.ui.modules.posts.components.postOverlay.PostOverlay
+import com.example.scrollbooker.ui.modules.posts.util.mapPostToButtonUI
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
