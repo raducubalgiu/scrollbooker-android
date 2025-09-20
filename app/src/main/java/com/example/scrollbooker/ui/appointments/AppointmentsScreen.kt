@@ -154,7 +154,7 @@ fun AppointmentsScreen(
                 appointmentsNumber = appointmentsNumber,
                 currentTab = MainTab.Appointments,
                 currentRoute = MainRoute.Appointments.route,
-                onNavigate = onChangeTab
+                onChangeTab = onChangeTab
             )
         }
     ) { innerPadding ->

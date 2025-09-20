@@ -39,7 +39,7 @@ fun InboxScreen(
                 appointmentsNumber = appointmentsNumber,
                 currentTab = MainTab.Inbox,
                 currentRoute = MainRoute.Inbox.route,
-                onNavigate = onChangeTab
+                onChangeTab = onChangeTab
             )
         }
     ) { innerPadding ->

@@ -1,19 +1,26 @@
 package com.example.scrollbooker.ui.inbox.components
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.components.core.buttons.MainButtonSmall
 import com.example.scrollbooker.core.util.Dimens.AvatarSizeS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.ui.theme.Background
+import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.OnPrimary
+import com.example.scrollbooker.ui.theme.OnSurfaceBG
+import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
 
@@ -26,11 +33,16 @@ fun NotificationItem(
     actionModifier: Modifier = Modifier,
     showAction: Boolean = true,
     actionTitle: String = "",
+    actionBackgroundColor: Color = Primary,
+    actionColor: Color = OnPrimary,
     onActionClick: (() -> Unit)? = null
 ) {
     ListItem(modifier = modifier
         .fillMaxWidth()
         .padding(vertical = SpacingXXS)
+        .clickable {
+
+        }
         .then(modifier),
         headlineContent = {
             Text(
@@ -57,7 +69,13 @@ fun NotificationItem(
                     MainButtonSmall(
                         modifier = actionModifier,
                         title = actionTitle,
-                        onClick = { onActionClick?.invoke() }
+                        onClick = { onActionClick?.invoke() },
+                        colors = ButtonColors(
+                            containerColor = actionBackgroundColor,
+                            contentColor = actionColor,
+                            disabledContainerColor = Divider,
+                            disabledContentColor = OnSurfaceBG
+                        )
                     )
                 }
             }

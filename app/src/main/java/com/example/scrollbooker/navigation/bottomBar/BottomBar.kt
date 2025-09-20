@@ -22,7 +22,7 @@ fun BottomBar(
     appointmentsNumber: Int,
     currentTab: MainTab,
     currentRoute: String?,
-    onNavigate: (MainTab) -> Unit
+    onChangeTab: (MainTab) -> Unit
 ) {
     val allTabs = MainTab.allTabs
     val isFeedTab = currentTab == MainTab.Feed
@@ -43,10 +43,7 @@ fun BottomBar(
     val containerColor = if(isFeedTab) Color(0xFF121212) else Background
 
     if(isVisible) {
-        Column(
-            modifier = Modifier
-                .height(90.dp)
-        ) {
+        Column(modifier = Modifier.height(90.dp)) {
             HorizontalDivider(color = dividerColor, thickness = 1.dp)
             NavigationBar(
                 tonalElevation = 0.dp,
@@ -61,7 +58,7 @@ fun BottomBar(
                         BottomBarItem(
                             appointmentsNumber = appointmentsNumber,
                             modifier = Modifier.then(Modifier.weight(1f)),
-                            onNavigate = { onNavigate(tab) },
+                            onNavigate = { onChangeTab(tab) },
                             isSelected = currentTab == tab,
                             isFeedTab = isFeedTab,
                             tab = tab

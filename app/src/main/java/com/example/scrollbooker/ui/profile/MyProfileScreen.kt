@@ -130,7 +130,7 @@ fun MyProfileScreen(
                 appointmentsNumber = appointmentsNumber,
                 currentTab = MainTab.Profile,
                 currentRoute = MainRoute.MyProfile.route,
-                onNavigate = onChangeTab
+                onChangeTab = onChangeTab
             )
         }
     ) { innerPadding ->

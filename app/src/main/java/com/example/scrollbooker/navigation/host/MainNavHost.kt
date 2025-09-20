@@ -126,7 +126,7 @@ fun MainNavHost(
                                 appointmentsNumber = mainViewModel.appointmentsState,
                                 currentTab = currentTab,
                                 currentRoute = currentRoute,
-                                onNavigate = { currentTab = it }
+                                onChangeTab = { currentTab = it }
                             )
                         }
                     ) {

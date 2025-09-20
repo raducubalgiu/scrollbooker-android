@@ -15,11 +15,6 @@ import javax.inject.Inject
 class InboxViewModel @Inject constructor(
     getNotificationsUseCase: GetNotificationsUseCase
 ): ViewModel() {
-
-    init {
-        Timber.tag("Init Inbox").e("-> View Model Created")
-    }
-
     val notifications: Flow<PagingData<Notification>> =
                 getNotificationsUseCase().cachedIn(viewModelScope)
 }

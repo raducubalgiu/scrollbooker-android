@@ -8,6 +8,8 @@ import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.entity.user.notification.domain.model.Notification
+import com.example.scrollbooker.ui.theme.Error
+import com.example.scrollbooker.ui.theme.OnError
 import timber.log.Timber
 
 @Composable
@@ -39,7 +41,9 @@ fun NotificationsList(
                             message = stringResource(R.string.sentYouAnEmploymentRequest),
                             avatar = it.sender.avatar.toString(),
                             actionTitle = stringResource(R.string.seeMore),
-                            onActionClick = { onNavigate(it.id) }
+                            actionBackgroundColor = Error,
+                            actionColor = OnError,
+                            onActionClick = { onNavigate(it.id) },
                         )
                     }
                     else -> Unit

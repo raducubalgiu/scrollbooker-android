@@ -49,7 +49,7 @@ fun PostBottomBar(
                     appointmentsNumber = appointmentsNumber,
                     currentTab = MainTab.Feed,
                     currentRoute = MainRoute.Feed.route,
-                    onNavigate = currentOnChangeTab
+                    onChangeTab = currentOnChangeTab
                 )
             } else {
                 val bottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
