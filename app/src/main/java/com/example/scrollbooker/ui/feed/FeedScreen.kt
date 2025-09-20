@@ -41,7 +41,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.media3.ui.PlayerView
 import androidx.paging.LoadState
@@ -58,7 +57,6 @@ import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
 import com.example.scrollbooker.ui.feed.components.FeedTabs
-import com.example.scrollbooker.ui.modules.posts.PostsPagerViewModel
 import com.example.scrollbooker.ui.modules.posts.components.PostBottomBar
 import com.example.scrollbooker.ui.modules.posts.components.postOverlay.PostOverlay
 import com.example.scrollbooker.ui.modules.posts.util.mapPostToButtonUI
@@ -78,7 +76,6 @@ data class PostActionButtonUIModel(
 @Composable
 fun FeedScreen(
     feedViewModel: FeedScreenViewModel,
-    viewModel: MainUIViewModel,
     posts: LazyPagingItems<Post>,
     drawerState: DrawerState,
     appointmentsNumber: Int,
@@ -88,7 +85,6 @@ fun FeedScreen(
 ) {
     val pagerState = rememberPagerState(pageCount = { posts.itemCount })
     val currentOnReleasePlayer by rememberUpdatedState(feedViewModel::releasePlayer)
-    val pagerViewModel: PostsPagerViewModel = hiltViewModel()
 
     LifecycleStartEffect(true) {
         onStopOrDispose {
@@ -105,21 +101,25 @@ fun FeedScreen(
         }
     }
 
+    fun navigateToCalendar() {
+        val userId = currentPost?.user?.id
+        val slotDuration = currentPost?.product?.duration
+        val productId = currentPost?.product?.id
+        val productName = currentPost?.product?.name
+
+        if(userId != null && slotDuration != null && productId != null && productName != null) {
+            feedNavigate.toCalendar(
+                NavigateCalendarParam(userId, slotDuration, productId, productName)
+            )
+        }
+    }
+
     Scaffold(
         containerColor = Color(0xFF121212),
         bottomBar = {
             PostBottomBar(
                 uiModel = buttonUIModel,
-                onAction = {
-                    val userId = currentPost?.user?.id
-                    val slotDuration = currentPost?.product?.duration
-                    val productId = currentPost?.product?.id
-                    val productName = currentPost?.product?.name
-
-                    if(userId != null && slotDuration != null && productId != null && productName != null) {
-                        feedNavigate.toCalendar(NavigateCalendarParam(userId, slotDuration, productId, productName))
-                    }
-                },
+                onAction = { navigateToCalendar() },
                 shouldDisplayBottomBar = shouldDisplayBottomBar,
                 appointmentsNumber = appointmentsNumber,
                 onChangeTab = onChangeTab,
@@ -131,7 +131,9 @@ fun FeedScreen(
                 selectedTabIndex = 0,
                 onChangeTab = {},
                 onOpenDrawer = onOpenDrawer,
-                onNavigateSearch = {}
+                onNavigateSearch = {
+                    feedNavigate.toFeedSearch()
+                }
             )
 
             posts.apply {
@@ -201,16 +203,18 @@ fun FeedScreen(
 
                                 Box(
                                     modifier = Modifier
-                                    .fillMaxSize()
-                                    .clickable(
-                                        interactionSource = remember { MutableInteractionSource() },
-                                        indication = null,
-                                        onClick = { feedViewModel.togglePlayer(post.id) }
-                                    )
+                                        .fillMaxSize()
+                                        .clickable(
+                                            interactionSource = remember { MutableInteractionSource() },
+                                            indication = null,
+                                            onClick = { feedViewModel.togglePlayer(post.id) }
+                                        )
                                 ) {
                                     if (playerState.isBuffering) {
                                         CircularProgressIndicator(
-                                            modifier = Modifier.size(50.dp).align(Alignment.Center),
+                                            modifier = Modifier
+                                                .size(50.dp)
+                                                .align(Alignment.Center),
                                             color = Color.White.copy(0.5f)
                                         )
                                     }
@@ -271,25 +275,6 @@ fun FeedScreen(
                                             )
                                         }
                                     }
-//                                    var progress by remember(post.id) { mutableFloatStateOf(0f) }
-//
-//                                    LaunchedEffect(player) {
-//                                        while (true) {
-//                                            val duration = player.duration.takeIf { it > 0 } ?: 1L
-//                                            val position = player.currentPosition
-//                                            progress = (position / duration.toFloat()).coerceIn(0f, 1f)
-//                                            delay(100)
-//                                        }
-//                                    }
-//
-//                                    VideoSlider(
-//                                        progress = progress,
-//                                        isPlaying = isPlaying,
-//                                        onSeek = {},
-//                                        modifier = Modifier
-//                                            .align(Alignment.BottomCenter)
-//                                            .fillMaxWidth()
-//                                    )
                                 }
                             }
                         }

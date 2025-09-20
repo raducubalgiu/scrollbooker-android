@@ -40,7 +40,9 @@ fun FeedNavHost(
     onChangeTab: (MainTab) -> Unit
 ) {
     val userSearch by mainViewModel.userSearch.collectAsState()
-    val feedNavigate = remember(rootNavController) { FeedNavigator(rootNavController) }
+    val feedNavigate = remember(rootNavController, navController) {
+        FeedNavigator(rootNavController, navController)
+    }
 
     NavHost(
         navController = navController,
@@ -52,7 +54,6 @@ fun FeedNavHost(
         ) { backStackEntry ->
             FeedScreen(
                 feedViewModel = feedViewModel,
-                viewModel = mainViewModel,
                 posts = bookNowPosts,
                 drawerState = drawerState,
                 onOpenDrawer = onOpenDrawer,
