@@ -61,7 +61,7 @@ fun PostOverlayActions(
         ) {
             AvatarWithRating(
                 url = "https://media.scrollbooker.ro/avatar-men-22.jpg",
-                rating = "4.5",
+                rating = 4.5f,
                 size = 55.dp
             )
         }

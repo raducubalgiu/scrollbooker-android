@@ -21,7 +21,10 @@ data class NotificationDto(
     @SerializedName("is_deleted")
     val isDeleted: Boolean,
 
-    val sender: SenderDto
+    val sender: SenderDto,
+
+    @SerializedName("is_follow")
+    val isFollow: Boolean
 )
 
 data class SenderDto(

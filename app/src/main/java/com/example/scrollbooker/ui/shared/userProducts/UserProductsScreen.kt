@@ -40,7 +40,7 @@ fun UserProductsScreen(
             verticalArrangement = Arrangement.Center
         ) {
             AvatarWithRating(
-                rating = "4.5",
+                rating = 4.5f,
                 size = 100.dp
             )
 

@@ -91,7 +91,7 @@ fun UserSocialItem(
         },
         leadingContent = {
             if(isBusinessOrEmployee) {
-                AvatarWithRating(rating = "4.5", size = 60.dp)
+                AvatarWithRating(rating = 4.5f, size = 60.dp)
             } else {
                 Avatar(url = userSocial.avatar ?: "", size = 60.dp)
             }

@@ -31,17 +31,37 @@ import com.example.scrollbooker.ui.theme.titleMedium
 data class BusinessEmp(
     val fullName: String,
     val avatar: String,
-    val rating: String
+    val rating: Float
 )
 
 @Composable
 fun BusinessEmployeesTab() {
     val employees = listOf(
-        BusinessEmp(avatar = "https://media.scrollbooker.ro/avatar-male-9.jpeg", fullName ="Cristian Ionel", rating= "4.9"),
-        BusinessEmp(avatar = "https://media.scrollbooker.ro/avatar-male-10.jpg", fullName ="Radu Dan", rating = "4.3"),
-        BusinessEmp(avatar = "https://media.scrollbooker.ro/avatar-male-11.jpeg", fullName ="Laur Oprea", rating = "4.2"),
-        BusinessEmp(avatar = "https://media.scrollbooker.ro/avatar-male-12.jpg", fullName ="Mihai Gandac", rating = "4.9"),
-        BusinessEmp(avatar = "https://media.scrollbooker.ro/avatar-male-14.jpeg", fullName ="Gigi Corsicanu", rating = "3.2"),
+        BusinessEmp(
+            avatar = "https://media.scrollbooker.ro/avatar-male-9.jpeg",
+            fullName ="Cristian Ionel",
+            rating= 4.9f
+        ),
+        BusinessEmp(
+            avatar = "https://media.scrollbooker.ro/avatar-male-10.jpg",
+            fullName ="Radu Dan",
+            rating = 4.3f
+        ),
+        BusinessEmp(
+            avatar = "https://media.scrollbooker.ro/avatar-male-11.jpeg",
+            fullName ="Laur Oprea",
+            rating = 4.2f
+        ),
+        BusinessEmp(
+            avatar = "https://media.scrollbooker.ro/avatar-male-12.jpg",
+            fullName ="Mihai Gandac",
+            rating = 4.9f
+        ),
+        BusinessEmp(
+            avatar = "https://media.scrollbooker.ro/avatar-male-14.jpeg",
+            fullName ="Gigi Corsicanu",
+            rating = 3.2f
+        ),
     )
 
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -81,7 +101,7 @@ fun BusinessEmployeesTab() {
                     Spacer(Modifier.height(BasePadding))
 
                     MainButtonOutlined(
-                        title = "Profil",
+                        title = stringResource(R.string.profile),
                         onClick = {}
                     )
                 }

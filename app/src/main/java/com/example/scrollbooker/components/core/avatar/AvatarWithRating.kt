@@ -35,7 +35,7 @@ import com.example.scrollbooker.ui.theme.bodyMedium
 fun AvatarWithRating(
     modifier: Modifier = Modifier,
     url: String =  "https://media.scrollbooker.ro/frizerie-1-cover.jpg",
-    rating: String,
+    rating: Float?,
     size: Dp = 75.dp
 ) {
 
@@ -79,7 +79,7 @@ fun AvatarWithRating(
             )
             Spacer(Modifier.width(2.dp))
             Text(
-                text = rating,
+                text = rating.toString(),
                 color = Color.Black,
                 fontWeight = FontWeight.ExtraBold,
                 style = bodyMedium,

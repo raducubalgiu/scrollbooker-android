@@ -1,15 +1,22 @@
 package com.example.scrollbooker.ui.inbox.components
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
+import com.example.scrollbooker.components.core.buttons.MainButtonSmall
+import com.example.scrollbooker.components.customized.UserListItem
+import com.example.scrollbooker.core.enums.NotificationTypeEnum
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.entity.user.notification.domain.model.Notification
+import com.example.scrollbooker.ui.social.components.UserSocialItem
+import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnError
+import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import timber.log.Timber
 
 @Composable
@@ -27,7 +34,7 @@ fun NotificationsList(
             val notification = notifications[index]
             notification?.let {
                 when(it.type) {
-                    "follow" -> {
+                    NotificationTypeEnum.FOLLOW -> {
                         NotificationItem(
                             fullName = it.sender.fullName.toString(),
                             message = stringResource(id = R.string.startedFollowingYou),
@@ -35,18 +42,30 @@ fun NotificationsList(
                             actionTitle = stringResource(R.string.follow),
                         )
                     }
-                    "employment_request" -> {
-                        NotificationItem(
-                            fullName = it.sender.fullName.toString(),
-                            message = stringResource(R.string.sentYouAnEmploymentRequest),
-                            avatar = it.sender.avatar.toString(),
-                            actionTitle = stringResource(R.string.seeMore),
-                            actionBackgroundColor = Error,
-                            actionColor = OnError,
-                            onActionClick = { onNavigate(it.id) },
+                    NotificationTypeEnum.EMPLOYMENT_REQUEST -> {
+                        UserListItem(
+                            title = it.sender.fullName ?: "",
+                            description = stringResource(R.string.sentYouAnEmploymentRequest),
+                            avatar = it.sender.avatar ?: "",
+                            rating = 4.5f,
+                            isEnabled = true,
+                            isBusinessOrEmployee = false,
+                            onNavigateUserProfile = {  },
+                            trailingContent = {
+                                MainButtonSmall(
+                                    title = stringResource(R.string.seeMore),
+                                    onClick = { onNavigate(it.id) },
+                                    colors = ButtonColors(
+                                        containerColor = Error,
+                                        contentColor = OnError,
+                                        disabledContainerColor = Divider,
+                                        disabledContentColor = OnSurfaceBG
+                                    )
+                                )
+                            }
                         )
                     }
-                    else -> Unit
+                    NotificationTypeEnum.UNKNOWN -> Unit
                 }
             }
         }

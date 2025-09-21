@@ -74,7 +74,7 @@ fun EmployeeTab(
             AvatarWithRating(
                 modifier = Modifier.size(90.dp),
                 url = "$avatar",
-                rating = "$ratingsAverage"
+                rating = ratingsAverage
             )
             Spacer(Modifier.height(SpacingM))
             Text(

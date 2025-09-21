@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -30,6 +32,9 @@ fun InboxScreen(
     onChangeTab: (MainTab) -> Unit
 ) {
     val notifications = viewModel.notifications.collectAsLazyPagingItems()
+    val followedOverrides by viewModel.followedOverrides.collectAsState()
+    val followRequestLocks by viewModel.followRequestLocks.collectAsState()
+
     val refreshState = notifications.loadState.refresh
     val appendState = notifications.loadState.append
 
