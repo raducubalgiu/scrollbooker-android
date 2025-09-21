@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.nomenclature.businessType.domain.model.BusinessType
+import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
@@ -18,7 +19,9 @@ import com.example.scrollbooker.ui.search.businessProfile.BusinessProfileScreen
 @Composable
 fun SearchNavHost(
     businessTypesState: FeatureState<List<BusinessType>>,
-    navController: NavHostController
+    navController: NavHostController,
+    appointmentsNumber: Int,
+    onChangeTab: (MainTab) -> Unit
 ) {
     NavHost(
         navController = navController,
@@ -33,7 +36,9 @@ fun SearchNavHost(
             SearchScreen(
                 viewModel = viewModel,
                 businessTypesState = businessTypesState,
-                onNavigateToBusinessProfile = { navController.navigate(MainRoute.BusinessProfile.route) }
+                onNavigateToBusinessProfile = { navController.navigate(MainRoute.BusinessProfile.route) },
+                appointmentsNumber = appointmentsNumber,
+                onChangeTab = onChangeTab,
             )
         }
         composable(MainRoute.BusinessProfile.route) { backStackEntry ->

@@ -1,12 +1,10 @@
 package com.example.scrollbooker.navigation.host
-import BottomBar
 import android.annotation.SuppressLint
 import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -23,7 +21,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.navigation.bottomBar.MainTab
@@ -33,7 +30,6 @@ import com.example.scrollbooker.ui.MainDrawer
 import com.example.scrollbooker.ui.MainUIViewModel
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 val MainTabSaver: Saver<MainTab, String> = Saver(
     save = { it.route },
@@ -75,13 +71,6 @@ fun MainNavHost(
         mutableStateOf(MainTab.Feed)
     }
 
-    val currentNavController = checkNotNull(navControllers[currentTab]) {
-        Timber.tag("Current NavController").e("NavController for tab $currentTab is not initialized")
-    }
-
-    val currentBackStackEntry by currentNavController.currentBackStackEntryAsState()
-    val currentRoute = currentBackStackEntry?.destination?.route
-
     Box(modifier = Modifier.fillMaxSize()) {
         saveableStateHolder.SaveableStateProvider(currentTab.route) {
             when (currentTab) {
@@ -120,21 +109,12 @@ fun MainNavHost(
                 }
 
                 is MainTab.Search -> {
-                    Scaffold(
-                        bottomBar = {
-                            BottomBar(
-                                appointmentsNumber = mainViewModel.appointmentsState,
-                                currentTab = currentTab,
-                                currentRoute = currentRoute,
-                                onChangeTab = { currentTab = it }
-                            )
-                        }
-                    ) {
-                        SearchNavHost(
-                            businessTypesState = businessTypesState,
-                            navController = navControllers[MainTab.Search]!!
-                        )
-                    }
+                    SearchNavHost(
+                        businessTypesState = businessTypesState,
+                        navController = navControllers[MainTab.Search]!!,
+                        appointmentsNumber = mainViewModel.appointmentsState,
+                        onChangeTab = { currentTab = it }
+                    )
                 }
 
                 is MainTab.Appointments -> {

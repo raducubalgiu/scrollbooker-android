@@ -1,4 +1,5 @@
 package com.example.scrollbooker.ui.search
+import BottomBar
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -26,6 +27,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -53,6 +55,8 @@ import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.nomenclature.businessType.domain.model.BusinessType
+import com.example.scrollbooker.navigation.bottomBar.MainTab
+import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.search.components.SearchHeader
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Primary
@@ -80,7 +84,9 @@ enum class BottomSheetValue(val fraction: Float) {
 fun SearchScreen(
     viewModel: SearchViewModel,
     businessTypesState: FeatureState<List<BusinessType>>,
-    onNavigateToBusinessProfile: () -> Unit
+    onNavigateToBusinessProfile: () -> Unit,
+    appointmentsNumber: Int,
+    onChangeTab: (MainTab) -> Unit
 ) {
     val isSystemInDarkMode = isSystemInDarkTheme()
 
@@ -110,41 +116,51 @@ fun SearchScreen(
     }
     val cameraState = mapViewportState.cameraState
 
-    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-        val density = LocalDensity.current
-        val totalHeightPx = with(density) { maxHeight.toPx() }
+    Scaffold(
+        bottomBar = {
+            BottomBar(
+                appointmentsNumber = appointmentsNumber,
+                currentTab = MainTab.Search,
+                currentRoute = MainRoute.Search.route,
+                onChangeTab = onChangeTab
+            )
+        }
+    ) { innerPadding ->
+        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+            val density = LocalDensity.current
+            val totalHeightPx = with(density) { maxHeight.toPx() }
 
-        MapboxMap(
-            modifier = Modifier.fillMaxSize(),
-            mapViewportState = mapViewportState,
-            style = { MapStyle(style = if(isSystemInDarkMode) Style.DARK else Style.STANDARD) },
-            scaleBar = {},
-        ) {
-            viewAnnotationList1.forEachIndexed { index, point ->
-                ViewAnnotation(
-                    options = viewAnnotationOptions {
-                        geometry(point)
-                        allowOverlap(true)
+            MapboxMap(
+                modifier = Modifier.fillMaxSize(),
+                mapViewportState = mapViewportState,
+                style = { MapStyle(style = if(isSystemInDarkMode) Style.DARK else Style.STANDARD) },
+                scaleBar = {},
+            ) {
+                viewAnnotationList1.forEachIndexed { index, point ->
+                    ViewAnnotation(
+                        options = viewAnnotationOptions {
+                            geometry(point)
+                            allowOverlap(true)
+                        }
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(30.dp),
+                            painter = painterResource(R.drawable.ic_location_solid),
+                            contentDescription = null,
+                            tint = Primary
+                        )
                     }
-                ) {
-                    Icon(
-                        modifier = Modifier.size(30.dp),
-                        painter = painterResource(R.drawable.ic_location_solid),
-                        contentDescription = null,
-                        tint = Primary
-                    )
                 }
             }
-        }
 
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .statusBarsPadding()
-        ) {
-            SearchHeader(
-                headline = selectedBusinessType?.name ?: stringResource(R.string.allServices),
-                subHeadline = stringResource(R.string.anytimeAnyHour)
-            )
+            Column(modifier = Modifier
+                .fillMaxSize()
+                .statusBarsPadding()
+            ) {
+                SearchHeader(
+                    headline = selectedBusinessType?.name ?: stringResource(R.string.allServices),
+                    subHeadline = stringResource(R.string.anytimeAnyHour)
+                )
 
 //            Column {
 //                when(val businessTypes = businessTypesState) {
@@ -185,145 +201,146 @@ fun SearchScreen(
 //                }
 //            }
 
-            Spacer(
-                Modifier.height(BasePadding)
-            )
+                Spacer(
+                    Modifier.height(BasePadding)
+                )
 
-            val lazyListState = rememberLazyListState()
-            val scope = rememberCoroutineScope()
+                val lazyListState = rememberLazyListState()
+                val scope = rememberCoroutineScope()
 
-            val offset = remember {
-                Animatable(totalHeightPx * (1f - BottomSheetValue.Collapsed.fraction))
-            }
-
-            val minPx = remember(totalHeightPx) {
-                totalHeightPx * (1f - BottomSheetValue.Expanded.fraction)
-            }
-            val maxPx = remember(totalHeightPx) {
-                totalHeightPx * (1f - BottomSheetValue.Collapsed.fraction)
-            }
-
-            val isAtTop by remember {
-                derivedStateOf {
-                    lazyListState.firstVisibleItemIndex == 0
-                    && lazyListState.firstVisibleItemScrollOffset == 0
+                val offset = remember {
+                    Animatable(totalHeightPx * (1f - BottomSheetValue.Collapsed.fraction))
                 }
-            }
 
-            val dragState = rememberDraggableState { delta ->
-                val newOffset = (offset.value + delta)
-                    .coerceIn(minPx, maxPx)
-                scope.launch { offset.snapTo(newOffset) }
-            }
+                val minPx = remember(totalHeightPx) {
+                    totalHeightPx * (1f - BottomSheetValue.Expanded.fraction)
+                }
+                val maxPx = remember(totalHeightPx) {
+                    totalHeightPx * (1f - BottomSheetValue.Collapsed.fraction)
+                }
 
-            val nestedScrollConnection = remember {
-                object: NestedScrollConnection {
-                    override fun onPreScroll(
-                        available: Offset,
-                        source: NestedScrollSource
-                    ): Offset {
-                        val isScrollingDown = available.y > 0f
-                        val isSheetFullyExpanded = offset.value < maxPx
+                val isAtTop by remember {
+                    derivedStateOf {
+                        lazyListState.firstVisibleItemIndex == 0
+                                && lazyListState.firstVisibleItemScrollOffset == 0
+                    }
+                }
 
-                        return if(isAtTop && isScrollingDown && isSheetFullyExpanded) {
-                            scope.launch {
-                                val newOffset = (offset.value + available.y).coerceIn(minPx, maxPx)
-                                offset.snapTo(newOffset)
+                val dragState = rememberDraggableState { delta ->
+                    val newOffset = (offset.value + delta)
+                        .coerceIn(minPx, maxPx)
+                    scope.launch { offset.snapTo(newOffset) }
+                }
+
+                val nestedScrollConnection = remember {
+                    object: NestedScrollConnection {
+                        override fun onPreScroll(
+                            available: Offset,
+                            source: NestedScrollSource
+                        ): Offset {
+                            val isScrollingDown = available.y > 0f
+                            val isSheetFullyExpanded = offset.value < maxPx
+
+                            return if(isAtTop && isScrollingDown && isSheetFullyExpanded) {
+                                scope.launch {
+                                    val newOffset = (offset.value + available.y).coerceIn(minPx, maxPx)
+                                    offset.snapTo(newOffset)
+                                }
+                                Offset(0f, available.y)
+                            } else {
+                                Offset.Zero
                             }
-                            Offset(0f, available.y)
-                        } else {
-                            Offset.Zero
+                        }
+
+                        override fun onPostScroll(
+                            consumed: Offset,
+                            available: Offset,
+                            source: NestedScrollSource
+                        ): Offset {
+                            return Offset.Zero
                         }
                     }
-
-                    override fun onPostScroll(
-                        consumed: Offset,
-                        available: Offset,
-                        source: NestedScrollSource
-                    ): Offset {
-                        return Offset.Zero
-                    }
                 }
-            }
 
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    //.nestedScroll(nestedScrollConnection)
-            ) {
                 Box(
                     modifier = Modifier
-                        .offset { IntOffset(x = 0, y = offset.value.roundToInt()) }
-                        .fillMaxWidth()
-                        .heightIn(min = 150.dp, max = with(density) { totalHeightPx.toDp() })
-                        .background(Color.White, RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-                        .draggable(
-                            orientation = Orientation.Vertical,
-                            state = dragState,
-                            onDragStopped = { velocity ->
-                                val current = offset.value
-                                val nearest = BottomSheetValue.entries
-                                    .map { target ->
-                                        val targetOffset = totalHeightPx * (1f - target.fraction)
-                                        val distance = abs(targetOffset - current)
-                                        Triple(target, targetOffset, distance)
-                                    }
-                                    .minByOrNull { it.third } ?: return@draggable
-
-                                val shouldGoNext = velocity < -1000 && nearest.first.ordinal < BottomSheetValue.entries.lastIndex
-                                val shouldGoBack = velocity > 1000 && nearest.first.ordinal > 0
-
-                                val target = when {
-                                    shouldGoNext -> BottomSheetValue.entries[nearest.first.ordinal + 1]
-                                    shouldGoBack -> BottomSheetValue.entries[nearest.first.ordinal - 1]
-                                    else -> nearest.first
-                                }
-                                val targetOffset = totalHeightPx * (1f - target.fraction)
-
-                                scope.launch {
-                                    offset.animateTo(
-                                        targetOffset,
-                                        animationSpec = tween(200, easing = FastOutSlowInEasing)
-                                    )
-                                }
-                            }
-                        )
-
+                        .fillMaxSize()
+                    //.nestedScroll(nestedScrollConnection)
                 ) {
-                    Column(modifier = Modifier.fillMaxSize()) {
-                        Box(modifier = Modifier
+                    Box(
+                        modifier = Modifier
+                            .offset { IntOffset(x = 0, y = offset.value.roundToInt()) }
                             .fillMaxWidth()
-                            .height(50.dp)
-                            .background(Color.Red),
-                            contentAlignment = Alignment.TopCenter
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .padding(top = BasePadding)
-                                    .width(60.dp)
-                                    .height(4.dp)
-                                    .clip(shape = ShapeDefaults.ExtraLarge)
-                                    .background(Divider)
-                            )
-                        }
+                            .heightIn(min = 150.dp, max = with(density) { totalHeightPx.toDp() })
+                            .background(Color.White, RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                            .draggable(
+                                orientation = Orientation.Vertical,
+                                state = dragState,
+                                onDragStopped = { velocity ->
+                                    val current = offset.value
+                                    val nearest = BottomSheetValue.entries
+                                        .map { target ->
+                                            val targetOffset = totalHeightPx * (1f - target.fraction)
+                                            val distance = abs(targetOffset - current)
+                                            Triple(target, targetOffset, distance)
+                                        }
+                                        .minByOrNull { it.third } ?: return@draggable
 
-                        LazyColumn(
-                            state = lazyListState,
-                            modifier = Modifier.weight(1f),
-                            //userScrollEnabled = isAtTop
-                        ) {
-                            items(100) {
-                                Box(Modifier.fillMaxWidth()) {
-                                    MainButton(
-                                        onClick = onNavigateToBusinessProfile,
-                                        title = "Business Profile",
-                                    )
+                                    val shouldGoNext = velocity < -1000 && nearest.first.ordinal < BottomSheetValue.entries.lastIndex
+                                    val shouldGoBack = velocity > 1000 && nearest.first.ordinal > 0
+
+                                    val target = when {
+                                        shouldGoNext -> BottomSheetValue.entries[nearest.first.ordinal + 1]
+                                        shouldGoBack -> BottomSheetValue.entries[nearest.first.ordinal - 1]
+                                        else -> nearest.first
+                                    }
+                                    val targetOffset = totalHeightPx * (1f - target.fraction)
+
+                                    scope.launch {
+                                        offset.animateTo(
+                                            targetOffset,
+                                            animationSpec = tween(200, easing = FastOutSlowInEasing)
+                                        )
+                                    }
+                                }
+                            )
+
+                    ) {
+                        Column(modifier = Modifier.fillMaxSize()) {
+                            Box(modifier = Modifier
+                                .fillMaxWidth()
+                                .height(50.dp)
+                                .background(Color.Red),
+                                contentAlignment = Alignment.TopCenter
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .padding(top = BasePadding)
+                                        .width(60.dp)
+                                        .height(4.dp)
+                                        .clip(shape = ShapeDefaults.ExtraLarge)
+                                        .background(Divider)
+                                )
+                            }
+
+                            LazyColumn(
+                                state = lazyListState,
+                                modifier = Modifier.weight(1f),
+                                //userScrollEnabled = isAtTop
+                            ) {
+                                items(100) {
+                                    Box(Modifier.fillMaxWidth()) {
+                                        MainButton(
+                                            onClick = onNavigateToBusinessProfile,
+                                            title = "Business Profile",
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
-                }
 
+                }
             }
         }
     }
