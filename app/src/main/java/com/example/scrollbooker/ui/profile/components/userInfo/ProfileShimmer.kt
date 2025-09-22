@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.components.profileHeader
+package com.example.scrollbooker.ui.profile.components.userInfo
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -26,14 +26,13 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.components.core.divider.VerticalDivider
-import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.shimmer.rememberShimmerBrush
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
-import com.example.scrollbooker.ui.profile.components.profileHeader.components.CounterItem
-import com.example.scrollbooker.ui.profile.components.profileHeader.components.ProfileActionButton
+import com.example.scrollbooker.ui.profile.components.userInfo.components.CounterItem
+import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileActionButton
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.SurfaceBG
 

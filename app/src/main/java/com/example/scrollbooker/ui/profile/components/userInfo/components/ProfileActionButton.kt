@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.components.profileHeader.components
+package com.example.scrollbooker.ui.profile.components.userInfo.components
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button

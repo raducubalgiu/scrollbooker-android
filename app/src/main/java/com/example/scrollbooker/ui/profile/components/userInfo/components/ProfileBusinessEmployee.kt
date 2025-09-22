@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.components.profileHeader.components
+package com.example.scrollbooker.ui.profile.components.userInfo.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.components.profileHeader.components
+package com.example.scrollbooker.ui.profile.components.userInfo.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

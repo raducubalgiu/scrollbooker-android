@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.components.profileHeader.components
+package com.example.scrollbooker.ui.profile.components.userInfo.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -13,7 +13,6 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.divider.VerticalDivider
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserCounters
-import com.example.scrollbooker.navigation.routes.MainRoute
 
 @Composable
 fun ProfileCounters(
