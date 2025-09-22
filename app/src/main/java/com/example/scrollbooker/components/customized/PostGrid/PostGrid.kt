@@ -1,8 +1,10 @@
-package com.example.scrollbooker.components.customized
+package com.example.scrollbooker.components.customized.PostGrid
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -30,7 +32,7 @@ import coil.request.ImageRequest
 import com.example.scrollbooker.R
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.routes.MainRoute
-import com.example.scrollbooker.ui.theme.Error
+import com.example.scrollbooker.ui.theme.LastMinute
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
@@ -39,12 +41,15 @@ import timber.log.Timber
 @Composable
 fun PostGrid(
     post: Post,
-    onNavigateToPost: (String) -> Unit
+    viewsCount: Float = 14.200f,
+    onNavigateToPost: (Int) -> Unit
 ) {
     Box(modifier = Modifier
-        .aspectRatio(9f / 12f)
+        .aspectRatio(9f / 16f)
         .background(SurfaceBG)
-        .clickable(onClick = { onNavigateToPost("${MainRoute.ProfilePostDetail.route}/${post.id}") })
+        .clickable(onClick = {
+            onNavigateToPost(post.id)
+        })
     ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
@@ -72,50 +77,20 @@ fun PostGrid(
             )
         )
 
-        Box(modifier = Modifier
-            .padding(
-                top = 5.dp,
-                start = 5.dp
-            )
-        ) {
-            Box(modifier = Modifier
-                .background(
-                    color = Color(0xFF00BCD4),
-                    shape = RoundedCornerShape(4.dp)
-                )
-                .padding(2.5.dp)
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(modifier = Modifier
+                .fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = "Last Minute",
-                    color = Color.White,
-                    fontWeight = FontWeight.SemiBold,
-                    style = bodyMedium
+                PostGridLabel(
+                    lastMinute = post.lastMinute,
+                    product = post.product
                 )
+                Column {
+                    post.product?.let { PostGridCover(post.product) }
+                    PostGridViews(viewsCount)
+                }
             }
-        }
-
-        Row(modifier = Modifier
-            .align(Alignment.BottomStart)
-            .padding(
-                bottom = 5.dp,
-                start = 5.dp
-            ),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_play_outline),
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(18.dp)
-            )
-            Spacer(modifier = Modifier.width(2.dp))
-            Text(
-                text = "14,200",
-                color = Color.White,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.SemiBold,
-                style = bodyLarge
-            )
         }
     }
 }

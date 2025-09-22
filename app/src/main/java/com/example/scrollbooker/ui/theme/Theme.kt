@@ -14,7 +14,7 @@ private val LightColorScheme = lightColorScheme(
     primary = Color(0xFFFF6F00),
     onPrimary = Color(0xFFFFFFFF),
 
-    secondary = Color(0xFF25F4EE),
+    secondary = Color(0xFFF3BA2F),
     onSecondary = Color.Black,
 
     tertiary = Color(0xFF607D8B),
@@ -34,7 +34,7 @@ private val DarkColorScheme = darkColorScheme(
     primary = Color(0xFFFF6F00),
     onPrimary = Color(0xFFFFFFFF),
 
-    secondary = Color(0xFF25F4EE),
+    secondary = Color(0xFFF3BA2F),
     onSecondary = Color(0xFF1C1B1F),
 
     tertiary = Color(0xFF607D8B),
@@ -51,18 +51,24 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 data class ExtendedColors(
-    val divider: Color
+    val divider: Color,
+    val lastMinute: Color
 )
 
 private val LightExtendedColors = ExtendedColors(
-    divider = Color(0xFFCCCCCC)
+    divider = Color(0xFFCCCCCC),
+    lastMinute = Color(0xFF00BCD4)
 )
 private val DarkExtendedColor = ExtendedColors(
-    divider = Color(0xFF3A3A3A)
+    divider = Color(0xFF3A3A3A),
+    lastMinute = Color(0xFF00BCD4)
 )
 
 val LocalExtendedColors = staticCompositionLocalOf {
-    ExtendedColors(divider = Color.Gray)
+    ExtendedColors(
+        divider = Color.Gray,
+        lastMinute = Color(0xFF00BCD4)
+    )
 }
 
 @Composable

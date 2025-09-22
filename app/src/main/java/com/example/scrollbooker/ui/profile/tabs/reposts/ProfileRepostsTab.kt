@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.customized.PostGrid
+import com.example.scrollbooker.components.customized.PostGrid.PostGrid
 import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
@@ -26,7 +26,7 @@ import com.example.scrollbooker.ui.profile.tabs.ProfileTabViewModel
 fun ProfileRepostsTab(
     viewModel: ProfileTabViewModel,
     isOwnProfile: Boolean,
-    onNavigateToPostDetail: (String) -> Unit
+    onNavigateToPostDetail: (Int) -> Unit
 ) {
 
     val posts = viewModel.userReposts.collectAsLazyPagingItems()

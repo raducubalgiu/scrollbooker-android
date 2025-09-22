@@ -47,3 +47,6 @@ object ExtendedTheme {
 val Divider: Color
     @Composable get() = ExtendedTheme.colors.divider
 
+val LastMinute: Color
+    @Composable get() = ExtendedTheme.colors.lastMinute
+

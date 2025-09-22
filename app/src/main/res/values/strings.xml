@@ -251,4 +251,6 @@
     <string name="explore">Explorează</string>
     <string name="dontHaveAnyNotification">Nu ai nici o notificare</string>
     <string name="categories">Categorii</string>
+    <string name="lastMinute">Last Minute</string>
+    <string name="sale">Reducere</string>
 </resources>

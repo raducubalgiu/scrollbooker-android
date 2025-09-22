@@ -15,7 +15,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.EmptyScreen
-import com.example.scrollbooker.components.customized.PostGrid
+import com.example.scrollbooker.components.customized.PostGrid.PostGrid
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.entity.social.post.domain.model.Post
@@ -24,7 +24,7 @@ import com.example.scrollbooker.entity.social.post.domain.model.Post
 fun ProfilePostsTab(
     isOwnProfile: Boolean,
     posts: LazyPagingItems<Post>,
-    onNavigateToPostDetail: (String) -> Unit
+    onNavigateToPostDetail: (Int) -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         when(posts.loadState.refresh) {
