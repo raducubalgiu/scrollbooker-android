@@ -253,4 +253,5 @@
     <string name="categories">Categorii</string>
     <string name="lastMinute">Last Minute</string>
     <string name="sale">Reducere</string>
+    <string name="createPost">Creează o postare</string>
 </resources>

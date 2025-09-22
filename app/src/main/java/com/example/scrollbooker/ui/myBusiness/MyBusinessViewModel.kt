@@ -40,5 +40,4 @@ class MyBusinessViewModel @Inject constructor(
             }
         }
     }
-
 }

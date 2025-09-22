@@ -38,7 +38,7 @@ import com.example.scrollbooker.ui.theme.titleMedium
 fun MyProfileHeader(
     modifier: Modifier = Modifier,
     username: String,
-    isBusinessOrEmployee: Boolean,
+    canCreatePost: Boolean,
     onOpenBottomSheet: () -> Unit,
     onNavigateToCreatePost: () -> Unit
 ) {
@@ -65,12 +65,12 @@ fun MyProfileHeader(
         ),
         navigationIcon = {
             Box(modifier = Modifier
-                .size(if(isBusinessOrEmployee) 100.dp else 50.dp)
+                .size(if(canCreatePost) 100.dp else 50.dp)
             )
         },
         actions = {
             Row {
-                if(isBusinessOrEmployee) {
+                if(canCreatePost) {
                     Box(modifier = Modifier
                         .size(50.dp)
                         .clickable(

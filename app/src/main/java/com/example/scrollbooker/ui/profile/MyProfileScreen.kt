@@ -34,6 +34,8 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.core.sheet.Sheet
 import com.example.scrollbooker.components.core.sheet.SheetHeader
+import com.example.scrollbooker.core.enums.PermissionEnum
+import com.example.scrollbooker.core.enums.has
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
@@ -71,23 +73,10 @@ fun MyProfileScreen(
     profileNavigate: ProfileNavigator
 ) {
     val menuSheetState = rememberModalBottomSheetState()
-    val scheduleSheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
 
     val isInitLoading by viewModel.isInitLoading.collectAsState()
-
-    if(scheduleSheetState.isVisible) {
-        Sheet(
-            sheetState = scheduleSheetState,
-            onClose = { scope.launch { scheduleSheetState.hide() } }
-        ) {
-            SheetHeader(
-                title = stringResource(R.string.scheduleShort),
-                onClose = { scope.launch { scheduleSheetState.hide() } }
-            )
-            UserScheduleSheet()
-        }
-    }
+    val permissionsState by viewModel.permissionsState.collectAsState()
 
     if(menuSheetState.isVisible) {
         Sheet(
@@ -95,6 +84,7 @@ fun MyProfileScreen(
             onClose = { scope.launch { menuSheetState.hide() } }
         ) {
             MyProfileMenuList(
+                permissionsState = permissionsState,
                 onNavigateToCreatePost = {
                     scope.launch {
                         menuSheetState.hide()
@@ -127,12 +117,13 @@ fun MyProfileScreen(
     }
 
     val userData = (myProfileData as? FeatureState.Success)?.data
+    val permissions = (permissionsState as FeatureState.Success).data
 
     Scaffold(
         topBar = {
             MyProfileHeader(
                 username = userData?.username ?: "",
-                isBusinessOrEmployee = userData?.isBusinessOrEmployee == true,
+                canCreatePost = permissions.has(PermissionEnum.POST_CREATE),
                 onOpenBottomSheet = { scope.launch { menuSheetState.show() } },
                 onNavigateToCreatePost = { profileNavigate.toCamera() }
             )

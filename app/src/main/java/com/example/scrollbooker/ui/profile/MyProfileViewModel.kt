@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.example.scrollbooker.core.enums.PermissionEnum
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.social.post.domain.model.Post
@@ -23,8 +24,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onEach
@@ -46,6 +49,10 @@ class MyProfileViewModel @Inject constructor(
     private val _userProfileState =
         MutableStateFlow<FeatureState<UserProfile>>(FeatureState.Loading)
     val userProfileState: StateFlow<FeatureState<UserProfile>> = _userProfileState
+
+    private val _permissionsState = MutableStateFlow<FeatureState<List<PermissionEnum>>>(
+        FeatureState.Loading)
+    val permissionsState: StateFlow<FeatureState<List<PermissionEnum>>> = _permissionsState.asStateFlow()
 
     private val _initCompleted = MutableStateFlow(false)
     val isInitLoading = combine(_userProfileState, _initCompleted) { profile, done ->
@@ -77,9 +84,25 @@ class MyProfileViewModel @Inject constructor(
         }
     }
 
+    fun loadPermissions() {
+        viewModelScope.launch {
+            try {
+                val results = withVisibleLoading {
+                    val rawList = authDataStore.getUserPermissions().first()
+                    PermissionEnum.fromKeys(rawList)
+                }
+                _permissionsState.value = FeatureState.Success(results)
+            } catch (e: Exception) {
+                Timber.tag("Permissions dataStore").e("ERROR: on loading permission from authDataStore $e")
+                FeatureState.Error()
+            }
+        }
+    }
+
     init {
         viewModelScope.launch {
             loadUserProfile()
+            loadPermissions()
         }
     }
 
