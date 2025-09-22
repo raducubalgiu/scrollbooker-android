@@ -32,19 +32,19 @@ class InboxViewModel @Inject constructor(
 
     val notifications:  Flow<PagingData<Notification>> get() = _notifications
 
-    private val _followedOverrides = MutableStateFlow<Map<Int, Boolean>>(emptyMap())
-    val followedOverrides = _followedOverrides.asStateFlow()
+    private val _followState = MutableStateFlow<Map<Int, Boolean>>(emptyMap())
+    val followState = _followState.asStateFlow()
 
-    private val _followRequestLocks = MutableStateFlow<Set<Int>>(emptySet())
-    val followRequestLocks = _followRequestLocks.asStateFlow()
+    private val _isFollowSaving = MutableStateFlow<Set<Int>>(emptySet())
+    val isFollowSaving = _isFollowSaving.asStateFlow()
 
     fun follow(isFollow: Boolean, userId: Int) {
-        if(_followRequestLocks.value.contains(userId)) {
+        if(_isFollowSaving.value.contains(userId)) {
             return
         }
 
-        _followRequestLocks.update { it + userId }
-        _followedOverrides.update { it + (userId to !isFollow) }
+        _isFollowSaving.update { it + userId }
+        _followState.update { it + (userId to !isFollow) }
 
         viewModelScope.launch {
             try {
@@ -54,11 +54,11 @@ class InboxViewModel @Inject constructor(
                     followUserUseCase(userId)
                 }
             } catch(e: Exception) {
-                _followedOverrides.update { it + (userId to isFollow) }
+                _followState.update { it + (userId to isFollow) }
                 Timber.tag("Follow/Unfollow").e("ERROR: $e")
 
             } finally {
-                _followRequestLocks.update { it - userId }
+                _isFollowSaving.update { it - userId }
             }
         }
     }

@@ -9,6 +9,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.scrollbooker.navigation.bottomBar.MainTab
+import com.example.scrollbooker.navigation.navigators.InboxNavigator
+import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
@@ -22,6 +24,7 @@ import com.example.scrollbooker.ui.inbox.employmentRequestRespond.EmploymentRequ
 
 @Composable
 fun InboxNavHost(
+    rootNavController: NavHostController,
     navController: NavHostController,
     appointmentsNumber: Int,
     onChangeTab: (MainTab) -> Unit
@@ -33,13 +36,13 @@ fun InboxNavHost(
         composable(MainRoute.Inbox.route) { backStackEntry ->
             val viewModel = hiltViewModel<InboxViewModel>(backStackEntry)
 
+            val inboxNavigate = remember(navController) { InboxNavigator(rootNavController, navController) }
+
             InboxScreen(
                 viewModel = viewModel,
-                onNavigate = { employmentId ->
-                    navController.navigate("${MainRoute.EmploymentRequestRespond.route}/${employmentId}")
-                },
                 appointmentsNumber = appointmentsNumber,
-                onChangeTab = onChangeTab
+                onChangeTab = onChangeTab,
+                inboxNavigate = inboxNavigate,
             )
         }
 

@@ -8,6 +8,7 @@ class ProfileNavigator (
 ) {
     fun toSocial(socialParams: NavigateSocialParam) {
         val ( tabIndex, userId, username, isBusinessOrEmployee ) = socialParams
+
         navController.navigate(
             "${MainRoute.UserSocial.route}/${tabIndex}/${userId}/${username}/${isBusinessOrEmployee}"
         )

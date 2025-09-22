@@ -21,22 +21,19 @@ import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.core.layout.MessageScreen
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.navigation.bottomBar.MainTab
+import com.example.scrollbooker.navigation.navigators.InboxNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.inbox.components.NotificationsList
 
 @Composable
 fun InboxScreen(
     viewModel: InboxViewModel,
-    onNavigate: (Int) -> Unit,
     appointmentsNumber: Int,
-    onChangeTab: (MainTab) -> Unit
+    onChangeTab: (MainTab) -> Unit,
+    inboxNavigate: InboxNavigator
 ) {
     val notifications = viewModel.notifications.collectAsLazyPagingItems()
-    val followedOverrides by viewModel.followedOverrides.collectAsState()
-    val followRequestLocks by viewModel.followRequestLocks.collectAsState()
-
     val refreshState = notifications.loadState.refresh
-    val appendState = notifications.loadState.append
 
     Scaffold(
         bottomBar = {
@@ -63,16 +60,14 @@ fun InboxScreen(
                     is LoadState.Error -> ErrorScreen()
                     is LoadState.NotLoading -> {
                         NotificationsList(
-                            notifications=notifications,
-                            onNavigate = onNavigate
+                            viewModel = viewModel,
+                            notifications = notifications,
+                            onFollow = { isFollowed, userId ->
+                                viewModel.follow(isFollowed, userId)
+                            },
+                            inboxNavigate = inboxNavigate
                         )
                     }
-                }
-
-                when(appendState) {
-                    is LoadState.Error -> Text("A aparut o eroare")
-                    is LoadState.Loading -> LoadMoreSpinner()
-                    is LoadState.NotLoading -> Unit
                 }
             }
 
