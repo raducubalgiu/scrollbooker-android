@@ -41,8 +41,6 @@ import com.example.scrollbooker.ui.theme.SurfaceBG
 fun ProfileShimmer() {
     val brush = rememberShimmerBrush()
 
-    Header(title = "")
-
     Row(modifier = Modifier
         .fillMaxWidth()
         .padding(

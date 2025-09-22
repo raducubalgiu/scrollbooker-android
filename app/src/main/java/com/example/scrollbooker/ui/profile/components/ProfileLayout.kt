@@ -1,124 +1,248 @@
 package com.example.scrollbooker.ui.profile.components
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.IntOffset
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.sheet.BottomSheet
-import com.example.scrollbooker.entity.booking.products.domain.model.Product
+import com.example.scrollbooker.components.core.layout.ErrorScreen
+import com.example.scrollbooker.components.core.layout.LoadingScreen
+import com.example.scrollbooker.components.core.sheet.Sheet
+import com.example.scrollbooker.components.core.sheet.SheetHeader
+import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
-import com.example.scrollbooker.navigation.routes.MainRoute
-import com.example.scrollbooker.ui.profile.components.profileHeader.ProfileUserInfo
-import com.example.scrollbooker.ui.profile.components.profileHeader.components.ProfileCounters
+import com.example.scrollbooker.navigation.navigators.ProfileNavigator
+import com.example.scrollbooker.ui.profile.components.myProfile.MyProfileActions
+import com.example.scrollbooker.ui.profile.components.profileHeader.ProfileHeader
+import com.example.scrollbooker.ui.profile.components.profileHeader.ProfileShimmer
 import com.example.scrollbooker.ui.profile.components.profileHeader.components.UserScheduleSheet
-import kotlinx.coroutines.delay
+import com.example.scrollbooker.ui.profile.components.userProfile.UserProfileActions
+import com.example.scrollbooker.ui.profile.tabs.ProfileTab
+import com.example.scrollbooker.ui.profile.tabs.ProfileTabRow
+import com.example.scrollbooker.ui.profile.tabs.ProfileTabViewModel
+import com.example.scrollbooker.ui.profile.tabs.bookmarks.ProfileBookmarksTab
+import com.example.scrollbooker.ui.profile.tabs.info.ProfileInfoTab
+import com.example.scrollbooker.ui.profile.tabs.posts.ProfilePostsTab
+import com.example.scrollbooker.ui.profile.tabs.reposts.ProfileRepostsTab
+import com.example.scrollbooker.ui.shared.modules.products.UserProductsServiceTabs
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun ProfileLayout(
-    user: UserProfile,
-    onNavigate: (String) -> Unit,
-    onNavigateToCalendar: (Product) -> Unit,
-    actions: @Composable (() -> Unit)
+    isInitLoading: Boolean,
+    profileData: FeatureState<UserProfile>,
+    posts: LazyPagingItems<Post>,
+    profileNavigate: ProfileNavigator
 ) {
-    var showScheduleSheet by remember { mutableStateOf(false) }
-    //var globalLazyListState = rememberLazyListState()
-
-    val tabCount = 5
-    val pagerState = rememberPagerState(initialPage = 0) { tabCount }
-
-    val state = rememberPullToRefreshState()
-    var isRefreshing by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+    val scheduleSheetState = rememberModalBottomSheetState()
 
-    BottomSheet(
-        onDismiss = { showScheduleSheet = false },
-        enableCloseButton = true,
-        showBottomSheet = showScheduleSheet,
-        showHeader = true,
-        headerTitle = stringResource(R.string.scheduleShort)
-    ) { UserScheduleSheet() }
+    if(scheduleSheetState.isVisible) {
+        Sheet(
+            sheetState = scheduleSheetState,
+            onClose = { scope.launch { scheduleSheetState.hide() } }
+        ) {
+            SheetHeader(
+                title = stringResource(R.string.scheduleShort),
+                onClose = { scope.launch { scheduleSheetState.hide() } }
+            )
+            UserScheduleSheet()
+        }
+    }
 
-    PullToRefreshBox(
-        state = state,
-        isRefreshing = isRefreshing,
-        onRefresh = {
-            scope.launch {
-                isRefreshing = true
-                delay(300)
-                isRefreshing = false
+    val density = LocalDensity.current
+
+    var collapsibleHeightPx by remember { mutableIntStateOf(0) }
+    var tabRowHeightPx by remember { mutableIntStateOf(0) }
+    var headerOffsetPx by remember { mutableIntStateOf(0) }
+
+    val currentHeaderHeightDp = with(density) { (collapsibleHeightPx + tabRowHeightPx + headerOffsetPx).toDp() }
+
+    val nestedScrollConnection = remember {
+        object : NestedScrollConnection {
+            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                val delta = available.y
+                if (delta < 0 && headerOffsetPx > -collapsibleHeightPx) {
+                    val oldOffset = headerOffsetPx.toFloat()
+                    val newOffset = (oldOffset + delta).coerceAtLeast(-collapsibleHeightPx.toFloat())
+                    headerOffsetPx = newOffset.toInt()
+                    return Offset(0f, newOffset - oldOffset)
+                }
+                return Offset.Zero
+            }
+
+            override fun onPostScroll(
+                consumed: Offset,
+                available: Offset,
+                source: NestedScrollSource
+            ): Offset {
+                val delta = available.y
+                if (delta > 0 && headerOffsetPx < 0) {
+                    val oldOffset = headerOffsetPx.toFloat()
+                    val newOffset = (oldOffset + delta).coerceAtMost(0f)
+                    headerOffsetPx = newOffset.toInt()
+                    return Offset(0f, newOffset - oldOffset)
+                }
+                return Offset.Zero
             }
         }
-    ) {
-        Column {
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth().weight(1f)) {
-                item {
-//                    ProfileCounters(
-//                        counters = user.counters,
-//                        onNavigate = {
-//                            onNavigate("$it/${user.id}/${user.username}/${user.isBusinessOrEmployee}")
-//                        },
-//                        isBusinessOrEmployee = user.isBusinessOrEmployee
-//                    )
+    }
 
-                    ProfileUserInfo(
-                        user = user,
-                        actions = actions,
-                        onOpenScheduleSheet = { showScheduleSheet = true },
-                        onNavigateToBusinessOwner = { onNavigate("${MainRoute.UserProfile.route}/${it}") }
-                    )
+    if (isInitLoading) {
+        ProfileShimmer()
+        LoadingScreen()
+    } else {
+        when (val profileData = profileData) {
+            is FeatureState.Error -> ErrorScreen()
+            is FeatureState.Loading -> Unit
+            is FeatureState.Success -> {
+                val user = profileData.data
+
+                val tabs = remember(user.isBusinessOrEmployee) {
+                    ProfileTab.getTabs(user.isBusinessOrEmployee)
                 }
 
-                //stickyHeader { ProfileTabRow(pagerState) }
+                val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
 
-                item {
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .nestedScroll(nestedScrollConnection)
+                ) {
+                    // Tab Content
                     HorizontalPager(
                         state = pagerState,
                         beyondViewportPageCount = 0,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(LocalConfiguration.current.screenHeightDp.dp - 150.dp)
+                        modifier = Modifier.fillMaxWidth()
                     ) { page ->
-//                        when(page) {
-//                            0 -> ProfilePostsTab(
-//                                userId = user.id,
-//                                onNavigate = onNavigate
-//                            )
-//                            1 -> ProfileProductsTab(
-//                                userId = user.id,
-//                                businessId = user.businessId,
-//                                onNavigateToCalendar = onNavigateToCalendar
-//                            )
-//                            2 -> ProfileRepostsTab(
-//                                userId = user.id,
-//                                onNavigate = onNavigate
-//                            )
-//                            3 -> ProfileBookmarksTab(
-//                                userId = user.id,
-//                                onNavigate = onNavigate
-//                            )
-//                            4 -> ProfileInfoTab()
-//                        }
+                        val viewModel: ProfileTabViewModel = hiltViewModel()
+
+                        LaunchedEffect(user.id) {
+                            viewModel.setUserId(userId = user.id)
+                        }
+
+                        when (tabs[page]) {
+                            ProfileTab.Posts -> ProfilePostsTab(
+                                paddingTop = currentHeaderHeightDp,
+                                isOwnProfile = user.isOwnProfile,
+                                posts = posts,
+                                onNavigateToPostDetail = { profileNavigate.toPostDetail() }
+                            )
+
+                            ProfileTab.Products -> {
+                                UserProductsServiceTabs(
+                                    paddingTop = currentHeaderHeightDp,
+                                    userId = user.id,
+                                    onNavigateToCalendar = { profileNavigate.toCalendar(it) }
+                                )
+                            }
+
+                            ProfileTab.Reposts -> ProfileRepostsTab(
+                                paddingTop = currentHeaderHeightDp,
+                                viewModel = viewModel,
+                                isOwnProfile = user.isOwnProfile,
+                                onNavigateToPostDetail = { profileNavigate.toPostDetail() }
+                            )
+
+                            ProfileTab.Bookmarks -> ProfileBookmarksTab(
+                                paddingTop = currentHeaderHeightDp,
+                                viewModel = viewModel,
+                                isOwnProfile = user.isOwnProfile,
+                                onNavigateToPostDetail = { profileNavigate.toPostDetail() }
+                            )
+
+                            ProfileTab.Info -> ProfileInfoTab(paddingTop = currentHeaderHeightDp,)
+                        }
+                    }
+
+                    // Header Overlay
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.TopStart)
+                            .offset { IntOffset(0, headerOffsetPx) }
+                            .pointerInput(Unit) {
+                                detectVerticalDragGestures { change, dragAmount ->
+                                    val oldOffset = headerOffsetPx.toFloat()
+                                    val newOffset = (oldOffset + dragAmount).coerceIn(
+                                        -collapsibleHeightPx.toFloat(),
+                                        0f
+                                    )
+                                    headerOffsetPx = newOffset.toInt()
+                                    if (newOffset != oldOffset) {
+                                        change.consume()
+                                    }
+                                }
+                            }
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .onSizeChanged { size ->
+                                    collapsibleHeightPx = size.height
+                                }
+                        ) {
+                            ProfileHeader(
+                                user = user,
+                                onOpenScheduleSheet = {
+                                    scope.launch {
+                                        scheduleSheetState.show()
+                                    }
+                                },
+                                onNavigateToSocial = { profileNavigate.toSocial(it) },
+                                onNavigateToBusinessOwner = { ownerId ->
+                                    ownerId?.let {
+                                        profileNavigate.toBusinessOwner(ownerId)
+                                    }
+                                }
+                            ) {
+                                if (user.isOwnProfile) {
+                                    MyProfileActions(
+                                        onEditProfile = { profileNavigate.toEditProfile() },
+                                        isBusinessOrEmployee = user.isBusinessOrEmployee
+                                    )
+                                } else {
+                                    UserProfileActions(
+                                        isFollow = user.isFollow,
+                                        onNavigateToCalendar = {}
+                                    )
+                                }
+                            }
+                        }
+
+                        ProfileTabRow(
+                            pagerState = pagerState,
+                            tabs = tabs,
+                            onTabRowSizeChanged = { tabRowHeightPx = it.height },
+                        )
                     }
                 }
             }

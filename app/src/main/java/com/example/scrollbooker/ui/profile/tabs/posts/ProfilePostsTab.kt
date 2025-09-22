@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -22,6 +23,7 @@ import com.example.scrollbooker.entity.social.post.domain.model.Post
 
 @Composable
 fun ProfilePostsTab(
+    paddingTop: Dp,
     isOwnProfile: Boolean,
     posts: LazyPagingItems<Post>,
     onNavigateToPostDetail: (Int) -> Unit
@@ -35,7 +37,9 @@ fun ProfilePostsTab(
                     columns = GridCells.Fixed(3),
                     verticalArrangement = Arrangement.spacedBy(1.dp),
                     horizontalArrangement = Arrangement.spacedBy(1.dp),
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = paddingTop)
                 ) {
                     items(posts.itemCount) { index ->
                         val post = posts[index]

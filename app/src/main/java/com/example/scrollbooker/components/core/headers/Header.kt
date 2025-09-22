@@ -69,7 +69,7 @@ fun Header(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null
                     ),
-                contentAlignment = Alignment.CenterStart
+                contentAlignment = Alignment.Center
             ) {
                 if(enableBack) {
                     Icon(

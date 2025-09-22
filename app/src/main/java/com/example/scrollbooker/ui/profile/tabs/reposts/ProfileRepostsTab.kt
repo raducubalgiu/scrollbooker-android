@@ -1,6 +1,7 @@
 package com.example.scrollbooker.ui.profile.tabs.reposts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -11,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -24,15 +26,17 @@ import com.example.scrollbooker.ui.profile.tabs.ProfileTabViewModel
 
 @Composable
 fun ProfileRepostsTab(
+    paddingTop: Dp,
     viewModel: ProfileTabViewModel,
     isOwnProfile: Boolean,
     onNavigateToPostDetail: (Int) -> Unit
 ) {
-
     val posts = viewModel.userReposts.collectAsLazyPagingItems()
 
-    Box(
-        modifier = Modifier.fillMaxSize()
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = paddingTop)
     ) {
         when(posts.loadState.refresh) {
             is LoadState.Error -> ErrorScreen()

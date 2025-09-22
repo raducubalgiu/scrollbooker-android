@@ -36,7 +36,7 @@ fun Layout(
             }
         }
     ) { innerPadding ->
-        Box(Modifier.padding(innerPadding)) {
+        Box(modifier = Modifier.padding(innerPadding).then(modifier)) {
             Column(modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = if(enablePaddingH) BasePadding else 0.dp)

@@ -1,9 +1,11 @@
 package com.example.scrollbooker.ui.social
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -19,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.dp
+import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.ui.social.tab.BookingsTab
 import com.example.scrollbooker.ui.social.tab.UserFollowersTab
 import com.example.scrollbooker.ui.social.tab.UserFollowingsTab
@@ -50,13 +53,12 @@ fun UserSocialScreen(
         }
     }
 
-    Layout(
-        modifier = Modifier.statusBarsPadding(),
-        headerTitle = username,
-        onBack = onBack,
-        enablePaddingH = false
-    ) {
-        Column {
+    Scaffold(
+        topBar = {
+            Header(title = username, onBack = onBack)
+        }
+    ) { innerPadding ->
+        Column(Modifier.padding(top = innerPadding.calculateTopPadding())) {
             Tabs(
                 tabs = tabs.map { it.route },
                 selectedTabIndex,

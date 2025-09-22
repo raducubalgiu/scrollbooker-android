@@ -23,8 +23,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.IconSizeXL
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
@@ -79,9 +81,8 @@ fun MyProfileHeader(
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            imageVector = Icons.Default.AddBox,
+                            painter = painterResource(R.drawable.ic_circle_plus_outline),
                             contentDescription = null,
-                            tint = Primary,
                             modifier = Modifier.size(IconSizeXL)
                         )
                     }

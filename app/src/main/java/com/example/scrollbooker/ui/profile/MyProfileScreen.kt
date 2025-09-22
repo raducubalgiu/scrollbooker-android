@@ -45,6 +45,8 @@ import com.example.scrollbooker.ui.profile.components.profileHeader.ProfileHeade
 import com.example.scrollbooker.ui.profile.components.profileHeader.ProfileShimmer
 import com.example.scrollbooker.ui.profile.components.profileHeader.components.UserScheduleSheet
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
+import com.example.scrollbooker.ui.profile.components.ProfileLayout
+import com.example.scrollbooker.ui.profile.components.myProfile.MyProfileActions
 import com.example.scrollbooker.ui.profile.tabs.ProfileTab
 import com.example.scrollbooker.ui.profile.tabs.ProfileTabRow
 import com.example.scrollbooker.ui.profile.tabs.ProfileTabViewModel
@@ -68,10 +70,8 @@ fun MyProfileScreen(
 ) {
     val menuSheetState = rememberModalBottomSheetState()
     val scheduleSheetState = rememberModalBottomSheetState()
-
-    val state = rememberPullToRefreshState()
-    var isRefreshing by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+
     val isInitLoading by viewModel.isInitLoading.collectAsState()
 
     if(scheduleSheetState.isVisible) {
@@ -148,105 +148,13 @@ fun MyProfileScreen(
             .fillMaxSize()
             .padding(innerPadding)
         ) {
-            if (isInitLoading) {
-                ProfileShimmer()
-                LoadingScreen()
-            } else {
-                when (val profileData = myProfileData) {
-                    is FeatureState.Error -> ErrorScreen()
-                    is FeatureState.Loading -> Unit
-                    is FeatureState.Success -> {
-                        val user = profileData.data
 
-                        val tabs = remember(user.isBusinessOrEmployee) {
-                            ProfileTab.getTabs(user.isBusinessOrEmployee)
-                        }
-
-                        val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
-
-                        Column(Modifier.fillMaxSize()) {
-                            PullToRefreshBox(
-                                state = state,
-                                isRefreshing = isRefreshing,
-                                onRefresh = {
-                                    scope.launch {
-                                        isRefreshing = true
-                                        viewModel.loadUserProfile()
-                                        isRefreshing = false
-                                    }
-                                }
-                            ) {
-                                LazyColumn {
-                                    item {
-                                        ProfileHeader(
-                                            user = user,
-                                            onOpenScheduleSheet = {
-                                                scope.launch {
-                                                    scheduleSheetState.show()
-                                                }
-                                            },
-                                            onNavigateToSocial = { profileNavigate.toSocial(it) },
-                                            onNavigateToEditProfile = { profileNavigate.toEditProfile() },
-                                            onNavigateToBusinessOwner = { ownerId ->
-                                                ownerId?.let {
-                                                    profileNavigate.toBusinessOwner(ownerId)
-                                                }
-                                            }
-                                        )
-                                    }
-
-                                    stickyHeader {
-                                        ProfileTabRow(pagerState, tabs)
-
-                                        HorizontalPager(
-                                            state = pagerState,
-                                            beyondViewportPageCount = 0,
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .height(LocalConfiguration.current.screenHeightDp.dp - 150.dp)
-                                        ) { page ->
-                                            val viewModel: ProfileTabViewModel = hiltViewModel()
-
-                                            LaunchedEffect(user.id) {
-                                                viewModel.setUserId(userId = user.id)
-                                            }
-
-                                            when (tabs[page]) {
-                                                ProfileTab.Posts -> ProfilePostsTab(
-                                                    isOwnProfile = user.isOwnProfile,
-                                                    posts = myPosts,
-                                                    onNavigateToPostDetail = { profileNavigate.toPostDetail() }
-                                                )
-
-                                                ProfileTab.Products -> {
-                                                    UserProductsServiceTabs(
-                                                        userId = user.id,
-                                                        onNavigateToCalendar = { profileNavigate.toCalendar(it) }
-                                                    )
-                                                }
-
-                                                ProfileTab.Reposts -> ProfileRepostsTab(
-                                                    viewModel = viewModel,
-                                                    isOwnProfile = user.isOwnProfile,
-                                                    onNavigateToPostDetail = { profileNavigate.toPostDetail() }
-                                                )
-
-                                                ProfileTab.Bookmarks -> ProfileBookmarksTab(
-                                                    viewModel = viewModel,
-                                                    isOwnProfile = user.isOwnProfile,
-                                                    onNavigateToPostDetail = { profileNavigate.toPostDetail() }
-                                                )
-
-                                                ProfileTab.Info -> ProfileInfoTab()
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            ProfileLayout(
+                isInitLoading = isInitLoading,
+                profileData = myProfileData,
+                posts = myPosts,
+                profileNavigate = profileNavigate
+            )
         }
     }
 }

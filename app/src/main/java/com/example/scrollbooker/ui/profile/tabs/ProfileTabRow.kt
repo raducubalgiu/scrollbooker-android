@@ -2,6 +2,7 @@ package com.example.scrollbooker.ui.profile.tabs
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -21,7 +22,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
@@ -32,12 +35,18 @@ import kotlinx.coroutines.launch
 @Composable
 fun ProfileTabRow(
     pagerState: PagerState,
-    tabs: List<ProfileTab>
+    tabs: List<ProfileTab>,
+    onTabRowSizeChanged: (IntSize) -> Unit
 ) {
     val selectedTabIndex = pagerState.currentPage
     val scope = rememberCoroutineScope()
 
     TabRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .onSizeChanged { size ->
+                onTabRowSizeChanged(size)
+            },
         containerColor = Background,
         contentColor = OnSurfaceBG,
         indicator = {  tabPositions ->

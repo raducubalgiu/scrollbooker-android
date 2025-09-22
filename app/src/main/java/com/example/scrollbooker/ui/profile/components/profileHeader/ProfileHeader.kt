@@ -10,9 +10,9 @@ import com.example.scrollbooker.ui.profile.components.profileHeader.components.P
 fun ProfileHeader(
     user: UserProfile,
     onOpenScheduleSheet: () -> Unit,
-    onNavigateToEditProfile: (() -> Unit)? = null,
     onNavigateToSocial: (NavigateSocialParam) -> Unit,
-    onNavigateToBusinessOwner: (Int?) -> Unit
+    onNavigateToBusinessOwner: (Int?) -> Unit,
+    actions: @Composable () -> Unit
 ) {
     ProfileCounters(
         counters = user.counters,
@@ -32,10 +32,7 @@ fun ProfileHeader(
     ProfileUserInfo(
         user = user,
         actions = {
-            MyProfileActions(
-                onEditProfile = { onNavigateToEditProfile?.invoke() },
-                isBusinessOrEmployee = user.isBusinessOrEmployee
-            )
+            actions()
         },
         onOpenScheduleSheet = onOpenScheduleSheet,
         onNavigateToBusinessOwner = onNavigateToBusinessOwner
