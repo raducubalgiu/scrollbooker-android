@@ -15,6 +15,7 @@ import com.example.scrollbooker.navigation.bottomBar.BottomBarItem
 import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.theme.Background
+import com.example.scrollbooker.ui.theme.BackgroundDark
 import com.example.scrollbooker.ui.theme.Divider
 
 @Composable
@@ -40,7 +41,7 @@ fun BottomBar(
     }
 
     val dividerColor = if (isFeedTab) Color(0xFF3A3A3A) else Divider
-    val containerColor = if(isFeedTab) Color(0xFF121212) else Background
+    val containerColor = if(isFeedTab) BackgroundDark else Background
 
     if(isVisible) {
         Column(modifier = Modifier.height(90.dp)) {

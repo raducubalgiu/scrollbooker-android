@@ -51,5 +51,5 @@ val LastMinute: Color
     @Composable get() = ExtendedTheme.colors.lastMinute
 
 val BackgroundDark: Color
-    @Composable get() = ExtendedTheme.colors.lastMinute
+    @Composable get() = ExtendedTheme.colors.backgroundDark
 

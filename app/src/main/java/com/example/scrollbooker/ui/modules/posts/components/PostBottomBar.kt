@@ -13,23 +13,22 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ButtonColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.navigation.routes.MainRoute
-import com.example.scrollbooker.ui.feed.PostActionButtonUIModel
 
 @Composable
 fun PostBottomBar(
-    uiModel: PostActionButtonUIModel?,
     onAction: () -> Unit,
     shouldDisplayBottomBar: Boolean,
     appointmentsNumber: Int,
@@ -61,21 +60,13 @@ fun PostBottomBar(
                         .padding(bottom = bottomPadding),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    uiModel?.let {
-                        MainButton(
-                            fullWidth = false,
-                            contentPadding = PaddingValues(SpacingM),
-                            leadingIcon = uiModel.icon,
-                            onClick = currentOnAction,
-                            title = uiModel.title,
-                            colors = ButtonColors(
-                                containerColor = uiModel.containerColor,
-                                contentColor = uiModel.contentColor,
-                                disabledContainerColor = uiModel.containerColor,
-                                disabledContentColor = uiModel.contentColor
-                            )
-                        )
-                    }
+                    MainButton(
+                        fullWidth = false,
+                        contentPadding = PaddingValues(SpacingM),
+                        leadingIcon = R.drawable.ic_shopping_outline,
+                        onClick = currentOnAction,
+                        title = stringResource(R.string.book),
+                    )
                 }
             }
         }

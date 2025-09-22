@@ -46,7 +46,6 @@ import androidx.media3.ui.PlayerView
 import androidx.paging.LoadState
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.navigation.bottomBar.MainTab
-import com.example.scrollbooker.ui.MainUIViewModel
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView.SHOW_BUFFERING_NEVER
@@ -59,17 +58,10 @@ import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
 import com.example.scrollbooker.ui.feed.components.FeedTabs
 import com.example.scrollbooker.ui.modules.posts.components.PostBottomBar
 import com.example.scrollbooker.ui.modules.posts.components.postOverlay.PostOverlay
-import com.example.scrollbooker.ui.modules.posts.util.mapPostToButtonUI
+import com.example.scrollbooker.ui.theme.BackgroundDark
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
-
-data class PostActionButtonUIModel(
-    val title: String,
-    val containerColor: Color = Color(0xFFFF6F00),
-    val contentColor: Color = Color(0xFFFFFFFF),
-    val icon: Int
-)
 
 @OptIn(UnstableApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -95,12 +87,6 @@ fun FeedScreen(
     var shouldDisplayBottomBar by rememberSaveable { mutableStateOf(true) }
     val currentPost by feedViewModel.currentPost.collectAsState()
 
-    val buttonUIModel by remember(currentPost) {
-        derivedStateOf {
-            currentPost?.let { post -> mapPostToButtonUI(post) }
-        }
-    }
-
     fun navigateToCalendar() {
         val userId = currentPost?.user?.id
         val slotDuration = currentPost?.product?.duration
@@ -115,10 +101,9 @@ fun FeedScreen(
     }
 
     Scaffold(
-        containerColor = Color(0xFF121212),
+        containerColor = BackgroundDark,
         bottomBar = {
             PostBottomBar(
-                uiModel = buttonUIModel,
                 onAction = { navigateToCalendar() },
                 shouldDisplayBottomBar = shouldDisplayBottomBar,
                 appointmentsNumber = appointmentsNumber,
@@ -185,10 +170,6 @@ fun FeedScreen(
                                 .fillMaxSize()
                                 .padding(bottom = 90.dp),
                             overscrollEffect = null,
-                            flingBehavior = PagerDefaults.flingBehavior(
-                                state = pagerState,
-                                snapAnimationSpec = tween(250)
-                            ),
                             pageSize = PageSize.Fill,
                             pageSpacing = 0.dp
                         ) { page ->
@@ -245,7 +226,6 @@ fun FeedScreen(
                                     PostOverlay(
                                         post = post,
                                         onAction = {},
-                                        buttonUIModel = buttonUIModel,
                                         shouldDisplayBottomBar = shouldDisplayBottomBar,
                                         onShowBottomBar = { shouldDisplayBottomBar = !shouldDisplayBottomBar },
                                         onNavigateToUserProfile = { feedNavigate.toUserProfile(it) },

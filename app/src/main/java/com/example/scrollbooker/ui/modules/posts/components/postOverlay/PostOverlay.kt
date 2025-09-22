@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.zIndex
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.SpacingM
@@ -25,16 +26,16 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
-import com.example.scrollbooker.ui.feed.PostActionButtonUIModel
 import com.example.scrollbooker.ui.modules.posts.PostInteractionState
 import com.example.scrollbooker.ui.modules.posts.components.PostActionButtonSmall
+import com.example.scrollbooker.ui.theme.Error
+import com.example.scrollbooker.ui.theme.LastMinute
 import java.math.BigDecimal
 
 @Composable
 fun PostOverlay(
     post: Post,
     onAction: (PostOverlayActionEnum) -> Unit,
-    buttonUIModel: PostActionButtonUIModel?,
     shouldDisplayBottomBar: Boolean,
     onShowBottomBar: () -> Unit,
     onNavigateToUserProfile: (Int) -> Unit,
@@ -66,15 +67,16 @@ fun PostOverlay(
                     post.lastMinute.isLastMinute -> {
                         PostOverlayLabel(
                             icon = R.drawable.ic_bolt_solid,
-                            title = "Last Minute",
-                            containerColor = Color(0xFF00BCD4)
+                            title = stringResource(R.string.lastMinute),
+                            containerColor = LastMinute
                         )
                     }
 
                     discount?.let { it > BigDecimal.ZERO } == true -> {
                         PostOverlayLabel(
                             icon = R.drawable.ic_percent_badge_solid,
-                            title = "Reducere"
+                            title = stringResource(R.string.sale),
+                            containerColor = Error
                         )
                     }
                 }
@@ -104,10 +106,20 @@ fun PostOverlay(
                     transitionSpec = { fadeIn(tween(300)) togetherWith fadeOut(tween(300)) },
                     label = "HeaderTransition"
                 ) { target ->
-                    if(target && buttonUIModel != null) {
+                    if(target) {
                         PostActionButtonSmall(
-                            buttonUIModel = buttonUIModel,
-                            onNavigateToCalendar = {},
+                            onNavigateToCalendar = {
+                                post.product?.let {
+                                    onNavigateToCalendar(
+                                        NavigateCalendarParam(
+                                            userId = post.user.id,
+                                            slotDuration = post.product.duration,
+                                            productId = post.product.id,
+                                            productName = post.product.name
+                                        )
+                                    )
+                                }
+                            },
                             onNavigateToProducts = onNavigateToProducts
                         )
                     }
