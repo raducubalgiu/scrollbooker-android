@@ -1,6 +1,7 @@
 package com.example.scrollbooker.ui.profile
 import BottomBar
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -55,6 +56,7 @@ import com.example.scrollbooker.ui.profile.tabs.info.ProfileInfoTab
 import com.example.scrollbooker.ui.profile.tabs.posts.ProfilePostsTab
 import com.example.scrollbooker.ui.profile.tabs.reposts.ProfileRepostsTab
 import com.example.scrollbooker.ui.shared.modules.products.UserProductsServiceTabs
+import com.example.scrollbooker.ui.theme.Background
 import kotlinx.coroutines.launch
 
 @SuppressLint("ConfigurationScreenWidthHeight")
@@ -146,6 +148,7 @@ fun MyProfileScreen(
     ) { innerPadding ->
         Column(modifier = Modifier
             .fillMaxSize()
+            .background(Background)
             .padding(innerPadding)
         ) {
 

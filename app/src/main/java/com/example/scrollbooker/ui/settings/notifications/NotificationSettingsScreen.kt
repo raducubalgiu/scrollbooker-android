@@ -18,7 +18,6 @@ fun NotificationSettings(
     onBack: () -> Unit
 ) {
     Layout(
-        modifier = Modifier.statusBarsPadding(),
         headerTitle = stringResource(R.string.notifications),
         onBack = onBack,
         enablePaddingH = false

@@ -1,8 +1,4 @@
 package com.example.scrollbooker.navigation.graphs
-
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.stringResource
@@ -17,6 +13,10 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.scrollbooker.R
 import com.example.scrollbooker.navigation.routes.MainRoute
+import com.example.scrollbooker.navigation.transition.slideInFromLeft
+import com.example.scrollbooker.navigation.transition.slideInFromRight
+import com.example.scrollbooker.navigation.transition.slideOutToLeft
+import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessServices.MyServicesScreen
 import com.example.scrollbooker.ui.myBusiness.MyBusinessScreen
 import com.example.scrollbooker.ui.myBusiness.MyBusinessViewModel
@@ -41,46 +41,16 @@ import com.example.scrollbooker.ui.myBusiness.mySchedules.SchedulesScreen
 import com.example.scrollbooker.ui.myBusiness.myServices.MyServicesViewModel
 import kotlinx.coroutines.launch
 
-fun NavGraphBuilder.myBusinessGraph(navController: NavHostController) {
+fun NavGraphBuilder.myBusinessGraph(
+    navController: NavHostController
+) {
     navigation(
         route = MainRoute.MyBusinessNavigator.route,
         startDestination = MainRoute.MyBusiness.route,
-        enterTransition = {
-            slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Left,
-                animationSpec = tween(
-                    durationMillis = 250,
-                    easing = FastOutSlowInEasing
-                )
-            )
-        },
-        exitTransition = {
-            slideOutOfContainer(
-                AnimatedContentTransitionScope.SlideDirection.Left,
-                animationSpec = tween(
-                    durationMillis = 250,
-                    easing = FastOutSlowInEasing
-                )
-            )
-        },
-        popEnterTransition = {
-            slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Right,
-                animationSpec = tween(
-                    durationMillis = 250,
-                    easing = FastOutSlowInEasing
-                )
-            )
-        },
-        popExitTransition = {
-            slideOutOfContainer(
-                AnimatedContentTransitionScope.SlideDirection.Right,
-                animationSpec = tween(
-                    durationMillis = 250,
-                    easing = FastOutSlowInEasing
-                )
-            )
-        }
+        enterTransition = { slideInFromRight() },
+        exitTransition = { slideOutToLeft() },
+        popEnterTransition = { slideInFromLeft() },
+        popExitTransition = { slideOutToRight() }
     ) {
         composable(MainRoute.MyBusiness.route) {
             val viewModel = hiltViewModel<MyBusinessViewModel>()

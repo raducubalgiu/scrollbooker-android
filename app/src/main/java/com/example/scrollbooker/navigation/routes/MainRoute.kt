@@ -74,4 +74,6 @@ sealed class MainRoute(val route: String) {
     object ReportProblem: MainRoute(route = "reportProblem")
     object Support: MainRoute(route = "support")
     object TermsAndConditions: MainRoute(route = "termsAndConditions")
+
+    object GlobalRouteNavigator: MainRoute(route = "globalRouteNavigator")
 }

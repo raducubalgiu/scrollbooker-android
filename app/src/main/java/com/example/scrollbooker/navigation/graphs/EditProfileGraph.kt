@@ -3,7 +3,7 @@ package com.example.scrollbooker.navigation.graphs
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import androidx.navigation.navigation
+import androidx.navigation.compose.navigation
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
@@ -23,15 +23,13 @@ fun NavGraphBuilder.editProfileGraph(
 ) {
     navigation(
         route = MainRoute.EditProfileNavigator.route,
-        startDestination = MainRoute.EditProfile.route
+        startDestination = MainRoute.EditProfile.route,
+        enterTransition = { slideInFromRight() },
+        exitTransition = { slideOutToLeft() },
+        popEnterTransition = { slideInFromLeft() },
+        popExitTransition = { slideOutToRight() }
     ) {
-        composable(
-            route = MainRoute.EditProfile.route,
-            enterTransition = { slideInFromRight() },
-            exitTransition = { slideOutToLeft() },
-            popEnterTransition = { slideInFromLeft() },
-            popExitTransition = { slideOutToRight() }
-        ) {
+        composable(route = MainRoute.EditProfile.route) {
             EditProfileScreen(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
@@ -39,64 +37,34 @@ fun NavGraphBuilder.editProfileGraph(
             )
         }
 
-        composable(
-            route = MainRoute.EditFullName.route,
-            enterTransition = { slideInFromRight() },
-            exitTransition = { slideOutToLeft() },
-            popEnterTransition = { slideInFromLeft() },
-            popExitTransition = { slideOutToRight() }
-        ) {
+        composable(route = MainRoute.EditFullName.route) {
             EditFullNameScreen(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() }
             )
         }
-        composable(
-            route = MainRoute.EditUsername.route,
-            enterTransition = { slideInFromRight() },
-            exitTransition = { slideOutToLeft() },
-            popEnterTransition = { slideInFromLeft() },
-            popExitTransition = { slideOutToRight() }
-        ) {
+        composable(route = MainRoute.EditUsername.route) {
             EditUsernameScreen(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() }
             )
         }
 
-        composable(
-            route = MainRoute.EditProfession.route,
-            enterTransition = { slideInFromRight() },
-            exitTransition = { slideOutToLeft() },
-            popEnterTransition = { slideInFromLeft() },
-            popExitTransition = { slideOutToRight() }
-        ) {
+        composable(route = MainRoute.EditProfession.route) {
             EditProfessionScreen(
                 viewModel=viewModel,
                 onBack = { navController.popBackStack() }
             )
         }
 
-        composable(
-            route = MainRoute.EditBio.route,
-            enterTransition = { slideInFromRight() },
-            exitTransition = { slideOutToLeft() },
-            popEnterTransition = { slideInFromLeft() },
-            popExitTransition = { slideOutToRight() }
-        ) {
+        composable(route = MainRoute.EditBio.route) {
             EditBioScreen(
                 viewModel=viewModel,
                 onBack = { navController.popBackStack() }
             )
         }
 
-        composable(
-            route = MainRoute.EditGender.route,
-            enterTransition = { slideInFromRight() },
-            exitTransition = { slideOutToLeft() },
-            popEnterTransition = { slideInFromLeft() },
-            popExitTransition = { slideOutToRight() }
-        ) {
+        composable(route = MainRoute.EditGender.route) {
             EditGenderScreen(
                 viewModel=viewModel,
                 onBack= { navController.popBackStack() }

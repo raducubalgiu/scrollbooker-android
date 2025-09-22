@@ -12,7 +12,6 @@ fun SecurityScreen(
     onBack: () -> Unit
 ) {
     Layout(
-        modifier = Modifier.statusBarsPadding(),
         headerTitle = stringResource(R.string.security),
         enablePaddingH = false,
         onBack = onBack

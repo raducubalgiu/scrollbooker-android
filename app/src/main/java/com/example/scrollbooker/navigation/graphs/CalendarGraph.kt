@@ -7,9 +7,9 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
-import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import androidx.navigation.navigation
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
@@ -24,6 +24,10 @@ fun NavGraphBuilder.calendarGraph(navController: NavHostController) {
     navigation(
         route = MainRoute.CalendarNavigator.route,
         startDestination = "${MainRoute.Calendar.route}/{userId}/{slotDuration}/{productId}/{productName}",
+        enterTransition = { slideInFromRight() },
+        exitTransition = { slideOutToLeft() },
+        popEnterTransition = { slideInFromLeft() },
+        popExitTransition = { slideOutToRight() }
     ) {
         composable(
             route = "${MainRoute.Calendar.route}/{userId}/{slotDuration}/{productId}/{productName}",
@@ -33,10 +37,6 @@ fun NavGraphBuilder.calendarGraph(navController: NavHostController) {
                 navArgument("productId") { type = NavType.IntType },
                 navArgument("productName") { type = NavType.StringType }
             ),
-            enterTransition = { slideInFromRight() },
-            exitTransition = { slideOutToLeft() },
-            popEnterTransition = { slideInFromLeft() },
-            popExitTransition = { slideOutToRight() }
         ) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(MainRoute.CalendarNavigator.route)
@@ -62,13 +62,7 @@ fun NavGraphBuilder.calendarGraph(navController: NavHostController) {
             )
         }
 
-        composable(
-            route = MainRoute.AppointmentConfirmation.route,
-            enterTransition = { slideInFromRight() },
-            exitTransition = { slideOutToLeft() },
-            popEnterTransition = { slideInFromLeft() },
-            popExitTransition = { slideOutToRight() }
-        ) { backStackEntry ->
+        composable(route = MainRoute.AppointmentConfirmation.route) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(MainRoute.CalendarNavigator.route)
             }

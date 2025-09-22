@@ -73,8 +73,8 @@ fun UserProfileScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = innerPadding.calculateTopPadding())
                 .background(Background)
+                .padding(top = innerPadding.calculateTopPadding())
         ) {
             ProfileLayout(
                 isInitLoading = isInitLoading,

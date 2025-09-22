@@ -80,7 +80,6 @@ fun SettingsScreen(
     )
 
     Layout(
-        modifier = Modifier.statusBarsPadding(),
         headerTitle = "",
         onBack = onBack,
         enablePaddingH = false

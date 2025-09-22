@@ -6,7 +6,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import androidx.navigation.navigation
+import androidx.navigation.compose.navigation
 import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
@@ -28,14 +28,12 @@ fun NavGraphBuilder.appointmentsGraph(
     navigation(
         route = MainRoute.AppointmentsNavigator.route,
         startDestination = MainRoute.Appointments.route,
+        enterTransition = { slideInFromRight() },
+        exitTransition = { slideOutToLeft() },
+        popEnterTransition = { slideInFromLeft() },
+        popExitTransition = { slideOutToRight() }
     ) {
-        composable(
-            route = MainRoute.Appointments.route,
-            enterTransition = { slideInFromRight() },
-            exitTransition = { slideOutToLeft() },
-            popEnterTransition = { slideInFromLeft() },
-            popExitTransition = { slideOutToRight() }
-        ) { backStackEntry ->
+        composable(route = MainRoute.Appointments.route) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(MainRoute.AppointmentsNavigator.route)
             }
@@ -53,13 +51,7 @@ fun NavGraphBuilder.appointmentsGraph(
             )
         }
 
-        composable(
-            route = MainRoute.AppointmentDetails.route,
-            enterTransition = { slideInFromRight() },
-            exitTransition = { slideOutToLeft() },
-            popEnterTransition = { slideInFromLeft() },
-            popExitTransition = { slideOutToRight() }
-        ) { backStackEntry ->
+        composable(route = MainRoute.AppointmentDetails.route) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(MainRoute.AppointmentsNavigator.route)
             }
@@ -72,13 +64,7 @@ fun NavGraphBuilder.appointmentsGraph(
             )
         }
 
-        composable(
-            route = MainRoute.AppointmentCancel.route,
-            enterTransition = { slideInFromRight() },
-            exitTransition = { slideOutToLeft() },
-            popEnterTransition = { slideInFromLeft() },
-            popExitTransition = { slideOutToRight() }
-        ) { backStackEntry ->
+        composable(route = MainRoute.AppointmentCancel.route) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(MainRoute.AppointmentsNavigator.route)
             }

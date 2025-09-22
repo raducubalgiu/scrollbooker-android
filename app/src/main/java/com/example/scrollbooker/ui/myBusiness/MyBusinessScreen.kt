@@ -108,7 +108,6 @@ fun MyBusinessScreen(
     )
 
     Layout(
-        modifier = Modifier.safeDrawingPadding(),
         headerTitle = stringResource(R.string.myBusiness),
         onBack = onBack
     ) {

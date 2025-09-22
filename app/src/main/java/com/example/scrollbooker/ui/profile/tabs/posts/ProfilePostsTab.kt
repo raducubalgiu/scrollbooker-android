@@ -28,7 +28,10 @@ fun ProfilePostsTab(
     posts: LazyPagingItems<Post>,
     onNavigateToPostDetail: (Int) -> Unit
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .padding(top = paddingTop)
+    ) {
         when(posts.loadState.refresh) {
             is LoadState.Error -> ErrorScreen()
             is LoadState.Loading -> Unit
@@ -37,9 +40,7 @@ fun ProfilePostsTab(
                     columns = GridCells.Fixed(3),
                     verticalArrangement = Arrangement.spacedBy(1.dp),
                     horizontalArrangement = Arrangement.spacedBy(1.dp),
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = paddingTop)
+                    modifier = Modifier.fillMaxSize()
                 ) {
                     items(posts.itemCount) { index ->
                         val post = posts[index]

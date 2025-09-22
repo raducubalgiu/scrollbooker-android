@@ -30,7 +30,6 @@ fun DisplayScreen(
     val selectedTheme by viewModel.themePreferences.collectAsState()
 
     Layout(
-        modifier = Modifier.statusBarsPadding(),
         headerTitle = stringResource(R.string.applicationTheme),
         onBack = onBack,
         enablePaddingH = false

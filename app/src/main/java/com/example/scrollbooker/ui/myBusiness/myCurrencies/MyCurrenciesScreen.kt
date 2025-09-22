@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
@@ -42,7 +41,6 @@ fun MyCurrenciesScreen(
     val isEnabled = !isLoading && selectedIds.isNotEmpty() && selectedIds != defaultSelectedIds
 
     FormLayout(
-        modifier = Modifier.safeDrawingPadding(),
         headLine = stringResource(R.string.acceptedCurrencies),
         subHeadLine = stringResource(R.string.chooseDesiredCurrencies),
         buttonTitle = buttonTitle,

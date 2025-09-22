@@ -2,11 +2,10 @@ package com.example.scrollbooker.navigation.transition
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 
-private const val TRANSITION_DURATION = 300
+private const val TRANSITION_DURATION = 350
 
 fun AnimatedContentTransitionScope<*>.slideInFromRight(): EnterTransition {
     return slideIntoContainer(
