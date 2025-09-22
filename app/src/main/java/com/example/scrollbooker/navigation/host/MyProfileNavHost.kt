@@ -10,11 +10,9 @@ import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.navigation.bottomBar.MainTab
-import com.example.scrollbooker.navigation.graphs.calendarGraph
 import com.example.scrollbooker.navigation.graphs.editProfileGraph
 import com.example.scrollbooker.navigation.graphs.myBusinessGraph
 import com.example.scrollbooker.navigation.graphs.settingsGraph
-import com.example.scrollbooker.navigation.graphs.sharedProfileGraph
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
@@ -31,6 +29,7 @@ fun MyProfileNavHost(
     authViewModel: AuthViewModel,
     myProfileData: FeatureState<UserProfile>,
     myPosts: LazyPagingItems<Post>,
+    rootNavController: NavHostController,
     navController: NavHostController,
     appointmentsNumber: Int,
     onChangeTab: (MainTab) -> Unit
@@ -52,7 +51,12 @@ fun MyProfileNavHost(
                 popEnterTransition = { slideInFromLeft() },
                 popExitTransition = { slideOutToRight() }
             ) {
-                val profileNavigate = remember(navController) { ProfileNavigator(navController) }
+                val profileNavigate = remember(navController) {
+                    ProfileNavigator(
+                        rootNavController = rootNavController,
+                        navController = navController
+                    )
+                }
 
                 MyProfileScreen(
                     viewModel = viewModel,
@@ -64,8 +68,6 @@ fun MyProfileNavHost(
                 )
             }
 
-            sharedProfileGraph(navController)
-            calendarGraph(navController)
             editProfileGraph(navController, viewModel)
             myBusinessGraph(navController)
             settingsGraph(

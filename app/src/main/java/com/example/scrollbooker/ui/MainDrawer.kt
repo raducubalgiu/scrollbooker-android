@@ -41,6 +41,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.ui.theme.BackgroundDark
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.headlineSmall
@@ -60,7 +61,7 @@ fun MainDrawer(
 
         ModalDrawerSheet(
             modifier = Modifier.width(screenWidth * 0.85f),
-            drawerContainerColor = Color(0xFF121212)
+            drawerContainerColor = BackgroundDark
         ) {
             Column(
                 modifier = Modifier

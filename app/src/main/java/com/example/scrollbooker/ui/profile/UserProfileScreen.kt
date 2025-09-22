@@ -104,7 +104,7 @@ fun UserProfileScreen(
                                         user = user,
                                         onOpenScheduleSheet = {},
                                         onNavigateToSocial = { profileNavigate.toSocial(it) },
-                                        onNavigateToEditProfile = { profileNavigate.toEditProfile() },
+                                        onNavigateToEditProfile = {  },
                                         onNavigateToBusinessOwner = { ownerId ->
                                             ownerId?.let {
                                                 profileNavigate.toBusinessOwner(ownerId)

@@ -52,22 +52,26 @@ private val DarkColorScheme = darkColorScheme(
 
 data class ExtendedColors(
     val divider: Color,
-    val lastMinute: Color
+    val lastMinute: Color,
+    val backgroundDark: Color
 )
 
 private val LightExtendedColors = ExtendedColors(
     divider = Color(0xFFCCCCCC),
-    lastMinute = Color(0xFF00BCD4)
+    lastMinute = Color(0xFF00BCD4),
+    backgroundDark = Color(0xFF121212)
 )
 private val DarkExtendedColor = ExtendedColors(
     divider = Color(0xFF3A3A3A),
-    lastMinute = Color(0xFF00BCD4)
+    lastMinute = Color(0xFF00BCD4),
+    backgroundDark = Color(0xFF121212)
 )
 
 val LocalExtendedColors = staticCompositionLocalOf {
     ExtendedColors(
         divider = Color.Gray,
-        lastMinute = Color(0xFF00BCD4)
+        lastMinute = Color(0xFF00BCD4),
+        backgroundDark = Color(0xFF121212)
     )
 }
 

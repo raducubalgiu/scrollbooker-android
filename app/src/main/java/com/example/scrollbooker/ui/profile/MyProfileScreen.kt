@@ -98,7 +98,7 @@ fun MyProfileScreen(
                         menuSheetState.hide()
 
                         if (!menuSheetState.isVisible) {
-                            profileNavigate.toCreatePost()
+                            profileNavigate.toCamera()
                         }
                     }
                 },
@@ -124,7 +124,17 @@ fun MyProfileScreen(
         }
     }
 
+    val userData = (myProfileData as? FeatureState.Success)?.data
+
     Scaffold(
+        topBar = {
+            MyProfileHeader(
+                username = userData?.username ?: "",
+                isBusinessOrEmployee = userData?.isBusinessOrEmployee == true,
+                onOpenBottomSheet = { scope.launch { menuSheetState.show() } },
+                onNavigateToCreatePost = { profileNavigate.toCamera() }
+            )
+        },
         bottomBar = {
             BottomBar(
                 appointmentsNumber = appointmentsNumber,
@@ -155,11 +165,6 @@ fun MyProfileScreen(
                         val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
 
                         Column(Modifier.fillMaxSize()) {
-                            MyProfileHeader(
-                                username = user.username,
-                                onOpenBottomSheet = { scope.launch { menuSheetState.show() } }
-                            )
-
                             PullToRefreshBox(
                                 state = state,
                                 isRefreshing = isRefreshing,

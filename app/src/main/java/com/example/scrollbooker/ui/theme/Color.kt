@@ -50,3 +50,6 @@ val Divider: Color
 val LastMinute: Color
     @Composable get() = ExtendedTheme.colors.lastMinute
 
+val BackgroundDark: Color
+    @Composable get() = ExtendedTheme.colors.lastMinute
+

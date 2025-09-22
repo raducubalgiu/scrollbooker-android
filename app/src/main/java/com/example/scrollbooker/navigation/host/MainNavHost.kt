@@ -17,7 +17,6 @@ import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavHostController
@@ -29,6 +28,7 @@ import com.example.scrollbooker.ui.feed.FeedScreenViewModel
 import com.example.scrollbooker.ui.MainDrawer
 import com.example.scrollbooker.ui.MainUIViewModel
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
+import com.example.scrollbooker.ui.theme.BackgroundDark
 import kotlinx.coroutines.launch
 
 val MainTabSaver: Saver<MainTab, String> = Saver(
@@ -83,7 +83,7 @@ fun MainNavHost(
                                 onClose = { scope.launch { drawerState.close() } }
                             )
                         },
-                        scrimColor = Color(0xFF121212).copy(0.7f),
+                        scrimColor = BackgroundDark.copy(0.7f),
                         drawerState = drawerState,
                         gesturesEnabled = drawerState.currentValue == DrawerValue.Open,
                     ) {
@@ -132,6 +132,7 @@ fun MainNavHost(
                         authViewModel = authViewModel,
                         myProfileData = myProfileData,
                         myPosts = myPosts,
+                        rootNavController = rootNavController,
                         navController = navControllers[MainTab.Profile]!!,
                         appointmentsNumber = mainViewModel.appointmentsState,
                         onChangeTab = { currentTab = it }
