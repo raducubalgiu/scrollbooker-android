@@ -49,8 +49,7 @@ fun EmploymentRequestRespondConsentScreen(
         headerTitle = stringResource(R.string.termsAndConditions),
         modifier = Modifier.statusBarsPadding(),
         onBack = onBack,
-        enablePaddingH = false,
-        enablePaddingV = false
+        enablePaddingH = false
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),

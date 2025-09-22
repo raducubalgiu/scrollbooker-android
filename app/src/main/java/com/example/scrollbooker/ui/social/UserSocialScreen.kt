@@ -54,8 +54,7 @@ fun UserSocialScreen(
         modifier = Modifier.statusBarsPadding(),
         headerTitle = username,
         onBack = onBack,
-        enablePaddingH = false,
-        enablePaddingV = false
+        enablePaddingH = false
     ) {
         Column {
             Tabs(

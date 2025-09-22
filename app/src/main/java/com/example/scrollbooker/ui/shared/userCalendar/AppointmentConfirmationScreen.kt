@@ -51,8 +51,7 @@ fun AppointmentConfirmationScreen(
         modifier = Modifier.safeDrawingPadding(),
         headerTitle = "",
         onBack = onBack,
-        enablePaddingH = false,
-        enablePaddingV = false
+        enablePaddingH = false
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),

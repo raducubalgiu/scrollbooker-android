@@ -10,8 +10,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -19,9 +22,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.titleMedium
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Header(
     modifier: Modifier = Modifier,
@@ -31,51 +36,59 @@ fun Header(
     customTitle: (@Composable () -> Unit)? = null,
     actions: @Composable (() -> Unit)? = null
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = BasePadding)
-            .then(modifier),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Box(
-            modifier = Modifier
-                .size(50.dp)
-                .clickable(
-                    onClick = {
-                        if(onBack != null) {
-                            onBack()
-                        }
-                    },
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null
-                ),
-            contentAlignment = Alignment.CenterStart
-        ) {
-            if(enableBack) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBackIosNew,
-                    tint = OnBackground,
-                    contentDescription = null
-                )
+    TopAppBar(
+        modifier = modifier,
+        title = {
+            Box(modifier = Modifier
+                .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                if (title.isNotEmpty()) {
+                    Text(
+                        style = titleMedium,
+                        color = OnBackground,
+                        fontWeight = FontWeight.Bold,
+                        text = title
+                    )
+                }
+                if(customTitle != null) {
+                    customTitle()
+                }
             }
-        }
-        Box {
-            if (title.isNotEmpty()) {
-                Text(
-                    style = titleMedium,
-                    color = OnBackground,
-                    fontWeight = FontWeight.Bold,
-                    text = title
-                )
+        },
+        navigationIcon = {
+            Box(
+                modifier = Modifier
+                    .size(50.dp)
+                    .clickable(
+                        onClick = {
+                            if (onBack != null) {
+                                onBack()
+                            }
+                        },
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                if(enableBack) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBackIosNew,
+                        tint = OnBackground,
+                        contentDescription = null
+                    )
+                }
             }
-            if(customTitle != null) {
-                customTitle()
-            }
-        }
-        Box(Modifier.size(50.dp)) {
+        },
+        actions = { Box(Modifier.size(50.dp)) {
             actions
-        }
-    }
+        } },
+        colors = TopAppBarColors(
+            containerColor = Background,
+            scrolledContainerColor = Background,
+            navigationIconContentColor = OnBackground,
+            titleContentColor = OnBackground,
+            actionIconContentColor = OnBackground
+        )
+    )
 }

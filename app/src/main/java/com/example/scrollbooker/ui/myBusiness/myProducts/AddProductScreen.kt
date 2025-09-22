@@ -181,8 +181,7 @@ fun AddProductScreen(
             onBack()
         },
         headerTitle = stringResource(R.string.addNewProduct),
-        enablePaddingH = false,
-        enablePaddingV = false
+        enablePaddingH = false
     ) {
         Box(
             modifier = Modifier

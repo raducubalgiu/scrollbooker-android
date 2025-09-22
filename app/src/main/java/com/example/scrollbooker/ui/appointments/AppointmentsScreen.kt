@@ -149,6 +149,12 @@ fun AppointmentsScreen(
     }
 
     Scaffold(
+        topBar = {
+            Header(
+                title = stringResource(R.string.appointments),
+                enableBack = false
+            )
+        },
         bottomBar = {
             BottomBar(
                 appointmentsNumber = appointmentsNumber,
@@ -160,8 +166,6 @@ fun AppointmentsScreen(
     ) { innerPadding ->
         Box(Modifier.fillMaxSize().padding(innerPadding)) {
             Column(Modifier.fillMaxSize()) {
-                Header(title = stringResource(R.string.appointments), enableBack = false)
-
                 ArrowButton(
                     title = selectedFilter?.title?.getLabel() ?: AppointmentFilterTitleEnum.ALL.getLabel(),
                     onClick = {

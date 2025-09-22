@@ -36,6 +36,12 @@ fun InboxScreen(
     val refreshState = notifications.loadState.refresh
 
     Scaffold(
+        topBar = {
+            Header(
+                title = stringResource(id = R.string.inbox),
+                enableBack = false
+            )
+        },
         bottomBar = {
             BottomBar(
                 appointmentsNumber = appointmentsNumber,
@@ -50,11 +56,6 @@ fun InboxScreen(
             .padding(innerPadding)
         ) {
             Column(Modifier.fillMaxSize()) {
-                Header(
-                    title = stringResource(id = R.string.inbox),
-                    enableBack = false
-                )
-
                 when(refreshState) {
                     is LoadState.Loading -> { LoadingScreen() }
                     is LoadState.Error -> ErrorScreen()
