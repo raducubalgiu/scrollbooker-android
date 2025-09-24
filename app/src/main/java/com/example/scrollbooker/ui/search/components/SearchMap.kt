@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.search.sheet
+package com.example.scrollbooker.ui.search.components
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize

@@ -25,15 +25,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.ui.search.SheetStage
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.bodyLarge
+import com.example.scrollbooker.ui.theme.titleLarge
 import com.example.scrollbooker.ui.theme.titleMedium
 import kotlinx.coroutines.Job
 
@@ -65,7 +68,7 @@ fun SearchHeader(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Box(
-                modifier = Modifier.padding(SpacingXXS),
+                modifier = Modifier.padding(SpacingS),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
@@ -79,16 +82,17 @@ fun SearchHeader(
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(horizontal = SpacingXXS),
+                    .padding(horizontal = SpacingS),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.Start
             ) {
                 Text(
                     text = headline,
                     fontWeight = FontWeight.SemiBold,
-                    style = titleMedium
+                    style = titleMedium,
+                    fontSize = 18.sp
                 )
-                Spacer(Modifier.height(SpacingXXS))
+                Spacer(Modifier.height(SpacingXS))
                 Text(
                     text = subHeadline,
                     color = Color.Gray,
