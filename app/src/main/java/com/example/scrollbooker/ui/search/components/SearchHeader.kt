@@ -2,6 +2,7 @@ package com.example.scrollbooker.ui.search.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -28,19 +30,25 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
+import com.example.scrollbooker.ui.search.SheetStage
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.titleMedium
+import kotlinx.coroutines.Job
 
 @Composable
 fun SearchHeader(
+    modifier: Modifier = Modifier,
     headline: String,
-    subHeadline: String
+    subHeadline: String,
+    sheetValue: SheetStage,
+    onMapToggle: () -> Job
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .statusBarsPadding()
             .padding(horizontal = BasePadding)
             .shadow(
                 elevation = 2.dp,
@@ -49,6 +57,7 @@ fun SearchHeader(
             )
             .clip(shape = CircleShape)
             .background(Background)
+            .then(modifier)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -93,7 +102,8 @@ fun SearchHeader(
                         width = 1.dp,
                         color = Divider,
                         shape = CircleShape
-                    ),
+                    )
+                    .clickable { onMapToggle() },
                 contentAlignment = Alignment.Center
             ) {
                 Icon(

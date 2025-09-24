@@ -18,7 +18,6 @@ import com.example.scrollbooker.ui.search.businessProfile.BusinessProfileScreen
 
 @Composable
 fun SearchNavHost(
-    businessTypesState: FeatureState<List<BusinessType>>,
     navController: NavHostController,
     appointmentsNumber: Int,
     onChangeTab: (MainTab) -> Unit
@@ -35,7 +34,6 @@ fun SearchNavHost(
             val viewModel = hiltViewModel<SearchViewModel>(backStackEntry)
             SearchScreen(
                 viewModel = viewModel,
-                businessTypesState = businessTypesState,
                 onNavigateToBusinessProfile = { navController.navigate(MainRoute.BusinessProfile.route) },
                 appointmentsNumber = appointmentsNumber,
                 onChangeTab = onChangeTab,

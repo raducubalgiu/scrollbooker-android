@@ -51,8 +51,6 @@ fun MainNavHost(
     val myPosts = myProfileViewModel.userPosts.collectAsLazyPagingItems()
 
     val bookNowPosts = mainViewModel.bookNowPosts.collectAsLazyPagingItems()
-
-    val businessTypesState by mainViewModel.businessTypesState.collectAsState()
     val businessDomainsState by mainViewModel.businessDomainsState.collectAsState()
 
     val saveableStateHolder = rememberSaveableStateHolder()
@@ -111,7 +109,6 @@ fun MainNavHost(
 
                 is MainTab.Search -> {
                     SearchNavHost(
-                        businessTypesState = businessTypesState,
                         navController = navControllers[MainTab.Search]!!,
                         appointmentsNumber = mainViewModel.appointmentsState,
                         onChangeTab = { currentTab = it }
@@ -127,12 +124,12 @@ fun MainNavHost(
                 }
                 is MainTab.Profile -> {
                     MyProfileNavHost(
+                        rootNavController = rootNavController,
+                        navController = navControllers[MainTab.Profile]!!,
                         viewModel = myProfileViewModel,
                         authViewModel = authViewModel,
                         myProfileData = myProfileData,
                         myPosts = myPosts,
-                        rootNavController = rootNavController,
-                        navController = navControllers[MainTab.Profile]!!,
                         appointmentsNumber = mainViewModel.appointmentsState,
                         onChangeTab = { currentTab = it }
                     )
