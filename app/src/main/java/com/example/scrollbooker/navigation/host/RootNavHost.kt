@@ -12,6 +12,7 @@ import androidx.navigation.navArgument
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.navigation.graphs.appointmentsGraph
 import com.example.scrollbooker.navigation.graphs.calendarGraph
+import com.example.scrollbooker.navigation.graphs.editProfileGraph
 import com.example.scrollbooker.navigation.graphs.globalGraph
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.navigation.routes.GlobalRoute
@@ -22,6 +23,7 @@ import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.ui.auth.AuthViewModel
 import com.example.scrollbooker.ui.camera.CameraScreen
+import com.example.scrollbooker.ui.profile.MyProfileViewModel
 import com.example.scrollbooker.ui.profile.ProfileViewModel
 import com.example.scrollbooker.ui.profile.UserProfileScreen
 import com.example.scrollbooker.ui.shared.userProducts.UserProductsScreen
@@ -34,6 +36,7 @@ fun RootNavHost(
     viewModel: AuthViewModel
 ) {
     val authState by viewModel.authState.collectAsState()
+    val myProfileViewModel: MyProfileViewModel = hiltViewModel()
 
     val startDestination = when(val state = authState) {
         is FeatureState.Success -> {
@@ -59,17 +62,21 @@ fun RootNavHost(
             composable(GlobalRoute.MAIN) {
                 MainNavHost(
                     authViewModel = viewModel,
+                    myProfileViewModel = myProfileViewModel,
                     rootNavController = navController
                 )
             }
 
             // Global Routes
-
             globalGraph(navController = navController)
             calendarGraph(navController = navController)
+            editProfileGraph(
+                navController = navController,
+                viewModel = myProfileViewModel
+            )
 
             appointmentsGraph(
-                navController,
+                navController = navController,
                 appointmentsNumber = 0,
                 onChangeTab = {}
             )

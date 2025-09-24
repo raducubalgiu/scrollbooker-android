@@ -68,7 +68,6 @@ fun MyProfileNavHost(
                 )
             }
 
-            editProfileGraph(navController, viewModel)
             myBusinessGraph(navController)
             settingsGraph(
                 navController = navController,

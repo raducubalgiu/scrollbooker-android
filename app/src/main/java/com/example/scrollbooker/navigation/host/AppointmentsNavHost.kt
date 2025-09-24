@@ -12,7 +12,6 @@ import com.example.scrollbooker.ui.MainUIViewModel
 @Composable
 fun AppointmentsNavHost(
     navController: NavHostController,
-    mainViewModel: MainUIViewModel,
     appointmentsNumber: Int,
     onChangeTab: (MainTab) -> Unit
 ) {

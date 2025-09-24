@@ -41,10 +41,10 @@ val MainTabSaver: Saver<MainTab, String> = Saver(
 @Composable
 fun MainNavHost(
     authViewModel: AuthViewModel,
+    myProfileViewModel: MyProfileViewModel,
     rootNavController: NavHostController
 ) {
     val feedViewModel: FeedScreenViewModel = hiltViewModel()
-    val myProfileViewModel: MyProfileViewModel = hiltViewModel()
 
     val mainViewModel: MainUIViewModel = hiltViewModel()
     val myProfileData by myProfileViewModel.userProfileState.collectAsState()
@@ -121,7 +121,6 @@ fun MainNavHost(
                 is MainTab.Appointments -> {
                     AppointmentsNavHost(
                         navController = navControllers[MainTab.Appointments]!!,
-                        mainViewModel = mainViewModel,
                         appointmentsNumber = mainViewModel.appointmentsState,
                         onChangeTab = { currentTab = it }
                     )
