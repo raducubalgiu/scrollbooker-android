@@ -16,12 +16,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,11 +33,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.coerceAtMost
+import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
@@ -85,16 +89,21 @@ fun SearchScreen(
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
             val density = LocalDensity.current
 
+            var headerHeightDp by remember { mutableStateOf(0.dp) }
+
             val bottomBarPadDp = innerPadding.calculateBottomPadding()
 
-            val availableHeightDp = maxHeight - bottomBarPadDp
+            val availableHeightDp = (maxHeight - headerHeightDp - bottomBarPadDp).coerceAtLeast(0.dp)
             val availableHeightPx = with(density) { availableHeightDp.toPx() }
 
-            val collapsedHeightDp = CollapsedHeightDp.coerceAtMost(availableHeightDp)
-
             var stage by remember { mutableStateOf(SheetStage.Collapsed) }
+
             val offset = remember {
                 Animatable(stage.targetOffsetPx(availableHeightPx, density))
+            }
+
+            LaunchedEffect(availableHeightPx, stage) {
+                offset.snapTo(stage.targetOffsetPx(availableHeightPx, density))
             }
 
             val scope = rememberCoroutineScope()
@@ -131,6 +140,13 @@ fun SearchScreen(
                 SearchMap()
 
                 SearchHeader(
+                    modifier = Modifier
+                        .statusBarsPadding()
+                        .onGloballyPositioned { coords ->
+                            val measured = with(density) { coords.size.height.toDp() }
+                            headerHeightDp = (measured + innerPadding.calculateTopPadding())
+                                .coerceAtLeast(0.dp)
+                        },
                     headline = selectedBusinessType?.name ?: stringResource(R.string.allServices),
                     subHeadline = stringResource(R.string.anytimeAnyHour),
                     sheetValue = stage,
@@ -140,6 +156,7 @@ fun SearchScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(top = headerHeightDp)
                         .height(availableHeightDp)
                         .offset { IntOffset(x = 0, y = offset.value.roundToInt()) }
                         .background(
@@ -161,13 +178,9 @@ fun SearchScreen(
                                     SheetStage.Expanded
                                 )
 
-                                val triples = candidates.map { st ->
-                                    val px = st.targetOffsetPx(availableHeightPx, density)
-                                    Triple(st, px, abs(px - current))
-                                }
-
-                                val nearest = triples.minByOrNull { it.third } ?: return@draggable
-
+                                val nearest = candidates
+                                    .map { st -> st to st.targetOffsetPx(availableHeightPx, density) }
+                                    .minBy { (_, px) -> abs(px - current) }
                                 val idx = candidates.indexOf(nearest.first)
 
                                 val shouldGoNext = velocity < -1000 && idx < candidates.lastIndex
@@ -187,7 +200,7 @@ fun SearchScreen(
 
                 ) {
                     Column(modifier = Modifier.fillMaxSize()) {
-                        SearchSheetHeader(collapsedHeight = collapsedHeightDp)
+                        SearchSheetHeader(collapsedHeight = CollapsedHeightDp)
 
                         LazyColumn(
                             modifier = Modifier
