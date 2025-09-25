@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.components.userInfo.components
+package com.example.scrollbooker.ui.profile.components.userInfo.sheets
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -29,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.shimmer.rememberShimmerBrush
 import com.example.scrollbooker.components.core.layout.ErrorScreen
+import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.formatTime
 import com.example.scrollbooker.core.util.translateDayOfWeek
@@ -46,8 +48,8 @@ enum class WorkScheduleStatus {
 }
 
 @Composable
-fun UserScheduleSheet() {
-    val viewModel: MySchedulesViewModel = hiltViewModel()
+fun UserScheduleSheet(userId: Int) {
+    val viewModel: UserScheduleSheetViewModel = hiltViewModel()
     val state by viewModel.schedulesState.collectAsState()
 
     val today = LocalDate.now().dayOfWeek
@@ -68,9 +70,13 @@ fun UserScheduleSheet() {
         }
     }
 
+    LaunchedEffect(Unit) {
+        viewModel.setUserId(userId)
+    }
+
     Column(modifier = Modifier
         .fillMaxWidth()
-        .padding(bottom = BasePadding)
+        .padding(bottom = SpacingXL)
     ) {
         when(state) {
             is FeatureState.Loading -> {
@@ -145,7 +151,7 @@ fun UserScheduleSheet() {
                         Text(
                             text = text,
                             style = bodyLarge,
-                            fontWeight = if(isToday) FontWeight.ExtraBold else FontWeight.Normal
+                            fontWeight = if(isToday) FontWeight.ExtraBold else FontWeight.Normal,
                         )
                     }
                 }

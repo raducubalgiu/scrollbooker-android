@@ -24,8 +24,8 @@ import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.profile.components.myProfile.MyProfileHeader
-import com.example.scrollbooker.ui.profile.components.myProfile.MyProfileMenuList
 import com.example.scrollbooker.ui.profile.components.ProfileLayout
+import com.example.scrollbooker.ui.profile.components.userInfo.sheets.ProfileMenuSheet
 import com.example.scrollbooker.ui.theme.Background
 import kotlinx.coroutines.launch
 
@@ -51,7 +51,7 @@ fun MyProfileScreen(
             sheetState = menuSheetState,
             onClose = { scope.launch { menuSheetState.hide() } }
         ) {
-            MyProfileMenuList(
+            ProfileMenuSheet(
                 permissionsState = permissionsState,
                 onNavigateToCreatePost = {
                     scope.launch {

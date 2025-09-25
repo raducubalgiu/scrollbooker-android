@@ -45,7 +45,7 @@ import com.example.scrollbooker.ui.profile.components.myProfile.MyProfileActions
 import com.example.scrollbooker.ui.profile.components.userInfo.ProfileShimmer
 import com.example.scrollbooker.ui.profile.components.userInfo.ProfileUserInfo
 import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileCounters
-import com.example.scrollbooker.ui.profile.components.userInfo.components.UserScheduleSheet
+import com.example.scrollbooker.ui.profile.components.userInfo.sheets.UserScheduleSheet
 import com.example.scrollbooker.ui.profile.components.userProfile.UserProfileActions
 import com.example.scrollbooker.ui.profile.tabs.ProfileTab
 import com.example.scrollbooker.ui.profile.tabs.ProfileTabRow
@@ -68,6 +68,7 @@ fun ProfileLayout(
 ) {
     val scope = rememberCoroutineScope()
     val scheduleSheetState = rememberModalBottomSheetState()
+    val userId = (profileData as? FeatureState.Success<UserProfile>)?.data?.id
 
     if(scheduleSheetState.isVisible) {
         Sheet(
@@ -78,7 +79,9 @@ fun ProfileLayout(
                 title = stringResource(R.string.scheduleShort),
                 onClose = { scope.launch { scheduleSheetState.hide() } }
             )
-            UserScheduleSheet()
+            userId?.let {
+                UserScheduleSheet(userId)
+            }
         }
     }
 

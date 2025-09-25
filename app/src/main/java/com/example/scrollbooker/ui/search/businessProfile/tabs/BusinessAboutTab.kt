@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
-import com.example.scrollbooker.ui.profile.components.userInfo.components.UserScheduleSheet
+import com.example.scrollbooker.ui.profile.components.userInfo.sheets.UserScheduleSheet
 import com.example.scrollbooker.ui.theme.headlineMedium
 
 @Composable
@@ -49,6 +49,6 @@ fun BusinessAboutTab() {
 
         Spacer(Modifier.height(SpacingXL))
 
-        UserScheduleSheet()
+        //UserScheduleSheet()
     }
 }

@@ -31,8 +31,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -46,11 +46,11 @@ import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.search.components.SearchHeader
 import com.example.scrollbooker.ui.search.components.SearchMap
 import com.example.scrollbooker.ui.search.components.SearchSheetHeader
+import com.example.scrollbooker.ui.theme.Background
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
-//private val CollapsedHeightDp = 150.dp
 private const val HALF_FRACTION = 0.7f
 enum class SheetStage { Collapsed, HalfExpanded, Expanded }
 
@@ -157,7 +157,7 @@ fun SearchScreen(
                         .height(availableHeightDp)
                         .offset { IntOffset(x = 0, y = offset.value.roundToInt()) }
                         .background(
-                            color = Color.White,
+                            color = Background,
                             shape = RoundedCornerShape(
                                 topStart = BasePadding,
                                 topEnd = BasePadding

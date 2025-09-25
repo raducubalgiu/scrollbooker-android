@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.components.myProfile
+package com.example.scrollbooker.ui.profile.components.userInfo.sheets
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -26,7 +26,7 @@ data class ProfileMenuItem(
 )
 
 @Composable
-fun MyProfileMenuList(
+fun ProfileMenuSheet(
     permissionsState:  FeatureState<List<PermissionEnum>>,
     onNavigateToMyBusiness: () -> Unit,
     onNavigateToSettings: () -> Unit,
