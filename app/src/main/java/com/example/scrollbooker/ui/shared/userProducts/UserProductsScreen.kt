@@ -18,6 +18,7 @@ import com.example.scrollbooker.components.core.avatar.AvatarWithRating
 import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
+import com.example.scrollbooker.ui.shared.modules.products.UserProductsServiceTabs
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.titleMedium
 
@@ -58,9 +59,10 @@ fun UserProductsScreen(
             color = Divider,
             thickness = 0.55.dp
         )
-//        UserProductsServiceTabs(
-//            userId = userId,
-//            onNavigateToCalendar = onNavigateToCalendar
-//        )
+        UserProductsServiceTabs(
+            userId = userId,
+            onNavigateToCalendar = onNavigateToCalendar,
+            paddingTop = 0.dp
+        )
     }
 }

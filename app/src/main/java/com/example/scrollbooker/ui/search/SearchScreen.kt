@@ -19,10 +19,15 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -30,24 +35,38 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.media3.common.util.UnstableApi
 import com.example.scrollbooker.R
+import com.example.scrollbooker.components.core.sheet.Sheet
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.navigation.routes.MainRoute
+import com.example.scrollbooker.ui.search.components.SearchBusinessCard
 import com.example.scrollbooker.ui.search.components.SearchHeader
-import com.example.scrollbooker.ui.search.components.SearchMap
 import com.example.scrollbooker.ui.search.components.SearchSheetHeader
+import com.example.scrollbooker.ui.search.components.ServiceUiModel
 import com.example.scrollbooker.ui.theme.Background
+import com.example.scrollbooker.ui.theme.titleMedium
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -62,6 +81,61 @@ fun SheetStage.targetOffsetPx(totalHeightPx: Float, collapsedHeightPx: Float): F
     }
 }
 
+data class SearchBusinessCardModel(
+    val id: Int,
+    val title: String,
+    val url: String,
+    val coverUrl: String
+)
+
+val dummyBusinesses = listOf(
+    SearchBusinessCardModel(
+        id=1,
+        title="Video 1",
+        url = "https://media.scrollbooker.ro/business-video-1.mp4",
+        coverUrl = "https://media.scrollbooker.ro/business-video-1-cover.jpeg"
+    ),
+    SearchBusinessCardModel(
+        id=2, title="Video 2",
+        url = "https://media.scrollbooker.ro/business-video-2.mp4",
+        coverUrl = "https://media.scrollbooker.ro/business-video-2-cover.jpeg"
+    ),
+    SearchBusinessCardModel(
+        id=3, title="Video 3",
+        url = "https://media.scrollbooker.ro/business-video-3.mp4",
+        coverUrl = "https://media.scrollbooker.ro/business-video-3-cover.jpeg"
+    ),
+    SearchBusinessCardModel(
+        id=4, title="Video 4",
+        url = "https://media.scrollbooker.ro/business-video-4.mp4",
+        coverUrl = "https://media.scrollbooker.ro/business-video-4-cover.jpeg"
+    ),
+    SearchBusinessCardModel(
+        id=5,
+        title="Video 5",
+        url = "https://media.scrollbooker.ro/business-video-5.mp4",
+        coverUrl = "https://media.scrollbooker.ro/business-video-5-cover.jpeg"
+    ),
+    SearchBusinessCardModel(
+        id=6,
+        title="Video 6",
+        url = "https://media.scrollbooker.ro/business-video-6.mp4",
+        coverUrl = "https://media.scrollbooker.ro/business-video-6-cover.jpeg"
+    ),
+    SearchBusinessCardModel(
+        id=7,
+        title="Video 7",
+        url = "https://media.scrollbooker.ro/business-video-7.mp4",
+        coverUrl = "https://media.scrollbooker.ro/business-video-7-cover.jpeg"
+    ),
+    SearchBusinessCardModel(
+        id=8, title="Video 8",
+        url = "https://media.scrollbooker.ro/business-video-8.mp4",
+        coverUrl = "https://media.scrollbooker.ro/business-video-8-cover.jpeg"
+    ),
+)
+
+@androidx.annotation.OptIn(UnstableApi::class)
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,8 +145,30 @@ fun SearchScreen(
     appointmentsNumber: Int,
     onChangeTab: (MainTab) -> Unit
 ) {
-    val selectedBusinessType by viewModel.selectedBusinessType.collectAsState()
-    var stage by remember { mutableStateOf(SheetStage.Collapsed) }
+    val videoViewModel: SearchPlayerViewModel = hiltViewModel()
+
+    val scope = rememberCoroutineScope()
+    var stage by rememberSaveable { mutableStateOf(SheetStage.HalfExpanded) }
+    val isMapReady by viewModel.isMapReady.collectAsState()
+
+    val sheetState = rememberModalBottomSheetState()
+
+    if(sheetState.isVisible) {
+        Sheet(
+            sheetState = sheetState,
+            onClose = { scope.launch { sheetState.hide() } }
+        ) {
+            Text("Hello World")
+            Text("Hello World")
+            Text("Hello World")
+            Text("Hello World")
+            Text("Hello World")
+            Text("Hello World")
+            Text("Hello World")
+            Text("Hello World")
+            Text("Hello World")
+        }
+        }
 
     Scaffold(
         bottomBar = {
@@ -86,7 +182,6 @@ fun SearchScreen(
     ) { innerPadding ->
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
             val density = LocalDensity.current
-            val scope = rememberCoroutineScope()
 
             val bottomBarPadDp = innerPadding.calculateBottomPadding()
             var headerHeightDp by remember { mutableStateOf(0.dp) }
@@ -134,7 +229,7 @@ fun SearchScreen(
             }
 
             Box(Modifier.fillMaxSize()) {
-                SearchMap()
+                //MapSearch(viewModel = viewModel)
 
                 SearchHeader(
                     modifier = Modifier
@@ -144,7 +239,7 @@ fun SearchScreen(
                             headerHeightDp = (measured + innerPadding.calculateTopPadding())
                                 .coerceAtLeast(0.dp)
                         },
-                    headline = selectedBusinessType?.name ?: stringResource(R.string.allServices),
+                    headline = stringResource(R.string.allServices),
                     subHeadline = stringResource(R.string.anytimeAnyHour),
                     sheetValue = stage,
                     onMapToggle = onMapToggle
@@ -153,8 +248,8 @@ fun SearchScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = headerHeightDp)
-                        .height(availableHeightDp)
+                        .padding(top = headerHeightDp + BasePadding)
+                        .height(availableHeightDp - BasePadding)
                         .offset { IntOffset(x = 0, y = offset.value.roundToInt()) }
                         .background(
                             color = Background,
@@ -180,8 +275,8 @@ fun SearchScreen(
                                     .minBy { (_, px) -> abs(px - current) }
                                 val idx = candidates.indexOf(nearest.first)
 
-                                val shouldGoNext = velocity < -1000 && idx < candidates.lastIndex
-                                val shouldGoBack = velocity > 1000 && idx > 0
+                                val shouldGoNext = velocity < -500 && idx < candidates.lastIndex
+                                val shouldGoBack = velocity > 500 && idx > 0
 
                                 val target = when {
                                     shouldGoNext -> candidates[idx + 1]
@@ -197,18 +292,79 @@ fun SearchScreen(
 
                 ) {
                     Column(modifier = Modifier.fillMaxSize()) {
-                        SearchSheetHeader(onMeasured = { collapsedHeightDp = it })
+                        SearchSheetHeader(
+                            onMeasured = { collapsedHeightDp = it + BasePadding },
+                            onClick = {
+                                scope.launch { sheetState.show() }
+                            }
+                        )
+
+                        val listState = rememberLazyListState()
+
+                        LaunchedEffect(listState) {
+                            val idleFlow = snapshotFlow { !listState.isScrollInProgress }
+                            val visibleIdFlow = snapshotFlow { listState.mostVisibleKey<Int>() }
+
+                            combine(idleFlow, visibleIdFlow) { idle, id -> idle to id }
+                                .filter { (idle, id) -> idle && id != null }
+                                .map { (_, id) -> id!! }
+                                .distinctUntilChanged()
+                                .collect { id ->
+                                    val item = dummyBusinesses.find { it.id == id }
+
+                                    if (item != null) {
+                                        videoViewModel.play(item.id, item.url)
+                                    } else {
+                                        videoViewModel.pause()
+                                    }
+                                }
+                        }
 
                         LazyColumn(
+                            state = listState,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .weight(1f),
                             userScrollEnabled = stage == SheetStage.Expanded,
-                            contentPadding = PaddingValues(bottom = BasePadding)
+                            contentPadding = PaddingValues(bottom = BasePadding),
+                            overscrollEffect = null
                         ) {
-                            items(100) {
+                            item {
+                                Box(modifier = Modifier
+                                    .fillMaxWidth(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        modifier = Modifier
+                                            .padding(bottom = SpacingM),
+                                        text = "200 de rezultate",
+                                        style = titleMedium,
+                                        color = Color.Gray
+                                    )
+                                }
+                            }
+
+                            items(
+                                items = dummyBusinesses,
+                                key = { it.id }
+                            ) { v ->
                                 Box(Modifier.fillMaxWidth()) {
-                                    Text("BusinessProfile")
+                                    SearchBusinessCard(
+                                        viewModel = videoViewModel,
+                                        //imageUrl = "https://picsum.photos/600/300",
+                                        id = v.id,
+                                        url = v.url,
+                                        coverUrl = v.coverUrl,
+                                        name = "Ida Spa Dorobanti",
+                                        rating = 5.0,
+                                        reviews = 4327,
+                                        location = "Sector 1, București",
+                                        services = listOf(
+                                            ServiceUiModel("NEW Intensive Muscle Release Massage", "1 hr - 1 hr 30 mins", 280),
+                                            ServiceUiModel("King Balinese Massage", "1 hr - 1 hr 30 mins", 280),
+                                            ServiceUiModel("Neuro Sedative Relaxing Massage", "1 hr - 1 hr 30 mins", 290),
+                                        )
+                                    )
                                 }
                             }
                         }
@@ -217,4 +373,31 @@ fun SearchScreen(
             }
         }
     }
+}
+
+inline fun <reified  K : Any> LazyListState.mostVisibleKey(): K? {
+    val info = this.layoutInfo
+    val items = info.visibleItemsInfo
+    if(items.isEmpty()) return null
+
+    val viewportStart = info.viewportStartOffset
+    val viewportEnd = info.viewportEndOffset
+
+    var bestKey: K? = null
+    var bestVisiblePx = 0
+
+    for (item in items) {
+        val key = item.key as? K ?: continue
+        val itemStart = item.offset
+        val itemEnd = item.offset + item.size
+        val visibleStart = maxOf(itemStart, viewportStart)
+        val visibleEnd = minOf(itemEnd, viewportEnd)
+        val visiblePx = (visibleEnd - visibleStart).coerceAtLeast(0)
+
+        if(visiblePx > bestVisiblePx) {
+            bestVisiblePx = visiblePx
+            bestKey = key
+        }
+    }
+    return bestKey
 }
