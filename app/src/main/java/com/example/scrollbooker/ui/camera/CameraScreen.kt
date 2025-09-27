@@ -23,13 +23,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
-import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Cameraswitch
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.PhotoCamera
-import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -37,23 +34,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingXL
+import com.example.scrollbooker.ui.camera.components.CameraActions
+import com.example.scrollbooker.ui.camera.components.CameraBackButton
+import com.example.scrollbooker.ui.camera.components.CameraBottomBar
 import com.example.scrollbooker.ui.camera.components.RecordButton
 import com.example.scrollbooker.ui.theme.BackgroundDark
-import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
-import com.example.scrollbooker.ui.theme.titleMedium
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -73,10 +66,7 @@ fun CameraScreen(
 
     // --- Permissions (modern) ---
     val permissions = remember {
-        arrayOf(
-            Manifest.permission.CAMERA,
-            Manifest.permission.RECORD_AUDIO, // necesar doar pt VIDEO_CAPTURE
-        )
+        arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
     }
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
@@ -91,15 +81,13 @@ fun CameraScreen(
     }
 
     if(!hasPerms) {
-        Box(modifier = Modifier
-            .fillMaxSize(),
+        Box(modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             Text("Nu ai permisiuni")
         }
 
         return
-        // Aici vom arata un UI de request permissions
     }
 
     // --- Camera controller ---
@@ -127,6 +115,8 @@ fun CameraScreen(
 
     var isCameraReady by remember { mutableStateOf(false) }
 
+    var isRecording by remember { mutableStateOf(false) }
+
     LaunchedEffect(Unit) {
         scope.launch {
             delay(200)
@@ -136,72 +126,7 @@ fun CameraScreen(
 
     Scaffold(
         containerColor = BackgroundDark,
-        bottomBar = {
-            Row(modifier = Modifier.fillMaxWidth().height(90.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(
-                    modifier = Modifier
-                        .height(90.dp)
-                        .padding(
-                            top = SpacingXL,
-                            start = BasePadding,
-                            end = BasePadding
-                        )
-                        .clickable {},
-                    contentAlignment = Alignment.TopCenter
-                ) {
-                    Text(
-                        text = "15s",
-                        style = titleMedium,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = Color.White,
-                        fontSize = 18.sp
-                    )
-                }
-
-                Box(
-                    modifier = Modifier
-                        .height(90.dp)
-                        .padding(
-                            top = SpacingXL,
-                            start = BasePadding,
-                            end = BasePadding
-                        )
-                        .clickable {},
-                    contentAlignment = Alignment.TopCenter
-                ) {
-                    Text(
-                        text = "30s",
-                        style = titleMedium,
-                        fontWeight = FontWeight.SemiBold,
-                        color = Divider,
-                        fontSize = 18.sp
-                    )
-                }
-
-                Box(
-                    modifier = Modifier
-                        .height(90.dp)
-                        .padding(
-                            top = SpacingXL,
-                            start = BasePadding,
-                            end = BasePadding
-                        )
-                        .clickable {},
-                    contentAlignment = Alignment.TopCenter
-                ) {
-                    Text(
-                        text = "60s",
-                        style = titleMedium,
-                        fontWeight = FontWeight.SemiBold,
-                        color = Divider,
-                        fontSize = 18.sp
-                    )
-                }
-            }
-        }
+        bottomBar = { CameraBottomBar() }
     ) { innerPadding ->
         // --- UI overlay ---
         Box(modifier = Modifier
@@ -209,39 +134,7 @@ fun CameraScreen(
             .background(BackgroundDark)
             .padding(innerPadding)
         ) {
-            Box(modifier = Modifier
-                .zIndex(5f)
-                .clickable { onBack() }
-            ) {
-                Box(
-                    modifier = Modifier.padding(BasePadding),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        modifier = Modifier.size(30.dp),
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "Back Button",
-                        tint = Color(0xFFE0E0E0),
-                    )
-                }
-            }
-
-            Box(
-                modifier = Modifier
-                    .size(50.dp)
-                    .clickable(
-                        onClick = onBack,
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBackIosNew,
-                    tint = OnBackground,
-                    contentDescription = null
-                )
-            }
+            CameraBackButton(onBack)
 
             // Compose PreviewView wrapper (dacă ai deja CameraPreview(...), folosește-l)
             if(isCameraReady) {
@@ -259,42 +152,17 @@ fun CameraScreen(
                 )
             }
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-                    .padding(24.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                IconButton(
-                    onClick = {
-                        controller.cameraSelector =
-                            if (controller.cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA)
-                                CameraSelector.DEFAULT_FRONT_CAMERA
-                            else CameraSelector.DEFAULT_BACK_CAMERA
-                    }
-                ) {
-                    Icon(Icons.Default.Cameraswitch, contentDescription = "Flip camera")
-                }
-
-                RecordButton(
-                    isRecording = true,
-                    onTap = {},
-                    onLongPress = {}
-                )
-
-                IconButton(
-                    onClick = {
-                        takePhoto(
-                            controller = controller,
-                            executor = mainExecutor,
-                            onPhotoTaken = viewModel::onTakePhoto
-                        )
-                    }
-                ) {
-                    Icon(Icons.Default.PhotoCamera, contentDescription = "Take Photo")
-                }
-            }
+            CameraActions(
+                onSwitchCamera = {
+                    controller.cameraSelector =
+                        if (controller.cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA)
+                            CameraSelector.DEFAULT_FRONT_CAMERA
+                        else CameraSelector.DEFAULT_BACK_CAMERA
+                },
+                isRecording = isRecording,
+                onRecord = { isRecording = !isRecording },
+                onLongPressRecord = {}
+            )
         }
     }
 }

@@ -82,28 +82,25 @@ fun RootNavHost(
                 enterTransition = {
                     slideInVertically(
                         animationSpec = tween(240, easing = LinearOutSlowInEasing),
-                        initialOffsetY = { full -> full } // from TOP
+                        initialOffsetY = { full -> full }
                     ) + fadeIn(animationSpec = tween(150))
                 },
                 exitTransition = {
-                    // when navigating forward from camera (rare):
                     slideOutVertically(
                         animationSpec = tween(180, easing = FastOutLinearInEasing),
-                        targetOffsetY = { full -> full / 8 } // slight push up
+                        targetOffsetY = { full -> full / 8 }
                     ) + fadeOut(animationSpec = tween(150))
                 },
                 popEnterTransition = {
-                    // returning back onto camera
                     slideInVertically(
                         animationSpec = tween(200, easing = LinearOutSlowInEasing),
                         initialOffsetY = { full -> full / 8 }
                     ) + fadeIn(animationSpec = tween(150))
                 },
                 popExitTransition = {
-                    // closing camera: slide to BOTTOM
                     slideOutVertically(
                         animationSpec = tween(260, easing = FastOutLinearInEasing),
-                        targetOffsetY = { full -> full } // to BOTTOM
+                        targetOffsetY = { full -> full }
                     ) + fadeOut(animationSpec = tween(150))
                 }
             ) { backStackEntry ->

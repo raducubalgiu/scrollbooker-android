@@ -27,7 +27,7 @@ import com.example.scrollbooker.ui.theme.Error
 @Composable
 fun RecordButton(
     modifier: Modifier = Modifier,
-    diameter: Dp = 90.dp, // <-- redenumit (era "size")
+    diameter: Dp = 90.dp,
     ringWidth: Dp = 5.dp,
     innerPadding: Dp = 6.dp,
     colorRed: Color = Error,
