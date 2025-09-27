@@ -1,4 +1,11 @@
 package com.example.scrollbooker.navigation.host
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.navigation.compose.NavHost
@@ -69,6 +76,42 @@ fun RootNavHost(
 
             // Global Routes
             globalGraph(navController = navController)
+
+            composable(
+                route = MainRoute.Camera.route,
+                enterTransition = {
+                    slideInVertically(
+                        animationSpec = tween(240, easing = LinearOutSlowInEasing),
+                        initialOffsetY = { full -> full } // from TOP
+                    ) + fadeIn(animationSpec = tween(150))
+                },
+                exitTransition = {
+                    // when navigating forward from camera (rare):
+                    slideOutVertically(
+                        animationSpec = tween(180, easing = FastOutLinearInEasing),
+                        targetOffsetY = { full -> full / 8 } // slight push up
+                    ) + fadeOut(animationSpec = tween(150))
+                },
+                popEnterTransition = {
+                    // returning back onto camera
+                    slideInVertically(
+                        animationSpec = tween(200, easing = LinearOutSlowInEasing),
+                        initialOffsetY = { full -> full / 8 }
+                    ) + fadeIn(animationSpec = tween(150))
+                },
+                popExitTransition = {
+                    // closing camera: slide to BOTTOM
+                    slideOutVertically(
+                        animationSpec = tween(260, easing = FastOutLinearInEasing),
+                        targetOffsetY = { full -> full } // to BOTTOM
+                    ) + fadeOut(animationSpec = tween(150))
+                }
+            ) { backStackEntry ->
+                CameraScreen(
+                    onBack = { navController.popBackStack() }
+                )
+            }
+
             calendarGraph(navController = navController)
             editProfileGraph(
                 navController = navController,

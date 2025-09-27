@@ -28,6 +28,7 @@ fun FeedTabs(
     selectedTabIndex: Int,
     onOpenDrawer: () -> Unit,
     onNavigateSearch: () -> Unit,
+    onNavigateToCamera: () -> Unit,
     onChangeTab: (Int) -> Unit,
 ) {
     val tabs = listOf(stringResource(R.string.following), stringResource(R.string.explore))
@@ -72,7 +73,6 @@ fun FeedTabs(
                 }
             }
         }
-
 
         Box(modifier = Modifier.clickable { onNavigateSearch() }) {
             Box(

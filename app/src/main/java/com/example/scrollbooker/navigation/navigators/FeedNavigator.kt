@@ -19,6 +19,10 @@ class FeedNavigator (
         rootNavController.navigate("${MainRoute.UserProfile.route}/${userId}")
     }
 
+    fun toCamera() {
+        rootNavController.navigate(MainRoute.Camera.route)
+    }
+
     fun toCalendar (calendarParams: NavigateCalendarParam) {
         val (userId, slotDuration, productId, productName) = calendarParams
         rootNavController.navigate(

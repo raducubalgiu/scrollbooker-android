@@ -118,6 +118,9 @@ fun FeedScreen(
                 onOpenDrawer = onOpenDrawer,
                 onNavigateSearch = {
                     feedNavigate.toFeedSearch()
+                },
+                onNavigateToCamera = {
+                    feedNavigate.toCamera()
                 }
             )
 

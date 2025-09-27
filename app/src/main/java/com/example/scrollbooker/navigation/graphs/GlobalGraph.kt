@@ -92,12 +92,6 @@ fun NavGraphBuilder.globalGraph(
             )
         }
 
-        composable(route = MainRoute.Camera.route) { backStackEntry ->
-            CameraScreen(
-                onBack = { navController.popBackStack() }
-            )
-        }
-
         composable("${MainRoute.ProfilePostDetail.route}/{postId}",
             arguments = listOf(navArgument("postId") { type = NavType.IntType })
         ) { backStackEntry ->

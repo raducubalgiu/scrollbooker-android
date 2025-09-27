@@ -4,6 +4,8 @@ android = "11.9.0"
 androidSdk = "9.5.0"
 androidSdkVersion = "11.11.0"
 annotation = "1.0.0"
+cameraCore = "1.5.0"
+cameraLifecycle = "1.5.0"
 coilCompose = "2.4.0"
 converterGson = "2.11.0"
 coreSplashscreen = "1.0.1"
@@ -40,6 +42,13 @@ timber = "5.0.1"
 android = { module = "com.mapbox.maps:android", version.ref = "android" }
 android-sdk = { module = "org.maplibre.gl:android-sdk", version.ref = "androidSdk" }
 android-sdk-v11110 = { module = "org.maplibre.gl:android-sdk", version.ref = "androidSdkVersion" }
+androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraCore" }
+androidx-camera-core = { module = "androidx.camera:camera-core", version.ref = "cameraCore" }
+androidx-camera-extensions = { module = "androidx.camera:camera-extensions", version.ref = "cameraCore" }
+androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraLifecycle" }
+androidx-camera-mlkit-vision = { module = "androidx.camera:camera-mlkit-vision", version.ref = "cameraCore" }
+androidx-camera-video = { module = "androidx.camera:camera-video", version.ref = "cameraCore" }
+androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "cameraCore" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferencesCore" }
