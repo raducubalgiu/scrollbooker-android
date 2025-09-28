@@ -1,18 +1,21 @@
 package com.example.scrollbooker.ui.onboarding.business
 
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.FormLayout
 import com.example.scrollbooker.ui.myBusiness.myBusinessLocation.MyBusinessLocationViewModel
 
 @Composable
-fun MyBusinessGalleryScreen(
+fun CollectBusinessGalleryScreen(
     viewModel: MyBusinessLocationViewModel,
     onBack: () -> Unit,
     onNext: () -> Unit
 ) {
     FormLayout(
+        modifier = Modifier.safeDrawingPadding(),
         headLine = stringResource(R.string.photoGallery),
         subHeadLine = stringResource(R.string.photoGalleryDescription),
         buttonTitle = stringResource(R.string.nextStep),

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.onboarding.shared.collectLocationPermission
+package com.example.scrollbooker.ui.onboarding.shared
 import androidx.lifecycle.ViewModel
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading

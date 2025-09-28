@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.onboarding.client.collectBirthdate
+package com.example.scrollbooker.ui.onboarding.client
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -49,6 +50,7 @@ fun CollectClientBirthDateScreen(
     val isLoading = isSaving is FeatureState.Loading
 
     FormLayout(
+        modifier = Modifier.safeDrawingPadding(),
         headLine = stringResource(R.string.dateOfBirth),
         subHeadLine = stringResource(R.string.dateOfBirthLabelDescription),
         buttonTitle = stringResource(R.string.nextStep),

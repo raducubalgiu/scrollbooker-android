@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.onboarding.client.collectGender
+package com.example.scrollbooker.ui.onboarding.client
 
 import androidx.lifecycle.ViewModel
 import com.example.scrollbooker.core.enums.GenderTypeEnum
@@ -6,9 +6,7 @@ import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectClientGenderUseCase
-import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateGenderUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import timber.log.Timber

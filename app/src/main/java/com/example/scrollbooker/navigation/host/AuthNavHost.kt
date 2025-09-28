@@ -15,11 +15,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.navigation
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.auth.data.remote.RoleNameEnum
+import com.example.scrollbooker.navigation.graphs.onBoardingGraph
 import com.example.scrollbooker.navigation.routes.AuthRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
@@ -30,26 +30,18 @@ import com.example.scrollbooker.ui.auth.AuthViewModel
 import com.example.scrollbooker.ui.auth.LoginScreen
 import com.example.scrollbooker.ui.auth.RegisterBusinessScreen
 import com.example.scrollbooker.ui.auth.RegisterClientScreen
-import com.example.scrollbooker.ui.myBusiness.myBusinessLocation.MyBusinessLocationScreen
 import com.example.scrollbooker.ui.myBusiness.myBusinessLocation.MyBusinessLocationViewModel
 import com.example.scrollbooker.ui.myBusiness.mySchedules.MySchedulesViewModel
 import com.example.scrollbooker.ui.myBusiness.mySchedules.SchedulesScreen
 import com.example.scrollbooker.ui.myBusiness.myServices.MyServicesViewModel
+import com.example.scrollbooker.ui.onboarding.business.CollectBusinessDetailsScreen
+import com.example.scrollbooker.ui.onboarding.business.CollectBusinessGalleryScreen
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessHasEmployeesScreen
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessHasEmployeesViewModel
+import com.example.scrollbooker.ui.onboarding.business.CollectBusinessLocationScreen
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessTypeScreen
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessValidationScreen
-import com.example.scrollbooker.ui.onboarding.business.MyBusinessDetailsScreen
-import com.example.scrollbooker.ui.onboarding.business.MyBusinessGalleryScreen
-import com.example.scrollbooker.ui.onboarding.client.collectBirthdate.CollectClientBirthDateScreen
-import com.example.scrollbooker.ui.onboarding.client.collectBirthdate.CollectClientBirthDateViewModel
-import com.example.scrollbooker.ui.onboarding.client.collectGender.CollectClientGenderScreen
-import com.example.scrollbooker.ui.onboarding.client.collectGender.CollectClientGenderViewModel
-import com.example.scrollbooker.ui.onboarding.shared.collectEmailVerification.CollectEmailVerificationScreen
-import com.example.scrollbooker.ui.onboarding.shared.collectLocationPermission.CollectClientLocationPermissionScreen
-import com.example.scrollbooker.ui.onboarding.shared.collectLocationPermission.CollectClientLocationPermissionViewModel
-import com.example.scrollbooker.ui.onboarding.shared.collectUsername.CollectUserUsernameScreen
-import com.example.scrollbooker.ui.onboarding.shared.collectUsername.CollectUserUsernameViewModel
+import com.example.scrollbooker.ui.onboarding.shared.CollectEmailVerificationScreen
 import kotlinx.coroutines.launch
 
 enum class AuthTypeEnum {
@@ -145,66 +137,10 @@ fun AuthNavHost(authViewModel: AuthViewModel) {
                 )
             }
 
-            composable(AuthRoute.CollectUserUsername.route) { backStackEntry ->
-                val viewModel: CollectUserUsernameViewModel = hiltViewModel(backStackEntry)
-
-                CollectUserUsernameScreen(
-                    viewModel = viewModel,
-                    onSubmit = {
-                        coroutineScope.launch {
-                            val authState = viewModel.collectUserUsername(newUsername = it)
-                            if(authState != null) {
-                                authViewModel.updateAuthState(authState)
-                            }
-                        }
-                    }
-                )
-            }
-
-            composable(AuthRoute.CollectClientBirthDate.route) { backStackEntry ->
-                val viewModel: CollectClientBirthDateViewModel = hiltViewModel(backStackEntry)
-
-                CollectClientBirthDateScreen(
-                    viewModel = viewModel,
-                    onNext = {
-                        navController.currentBackStackEntry?.lifecycleScope?.launch {
-                            val authState = viewModel.collectUserBirthDate()
-
-                            authState.onSuccess { authViewModel.updateAuthState(it) }
-                        }
-                    }
-                )
-            }
-
-            composable(AuthRoute.CollectClientGender.route) { backStackEntry ->
-                val viewModel: CollectClientGenderViewModel = hiltViewModel(backStackEntry)
-
-                CollectClientGenderScreen(
-                    viewModel = viewModel,
-                    onNext = {
-                        navController.currentBackStackEntry?.lifecycleScope?.launch {
-                            val authState = viewModel.collectUserGender(it)
-
-                            authState.onSuccess { authViewModel.updateAuthState(it) }
-                        }
-                    }
-                )
-            }
-
-            composable(AuthRoute.CollectClientLocationPermission.route) { backStackEntry ->
-                val viewModel: CollectClientLocationPermissionViewModel = hiltViewModel(backStackEntry)
-
-                CollectClientLocationPermissionScreen(
-                    viewModel = viewModel,
-                    onNext = {
-                        navController.currentBackStackEntry?.lifecycleScope?.launch {
-                            val authState = viewModel.collectLocationPermission()
-
-                            authState.onSuccess { authViewModel.updateAuthState(it) }
-                        }
-                    }
-                )
-            }
+            onBoardingGraph(
+                navController = navController,
+                authViewModel = authViewModel
+            )
 
             navigation(
                 route = AuthRoute.CollectBusiness.route,
@@ -228,7 +164,7 @@ fun AuthNavHost(authViewModel: AuthViewModel) {
                     }
                     val viewModel: MyBusinessLocationViewModel = hiltViewModel(parentEntry)
 
-                    MyBusinessDetailsScreen(
+                    CollectBusinessDetailsScreen(
                         viewModel = viewModel,
                         onBack = { navController.popBackStack() },
                         onNext = { navController.navigate(AuthRoute.CollectBusinessLocation.route) }
@@ -241,7 +177,7 @@ fun AuthNavHost(authViewModel: AuthViewModel) {
                     }
                     val viewModel: MyBusinessLocationViewModel = hiltViewModel(parentEntry)
 
-                    MyBusinessLocationScreen(
+                    CollectBusinessLocationScreen(
                         viewModel = viewModel,
                         onBack = { navController.popBackStack() },
                         onNextOrSave = {
@@ -256,7 +192,7 @@ fun AuthNavHost(authViewModel: AuthViewModel) {
                     }
                     val viewModel: MyBusinessLocationViewModel = hiltViewModel(parentEntry)
 
-                    MyBusinessGalleryScreen(
+                    CollectBusinessGalleryScreen(
                         viewModel = viewModel,
                         onBack = { navController.popBackStack() },
                         onNext = {

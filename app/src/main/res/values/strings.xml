@@ -254,4 +254,5 @@
     <string name="lastMinute">Last Minute</string>
     <string name="sale">Reducere</string>
     <string name="createPost">Creează o postare</string>
+    <string name="searchAddress">Caută adresa</string>
 </resources>

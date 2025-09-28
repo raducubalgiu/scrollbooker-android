@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -35,6 +36,7 @@ fun CollectBusinessTypeScreen(
     val selectedBusinessType by viewModel.selectedBusinessType.collectAsState()
 
     FormLayout(
+        modifier = Modifier.safeDrawingPadding(),
         enableBack = false,
         isEnabled = selectedBusinessType != null,
         headLine = stringResource(id = R.string.collectBusinessTypeHeadline),
@@ -72,9 +74,7 @@ fun CollectBusinessTypeScreen(
 
                     InputRadio(
                         selected = selected,
-                        onSelect = {
-                            viewModel.setBusinessType(businessType)
-                        },
+                        onSelect = { viewModel.setBusinessType(businessType) },
                         headLine = businessType.name
                     )
 

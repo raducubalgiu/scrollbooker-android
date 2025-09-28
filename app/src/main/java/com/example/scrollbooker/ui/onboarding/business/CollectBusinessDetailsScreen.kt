@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -23,7 +24,7 @@ import com.example.scrollbooker.ui.myBusiness.myBusinessLocation.MyBusinessLocat
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
-fun MyBusinessDetailsScreen(
+fun CollectBusinessDetailsScreen(
     viewModel: MyBusinessLocationViewModel,
     onBack: () -> Unit,
     onNext: () -> Unit
@@ -40,6 +41,7 @@ fun MyBusinessDetailsScreen(
     val isEnabled = !name.isEmpty() && isNameValid && isDescriptionValid
 
     FormLayout(
+        modifier = Modifier.safeDrawingPadding(),
         headLine = stringResource(R.string.locationPresentation),
         subHeadLine = stringResource(R.string.locationPresentationDescription),
         onBack = onBack,

@@ -8,15 +8,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.buttons.MainButton
+import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
+import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.headlineLarge
@@ -44,7 +49,8 @@ fun FormLayout(
         enablePaddingH = false,
         enableBack = enableBack
     ) {
-        Column(Modifier.fillMaxSize(),
+        Column(
+            modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column(Modifier.weight(1f)) {
@@ -66,8 +72,16 @@ fun FormLayout(
                 Spacer(Modifier.height(BasePadding))
                 content()
             }
-            if(enableBottomAction) {
-                Column(Modifier.fillMaxWidth()) {
+            if (enableBottomAction) {
+                HorizontalDivider(
+                    color = Divider,
+                    thickness = 0.55.dp
+                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = BasePadding)
+                ) {
                     MainButton(
                         modifier = Modifier.padding(
                             horizontal = SpacingXXL
