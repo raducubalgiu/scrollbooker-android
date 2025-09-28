@@ -15,5 +15,5 @@ interface SchedulesApiService {
     @PUT("schedules")
     suspend fun updateSchedules(
         @Body schedules: List<ScheduleDto>
-    ): AuthStateDto
+    ): List<ScheduleDto>
 }

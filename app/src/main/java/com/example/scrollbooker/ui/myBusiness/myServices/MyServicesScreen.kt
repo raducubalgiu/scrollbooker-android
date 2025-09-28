@@ -42,40 +42,34 @@ fun MyServicesScreen(
     val isLoading = isSaving is FeatureState.Loading
     val isEnabled = !isLoading && selectedIds.isNotEmpty() && selectedIds != defaultSelectedIds
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .statusBarsPadding()
+    FormLayout(
+        headLine = stringResource(id = R.string.services),
+        subHeadLine = stringResource(id = R.string.addYourBusinessServices),
+        buttonTitle = buttonTitle,
+        onBack = onBack,
+        onNext = onNextOrSave,
+        isEnabled = isEnabled,
+        isLoading = isLoading
     ) {
-        FormLayout(
-            modifier = Modifier.safeDrawingPadding(),
-            headLine = stringResource(id = R.string.services),
-            subHeadLine = stringResource(id = R.string.addYourBusinessServices),
-            buttonTitle = buttonTitle,
-            onBack = onBack,
-            onNext = onNextOrSave,
-            isEnabled = isEnabled,
-            isLoading = isLoading
-        ) {
-            when (val result = state) {
-                is FeatureState.Loading -> LoadingScreen()
-                is FeatureState.Error -> ErrorScreen()
-                is FeatureState.Success -> {
-                    LazyColumn {
-                        itemsIndexed(result.data) { index, service ->
-                            InputCheckbox(
-                                checked = service.id in selectedIds,
-                                onCheckedChange = { viewModel.toggleService(service.id) },
-                                headLine = service.name
+        when (val result = state) {
+            is FeatureState.Loading -> LoadingScreen()
+            is FeatureState.Error -> ErrorScreen()
+            is FeatureState.Success -> {
+                LazyColumn {
+                    itemsIndexed(result.data) { index, service ->
+                        InputCheckbox(
+                            checked = service.id in selectedIds,
+                            onCheckedChange = { viewModel.toggleService(service.id) },
+                            headLine = service.name
+                        )
+                        if(index < result.data.lastIndex) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = SpacingXXL)
+                                    .height(0.55.dp)
+                                    .background(Divider.copy(alpha = 0.5f))
                             )
-                            if(index < result.data.lastIndex) {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = SpacingXXL)
-                                        .height(0.55.dp)
-                                        .background(Divider.copy(alpha = 0.5f))
-                                )
-                            }
                         }
                     }
                 }

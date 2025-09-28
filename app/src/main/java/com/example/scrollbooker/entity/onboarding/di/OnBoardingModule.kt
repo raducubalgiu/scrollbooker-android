@@ -4,6 +4,7 @@ import com.example.scrollbooker.core.util.Constants
 import com.example.scrollbooker.entity.onboarding.data.remote.OnboardingApiService
 import com.example.scrollbooker.entity.onboarding.data.repository.OnboardingRepositoryImpl
 import com.example.scrollbooker.entity.onboarding.domain.repository.OnboardingRepository
+import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectBusinessSchedulesUseCase
 import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectClientBirthDateUseCase
 import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectClientGenderUseCase
 import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectUserLocationPermissionUseCase
@@ -67,5 +68,13 @@ object BusinessModule {
         repository: OnboardingRepository,
     ): CollectUserLocationPermissionUseCase {
         return CollectUserLocationPermissionUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCollectBusinessSchedulesUseCase(
+        repository: OnboardingRepository,
+    ): CollectBusinessSchedulesUseCase {
+        return CollectBusinessSchedulesUseCase(repository)
     }
 }

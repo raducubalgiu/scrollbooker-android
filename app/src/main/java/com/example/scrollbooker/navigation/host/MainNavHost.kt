@@ -41,9 +41,9 @@ val MainTabSaver: Saver<MainTab, String> = Saver(
 @Composable
 fun MainNavHost(
     authViewModel: AuthViewModel,
-    myProfileViewModel: MyProfileViewModel,
     rootNavController: NavHostController
 ) {
+    val myProfileViewModel: MyProfileViewModel = hiltViewModel()
     val feedViewModel: FeedScreenViewModel = hiltViewModel()
 
     val mainViewModel: MainUIViewModel = hiltViewModel()

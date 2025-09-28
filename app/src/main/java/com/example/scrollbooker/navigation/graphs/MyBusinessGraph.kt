@@ -36,8 +36,8 @@ import com.example.scrollbooker.ui.myBusiness.myProducts.AddProductScreen
 import com.example.scrollbooker.ui.myBusiness.myProducts.EditProductScreen
 import com.example.scrollbooker.ui.myBusiness.myProducts.MyProductsScreen
 import com.example.scrollbooker.ui.myBusiness.myProducts.MyProductsViewModel
+import com.example.scrollbooker.ui.myBusiness.mySchedules.MySchedulesScreen
 import com.example.scrollbooker.ui.myBusiness.mySchedules.MySchedulesViewModel
-import com.example.scrollbooker.ui.myBusiness.mySchedules.SchedulesScreen
 import com.example.scrollbooker.ui.myBusiness.myServices.MyServicesViewModel
 import kotlinx.coroutines.launch
 
@@ -263,7 +263,7 @@ fun NavGraphBuilder.myBusinessGraph(
             val viewModel = hiltViewModel<MySchedulesViewModel>(backStackEntry)
             val coroutineScope = rememberCoroutineScope()
 
-            SchedulesScreen(
+            MySchedulesScreen(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
                 onNextOrSave = {

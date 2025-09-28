@@ -2,6 +2,8 @@ package com.example.scrollbooker.entity.onboarding.data.repository
 
 import com.example.scrollbooker.entity.auth.data.mappers.toDomain
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
+import com.example.scrollbooker.entity.booking.schedule.data.mappers.toDto
+import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
 import com.example.scrollbooker.entity.onboarding.data.remote.OnboardingApiService
 import com.example.scrollbooker.entity.onboarding.domain.repository.OnboardingRepository
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateBirthDateRequest
@@ -29,5 +31,9 @@ class OnboardingRepositoryImpl @Inject constructor(
 
     override suspend fun collectUserLocationPermission(): AuthState {
         return apiService.collectUserLocationPermission().toDomain()
+    }
+
+    override suspend fun collectBusinessSchedules(schedules: List<Schedule>): AuthState {
+        return apiService.collectBusinessSchedules(schedules.toDto()).toDomain()
     }
 }

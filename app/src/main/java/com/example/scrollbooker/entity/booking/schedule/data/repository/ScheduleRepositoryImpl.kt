@@ -15,7 +15,7 @@ class ScheduleRepositoryImpl @Inject constructor(
         return api.getSchedules(userId).map { it.toDomain() }
     }
 
-    override suspend fun updateSchedules(schedules: List<Schedule>): AuthState {
+    override suspend fun updateSchedules(schedules: List<Schedule>): List<Schedule> {
         return api.updateSchedules(schedules.toDto()).toDomain()
     }
 

@@ -52,7 +52,6 @@ fun MyProductsScreen(
     val servicesState by viewModel.servicesState.collectAsState()
 
     Layout(
-        modifier = Modifier.statusBarsPadding(),
         headerTitle = stringResource(R.string.myProducts),
         header = {
             HeaderEdit(

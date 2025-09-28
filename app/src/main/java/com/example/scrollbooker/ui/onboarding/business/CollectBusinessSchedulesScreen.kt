@@ -1,4 +1,5 @@
-package com.example.scrollbooker.ui.myBusiness.mySchedules
+package com.example.scrollbooker.ui.onboarding.business
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,13 +18,13 @@ import com.example.scrollbooker.components.core.layout.FormLayout
 import com.example.scrollbooker.core.snackbar.SnackbarManager
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
-import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.components.core.layout.LoadingScreen
+import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.ui.myBusiness.mySchedules.components.ScheduleRow
 
 @Composable
-fun MySchedulesScreen(
-    viewModel: MySchedulesViewModel,
+fun CollectBusinessSchedulesScreen(
+    viewModel: CollectBusinessSchedulesViewModel,
     onBack: () -> Unit,
     onNextOrSave: () -> Unit
 ) {
@@ -34,7 +35,7 @@ fun MySchedulesScreen(
         modifier = Modifier.safeDrawingPadding(),
         headLine = stringResource(R.string.schedule),
         subHeadLine = stringResource(R.string.scheduleSubheaderDescription),
-        buttonTitle = stringResource(R.string.save),
+        buttonTitle = stringResource(R.string.nextStep),
         isEnabled = isSaving != FeatureState.Loading,
         isLoading = isSaving is FeatureState.Loading,
         onBack = onBack,
@@ -43,6 +44,7 @@ fun MySchedulesScreen(
         Column(modifier = Modifier
             .fillMaxSize()
             .padding(
+                vertical = BasePadding,
                 horizontal = SpacingXXL
             )
         ) {

@@ -14,14 +14,14 @@ import com.example.scrollbooker.navigation.routes.AuthRoute
 import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessServices.MyServicesScreen
 import com.example.scrollbooker.ui.auth.AuthViewModel
 import com.example.scrollbooker.ui.myBusiness.myBusinessLocation.MyBusinessLocationViewModel
-import com.example.scrollbooker.ui.myBusiness.mySchedules.MySchedulesViewModel
-import com.example.scrollbooker.ui.myBusiness.mySchedules.SchedulesScreen
 import com.example.scrollbooker.ui.myBusiness.myServices.MyServicesViewModel
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessDetailsScreen
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessGalleryScreen
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessHasEmployeesScreen
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessHasEmployeesViewModel
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessLocationScreen
+import com.example.scrollbooker.ui.onboarding.business.CollectBusinessSchedulesScreen
+import com.example.scrollbooker.ui.onboarding.business.CollectBusinessSchedulesViewModel
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessTypeScreen
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessValidationScreen
 import com.example.scrollbooker.ui.onboarding.client.CollectClientBirthDateScreen
@@ -192,9 +192,9 @@ fun NavGraphBuilder.onBoardingGraph(
 
     composable(AuthRoute.CollectBusinessSchedules.route) { backStackEntry ->
         val scope = rememberCoroutineScope()
-        val viewModel: MySchedulesViewModel = hiltViewModel(backStackEntry)
+        val viewModel: CollectBusinessSchedulesViewModel = hiltViewModel(backStackEntry)
 
-        SchedulesScreen(
+        CollectBusinessSchedulesScreen(
             viewModel = viewModel,
             onBack = { navController.navigate(AuthRoute.CollectBusinessServices.route) },
             onNextOrSave = {
