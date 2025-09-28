@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
@@ -42,7 +41,7 @@ fun CollectClientGenderScreen(
     val isLoading = isSaving is FeatureState.Loading
 
     FormLayout(
-        modifier = Modifier.safeDrawingPadding(),
+        modifier = Modifier.padding(top = 50.dp),
         headLine = stringResource(R.string.chooseYourGender),
         subHeadLine = stringResource(R.string.genderLabelDescription),
         buttonTitle = stringResource(R.string.nextStep),

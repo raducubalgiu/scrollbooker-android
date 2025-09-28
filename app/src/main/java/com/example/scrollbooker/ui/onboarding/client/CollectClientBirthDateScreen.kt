@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -21,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.inputs.InputSelect
 import com.example.scrollbooker.components.core.inputs.Option
@@ -50,7 +50,7 @@ fun CollectClientBirthDateScreen(
     val isLoading = isSaving is FeatureState.Loading
 
     FormLayout(
-        modifier = Modifier.safeDrawingPadding(),
+        modifier = Modifier.padding(top = 50.dp),
         headLine = stringResource(R.string.dateOfBirth),
         subHeadLine = stringResource(R.string.dateOfBirthLabelDescription),
         buttonTitle = stringResource(R.string.nextStep),
@@ -124,6 +124,7 @@ fun CollectClientBirthDateScreen(
                     onValueChange = { viewModel.setSelectedDay(it) }
                 )
             }
+
             Spacer(Modifier.width(SpacingS))
 
             Column(Modifier.weight(0.35f)) {
@@ -134,6 +135,7 @@ fun CollectClientBirthDateScreen(
                     onValueChange = { viewModel.setSelectedMonth(it) }
                 )
             }
+
             Spacer(Modifier.width(SpacingS))
 
             Column(Modifier.weight(0.35f)) {
@@ -149,8 +151,7 @@ fun CollectClientBirthDateScreen(
         Spacer(Modifier.height(SpacingXXL))
 
         Column(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

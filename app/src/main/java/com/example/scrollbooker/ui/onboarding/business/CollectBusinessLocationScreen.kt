@@ -45,7 +45,6 @@ fun CollectBusinessLocationScreen(
     val selectedAddress by viewModel.selectedBusinessAddress.collectAsState()
 
     FormLayout(
-        modifier = Modifier.safeDrawingPadding(),
         headLine = stringResource(id = R.string.locationAddress),
         subHeadLine = stringResource(id = R.string.addYourBusinessLocation),
         buttonTitle = stringResource(id = R.string.nextStep),

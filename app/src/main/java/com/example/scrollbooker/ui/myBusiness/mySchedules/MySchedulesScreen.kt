@@ -31,7 +31,6 @@ fun MySchedulesScreen(
     val isSaving by viewModel.isSaving.collectAsState()
 
     FormLayout(
-        modifier = Modifier.safeDrawingPadding(),
         headLine = stringResource(R.string.schedule),
         subHeadLine = stringResource(R.string.scheduleSubheaderDescription),
         buttonTitle = stringResource(R.string.save),

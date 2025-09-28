@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
@@ -32,7 +31,6 @@ fun CollectBusinessSchedulesScreen(
     val isSaving by viewModel.isSaving.collectAsState()
 
     FormLayout(
-        modifier = Modifier.safeDrawingPadding(),
         headLine = stringResource(R.string.schedule),
         subHeadLine = stringResource(R.string.scheduleSubheaderDescription),
         buttonTitle = stringResource(R.string.nextStep),
