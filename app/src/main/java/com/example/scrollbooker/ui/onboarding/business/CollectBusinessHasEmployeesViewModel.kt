@@ -8,6 +8,7 @@ import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.booking.business.domain.model.Business
 import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessByUserUseCase
 import com.example.scrollbooker.entity.booking.business.domain.useCase.UpdateBusinessHasEmployeesUseCase
+import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectBusinessHasEmployeesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CollectBusinessHasEmployeesViewModel @Inject constructor(
     private val getBusinessByUserUseCase: GetBusinessByUserUseCase,
-    private val updateBusinessHasEmployeesUseCase: UpdateBusinessHasEmployeesUseCase
+    private val collectBusinessHasEmployeesUseCase: CollectBusinessHasEmployeesUseCase
 ): ViewModel() {
 
     private val _businessState = MutableStateFlow<FeatureState<Business>>(FeatureState.Loading)
@@ -52,12 +53,14 @@ class CollectBusinessHasEmployeesViewModel @Inject constructor(
         val business = (_businessState.value as? FeatureState.Success)?.data
 
         return if(business?.hasEmployees != null) {
-            val response = withVisibleLoading { updateBusinessHasEmployeesUseCase(business.hasEmployees) }
+            val response = withVisibleLoading {
+                collectBusinessHasEmployeesUseCase(business.hasEmployees)
+            }
 
             response
                 .onFailure { error ->
                     _isSaving.value = FeatureState.Error(error)
-                    Timber.Forest.tag("Business Has Employees").e("ERROR: on Updating Business Has Employees $error")
+                    Timber.Forest.tag("Business Has Employees").e("ERROR: on Collecting Business Has Employees $error")
                 }
                 .onSuccess { updated ->
                     _isSaving.value = FeatureState.Success(Unit)

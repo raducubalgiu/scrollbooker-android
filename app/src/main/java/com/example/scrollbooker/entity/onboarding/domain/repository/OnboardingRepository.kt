@@ -11,4 +11,5 @@ interface OnboardingRepository {
     suspend fun collectUserLocationPermission(): AuthState
     // Business
     suspend fun collectBusinessSchedules(schedules: List<Schedule>): AuthState
+    suspend fun collectBusinessHasEmployees(hasEmployees: Boolean): AuthState
 }

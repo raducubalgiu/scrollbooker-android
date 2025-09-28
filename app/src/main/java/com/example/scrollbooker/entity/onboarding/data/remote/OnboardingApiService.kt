@@ -1,6 +1,7 @@
 package com.example.scrollbooker.entity.onboarding.data.remote
 
 import com.example.scrollbooker.entity.auth.data.remote.AuthStateDto
+import com.example.scrollbooker.entity.booking.business.data.remote.BusinessHasEmployeesUpdateRequest
 import com.example.scrollbooker.entity.booking.schedule.data.remote.ScheduleDto
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateBirthDateRequest
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateGenderRequest
@@ -33,5 +34,10 @@ interface OnboardingApiService {
     @PATCH("/onboarding/collect-business-schedules")
     suspend fun collectBusinessSchedules(
         @Body schedules: List<ScheduleDto>
+    ): AuthStateDto
+
+    @PATCH("/onboarding/collect-business-has-employees")
+    suspend fun collectBusinessHasEmployees(
+        @Body request: BusinessHasEmployeesUpdateRequest
     ): AuthStateDto
 }
