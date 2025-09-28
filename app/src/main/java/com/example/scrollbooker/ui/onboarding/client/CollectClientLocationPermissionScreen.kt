@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.onboarding.shared
+package com.example.scrollbooker.ui.onboarding.client
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.safeDrawingPadding
