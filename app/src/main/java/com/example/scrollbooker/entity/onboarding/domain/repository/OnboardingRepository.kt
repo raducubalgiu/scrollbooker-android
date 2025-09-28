@@ -10,6 +10,7 @@ interface OnboardingRepository {
     suspend fun collectClientGender(gender: String): AuthState
     suspend fun collectUserLocationPermission(): AuthState
     // Business
+    suspend fun collectBusinessServices(serviceIds: List<Int>): AuthState
     suspend fun collectBusinessSchedules(schedules: List<Schedule>): AuthState
     suspend fun collectBusinessHasEmployees(hasEmployees: Boolean): AuthState
 }

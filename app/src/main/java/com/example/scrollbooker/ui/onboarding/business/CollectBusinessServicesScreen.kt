@@ -1,4 +1,4 @@
-package com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessServices
+package com.example.scrollbooker.ui.onboarding.business
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -20,12 +20,11 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.components.core.layout.LoadingScreen
-import com.example.scrollbooker.ui.myBusiness.myServices.MyServicesViewModel
 import com.example.scrollbooker.ui.theme.Divider
 
 @Composable
-fun MyServicesScreen(
-    viewModel: MyServicesViewModel,
+fun CollectBusinessServicesScreen(
+    viewModel: CollectBusinessServicesViewModel,
     buttonTitle: String,
     onBack: () -> Unit,
     onNextOrSave: () -> Unit

@@ -6,6 +6,7 @@ import com.example.scrollbooker.entity.onboarding.data.repository.OnboardingRepo
 import com.example.scrollbooker.entity.onboarding.domain.repository.OnboardingRepository
 import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectBusinessHasEmployeesUseCase
 import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectBusinessSchedulesUseCase
+import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectBusinessServicesUseCase
 import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectClientBirthDateUseCase
 import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectClientGenderUseCase
 import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectUserLocationPermissionUseCase
@@ -69,6 +70,14 @@ object BusinessModule {
         repository: OnboardingRepository,
     ): CollectUserLocationPermissionUseCase {
         return CollectUserLocationPermissionUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCollectBusinessServicesUseCase(
+        repository: OnboardingRepository,
+    ): CollectBusinessServicesUseCase {
+        return CollectBusinessServicesUseCase(repository)
     }
 
     @Provides

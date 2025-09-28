@@ -1,13 +1,14 @@
-package com.example.scrollbooker.ui.myBusiness.myServices
+package com.example.scrollbooker.ui.onboarding.business
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
-import com.example.scrollbooker.entity.booking.business.domain.useCase.UpdateBusinessServicesUseCase
+import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
 import com.example.scrollbooker.entity.nomenclature.service.domain.useCase.GetServicesByBusinessTypeUseCase
 import com.example.scrollbooker.entity.nomenclature.service.domain.useCase.GetServicesByBusinessIdUseCase
+import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectBusinessServicesUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,11 +21,11 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class MyServicesViewModel @Inject constructor(
+class CollectBusinessServicesViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
     private val getServicesByBusinessIdUseCase: GetServicesByBusinessIdUseCase,
     private val getServicesByBusinessTypeUseCase: GetServicesByBusinessTypeUseCase,
-    private val updateBusinessServicesUseCase: UpdateBusinessServicesUseCase
+    private val collectBusinessServicesUseCase: CollectBusinessServicesUseCase
 ): ViewModel() {
 
     private val _state = MutableStateFlow<FeatureState<List<Service>>>(FeatureState.Loading)
@@ -51,18 +52,18 @@ class MyServicesViewModel @Inject constructor(
                 val businessId = authDataStore.getBusinessId().firstOrNull()
                 val businessTypeId = authDataStore.getBusinessTypeId().firstOrNull()
 
-                if(businessId == null) {
+                if (businessId == null) {
                     throw IllegalStateException("Business Id not found in data store")
                 }
 
-                if(businessTypeId == null) {
+                if (businessTypeId == null) {
                     throw IllegalStateException("BusinessType Id not found in data store")
                 }
 
                 val user = getServicesByBusinessIdUseCase(businessId)
                 val all = getServicesByBusinessTypeUseCase(businessTypeId)
 
-                if(all.isSuccess && user.isSuccess) {
+                if (all.isSuccess && user.isSuccess) {
                     val selectedIds = user.getOrThrow().map { it.id }.toSet()
                     _selectedServiceIds.value = selectedIds
                     _defaultSelectedServiceIds.value = selectedIds
@@ -79,7 +80,9 @@ class MyServicesViewModel @Inject constructor(
                 } else {
                     val error = all.exceptionOrNull() ?: user.exceptionOrNull()
                     Timber.tag("Services").e("ERROR: on Fetching Services $error")
-                    return@withVisibleLoading FeatureState.Error(error ?: Exception("Unexpected Error"))
+                    return@withVisibleLoading FeatureState.Error(
+                        error ?: Exception("Unexpected Error")
+                    )
                 }
             }
 
@@ -89,20 +92,20 @@ class MyServicesViewModel @Inject constructor(
 
     fun toggleService(serviceId: Int) {
         _selectedServiceIds.update { current ->
-            if(serviceId in current) current - serviceId else current + serviceId
+            if (serviceId in current) current - serviceId else current + serviceId
         }
     }
 
-    suspend fun updateBusinessServices(): List<Service>? {
+    suspend fun updateBusinessServices(): AuthState? {
         _isSaving.value = FeatureState.Loading
 
         val serviceIds = _selectedServiceIds.value.toList()
-        val result = withVisibleLoading { updateBusinessServicesUseCase(serviceIds) }
+        val result = withVisibleLoading { collectBusinessServicesUseCase(serviceIds) }
 
         return result
             .onFailure { e ->
                 _isSaving.value = FeatureState.Error(e)
-                Timber.tag("Update Services").e("ERROR: on updating Business Services $e")
+                Timber.tag("Update Services").e("ERROR: on Collecting Business Services $e")
             }
             .onSuccess {
                 _isSaving.value = FeatureState.Success(Unit)

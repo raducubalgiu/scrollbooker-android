@@ -3,6 +3,7 @@ package com.example.scrollbooker.entity.onboarding.data.repository
 import com.example.scrollbooker.entity.auth.data.mappers.toDomain
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessHasEmployeesUpdateRequest
+import com.example.scrollbooker.entity.booking.business.data.remote.BusinessServicesUpdateRequest
 import com.example.scrollbooker.entity.booking.schedule.data.mappers.toDto
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
 import com.example.scrollbooker.entity.onboarding.data.remote.OnboardingApiService
@@ -32,6 +33,12 @@ class OnboardingRepositoryImpl @Inject constructor(
 
     override suspend fun collectUserLocationPermission(): AuthState {
         return apiService.collectUserLocationPermission().toDomain()
+    }
+
+    override suspend fun collectBusinessServices(serviceIds: List<Int>): AuthState {
+        val request = BusinessServicesUpdateRequest(serviceIds)
+
+        return apiService.collectBusinessServices(request).toDomain()
     }
 
     override suspend fun collectBusinessSchedules(schedules: List<Schedule>): AuthState {

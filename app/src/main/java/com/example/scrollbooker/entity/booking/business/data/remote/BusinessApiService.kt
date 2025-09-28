@@ -1,5 +1,6 @@
 package com.example.scrollbooker.entity.booking.business.data.remote
 import com.example.scrollbooker.entity.auth.data.remote.AuthStateDto
+import com.example.scrollbooker.entity.nomenclature.service.data.remote.ServiceDto
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
@@ -34,7 +35,7 @@ interface BusinessApiService {
     @PUT("/businesses/update-services")
     suspend fun updateBusinessServices(
         @Body request: BusinessServicesUpdateRequest
-    ): AuthStateDto
+    ): List<ServiceDto>
 
     @PATCH("/businesses/update-has-employees")
     suspend fun updateBusinessHasEmployees(

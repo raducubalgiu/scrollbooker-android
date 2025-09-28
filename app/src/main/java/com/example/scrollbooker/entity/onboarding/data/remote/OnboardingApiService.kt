@@ -2,12 +2,14 @@ package com.example.scrollbooker.entity.onboarding.data.remote
 
 import com.example.scrollbooker.entity.auth.data.remote.AuthStateDto
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessHasEmployeesUpdateRequest
+import com.example.scrollbooker.entity.booking.business.data.remote.BusinessServicesUpdateRequest
 import com.example.scrollbooker.entity.booking.schedule.data.remote.ScheduleDto
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateBirthDateRequest
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateGenderRequest
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateUsernameRequest
 import retrofit2.http.Body
 import retrofit2.http.PATCH
+import retrofit2.http.PUT
 
 interface OnboardingApiService {
     // Shared
@@ -15,6 +17,9 @@ interface OnboardingApiService {
     suspend fun collectUserUsername(
         @Body request: UpdateUsernameRequest
     ): AuthStateDto
+
+    @PATCH("/onboarding/collect-user-location-permission")
+    suspend fun collectUserLocationPermission(): AuthStateDto
 
     // Client
     @PATCH("/onboarding/collect-client-birthdate")
@@ -27,10 +32,12 @@ interface OnboardingApiService {
         @Body request: UpdateGenderRequest
     ): AuthStateDto
 
-    @PATCH("/onboarding/collect-user-location-permission")
-    suspend fun collectUserLocationPermission(): AuthStateDto
-
     // Business
+    @PATCH("/onboarding/collect-business-services")
+    suspend fun collectBusinessServices(
+        @Body request: BusinessServicesUpdateRequest
+    ): AuthStateDto
+
     @PATCH("/onboarding/collect-business-schedules")
     suspend fun collectBusinessSchedules(
         @Body schedules: List<ScheduleDto>

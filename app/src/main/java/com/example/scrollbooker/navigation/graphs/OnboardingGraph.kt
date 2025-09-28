@@ -22,6 +22,8 @@ import com.example.scrollbooker.ui.onboarding.business.CollectBusinessHasEmploye
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessLocationScreen
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessSchedulesScreen
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessSchedulesViewModel
+import com.example.scrollbooker.ui.onboarding.business.CollectBusinessServicesScreen
+import com.example.scrollbooker.ui.onboarding.business.CollectBusinessServicesViewModel
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessTypeScreen
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessValidationScreen
 import com.example.scrollbooker.ui.onboarding.client.CollectClientBirthDateScreen
@@ -56,6 +58,21 @@ fun NavGraphBuilder.onBoardingGraph(
         )
     }
 
+    composable(AuthRoute.CollectClientLocationPermission.route) { backStackEntry ->
+        val viewModel: CollectClientLocationPermissionViewModel = hiltViewModel(backStackEntry)
+
+        CollectClientLocationPermissionScreen(
+            viewModel = viewModel,
+            onNext = {
+                navController.currentBackStackEntry?.lifecycleScope?.launch {
+                    val authState = viewModel.collectLocationPermission()
+
+                    authState.onSuccess { authViewModel.updateAuthState(it) }
+                }
+            }
+        )
+    }
+
     // Client
     composable(AuthRoute.CollectClientBirthDate.route) { backStackEntry ->
         val viewModel: CollectClientBirthDateViewModel = hiltViewModel(backStackEntry)
@@ -80,21 +97,6 @@ fun NavGraphBuilder.onBoardingGraph(
             onNext = {
                 navController.currentBackStackEntry?.lifecycleScope?.launch {
                     val authState = viewModel.collectUserGender(it)
-
-                    authState.onSuccess { authViewModel.updateAuthState(it) }
-                }
-            }
-        )
-    }
-
-    composable(AuthRoute.CollectClientLocationPermission.route) { backStackEntry ->
-        val viewModel: CollectClientLocationPermissionViewModel = hiltViewModel(backStackEntry)
-
-        CollectClientLocationPermissionScreen(
-            viewModel = viewModel,
-            onNext = {
-                navController.currentBackStackEntry?.lifecycleScope?.launch {
-                    val authState = viewModel.collectLocationPermission()
 
                     authState.onSuccess { authViewModel.updateAuthState(it) }
                 }
@@ -172,10 +174,10 @@ fun NavGraphBuilder.onBoardingGraph(
 
     composable(AuthRoute.CollectBusinessServices.route) { backStackEntry ->
         val scope = rememberCoroutineScope()
-        val viewModel: MyServicesViewModel = hiltViewModel(backStackEntry)
+        val viewModel: CollectBusinessServicesViewModel = hiltViewModel(backStackEntry)
         val buttonTitle = stringResource(R.string.nextStep)
 
-        MyServicesScreen(
+        CollectBusinessServicesScreen(
             viewModel = viewModel,
             buttonTitle = buttonTitle,
             onBack = { navController.navigate(AuthRoute.CollectBusinessLocation.route) },
