@@ -67,12 +67,15 @@ fun CollectBusinessGalleryScreen(
         pendingSlotIndex = null
     }
 
+    val isEnabled = videoUri != null || photosState.images.any { it != null }
+
     FormLayout(
         headLine = stringResource(R.string.visualPresentation),
         subHeadLine = stringResource(R.string.photoGalleryDescription),
         buttonTitle = stringResource(R.string.nextStep),
         onBack = onBack,
-        onNext = onNext
+        onNext = onNext,
+        isEnabled = isEnabled
     ) {
         Column(modifier = Modifier
             .padding(horizontal = SpacingXXL)
