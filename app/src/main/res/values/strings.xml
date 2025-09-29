@@ -171,7 +171,12 @@
     <string name="locationPresentationDescription">Spune-ne cum se numește business-ul tău și oferă cateva detalii despre servicii, atmosferă sau orice crezi ca e important</string>
     <string name="locationAddress">Adresa locației</string>
     <string name="photoGallery">Galerie foto</string>
-    <string name="photoGalleryDescription">"Încarcă cateva imagini de la locație - o prezentare vizuală bună atrage mai mulți clienți"</string>
+    <string name="visualPresentation">Prezentare vizuală</string>
+    <string name="images">Imagini</string>
+    <string name="video">Video</string>
+    <string name="addVideoDescription">Poți încărca un clip video prin care să arăți clienților atmosfera de la locație</string>
+    <string name="addImagesDescription">Încarcă câteva fotografii prin care să le arăți clienților cum arată locația ta. Minim o fotografie.</string>
+    <string name="photoGalleryDescription">"Încarcă un video și/sau câteva imagini de la locație - o prezentare vizuală bună atrage mai mulți clienți"</string>
     <string name="doYouHaveEmployees">Ai angajați care primesc programări?</string>
     <string name="ifHaveEmployeesDescription">Daca da, fiecare angajat va avea propriul calendar și își va gestiona propriile produse separat.</string>
     <string name="ifNotHaveEmployeesDescription">Daca nu, toate programările vor fi gestionate direct în numele business-ului tău, intr-un singur calendar.</string>
