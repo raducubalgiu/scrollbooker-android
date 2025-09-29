@@ -3,6 +3,7 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -33,9 +34,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.media3.common.util.UnstableApi
 import com.example.scrollbooker.components.customized.BusinessMediaLauncher
 import com.example.scrollbooker.components.customized.BusinessMediaTypeEnum
 
+@OptIn(UnstableApi::class)
 @Composable
 fun CollectBusinessGalleryScreen(
     viewModel: MyBusinessLocationViewModel,
@@ -44,12 +47,15 @@ fun CollectBusinessGalleryScreen(
 ) {
     val verticalScroll = rememberScrollState()
     val photosState by viewModel.photosState.collectAsState()
-    val videoState by viewModel.videoState.collectAsState()
+    val videoUri by viewModel.videoState.collectAsState()
+
     var pendingSlotIndex by rememberSaveable { mutableStateOf<Int?>(null) }
 
     val pickVideo = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
-    ) { uri: Uri? -> viewModel.setVideo(uri) }
+    ) { url: Uri? ->
+        viewModel.setVideo(url)
+    }
 
     val pickImage = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
@@ -79,7 +85,7 @@ fun CollectBusinessGalleryScreen(
 
             BusinessMediaLauncher(
                 type = BusinessMediaTypeEnum.VIDEO,
-                uri = videoState,
+                uri = videoUri,
                 onClick = {
                     pickVideo.launch(
                         PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly)

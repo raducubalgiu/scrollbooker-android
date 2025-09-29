@@ -1,6 +1,7 @@
 package com.example.scrollbooker.components.customized
 
 import android.net.Uri
+import androidx.annotation.OptIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -14,7 +15,7 @@ import androidx.compose.material.icons.filled.AddCircleOutline
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,9 +27,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import coil.compose.AsyncImage
 import com.example.scrollbooker.R
@@ -42,6 +48,7 @@ enum class BusinessMediaTypeEnum {
     VIDEO
 }
 
+@OptIn(UnstableApi::class)
 @Composable
 fun BusinessMediaLauncher(
     type: BusinessMediaTypeEnum,
@@ -51,20 +58,35 @@ fun BusinessMediaLauncher(
     onClear: () -> Unit
 ) {
     val context = LocalContext.current
-    val businessPlayer = remember {
-        if(uri == null) null
-        else ExoPlayer.Builder(context)
-            .build()
-            .apply {
-                this.repeatMode = Player.REPEAT_MODE_ALL
-                this.playWhenReady = true
-            }
+    val businessPlayer = remember(uri) {
+        if(uri == null || type != BusinessMediaTypeEnum.VIDEO) null
+        uri?.let {
+            ExoPlayer.Builder(context)
+                .build()
+                .apply {
+                    this.setMediaItem(MediaItem.fromUri(uri))
+                    this.prepare()
+                    this.playWhenReady = true
+                    this.repeatMode = Player.REPEAT_MODE_ALL
+                }
+        }
     }
 
-    LaunchedEffect(businessPlayer, uri) {
-        if(businessPlayer != null && uri != null && type == BusinessMediaTypeEnum.VIDEO) {
-            businessPlayer.setMediaItem(MediaItem.fromUri(uri))
-            businessPlayer.prepare()
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner, businessPlayer) {
+        val observer = LifecycleEventObserver { _, event ->
+            when(event) {
+                Lifecycle.Event.ON_START -> true
+                Lifecycle.Event.ON_STOP -> businessPlayer?.playWhenReady = false
+                else -> Unit
+            }
+        }
+
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+            businessPlayer?.release()
         }
     }
 
@@ -105,6 +127,10 @@ fun BusinessMediaLauncher(
                                 player = businessPlayer
                                 useController = false
                             }
+                        },
+                        update = { playerView ->
+                            playerView.player = businessPlayer
+                            playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
                         }
                     )
                 }
