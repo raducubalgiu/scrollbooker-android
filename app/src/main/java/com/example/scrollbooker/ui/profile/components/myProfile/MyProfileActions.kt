@@ -20,7 +20,8 @@ import com.example.scrollbooker.ui.theme.titleMedium
 @Composable
 fun MyProfileActions(
     onEditProfile: () -> Unit,
-    isBusinessOrEmployee: Boolean
+    isBusinessOrEmployee: Boolean,
+    onNavigateToMyCalendar: () -> Unit
 ) {
     Row(modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
@@ -43,7 +44,7 @@ fun MyProfileActions(
         if(isBusinessOrEmployee) {
             ProfileActionButton(
                 modifier = Modifier.weight(0.5f),
-                onClick = {}
+                onClick = onNavigateToMyCalendar
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(

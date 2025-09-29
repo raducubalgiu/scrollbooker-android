@@ -185,7 +185,7 @@ fun ProfileLayout(
                                 onNavigateToPostDetail = { profileNavigate.toPostDetail() }
                             )
 
-                            ProfileTab.Info -> ProfileInfoTab(paddingTop = currentHeaderHeightDp,)
+                            ProfileTab.Info -> ProfileInfoTab(paddingTop = currentHeaderHeightDp)
                         }
                     }
 
@@ -236,7 +236,8 @@ fun ProfileLayout(
                                     if (user.isOwnProfile) {
                                         MyProfileActions(
                                             onEditProfile = { profileNavigate.toEditProfile() },
-                                            isBusinessOrEmployee = user.isBusinessOrEmployee
+                                            isBusinessOrEmployee = user.isBusinessOrEmployee,
+                                            onNavigateToMyCalendar = { profileNavigate.toMyCalendar() }
                                         )
                                     } else {
                                         UserProfileActions(

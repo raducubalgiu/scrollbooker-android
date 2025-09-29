@@ -25,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.headers.Header
+import com.example.scrollbooker.components.core.inputs.InputSelect
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
@@ -36,21 +37,22 @@ import com.example.scrollbooker.ui.modules.calendar.components.CalendarHeader
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
 import kotlinx.coroutines.launch
+import org.threeten.bp.LocalDate
 import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MyCalendarScreen(
     viewModel: MyCalendarViewModel,
-    onBack: () -> Unit,
-    isBusiness: Boolean = false
+    onBack: () -> Unit
 ) {
     val headerState by viewModel.calendarHeader.collectAsState()
+    val slotDuration by viewModel.slotDuration.collectAsState()
 
     val locale = Locale("ro")
     val coroutineScope = rememberCoroutineScope()
 
-    fun handleDayChange(day: org.threeten.bp.LocalDate) {
+    fun handleDayChange(day: LocalDate) {
         viewModel.setDay(day)
     }
 
@@ -111,6 +113,18 @@ fun MyCalendarScreen(
                     }
 
                     Column(modifier = Modifier.fillMaxSize()) {
+                        Box(Modifier.fillMaxWidth().padding(horizontal = BasePadding)) {
+                            InputSelect(
+                                options = durations,
+                                label = "Interval",
+                                placeholder = "Alege intervalul",
+                                selectedOption = slotDuration.toString(),
+                                onValueChange = {
+                                    viewModel.setSlotDuration(it)
+                                },
+                            )
+                        }
+
                         CalendarHeader(
                             period = displayDatePeriod(currentWeekDates.first(), currentWeekDates.last(), locale),
                             enableBack = enableBack,

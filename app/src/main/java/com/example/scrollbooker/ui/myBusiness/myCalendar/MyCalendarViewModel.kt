@@ -13,6 +13,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
@@ -25,10 +26,12 @@ import javax.inject.Inject
 @HiltViewModel
 class MyCalendarViewModel @Inject constructor(
     private val getCalendarAvailableDaysUseCase: GetCalendarAvailableDaysUseCase,
-    private val authDataStore: AuthDataStore
+    authDataStore: AuthDataStore
 ): ViewModel() {
-    //private val userId = MutableStateFlow<Int?>(null)
     private val selectedDay = MutableStateFlow<LocalDate?>(LocalDate.now())
+
+    private val _slotDuration = MutableStateFlow<Int>(30)
+    val slotDuration: MutableStateFlow<Int> = _slotDuration
 
     private fun getCalendarHeader(userId: Int): StateFlow<FeatureState<CalendarHeaderState>> = flow {
         emit(FeatureState.Loading)
@@ -87,5 +90,11 @@ class MyCalendarViewModel @Inject constructor(
 
     fun setDay(day: LocalDate) {
         selectedDay.value = day
+    }
+
+    fun setSlotDuration(duration: String?) {
+        if(duration?.isNotEmpty() == true) {
+            _slotDuration.value = duration.toInt()
+        }
     }
 }
