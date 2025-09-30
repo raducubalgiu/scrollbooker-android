@@ -1,7 +1,10 @@
 package com.example.scrollbooker.entity.booking.calendar.domain.model
 
+import com.example.scrollbooker.core.util.parseLocalTimeFromLocalDateTimeString
+import com.example.scrollbooker.core.util.parseLocalTimeFromTimeString
 import com.example.scrollbooker.entity.nomenclature.currency.domain.model.Currency
 import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
+import org.threeten.bp.LocalTime
 import java.math.BigDecimal
 
 data class CalendarEvents(
@@ -44,3 +47,27 @@ data class CalendarEventsProduct(
     val productPriceWithDiscount: BigDecimal,
     val productDiscount: BigDecimal
 )
+
+data class SlotTimeBounds(
+    val startTime: LocalTime,
+    val endTime: LocalTime
+)
+
+data class CalendarEventsTimeBounds(
+    val minSlotTime: LocalTime,
+    val maxSlotTime: LocalTime
+)
+
+fun CalendarEvents.timeFromLocale(): CalendarEventsTimeBounds? =
+    if(minSlotTime != null && maxSlotTime != null) {
+        CalendarEventsTimeBounds(
+            minSlotTime = parseLocalTimeFromTimeString(minSlotTime),
+            maxSlotTime = parseLocalTimeFromTimeString(maxSlotTime)
+        )
+    } else { null }
+
+fun CalendarEventsSlot.timeFromLocale(): SlotTimeBounds =
+    SlotTimeBounds(
+        startTime = parseLocalTimeFromLocalDateTimeString(startDateLocale),
+        endTime = parseLocalTimeFromLocalDateTimeString(endDateLocale)
+    )

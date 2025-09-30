@@ -20,3 +20,4 @@ fun SlotDto.toDomain(): Slot {
         endDateLocale = endDateLocale
     )
 }
+

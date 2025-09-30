@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
@@ -33,9 +31,10 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.displayDatePeriod
 import com.example.scrollbooker.core.util.displayShortDayOfWeek
+import com.example.scrollbooker.entity.booking.calendar.domain.model.timeFromLocale
 import com.example.scrollbooker.ui.modules.calendar.components.CalendarDayTab
 import com.example.scrollbooker.ui.modules.calendar.components.CalendarHeader
-import com.example.scrollbooker.ui.myBusiness.myCalendar.components.Slot
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.DayTimeline
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
 import kotlinx.coroutines.launch
@@ -192,12 +191,16 @@ fun MyCalendarScreen(
                                     is FeatureState.Error -> { ErrorScreen() }
                                     is FeatureState.Loading -> { LoadingScreen() }
                                     is FeatureState.Success -> {
-                                        val slots = events.data.days[0].slots
+                                        val startEnd = events.data.timeFromLocale()
+                                        val slots = events.data.days.first().slots
 
-                                        LazyColumn {
-                                            items(slots) { slot ->
-                                                Slot()
-                                            }
+                                        if(startEnd != null) {
+                                            DayTimeline(
+                                                slotDuration = slotDuration,
+                                                slots = slots,
+                                                dayStart = startEnd.minSlotTime,
+                                                dayEnd = startEnd.maxSlotTime
+                                            )
                                         }
                                     }
                                 }

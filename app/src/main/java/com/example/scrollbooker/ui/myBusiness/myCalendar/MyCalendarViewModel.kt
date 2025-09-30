@@ -41,7 +41,7 @@ class MyCalendarViewModel @Inject constructor(
 ): ViewModel() {
     private val selectedDay = MutableStateFlow<LocalDate?>(LocalDate.now())
 
-    private val _slotDuration = MutableStateFlow<Int>(30)
+    private val _slotDuration = MutableStateFlow<Int>(60)
     val slotDuration: MutableStateFlow<Int> = _slotDuration
 
     private val refreshTick = MutableStateFlow(0)
