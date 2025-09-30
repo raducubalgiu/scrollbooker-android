@@ -15,7 +15,6 @@ The Android app provides a fast and modern mobile experience with video discover
 - [Paging 3](https://developer.android.com/topic/libraries/architecture/paging/v3-overview) — Infinite scrolling lists
 - [ExoPlayer](https://exoplayer.dev/) — Video playback (with caching & preload)
 - [Retrofit + OkHttp](https://square.github.io/retrofit/) — Networking
-- [Room / SQLDelight] — Local caching (if applicable)
 - [ThreeTenABP](https://github.com/JakeWharton/ThreeTenABP) — Date/time handling
 
 ---
