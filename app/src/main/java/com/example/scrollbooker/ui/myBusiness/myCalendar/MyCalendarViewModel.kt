@@ -4,34 +4,67 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
+import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEvents
 import com.example.scrollbooker.entity.booking.calendar.domain.useCase.GetCalendarAvailableDaysUseCase
+import com.example.scrollbooker.entity.booking.calendar.domain.useCase.GetUserCalendarEventsUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import com.example.scrollbooker.ui.modules.calendar.CalendarConfig
 import com.example.scrollbooker.ui.modules.calendar.CalendarHeaderState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.LocalDate
+import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
+import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 
 @HiltViewModel
 class MyCalendarViewModel @Inject constructor(
+    private val authDataStore: AuthDataStore,
     private val getCalendarAvailableDaysUseCase: GetCalendarAvailableDaysUseCase,
-    authDataStore: AuthDataStore
+    private val getCalendarEventsUseCase: GetUserCalendarEventsUseCase,
 ): ViewModel() {
     private val selectedDay = MutableStateFlow<LocalDate?>(LocalDate.now())
 
     private val _slotDuration = MutableStateFlow<Int>(30)
     val slotDuration: MutableStateFlow<Int> = _slotDuration
+
+    private val refreshTick = MutableStateFlow(0)
+
+    private val userIdFlow: Flow<Int?> = authDataStore.getUserId()
+        .distinctUntilChanged()
+
+    private val dateFmt = DateTimeFormatter.ISO_LOCAL_DATE
+
+    private val cache = ConcurrentHashMap<String, FeatureState<CalendarEvents>>()
+
+    private fun cacheKey(userId: Int, day: LocalDate, slot: Int): String =
+        "$userId:${day.format(dateFmt)}:$slot"
+
+    private val paramsFlow: Flow<Triple<Int, LocalDate, Int>> =
+        combine(
+            userIdFlow.filterNotNull(),
+            selectedDay.filterNotNull(),
+            slotDuration,
+            refreshTick
+        ) { userId, day, slot, _ ->
+            Triple(userId, day, slot)
+        }.distinctUntilChanged()
 
     private fun getCalendarHeader(userId: Int): StateFlow<FeatureState<CalendarHeaderState>> = flow {
         emit(FeatureState.Loading)
@@ -81,12 +114,47 @@ class MyCalendarViewModel @Inject constructor(
     )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val calendarHeader: StateFlow<FeatureState<CalendarHeaderState>> = authDataStore.getUserId()
+    val calendarHeader: StateFlow<FeatureState<CalendarHeaderState>> = userIdFlow
         .filterNotNull()
         .flatMapLatest { userId ->
             getCalendarHeader(userId)
         }
         .stateIn(viewModelScope, SharingStarted.Eagerly, FeatureState.Loading)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val calendarEvents: StateFlow<FeatureState<CalendarEvents>> =
+        paramsFlow
+            .flatMapLatest { (userId, day, slot) ->
+                flow {
+                    val startEnd = day.format(dateFmt)
+                    val key = cacheKey(userId, day, slot)
+
+                    cache[key]?.let { emit(it) }
+
+                    if(cache[key] !is FeatureState.Success) {
+                        emit(FeatureState.Loading)
+                    }
+
+                    val result = withVisibleLoading {
+                        getCalendarEventsUseCase(
+                            startDate = startEnd,
+                            endDate = startEnd,
+                            userId = userId,
+                            slotDuration = slot
+                        )
+                    }
+
+                    cache[key] = result
+                    emit(result)
+                }.catch { e ->
+                    emit(FeatureState.Error(e))
+                }
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = FeatureState.Loading
+            )
 
     fun setDay(day: LocalDate) {
         selectedDay.value = day
@@ -95,6 +163,16 @@ class MyCalendarViewModel @Inject constructor(
     fun setSlotDuration(duration: String?) {
         if(duration?.isNotEmpty() == true) {
             _slotDuration.value = duration.toInt()
+        }
+    }
+
+    fun refresh() {
+        val day = selectedDay.value ?: return
+        viewModelScope.launch {
+            val userId = authDataStore.getUserId().firstOrNull() ?: return@launch
+            val key = cacheKey(userId, day, _slotDuration.value)
+            cache.remove(key)
+            refreshTick.update { it + 1 }
         }
     }
 }

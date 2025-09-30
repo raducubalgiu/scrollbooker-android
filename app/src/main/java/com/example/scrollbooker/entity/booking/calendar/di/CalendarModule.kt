@@ -6,6 +6,7 @@ import com.example.scrollbooker.entity.booking.calendar.data.repository.Calendar
 import com.example.scrollbooker.entity.booking.calendar.domain.repository.CalendarRepository
 import com.example.scrollbooker.entity.booking.calendar.domain.useCase.GetCalendarAvailableDaysUseCase
 import com.example.scrollbooker.entity.booking.calendar.domain.useCase.GetUserAvailableTimeslotsUseCase
+import com.example.scrollbooker.entity.booking.calendar.domain.useCase.GetUserCalendarEventsUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -49,5 +50,13 @@ object CalendarModule {
         repository: CalendarRepository,
     ): GetUserAvailableTimeslotsUseCase {
         return GetUserAvailableTimeslotsUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetUserCalendarEventsUseCase(
+        repository: CalendarRepository,
+    ): GetUserCalendarEventsUseCase {
+        return GetUserCalendarEventsUseCase(repository)
     }
 }

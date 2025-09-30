@@ -17,4 +17,12 @@ interface CalendarApiService {
         @Query("user_id") userId: Int,
         @Query("slot_duration") slotDuration: Int
     ): AvailableDayDto
+
+    @GET("appointments/calendar-events")
+    suspend fun getUserCalendarEvents(
+        @Query("start_date") startDate: String,
+        @Query("end_date") endDate: String,
+        @Query("user_id") userId: Int,
+        @Query("slot_duration") slotDuration: Int,
+    ): CalendarEventsDto
 }
