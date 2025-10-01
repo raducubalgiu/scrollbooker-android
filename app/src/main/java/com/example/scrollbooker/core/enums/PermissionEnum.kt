@@ -2,6 +2,7 @@ package com.example.scrollbooker.core.enums
 
 enum class PermissionEnum(val key: String) {
     POST_CREATE("POST_CREATE"),
+    FILTER_APPOINTMENTS_VIEW("FILTER_APPOINTMENTS_VIEW"),
     NOMENCLATURES_VIEW("NOMENCLATURES_VIEW"),
     EDIT_USER_PROFESSION("EDIT_USER_PROFESSION"),
 

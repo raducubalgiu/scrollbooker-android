@@ -25,7 +25,7 @@ import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.profile.components.myProfile.MyProfileHeader
 import com.example.scrollbooker.ui.profile.components.ProfileLayout
-import com.example.scrollbooker.ui.profile.components.userInfo.sheets.ProfileMenuSheet
+import com.example.scrollbooker.ui.profile.components.sheets.ProfileMenuSheet
 import com.example.scrollbooker.ui.theme.Background
 import kotlinx.coroutines.launch
 

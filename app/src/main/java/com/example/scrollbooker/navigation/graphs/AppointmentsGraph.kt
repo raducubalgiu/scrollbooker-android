@@ -42,7 +42,7 @@ fun NavGraphBuilder.appointmentsGraph(
 
             AppointmentsScreen(
                 viewModel = viewModel,
-                navigateToAppointmentDetails = {
+                onNavigateToAppointmentDetails = {
                     viewModel.setAppointment(it)
                     navController.navigate(MainRoute.AppointmentDetails.route)
                 },

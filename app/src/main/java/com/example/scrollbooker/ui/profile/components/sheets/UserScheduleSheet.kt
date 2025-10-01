@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.components.userInfo.sheets
+package com.example.scrollbooker.ui.profile.components.sheets
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,7 +35,6 @@ import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.formatTime
 import com.example.scrollbooker.core.util.translateDayOfWeek
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
-import com.example.scrollbooker.ui.myBusiness.mySchedules.MySchedulesViewModel
 import com.example.scrollbooker.ui.theme.bodyLarge
 import org.threeten.bp.Duration
 import org.threeten.bp.LocalDate

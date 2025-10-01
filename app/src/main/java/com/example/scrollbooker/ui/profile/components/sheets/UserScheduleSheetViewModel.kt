@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.components.userInfo.sheets
+package com.example.scrollbooker.ui.profile.components.sheets
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

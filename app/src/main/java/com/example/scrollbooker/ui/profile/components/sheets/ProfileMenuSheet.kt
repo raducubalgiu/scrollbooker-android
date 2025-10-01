@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.components.userInfo.sheets
+package com.example.scrollbooker.ui.profile.components.sheets
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding

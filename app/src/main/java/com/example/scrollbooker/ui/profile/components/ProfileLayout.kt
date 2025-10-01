@@ -45,7 +45,7 @@ import com.example.scrollbooker.ui.profile.components.myProfile.MyProfileActions
 import com.example.scrollbooker.ui.profile.components.userInfo.ProfileShimmer
 import com.example.scrollbooker.ui.profile.components.userInfo.ProfileUserInfo
 import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileCounters
-import com.example.scrollbooker.ui.profile.components.userInfo.sheets.UserScheduleSheet
+import com.example.scrollbooker.ui.profile.components.sheets.UserScheduleSheet
 import com.example.scrollbooker.ui.profile.components.userProfile.UserProfileActions
 import com.example.scrollbooker.ui.profile.tabs.ProfileTab
 import com.example.scrollbooker.ui.profile.tabs.ProfileTabRow
