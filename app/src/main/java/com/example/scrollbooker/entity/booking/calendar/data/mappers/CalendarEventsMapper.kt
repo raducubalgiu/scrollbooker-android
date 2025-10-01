@@ -1,5 +1,6 @@
 package com.example.scrollbooker.entity.booking.calendar.data.mappers
 
+import com.example.scrollbooker.core.enums.AppointmentChannelEnum
 import com.example.scrollbooker.entity.booking.calendar.data.remote.CalendarEventsDayDto
 import com.example.scrollbooker.entity.booking.calendar.data.remote.CalendarEventsDto
 import com.example.scrollbooker.entity.booking.calendar.data.remote.CalendarEventsInfoDto
@@ -46,7 +47,7 @@ fun CalendarEventsSlotDto.toDomain(): CalendarEventsSlot {
 fun CalendarEventsInfoDto.toDomain(): CalendarEventsInfo {
     return CalendarEventsInfo(
         currency = currency,
-        channel = channel,
+        channel = AppointmentChannelEnum.fromKey(channel),
         serviceName = serviceName,
         product = product.toDomain(),
         customer = customer.toDomain(),

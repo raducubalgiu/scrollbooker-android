@@ -1,5 +1,6 @@
 package com.example.scrollbooker.entity.booking.calendar.domain.model
 
+import com.example.scrollbooker.core.enums.AppointmentChannelEnum
 import com.example.scrollbooker.core.util.parseLocalTimeFromLocalDateTimeString
 import com.example.scrollbooker.core.util.parseLocalTimeFromTimeString
 import com.example.scrollbooker.entity.nomenclature.currency.domain.model.Currency
@@ -34,7 +35,7 @@ data class CalendarEventsSlot(
 
 data class CalendarEventsInfo(
     val currency: Currency,
-    val channel: String,
+    val channel: AppointmentChannelEnum?,
     val serviceName: String,
     val product: CalendarEventsProduct,
     val customer: UserSocial,

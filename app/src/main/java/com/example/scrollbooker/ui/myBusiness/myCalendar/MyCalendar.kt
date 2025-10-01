@@ -24,7 +24,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.headers.Header
-import com.example.scrollbooker.components.core.inputs.InputSelect
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
@@ -34,6 +33,7 @@ import com.example.scrollbooker.core.util.displayShortDayOfWeek
 import com.example.scrollbooker.entity.booking.calendar.domain.model.timeFromLocale
 import com.example.scrollbooker.ui.modules.calendar.components.CalendarDayTab
 import com.example.scrollbooker.ui.modules.calendar.components.CalendarHeader
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.CalendarDurationSlot
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.DayTimeline
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
@@ -116,17 +116,12 @@ fun MyCalendarScreen(
                     }
 
                     Column(modifier = Modifier.fillMaxSize()) {
-                        Box(Modifier.fillMaxWidth().padding(horizontal = BasePadding)) {
-                            InputSelect(
-                                options = durations,
-                                label = "Interval",
-                                placeholder = "Alege intervalul",
-                                selectedOption = slotDuration.toString(),
-                                onValueChange = {
-                                    viewModel.setSlotDuration(it)
-                                },
-                            )
-                        }
+                        CalendarDurationSlot(
+                            label = "Interval",
+                            options = durations,
+                            selectedSlot = slotDuration.toString(),
+                            onSlotChange = { viewModel.setSlotDuration(it) }
+                        )
 
                         CalendarHeader(
                             period = displayDatePeriod(currentWeekDates.first(), currentWeekDates.last(), locale),
@@ -166,7 +161,7 @@ fun MyCalendarScreen(
                                                 dayPagerState.animateScrollToPage(index)
                                             }
                                         },
-                                        bgColor = if(currentDayIndex == index) Primary else Color.Transparent,
+                                        bgColor = if(dayPagerState.currentPage == index) Primary else Color.Transparent,
                                         label = displayShortDayOfWeek(date, locale),
                                         isLoading = false,
                                         isDayAvailable = isAvailable

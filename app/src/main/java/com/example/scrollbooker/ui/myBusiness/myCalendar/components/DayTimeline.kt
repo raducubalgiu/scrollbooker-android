@@ -7,26 +7,24 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.minutesBetween
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsSlot
 import com.example.scrollbooker.entity.booking.calendar.domain.model.timeFromLocale
-import com.example.scrollbooker.ui.theme.labelMedium
+import com.example.scrollbooker.ui.theme.bodyLarge
 import org.threeten.bp.LocalTime
 import kotlin.math.ceil
 import kotlin.math.max
@@ -38,7 +36,7 @@ fun DayTimeline(
     dayStart: LocalTime,
     dayEnd: LocalTime,
     slotDuration: Int,
-    slotHeight: Dp = 100.dp,
+    slotHeight: Dp = 150.dp,
     gutterWidth: Dp = 56.dp,
     onSlotClick: (CalendarEventsSlot) -> Unit = {}
 ) {
@@ -55,6 +53,7 @@ fun DayTimeline(
         .fillMaxWidth()
         .heightIn(min = 200.dp)
         .verticalScroll(rememberScrollState())
+        .padding(top = SpacingM, bottom = BasePadding)
     ) {
         Column(modifier = Modifier
             .width(gutterWidth)
@@ -69,7 +68,8 @@ fun DayTimeline(
                 ) {
                     Text(
                         text = t.toString(),
-                        style = labelMedium,
+                        style = bodyLarge,
+                        fontWeight = FontWeight.SemiBold,
                         modifier = Modifier.padding(top = 2.dp, start = 8.dp)
                     )
                 }
@@ -79,18 +79,6 @@ fun DayTimeline(
         Box(modifier = Modifier
             .weight(1f)
             .height(totalHeightDp)
-            .drawBehind {
-                // linii de grid
-                ticks.forEachIndexed { index, _ ->
-                    val y = index * slotHeight.toPx()
-                    drawLine(
-                        color = Color.Gray,
-                        start = Offset(0f , y),
-                        end = Offset(size.width, y),
-                        strokeWidth = 1f
-                    )
-                }
-            }
         ) {
             slots.forEach { slot ->
                 val bounds = slot.timeFromLocale()
@@ -103,14 +91,12 @@ fun DayTimeline(
                     val offsetY = dpPerMinute * s
                     val height = dpPerMinute * duration
 
-                    Card(modifier = Modifier
-                        .fillMaxWidth()
-                        .height(height)
-                        .offset(y = offsetY)
-                        .padding(horizontal = 8.dp, vertical = 4.dp)
-                    ) {
-                        Text("${bounds.startTime} - ${bounds.endTime}")
-                    }
+                    CalendarSlot(
+                        height = height,
+                        offsetY = offsetY,
+                        slot = slot,
+                        onSlotClick = onSlotClick
+                    )
                 }
             }
         }
