@@ -42,7 +42,6 @@ import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
-import timber.log.Timber
 import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -210,6 +209,7 @@ fun MyCalendarScreen(
                                                 dayStart = dayStart,
                                                 dayEnd = dayEnd,
                                                 isBlocking = isBlocking,
+                                                defaultBlockedLocalDates = defaultBlockedLocalDates,
                                                 blockedLocalDates = blockedLocalDates,
                                                 onBlock = { viewModel.setBlockDate(it) }
                                             )

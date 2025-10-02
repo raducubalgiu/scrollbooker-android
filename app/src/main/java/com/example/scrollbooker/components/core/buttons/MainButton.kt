@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.bodyLarge
-import com.example.scrollbooker.ui.theme.bodyMedium
 
 @Composable
 fun MainButton(
@@ -36,7 +35,7 @@ fun MainButton(
     colors: ButtonColors = ButtonDefaults.buttonColors(),
     contentPadding: PaddingValues = PaddingValues(BasePadding),
     shape: Shape = ShapeDefaults.ExtraLarge,
-    leadingIcon: Int? = null
+    leadingIcon: Int? = null,
 ) {
     Button(
         onClick = onClick,

@@ -22,6 +22,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.minutesBetween
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsSlot
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.Slot.CalendarSlot
 import com.example.scrollbooker.ui.theme.bodyLarge
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
@@ -38,6 +39,7 @@ fun DayTimeline(
     slotHeight: Dp = 200.dp,
     gutterWidth: Dp = 56.dp,
     isBlocking: Boolean,
+    defaultBlockedLocalDates: Set<LocalDateTime>,
     blockedLocalDates: Set<LocalDateTime>,
     onBlock: (LocalDateTime) -> Unit,
     onSlotClick: (CalendarEventsSlot) -> Unit = {}
@@ -96,12 +98,14 @@ fun DayTimeline(
                     val offsetY = dpPerMinute * s
                     val height = dpPerMinute * duration
                     val isBlocked = blockedLocalDates.contains(slot.startDateLocale)
+                    val isPermanentlyBlocked = defaultBlockedLocalDates.contains(slot.startDateLocale)
 
                     CalendarSlot(
                         height = height,
                         offsetY = offsetY,
                         slot = slot,
                         onSlotClick = onSlotClick,
+                        isPermanentlyBlocked = isPermanentlyBlocked,
                         isBlocked = isBlocked,
                         isBlocking = isBlocking,
                         onBlock = onBlock

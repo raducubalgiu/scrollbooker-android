@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.myBusiness.myCalendar.components
+package com.example.scrollbooker.ui.myBusiness.myCalendar.components.Slot
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
