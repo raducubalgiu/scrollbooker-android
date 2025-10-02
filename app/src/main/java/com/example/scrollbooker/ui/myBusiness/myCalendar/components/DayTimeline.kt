@@ -1,5 +1,4 @@
 package com.example.scrollbooker.ui.myBusiness.myCalendar.components
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,8 +22,8 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.minutesBetween
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsSlot
-import com.example.scrollbooker.entity.booking.calendar.domain.model.timeFromLocale
 import com.example.scrollbooker.ui.theme.bodyLarge
+import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 import kotlin.math.ceil
 import kotlin.math.max
@@ -36,8 +35,11 @@ fun DayTimeline(
     dayStart: LocalTime,
     dayEnd: LocalTime,
     slotDuration: Int,
-    slotHeight: Dp = 150.dp,
+    slotHeight: Dp = 200.dp,
     gutterWidth: Dp = 56.dp,
+    isBlocking: Boolean,
+    blockedLocalDates: Set<LocalDateTime>,
+    onBlock: (LocalDateTime) -> Unit,
     onSlotClick: (CalendarEventsSlot) -> Unit = {}
 ) {
     val ticks = remember(dayStart, dayEnd, slotDuration) {
@@ -81,21 +83,28 @@ fun DayTimeline(
             .height(totalHeightDp)
         ) {
             slots.forEach { slot ->
-                val bounds = slot.timeFromLocale()
+                val slotStart = slot.startDateLocale?.toLocalTime()
+                val slotEnd = slot.endDateLocale?.toLocalTime()
 
-                val s = max(0, minutesBetween(dayStart, maxOf(dayStart, bounds.startTime)))
-                val e = min(totalMinutes, minutesBetween(dayStart, minOf(dayEnd, bounds.endTime)))
+                if(slotStart == null || slotEnd == null) return
+
+                val s = max(0, minutesBetween(dayStart, maxOf(dayStart, slotStart)))
+                val e = min(totalMinutes, minutesBetween(dayStart, minOf(dayEnd, slotEnd)))
                 val duration = max(0, e - s)
 
                 if(duration > 0) {
                     val offsetY = dpPerMinute * s
                     val height = dpPerMinute * duration
+                    val isBlocked = blockedLocalDates.contains(slot.startDateLocale)
 
                     CalendarSlot(
                         height = height,
                         offsetY = offsetY,
                         slot = slot,
-                        onSlotClick = onSlotClick
+                        onSlotClick = onSlotClick,
+                        isBlocked = isBlocked,
+                        isBlocking = isBlocking,
+                        onBlock = onBlock
                     )
                 }
             }

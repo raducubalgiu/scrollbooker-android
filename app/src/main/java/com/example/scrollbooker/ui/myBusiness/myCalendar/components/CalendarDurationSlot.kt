@@ -30,9 +30,9 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.inputs.Option
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
@@ -58,7 +58,6 @@ fun CalendarDurationSlot(
 
     Column(
         modifier = Modifier
-            .padding(BasePadding)
             .clip(shape = ShapeDefaults.Medium)
             .background(SurfaceBG)
             .clickable { expanded = true }
@@ -72,7 +71,7 @@ fun CalendarDurationSlot(
                 modifier = Modifier
                     .padding(
                         horizontal = BasePadding,
-                        vertical = SpacingS
+                        vertical = 6.dp
                     ),
                 verticalAlignment = Alignment.CenterVertically
             ) {

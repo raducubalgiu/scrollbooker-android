@@ -260,4 +260,6 @@
     <string name="sale">Reducere</string>
     <string name="createPost">Creează o postare</string>
     <string name="searchAddress">Caută adresa</string>
+    <string name="blocked">Blocat</string>
+    <string name="block">Blochează</string>
 </resources>

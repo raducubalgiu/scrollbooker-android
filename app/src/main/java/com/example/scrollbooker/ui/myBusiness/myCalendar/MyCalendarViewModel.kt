@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEvents
+import com.example.scrollbooker.entity.booking.calendar.domain.model.blockedStartLocale
 import com.example.scrollbooker.entity.booking.calendar.domain.useCase.GetCalendarAvailableDaysUseCase
 import com.example.scrollbooker.entity.booking.calendar.domain.useCase.GetUserCalendarEventsUseCase
 import com.example.scrollbooker.store.AuthDataStore
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -28,6 +30,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
 import java.util.concurrent.ConcurrentHashMap
@@ -41,7 +44,13 @@ class MyCalendarViewModel @Inject constructor(
 ): ViewModel() {
     private val selectedDay = MutableStateFlow<LocalDate?>(LocalDate.now())
 
-    private val _slotDuration = MutableStateFlow<Int>(60)
+    private val _defaultBlockedStartLocale = MutableStateFlow<Set<LocalDateTime>>(emptySet())
+    val defaultBlockedStartLocale: StateFlow<Set<LocalDateTime>> = _defaultBlockedStartLocale.asStateFlow()
+
+    private val _selectedStartLocale = MutableStateFlow<Set<LocalDateTime>>(emptySet())
+    val selectedStartLocale: StateFlow<Set<LocalDateTime>> = _selectedStartLocale.asStateFlow()
+
+    private val _slotDuration = MutableStateFlow<Int>(30)
     val slotDuration: MutableStateFlow<Int> = _slotDuration
 
     private val refreshTick = MutableStateFlow(0)
@@ -146,6 +155,11 @@ class MyCalendarViewModel @Inject constructor(
 
                     cache[key] = result
                     emit(result)
+
+                    if(result is FeatureState.Success) {
+                        syncBlockedSelection(day, result.data)
+                    }
+
                 }.catch { e ->
                     emit(FeatureState.Error(e))
                 }
@@ -155,6 +169,33 @@ class MyCalendarViewModel @Inject constructor(
                 started = SharingStarted.WhileSubscribed(5_000),
                 initialValue = FeatureState.Loading
             )
+
+    private fun Set<LocalDateTime>.withoutDay(day: LocalDate): Set<LocalDateTime> =
+        this.filterNot { it.toLocalDate() == day }.toSet()
+
+    private fun syncBlockedSelection(day: LocalDate, events: CalendarEvents) {
+        val blocked = events.blockedStartLocale()
+        _defaultBlockedStartLocale.update { current ->
+            current
+                .withoutDay(day)
+                .plus(blocked)
+        }
+        _selectedStartLocale.update { current ->
+            current
+                .withoutDay(day)
+                .plus(blocked)
+        }
+    }
+
+    fun setBlockDate(startDate: LocalDateTime) {
+        _selectedStartLocale.update { current ->
+            if(startDate in current) current -startDate else current + startDate
+        }
+    }
+
+    fun resetSelectedLocalDates() {
+        _selectedStartLocale.value = _defaultBlockedStartLocale.value
+    }
 
     fun setDay(day: LocalDate) {
         selectedDay.value = day

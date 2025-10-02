@@ -1,6 +1,7 @@
 package com.example.scrollbooker.entity.booking.calendar.data.mappers
 
 import com.example.scrollbooker.core.enums.AppointmentChannelEnum
+import com.example.scrollbooker.core.util.parseDateTimeStringToLocalDateTime
 import com.example.scrollbooker.entity.booking.calendar.data.remote.CalendarEventsDayDto
 import com.example.scrollbooker.entity.booking.calendar.data.remote.CalendarEventsDto
 import com.example.scrollbooker.entity.booking.calendar.data.remote.CalendarEventsInfoDto
@@ -15,8 +16,8 @@ import com.example.scrollbooker.entity.user.userSocial.data.mappers.toDomain
 
 fun CalendarEventsDto.toDomain(): CalendarEvents {
     return CalendarEvents(
-        minSlotTime = minSlotTime,
-        maxSlotTime = maxSlotTime,
+        minSlotTime = parseDateTimeStringToLocalDateTime(minSlotTime),
+        maxSlotTime = parseDateTimeStringToLocalDateTime(maxSlotTime),
         days = days.map { it.toDomain() }
     )
 }
@@ -33,8 +34,8 @@ fun CalendarEventsDayDto.toDomain(): CalendarEventsDay {
 fun CalendarEventsSlotDto.toDomain(): CalendarEventsSlot {
     return CalendarEventsSlot(
         id = id,
-        startDateLocale = startDateLocale,
-        endDateLocale = endDateLocale,
+        startDateLocale = parseDateTimeStringToLocalDateTime(startDateLocale),
+        endDateLocale = parseDateTimeStringToLocalDateTime(endDateLocale),
         startDateUtc = startDateUtc,
         endDateUtc = endDateUtc,
         isBooked = isBooked,
@@ -50,7 +51,7 @@ fun CalendarEventsInfoDto.toDomain(): CalendarEventsInfo {
         channel = AppointmentChannelEnum.fromKey(channel),
         serviceName = serviceName,
         product = product.toDomain(),
-        customer = customer.toDomain(),
+        customer = customer?.toDomain(),
         message = message
     )
 }

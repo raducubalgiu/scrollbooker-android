@@ -3,6 +3,7 @@ package com.example.scrollbooker.ui.search.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,12 +33,10 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
-import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.ui.search.SheetStage
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.bodyLarge
-import com.example.scrollbooker.ui.theme.titleLarge
 import com.example.scrollbooker.ui.theme.titleMedium
 import kotlinx.coroutines.Job
 
@@ -48,6 +48,9 @@ fun SearchHeader(
     sheetValue: SheetStage,
     onMapToggle: () -> Job
 ) {
+    val isSheetCollapsed = sheetValue == SheetStage.Collapsed
+    val interactionSource = remember { MutableInteractionSource() }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -107,14 +110,21 @@ fun SearchHeader(
                         color = Divider,
                         shape = CircleShape
                     )
-                    .clickable { onMapToggle() },
+                    .clickable(
+                        onClick = { onMapToggle() },
+                        indication = null,
+                        interactionSource = interactionSource
+                    ),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     modifier = Modifier
                         .padding(SpacingM)
                         .size(22.5.dp),
-                    painter = painterResource(R.drawable.ic_map_outline),
+                    painter = painterResource(
+                        if(isSheetCollapsed) R.drawable.ic_map_outline
+                        else R.drawable.ic_list_bullet_outline
+                    ),
                     contentDescription = null
                 )
             }

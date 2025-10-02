@@ -1,16 +1,15 @@
 package com.example.scrollbooker.entity.booking.calendar.domain.model
 
 import com.example.scrollbooker.core.enums.AppointmentChannelEnum
-import com.example.scrollbooker.core.util.parseLocalTimeFromLocalDateTimeString
-import com.example.scrollbooker.core.util.parseLocalTimeFromTimeString
+import com.example.scrollbooker.core.util.parseTimeStringFromLocalDateTimeString
 import com.example.scrollbooker.entity.nomenclature.currency.domain.model.Currency
 import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
-import org.threeten.bp.LocalTime
+import org.threeten.bp.LocalDateTime
 import java.math.BigDecimal
 
 data class CalendarEvents(
-    val minSlotTime: String?,
-    val maxSlotTime: String?,
+    val minSlotTime: LocalDateTime?,
+    val maxSlotTime: LocalDateTime?,
     val days: List<CalendarEventsDay>
 )
 
@@ -23,8 +22,8 @@ data class CalendarEventsDay(
 
 data class CalendarEventsSlot(
     val id: Int?,
-    val startDateLocale: String,
-    val endDateLocale: String,
+    val startDateLocale: LocalDateTime?,
+    val endDateLocale: LocalDateTime?,
     val startDateUtc: String,
     val endDateUtc: String,
     val isBooked: Boolean,
@@ -34,11 +33,11 @@ data class CalendarEventsSlot(
 )
 
 data class CalendarEventsInfo(
-    val currency: Currency,
+    val currency: Currency?,
     val channel: AppointmentChannelEnum?,
     val serviceName: String,
     val product: CalendarEventsProduct,
-    val customer: UserSocial,
+    val customer: UserSocial?,
     val message: String?
 )
 
@@ -49,26 +48,21 @@ data class CalendarEventsProduct(
     val productDiscount: BigDecimal
 )
 
+fun CalendarEvents.blockedStartLocale(): Set<LocalDateTime> =
+    days.asSequence()
+        .flatMap { it.slots.asSequence() }
+        .filter { it.isBlocked }
+        .map { it.startDateLocale }
+        .filterNotNull()
+        .toSet()
+
 data class SlotTimeBounds(
-    val startTime: LocalTime,
-    val endTime: LocalTime
+    val start: String,
+    val end: String
 )
 
-data class CalendarEventsTimeBounds(
-    val minSlotTime: LocalTime,
-    val maxSlotTime: LocalTime
-)
-
-fun CalendarEvents.timeFromLocale(): CalendarEventsTimeBounds? =
-    if(minSlotTime != null && maxSlotTime != null) {
-        CalendarEventsTimeBounds(
-            minSlotTime = parseLocalTimeFromTimeString(minSlotTime),
-            maxSlotTime = parseLocalTimeFromTimeString(maxSlotTime)
-        )
-    } else { null }
-
-fun CalendarEventsSlot.timeFromLocale(): SlotTimeBounds =
+fun CalendarEventsSlot.toTime(): SlotTimeBounds =
     SlotTimeBounds(
-        startTime = parseLocalTimeFromLocalDateTimeString(startDateLocale),
-        endTime = parseLocalTimeFromLocalDateTimeString(endDateLocale)
+        start = parseTimeStringFromLocalDateTimeString(startDateLocale),
+        end = parseTimeStringFromLocalDateTimeString(endDateLocale)
     )

@@ -6,10 +6,10 @@ import java.math.BigDecimal
 
 data class CalendarEventsDto(
     @SerializedName("min_slot_time")
-    val minSlotTime: String?,
+    val minSlotTime: String,
 
     @SerializedName("max_slot_time")
-    val maxSlotTime: String?,
+    val maxSlotTime: String,
 
     val days: List<CalendarEventsDayDto>
 )
@@ -54,13 +54,13 @@ data class CalendarEventsSlotDto(
 )
 
 data class CalendarEventsInfoDto(
-    val currency: Currency,
+    val currency: Currency?,
     val channel: String,
 
     @SerializedName("service_name")
     val serviceName: String,
     val product: CalendarEventsProductDto,
-    val customer: UserSocialDto,
+    val customer: UserSocialDto?,
     val message: String?
 )
 

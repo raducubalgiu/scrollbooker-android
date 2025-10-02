@@ -16,7 +16,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,15 +33,16 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.displayDatePeriod
 import com.example.scrollbooker.core.util.displayShortDayOfWeek
-import com.example.scrollbooker.entity.booking.calendar.domain.model.timeFromLocale
 import com.example.scrollbooker.ui.modules.calendar.components.CalendarDayTab
 import com.example.scrollbooker.ui.modules.calendar.components.CalendarHeader
-import com.example.scrollbooker.ui.myBusiness.myCalendar.components.CalendarDurationSlot
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.CalendarBlockAction
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.CalendarHeaderActions
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.DayTimeline
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
+import timber.log.Timber
 import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -49,8 +53,11 @@ fun MyCalendarScreen(
 ) {
     val headerState by viewModel.calendarHeader.collectAsState()
     val slotDuration by viewModel.slotDuration.collectAsState()
-
+    val defaultBlockedLocalDates by viewModel.defaultBlockedStartLocale.collectAsState()
+    val blockedLocalDates by viewModel.selectedStartLocale.collectAsState()
     val calendarEvents by viewModel.calendarEvents.collectAsState()
+
+    var isBlocking by remember { mutableStateOf(false) }
 
     val locale = Locale("ro")
     val coroutineScope = rememberCoroutineScope()
@@ -60,16 +67,17 @@ fun MyCalendarScreen(
     }
 
     Scaffold(
-        topBar = {
-            Header(
-                title = stringResource(R.string.calendar),
-                onBack = onBack
-            )
+        topBar = { Header(title = stringResource(R.string.calendar), onBack = onBack) },
+        bottomBar = { if(isBlocking) {
+            CalendarBlockAction(
+                isEnabled = defaultBlockedLocalDates != blockedLocalDates,
+                onBlockConfirm = {  }
+            ) }
         }
     ) { innerPadding ->
         Box(modifier = Modifier
             .fillMaxSize()
-            .padding(top = innerPadding.calculateTopPadding())
+            .padding(innerPadding)
         ) {
             when(headerState) {
                 is FeatureState.Error -> ErrorScreen()
@@ -116,10 +124,13 @@ fun MyCalendarScreen(
                     }
 
                     Column(modifier = Modifier.fillMaxSize()) {
-                        CalendarDurationSlot(
-                            label = "Interval",
-                            options = durations,
-                            selectedSlot = slotDuration.toString(),
+                        CalendarHeaderActions(
+                            slotDuration = slotDuration.toString(),
+                            isBlocking = isBlocking,
+                            onIsBlocking = {
+                                if(isBlocking) viewModel.resetSelectedLocalDates()
+                                isBlocking = !isBlocking
+                            },
                             onSlotChange = { viewModel.setSlotDuration(it) }
                         )
 
@@ -183,18 +194,24 @@ fun MyCalendarScreen(
                                 contentAlignment = Alignment.TopStart
                             ) {
                                 when(val events = calendarEvents) {
-                                    is FeatureState.Error -> { ErrorScreen() }
-                                    is FeatureState.Loading -> { LoadingScreen() }
+                                    is FeatureState.Error -> ErrorScreen()
+                                    is FeatureState.Loading -> LoadingScreen()
                                     is FeatureState.Success -> {
-                                        val startEnd = events.data.timeFromLocale()
+                                        val calendarEvents = events.data
                                         val slots = events.data.days.first().slots
 
-                                        if(startEnd != null) {
+                                        val dayStart = calendarEvents.minSlotTime?.toLocalTime()
+                                        val dayEnd = calendarEvents.maxSlotTime?.toLocalTime()
+
+                                        if(dayStart != null && dayEnd != null) {
                                             DayTimeline(
                                                 slotDuration = slotDuration,
                                                 slots = slots,
-                                                dayStart = startEnd.minSlotTime,
-                                                dayEnd = startEnd.maxSlotTime
+                                                dayStart = dayStart,
+                                                dayEnd = dayEnd,
+                                                isBlocking = isBlocking,
+                                                blockedLocalDates = blockedLocalDates,
+                                                onBlock = { viewModel.setBlockDate(it) }
                                             )
                                         }
                                     }
