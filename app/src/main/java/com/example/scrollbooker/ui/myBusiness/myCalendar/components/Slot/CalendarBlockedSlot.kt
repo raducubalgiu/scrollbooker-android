@@ -7,7 +7,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.ui.theme.Error
@@ -21,7 +20,7 @@ fun CalendarBlockedSlot(message: String?) {
     ) {
         Text(
             text = message ?: stringResource(R.string.blocked),
-            color = Color.Red
+            color = Error
         )
     }
 

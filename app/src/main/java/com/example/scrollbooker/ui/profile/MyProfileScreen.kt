@@ -103,7 +103,8 @@ fun MyProfileScreen(
                 currentRoute = MainRoute.MyProfile.route,
                 onChangeTab = onChangeTab
             )
-        }
+        },
+        containerColor = Background
     ) { innerPadding ->
         Column(modifier = Modifier
             .fillMaxSize()

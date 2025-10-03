@@ -1,6 +1,4 @@
 package com.example.scrollbooker.core.util
-
-import okhttp3.internal.format
 import org.threeten.bp.Duration
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
@@ -22,6 +20,10 @@ fun parseDateTimeStringToLocalDateTime(value: String): LocalDateTime? {
         Timber.e("ERROR on Parsing DateTimeString from LocalDateTime: $e")
         null
     }
+}
+
+fun LocalDate.toIsoString(): String {
+    return this.format(DateTimeFormatter.ISO_LOCAL_DATE)
 }
 
 // "2025-09-30T15:30:00" -> LocalTime(15:30)

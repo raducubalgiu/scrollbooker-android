@@ -10,8 +10,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -19,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,12 +42,15 @@ import com.example.scrollbooker.ui.modules.calendar.components.CalendarHeader
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.CalendarBlockAction
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.CalendarHeaderActions
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.DayTimeline
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.sheets.BlockSlotsSheet
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
+import timber.log.Timber
 import java.util.Locale
 
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MyCalendarScreen(
@@ -55,8 +62,10 @@ fun MyCalendarScreen(
     val defaultBlockedLocalDates by viewModel.defaultBlockedStartLocale.collectAsState()
     val blockedLocalDates by viewModel.selectedStartLocale.collectAsState()
     val calendarEvents by viewModel.calendarEvents.collectAsState()
+    val selectedDay by viewModel.selectedDay.collectAsState()
 
-    var isBlocking by remember { mutableStateOf(false) }
+    var message by rememberSaveable { mutableStateOf("") }
+    var isBlocking by rememberSaveable { mutableStateOf(false) }
 
     val locale = Locale("ro")
     val coroutineScope = rememberCoroutineScope()
@@ -65,12 +74,31 @@ fun MyCalendarScreen(
         viewModel.setDay(day)
     }
 
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true,)
+    val scope = rememberCoroutineScope()
+
+    if (sheetState.isVisible) {
+        BlockSlotsSheet(
+            message = message,
+            sheetState = sheetState,
+            slotCount = blockedLocalDates.size - defaultBlockedLocalDates.size,
+            selectedSlots = blockedLocalDates - defaultBlockedLocalDates,
+            selectedDay = selectedDay,
+            onDismiss = { scope.launch { sheetState.hide() } },
+            onMessageChange = { message = it }
+        )
+    }
+
     Scaffold(
         topBar = { Header(title = stringResource(R.string.calendar), onBack = onBack) },
         bottomBar = { if(isBlocking) {
             CalendarBlockAction(
                 isEnabled = defaultBlockedLocalDates != blockedLocalDates,
-                onBlockConfirm = {  }
+                onCancel = {
+                    viewModel.resetSelectedLocalDates()
+                    isBlocking = false
+                },
+                onBlockConfirm = { scope.launch { sheetState.show() } }
             ) }
         }
     ) { innerPadding ->
@@ -127,8 +155,7 @@ fun MyCalendarScreen(
                             slotDuration = slotDuration.toString(),
                             isBlocking = isBlocking,
                             onIsBlocking = {
-                                if(isBlocking) viewModel.resetSelectedLocalDates()
-                                isBlocking = !isBlocking
+                                if(!isBlocking) isBlocking = true
                             },
                             onSlotChange = { viewModel.setSlotDuration(it) }
                         )

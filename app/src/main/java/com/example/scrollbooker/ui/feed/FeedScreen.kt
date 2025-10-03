@@ -57,6 +57,7 @@ import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
 import com.example.scrollbooker.ui.feed.components.FeedTabs
 import com.example.scrollbooker.ui.modules.posts.components.PostBottomBar
+import com.example.scrollbooker.ui.modules.posts.components.PostShimmer
 import com.example.scrollbooker.ui.modules.posts.components.postOverlay.PostOverlay
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import kotlinx.coroutines.FlowPreview
@@ -185,6 +186,10 @@ fun FeedScreen(
                                 val playerState by feedViewModel.getPlayerState(post.id)
                                     .collectAsState()
 
+                                if (playerState.isBuffering || !playerState.isPlaying) {
+                                    PostShimmer()
+                                }
+
                                 Box(
                                     modifier = Modifier
                                         .fillMaxSize()
@@ -194,14 +199,6 @@ fun FeedScreen(
                                             onClick = { feedViewModel.togglePlayer(post.id) }
                                         )
                                 ) {
-                                    if (playerState.isBuffering) {
-                                        CircularProgressIndicator(
-                                            modifier = Modifier
-                                                .size(50.dp)
-                                                .align(Alignment.Center),
-                                            color = Color.White.copy(0.5f)
-                                        )
-                                    }
 
                                     AndroidView(
                                         factory = { context ->

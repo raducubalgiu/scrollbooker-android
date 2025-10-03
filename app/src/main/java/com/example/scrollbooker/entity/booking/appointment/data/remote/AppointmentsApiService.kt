@@ -27,4 +27,9 @@ interface AppointmentsApiService {
     suspend fun cancelAppointment(
         @Body request: AppointmentCancelRequest
     )
+
+    @POST("appointments/block-appointments")
+    suspend fun blockAppointments(
+        @Body request: List<AppointmentBlockRequest>
+    )
 }

@@ -108,7 +108,7 @@
     <string name="allMessagesAreComingToOurTeam">Toate mesajele ajung direct la echipa noastră și ne ajută să facem aplicația mai bună.</string>
     <string name="pleaseGiveUseAllTheDetails">Te rugăm să oferi cât mai multe detalii (ex. ce acțiune făceai, ce s-a intamplat, pe ce ecran erai).</string>
     <string name="thankYouForHelp">"Îți mulțumim pentru ajutor!"</string>
-    <string name="minLengthValidationMessage">Acest câmp trebuie să aibă %1$d caractere</string>
+    <string name="minLengthValidationMessage">Acest câmp trebuie să aibă minim %1$d caractere</string>
     <string name="maxLengthValidationMessage">Acest câmp este limitat la %1$d caractere</string>
     <string name="searchEmployee">Caută angajat</string>
     <string name="selectEmployee">Selectează angajat</string>
@@ -123,7 +123,8 @@
     <string name="sunday">Duminică</string>
     <string name="profession">Profesie</string>
     <string name="myProfession">Profesia mea</string>
-    <string name="addComment">Adaugă un comentariu</string>
+    <string name="addComment">Adaugă un comentariu ...</string>
+    <string name="addMessage">Adaugă un mesaj ...</string>
     <string name="rating_1">Nu mi-a plăcut deloc</string>
     <string name="rating_2">Nu prea mi-a plăcut</string>
     <string name="rating_3">A fost ok</string>
@@ -262,4 +263,13 @@
     <string name="searchAddress">Caută adresa</string>
     <string name="blocked">Blocat</string>
     <string name="block">Blochează</string>
+    <string name="slot">Slot</string>
+    <string name="slots">Sloturi</string>
+    <string name="blockSlot">Blochează slotul</string>
+    <string name="blockSelectedSlots">Blochează sloturile selectate</string>
+    <string name="reason">Motiv</string>
+    <string name="reason_vacation">Concediu de odihnă</string>
+    <string name="reason_medical_leave">Concediu medical</string>
+    <string name="reason_doctor_appointment">Programare la medic</string>
+    <string name="reason_legal_day_off">Zi legală liberă</string>
 </resources>

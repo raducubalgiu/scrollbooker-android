@@ -1,5 +1,4 @@
 package com.example.scrollbooker.ui.profile.edit
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
@@ -20,7 +19,6 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.checkLength
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
-import com.example.scrollbooker.ui.theme.Background
 
 @Composable
 fun EditBioScreen(
@@ -33,7 +31,9 @@ fun EditBioScreen(
     var newBio by rememberSaveable { mutableStateOf(user?.bio ?: "") }
     val state = viewModel.editState.collectAsState().value
 
-    val checkBio = checkLength(LocalContext.current, newBio, maxLength = 100)
+    val maxLength = 100
+
+    val checkBio = checkLength(LocalContext.current, newBio, maxLength = maxLength)
     val isInputValid = checkBio.isNullOrBlank()
 
     val isLoading = state == FeatureState.Loading
@@ -71,7 +71,8 @@ fun EditBioScreen(
             isError = isError,
             isEnabled = !isLoading,
             isInputValid = isInputValid,
-            errorMessage = checkBio.toString()
+            errorMessage = checkBio.toString(),
+            maxLength = maxLength
         )
     }
 }

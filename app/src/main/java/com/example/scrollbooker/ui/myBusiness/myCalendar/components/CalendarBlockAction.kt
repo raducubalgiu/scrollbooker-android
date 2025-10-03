@@ -7,12 +7,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
@@ -23,10 +22,12 @@ import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
+import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable
 fun CalendarBlockAction(
     isEnabled: Boolean,
+    onCancel: () -> Unit,
     onBlockConfirm: () -> Unit
 ) {
     Box(modifier = Modifier
@@ -44,22 +45,24 @@ fun CalendarBlockAction(
             MainButton(
                 modifier = Modifier.weight(0.5f),
                 fullWidth = false,
-                onClick = {},
+                onClick = onCancel,
                 title = stringResource(R.string.cancel),
-                colors = ButtonColors(
-                    containerColor = Error.copy(alpha = 0.1f),
-                    contentColor = Color.Red,
-                    disabledContainerColor = Divider,
-                    disabledContentColor = OnSurfaceBG
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = SurfaceBG,
+                    contentColor = OnSurfaceBG
                 )
             )
             Spacer(Modifier.width(SpacingS))
             MainButton(
                 modifier = Modifier.weight(0.5f),
                 fullWidth = false,
-                onClick = {},
+                onClick = onBlockConfirm,
                 enabled = isEnabled,
-                title = stringResource(R.string.block)
+                title = stringResource(R.string.block),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Error.copy(alpha = 0.2f),
+                    contentColor = Error
+                )
             )
         }
     }

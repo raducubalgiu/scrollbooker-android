@@ -3,6 +3,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.example.scrollbooker.entity.booking.appointment.data.mappers.toDto
+import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentBlockRequest
 import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentCancelRequest
 import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentPagingSource
 import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentsApiService
@@ -36,5 +37,9 @@ class AppointmentRepositoryImpl @Inject constructor(
     override suspend fun cancelAppointment(appointmentId: Int, message: String) {
         val request = AppointmentCancelRequest(appointmentId, message)
         return apiService.cancelAppointment(request)
+    }
+
+    override suspend fun blockAppointments(request: List<AppointmentBlockRequest>) {
+        return apiService.blockAppointments(request)
     }
 }

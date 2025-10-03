@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
+import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentBlockRequest
+import com.example.scrollbooker.entity.booking.appointment.domain.useCase.BlockAppointmentsUseCase
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEvents
 import com.example.scrollbooker.entity.booking.calendar.domain.model.blockedStartLocale
 import com.example.scrollbooker.entity.booking.calendar.domain.useCase.GetCalendarAvailableDaysUseCase
@@ -41,8 +43,11 @@ class MyCalendarViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
     private val getCalendarAvailableDaysUseCase: GetCalendarAvailableDaysUseCase,
     private val getCalendarEventsUseCase: GetUserCalendarEventsUseCase,
+    private val blockAppointmentsUseCase: BlockAppointmentsUseCase
 ): ViewModel() {
-    private val selectedDay = MutableStateFlow<LocalDate?>(LocalDate.now())
+
+    private val _selectedDay = MutableStateFlow<LocalDate?>(LocalDate.now())
+    val selectedDay: StateFlow<LocalDate?> = _selectedDay.asStateFlow()
 
     private val _defaultBlockedStartLocale = MutableStateFlow<Set<LocalDateTime>>(emptySet())
     val defaultBlockedStartLocale: StateFlow<Set<LocalDateTime>> = _defaultBlockedStartLocale.asStateFlow()
@@ -50,11 +55,13 @@ class MyCalendarViewModel @Inject constructor(
     private val _selectedStartLocale = MutableStateFlow<Set<LocalDateTime>>(emptySet())
     val selectedStartLocale: StateFlow<Set<LocalDateTime>> = _selectedStartLocale.asStateFlow()
 
+    private val _isSaving = MutableStateFlow<Boolean>(false)
+    val isSaving: StateFlow<Boolean> = _isSaving
+
     private val _slotDuration = MutableStateFlow<Int>(30)
     val slotDuration: MutableStateFlow<Int> = _slotDuration
 
     private val refreshTick = MutableStateFlow(0)
-
     private val userIdFlow: Flow<Int?> = authDataStore.getUserId()
         .distinctUntilChanged()
 
@@ -125,9 +132,7 @@ class MyCalendarViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     val calendarHeader: StateFlow<FeatureState<CalendarHeaderState>> = userIdFlow
         .filterNotNull()
-        .flatMapLatest { userId ->
-            getCalendarHeader(userId)
-        }
+        .flatMapLatest { userId -> getCalendarHeader(userId) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, FeatureState.Loading)
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -187,6 +192,34 @@ class MyCalendarViewModel @Inject constructor(
         }
     }
 
+    fun blockAppointments() {
+        viewModelScope.launch {
+            _isSaving.value = true
+
+            val result = withVisibleLoading {
+                blockAppointmentsUseCase(
+                    request = listOf(
+                        AppointmentBlockRequest(
+                            message = TODO(),
+                            startDate = TODO(),
+                            endDate = TODO(),
+                            userId = TODO()
+                        )
+                    )
+                )
+            }
+
+            result
+                .onFailure { e ->
+                    Timber.tag("Appointments").e("ERROR: on blocking appointments $e")
+                    _isSaving.value = false
+                }
+                .onSuccess {
+                    _isSaving.value = false
+                }
+        }
+    }
+
     fun setBlockDate(startDate: LocalDateTime) {
         _selectedStartLocale.update { current ->
             if(startDate in current) current -startDate else current + startDate
@@ -198,7 +231,7 @@ class MyCalendarViewModel @Inject constructor(
     }
 
     fun setDay(day: LocalDate) {
-        selectedDay.value = day
+        _selectedDay.value = day
     }
 
     fun setSlotDuration(duration: String?) {

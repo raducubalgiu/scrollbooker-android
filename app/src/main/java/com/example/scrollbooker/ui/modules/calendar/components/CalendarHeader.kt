@@ -33,6 +33,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
+import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
@@ -83,7 +84,7 @@ fun CalendarHeader(
                     )
                     .clip(CircleShape)
                     .background(
-                        color = if(enableBack) Color(0xFFE8E8E8) else Color.Transparent,
+                        color = if(enableBack) SurfaceBG else Color.Transparent,
                         shape = CircleShape
                     )
                     .clickable(
@@ -115,7 +116,7 @@ fun CalendarHeader(
                     )
                     .clip(CircleShape)
                     .background(
-                        color = if(enableNext) Color(0xFFE8E8E8) else Color.Transparent,
+                        color = if(enableNext) SurfaceBG else Color.Transparent,
                         shape = CircleShape
                     )
                     .clickable(

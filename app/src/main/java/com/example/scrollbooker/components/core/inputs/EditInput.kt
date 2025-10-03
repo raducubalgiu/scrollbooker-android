@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
@@ -18,8 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import com.example.scrollbooker.R
@@ -29,6 +28,7 @@ import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
+import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
 
 @Composable
@@ -44,7 +44,8 @@ fun EditInput(
     isEnabled: Boolean = true,
     leadingIcon: (@Composable () -> Unit)? = null,
     isInputValid: Boolean = true,
-    errorMessage: String = ""
+    errorMessage: String = "",
+    maxLength: Int = 0
 ) {
     TextField(
         modifier = modifier
@@ -55,18 +56,7 @@ fun EditInput(
         leadingIcon = leadingIcon,
         trailingIcon = {
             if(singleLine && value.isNotEmpty()) {
-                Box(modifier = Modifier
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null
-                    ) { if(isEnabled) onValueChange("") }
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_close_circle_solid),
-                        contentDescription = null,
-                        tint = Color.Gray.copy(alpha = 0.7f)
-                    )
-                }
+                EditInputTrailingIcon(isEnabled, onValueChange)
             }
         },
         label = null,
@@ -89,23 +79,68 @@ fun EditInput(
         singleLine = singleLine,
         minLines = minLines,
         maxLines = maxLines,
-        enabled = isEnabled
+        enabled = isEnabled,
+        supportingText = {
+            EditInputSupportingText(maxLength, value, isInputValid, errorMessage)
+        }
     )
+}
 
-    if(!isInputValid) {
-        Column(modifier = Modifier.padding(vertical = BasePadding)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = Icons.Outlined.Warning,
-                    contentDescription = null,
-                    tint = Error
-                )
-                Spacer(Modifier.width(SpacingS))
+@Composable
+private fun EditInputTrailingIcon(
+    isEnabled: Boolean,
+    onValueChange: (String) -> Unit
+) {
+    Box(modifier = Modifier
+        .clickable(
+            interactionSource = remember { MutableInteractionSource() },
+            indication = null
+        ) { if(isEnabled) onValueChange("") }
+    ) {
+        Icon(
+            painter = painterResource(R.drawable.ic_close_circle_solid),
+            contentDescription = null,
+            tint = Color.Gray.copy(alpha = 0.7f)
+        )
+    }
+}
+
+@Composable
+private fun EditInputSupportingText(
+    maxLength: Int,
+    value: String,
+    isInputValid: Boolean,
+    errorMessage: String
+) {
+    Column {
+        Spacer(Modifier.height(BasePadding))
+
+        if(maxLength > 0) {
+            Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
                 Text(
-                    text = errorMessage,
-                    color = Error,
-                    style = bodyMedium
+                    style = bodyLarge,
+                    text = "${value.length} / $maxLength"
                 )
+            }
+        }
+
+        Spacer(Modifier.height(BasePadding))
+
+        if (!isInputValid) {
+            Column(modifier = Modifier.padding(vertical = BasePadding)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Outlined.Warning,
+                        contentDescription = null,
+                        tint = Error
+                    )
+                    Spacer(Modifier.width(SpacingS))
+                    Text(
+                        text = errorMessage,
+                        color = Error,
+                        style = bodyMedium
+                    )
+                }
             }
         }
     }
