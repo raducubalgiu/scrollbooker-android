@@ -1,9 +1,7 @@
 package com.example.scrollbooker.ui.profile
 import BottomBar
 import android.annotation.SuppressLint
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -15,7 +13,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.paging.compose.LazyPagingItems
-import com.example.scrollbooker.components.core.sheet.Sheet
 import com.example.scrollbooker.core.enums.PermissionEnum
 import com.example.scrollbooker.core.enums.has
 import com.example.scrollbooker.core.util.FeatureState
@@ -48,41 +45,11 @@ fun MyProfileScreen(
     val permissionsState by viewModel.permissionsState.collectAsState()
 
     if(menuSheetState.isVisible) {
-        Sheet(
+        ProfileMenuSheet(
             sheetState = menuSheetState,
-            onClose = { scope.launch { menuSheetState.hide() } }
-        ) {
-            ProfileMenuSheet(
-                permissionsState = permissionsState,
-                onNavigateToCreatePost = {
-                    scope.launch {
-                        menuSheetState.hide()
-
-                        if (!menuSheetState.isVisible) {
-                            profileNavigate.toCamera()
-                        }
-                    }
-                },
-                onNavigateToMyBusiness = {
-                    scope.launch {
-                        menuSheetState.hide()
-
-                        if (!menuSheetState.isVisible) {
-                            profileNavigate.toMyBusiness()
-                        }
-                    }
-                },
-                onNavigateToSettings = {
-                    scope.launch {
-                        menuSheetState.hide()
-
-                        if (!menuSheetState.isVisible) {
-                            profileNavigate.toSettings()
-                        }
-                    }
-                },
-            )
-        }
+            profileNavigate = profileNavigate,
+            permissionsState = permissionsState
+        )
     }
 
     val userData = (myProfileData as? FeatureState.Success)?.data
