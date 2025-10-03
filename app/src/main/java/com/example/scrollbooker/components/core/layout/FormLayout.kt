@@ -1,6 +1,4 @@
 package com.example.scrollbooker.components.core.layout
-
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -49,6 +47,16 @@ fun FormLayout(
                     onBack = onBack
                 )
             }
+        },
+        bottomBar = {
+            if(enableBottomAction) {
+                FormLayoutBottomBar(
+                    buttonTitle = buttonTitle,
+                    onNext = onNext,
+                    isEnabled = isEnabled,
+                    isLoading = isLoading
+                )
+            }
         }
     ) { innerPadding ->
         Box(modifier = Modifier
@@ -56,51 +64,55 @@ fun FormLayout(
             .padding(innerPadding)
             .then(modifier)
         ) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column(Modifier.weight(1f)) {
-                    Column(Modifier.padding(horizontal = SpacingXXL)) {
-                        Text(
-                            style = headlineLarge,
-                            color = OnBackground,
-                            fontWeight = FontWeight.ExtraBold,
-                            text = headLine
-                        )
-                        Spacer(Modifier.height(SpacingXXS))
-                        Text(
-                            style = bodyLarge,
-                            fontWeight = FontWeight.Normal,
-                            color = Color.Gray,
-                            text = subHeadLine,
-                        )
-                    }
-                    Spacer(Modifier.height(BasePadding))
-                    content()
-                }
-                if (enableBottomAction) {
-                    HorizontalDivider(
-                        color = Divider,
-                        thickness = 0.55.dp
+            Column(Modifier.fillMaxSize()) {
+                Column(Modifier.padding(horizontal = SpacingXXL)) {
+                    Text(
+                        style = headlineLarge,
+                        color = OnBackground,
+                        fontWeight = FontWeight.ExtraBold,
+                        text = headLine
                     )
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = BasePadding)
-                    ) {
-                        MainButton(
-                            modifier = Modifier.padding(
-                                horizontal = SpacingXXL
-                            ),
-                            title = buttonTitle ?: "",
-                            onClick = { onNext?.invoke() },
-                            enabled = isEnabled,
-                            isLoading = isLoading
-                        )
-                    }
+                    Spacer(Modifier.height(SpacingXXS))
+                    Text(
+                        style = bodyLarge,
+                        fontWeight = FontWeight.Normal,
+                        color = Color.Gray,
+                        text = subHeadLine,
+                    )
                 }
+                Spacer(Modifier.height(BasePadding))
+                content()
             }
         }
+    }
+}
+
+@Composable
+private fun FormLayoutBottomBar(
+    buttonTitle: String?,
+    onNext: (() -> Unit)?,
+    isEnabled: Boolean,
+    isLoading: Boolean
+) {
+    HorizontalDivider(
+        color = Divider,
+        thickness = 0.55.dp
+    )
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = BasePadding)
+    ) {
+        MainButton(
+            modifier = Modifier.padding(
+                start = SpacingXXL,
+                end = SpacingXXL,
+                bottom = BasePadding
+            ),
+            title = buttonTitle ?: "",
+            onClick = { onNext?.invoke() },
+            enabled = isEnabled,
+            isLoading = isLoading
+        )
     }
 }
