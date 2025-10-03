@@ -86,7 +86,7 @@ fun BlockSlotsSheet(
     )
     var selectedReason by rememberSaveable { mutableStateOf(BlockReason.OTHER) }
     val isOtherReason = selectedReason == BlockReason.OTHER
-    val maxLength = 140
+    val maxLength = 50
 
     val checkNote = checkLength(LocalContext.current, message, minLength = 3, maxLength = maxLength)
     val isInputValid = checkNote.isNullOrBlank()

@@ -7,7 +7,7 @@ import javax.inject.Inject
 class BlockAppointmentsUseCase @Inject constructor(
     private val repository: AppointmentRepository
 ) {
-    suspend operator fun invoke(request: List<AppointmentBlockRequest>): Result<Unit> = runCatching {
+    suspend operator fun invoke(request: AppointmentBlockRequest): Result<Unit> = runCatching {
         repository.blockAppointments(request)
     }
 }

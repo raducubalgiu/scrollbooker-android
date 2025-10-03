@@ -30,6 +30,6 @@ interface AppointmentsApiService {
 
     @POST("appointments/block-appointments")
     suspend fun blockAppointments(
-        @Body request: List<AppointmentBlockRequest>
+        @Body request: AppointmentBlockRequest
     )
 }

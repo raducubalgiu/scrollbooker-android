@@ -5,12 +5,16 @@ import com.google.gson.annotations.SerializedName
 data class AppointmentBlockRequest(
     val message: String,
 
+    @SerializedName("user_id")
+    val userId: Int,
+
+    val slots: List<AppointmentBlockSlots>
+)
+
+data class AppointmentBlockSlots(
     @SerializedName("start_date")
     val startDate: String,
 
     @SerializedName("end_date")
     val endDate: String,
-
-    @SerializedName("user_id")
-    val userId: String
 )

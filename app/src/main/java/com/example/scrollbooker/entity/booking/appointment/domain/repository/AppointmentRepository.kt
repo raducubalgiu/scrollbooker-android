@@ -10,5 +10,5 @@ interface AppointmentRepository {
     suspend fun createAppointment(appointmentCreate: AppointmentCreate)
     suspend fun getUserAppointmentsNumber(): Int
     suspend fun cancelAppointment(appointmentId: Int, message: String)
-    suspend fun blockAppointments(request: List<AppointmentBlockRequest>)
+    suspend fun blockAppointments(request: AppointmentBlockRequest)
 }

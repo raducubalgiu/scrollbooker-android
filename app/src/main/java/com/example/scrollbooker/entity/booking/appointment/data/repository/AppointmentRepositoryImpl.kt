@@ -39,7 +39,7 @@ class AppointmentRepositoryImpl @Inject constructor(
         return apiService.cancelAppointment(request)
     }
 
-    override suspend fun blockAppointments(request: List<AppointmentBlockRequest>) {
+    override suspend fun blockAppointments(request: AppointmentBlockRequest) {
         return apiService.blockAppointments(request)
     }
 }
