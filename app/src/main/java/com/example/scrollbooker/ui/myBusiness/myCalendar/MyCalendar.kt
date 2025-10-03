@@ -42,7 +42,9 @@ import com.example.scrollbooker.ui.modules.calendar.components.CalendarHeader
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.CalendarBlockAction
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.CalendarHeaderActions
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.DayTimeline
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.sheets.BlockSlotsAction
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.sheets.BlockSlotsSheet
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.sheets.BlockSlotsSheetState
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
 import kotlinx.coroutines.launch
@@ -59,10 +61,13 @@ fun MyCalendarScreen(
 ) {
     val headerState by viewModel.calendarHeader.collectAsState()
     val slotDuration by viewModel.slotDuration.collectAsState()
+
     val defaultBlockedLocalDates by viewModel.defaultBlockedStartLocale.collectAsState()
     val blockedLocalDates by viewModel.selectedStartLocale.collectAsState()
+
     val calendarEvents by viewModel.calendarEvents.collectAsState()
     val selectedDay by viewModel.selectedDay.collectAsState()
+    val isSaving by viewModel.isSaving.collectAsState()
 
     var message by rememberSaveable { mutableStateOf("") }
     var isBlocking by rememberSaveable { mutableStateOf(false) }
@@ -74,18 +79,33 @@ fun MyCalendarScreen(
         viewModel.setDay(day)
     }
 
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true,)
     val scope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true,)
+    val slotCount = blockedLocalDates.size - defaultBlockedLocalDates.size
+    val selectedSlots = blockedLocalDates - defaultBlockedLocalDates
+
+    val sheetUIState = BlockSlotsSheetState(
+        message = message,
+        slotCount = slotCount,
+        selectedSlots = selectedSlots,
+        selectedDay = selectedDay,
+        isSaving = isSaving
+    )
 
     if (sheetState.isVisible) {
         BlockSlotsSheet(
-            message = message,
             sheetState = sheetState,
-            slotCount = blockedLocalDates.size - defaultBlockedLocalDates.size,
-            selectedSlots = blockedLocalDates - defaultBlockedLocalDates,
-            selectedDay = selectedDay,
-            onDismiss = { scope.launch { sheetState.hide() } },
-            onMessageChange = { message = it }
+            state = sheetUIState,
+            onAction = { action ->
+                when(action) {
+                    is BlockSlotsAction.Confirm -> {
+                        viewModel.blockAppointments(message)
+                        isBlocking = false
+                    }
+                    is BlockSlotsAction.Dismiss -> scope.launch { sheetState.hide() }
+                    is BlockSlotsAction.MessageChanged -> { message = action.value }
+                }
+            }
         )
     }
 
@@ -156,6 +176,10 @@ fun MyCalendarScreen(
                             isBlocking = isBlocking,
                             onIsBlocking = {
                                 if(!isBlocking) isBlocking = true
+                                else {
+                                    viewModel.resetSelectedLocalDates()
+                                    isBlocking = false
+                                }
                             },
                             onSlotChange = { viewModel.setSlotDuration(it) }
                         )

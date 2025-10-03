@@ -19,6 +19,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.ui.myBusiness.myCalendar.durations
 import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.SurfaceBG
 
@@ -52,8 +53,8 @@ fun CalendarHeaderActions(
         Column(Modifier.weight(0.5f)) {
             MainButton(
                 colors = ButtonColors(
-                    containerColor = SurfaceBG,
-                    contentColor = OnSurfaceBG,
+                    containerColor = if(isBlocking) Error.copy(alpha = 0.2f) else SurfaceBG,
+                    contentColor = if(isBlocking) Error else OnSurfaceBG,
                     disabledContainerColor = Divider,
                     disabledContentColor = OnSurfaceBG
                 ),

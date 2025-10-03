@@ -27,11 +27,7 @@ fun NavGraphBuilder.settingsGraph(
 ) {
     navigation(
         route = MainRoute.SettingsNavigator.route,
-        startDestination = MainRoute.Settings.route,
-        enterTransition = { slideInFromRight() },
-        exitTransition = { slideOutToLeft() },
-        popEnterTransition = { slideInFromLeft() },
-        popExitTransition = { slideOutToRight() }
+        startDestination = MainRoute.Settings.route
     ) {
         composable(MainRoute.Settings.route) {
             SettingsScreen(

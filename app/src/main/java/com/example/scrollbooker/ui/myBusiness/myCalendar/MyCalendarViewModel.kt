@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentBlockRequest
+import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentBlockSlots
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.BlockAppointmentsUseCase
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEvents
 import com.example.scrollbooker.entity.booking.calendar.domain.model.blockedStartLocale
@@ -43,9 +44,8 @@ class MyCalendarViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
     private val getCalendarAvailableDaysUseCase: GetCalendarAvailableDaysUseCase,
     private val getCalendarEventsUseCase: GetUserCalendarEventsUseCase,
-    private val blockAppointmentsUseCase: BlockAppointmentsUseCase
+    private val blockAppointmentsUseCase: BlockAppointmentsUseCase,
 ): ViewModel() {
-
     private val _selectedDay = MutableStateFlow<LocalDate?>(LocalDate.now())
     val selectedDay: StateFlow<LocalDate?> = _selectedDay.asStateFlow()
 
@@ -192,19 +192,50 @@ class MyCalendarViewModel @Inject constructor(
         }
     }
 
-    fun blockAppointments() {
+    fun blockAppointments(message: String) {
         viewModelScope.launch {
             _isSaving.value = true
 
+            val userId = authDataStore.getUserId().firstOrNull() ?: run {
+                Timber.tag("Appointments").e("ERROR: on Blocking Appointments. User If not found in DataStore")
+                return@launch
+            }
+
+            val state = calendarEvents.value
+
+            if(state !is FeatureState.Success) {
+                _isSaving.value = false
+                return@launch
+            }
+
+            val dayKey: LocalDate = _selectedDay.value ?: run {
+                _isSaving.value = false
+                return@launch
+            }
+
+            val day = state.data.days.firstOrNull { it.day == dayKey.toString() } ?: run {
+                _isSaving.value = false
+                return@launch
+            }
+
+            val slotsDiff: Set<LocalDateTime> =
+                _selectedStartLocale.value - _defaultBlockedStartLocale.value
+
+            val slotsToBlock = day.slots
+                .filter { it.startDateLocale in slotsDiff }
+                .map { slot ->
+                    AppointmentBlockSlots(
+                        startDate = slot.startDateUtc,
+                        endDate = slot.endDateUtc
+                    )
+                }
+
             val result = withVisibleLoading {
                 blockAppointmentsUseCase(
-                    request = listOf(
-                        AppointmentBlockRequest(
-                            message = TODO(),
-                            startDate = TODO(),
-                            endDate = TODO(),
-                            userId = TODO()
-                        )
+                    request = AppointmentBlockRequest(
+                        message = message,
+                        userId = userId,
+                        slots = slotsToBlock
                     )
                 )
             }
@@ -215,6 +246,7 @@ class MyCalendarViewModel @Inject constructor(
                     _isSaving.value = false
                 }
                 .onSuccess {
+                    refreshCalendarEvents()
                     _isSaving.value = false
                 }
         }
@@ -240,7 +272,7 @@ class MyCalendarViewModel @Inject constructor(
         }
     }
 
-    fun refresh() {
+    fun refreshCalendarEvents() {
         val day = selectedDay.value ?: return
         viewModelScope.launch {
             val userId = authDataStore.getUserId().firstOrNull() ?: return@launch

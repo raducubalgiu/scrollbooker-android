@@ -46,11 +46,7 @@ fun NavGraphBuilder.myBusinessGraph(
 ) {
     navigation(
         route = MainRoute.MyBusinessNavigator.route,
-        startDestination = MainRoute.MyBusiness.route,
-        enterTransition = { slideInFromRight() },
-        exitTransition = { slideOutToLeft() },
-        popEnterTransition = { slideInFromLeft() },
-        popExitTransition = { slideOutToRight() }
+        startDestination = MainRoute.MyBusiness.route
     ) {
         composable(MainRoute.MyBusiness.route) {
             val viewModel = hiltViewModel<MyBusinessViewModel>()

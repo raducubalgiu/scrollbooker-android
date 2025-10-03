@@ -4,13 +4,12 @@ import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navigation
+import androidx.navigation.compose.navigation
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.navigation.bottomBar.MainTab
-import com.example.scrollbooker.navigation.graphs.editProfileGraph
 import com.example.scrollbooker.navigation.graphs.myBusinessGraph
 import com.example.scrollbooker.navigation.graphs.settingsGraph
 import com.example.scrollbooker.navigation.routes.MainRoute
@@ -37,19 +36,17 @@ fun MyProfileNavHost(
     NavHost(
         navController = navController,
         startDestination = MainRoute.MyProfileNavigator.route,
-        popEnterTransition = { slideInFromLeft() },
-        popExitTransition = { slideOutToRight() }
     ) {
         navigation(
             route = MainRoute.MyProfileNavigator.route,
             startDestination = MainRoute.MyProfile.route,
+            enterTransition = { slideInFromRight() },
+            exitTransition = { slideOutToLeft() },
+            popEnterTransition = { slideInFromLeft() },
+            popExitTransition = { slideOutToRight() }
         ) {
             composable(
                 route = MainRoute.MyProfile.route,
-                enterTransition = { slideInFromRight() },
-                exitTransition = { slideOutToLeft() },
-                popEnterTransition = { slideInFromLeft() },
-                popExitTransition = { slideOutToRight() }
             ) {
                 val profileNavigate = remember(navController) {
                     ProfileNavigator(

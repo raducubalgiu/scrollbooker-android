@@ -46,8 +46,6 @@ import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.titleLarge
 import com.example.scrollbooker.ui.theme.titleMedium
-import org.threeten.bp.LocalDate
-import org.threeten.bp.LocalDateTime
 
 enum class BlockReason {
     VACATION,
@@ -69,14 +67,12 @@ fun BlockReason.toLabel(): Int = when(this) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BlockSlotsSheet(
-    message: String,
-    onMessageChange: (String) -> Unit,
     sheetState: SheetState,
-    slotCount: Int,
-    selectedDay: LocalDate?,
-    selectedSlots: Set<LocalDateTime>,
-    onDismiss: () -> Unit,
+    state: BlockSlotsSheetState,
+    onAction: (BlockSlotsAction) -> Unit
 ) {
+    val context = LocalContext.current
+
     val reasons = listOf<BlockReason>(
         BlockReason.VACATION,
         BlockReason.MEDICAL_LEAVE,
@@ -88,21 +84,21 @@ fun BlockSlotsSheet(
     val isOtherReason = selectedReason == BlockReason.OTHER
     val maxLength = 50
 
-    val checkNote = checkLength(LocalContext.current, message, minLength = 3, maxLength = maxLength)
+    val checkNote = checkLength(LocalContext.current, state.message, minLength = 3, maxLength = maxLength)
     val isInputValid = checkNote.isNullOrBlank()
 
-    val dayLabel = selectedDay?.toIsoString()
-    val timeLabel = if(slotCount > 1) {
-        selectedSlots.joinToString(" • ") { parseTimeStringFromLocalDateTimeString(it) }
+    val dayLabel = state.selectedDay?.toIsoString()
+    val timeLabel = if(state.slotCount > 1) {
+        state.selectedSlots.joinToString(" • ") { parseTimeStringFromLocalDateTimeString(it) }
     } else {
-        selectedSlots.firstOrNull()?.let { parseTimeStringFromLocalDateTimeString(it) }
+        state.selectedSlots.firstOrNull()?.let { parseTimeStringFromLocalDateTimeString(it) }
     }
 
-    val title = if(slotCount > 1) stringResource(R.string.blockSelectedSlots)
+    val title = if(state.slotCount > 1) stringResource(R.string.blockSelectedSlots)
                 else stringResource(R.string.blockSlot)
 
     ModalBottomSheet(
-        onDismissRequest = onDismiss,
+        onDismissRequest = { onAction(BlockSlotsAction.Dismiss) },
         sheetState = sheetState,
         containerColor = Background,
         dragHandle = {}
@@ -119,7 +115,7 @@ fun BlockSlotsSheet(
         ) {
             SheetHeader(
                 title = "",
-                onClose = onDismiss,
+                onClose = { onAction(BlockSlotsAction.Dismiss) },
                 padding = 0.dp
             )
 
@@ -165,7 +161,12 @@ fun BlockSlotsSheet(
                             enabled = true
                         ),
                         selected = selectedReason == reason,
-                        onClick = { selectedReason = reason },
+                        onClick = {
+                            selectedReason = reason
+                            onAction(
+                                BlockSlotsAction.MessageChanged(context.getString(reason.toLabel()))
+                            )
+                        },
                         label = {
                             Text(text = stringResource(reason.toLabel()))
                         }
@@ -177,10 +178,10 @@ fun BlockSlotsSheet(
 
             AnimatedVisibility(visible = isOtherReason) {
                 EditInput(
-                    value = message,
+                    value = state.message,
                     placeholder = stringResource(R.string.addMessage),
                     onValueChange = {
-                        if (it.length <= maxLength) onMessageChange(it)
+                        if (it.length <= maxLength) onAction(BlockSlotsAction.MessageChanged(it))
                     },
                     singleLine = false,
                     minLines = 3,
@@ -194,9 +195,10 @@ fun BlockSlotsSheet(
             Spacer(Modifier.height(16.dp))
 
             MainButton(
-                onClick = {},
+                onClick = { onAction(BlockSlotsAction.Confirm) },
                 title = stringResource(R.string.block),
-                enabled = if(isOtherReason) isInputValid else true,
+                enabled = if(state.isSaving) false else if(isOtherReason) isInputValid else true,
+                isLoading = state.isSaving,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Error.copy(alpha = 0.2f),
                     contentColor = Error

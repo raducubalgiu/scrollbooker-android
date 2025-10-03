@@ -2,6 +2,7 @@ package com.example.scrollbooker.ui.profile
 import BottomBar
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -106,12 +107,10 @@ fun MyProfileScreen(
         },
         containerColor = Background
     ) { innerPadding ->
-        Column(modifier = Modifier
+        Box(modifier = Modifier
             .fillMaxSize()
-            .background(Background)
             .padding(innerPadding)
         ) {
-
             ProfileLayout(
                 isInitLoading = isInitLoading,
                 profileData = myProfileData,
