@@ -25,10 +25,9 @@ import com.example.scrollbooker.components.customized.ProductCard
 import com.example.scrollbooker.components.customized.ProductCardShimmer
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.LoadMoreSpinner
-import com.example.scrollbooker.entity.booking.products.domain.model.ProductCardEnum
 import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
 import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
-import com.example.scrollbooker.ui.profile.tabs.products.components.EmployeesList
+import com.example.scrollbooker.ui.shared.userProducts.components.EmployeesList
 import com.example.scrollbooker.ui.theme.Divider
 
 @SuppressLint("ConfigurationScreenWidthHeight")
@@ -78,7 +77,6 @@ fun UserProductsServiceTab(
                             productsState[index]?.let { product ->
                                 ProductCard(
                                     product = product,
-                                    mode = ProductCardEnum.CLIENT,
                                     onNavigateToCalendar = onNavigateToCalendar
                                 )
 

@@ -10,6 +10,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,18 +27,21 @@ import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.titleMedium
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.shimmer.rememberShimmerBrush
 import com.example.scrollbooker.components.core.layout.ErrorScreen
+import com.example.scrollbooker.components.core.sheet.SheetHeader
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.formatTime
 import com.example.scrollbooker.core.util.translateDayOfWeek
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
 import com.example.scrollbooker.ui.theme.bodyLarge
+import kotlinx.coroutines.launch
 import org.threeten.bp.Duration
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
@@ -46,10 +52,15 @@ enum class WorkScheduleStatus {
     CLOSED, SHORT, FULL
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UserScheduleSheet(userId: Int) {
+fun UserScheduleSheet(
+    userId: Int,
+    sheetState: SheetState
+) {
     val viewModel: UserScheduleSheetViewModel = hiltViewModel()
     val state by viewModel.schedulesState.collectAsState()
+    val scope = rememberCoroutineScope()
 
     val today = LocalDate.now().dayOfWeek
     val todayName = today.getDisplayName(TextStyle.FULL, Locale.ENGLISH)
@@ -73,85 +84,94 @@ fun UserScheduleSheet(userId: Int) {
         viewModel.setUserId(userId)
     }
 
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .padding(bottom = SpacingXL)
+    ModalBottomSheet(
+        sheetState = sheetState,
+        onDismissRequest = { scope.launch { sheetState.hide() } }
     ) {
-        when(state) {
-            is FeatureState.Loading -> {
-                val brush = rememberShimmerBrush()
+        SheetHeader(
+            title = stringResource(R.string.scheduleShort),
+            onClose = { scope.launch { sheetState.hide() } }
+        )
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = SpacingXL)
+        ) {
+            when(state) {
+                is FeatureState.Loading -> {
+                    val brush = rememberShimmerBrush()
 
-                repeat(7) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth()
-                            .padding(
-                                horizontal = BasePadding,
-                                vertical = SpacingM
-                            ),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Spacer(Modifier
-                            .fillMaxWidth(fraction = 0.4f)
-                            .height(BasePadding)
-                            .background(brush)
-                        )
-                        Spacer(Modifier
-                            .fillMaxWidth(fraction = 0.2f)
-                            .height(BasePadding)
-                            .background(brush)
-                        )
-                    }
-                }
-            }
-            is FeatureState.Error -> ErrorScreen()
-            is FeatureState.Success -> {
-                val schedules = (state as FeatureState.Success<List<Schedule>>).data
-
-                schedules.forEach { (_, dayOfWeek, startTime, endTime) ->
-                    val text = if (startTime.isNullOrBlank()) stringResource(R.string.closed)
-                    else "${formatTime(startTime)} - ${formatTime(endTime)}"
-
-                    val isToday = dayOfWeek == todayName
-                    val schedulesStatus = getWorkScheduleStatus(startTime, endTime)
-
-                    val statusBg = when(schedulesStatus) {
-                        WorkScheduleStatus.CLOSED -> Color(0xFFCCCCCC)
-                        WorkScheduleStatus.SHORT -> Color(0xFFFBBF24)
-                        WorkScheduleStatus.FULL -> Color.Green
-                    }
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(
-                                horizontal = BasePadding,
-                                vertical = SpacingM
-                            ),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Row( verticalAlignment = Alignment.CenterVertically) {
-                            Box(
-                                modifier = Modifier
-                                    .clip(CircleShape)
-                                    .width(10.dp)
-                                    .height(10.dp)
-                                    .background(statusBg)
+                    repeat(7) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth()
+                                .padding(
+                                    horizontal = BasePadding,
+                                    vertical = SpacingM
+                                ),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Spacer(Modifier
+                                .fillMaxWidth(fraction = 0.4f)
+                                .height(BasePadding)
+                                .background(brush)
                             )
-                            Spacer(Modifier.width(BasePadding))
-                            Text(
-                                style = titleMedium,
-                                fontWeight = if(isToday) FontWeight.ExtraBold else FontWeight.Normal,
-                                text = translateDayOfWeek(dayOfWeek) ?: dayOfWeek,
-                                color = OnSurfaceBG,
+                            Spacer(Modifier
+                                .fillMaxWidth(fraction = 0.2f)
+                                .height(BasePadding)
+                                .background(brush)
                             )
                         }
-                        Text(
-                            text = text,
-                            style = bodyLarge,
-                            fontWeight = if(isToday) FontWeight.ExtraBold else FontWeight.Normal,
-                        )
+                    }
+                }
+                is FeatureState.Error -> ErrorScreen()
+                is FeatureState.Success -> {
+                    val schedules = (state as FeatureState.Success<List<Schedule>>).data
+
+                    schedules.forEach { (_, dayOfWeek, startTime, endTime) ->
+                        val text = if (startTime.isNullOrBlank()) stringResource(R.string.closed)
+                        else "${formatTime(startTime)} - ${formatTime(endTime)}"
+
+                        val isToday = dayOfWeek == todayName
+                        val schedulesStatus = getWorkScheduleStatus(startTime, endTime)
+
+                        val statusBg = when(schedulesStatus) {
+                            WorkScheduleStatus.CLOSED -> Color(0xFFCCCCCC)
+                            WorkScheduleStatus.SHORT -> Color(0xFFFBBF24)
+                            WorkScheduleStatus.FULL -> Color.Green
+                        }
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    horizontal = BasePadding,
+                                    vertical = SpacingM
+                                ),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Row( verticalAlignment = Alignment.CenterVertically) {
+                                Box(
+                                    modifier = Modifier
+                                        .clip(CircleShape)
+                                        .width(10.dp)
+                                        .height(10.dp)
+                                        .background(statusBg)
+                                )
+                                Spacer(Modifier.width(BasePadding))
+                                Text(
+                                    style = titleMedium,
+                                    fontWeight = if(isToday) FontWeight.ExtraBold else FontWeight.Normal,
+                                    text = translateDayOfWeek(dayOfWeek) ?: dayOfWeek,
+                                    color = OnSurfaceBG,
+                                )
+                            }
+                            Text(
+                                text = text,
+                                style = bodyLarge,
+                                fontWeight = if(isToday) FontWeight.ExtraBold else FontWeight.Normal,
+                            )
+                        }
                     }
                 }
             }

@@ -49,7 +49,6 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
-import com.example.scrollbooker.entity.booking.products.domain.model.ProductCardEnum
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.headlineMedium
@@ -218,7 +217,6 @@ fun BusinessServicesTab() {
             itemsIndexed(products) { index, product ->
                 ProductCard(
                     product =product,
-                    mode = ProductCardEnum.CLIENT,
                     onNavigateToEdit = {},
                     isLoadingDelete = false,
                     onDeleteProduct = {},

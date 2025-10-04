@@ -26,7 +26,6 @@ import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
-import com.example.scrollbooker.entity.booking.products.domain.model.ProductCardEnum
 import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
@@ -38,7 +37,6 @@ import java.math.BigDecimal
 @Composable
 fun ProductCard(
     product: Product,
-    mode: ProductCardEnum,
     onNavigateToEdit: ((Int) -> Unit)? = null,
     isLoadingDelete: Boolean = false,
     onDeleteProduct: ((productId: Int) -> Unit)? = null,
@@ -111,56 +109,52 @@ fun ProductCard(
                     }
                 }
 
-                if(mode == ProductCardEnum.CLIENT) {
-                    MainButtonOutlined(
-                        title = stringResource(R.string.book),
-                        onClick = {
-                            onNavigateToCalendar(
-                                NavigateCalendarParam(
-                                    userId = product.userId,
-                                    slotDuration = product.duration,
-                                    productId = product.id,
-                                    productName = product.name
-                                )
+                MainButtonOutlined(
+                    title = stringResource(R.string.book),
+                    onClick = {
+                        onNavigateToCalendar(
+                            NavigateCalendarParam(
+                                userId = product.userId,
+                                slotDuration = product.duration,
+                                productId = product.id,
+                                productName = product.name
                             )
-                        },
-                    )
-                }
+                        )
+                    },
+                )
             }
 
-            if(mode == ProductCardEnum.OWNER) {
-                Spacer(Modifier.height(BasePadding))
+            Spacer(Modifier.height(BasePadding))
 
-                Row(
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                MainButtonOutlined(
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    MainButtonOutlined(
-                        modifier = Modifier
-                            .weight(0.5f)
-                            .clip(shape = ShapeDefaults.ExtraLarge),
-                        title = stringResource(R.string.edit),
-                        onClick = { onNavigateToEdit?.invoke(product.id) },
-                        icon = painterResource(R.drawable.ic_edit_outline),
-                        iconColor = Color.Gray
-                    )
+                        .weight(0.5f)
+                        .clip(shape = ShapeDefaults.ExtraLarge),
+                    title = stringResource(R.string.edit),
+                    onClick = { onNavigateToEdit?.invoke(product.id) },
+                    icon = painterResource(R.drawable.ic_edit_outline),
+                    iconColor = Color.Gray
+                )
 
-                    Spacer(Modifier.width(SpacingS))
+                Spacer(Modifier.width(SpacingS))
 
-                    MainButtonOutlined(
-                        modifier = Modifier
-                            .weight(0.5f)
-                            .clip(shape = ShapeDefaults.ExtraLarge),
-                        title = stringResource(R.string.delete),
-                        isLoading = isLoadingDelete,
-                        isEnabled = !isLoadingDelete,
-                        onClick = { onDeleteProduct?.invoke(product.id) },
-                        icon = painterResource(R.drawable.ic_delete_outline),
-                        iconColor = Error
-                    )
-                }
+                MainButtonOutlined(
+                    modifier = Modifier
+                        .weight(0.5f)
+                        .clip(shape = ShapeDefaults.ExtraLarge),
+                    title = stringResource(R.string.delete),
+                    isLoading = isLoadingDelete,
+                    isEnabled = !isLoadingDelete,
+                    onClick = { onDeleteProduct?.invoke(product.id) },
+                    icon = painterResource(R.drawable.ic_delete_outline),
+                    iconColor = Error
+                )
             }
         }
     }

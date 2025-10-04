@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.tabs.products.components
+package com.example.scrollbooker.ui.shared.userProducts.components
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Spacer
@@ -16,7 +16,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial

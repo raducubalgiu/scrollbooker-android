@@ -1,10 +1,8 @@
 package com.example.scrollbooker.ui.shared.modules.products
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
@@ -29,7 +27,7 @@ import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
-import com.example.scrollbooker.ui.profile.tabs.products.components.ServiceTab
+import com.example.scrollbooker.ui.shared.userProducts.components.ServiceTab
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnSurfaceBG

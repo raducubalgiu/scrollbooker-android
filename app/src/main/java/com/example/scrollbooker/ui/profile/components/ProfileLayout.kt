@@ -27,15 +27,11 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
-import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
-import com.example.scrollbooker.components.core.sheet.Sheet
-import com.example.scrollbooker.components.core.sheet.SheetHeader
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
@@ -71,17 +67,8 @@ fun ProfileLayout(
     val userId = (profileData as? FeatureState.Success<UserProfile>)?.data?.id
 
     if(scheduleSheetState.isVisible) {
-        Sheet(
-            sheetState = scheduleSheetState,
-            onClose = { scope.launch { scheduleSheetState.hide() } }
-        ) {
-            SheetHeader(
-                title = stringResource(R.string.scheduleShort),
-                onClose = { scope.launch { scheduleSheetState.hide() } }
-            )
-            userId?.let {
-                UserScheduleSheet(userId)
-            }
+        userId?.let {
+            UserScheduleSheet(userId = it, sheetState = scheduleSheetState)
         }
     }
 

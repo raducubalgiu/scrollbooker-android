@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.tabs.products
+package com.example.scrollbooker.ui.shared.userProducts
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -27,13 +25,11 @@ import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.customized.ProductCard
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.LoadMoreSpinner
-import com.example.scrollbooker.entity.booking.products.domain.model.ProductCardEnum
 import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
 import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
 import com.example.scrollbooker.ui.profile.tabs.ProfileTabViewModel
-import com.example.scrollbooker.ui.profile.tabs.products.components.EmployeesList
+import com.example.scrollbooker.ui.shared.userProducts.components.EmployeesList
 import com.example.scrollbooker.ui.theme.Divider
-import androidx.compose.runtime.getValue
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
@@ -87,7 +83,6 @@ fun ProfileServiceProductsTab(
                             productsState[index]?.let { product ->
                                 ProductCard(
                                     product = product,
-                                    mode = ProductCardEnum.CLIENT,
                                     onNavigateToCalendar = onNavigateToCalendar
                                 )
 

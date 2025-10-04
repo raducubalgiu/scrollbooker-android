@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.tabs.products.components
+package com.example.scrollbooker.ui.shared.userProducts.components
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.animateColorAsState

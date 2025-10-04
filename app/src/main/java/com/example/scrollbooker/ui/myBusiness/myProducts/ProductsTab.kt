@@ -28,7 +28,6 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.Dimens.SpacingM
-import com.example.scrollbooker.entity.booking.products.domain.model.ProductCardEnum
 import com.example.scrollbooker.ui.theme.Divider
 
 @Composable
@@ -66,7 +65,6 @@ fun ProductsTab(
                             productsState[index]?.let { product ->
                                 ProductCard(
                                     product = product,
-                                    mode = ProductCardEnum.OWNER,
                                     onNavigateToEdit = onNavigateToEdit,
                                     isLoadingDelete = isSaving && selectedProduct?.id == product.id,
                                     onNavigateToCalendar = {},
