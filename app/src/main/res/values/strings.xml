@@ -228,11 +228,12 @@
     <string name="filter">Filtrează</string>
     <string name="filterAppointments">Filtrează comenzile</string>
     <string name="cancelAppointment">Anulează programarea</string>
-    <string name="cannotArriveToAppointment">Nu mai pot ajunge la programare</string>
-    <string name="foundABetterOffer">Am găsit o ofertă mai bună</string>
-    <string name="bookedByMistake">Am rezervat din greșeală</string>
+    <string name="reasonCancel_cannotArrive">Nu mai pot ajunge la programare</string>
+    <string name="reasonCancel_foundBetterOffer">Am găsit o ofertă mai bună</string>
+    <string name="reasonCancel_bookedByMistake">Am rezervat din greșeală</string>
     <string name="otherReason">Alt motiv</string>
     <string name="cancelReason">Motivul anulării</string>
+    <string name="others">Altele</string>
     <string name="writeCancelReason">Scrie motivul anulării</string>
     <string name="logout">Delogare</string>
     <string name="notFoundAnyResult">Nu a fost găsit nici un rezultat</string>
