@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.components.userProfile
+package com.example.scrollbooker.ui.profile.components.userInfo.components
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,7 +17,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileActionButton
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.Primary
@@ -57,7 +56,7 @@ fun UserProfileActions(
                 )
                 Spacer(Modifier.width(SpacingS))
                 Text(
-                    text = "Calendar",
+                    text = stringResource(R.string.calendar),
                     style = titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = OnBackground

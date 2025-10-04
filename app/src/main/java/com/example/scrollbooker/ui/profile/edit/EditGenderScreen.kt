@@ -22,7 +22,6 @@ import com.example.scrollbooker.components.core.headers.HeaderEdit
 import com.example.scrollbooker.components.core.inputs.InputRadio
 import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.core.enums.GenderTypeEnum
-import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
@@ -62,9 +61,7 @@ fun EditGenderScreen(
             HeaderEdit(
                 onBack = onBack,
                 title = stringResource(R.string.gender),
-                modifier = Modifier.padding(horizontal = BasePadding),
                 onAction = { viewModel.updateGender(newGender) },
-                actionTitle = stringResource(R.string.save),
                 isLoading = isLoading,
                 isEnabled = isEnabled
             )

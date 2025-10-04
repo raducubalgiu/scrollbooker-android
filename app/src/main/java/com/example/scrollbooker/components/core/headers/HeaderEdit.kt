@@ -1,88 +1,35 @@
 package com.example.scrollbooker.components.core.headers
-
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.example.scrollbooker.R
 import com.example.scrollbooker.ui.theme.Divider
-import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun HeaderEdit(
-    modifier: Modifier = Modifier,
     onBack: (() -> Unit)? = null,
     title: String,
-    enableBack: Boolean = true,
     onAction: () -> Unit,
-    actionTitle: String,
+    actionTitle: String? = stringResource(R.string.save),
     isEnabled: Boolean = true,
     isLoading: Boolean = false
 ) {
-
-    Row(
-        modifier = Modifier.fillMaxWidth().then(modifier),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Box(
-            modifier = Modifier
-                .width(100.dp)
-                .height(50.dp)
-                .clickable(
-                    onClick = {
-                        if(onBack != null) {
-                            onBack()
-                        }
-                    },
-                ),
-            contentAlignment = Alignment.CenterStart
-        ) {
-            if(enableBack) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBackIosNew,
-                    tint = OnBackground,
-                    contentDescription = null
-                )
-            }
-        }
-        Box {
-            if (title.isNotEmpty()) {
-                Text(
-                    style = titleMedium,
-                    color = OnBackground,
-                    fontWeight = FontWeight.Bold,
-                    text = title,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
-        }
-        Box (modifier = Modifier
-            .width(100.dp),
-            contentAlignment = Alignment.CenterEnd
-        ) {
+    Header(
+        title = title,
+        onBack = onBack,
+        actions = {
             TextButton(
                 onClick = onAction,
                 enabled = isEnabled && !isLoading,
@@ -103,10 +50,10 @@ fun HeaderEdit(
                     Text(
                         style = titleMedium,
                         fontWeight = FontWeight.Bold,
-                        text = actionTitle
+                        text = actionTitle ?: ""
                     )
                 }
             }
         }
-    }
+    )
 }

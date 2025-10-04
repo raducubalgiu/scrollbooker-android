@@ -1,7 +1,6 @@
 package com.example.scrollbooker.ui.settings.reportProblem.presentation
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,9 +34,7 @@ fun ReportProblemScreen(
         onBack = onBack,
         header = {
             HeaderEdit(
-                modifier = Modifier.padding(horizontal = BasePadding),
                 title = stringResource(R.string.report),
-                actionTitle = stringResource(R.string.save),
                 onBack = onBack,
                 onAction = { viewModel.sendProblem(text) },
                 isLoading = (sendState) is FeatureState.Loading,

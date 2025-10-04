@@ -51,9 +51,7 @@ fun EditFullNameScreen(
             HeaderEdit(
                 onBack = onBack,
                 title = stringResource(R.string.name),
-                modifier = Modifier.padding(horizontal = BasePadding),
                 onAction = { viewModel.updateFullName(newFullName) },
-                actionTitle = stringResource(R.string.save),
                 isLoading = isLoading,
                 isEnabled = isEnabled
             )
