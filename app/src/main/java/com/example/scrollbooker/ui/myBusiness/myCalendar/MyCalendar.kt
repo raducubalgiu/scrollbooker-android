@@ -50,6 +50,9 @@ fun MyCalendarScreen(
     viewModel: MyCalendarViewModel,
     onBack: () -> Unit
 ) {
+    val locale = Locale("ro")
+    val scope = rememberCoroutineScope()
+
     val headerState by viewModel.calendarHeader.collectAsState()
     val slotDuration by viewModel.slotDuration.collectAsState()
 
@@ -63,12 +66,7 @@ fun MyCalendarScreen(
     var message by rememberSaveable { mutableStateOf("") }
     var isBlocking by rememberSaveable { mutableStateOf(false) }
 
-    val locale = Locale("ro")
-    val coroutineScope = rememberCoroutineScope()
-
     fun handleDayChange(day: LocalDate) { viewModel.setDay(day) }
-
-    val scope = rememberCoroutineScope()
 
     val blockSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val settingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -156,11 +154,11 @@ fun MyCalendarScreen(
                     val enableNext = currentWeekIndex < config.totalWeeks - 1
 
                     fun handlePreviousWeek() {
-                        coroutineScope.launch { weekPagerState.animateScrollToPage(currentWeekIndex - 1) }
+                        scope.launch { weekPagerState.animateScrollToPage(currentWeekIndex - 1) }
                     }
 
                     fun handleNextWeek() {
-                        coroutineScope.launch { weekPagerState.animateScrollToPage(currentWeekIndex + 1) }
+                        scope.launch { weekPagerState.animateScrollToPage(currentWeekIndex + 1) }
                     }
 
                     val myCalendarUIState = MyCalendarHeaderState(
@@ -183,7 +181,7 @@ fun MyCalendarScreen(
                                     is MyCalendarHeaderStateAction.HandleNextWeek -> handleNextWeek()
                                     is MyCalendarHeaderStateAction.HandlePreviousWeek -> handlePreviousWeek()
                                     is MyCalendarHeaderStateAction.OnChangeTab -> {
-                                        coroutineScope.launch {
+                                        scope.launch {
                                             handleDayChange(action.date)
                                             dayPagerState.animateScrollToPage(action.index)
                                         }
