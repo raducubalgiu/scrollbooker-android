@@ -4,34 +4,24 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SheetValue
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.iconButton.CustomIconButton
@@ -40,20 +30,17 @@ import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.displayDatePeriod
-import com.example.scrollbooker.core.util.displayShortDayOfWeek
-import com.example.scrollbooker.ui.modules.calendar.components.CalendarDayTab
-import com.example.scrollbooker.ui.modules.calendar.components.CalendarHeader
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.CalendarBlockAction
-import com.example.scrollbooker.ui.myBusiness.myCalendar.components.CalendarHeaderActions
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.DayTimeline
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.MyCalendarHeader
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.MyCalendarHeaderState
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.MyCalendarHeaderStateAction
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.sheets.BlockSlotsAction
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.sheets.BlockSlotsSheet
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.sheets.BlockSlotsSheetState
-import com.example.scrollbooker.ui.theme.OnBackground
-import com.example.scrollbooker.ui.theme.Primary
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.sheets.MyCalendarSettingsSheet
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
-import timber.log.Timber
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -79,46 +66,47 @@ fun MyCalendarScreen(
     val locale = Locale("ro")
     val coroutineScope = rememberCoroutineScope()
 
-    fun handleDayChange(day: LocalDate) {
-        viewModel.setDay(day)
-    }
+    fun handleDayChange(day: LocalDate) { viewModel.setDay(day) }
 
     val scope = rememberCoroutineScope()
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true,)
-    val slotCount = blockedLocalDates.size - defaultBlockedLocalDates.size
-    val selectedSlots = blockedLocalDates - defaultBlockedLocalDates
 
-    val sheetUIState = BlockSlotsSheetState(
+    val blockSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val settingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    val blockSheetUIState = BlockSlotsSheetState(
         message = message,
-        slotCount = slotCount,
-        selectedSlots = selectedSlots,
+        slotCount = blockedLocalDates.size - defaultBlockedLocalDates.size,
+        selectedSlots = blockedLocalDates - defaultBlockedLocalDates,
         selectedDay = selectedDay,
         isSaving = isSaving
     )
 
-    if (sheetState.isVisible) {
+    if (blockSheetState.isVisible) {
         BlockSlotsSheet(
-            sheetState = sheetState,
-            state = sheetUIState,
+            sheetState = blockSheetState,
+            state = blockSheetUIState,
             onAction = { action ->
                 when(action) {
                     is BlockSlotsAction.Confirm -> {
                         viewModel.blockAppointments(message)
                         isBlocking = false
                     }
-                    is BlockSlotsAction.Dismiss -> scope.launch { sheetState.hide() }
+                    is BlockSlotsAction.Dismiss -> scope.launch { blockSheetState.hide() }
                     is BlockSlotsAction.MessageChanged -> { message = action.value }
                 }
             }
         )
     }
 
+    if(settingsSheetState.isVisible) {
+        MyCalendarSettingsSheet(
+            sheetState = settingsSheetState,
+            onDismiss = { scope.launch { settingsSheetState.hide() } }
+        )
+    }
+
     Scaffold(
-        topBar = { Header(
-            title = stringResource(R.string.calendar),
-            onBack = onBack,
-            actions = { HeaderAction() }
-        )},
+        topBar = { ScreenHeader(onBack, onClick = { scope.launch { settingsSheetState.show() } }) },
         bottomBar = { if(isBlocking) {
             CalendarBlockAction(
                 isEnabled = defaultBlockedLocalDates != blockedLocalDates,
@@ -126,8 +114,8 @@ fun MyCalendarScreen(
                     viewModel.resetSelectedLocalDates()
                     isBlocking = false
                 },
-                onBlockConfirm = { scope.launch { sheetState.show() } }
-            ) }
+                onBlockConfirm = { scope.launch { blockSheetState.show() } }
+            )}
         }
     ) { innerPadding ->
         Box(modifier = Modifier
@@ -163,81 +151,56 @@ fun MyCalendarScreen(
                     }
 
                     val currentWeekDates = calendarDays.drop(currentWeekIndex * 7).take(7)
+                    val period = displayDatePeriod(currentWeekDates.first(), currentWeekDates.last(), locale)
                     val enableBack = currentWeekIndex > 0
                     val enableNext = currentWeekIndex < config.totalWeeks - 1
 
                     fun handlePreviousWeek() {
-                        coroutineScope.launch {
-                            weekPagerState.animateScrollToPage(currentWeekIndex - 1)
-                        }
+                        coroutineScope.launch { weekPagerState.animateScrollToPage(currentWeekIndex - 1) }
                     }
 
                     fun handleNextWeek() {
-                        coroutineScope.launch {
-                            weekPagerState.animateScrollToPage(currentWeekIndex + 1)
-                        }
+                        coroutineScope.launch { weekPagerState.animateScrollToPage(currentWeekIndex + 1) }
                     }
 
+                    val myCalendarUIState = MyCalendarHeaderState(
+                        weekPagerState = weekPagerState,
+                        selectedTabIndex = dayPagerState.currentPage,
+                        period = period,
+                        slotDuration = slotDuration,
+                        isBlocking = isBlocking,
+                        enableBack = enableBack,
+                        enableNext = enableNext,
+                        availableDays = availableDays,
+                        calendarDays = calendarDays
+                    )
+
                     Column(modifier = Modifier.fillMaxSize()) {
-                        CalendarHeaderActions(
-                            slotDuration = slotDuration.toString(),
-                            isBlocking = isBlocking,
-                            onIsBlocking = {
-                                if(!isBlocking) isBlocking = true
-                                else {
-                                    viewModel.resetSelectedLocalDates()
-                                    isBlocking = false
+                        MyCalendarHeader(
+                            state = myCalendarUIState,
+                            onAction = { action ->
+                                when(action) {
+                                    is MyCalendarHeaderStateAction.HandleNextWeek -> handleNextWeek()
+                                    is MyCalendarHeaderStateAction.HandlePreviousWeek -> handlePreviousWeek()
+                                    is MyCalendarHeaderStateAction.OnChangeTab -> {
+                                        coroutineScope.launch {
+                                            handleDayChange(action.date)
+                                            dayPagerState.animateScrollToPage(action.index)
+                                        }
+                                    }
+                                    is MyCalendarHeaderStateAction.OnIsBlocking -> {
+                                        if(!isBlocking) isBlocking = true
+                                        else {
+                                            viewModel.resetSelectedLocalDates()
+                                            isBlocking = false
+                                        }
+                                    }
+                                    is MyCalendarHeaderStateAction.OnSlotChange -> {
+                                        viewModel.setSlotDuration(duration = action.slotDuration)
+                                    }
                                 }
                             },
-                            onSlotChange = { viewModel.setSlotDuration(it) }
                         )
-
-                        CalendarHeader(
-                            period = displayDatePeriod(currentWeekDates.first(), currentWeekDates.last(), locale),
-                            enableBack = enableBack,
-                            enableNext = enableNext,
-                            handlePreviousWeek = { handlePreviousWeek() },
-                            handleNextWeek = { handleNextWeek() }
-                        )
-
-                        HorizontalPager(
-                            state = weekPagerState,
-                            pageSize = PageSize.Fill,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(95.dp)
-                                .padding(horizontal = BasePadding),
-                            beyondViewportPageCount = 0
-                        ) { page ->
-                            val weekDates = calendarDays.drop(page * 7).take(7)
-
-                            TabRow(
-                                selectedTabIndex = dayPagerState.currentPage,
-                                modifier = Modifier.fillMaxWidth(),
-                                containerColor = Color.Transparent,
-                                contentColor = OnBackground,
-                                indicator = {},
-                            ) {
-                                weekDates.forEachIndexed { index, date ->
-                                    val isAvailable = availableDays.contains(date) == true
-
-                                    CalendarDayTab(
-                                        date = date,
-                                        isCurrentTab = index == dayPagerState.currentPage,
-                                        onChangeTab = {
-                                            coroutineScope.launch {
-                                                handleDayChange(date)
-                                                dayPagerState.animateScrollToPage(index)
-                                            }
-                                        },
-                                        bgColor = if(dayPagerState.currentPage == index) Primary else Color.Transparent,
-                                        label = displayShortDayOfWeek(date, locale),
-                                        isLoading = false,
-                                        isDayAvailable = isAvailable
-                                    )
-                                }
-                            }
-                        }
 
                         HorizontalPager(
                             state = dayPagerState,
@@ -285,9 +248,18 @@ fun MyCalendarScreen(
 }
 
 @Composable
-private fun HeaderAction() {
-    CustomIconButton(
-        painter = R.drawable.ic_settings_outline,
-        onClick = {}
+private fun ScreenHeader(
+    onBack: () -> Unit,
+    onClick: () -> Unit
+) {
+    Header(
+        title = stringResource(R.string.calendar),
+        onBack = onBack,
+        actions = {
+            CustomIconButton(
+                painter = R.drawable.ic_settings_outline,
+                onClick = onClick
+            )
+        }
     )
 }
