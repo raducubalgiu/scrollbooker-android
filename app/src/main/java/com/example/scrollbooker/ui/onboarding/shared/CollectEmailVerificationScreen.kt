@@ -12,7 +12,6 @@ fun CollectEmailVerificationScreen(
         headLine = "",
         subHeadLine = "",
         buttonTitle = "Verify",
-        enableBack = false,
         onNext = onNext
     ) {}
 }

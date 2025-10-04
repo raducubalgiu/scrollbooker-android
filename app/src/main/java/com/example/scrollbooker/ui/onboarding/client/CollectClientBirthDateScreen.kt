@@ -56,7 +56,6 @@ fun CollectClientBirthDateScreen(
         buttonTitle = stringResource(R.string.nextStep),
         isEnabled = isEnabled && !isLoading,
         isLoading = isLoading,
-        enableBack = false,
         onNext = onNext,
     ) {
         val currentYear = LocalDate.now().year

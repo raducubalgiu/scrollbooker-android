@@ -16,7 +16,6 @@ fun Layout(
     modifier: Modifier = Modifier,
     headerTitle: String = "",
     onBack: (() -> Unit)? = null,
-    enableBack: Boolean = true,
     enablePaddingH: Boolean = true,
     header: (@Composable () -> Unit)? = null,
     content: @Composable () -> Unit,
@@ -25,7 +24,6 @@ fun Layout(
         topBar = {
             if(header == null) {
                 Header(
-                    enableBack = enableBack,
                     title = headerTitle,
                     onBack = onBack
                 )

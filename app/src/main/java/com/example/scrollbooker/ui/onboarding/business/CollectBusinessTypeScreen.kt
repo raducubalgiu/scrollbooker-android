@@ -36,7 +36,6 @@ fun CollectBusinessTypeScreen(
 
     FormLayout(
         modifier = Modifier.padding(top = 50.dp),
-        enableBack = false,
         isEnabled = selectedBusinessType != null,
         headLine = stringResource(id = R.string.collectBusinessTypeHeadline),
         subHeadLine = stringResource(id = R.string.collectBusinessTypeSubHeadline),

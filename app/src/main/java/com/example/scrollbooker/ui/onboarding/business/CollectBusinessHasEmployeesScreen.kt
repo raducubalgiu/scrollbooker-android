@@ -61,7 +61,6 @@ fun CollectBusinessHasEmployeesScreen(
         buttonTitle = stringResource(R.string.nextStep),
         isEnabled = !isError && !isLoading,
         isLoading = isLoading,
-        enableBack = false,
         onNext = onNext
     ) {
         Column(

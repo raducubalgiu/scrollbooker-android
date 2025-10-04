@@ -22,7 +22,6 @@ fun CollectClientLocationPermissionScreen(
 
     FormLayout(
         modifier = Modifier.padding(top = 50.dp),
-        enableBack = false,
         isEnabled = true,
         isLoading = isSaving is FeatureState.Loading,
         headLine = stringResource(R.string.locationPermission),

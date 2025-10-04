@@ -5,10 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -19,7 +16,6 @@ import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.core.layout.MessageScreen
-import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.navigation.navigators.InboxNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
@@ -37,10 +33,7 @@ fun InboxScreen(
 
     Scaffold(
         topBar = {
-            Header(
-                title = stringResource(id = R.string.inbox),
-                enableBack = false
-            )
+            Header(title = stringResource(id = R.string.inbox))
         },
         bottomBar = {
             BottomBar(

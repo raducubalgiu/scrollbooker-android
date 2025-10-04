@@ -1,27 +1,15 @@
 package com.example.scrollbooker.components.core.headers
-
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.components.core.iconButton.CustomIconButton
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.titleMedium
@@ -32,18 +20,16 @@ fun Header(
     modifier: Modifier = Modifier,
     onBack: (() -> Unit)? = null,
     title: String = "",
-    enableBack: Boolean = true,
     customTitle: (@Composable () -> Unit)? = null,
-    actions: @Composable (() -> Unit)? = null
+    actions:  @Composable (RowScope.() -> Unit) = {}
 ) {
-    TopAppBar(
+    CenterAlignedTopAppBar(
         modifier = modifier,
         title = {
-            Box(modifier = Modifier
-                .fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                if (title.isNotEmpty()) {
+            if(customTitle != null) {
+                customTitle()
+            } else {
+                title.isNotEmpty().let {
                     Text(
                         style = titleMedium,
                         color = OnBackground,
@@ -51,38 +37,17 @@ fun Header(
                         text = title
                     )
                 }
-                if(customTitle != null) {
-                    customTitle()
-                }
             }
         },
         navigationIcon = {
-            Box(
-                modifier = Modifier
-                    .size(50.dp)
-                    .clickable(
-                        onClick = {
-                            if (onBack != null) {
-                                onBack()
-                            }
-                        },
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                if(enableBack) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBackIosNew,
-                        tint = OnBackground,
-                        contentDescription = null
-                    )
-                }
+            onBack?.let {
+                CustomIconButton(
+                    imageVector = Icons.Default.ArrowBackIosNew,
+                    onClick = onBack
+                )
             }
         },
-        actions = { Box(Modifier.size(50.dp)) {
-            actions
-        } },
+        actions = actions,
         colors = TopAppBarColors(
             containerColor = Background,
             scrolledContainerColor = Background,

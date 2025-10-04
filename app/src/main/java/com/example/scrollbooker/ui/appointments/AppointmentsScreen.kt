@@ -86,12 +86,7 @@ fun AppointmentsScreen(
     }
 
     Scaffold(
-        topBar = {
-            Header(
-                title = stringResource(R.string.appointments),
-                enableBack = false
-            )
-        },
+        topBar = { Header(title = stringResource(R.string.appointments)) },
         bottomBar = {
             BottomBar(
                 appointmentsNumber = appointmentsNumber,

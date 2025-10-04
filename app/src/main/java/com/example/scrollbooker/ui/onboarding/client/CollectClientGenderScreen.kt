@@ -47,7 +47,6 @@ fun CollectClientGenderScreen(
         buttonTitle = stringResource(R.string.nextStep),
         isLoading = isLoading,
         isEnabled = !isLoading,
-        enableBack = false,
         onNext = { onNext(selectedGender) }
     ) {
         LazyColumn {

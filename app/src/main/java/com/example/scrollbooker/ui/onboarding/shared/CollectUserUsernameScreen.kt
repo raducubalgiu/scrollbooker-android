@@ -45,7 +45,6 @@ fun CollectUserUsernameScreen(
 ) {
     FormLayout(
         modifier = Modifier.padding(top = 50.dp),
-        enableBack = false,
         enableBottomAction = false,
         headerTitle = "",
         headLine = stringResource(R.string.usernameTitle),

@@ -27,7 +27,6 @@ import com.example.scrollbooker.ui.theme.headlineLarge
 @Composable
 fun FormLayout(
     modifier: Modifier = Modifier,
-    enableBack: Boolean = true,
     enableBottomAction: Boolean = true,
     isEnabled: Boolean = true,
     isLoading: Boolean = false,
@@ -41,12 +40,7 @@ fun FormLayout(
 ) {
     Scaffold(
         topBar = {
-            if(enableBack) {
-                Header(
-                    title = headerTitle ?: "",
-                    onBack = onBack
-                )
-            }
+            Header(title = headerTitle ?: "", onBack = onBack)
         },
         bottomBar = {
             if(enableBottomAction) {
