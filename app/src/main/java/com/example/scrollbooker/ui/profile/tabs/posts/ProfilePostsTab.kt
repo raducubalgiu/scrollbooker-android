@@ -1,6 +1,7 @@
 package com.example.scrollbooker.ui.profile.tabs.posts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -28,7 +29,7 @@ fun ProfilePostsTab(
     posts: LazyPagingItems<Post>,
     onNavigateToPostDetail: (Int) -> Unit
 ) {
-    Box(modifier = Modifier
+    Column(modifier = Modifier
         .fillMaxSize()
         .padding(top = paddingTop)
     ) {

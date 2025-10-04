@@ -20,6 +20,7 @@ data class AppointmentProduct(
     val name: String,
     val price: BigDecimal,
     val priceWithDiscount: BigDecimal,
+    val duration: Int,
     val discount: BigDecimal,
     val currency: String,
     val exchangeRate: BigDecimal

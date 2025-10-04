@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.example.scrollbooker.navigation.bottomBar.MainTab
+import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
@@ -21,6 +22,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 fun NavGraphBuilder.appointmentsGraph(
+    rootNavController: NavHostController,
     navController: NavHostController,
     appointmentsNumber: Int,
     onChangeTab: (MainTab) -> Unit
@@ -60,7 +62,12 @@ fun NavGraphBuilder.appointmentsGraph(
             AppointmentDetailsScreen(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
-                onGoToCancel = { navController.navigate(MainRoute.AppointmentCancel.route) }
+                onNavigateToCancel = { navController.navigate(MainRoute.AppointmentCancel.route) },
+                onNavigateToBookAgain = {
+                    rootNavController.navigate(
+                        "${MainRoute.Calendar.route}/${it.userId}/${it.slotDuration}/${it.productId}/${it.productName}"
+                    )
+                }
             )
         }
 

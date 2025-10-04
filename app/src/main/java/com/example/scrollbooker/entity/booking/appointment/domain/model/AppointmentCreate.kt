@@ -9,12 +9,14 @@ data class AppointmentCreate(
     val customerId: Int?,
     val currencyId: Int,
     val serviceId: Int,
-    val productId: Int?,
-    val channel: String,
 
-    val customerFullName: String,
+    val productId: Int?,
     val productName: String,
     val productPrice: BigDecimal,
     val productPriceWithDiscount: BigDecimal,
-    val productDiscount: BigDecimal
+    val productDuration: Int,
+    val productDiscount: BigDecimal,
+
+    val channel: String,
+    val customerFullName: String,
 )

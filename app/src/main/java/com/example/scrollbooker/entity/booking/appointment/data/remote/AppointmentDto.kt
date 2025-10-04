@@ -31,6 +31,8 @@ data class AppointmentProductDto(
     @SerializedName("price_with_discount")
     val priceWithDiscount: BigDecimal,
 
+    val duration: Int,
+
     val discount: BigDecimal,
     val currency: String,
 

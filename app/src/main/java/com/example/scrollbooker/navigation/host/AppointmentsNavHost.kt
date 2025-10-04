@@ -7,10 +7,10 @@ import com.example.scrollbooker.navigation.graphs.appointmentsGraph
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
-import com.example.scrollbooker.ui.MainUIViewModel
 
 @Composable
 fun AppointmentsNavHost(
+    rootNavController: NavHostController,
     navController: NavHostController,
     appointmentsNumber: Int,
     onChangeTab: (MainTab) -> Unit
@@ -22,6 +22,7 @@ fun AppointmentsNavHost(
         popExitTransition = { slideOutToRight() }
     ) {
         appointmentsGraph(
+            rootNavController = rootNavController,
             navController = navController,
             appointmentsNumber = appointmentsNumber,
             onChangeTab = onChangeTab,

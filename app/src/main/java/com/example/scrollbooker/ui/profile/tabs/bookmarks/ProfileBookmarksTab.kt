@@ -33,14 +33,16 @@ fun ProfileBookmarksTab(
 ) {
     val posts = viewModel.userBookmarkedPosts.collectAsLazyPagingItems()
 
-    Column(
-        modifier = Modifier.fillMaxSize()
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(top = paddingTop)
     ) {
         when(posts.loadState.refresh) {
             is LoadState.Error -> ErrorScreen()
             is LoadState.Loading -> {
                 LoadingScreen(
-                    modifier = Modifier.padding(top = 50.dp),
+                    modifier = Modifier
+                        .padding(top = 50.dp),
                     arrangement = Arrangement.Top
                 )
             }
@@ -50,7 +52,8 @@ fun ProfileBookmarksTab(
                     contentPadding = PaddingValues(2.dp),
                     verticalArrangement = Arrangement.spacedBy(2.dp),
                     horizontalArrangement = Arrangement.spacedBy(2.dp),
-                    modifier = Modifier.fillMaxSize().padding(top = paddingTop)
+                    modifier = Modifier
+                        .fillMaxSize()
                 ) {
                     items(posts.itemCount) { index ->
                         val post = posts[index]

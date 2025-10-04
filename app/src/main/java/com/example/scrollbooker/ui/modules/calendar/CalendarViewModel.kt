@@ -225,6 +225,7 @@ class CalendarViewModel @Inject constructor(
             productName = selectedProduct.data.name,
             productPrice = selectedProduct.data.price,
             productPriceWithDiscount = selectedProduct.data.priceWithDiscount,
+            productDuration = selectedProduct.data.duration,
             productDiscount = selectedProduct.data.discount
         )
 

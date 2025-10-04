@@ -15,11 +15,12 @@ fun AppointmentCreate.toDto(): AppointmentCreateDto {
         customerId = customerId,
         currencyId = currencyId,
         serviceId = serviceId,
-        productId = productId,
         customerFullName = customerFullName,
+        productId = productId,
         productName = productName,
         productPrice = productPrice,
         productPriceWithDiscount = productPriceWithDiscount,
+        productDuration = productDuration,
         productDiscount = productDiscount,
     )
 }

@@ -61,6 +61,7 @@ fun RootNavHost(
             calendarGraph(navController = navController)
 
             appointmentsGraph(
+                rootNavController = navController,
                 navController = navController,
                 appointmentsNumber = 0,
                 onChangeTab = {}

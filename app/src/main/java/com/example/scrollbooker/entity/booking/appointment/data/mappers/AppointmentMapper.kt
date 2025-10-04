@@ -32,6 +32,7 @@ fun AppointmentProductDto.toDomain(): AppointmentProduct {
         name = name,
         price = price,
         priceWithDiscount = priceWithDiscount,
+        duration = duration,
         discount = discount,
         currency = currency,
         exchangeRate = exchangeRate

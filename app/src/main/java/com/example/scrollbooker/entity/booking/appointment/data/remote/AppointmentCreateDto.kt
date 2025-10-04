@@ -29,12 +29,6 @@ data class AppointmentCreateDto(
     @SerializedName("product_id")
     val productId: Int?,
 
-    @SerializedName("channel")
-    val channel: String,
-
-    @SerializedName("customer_fullname")
-    val customerFullName: String,
-
     @SerializedName("product_name")
     val productName: String,
 
@@ -44,6 +38,15 @@ data class AppointmentCreateDto(
     @SerializedName("product_price_with_discount")
     val productPriceWithDiscount: BigDecimal,
 
+    @SerializedName("product_duration")
+    val productDuration: Int,
+
     @SerializedName("product_discount")
-    val productDiscount: BigDecimal
+    val productDiscount: BigDecimal,
+
+    @SerializedName("channel")
+    val channel: String,
+
+    @SerializedName("customer_fullname")
+    val customerFullName: String,
 )

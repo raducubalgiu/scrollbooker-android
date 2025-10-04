@@ -34,6 +34,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
+import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
 import com.example.scrollbooker.ui.appointments.components.AppointmentCard.AppointmentCard
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Error
@@ -45,10 +46,23 @@ import com.example.scrollbooker.ui.theme.titleMedium
 fun AppointmentDetailsScreen(
     viewModel: AppointmentsViewModel,
     onBack: () -> Unit,
-    onGoToCancel: () -> Unit
+    onNavigateToCancel: () -> Unit,
+    onNavigateToBookAgain: (NavigateCalendarParam) -> Unit
 ) {
     val appointment by viewModel.selectedAppointment.collectAsState()
     val status = AppointmentStatusEnum.fromKey(appointment?.status)
+
+    fun navigateToCalendar() {
+        val userId = appointment?.user?.id
+        val productId = appointment?.product?.id
+        val productName = appointment?.product?.name
+        val slotDuration = appointment?.product?.duration
+
+        if(userId != null && productId != null && productName != null && slotDuration != null) {
+            val params = NavigateCalendarParam(userId, slotDuration, productId, productName)
+            onNavigateToBookAgain(params)
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -76,24 +90,26 @@ fun AppointmentDetailsScreen(
 
             Spacer(Modifier.height(SpacingXL))
 
-            when(status) {
-                AppointmentStatusEnum.IN_PROGRESS -> {
-                    MainButton(
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Error,
-                            contentColor = Color.White,
-                        ),
-                        title = stringResource(R.string.cancel),
-                        onClick = onGoToCancel
-                    )
+            appointment?.id?.let {
+                when(status) {
+                    AppointmentStatusEnum.IN_PROGRESS -> {
+                        MainButton(
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Error,
+                                contentColor = Color.White,
+                            ),
+                            title = stringResource(R.string.cancel),
+                            onClick = onNavigateToCancel
+                        )
+                    }
+                    AppointmentStatusEnum.FINISHED -> {
+                        MainButton(
+                            title = stringResource(R.string.bookAgain),
+                            onClick = { navigateToCalendar() }
+                        )
+                    }
+                    else -> Unit
                 }
-                AppointmentStatusEnum.FINISHED -> {
-                    MainButton(
-                        title = stringResource(R.string.bookAgain),
-                        onClick = {}
-                    )
-                }
-                else -> Unit
             }
 
             appointment?.message?.let {

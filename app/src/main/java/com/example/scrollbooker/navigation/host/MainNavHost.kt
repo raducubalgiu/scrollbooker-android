@@ -117,6 +117,7 @@ fun MainNavHost(
 
                 is MainTab.Appointments -> {
                     AppointmentsNavHost(
+                        rootNavController = rootNavController,
                         navController = navControllers[MainTab.Appointments]!!,
                         appointmentsNumber = mainViewModel.appointmentsState,
                         onChangeTab = { currentTab = it }
