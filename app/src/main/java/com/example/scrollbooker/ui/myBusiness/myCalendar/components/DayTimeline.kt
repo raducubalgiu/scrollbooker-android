@@ -42,7 +42,7 @@ fun DayTimeline(
     defaultBlockedLocalDates: Set<LocalDateTime>,
     blockedLocalDates: Set<LocalDateTime>,
     onBlock: (LocalDateTime) -> Unit,
-    onSlotClick: (CalendarEventsSlot) -> Unit = {}
+    onSlotClick: (CalendarEventsSlot) -> Unit
 ) {
     val ticks = remember(dayStart, dayEnd, slotDuration) {
         generateTicks(dayStart, dayEnd, slotDuration)

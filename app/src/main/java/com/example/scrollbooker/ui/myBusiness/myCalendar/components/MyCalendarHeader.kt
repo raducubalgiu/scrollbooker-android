@@ -16,18 +16,12 @@ import com.example.scrollbooker.ui.modules.calendar.components.CalendarDayTab
 import com.example.scrollbooker.ui.modules.calendar.components.CalendarHeader
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
-import org.threeten.bp.LocalDate
 import java.util.Locale
 
 @Composable
 fun MyCalendarHeader(
     state: MyCalendarHeaderState,
     onAction: (MyCalendarHeaderStateAction) -> Unit
-//    onChangeTab: (LocalDate, Int) -> Unit,
-//    onIsBlocking: () -> Unit,
-//    onSlotChange: (String?) -> Unit,
-//    handlePreviousWeek: () -> Unit,
-//    handleNextWeek: () -> Unit
 ) {
     val locale = Locale("ro")
 

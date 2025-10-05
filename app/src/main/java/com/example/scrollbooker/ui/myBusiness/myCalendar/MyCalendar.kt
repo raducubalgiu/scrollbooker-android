@@ -38,6 +38,7 @@ import com.example.scrollbooker.ui.myBusiness.myCalendar.components.MyCalendarHe
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.sheets.BlockSlotsAction
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.sheets.BlockSlotsSheet
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.sheets.BlockSlotsSheetState
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.sheets.CreateOwnClientSheet
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.sheets.MyCalendarSettingsSheet
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
@@ -61,6 +62,7 @@ fun MyCalendarScreen(
 
     val calendarEvents by viewModel.calendarEvents.collectAsState()
     val selectedDay by viewModel.selectedDay.collectAsState()
+    val selectedOwnClient by viewModel.selectedOwnClient.collectAsState()
     val isSaving by viewModel.isSaving.collectAsState()
 
     var message by rememberSaveable { mutableStateOf("") }
@@ -70,6 +72,7 @@ fun MyCalendarScreen(
 
     val blockSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val settingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val ownClientSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     val blockSheetUIState = BlockSlotsSheetState(
         message = message,
@@ -92,6 +95,17 @@ fun MyCalendarScreen(
                     is BlockSlotsAction.Dismiss -> scope.launch { blockSheetState.hide() }
                     is BlockSlotsAction.MessageChanged -> { message = action.value }
                 }
+            }
+        )
+    }
+
+    if(ownClientSheetState.isVisible) {
+        CreateOwnClientSheet(
+            sheetState = ownClientSheetState,
+            selectedOwnClientSlot = selectedOwnClient,
+            onDismiss = {
+                viewModel.resetOwnClient()
+                scope.launch { ownClientSheetState.hide() }
             }
         )
     }
@@ -231,7 +245,11 @@ fun MyCalendarScreen(
                                                 isBlocking = isBlocking,
                                                 defaultBlockedLocalDates = defaultBlockedLocalDates,
                                                 blockedLocalDates = blockedLocalDates,
-                                                onBlock = { viewModel.setBlockDate(it) }
+                                                onBlock = { viewModel.setBlockDate(it) },
+                                                onSlotClick = {
+                                                    viewModel.setSelectedOwnClient(it)
+                                                    scope.launch { ownClientSheetState.show() }
+                                                }
                                             )
                                         }
                                     }

@@ -13,6 +13,8 @@ import androidx.compose.material3.ShapeDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
@@ -41,7 +43,7 @@ fun CalendarHeaderActions(
     ) {
         Column(Modifier.weight(0.5f)) {
             CalendarDurationSlot(
-                label = "Interval",
+                label = stringResource(R.string.interval),
                 options = durations,
                 selectedSlot = slotDuration.toString(),
                 onSlotChange = onSlotChange
@@ -60,7 +62,7 @@ fun CalendarHeaderActions(
                 ),
                 contentPadding = PaddingValues(BasePadding),
                 shape = ShapeDefaults.Medium,
-                title = "Blocheaza sloturi",
+                title = stringResource(R.string.blockSlots),
                 onClick = onIsBlocking
             )
         }

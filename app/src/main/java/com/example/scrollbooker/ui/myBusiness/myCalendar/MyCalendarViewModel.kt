@@ -8,6 +8,7 @@ import com.example.scrollbooker.entity.booking.appointment.data.remote.Appointme
 import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentBlockSlots
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.BlockAppointmentsUseCase
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEvents
+import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsSlot
 import com.example.scrollbooker.entity.booking.calendar.domain.model.blockedStartLocale
 import com.example.scrollbooker.entity.booking.calendar.domain.useCase.GetCalendarAvailableDaysUseCase
 import com.example.scrollbooker.entity.booking.calendar.domain.useCase.GetUserCalendarEventsUseCase
@@ -60,6 +61,9 @@ class MyCalendarViewModel @Inject constructor(
 
     private val _slotDuration = MutableStateFlow<Int>(30)
     val slotDuration: MutableStateFlow<Int> = _slotDuration
+
+    private val _selectedOwnClient = MutableStateFlow<CalendarEventsSlot?>(null)
+    val selectedOwnClient: StateFlow<CalendarEventsSlot?> = _selectedOwnClient.asStateFlow()
 
     private val refreshTick = MutableStateFlow(0)
     private val userIdFlow: Flow<Int?> = authDataStore.getUserId()
@@ -250,6 +254,14 @@ class MyCalendarViewModel @Inject constructor(
                     _isSaving.value = false
                 }
         }
+    }
+
+    fun setSelectedOwnClient(calendarEvents: CalendarEventsSlot) {
+        _selectedOwnClient.value = calendarEvents
+    }
+
+    fun resetOwnClient() {
+        _selectedOwnClient.value = null
     }
 
     fun setBlockDate(startDate: LocalDateTime) {
