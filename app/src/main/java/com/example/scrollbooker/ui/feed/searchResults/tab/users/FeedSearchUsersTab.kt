@@ -24,6 +24,8 @@ fun FeedSearchUsersTab(
     UserSocialList(
         users = users,
         followedOverrides = followedOverrides,
+        isRefreshing = false,
+        onRefresh = {},
         followRequestLocks = followRequestLocks,
         onFollow = { isFollowed, userId ->
             viewModel.onFollow(isFollowed, userId)

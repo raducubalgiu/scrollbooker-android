@@ -12,11 +12,14 @@ fun UserFollowersTab(
     onNavigateUserProfile: (Int) -> Unit
 ) {
     val userFollowers = viewModel.userFollowers.collectAsLazyPagingItems()
+    val isRefreshing by viewModel.isRefreshing.collectAsState()
     val followedOverrides by viewModel.followedOverrides.collectAsState()
     val followRequestLocks by viewModel.followRequestLocks.collectAsState()
 
     UserSocialList(
         users = userFollowers,
+        isRefreshing = isRefreshing,
+        onRefresh = { viewModel.refreshFollowers() },
         followedOverrides = followedOverrides,
         followRequestLocks = followRequestLocks,
         onFollow = { isFollowed, userId ->

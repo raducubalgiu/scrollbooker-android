@@ -60,15 +60,29 @@ class UserSocialViewModel @Inject constructor(
     private val _userReviewsSummary = MutableStateFlow<FeatureState<ReviewsSummary>>(FeatureState.Loading)
     val userReviewsSummary: StateFlow<FeatureState<ReviewsSummary>> = _userReviewsSummary
 
-    private val _userFollowers: Flow<PagingData<UserSocial>> by lazy {
-        getUserSocialFollowersUseCase(userId).cachedIn(viewModelScope)
-    }
-    val userFollowers: Flow<PagingData<UserSocial>> get() = _userFollowers
+    private val _followersRefreshTrigger = MutableStateFlow(0)
+    private val _followingsRefreshTrigger = MutableStateFlow(0)
 
-    private val _userFollowings: Flow<PagingData<UserSocial>> by lazy {
-        getUserSocialFollowingsUseCase(userId).cachedIn(viewModelScope)
+    private val _isRefreshing = MutableStateFlow<Boolean>(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val userFollowers: Flow<PagingData<UserSocial>> = _followersRefreshTrigger
+        .flatMapLatest { getUserSocialFollowersUseCase(userId).cachedIn(viewModelScope) }
+        .cachedIn(viewModelScope)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val userFollowings: Flow<PagingData<UserSocial>> = _followingsRefreshTrigger
+        .flatMapLatest { getUserSocialFollowingsUseCase(userId).cachedIn(viewModelScope) }
+        .cachedIn(viewModelScope)
+
+    fun refreshFollowers() {
+        _followersRefreshTrigger.value += 1
     }
-    val userFollowings: Flow<PagingData<UserSocial>> get() = _userFollowings
+
+    fun refreshFollowings() {
+        _followingsRefreshTrigger.value += 1
+    }
 
     private val _followedOverrides = MutableStateFlow<Map<Int, Boolean>>(emptyMap())
     val followedOverrides = _followedOverrides.asStateFlow()
