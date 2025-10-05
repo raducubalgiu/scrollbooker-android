@@ -1,6 +1,5 @@
 package com.example.scrollbooker.ui.modules.reviews.list
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -10,101 +9,90 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
-import com.example.scrollbooker.R
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.components.core.layout.ErrorScreen
+import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.LoadMoreSpinner
-import com.example.scrollbooker.components.core.layout.MessageScreen
-import com.example.scrollbooker.entity.booking.review.domain.model.Review
-import com.example.scrollbooker.entity.booking.review.domain.model.ReviewsSummary
-import com.example.scrollbooker.ui.modules.reviews.summary.ReviewSummaryShimmer
 import com.example.scrollbooker.ui.modules.reviews.summary.ReviewsSummarySection
-import com.example.scrollbooker.ui.theme.Background
+import com.example.scrollbooker.ui.social.UserSocialViewModel
 import com.example.scrollbooker.ui.theme.SurfaceBG
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReviewsList(
-    pagingItems: LazyPagingItems<Review>,
-    summaryState: FeatureState<ReviewsSummary>,
+    viewModel: UserSocialViewModel,
     onRatingClick: (Int) -> Unit,
-    selectedRatings: Set<Int>
 ) {
-    LazyColumn(modifier = Modifier
-        .fillMaxSize()
-        .background(SurfaceBG)
-    ) {
-        pagingItems.apply {
-            when(loadState.refresh) {
-                is LoadState.Loading -> {
+    val reviews = viewModel.userReviews.collectAsLazyPagingItems()
+    val summaryState by viewModel.userReviewsSummary.collectAsState()
+    val isRefreshing by viewModel.isRefreshing.collectAsState()
+    val selectedRatings by viewModel.selectedRatings
+
+    val refreshState = reviews.loadState.refresh
+    val appendState = reviews.loadState.append
+
+    when(refreshState) {
+        is LoadState.Loading -> { LoadingScreen() }
+        is LoadState.Error -> ErrorScreen()
+        is LoadState.NotLoading -> {
+            PullToRefreshBox(
+                isRefreshing = isRefreshing,
+                onRefresh = { viewModel.refreshReviews() }
+            ) {
+                LazyColumn(modifier = Modifier
+                    .fillMaxSize()
+                    .background(SurfaceBG)
+                ) {
                     item {
-                        Box(Modifier.background(Background)) {
-                            ReviewSummaryShimmer()
-                        }
-                    }
-                }
-                is LoadState.Error -> {
-                    item { ErrorScreen() }
-                }
-                is LoadState.NotLoading -> {
-                    if(summaryState is FeatureState.Success) {
-                        val summary = summaryState.data
-
-                        item {
-                            if(summary.totalReviews > 0) {
-                                ReviewsSummarySection(
-                                    summary,
-                                    onRatingClick,
-                                    selectedRatings
-                                )
+                        when (val summary = summaryState) {
+                            is FeatureState.Success -> {
+                                if (summary.data.totalReviews > 0) {
+                                    ReviewsSummarySection(
+                                        summary = summary.data,
+                                        onRatingClick,
+                                        selectedRatings
+                                    )
+                                }
                             }
+                            else -> Unit
                         }
                     }
 
-                    if(pagingItems.itemCount == 0) {
-                        item { MessageScreen(
-                            message = stringResource(R.string.dontFoundResults),
-                            icon = painterResource(R.drawable.ic_clipboard_outline)
-                        ) }
+                    items(reviews.itemCount) { index ->
+                        reviews[index]?.let { ReviewItem(it) }
+                    }
+
+                    item {
+                        when(appendState) {
+                            is LoadState.Error -> Text("Ceva nu a mers cum trebuie")
+                            is LoadState.Loading -> LoadMoreSpinner()
+                            is LoadState.NotLoading -> Unit
+                        }
+                    }
+
+                    item {
+                        Spacer(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .height(
+                                    WindowInsets.safeContent
+                                        .only(WindowInsetsSides.Bottom)
+                                        .asPaddingValues()
+                                        .calculateBottomPadding()
+                                )
+                        )
                     }
                 }
             }
-        }
-
-        items(pagingItems.itemCount) { index ->
-            pagingItems[index]?.let { ReviewItem(it) }
-        }
-
-        pagingItems.apply {
-            when (loadState.append) {
-                is LoadState.Loading -> {
-                    item { LoadMoreSpinner() }
-                }
-
-                is LoadState.Error -> {
-                    item { Text("Ceva nu a mers cum trebuie") }
-                }
-
-                is LoadState.NotLoading -> Unit
-            }
-        }
-
-        item {
-            Spacer(modifier = Modifier
-                .fillMaxSize()
-                .height(
-                    WindowInsets.safeContent
-                        .only(WindowInsetsSides.Bottom)
-                        .asPaddingValues()
-                        .calculateBottomPadding()
-                )
-            )
         }
     }
 }

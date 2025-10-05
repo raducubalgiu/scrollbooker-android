@@ -7,10 +7,8 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.components.core.tabs.Tabs
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.getValue
@@ -52,9 +50,7 @@ fun UserSocialScreen(
     }
 
     Scaffold(
-        topBar = {
-            Header(title = username, onBack = onBack)
-        }
+        topBar = { Header(title = username, onBack = onBack) }
     ) { innerPadding ->
         Column(Modifier.padding(top = innerPadding.calculateTopPadding())) {
             Tabs(
@@ -71,18 +67,7 @@ fun UserSocialScreen(
             ) { page ->
                 when(tabs[page]) {
                     SocialTab.Bookings -> BookingsTab()
-                    SocialTab.Reviews -> {
-                        val pagingItems = viewModal.userReviews.collectAsLazyPagingItems()
-                        val summaryState by viewModal.userReviewsSummary.collectAsState()
-                        val selectedRatings by viewModal.selectedRatings
-
-                        ReviewsList(
-                            pagingItems,
-                            summaryState,
-                            onRatingClick = { viewModal.toggleRatingFilter(it) },
-                            selectedRatings = selectedRatings
-                        )
-                    }
+                    SocialTab.Reviews -> ReviewsList(viewModal, onRatingClick = { viewModal.toggleRatingFilter(it) })
                     SocialTab.Followers -> UserFollowersTab(viewModal, onNavigateUserProfile)
                     SocialTab.Followings -> UserFollowingsTab(viewModal, onNavigateUserProfile)
                 }

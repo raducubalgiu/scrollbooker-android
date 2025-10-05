@@ -49,22 +49,27 @@ class UserSocialViewModel @Inject constructor(
     private val _selectedRatings = mutableStateOf(setOf<Int>())
     val selectedRatings: State<Set<Int>> get() = _selectedRatings
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val userReviews: Flow<PagingData<Review>> =
-        combine(filtersTrigger, snapshotFlow { _selectedRatings.value }) { _, ratings ->
-            ratings
-        }.flatMapLatest { ratings ->
-            getReviewsUseCase(userId, ratings.ifEmpty { null })
-        }.cachedIn(viewModelScope)
-
-    private val _userReviewsSummary = MutableStateFlow<FeatureState<ReviewsSummary>>(FeatureState.Loading)
-    val userReviewsSummary: StateFlow<FeatureState<ReviewsSummary>> = _userReviewsSummary
-
     private val _followersRefreshTrigger = MutableStateFlow(0)
     private val _followingsRefreshTrigger = MutableStateFlow(0)
+    private val _reviewsRefreshTrigger = MutableStateFlow(0)
 
     private val _isRefreshing = MutableStateFlow<Boolean>(false)
     val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val userReviews: Flow<PagingData<Review>> =
+        combine(
+            filtersTrigger,
+            snapshotFlow { _selectedRatings.value },
+            _reviewsRefreshTrigger
+        ) { _, ratings, _ -> ratings }
+            .flatMapLatest { ratings ->
+                getReviewsUseCase(userId, ratings.ifEmpty { null })
+            }
+            .cachedIn(viewModelScope)
+
+    private val _userReviewsSummary = MutableStateFlow<FeatureState<ReviewsSummary>>(FeatureState.Loading)
+    val userReviewsSummary: StateFlow<FeatureState<ReviewsSummary>> = _userReviewsSummary
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val userFollowers: Flow<PagingData<UserSocial>> = _followersRefreshTrigger
@@ -82,6 +87,14 @@ class UserSocialViewModel @Inject constructor(
 
     fun refreshFollowings() {
         _followingsRefreshTrigger.value += 1
+    }
+
+    fun refreshReviews() {
+        viewModelScope.launch {
+            _isRefreshing.value = true
+            _reviewsRefreshTrigger.value += 1
+            _isRefreshing.value = false
+        }
     }
 
     private val _followedOverrides = MutableStateFlow<Map<Int, Boolean>>(emptyMap())
