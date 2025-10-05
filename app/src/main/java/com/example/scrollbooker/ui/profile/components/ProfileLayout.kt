@@ -59,6 +59,9 @@ import kotlinx.coroutines.launch
 fun ProfileLayout(
     isInitLoading: Boolean,
     profileData: FeatureState<UserProfile>,
+    isFollow: Boolean? = null,
+    isFollowEnabled: Boolean,
+    onFollow: (() -> Unit)? = null,
     posts: LazyPagingItems<Post>,
     profileNavigate: ProfileNavigator
 ) {
@@ -228,7 +231,9 @@ fun ProfileLayout(
                                         )
                                     } else {
                                         UserProfileActions(
-                                            isFollow = user.isFollow,
+                                            isFollow = isFollow,
+                                            isFollowEnabled = isFollowEnabled,
+                                            onFollow = onFollow,
                                             onNavigateToCalendar = {}
                                         )
                                     }

@@ -28,6 +28,8 @@ fun UserProfileScreen(
     val profileData by viewModel.userProfileState.collectAsState()
     val posts = viewModel.userPosts.collectAsLazyPagingItems()
     val isInitLoading by viewModel.isInitLoading.collectAsState()
+    val isFollow by viewModel.isFollowState.collectAsState()
+    val isSaving by viewModel.isSaving.collectAsState()
 
     val userData = (profileData as? FeatureState.Success)?.data
 
@@ -48,6 +50,9 @@ fun UserProfileScreen(
             ProfileLayout(
                 isInitLoading = isInitLoading,
                 profileData = profileData,
+                isFollow = isFollow,
+                onFollow = { viewModel.onFollow() },
+                isFollowEnabled = !isSaving,
                 posts = posts,
                 profileNavigate = profileNavigate
             )

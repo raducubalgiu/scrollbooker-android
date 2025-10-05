@@ -25,24 +25,29 @@ import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun UserProfileActions(
-    isFollow: Boolean,
+    isFollow: Boolean?,
+    isFollowEnabled: Boolean,
+    onFollow: (() -> Unit)? = null,
     onNavigateToCalendar: () -> Unit
 ) {
     Row(modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        ProfileActionButton(
-            modifier = Modifier.weight(5f),
-            containerColor = if(isFollow) SurfaceBG else Primary,
-            contentColor = OnPrimary,
-            onClick = { }
-        ) {
-            Text(
-                text = if(isFollow) stringResource(R.string.following) else stringResource(R.string.follow),
-                color = if(isFollow) OnBackground else OnPrimary,
-                style = titleMedium,
-                fontWeight = FontWeight.Bold,
-            )
+        isFollow?.let {
+            ProfileActionButton(
+                modifier = Modifier.weight(5f),
+                containerColor = if(isFollow) SurfaceBG else Primary,
+                contentColor = OnPrimary,
+                isEnabled = isFollowEnabled,
+                onClick = { onFollow?.invoke() }
+            ) {
+                Text(
+                    text = if(isFollow) stringResource(R.string.following) else stringResource(R.string.follow),
+                    color = if(isFollow) OnBackground else OnPrimary,
+                    style = titleMedium,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
         }
         Spacer(Modifier.width(SpacingS))
         ProfileActionButton(

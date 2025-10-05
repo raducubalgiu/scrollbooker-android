@@ -103,6 +103,7 @@ fun MyProfileScreen(
             ProfileLayout(
                 isInitLoading = isInitLoading,
                 profileData = myProfileData,
+                isFollowEnabled = false,
                 posts = myPosts,
                 profileNavigate = profileNavigate
             )
