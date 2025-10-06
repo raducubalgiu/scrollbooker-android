@@ -25,6 +25,7 @@ import com.example.scrollbooker.core.util.translateDayOfWeek
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.titleMedium
+import timber.log.Timber
 
 @Composable
 fun ScheduleRow(
@@ -38,8 +39,10 @@ fun ScheduleRow(
         mutableStateOf(schedule.endTime)
     }
 
+    val closed = stringResource(R.string.closed)
+
     val slots = remember {
-        listOf(Option(value = null, name = "Inchis")) + generateTimeSlots()
+        listOf(Option(value = "null", name = closed)) + generateTimeSlots()
     }
 
     Row(modifier = Modifier.fillMaxWidth(),
@@ -61,9 +64,7 @@ fun ScheduleRow(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column(
-                modifier = Modifier.weight(0.5f)
-            ) {
+            Column(modifier = Modifier.weight(0.5f)) {
                 InputSelect(
                     placeholder = stringResource(R.string.closed),
                     options = slots,

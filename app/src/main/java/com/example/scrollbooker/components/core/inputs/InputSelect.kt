@@ -73,7 +73,6 @@ fun InputSelect(
     )
 
     val selected = options.find { it.value == selectedOption }
-
     val hasValue = selected != null
 
     Column(
