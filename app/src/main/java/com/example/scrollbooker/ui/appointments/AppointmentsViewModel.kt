@@ -41,7 +41,9 @@ class AppointmentsViewModel @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val appointments: Flow<PagingData<Appointment>> =
-        _appointmentsState.filterNotNull().flatMapLatest { it }
+        _appointmentsState
+            .filterNotNull()
+            .flatMapLatest { it }
 
     private val _selectedAppointment = MutableStateFlow<Appointment?>(null)
     val selectedAppointment: StateFlow<Appointment?> = _selectedAppointment

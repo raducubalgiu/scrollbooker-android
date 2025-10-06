@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -61,6 +62,8 @@ fun AppointmentsScreen(
     var selectedOption by remember { mutableStateOf<AppointmentFilter?>(
         AppointmentFilter(title = AppointmentFilterTitleEnum.ALL, asCustomer = null)
     ) }
+
+    val isRefreshing = appointments.loadState.refresh is LoadState.Loading
 
     if(sheetState.isVisible) {
         AppointmentsFilterSheet(
@@ -122,26 +125,31 @@ fun AppointmentsScreen(
                     is LoadState.Loading -> LoadingScreen()
                     is LoadState.Error -> ErrorScreen()
                     is LoadState.NotLoading -> {
-                        AppointmentsList(
-                            appointments = appointments,
-                            onNavigateToAppointmentDetails = onNavigateToAppointmentDetails
-                        )
+                        PullToRefreshBox(
+                            isRefreshing = isRefreshing,
+                            onRefresh = {
+                                viewModel.loadAppointments(selectedOption?.asCustomer)
+                            }
+                        ) {
+                            AppointmentsList(
+                                appointments = appointments,
+                                onNavigateToAppointmentDetails = onNavigateToAppointmentDetails
+                            )
+                        }
                     }
                 }
             }
 
-            Box {
-                when(appointments.loadState.refresh) {
-                    is LoadState.NotLoading -> {
-                        if(appointments.itemCount == 0) {
-                            MessageScreen(
-                                message = stringResource(R.string.dontHaveAppointmentsYet),
-                                icon = painterResource(R.drawable.ic_calendar_outline)
-                            )
-                        }
+            when(appointments.loadState.refresh) {
+                is LoadState.NotLoading -> {
+                    if(appointments.itemCount == 0) {
+                        MessageScreen(
+                            message = stringResource(R.string.dontHaveAppointmentsYet),
+                            icon = painterResource(R.drawable.ic_calendar_outline)
+                        )
                     }
-                    else -> Unit
                 }
+                else -> Unit
             }
         }
     }
