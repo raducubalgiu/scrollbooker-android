@@ -17,7 +17,7 @@ interface AppointmentsApiService {
 
     @POST("appointments")
     suspend fun createAppointment(
-        @Body request: AppointmentCreateDto
+        @Body request: AppointmentScrollBookerCreateDto
     )
 
     @GET("appointments/count")

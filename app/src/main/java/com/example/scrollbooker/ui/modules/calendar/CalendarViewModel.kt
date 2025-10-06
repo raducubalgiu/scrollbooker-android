@@ -1,18 +1,16 @@
 package com.example.scrollbooker.ui.modules.calendar
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.scrollbooker.core.enums.AppointmentChannelEnum
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
-import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentCreate
-import com.example.scrollbooker.entity.booking.appointment.domain.useCase.CreateAppointmentUseCase
+import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentScrollBookerCreate
+import com.example.scrollbooker.entity.booking.appointment.domain.useCase.CreateScrollBookerAppointmentUseCase
 import com.example.scrollbooker.entity.booking.calendar.domain.model.AvailableDay
 import com.example.scrollbooker.entity.booking.calendar.domain.model.Slot
 import com.example.scrollbooker.entity.booking.calendar.domain.useCase.GetCalendarAvailableDaysUseCase
 import com.example.scrollbooker.entity.booking.calendar.domain.useCase.GetUserAvailableTimeslotsUseCase
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductByIdUseCase
-import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
@@ -25,7 +23,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
@@ -40,8 +37,7 @@ class CalendarViewModel @Inject constructor(
     private val getCalendarAvailableDaysUseCase: GetCalendarAvailableDaysUseCase,
     private val getUserAvailableTimeslotsUseCase: GetUserAvailableTimeslotsUseCase,
     private val getProductByIdUseCase: GetProductByIdUseCase,
-    private val createAppointmentUseCase: CreateAppointmentUseCase,
-    private val authDataStore: AuthDataStore
+    private val createScrollBookerAppointmentUseCase: CreateScrollBookerAppointmentUseCase,
 ): ViewModel() {
     private val userId = MutableStateFlow<Int?>(null)
     private val selectedDay = MutableStateFlow<LocalDate?>(LocalDate.now())
@@ -201,40 +197,29 @@ class CalendarViewModel @Inject constructor(
         val selectedProduct = _product.value
         val startDate = _selectedSlot.value?.startDateUtc
         val endDate = _selectedSlot.value?.endDateUtc
+
         val isProductSuccess = selectedProduct is FeatureState.Success
 
-        val customerId = authDataStore.getUserId().firstOrNull()
-        val customerFullName = authDataStore.getUsername().firstOrNull()
-
-        if(customerId == null || customerFullName == null || startDate.isNullOrBlank() || endDate.isNullOrBlank() || !isProductSuccess) {
-            Timber.tag("Create Appointment").e("ERROR: on Creating Appointment, the provided data are invalid")
+        if(startDate.isNullOrBlank() || endDate.isNullOrBlank() || !isProductSuccess) {
+            Timber.tag("Create Appointment").e("ERROR: on Creating ScrollBooker Appointment, the provided data are invalid")
             return Result.failure(Exception("Invalid data"))
         }
 
-        val appointment = AppointmentCreate(
+        val appointment = AppointmentScrollBookerCreate(
             startDate = startDate,
             endDate = endDate,
             userId = selectedProduct.data.userId,
-            businessId = selectedProduct.data.businessId,
-            customerId = customerId,
             currencyId = selectedProduct.data.currencyId,
             serviceId = selectedProduct.data.serviceId,
             productId = selectedProduct.data.id,
-            channel = AppointmentChannelEnum.SCROLL_BOOKER.key,
-            customerFullName = customerFullName,
-            productName = selectedProduct.data.name,
-            productPrice = selectedProduct.data.price,
-            productPriceWithDiscount = selectedProduct.data.priceWithDiscount,
-            productDuration = selectedProduct.data.duration,
-            productDiscount = selectedProduct.data.discount
         )
 
-        val result = withVisibleLoading { createAppointmentUseCase(appointment) }
+        val result = withVisibleLoading { createScrollBookerAppointmentUseCase(appointment) }
 
         result
             .onFailure { e ->
                 _isSaving.value = FeatureState.Error(e)
-                Timber.tag("Appointment").e("ERROR: onCreating Appointment $e")
+                Timber.tag("Appointment").e("ERROR: onCreating ScrollBooker Appointment $e")
             }
             .onSuccess {
                 _isSaving.value = FeatureState.Success(Unit)
