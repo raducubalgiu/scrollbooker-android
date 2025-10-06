@@ -10,12 +10,14 @@ import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -43,6 +45,7 @@ import com.example.scrollbooker.ui.myBusiness.myCalendar.components.sheets.MyCal
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import java.util.Locale
+import androidx.compose.material3.SheetValue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
@@ -72,7 +75,20 @@ fun MyCalendarScreen(
 
     val blockSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val settingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val ownClientSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    var showOwnClientSheet by remember { mutableStateOf(false) }
+
+    val ownClientSheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true,
+        confirmValueChange = { newState ->
+            when (newState) {
+                SheetValue.Hidden -> {
+                    false
+                }
+                else -> true
+            }
+        }
+    )
 
     val blockSheetUIState = BlockSlotsSheetState(
         message = message,
@@ -99,17 +115,6 @@ fun MyCalendarScreen(
         )
     }
 
-    if(ownClientSheetState.isVisible) {
-        CreateOwnClientSheet(
-            sheetState = ownClientSheetState,
-            selectedOwnClientSlot = selectedOwnClient,
-            onDismiss = {
-                viewModel.resetOwnClient()
-                scope.launch { ownClientSheetState.hide() }
-            }
-        )
-    }
-
     if(settingsSheetState.isVisible) {
         MyCalendarSettingsSheet(
             sheetState = settingsSheetState,
@@ -130,6 +135,20 @@ fun MyCalendarScreen(
             )}
         }
     ) { innerPadding ->
+        if(showOwnClientSheet) {
+            CreateOwnClientSheet(
+                sheetState = ownClientSheetState,
+                paddingTop = innerPadding.calculateTopPadding(),
+                selectedOwnClientSlot = selectedOwnClient,
+                slotDuration = slotDuration,
+                onCreateOwnClient = { viewModel.createOwnClientAppointment(it) },
+                onClose = {
+                    scope.launch { ownClientSheetState.hide() }
+                    showOwnClientSheet = false
+                },
+            )
+        }
+
         Box(modifier = Modifier
             .fillMaxSize()
             .padding(innerPadding)
@@ -248,7 +267,10 @@ fun MyCalendarScreen(
                                                 onBlock = { viewModel.setBlockDate(it) },
                                                 onSlotClick = {
                                                     viewModel.setSelectedOwnClient(it)
-                                                    scope.launch { ownClientSheetState.show() }
+                                                    scope.launch {
+                                                        ownClientSheetState.show()
+                                                        showOwnClientSheet = true
+                                                    }
                                                 }
                                             )
                                         }

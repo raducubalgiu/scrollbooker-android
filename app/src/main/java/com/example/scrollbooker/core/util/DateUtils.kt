@@ -42,6 +42,17 @@ fun parseTimeStringFromLocalDateTimeString(value: LocalDateTime?): String {
     }
 }
 
+// "2025-09-30T15:30:00" -> LocalDate(2025-05-21)
+fun parseDateStringFromLocalDateTimeString(value: LocalDateTime?): String {
+    return try {
+        val outputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+        value?.format(outputFormatter) ?: ""
+
+    } catch (e: Exception) {
+        Timber.e("ERROR on Parsing LocalDateString from LocalDateTime: $e")
+        ""
+    }
+}
 
 // "09:30:00" or "09:30" -> LocalTime(09:30)
 fun parseLocalTimeFromTimeString(value: String): LocalTime {

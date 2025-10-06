@@ -6,6 +6,7 @@ import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentBlockRequest
 import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentBlockSlots
+import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentOwnClientCreate
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.CreateBlockAppointmentsUseCase
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.CreateOwnClientAppointmentUseCase
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEvents
@@ -196,8 +197,24 @@ class MyCalendarViewModel @Inject constructor(
         }
     }
 
-    fun createOwnClientAppointment() {
+    fun createOwnClientAppointment(ownClient: AppointmentOwnClientCreate) {
+        viewModelScope.launch {
+            _isSaving.value = true
 
+            val result = withVisibleLoading {
+                createOwnClientAppointmentUseCase(ownClient)
+            }
+
+            result
+                .onFailure { e ->
+                    Timber.tag("Appointments").e("ERROR: on blocking appointments $e")
+                    _isSaving.value = false
+                }
+                .onSuccess {
+                    refreshCalendarEvents()
+                    _isSaving.value = false
+                }
+        }
     }
 
     fun blockAppointments(message: String) {
