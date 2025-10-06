@@ -15,21 +15,26 @@ interface AppointmentsApiService {
         @Query("as_customer") asCustomer: Boolean?
     ): PaginatedResponseDto<AppointmentDto>
 
-    @POST("appointments")
-    suspend fun createAppointment(
+    @GET("appointments/count")
+    suspend fun getUserAppointmentsNumber(): Int
+
+    @POST("appointments/create-scrollbooker-appointment")
+    suspend fun createScrollBookerAppointment(
         @Body request: AppointmentScrollBookerCreateDto
     )
 
-    @GET("appointments/count")
-    suspend fun getUserAppointmentsNumber(): Int
+    @POST("appointments/create-own-client-appointment")
+    suspend fun createOwnClientAppointment(
+        @Body request: AppointmentOwnClientCreateDto
+    )
+
+    @POST("appointments/create-block-appointments")
+    suspend fun blockAppointments(
+        @Body request: AppointmentBlockRequest
+    )
 
     @PUT("appointments/cancel-appointment")
     suspend fun cancelAppointment(
         @Body request: AppointmentCancelRequest
-    )
-
-    @POST("appointments/block-appointments")
-    suspend fun blockAppointments(
-        @Body request: AppointmentBlockRequest
     )
 }

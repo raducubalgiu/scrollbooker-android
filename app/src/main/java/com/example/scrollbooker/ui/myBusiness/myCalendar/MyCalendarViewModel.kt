@@ -6,7 +6,8 @@ import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentBlockRequest
 import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentBlockSlots
-import com.example.scrollbooker.entity.booking.appointment.domain.useCase.BlockAppointmentsUseCase
+import com.example.scrollbooker.entity.booking.appointment.domain.useCase.CreateBlockAppointmentsUseCase
+import com.example.scrollbooker.entity.booking.appointment.domain.useCase.CreateOwnClientAppointmentUseCase
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEvents
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsSlot
 import com.example.scrollbooker.entity.booking.calendar.domain.model.blockedStartLocale
@@ -45,7 +46,8 @@ class MyCalendarViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
     private val getCalendarAvailableDaysUseCase: GetCalendarAvailableDaysUseCase,
     private val getCalendarEventsUseCase: GetUserCalendarEventsUseCase,
-    private val blockAppointmentsUseCase: BlockAppointmentsUseCase,
+    private val createBlockAppointmentsUseCase: CreateBlockAppointmentsUseCase,
+    private val createOwnClientAppointmentUseCase: CreateOwnClientAppointmentUseCase
 ): ViewModel() {
     private val _selectedDay = MutableStateFlow<LocalDate?>(LocalDate.now())
     val selectedDay: StateFlow<LocalDate?> = _selectedDay.asStateFlow()
@@ -66,11 +68,9 @@ class MyCalendarViewModel @Inject constructor(
     val selectedOwnClient: StateFlow<CalendarEventsSlot?> = _selectedOwnClient.asStateFlow()
 
     private val refreshTick = MutableStateFlow(0)
-    private val userIdFlow: Flow<Int?> = authDataStore.getUserId()
-        .distinctUntilChanged()
+    private val userIdFlow: Flow<Int?> = authDataStore.getUserId().distinctUntilChanged()
 
     private val dateFmt = DateTimeFormatter.ISO_LOCAL_DATE
-
     private val cache = ConcurrentHashMap<String, FeatureState<CalendarEvents>>()
 
     private fun cacheKey(userId: Int, day: LocalDate, slot: Int): String =
@@ -196,14 +196,13 @@ class MyCalendarViewModel @Inject constructor(
         }
     }
 
+    fun createOwnClientAppointment() {
+
+    }
+
     fun blockAppointments(message: String) {
         viewModelScope.launch {
             _isSaving.value = true
-
-            val userId = authDataStore.getUserId().firstOrNull() ?: run {
-                Timber.tag("Appointments").e("ERROR: on Blocking Appointments. User If not found in DataStore")
-                return@launch
-            }
 
             val state = calendarEvents.value
 
@@ -235,10 +234,9 @@ class MyCalendarViewModel @Inject constructor(
                 }
 
             val result = withVisibleLoading {
-                blockAppointmentsUseCase(
+                createBlockAppointmentsUseCase(
                     request = AppointmentBlockRequest(
                         message = message,
-                        userId = userId,
                         slots = slotsToBlock
                     )
                 )

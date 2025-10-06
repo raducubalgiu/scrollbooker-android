@@ -4,10 +4,6 @@ import com.google.gson.annotations.SerializedName
 
 data class AppointmentBlockRequest(
     val message: String,
-
-    @SerializedName("user_id")
-    val userId: Int,
-
     val slots: List<AppointmentBlockSlots>
 )
 

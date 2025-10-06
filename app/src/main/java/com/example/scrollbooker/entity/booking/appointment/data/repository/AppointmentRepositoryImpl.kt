@@ -8,6 +8,7 @@ import com.example.scrollbooker.entity.booking.appointment.data.remote.Appointme
 import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentPagingSource
 import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentsApiService
 import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointment
+import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentOwnClientCreate
 import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentScrollBookerCreate
 import com.example.scrollbooker.entity.booking.appointment.domain.repository.AppointmentRepository
 import kotlinx.coroutines.flow.Flow
@@ -27,7 +28,11 @@ class AppointmentRepositoryImpl @Inject constructor(
     }
 
     override suspend fun createScrollBookerAppointment(appointmentCreate: AppointmentScrollBookerCreate) {
-        return apiService.createAppointment(request = appointmentCreate.toDto())
+        return apiService.createScrollBookerAppointment(request = appointmentCreate.toDto())
+    }
+
+    override suspend fun createOwnClientAppointment(appointmentCreate: AppointmentOwnClientCreate) {
+        return apiService.createOwnClientAppointment(request = appointmentCreate.toDto())
     }
 
     override suspend fun getUserAppointmentsNumber(): Int {

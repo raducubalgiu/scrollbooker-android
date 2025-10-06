@@ -4,7 +4,9 @@ import com.example.scrollbooker.core.util.Constants
 import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentsApiService
 import com.example.scrollbooker.entity.booking.appointment.data.repository.AppointmentRepositoryImpl
 import com.example.scrollbooker.entity.booking.appointment.domain.repository.AppointmentRepository
-import com.example.scrollbooker.entity.booking.appointment.domain.useCase.BlockAppointmentsUseCase
+import com.example.scrollbooker.entity.booking.appointment.domain.useCase.CreateBlockAppointmentsUseCase
+import com.example.scrollbooker.entity.booking.appointment.domain.useCase.CreateOwnClientAppointmentUseCase
+import com.example.scrollbooker.entity.booking.appointment.domain.useCase.CreateScrollBookerAppointmentUseCase
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.DeleteAppointmentUseCase
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.GetUserAppointmentsNumberUseCase
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.GetUserAppointmentsUseCase
@@ -55,17 +57,33 @@ object AppointmentsModule {
 
     @Provides
     @Singleton
-    fun provideDeleteAppointmentUseCase(
+    fun provideCreateScrollBookerAppointmentsUseCase(
         repository: AppointmentRepository,
-    ): DeleteAppointmentUseCase {
-        return DeleteAppointmentUseCase(repository)
+    ): CreateScrollBookerAppointmentUseCase {
+        return CreateScrollBookerAppointmentUseCase(repository)
     }
 
     @Provides
     @Singleton
-    fun provideBlockAppointmentsUseCase(
+    fun provideCreateOwnClientAppointmentsUseCase(
         repository: AppointmentRepository,
-    ): BlockAppointmentsUseCase {
-        return BlockAppointmentsUseCase(repository)
+    ): CreateOwnClientAppointmentUseCase {
+        return CreateOwnClientAppointmentUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCreateBlockAppointmentsUseCase(
+        repository: AppointmentRepository,
+    ): CreateBlockAppointmentsUseCase {
+        return CreateBlockAppointmentsUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDeleteAppointmentUseCase(
+        repository: AppointmentRepository,
+    ): DeleteAppointmentUseCase {
+        return DeleteAppointmentUseCase(repository)
     }
 }
