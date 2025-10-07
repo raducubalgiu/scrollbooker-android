@@ -224,7 +224,7 @@ fun AddProductScreen(
                         value = name,
                         onValueChange = { name = it },
                         label = stringResource(R.string.name),
-                        isInputValid = validation.isNameValid,
+                        isError = !validation.isNameValid,
                         errorMessage = validation.nameError.toString()
                     )
 
@@ -258,7 +258,7 @@ fun AddProductScreen(
                         value = description,
                         onValueChange = { description = it },
                         label = stringResource(R.string.description),
-                        isInputValid = validation.isDescriptionValid,
+                        isError = !validation.isDescriptionValid,
                         errorMessage = validation.descriptionError.toString(),
                         singleLine = false
                     )
@@ -295,7 +295,7 @@ fun AddProductScreen(
                             imeAction = ImeAction.Next
                         ),
                         label = stringResource(R.string.price),
-                        isInputValid = validation.isPriceValid,
+                        isError = !validation.isPriceValid,
                         errorMessage = validation.priceError.toString()
                     )
                     Spacer(Modifier.height(BasePadding))
@@ -315,7 +315,7 @@ fun AddProductScreen(
                                 tint = Color.Gray
                             )
                         },
-                        isInputValid = validation.isDiscountValid,
+                        isError = !validation.isDiscountValid,
                         errorMessage = validation.discountError.toString()
                     )
                     Spacer(Modifier.height(BasePadding))

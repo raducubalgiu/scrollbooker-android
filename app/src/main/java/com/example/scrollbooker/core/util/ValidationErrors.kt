@@ -1,5 +1,6 @@
 package com.example.scrollbooker.core.util
 import android.content.Context
+import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import java.math.BigDecimal
 
@@ -21,6 +22,14 @@ fun checkMinMax(context: Context, field: String, min: Int? = null, max: Int? = n
         max !== null &&  value >= max -> context.getString(R.string.maxNumberValidationMessage, max)
         else -> null
     }
+}
+
+fun checkRequired(context: Context, value: String?): String? {
+    val trimmed = value?.trim().orEmpty()
+
+    return if (trimmed.isEmpty() || trimmed.equals("null", ignoreCase = true)) {
+        context.getString(R.string.requiredValidationMessage)
+    } else null
 }
 
 fun checkEmail(email: String): String? {

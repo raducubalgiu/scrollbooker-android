@@ -48,7 +48,6 @@ import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarViewModel
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.math.BigDecimal
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
@@ -132,6 +131,8 @@ fun OwnClientSheet(
                             }
                         }
                     )
+
+                    Spacer(Modifier.height(BasePadding))
 
                     HorizontalPager(
                         state = pagerState

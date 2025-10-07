@@ -1,4 +1,5 @@
 package com.example.scrollbooker.components.core.inputs
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -40,7 +41,7 @@ fun Input(
     onValueChange: (String) -> Unit,
     label: String = "",
     isError: Boolean = false,
-    enabled: Boolean = true,
+    isEnabled: Boolean = true,
     inputColor: Color = SurfaceBG,
     keyboardOptions: KeyboardOptions = KeyboardOptions(
         imeAction = ImeAction.Next,
@@ -48,12 +49,11 @@ fun Input(
     ),
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     singleLine: Boolean = true,
-    leadingIcon: (@Composable () -> Unit)? = null,
-    trailingIcon: (@Composable () -> Unit)? = null,
     readOnly: Boolean = false,
     maxLength: Int? = null,
-    isInputValid: Boolean = true,
-    errorMessage: String? = ""
+    errorMessage: String? = "",
+    leadingIcon: (@Composable () -> Unit)? = null,
+    trailingIcon: (@Composable () -> Unit)? = null,
 ) {
     TextField(
         value = value,
@@ -96,17 +96,15 @@ fun Input(
         isError = isError,
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
-        enabled = enabled,
+        enabled = isEnabled,
         modifier = modifier
             .fillMaxWidth()
             .background(OnSurfaceBG, shape = ShapeDefaults.Medium),
         readOnly = readOnly
     )
 
-    if(!isInputValid && errorMessage?.isNotBlank() == true) {
-        Column(modifier = Modifier
-            .padding(top = BasePadding)
-        ) {
+    AnimatedVisibility(visible = isError && errorMessage?.isNotBlank() == true) {
+        Column(modifier = Modifier.padding(top = BasePadding)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = Icons.Outlined.Warning,
@@ -115,7 +113,7 @@ fun Input(
                 )
                 Spacer(Modifier.width(SpacingS))
                 Text(
-                    text = errorMessage,
+                    text = errorMessage ?: "",
                     color = Error,
                     style = bodyMedium
                 )

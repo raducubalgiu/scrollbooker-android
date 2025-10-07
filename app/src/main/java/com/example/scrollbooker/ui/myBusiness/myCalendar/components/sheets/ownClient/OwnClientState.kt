@@ -11,6 +11,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import com.example.scrollbooker.core.util.checkLength
 import com.example.scrollbooker.core.util.checkMinMax
+import com.example.scrollbooker.core.util.checkRequired
 
 @Immutable
 data class OwnClientFormStateState(
@@ -32,12 +33,16 @@ data class OwnClientFormStateState(
         val customerNameError = checkLength(context, customerName, minLength = 3, maxLength = customerNameMaxLength)
         val serviceNameError = checkLength(context, serviceName, minLength = 3, maxLength = serviceNameMaxLength)
         val productNameError = checkLength(context, productName, minLength = 3, maxLength = productNameMaxLength)
+        val currencyIdError = checkRequired(context, selectedCurrencyId)
         val discountError = checkMinMax(context, discount, min=0, max=100)
 
         return OwnClientValidationResult(
             isValid = listOf(
                 customerNameError,
-                discountError
+                serviceNameMaxLength,
+                productNameError,
+                discountError,
+                currencyIdError
             ).all { it == null },
             customerNameMaxLength = customerNameMaxLength,
             customerNameError = customerNameError,

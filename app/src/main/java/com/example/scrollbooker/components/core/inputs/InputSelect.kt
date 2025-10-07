@@ -1,4 +1,5 @@
 package com.example.scrollbooker.components.core.inputs
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,6 +20,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,6 +35,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -43,6 +46,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
+import com.example.scrollbooker.core.util.checkRequired
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
@@ -61,10 +65,14 @@ fun InputSelect(
     onValueChange: (String?) -> Unit,
     isLoading: Boolean = false,
     isEnabled: Boolean = true,
-    isRequired: Boolean = true
+    isRequired: Boolean = true,
+    shouldDisplayRequiredMessage: Boolean = true
 ) {
     var expanded by remember { mutableStateOf(false) }
     var parentWidth by remember { mutableIntStateOf(0) }
+
+    val context = LocalContext.current
+    val required = checkRequired(context, selectedOption)
 
     val rotation by animateFloatAsState(
         targetValue = if(expanded) 180f else 0f,
@@ -73,6 +81,12 @@ fun InputSelect(
 
     val selected = options.find { it.value == selectedOption }
     val hasValue = selected != null
+
+    val placeholderColor = when {
+        isRequired && selectedOption.isBlank() || selectedOption == "null" -> MaterialTheme.colorScheme.error
+        expanded -> Primary
+        else -> Color.Gray
+    }
 
     Column(
         modifier = Modifier
@@ -119,7 +133,7 @@ fun InputSelect(
                             text = placeholder,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
-                            color = if(expanded) Primary else Color.Gray,
+                            color = placeholderColor,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.SemiBold
                         )
@@ -179,7 +193,7 @@ fun InputSelect(
         }
     }
 
-    if(isRequired && selectedOption.isEmpty()) {
+    AnimatedVisibility(visible = isRequired && required != null && shouldDisplayRequiredMessage) {
         Column(modifier = Modifier
             .padding(top = BasePadding)
         ) {
