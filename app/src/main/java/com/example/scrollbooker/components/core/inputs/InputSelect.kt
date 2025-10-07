@@ -1,5 +1,4 @@
 package com.example.scrollbooker.components.core.inputs
-
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -115,12 +114,12 @@ fun InputSelect(
                         )
                     }
 
-                    if(selectedOption.isEmpty()) {
+                    if(selectedOption.isBlank() || selectedOption == "null") {
                         Text(
                             text = placeholder,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
-                            color = Color.Gray,
+                            color = if(expanded) Primary else Color.Gray,
                             fontSize = 15.sp
                         )
                     } else {

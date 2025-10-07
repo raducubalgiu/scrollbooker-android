@@ -98,6 +98,9 @@ fun CreateOwnClientSheet(
     var priceWithDiscount by rememberSaveable { mutableStateOf("") }
     var discount by rememberSaveable { mutableStateOf("0") }
 
+    var selectedServiceId by rememberSaveable { mutableStateOf<String?>(null) }
+    var selectedProductId by rememberSaveable { mutableStateOf<String?>(null) }
+
     var shouldSelectService by rememberSaveable { mutableStateOf(true) }
     var shouldSelectProduct by rememberSaveable { mutableStateOf(true) }
 
@@ -221,13 +224,15 @@ fun CreateOwnClientSheet(
                             if(shouldSelectService) {
                                 Column(Modifier.weight(0.8f)) {
                                     InputSelect(
+                                        label = "Numele serviciului",
+                                        placeholder = "Selecteaza un serviciu",
                                         options = listOf(
                                             Option(value = "1", "Tuns"),
                                             Option(value = "2", "Vopsit"),
                                             Option(value = "3", "Pensat")
                                         ),
-                                        selectedOption = "1",
-                                        onValueChange = {  }
+                                        selectedOption = selectedServiceId.toString(),
+                                        onValueChange = { selectedServiceId = it }
                                     )
                                 }
                             } else {
@@ -258,13 +263,15 @@ fun CreateOwnClientSheet(
                             if(shouldSelectProduct) {
                                 Column(Modifier.weight(0.8f)) {
                                     InputSelect(
+                                        label = "Numele produsului",
+                                        placeholder = "Selecteaza un produs",
                                         options = listOf(
                                             Option(value = "1", "Tuns Special"),
                                             Option(value = "2", "Tuns Scurt"),
                                             Option(value = "3", "Tuns bros")
                                         ),
-                                        selectedOption = "1",
-                                        onValueChange = {}
+                                        selectedOption = selectedProductId.toString(),
+                                        onValueChange = { selectedProductId = it }
                                     )
                                 }
                             } else {
