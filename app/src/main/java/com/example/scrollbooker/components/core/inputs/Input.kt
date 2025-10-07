@@ -51,12 +51,22 @@ fun Input(
     leadingIcon: (@Composable () -> Unit)? = null,
     trailingIcon: (@Composable () -> Unit)? = null,
     readOnly: Boolean = false,
+    maxLength: Int? = null,
     isInputValid: Boolean = true,
-    errorMessage: String = ""
+    errorMessage: String? = ""
 ) {
     TextField(
         value = value,
-        onValueChange = onValueChange,
+        onValueChange = { newValue ->
+            if(maxLength != null) {
+                val isDeleting = newValue.length < value.length
+                if(newValue.length <= maxLength || isDeleting) {
+                    onValueChange(newValue)
+                }
+            } else {
+                onValueChange(newValue)
+            }
+        },
         label = {
             Text(
                 text = label,
@@ -93,7 +103,7 @@ fun Input(
         readOnly = readOnly
     )
 
-    if(!isInputValid) {
+    if(!isInputValid && errorMessage?.isNotBlank() == true) {
         Column(modifier = Modifier
             .padding(top = BasePadding)
         ) {

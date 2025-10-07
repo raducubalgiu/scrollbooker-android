@@ -19,6 +19,8 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -27,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
@@ -41,6 +44,7 @@ import com.example.scrollbooker.core.util.parseDateStringFromLocalDateTimeString
 import com.example.scrollbooker.core.util.parseTimeStringFromLocalDateTimeString
 import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentOwnClientCreate
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsSlot
+import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarViewModel
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import kotlinx.coroutines.launch
@@ -51,6 +55,7 @@ import java.math.BigDecimal
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OwnClientSheet(
+    viewModel: MyCalendarViewModel,
     sheetState: SheetState,
     paddingTop: Dp,
     selectedOwnClientSlot: CalendarEventsSlot?,
@@ -58,10 +63,20 @@ fun OwnClientSheet(
     onCreateOwnClient: (AppointmentOwnClientCreate) -> Unit,
     onClose: () -> Unit
 ) {
+    val servicesState by viewModel.servicesState.collectAsState()
+    val currenciesState by viewModel.currenciesState.collectAsState()
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.loadServices()
+        viewModel.loadCurrencies()
+    }
+
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState { 2 }
 
     val (form, onEvent) = rememberOwnClientFormState()
+    val validation = remember(form) { form.validate(context) }
 
     ModalBottomSheet(
         sheetState = sheetState,
@@ -101,7 +116,7 @@ fun OwnClientSheet(
                         .padding(horizontal = SpacingXL)
                 ) {
                     OwnClientHeader(
-                        title = "Administreaza intervalul",
+                        title = stringResource(R.string.manageSlot),
                         subTitle = "$startLocalDate \u2022 $startLocalTime - $endLocalTime",
                         onClose = onClose
                     )
@@ -124,9 +139,12 @@ fun OwnClientSheet(
                         when(page) {
                             0 -> {
                                 OwnClientCreateTab(
+                                    servicesState = servicesState,
+                                    currenciesState = currenciesState,
                                     buttonHeightDp = buttonHeightDp,
                                     ownClientState = form,
                                     onEvent = onEvent,
+                                    validation = validation
                                 )
                             }
                             1 -> OwnClientLastMinuteTab(buttonHeightDp)
@@ -150,12 +168,10 @@ fun OwnClientSheet(
                     MainButton(
                         modifier = Modifier.padding(BasePadding),
                         title = stringResource(R.string.save),
+                        enabled = validation.isValid,
                         onClick = {
                             selectedOwnClientSlot?.let { slot ->
-                                Timber.tag("CREATE OWN CLIENT").e("FORM STATE, $form")
                                 val currencyId = form.selectedCurrencyId?.toInt()
-
-                                Timber.tag("CREATE OWN CLIENT").e("SELECTED CURRENCY ID, $currencyId")
 
                                 if(currencyId != null) {
                                     onCreateOwnClient(AppointmentOwnClientCreate(

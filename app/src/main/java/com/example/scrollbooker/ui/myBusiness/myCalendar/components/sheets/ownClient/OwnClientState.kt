@@ -1,5 +1,6 @@
 package com.example.scrollbooker.ui.myBusiness.myCalendar.components.sheets.ownClient
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
@@ -8,6 +9,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import com.example.scrollbooker.core.util.checkLength
+import com.example.scrollbooker.core.util.checkMinMax
 
 @Immutable
 data class OwnClientFormStateState(
@@ -21,6 +24,31 @@ data class OwnClientFormStateState(
     val selectedProductId: String? = null,
     val selectedCurrencyId: String? = null
 ) {
+    val customerNameMaxLength = 50
+    val serviceNameMaxLength = 50
+    val productNameMaxLength = 100
+
+    fun validate(context: Context): OwnClientValidationResult {
+        val customerNameError = checkLength(context, customerName, minLength = 3, maxLength = customerNameMaxLength)
+        val serviceNameError = checkLength(context, serviceName, minLength = 3, maxLength = serviceNameMaxLength)
+        val productNameError = checkLength(context, productName, minLength = 3, maxLength = productNameMaxLength)
+        val discountError = checkMinMax(context, discount, min=0, max=100)
+
+        return OwnClientValidationResult(
+            isValid = listOf(
+                customerNameError,
+                discountError
+            ).all { it == null },
+            customerNameMaxLength = customerNameMaxLength,
+            customerNameError = customerNameError,
+            serviceNameMaxLength = serviceNameMaxLength,
+            serviceNameError = serviceNameError,
+            productNameMaxLength = productNameMaxLength,
+            productNameError = productNameError,
+            discountError = discountError
+        )
+    }
+
     companion object {
         val Saver = listSaver<OwnClientFormStateState, String?>(
             save = { s ->
@@ -64,6 +92,18 @@ sealed interface OwnClientFormEvent {
     data class ProductSelected(val id: String?): OwnClientFormEvent
     data class CurrencySelected(val id: String?): OwnClientFormEvent
 }
+
+data class OwnClientValidationResult(
+    val isValid: Boolean,
+    val customerNameMaxLength: Int? = null,
+    val customerNameError: String? = null,
+    val serviceNameMaxLength: Int? = null,
+    val serviceNameError: String? = null,
+    val productNameMaxLength: Int? = null,
+    val productNameError: String? = null,
+    val discountError: String? = null,
+    //val priceError: String? = null
+)
 
 @Composable
 fun rememberOwnClientFormState(): Pair<OwnClientFormStateState,(OwnClientFormEvent) -> Unit> {

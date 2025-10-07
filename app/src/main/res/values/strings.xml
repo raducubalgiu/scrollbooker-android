@@ -276,4 +276,7 @@
     <string name="blockSlots">Blochează sloturi</string>
     <string name="interval">Interval</string>
     <string name="ownClient">Client Propriu</string>
+    <string name="product">Produs</string>
+    <string name="clientName">Numele clientului</string>
+    <string name="manageSlot">Administrează slotul</string>
 </resources>

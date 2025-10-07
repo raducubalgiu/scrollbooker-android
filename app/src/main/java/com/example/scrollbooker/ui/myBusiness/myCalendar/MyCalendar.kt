@@ -136,6 +136,7 @@ fun MyCalendarScreen(
     ) { innerPadding ->
         if(showOwnClientSheet) {
             OwnClientSheet(
+                viewModel = viewModel,
                 sheetState = ownClientSheetState,
                 paddingTop = innerPadding.calculateTopPadding(),
                 selectedOwnClientSlot = selectedOwnClient,

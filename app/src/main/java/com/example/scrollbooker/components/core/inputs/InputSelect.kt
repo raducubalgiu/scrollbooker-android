@@ -120,7 +120,8 @@ fun InputSelect(
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             color = if(expanded) Primary else Color.Gray,
-                            fontSize = 15.sp
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.SemiBold
                         )
                     } else {
                         Text(
