@@ -32,7 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.scrollbooker.components.core.shimmer.rememberShimmerBrush
+import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.sheet.SheetHeader
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
@@ -40,6 +40,8 @@ import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.formatTime
 import com.example.scrollbooker.core.util.translateDayOfWeek
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
+import com.example.scrollbooker.ui.theme.Background
+import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.bodyLarge
 import kotlinx.coroutines.launch
 import org.threeten.bp.Duration
@@ -86,43 +88,21 @@ fun UserScheduleSheet(
 
     ModalBottomSheet(
         sheetState = sheetState,
-        onDismissRequest = { scope.launch { sheetState.hide() } }
+        onDismissRequest = { scope.launch { sheetState.hide() } },
+        containerColor = Background,
+        dragHandle = {}
     ) {
         SheetHeader(
             title = stringResource(R.string.scheduleShort),
             onClose = { scope.launch { sheetState.hide() } }
         )
+
         Column(modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = SpacingXL)
+            .padding(SpacingXL)
         ) {
             when(state) {
-                is FeatureState.Loading -> {
-                    val brush = rememberShimmerBrush()
-
-                    repeat(7) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth()
-                                .padding(
-                                    horizontal = BasePadding,
-                                    vertical = SpacingM
-                                ),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Spacer(Modifier
-                                .fillMaxWidth(fraction = 0.4f)
-                                .height(BasePadding)
-                                .background(brush)
-                            )
-                            Spacer(Modifier
-                                .fillMaxWidth(fraction = 0.2f)
-                                .height(BasePadding)
-                                .background(brush)
-                            )
-                        }
-                    }
-                }
+                is FeatureState.Loading -> ScheduleShimmer()
                 is FeatureState.Error -> ErrorScreen()
                 is FeatureState.Success -> {
                     val schedules = (state as FeatureState.Success<List<Schedule>>).data
@@ -143,10 +123,7 @@ fun UserScheduleSheet(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(
-                                    horizontal = BasePadding,
-                                    vertical = SpacingM
-                                ),
+                                .padding(bottom = SpacingXL),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
@@ -162,17 +139,21 @@ fun UserScheduleSheet(
                                 Text(
                                     style = titleMedium,
                                     fontWeight = if(isToday) FontWeight.ExtraBold else FontWeight.Normal,
+                                    fontSize = 18.sp,
                                     text = translateDayOfWeek(dayOfWeek) ?: dayOfWeek,
-                                    color = OnSurfaceBG,
+                                    color = OnBackground,
                                 )
                             }
                             Text(
                                 text = text,
                                 style = bodyLarge,
+                                color = OnBackground,
                                 fontWeight = if(isToday) FontWeight.ExtraBold else FontWeight.Normal,
                             )
                         }
                     }
+
+                    Spacer(Modifier.padding(bottom = BasePadding))
                 }
             }
         }

@@ -180,25 +180,22 @@ fun OwnClientSheet(
                             selectedOwnClientSlot?.let { slot ->
                                 val currencyId = form.selectedCurrencyId?.toInt()
 
-                                Timber.tag("Creare Own Client").e("FORM $form")
-                                Timber.tag("Creare Own Client").e("CURRENCY ID $currencyId")
-
-//                                if(currencyId != null) {
-//                                    onCreateOwnClient(AppointmentOwnClientCreate(
-//                                        startDate = slot.startDateUtc,
-//                                        endDate = slot.endDateUtc,
-//                                        customerFullname = form.customerName,
-//                                        serviceName = form.serviceName,
-//                                        productName = form.productName,
-//                                        productPrice = BigDecimal(form.price),
-//                                        productPriceWithDiscount = BigDecimal(form.priceWithDiscount),
-//                                        productDiscount = BigDecimal(form.discount),
-//                                        productDuration = slotDuration,
-//                                        currencyId = currencyId,
-//                                        serviceId = form.selectedServiceId?.toInt(),
-//                                        productId = form.selectedProductId?.toInt(),
-//                                    ))
-//                                }
+                                if(currencyId != null) {
+                                    onCreateOwnClient(AppointmentOwnClientCreate(
+                                        startDate = slot.startDateUtc,
+                                        endDate = slot.endDateUtc,
+                                        customerFullname = form.customerName,
+                                        serviceName = form.serviceName,
+                                        productName = form.productName,
+                                        productPrice = BigDecimal(form.price),
+                                        productPriceWithDiscount = BigDecimal(form.priceWithDiscount),
+                                        productDiscount = BigDecimal(form.discount),
+                                        productDuration = slotDuration,
+                                        currencyId = currencyId,
+                                        serviceId = form.selectedServiceId?.toInt(),
+                                        productId = form.selectedProductId?.toInt(),
+                                    ))
+                                }
                             }
                         }
                     )

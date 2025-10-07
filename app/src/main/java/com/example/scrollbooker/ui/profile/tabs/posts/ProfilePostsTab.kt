@@ -13,6 +13,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
@@ -29,19 +30,25 @@ fun ProfilePostsTab(
     posts: LazyPagingItems<Post>,
     onNavigateToPostDetail: (Int) -> Unit
 ) {
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(top = paddingTop)
-    ) {
-        when(posts.loadState.refresh) {
-            is LoadState.Error -> ErrorScreen()
-            is LoadState.Loading -> Unit
-            is LoadState.NotLoading -> {
+    when(posts.loadState.refresh) {
+        is LoadState.Error -> ErrorScreen()
+        is LoadState.Loading -> Unit
+        is LoadState.NotLoading -> {
+            Box(Modifier.fillMaxSize()) {
+                if(posts.itemCount == 0) {
+                    EmptyScreen(
+                        modifier = Modifier.padding(top = 50.dp + paddingTop),
+                        arrangement = Arrangement.Top,
+                        message = if(isOwnProfile) "Inca nu ai postat nici un review video" else stringResource(R.string.notFoundPosts),
+                        icon = painterResource(R.drawable.ic_video_outline)
+                    )
+                }
+
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(3),
                     verticalArrangement = Arrangement.spacedBy(1.dp),
                     horizontalArrangement = Arrangement.spacedBy(1.dp),
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize().padding(top = paddingTop)
                 ) {
                     items(posts.itemCount) { index ->
                         val post = posts[index]
@@ -58,15 +65,6 @@ fun ProfilePostsTab(
                     is LoadState.Loading -> LoadMoreSpinner()
                     is LoadState.Error -> { Text("Ceva nu a mers cum trebuie") }
                     is LoadState.NotLoading -> Unit
-                }
-
-                if(posts.itemCount == 0) {
-                    EmptyScreen(
-                        modifier = Modifier.padding(top = 50.dp),
-                        arrangement = Arrangement.Top,
-                        message = if(isOwnProfile) "Inca nu ai postat nici un review video" else stringResource(R.string.notFoundPosts),
-                        icon = painterResource(R.drawable.ic_video_outline)
-                    )
                 }
             }
         }
