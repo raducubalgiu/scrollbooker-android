@@ -10,7 +10,6 @@ import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,15 +36,15 @@ import com.example.scrollbooker.ui.myBusiness.myCalendar.components.DayTimeline
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.MyCalendarHeader
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.MyCalendarHeaderState
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.MyCalendarHeaderStateAction
-import com.example.scrollbooker.ui.myBusiness.myCalendar.components.sheets.BlockSlotsAction
-import com.example.scrollbooker.ui.myBusiness.myCalendar.components.sheets.BlockSlotsSheet
-import com.example.scrollbooker.ui.myBusiness.myCalendar.components.sheets.BlockSlotsSheetState
-import com.example.scrollbooker.ui.myBusiness.myCalendar.components.sheets.CreateOwnClientSheet
-import com.example.scrollbooker.ui.myBusiness.myCalendar.components.sheets.MyCalendarSettingsSheet
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.sheets.block.BlockSlotsAction
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.sheets.block.BlockSlotsSheet
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.sheets.block.BlockSlotsSheetState
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.sheets.settings.MyCalendarSettingsSheet
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import java.util.Locale
 import androidx.compose.material3.SheetValue
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.sheets.ownClient.OwnClientSheet
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
@@ -136,7 +135,7 @@ fun MyCalendarScreen(
         }
     ) { innerPadding ->
         if(showOwnClientSheet) {
-            CreateOwnClientSheet(
+            OwnClientSheet(
                 sheetState = ownClientSheetState,
                 paddingTop = innerPadding.calculateTopPadding(),
                 selectedOwnClientSlot = selectedOwnClient,

@@ -275,4 +275,5 @@
     <string name="reason_legal_day_off">Zi legală liberă</string>
     <string name="blockSlots">Blochează sloturi</string>
     <string name="interval">Interval</string>
+    <string name="ownClient">Client Propriu</string>
 </resources>
