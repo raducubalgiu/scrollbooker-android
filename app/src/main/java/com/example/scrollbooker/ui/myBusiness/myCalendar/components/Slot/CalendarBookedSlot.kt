@@ -73,7 +73,7 @@ fun CalendarBookedSlot(slot: CalendarEventsSlot) {
                 Avatar(size = 35.dp, url = "")
                 Spacer(Modifier.width(SpacingS))
                 Text(
-                    text = it.fullName,
+                    text = it.fullname,
                     fontWeight = FontWeight.SemiBold
                 )
             }

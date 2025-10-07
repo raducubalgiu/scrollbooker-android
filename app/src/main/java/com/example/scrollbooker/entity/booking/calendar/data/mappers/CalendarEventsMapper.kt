@@ -2,12 +2,14 @@ package com.example.scrollbooker.entity.booking.calendar.data.mappers
 
 import com.example.scrollbooker.core.enums.AppointmentChannelEnum
 import com.example.scrollbooker.core.util.parseDateTimeStringToLocalDateTime
+import com.example.scrollbooker.entity.booking.calendar.data.remote.CalendarEventsCustomerDto
 import com.example.scrollbooker.entity.booking.calendar.data.remote.CalendarEventsDayDto
 import com.example.scrollbooker.entity.booking.calendar.data.remote.CalendarEventsDto
 import com.example.scrollbooker.entity.booking.calendar.data.remote.CalendarEventsInfoDto
 import com.example.scrollbooker.entity.booking.calendar.data.remote.CalendarEventsProductDto
 import com.example.scrollbooker.entity.booking.calendar.data.remote.CalendarEventsSlotDto
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEvents
+import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsCustomer
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsDay
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsInfo
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsProduct
@@ -42,6 +44,15 @@ fun CalendarEventsSlotDto.toDomain(): CalendarEventsSlot {
         isClosed = isClosed,
         isBlocked = isBlocked,
         info = info?.toDomain()
+    )
+}
+
+fun CalendarEventsCustomerDto.toDomain(): CalendarEventsCustomer {
+    return CalendarEventsCustomer(
+        id = id,
+        fullname = fullname,
+        username = username,
+        avatar = avatar
     )
 }
 

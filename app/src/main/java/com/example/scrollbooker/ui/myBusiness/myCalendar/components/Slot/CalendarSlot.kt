@@ -27,13 +27,12 @@ fun CalendarSlot(
     isPermanentlyBlocked: Boolean,
     isBlocked: Boolean,
     isBlocking: Boolean,
-    onBlock: (LocalDateTime) -> Unit,
     onSlotClick: (CalendarEventsSlot) -> Unit
 ) {
-    fun onFreeSlotClick() {
-        if(isBlocking) slot.startDateLocale?.let { onBlock(it) }
-        else onSlotClick(slot)
-    }
+//    fun onFreeSlotClick() {
+//        if(isBlocking) slot.startDateLocale?.let { onBlock(it) }
+//        else onSlotClick(slot)
+//    }
 
     Box(modifier = Modifier
         .fillMaxWidth()
@@ -49,7 +48,8 @@ fun CalendarSlot(
             isPermanentlyBlocked -> CalendarBlockedSlot(slot.info?.message)
             else -> {
                 CalendarFreeSlot(
-                    onClick = { onFreeSlotClick() },
+                    startDateLocale = slot.startDateLocale,
+                    onSlotClick = { onSlotClick(slot) },
                     isBlocking = isBlocking,
                     isBlocked = isBlocked
                 )

@@ -53,6 +53,13 @@ data class CalendarEventsSlotDto(
     val info: CalendarEventsInfoDto?
 )
 
+data class CalendarEventsCustomerDto(
+    val id: Int?,
+    val fullname: String,
+    val username: String?,
+    val avatar: String?
+)
+
 data class CalendarEventsInfoDto(
     val currency: Currency?,
     val channel: String,
@@ -60,7 +67,7 @@ data class CalendarEventsInfoDto(
     @SerializedName("service_name")
     val serviceName: String,
     val product: CalendarEventsProductDto,
-    val customer: UserSocialDto?,
+    val customer: CalendarEventsCustomerDto?,
     val message: String?
 )
 

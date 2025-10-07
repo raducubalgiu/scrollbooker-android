@@ -88,6 +88,11 @@ fun MyCalendarScreen(
             }
         }
     )
+    
+//    val calendarEvents: FeatureState.Success<CalendarEvents> =
+//        FeatureState.Success<CalendarEvents>(
+//            data = calendarMockData
+//        )
 
     val blockSheetUIState = BlockSlotsSheetState(
         message = message,
@@ -264,12 +269,23 @@ fun MyCalendarScreen(
                                                 isBlocking = isBlocking,
                                                 defaultBlockedLocalDates = defaultBlockedLocalDates,
                                                 blockedLocalDates = blockedLocalDates,
-                                                onBlock = { viewModel.setBlockDate(it) },
-                                                onSlotClick = {
-                                                    viewModel.setSelectedOwnClient(it)
-                                                    scope.launch {
-                                                        ownClientSheetState.show()
-                                                        showOwnClientSheet = true
+                                                onSlotClick = { slot ->
+                                                    when {
+                                                        isBlocking -> {
+                                                            slot.startDateLocale?.let {
+                                                                viewModel.setBlockDate(slot.startDateLocale)
+                                                            }
+                                                        }
+                                                        slot.isBooked -> {
+                                                            // Should Redirect to DetailScreen
+                                                        }
+                                                        else -> {
+                                                            viewModel.setSelectedOwnClient(slot)
+                                                            scope.launch {
+                                                                ownClientSheetState.show()
+                                                                showOwnClientSheet = true
+                                                            }
+                                                        }
                                                     }
                                                 }
                                             )

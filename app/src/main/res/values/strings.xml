@@ -283,4 +283,5 @@
     <string name="product">Produs</string>
     <string name="clientName">Numele clientului</string>
     <string name="manageSlot">Administrează slotul</string>
+    <string name="addAppointment">Adaugă o programare</string>
 </resources>

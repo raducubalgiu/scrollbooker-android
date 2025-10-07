@@ -32,12 +32,19 @@ data class CalendarEventsSlot(
     val info: CalendarEventsInfo?
 )
 
+data class CalendarEventsCustomer(
+    val id: Int?,
+    val fullname: String,
+    val username: String?,
+    val avatar: String?
+)
+
 data class CalendarEventsInfo(
     val currency: Currency?,
     val channel: AppointmentChannelEnum?,
     val serviceName: String,
     val product: CalendarEventsProduct,
-    val customer: UserSocial?,
+    val customer: CalendarEventsCustomer?,
     val message: String?
 )
 

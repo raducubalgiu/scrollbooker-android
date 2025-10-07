@@ -6,12 +6,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.inputs.Input
 import com.example.scrollbooker.components.core.inputs.InputSelect
@@ -20,6 +23,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.nomenclature.currency.domain.model.Currency
 import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
+import com.example.scrollbooker.ui.theme.headlineMedium
 
 @Composable
 fun OwnClientCreateTab(
@@ -72,6 +76,14 @@ fun OwnClientCreateTab(
             .padding(bottom = buttonHeightDp + BasePadding)
 
     ) {
+        Text(
+            modifier = Modifier.padding(bottom = BasePadding),
+            text = stringResource(R.string.addAppointment),
+            style = headlineMedium,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 26.sp
+        )
+
         Input(
             label = "${stringResource(R.string.clientName)}*",
             value = ownClientState.customerName,
