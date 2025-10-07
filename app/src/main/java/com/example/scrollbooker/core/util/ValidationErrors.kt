@@ -2,6 +2,7 @@ package com.example.scrollbooker.core.util
 import android.content.Context
 import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
+import timber.log.Timber
 import java.math.BigDecimal
 
 fun checkLength(context: Context, field: String, minLength: Int = 0, maxLength: Int): String? {

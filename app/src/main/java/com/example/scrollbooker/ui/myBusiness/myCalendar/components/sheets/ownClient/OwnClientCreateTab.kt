@@ -50,12 +50,20 @@ fun OwnClientCreateTab(
         else -> emptyList()
     }
 
+    val productsOptionsList = listOf(
+        Option(value = "1", "Tuns Special"),
+        Option(value = "2", "Tuns Scurt"),
+        Option(value = "3", "Tuns bros")
+    )
+
     val isServicesEnabled = servicesState is FeatureState.Success
     val isCurrencyEnabled = currenciesState is FeatureState.Success
 
     val isClientNameValid = validation.customerNameError.isNullOrBlank()
     val isServiceNameValid = validation.serviceNameError.isNullOrBlank()
     val isProductNameValid = validation.productNameError.isNullOrBlank()
+    val isPriceWithDiscountValid = validation.priceWithDiscountError.isNullOrBlank()
+    val isDiscountValid = validation.discountError.isNullOrBlank()
 
     Column(
         Modifier
@@ -81,9 +89,16 @@ fun OwnClientCreateTab(
             options = servicesOptionList,
             isServicesSelectEnabled = isServicesEnabled,
             selectedServiceId = ownClientState.selectedServiceId.toString(),
-            onSelectedServiceId = { onEvent(OwnClientFormEvent.ServiceSelected(it)) },
+            onSelectedServiceId = { newValue ->
+                val service = newValue?.let {
+                    servicesOptionList.first { it.value == newValue }
+                }
+
+                onEvent(OwnClientFormEvent.ServiceSelected(newValue))
+                onEvent(OwnClientFormEvent.ServiceNameChanged(service?.name!!))
+            },
             serviceName = ownClientState.serviceName,
-            onServiceChange = { onEvent(OwnClientFormEvent.ServiceNameChanged(it)) },
+            onServiceChange = { onEvent(OwnClientFormEvent.ServiceSelected(it)) },
             isServiceNameValid = isServiceNameValid,
             serviceNameError = validation.serviceNameError,
             serviceNameMaxLength = validation.serviceNameMaxLength
@@ -92,14 +107,16 @@ fun OwnClientCreateTab(
         Spacer(Modifier.padding(bottom = BasePadding))
 
         OwnClientProduct(
-            options = listOf(
-                Option(value = "1", "Tuns Special"),
-                Option(value = "2", "Tuns Scurt"),
-                Option(value = "3", "Tuns bros")
-            ),
+            options = productsOptionsList,
             isProductsSelectEnabled = true,
             selectedProductId = ownClientState.selectedProductId.toString(),
-            onSelectedProductId = { onEvent(OwnClientFormEvent.ProductSelected(it)) },
+            onSelectedProductId = { newValue ->
+                val product = newValue?.let {
+                    productsOptionsList.first { it.value == newValue }
+                }
+                onEvent(OwnClientFormEvent.ProductSelected(newValue))
+                onEvent(OwnClientFormEvent.ProductNameChanged(product?.name!!))
+            },
             productName = ownClientState.productName,
             onProductChange = { onEvent(OwnClientFormEvent.ProductNameChanged(it)) },
             isProductNameValid = isProductNameValid,
@@ -110,9 +127,10 @@ fun OwnClientCreateTab(
         Spacer(Modifier.padding(bottom = BasePadding))
 
         Input(
-            label = "${stringResource(R.string.price)}*",
+            label = "${stringResource(R.string.fullPrice)}*",
             value = ownClientState.price,
             onValueChange = { onEvent(OwnClientFormEvent.PriceChanged(it)) },
+            isEnabled = false,
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next,
                 keyboardType = KeyboardType.Number
@@ -122,8 +140,10 @@ fun OwnClientCreateTab(
         Spacer(Modifier.padding(bottom = BasePadding))
 
         Input(
-            label = "${stringResource(R.string.priceWithDiscount)}*",
+            label = "${stringResource(R.string.finalPrice)}*",
             value = ownClientState.priceWithDiscount,
+            isError = !isPriceWithDiscountValid,
+            errorMessage = validation.priceWithDiscountError,
             onValueChange = { onEvent(OwnClientFormEvent.PriceWithDiscountChanged(it)) },
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next,
@@ -137,6 +157,8 @@ fun OwnClientCreateTab(
             label = "${stringResource(R.string.discount)}*",
             value = ownClientState.discount,
             onValueChange = { onEvent(OwnClientFormEvent.DiscountChanged(it)) },
+            isError = !isDiscountValid,
+            errorMessage = validation.discountError,
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next,
                 keyboardType = KeyboardType.Number

@@ -18,7 +18,7 @@ data class OwnClientFormStateState(
     val customerName: String = "",
     val serviceName: String = "",
     val productName: String = "",
-    val price: String = "",
+    val price: String = "0",
     val priceWithDiscount: String = "",
     val discount: String = "0",
     val selectedServiceId: String? = null,
@@ -33,14 +33,16 @@ data class OwnClientFormStateState(
         val customerNameError = checkLength(context, customerName, minLength = 3, maxLength = customerNameMaxLength)
         val serviceNameError = checkLength(context, serviceName, minLength = 3, maxLength = serviceNameMaxLength)
         val productNameError = checkLength(context, productName, minLength = 3, maxLength = productNameMaxLength)
-        val currencyIdError = checkRequired(context, selectedCurrencyId)
+        val priceWithDiscountError = checkRequired(context, priceWithDiscount)
         val discountError = checkMinMax(context, discount, min=0, max=100)
+        val currencyIdError = checkRequired(context, selectedCurrencyId)
 
         return OwnClientValidationResult(
             isValid = listOf(
                 customerNameError,
-                serviceNameMaxLength,
+                serviceNameError,
                 productNameError,
+                priceWithDiscountError,
                 discountError,
                 currencyIdError
             ).all { it == null },
@@ -50,6 +52,7 @@ data class OwnClientFormStateState(
             serviceNameError = serviceNameError,
             productNameMaxLength = productNameMaxLength,
             productNameError = productNameError,
+            priceWithDiscountError = priceWithDiscountError,
             discountError = discountError
         )
     }
@@ -106,8 +109,8 @@ data class OwnClientValidationResult(
     val serviceNameError: String? = null,
     val productNameMaxLength: Int? = null,
     val productNameError: String? = null,
+    val priceWithDiscountError: String? = null,
     val discountError: String? = null,
-    //val priceError: String? = null
 )
 
 @Composable

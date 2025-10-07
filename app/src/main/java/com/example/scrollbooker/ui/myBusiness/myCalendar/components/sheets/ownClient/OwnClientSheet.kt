@@ -48,6 +48,7 @@ import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarViewModel
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.math.BigDecimal
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
@@ -76,6 +77,11 @@ fun OwnClientSheet(
 
     val (form, onEvent) = rememberOwnClientFormState()
     val validation = remember(form) { form.validate(context) }
+
+    LaunchedEffect(form) {
+        Timber.tag("Creare Own Client").e("FORM IN SHEET!! $form")
+        Timber.tag("Creare Own Client").e("VALIDATION IN SHEET!! $validation")
+    }
 
     ModalBottomSheet(
         sheetState = sheetState,
@@ -174,22 +180,25 @@ fun OwnClientSheet(
                             selectedOwnClientSlot?.let { slot ->
                                 val currencyId = form.selectedCurrencyId?.toInt()
 
-                                if(currencyId != null) {
-                                    onCreateOwnClient(AppointmentOwnClientCreate(
-                                        startDate = slot.startDateUtc,
-                                        endDate = slot.endDateUtc,
-                                        customerFullname = form.customerName,
-                                        serviceName = form.serviceName,
-                                        productName = form.productName,
-                                        productPrice = BigDecimal(form.price),
-                                        productPriceWithDiscount = BigDecimal(form.priceWithDiscount),
-                                        productDiscount = BigDecimal(form.discount),
-                                        productDuration = slotDuration,
-                                        currencyId = currencyId,
-                                        serviceId = form.selectedServiceId?.toInt(),
-                                        productId = form.selectedProductId?.toInt(),
-                                    ))
-                                }
+                                Timber.tag("Creare Own Client").e("FORM $form")
+                                Timber.tag("Creare Own Client").e("CURRENCY ID $currencyId")
+
+//                                if(currencyId != null) {
+//                                    onCreateOwnClient(AppointmentOwnClientCreate(
+//                                        startDate = slot.startDateUtc,
+//                                        endDate = slot.endDateUtc,
+//                                        customerFullname = form.customerName,
+//                                        serviceName = form.serviceName,
+//                                        productName = form.productName,
+//                                        productPrice = BigDecimal(form.price),
+//                                        productPriceWithDiscount = BigDecimal(form.priceWithDiscount),
+//                                        productDiscount = BigDecimal(form.discount),
+//                                        productDuration = slotDuration,
+//                                        currencyId = currencyId,
+//                                        serviceId = form.selectedServiceId?.toInt(),
+//                                        productId = form.selectedProductId?.toInt(),
+//                                    ))
+//                                }
                             }
                         }
                     )

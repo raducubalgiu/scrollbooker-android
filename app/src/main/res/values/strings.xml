@@ -75,6 +75,8 @@
     <string name="followers">Urmăritori</string>
     <string name="dontFoundResults">Nu au fost găsite rezultate</string>
     <string name="price">Preț</string>
+    <string name="fullPrice">Preț întreg (se calculează automat)</string>
+    <string name="finalPrice">Preț final</string>
     <string name="priceWithDiscount">Preț cu discount</string>
     <string name="discount">Discount</string>
     <string name="currency">Monedă</string>
@@ -214,7 +216,9 @@
     <string name="thisDayDoesntBelongToSchedule">Această zi nu face parte din programul de lucru</string>
     <string name="minNumberValidationMessage">Acest câmp trebuie să fie mai mare ca %1$d</string>
     <string name="maxNumberValidationMessage">Acest câmp trebuie să fie mai mic decât %1$d</string>
+    <string name="greaterThanValidationMessage">Acest câmp trebuie să fie mai mare ca %1$d</string>
     <string name="requiredValidationMessage">Acest câmp este obligatoriu</string>
+    <string name="numericValueValidationMessage">Te rugăm să introduci o valoarea numerică validă</string>
     <string name="pickService">Alege un serviciu</string>
     <string name="pickCurrency">Alege moneda</string>
     <string name="social">Social</string>
