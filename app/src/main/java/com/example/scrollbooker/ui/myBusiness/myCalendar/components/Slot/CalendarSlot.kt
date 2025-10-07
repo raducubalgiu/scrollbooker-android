@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsSlot
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Primary
-import org.threeten.bp.LocalDateTime
 
 @Composable
 fun CalendarSlot(
@@ -29,11 +28,6 @@ fun CalendarSlot(
     isBlocking: Boolean,
     onSlotClick: (CalendarEventsSlot) -> Unit
 ) {
-//    fun onFreeSlotClick() {
-//        if(isBlocking) slot.startDateLocale?.let { onBlock(it) }
-//        else onSlotClick(slot)
-//    }
-
     Box(modifier = Modifier
         .fillMaxWidth()
         .height(height)

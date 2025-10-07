@@ -1,5 +1,4 @@
 package com.example.scrollbooker.ui.profile.edit
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AlternateEmail
 import androidx.compose.material3.Icon
@@ -10,13 +9,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.headers.HeaderEdit
 import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.components.core.inputs.EditInput
-import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
 
@@ -41,7 +38,6 @@ fun EditUsernameScreen(
     }
 
     Layout(
-        modifier = Modifier.statusBarsPadding(),
         header = {
             HeaderEdit(
                 onBack = onBack,

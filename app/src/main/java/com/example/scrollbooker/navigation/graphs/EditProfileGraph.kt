@@ -1,9 +1,11 @@
 package com.example.scrollbooker.navigation.graphs
 
+import androidx.compose.runtime.remember
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import com.example.scrollbooker.navigation.navigators.EditProfileNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
@@ -30,10 +32,16 @@ fun NavGraphBuilder.editProfileGraph(
         popExitTransition = { slideOutToRight() }
     ) {
         composable(route = MainRoute.EditProfile.route) {
+            val editProfileNavigate = remember(navController) {
+                EditProfileNavigator(
+                    navController = navController
+                )
+            }
+
             EditProfileScreen(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
-                onNavigate = { route -> navController.navigate(route) }
+                editProfileNavigate = editProfileNavigate
             )
         }
 

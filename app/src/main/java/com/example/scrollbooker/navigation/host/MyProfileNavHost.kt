@@ -10,6 +10,7 @@ import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.navigation.bottomBar.MainTab
+import com.example.scrollbooker.navigation.graphs.editProfileGraph
 import com.example.scrollbooker.navigation.graphs.myBusinessGraph
 import com.example.scrollbooker.navigation.graphs.settingsGraph
 import com.example.scrollbooker.navigation.routes.MainRoute
@@ -65,6 +66,7 @@ fun MyProfileNavHost(
                 )
             }
 
+            editProfileGraph(navController, viewModel)
             myBusinessGraph(navController)
             settingsGraph(
                 navController = navController,

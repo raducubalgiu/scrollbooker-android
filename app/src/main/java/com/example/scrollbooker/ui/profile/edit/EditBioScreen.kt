@@ -1,5 +1,4 @@
 package com.example.scrollbooker.ui.profile.edit
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -7,7 +6,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
@@ -46,7 +44,6 @@ fun EditBioScreen(
     }
 
     Layout(
-        modifier = Modifier.statusBarsPadding(),
         header = {
             HeaderEdit(
                 onBack = onBack,
