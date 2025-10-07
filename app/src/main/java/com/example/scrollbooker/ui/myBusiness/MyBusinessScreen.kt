@@ -2,7 +2,6 @@ package com.example.scrollbooker.ui.myBusiness
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -29,21 +28,21 @@ import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.enums.PermissionEnum
 import com.example.scrollbooker.core.enums.has
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.navigation.routes.MainRoute
+import com.example.scrollbooker.navigation.navigators.MyBusinessNavigator
 import com.example.scrollbooker.ui.myBusiness.myProducts.components.MyBusinessCard
 
 data class BusinessCard(
     val title: String,
     val description: String,
     val icon: ImageVector,
-    val route: String,
-    val permission: PermissionEnum
+    val permission: PermissionEnum,
+    val navigate: () -> Unit,
 )
 
 @Composable
 fun MyBusinessScreen(
     viewModel: MyBusinessViewModel,
-    onNavigation: (String) -> Unit,
+    myBusinessNavigate: MyBusinessNavigator,
     onBack: () -> Unit
 ) {
     val permissionsState by viewModel.permissionsState.collectAsState()
@@ -53,56 +52,56 @@ fun MyBusinessScreen(
             title = stringResource(R.string.location),
             description = stringResource(R.string.businessLocationDetails),
             icon = Icons.Outlined.LocationOn,
-            route = "",
+            navigate = {},
             permission = PermissionEnum.MY_BUSINESS_LOCATION_VIEW
         ),
         BusinessCard(
             title = stringResource(R.string.scheduleShort),
             description = stringResource(R.string.userScheduleDetails),
             icon = Icons.Outlined.Schedule,
-            route = MainRoute.Schedules.route,
+            navigate = { myBusinessNavigate.toMySchedules() },
             permission = PermissionEnum.MY_SCHEDULES_VIEW
         ),
         BusinessCard(
             title = stringResource(R.string.products),
             description = stringResource(R.string.userProductsDetails),
             icon = Icons.Outlined.ShoppingBag,
-            route = MainRoute.MyProducts.route,
+            navigate = { myBusinessNavigate.toMyProducts() },
             permission = PermissionEnum.MY_PRODUCTS_VIEW
         ),
         BusinessCard(
             title = stringResource(R.string.services),
             description = stringResource(R.string.servicesDetails),
             icon = Icons.Outlined.Book,
-            route = MainRoute.MyServices.route,
+            navigate = { myBusinessNavigate.toMyServices() },
             permission = PermissionEnum.MY_SERVICES_VIEW
         ),
         BusinessCard(
             title = stringResource(R.string.calendar),
             description = stringResource(R.string.servicesDetails),
             icon = Icons.Outlined.CalendarToday,
-            route = MainRoute.MyCalendar.route,
+            navigate = { myBusinessNavigate.toMyCalendar() },
             permission = PermissionEnum.MY_CALENDAR_VIEW
         ),
         BusinessCard(
             title = stringResource(R.string.paymentMethods),
             description = stringResource(R.string.paymentMethodsDetails),
             icon = Icons.Outlined.Payment,
-            route = MainRoute.MyCurrencies.route,
+            navigate = { myBusinessNavigate.toMyCurrencies() },
             permission = PermissionEnum.MY_CURRENCIES_VIEW
         ),
         BusinessCard(
             title = stringResource(R.string.employees),
             description = stringResource(R.string.servicesDetails),
             icon = Icons.Outlined.PeopleOutline,
-            route = MainRoute.Employees.route,
+            navigate = { myBusinessNavigate.toMyEmployees() },
             permission = PermissionEnum.MY_EMPLOYEES_VIEW
         ),
         BusinessCard(
             title = stringResource(R.string.employmentRequests),
             description = stringResource(R.string.servicesDetails),
             icon = Icons.Outlined.Repeat,
-            route = MainRoute.EmploymentsRequests.route,
+            navigate = { myBusinessNavigate.toMyEmploymentRequests() },
             permission = PermissionEnum.MY_EMPLOYMENT_REQUESTS_VIEW
         )
     )
@@ -130,7 +129,7 @@ fun MyBusinessScreen(
                             title = page.title,
                             icon = page.icon,
                             description = page.description,
-                            onClick = { onNavigation(page.route) }
+                            onClick = page.navigate
                         )
                     }
                 }

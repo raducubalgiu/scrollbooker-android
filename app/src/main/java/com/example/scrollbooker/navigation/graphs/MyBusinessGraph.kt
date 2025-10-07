@@ -1,4 +1,6 @@
 package com.example.scrollbooker.navigation.graphs
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.stringResource
@@ -8,15 +10,12 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.scrollbooker.R
+import com.example.scrollbooker.navigation.navigators.MyBusinessNavigator
+import com.example.scrollbooker.navigation.navigators.SettingsNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
-import com.example.scrollbooker.navigation.transition.slideInFromLeft
-import com.example.scrollbooker.navigation.transition.slideInFromRight
-import com.example.scrollbooker.navigation.transition.slideOutToLeft
-import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessServices.MyServicesScreen
 import com.example.scrollbooker.ui.myBusiness.MyBusinessScreen
 import com.example.scrollbooker.ui.myBusiness.MyBusinessViewModel
@@ -41,6 +40,7 @@ import com.example.scrollbooker.ui.myBusiness.mySchedules.MySchedulesViewModel
 import com.example.scrollbooker.ui.myBusiness.myServices.MyServicesViewModel
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.O)
 fun NavGraphBuilder.myBusinessGraph(
     navController: NavHostController
 ) {
@@ -51,14 +51,20 @@ fun NavGraphBuilder.myBusinessGraph(
         composable(MainRoute.MyBusiness.route) {
             val viewModel = hiltViewModel<MyBusinessViewModel>()
 
+            val myBusinessNavigate = remember(navController) {
+                MyBusinessNavigator(
+                    navController = navController
+                )
+            }
+
             MyBusinessScreen(
                 viewModel = viewModel,
-                onNavigation = { navController.navigate(it) },
+                myBusinessNavigate = myBusinessNavigate,
                 onBack = { navController.popBackStack() }
             )
         }
 
-        composable(MainRoute.Employees.route) { backStackEntry ->
+        composable(MainRoute.MyEmployees.route) { backStackEntry ->
             val viewModel = hiltViewModel<EmployeesViewModel>(backStackEntry)
 
             EmployeesScreen(
@@ -157,6 +163,23 @@ fun NavGraphBuilder.myBusinessGraph(
             }
         }
 
+        composable(
+            MainRoute.MySchedules.route,
+        ) { backStackEntry ->
+            val viewModel = hiltViewModel<MySchedulesViewModel>(backStackEntry)
+            val coroutineScope = rememberCoroutineScope()
+
+            MySchedulesScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() },
+                onNextOrSave = {
+                    coroutineScope.launch {
+                        viewModel.updateSchedules()
+                    }
+                }
+            )
+        }
+
         composable(MainRoute.MyCalendar.route) { backStackEntry ->
             val viewModel = hiltViewModel<MyCalendarViewModel>(backStackEntry)
 
@@ -252,23 +275,5 @@ fun NavGraphBuilder.myBusinessGraph(
                 )
             }
         }
-
-        composable(
-            MainRoute.Schedules.route,
-        ) { backStackEntry ->
-            val viewModel = hiltViewModel<MySchedulesViewModel>(backStackEntry)
-            val coroutineScope = rememberCoroutineScope()
-
-            MySchedulesScreen(
-                viewModel = viewModel,
-                onBack = { navController.popBackStack() },
-                onNextOrSave = {
-                    coroutineScope.launch {
-                        viewModel.updateSchedules()
-                    }
-                }
-            )
-        }
-
     }
 }

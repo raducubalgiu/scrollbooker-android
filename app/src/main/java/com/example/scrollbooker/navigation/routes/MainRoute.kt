@@ -42,7 +42,19 @@ sealed class MainRoute(val route: String) {
     object Camera: MainRoute(route = "camera")
 
     object MyBusinessNavigator: MainRoute(route = "myBusinessNavigator")
-    object Employees: MainRoute(route = "employees")
+    object MyBusiness: MainRoute(route = "myBusiness")
+
+    object MySchedules: MainRoute(route = "mySchedules")
+    object MyServices: MainRoute(route = "myServices")
+    object MyCalendar: MainRoute(route = "myCalendar")
+    object MyCurrencies: MainRoute(route = "myCurrencies")
+
+    object MyProductsNavigator: MainRoute(route = "myProductsNavigator")
+    object MyProducts: MainRoute(route = "myProducts")
+    object AddProduct: MainRoute(route = "addProduct")
+    object EditProduct: MainRoute(route = "editProduct")
+
+    object MyEmployees: MainRoute(route = "myEmployees")
 
     object EmployeesDismissal: MainRoute(route = "employeesDismissal")
 
@@ -52,17 +64,6 @@ sealed class MainRoute(val route: String) {
     object EmploymentAssignJob: MainRoute(route = "employmentAssignJob")
     object EmploymentAcceptTerms: MainRoute(route = "employmentAcceptTerms")
 
-    object MyCalendar: MainRoute(route = "myCalendar")
-    object MyBusiness: MainRoute(route = "myBusiness")
-    object MyServices: MainRoute(route = "myServices")
-    object MyCurrencies: MainRoute(route = "myCurrencies")
-
-    object MyProductsNavigator: MainRoute(route = "myProductsNavigator")
-    object MyProducts: MainRoute(route = "myProducts")
-    object AddProduct: MainRoute(route = "addProduct")
-    object EditProduct: MainRoute(route = "editProduct")
-
-    object Schedules: MainRoute(route = "schedules")
 
     object SettingsNavigator: MainRoute(route = "settingsNavigator")
     object Settings: MainRoute(route = "settings")
