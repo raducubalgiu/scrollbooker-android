@@ -38,11 +38,12 @@ import kotlinx.coroutines.launch
 @Composable
 fun OnboardingNavHost(
     navController: NavHostController,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
+    startDestination: String
 ) {
     NavHost(
         navController = navController,
-        startDestination = AuthRoute.CollectUserUsername.route
+        startDestination = startDestination
     ) {
         // Shared
         composable(AuthRoute.CollectUserUsername.route) { backStackEntry ->

@@ -15,16 +15,21 @@ fun RootNavHost(
 
     when(val state = authState) {
         is FeatureState.Success -> {
+            val registrationStep = state.data.registrationStep?.key
+
             if(state.data.isValidated) {
                 MainNavHost(
                     navController = navController,
                     authViewModel = viewModel
                 )
-            } else {
+            } else if(registrationStep != null) {
                 OnboardingNavHost(
                     navController = navController,
-                    authViewModel = viewModel
+                    authViewModel = viewModel,
+                    startDestination = registrationStep
                 )
+            } else {
+                AuthNavHost(viewModel)
             }
         }
         else -> AuthNavHost(viewModel)
