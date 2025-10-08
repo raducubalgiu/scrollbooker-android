@@ -1,14 +1,11 @@
 package com.example.scrollbooker.ui.onboarding.client
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import com.example.scrollbooker.components.core.layout.FormLayout
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.FeatureState
 
@@ -21,7 +18,6 @@ fun CollectClientLocationPermissionScreen(
     val isSaving by viewModel.isSaving.collectAsState()
 
     FormLayout(
-        modifier = Modifier.padding(top = 50.dp),
         isEnabled = true,
         isLoading = isSaving is FeatureState.Loading,
         headLine = stringResource(R.string.locationPermission),

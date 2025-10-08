@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.CircularProgressIndicator
@@ -155,7 +156,7 @@ fun InputSelect(
                         )
                     } else {
                         Icon(
-                            imageVector = Icons.Default.KeyboardArrowUp,
+                            imageVector = Icons.Default.KeyboardArrowDown,
                             contentDescription = null,
                             modifier = Modifier.rotate(rotation)
                         )

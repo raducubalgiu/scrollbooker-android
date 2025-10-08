@@ -44,7 +44,6 @@ fun CollectUserUsernameScreen(
     onSubmit: (String) -> Unit
 ) {
     FormLayout(
-        modifier = Modifier.padding(top = 50.dp),
         enableBottomAction = false,
         headerTitle = "",
         headLine = stringResource(R.string.usernameTitle),

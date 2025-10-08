@@ -20,7 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.inputs.InputSelect
 import com.example.scrollbooker.components.core.inputs.Option
@@ -49,8 +48,60 @@ fun CollectClientBirthDateScreen(
     val isEnabled by viewModel.isBirthDateValid.collectAsState()
     val isLoading = isSaving is FeatureState.Loading
 
+    val currentYear = LocalDate.now().year
+
+    val monthOptions = remember {
+        (1..12).map { month ->
+            val name = Month.of(month)
+                .getDisplayName(TextStyle.FULL, Locale("ro"))
+                .replaceFirstChar { it.uppercase(Locale.ROOT) }
+
+            Option(
+                value = month.toString().padStart(2, '0'),
+                name = name
+            )
+        }
+    }
+
+    val yearOptions = remember {
+        (1900..currentYear).reversed().map {
+            Option(value = it.toString(), name = it.toString())
+        }
+    }
+
+    var dayOptions by remember { mutableStateOf<List<Option>>(emptyList()) }
+
+    fun getValidDayOptions(month: Int?, year: Int?): List<Option> {
+        return try {
+            if(month != null && year != null) {
+                val lastDay = YearMonth.of(year, month).lengthOfMonth()
+                (1..lastDay).map {
+                    Option(value = it.toString().padStart(2, '0'), name = it.toString())
+                }
+            } else {
+                (1..31).map {
+                    Option(value = it.toString().padStart(2, '0'), name = it.toString())
+                }
+            }
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
+    LaunchedEffect(selectedMonth, selectedYear) {
+        val month = selectedMonth?.toIntOrNull()
+        val year = selectedYear?.toIntOrNull()
+
+        val newDayOptions = getValidDayOptions(month, year)
+
+        if(selectedDay !in newDayOptions.map { it.value }) {
+            viewModel.setSelectedDay(null)
+        }
+
+        dayOptions = newDayOptions
+    }
+
     FormLayout(
-        modifier = Modifier.padding(top = 50.dp),
         headLine = stringResource(R.string.dateOfBirth),
         subHeadLine = stringResource(R.string.dateOfBirthLabelDescription),
         buttonTitle = stringResource(R.string.nextStep),
@@ -58,59 +109,6 @@ fun CollectClientBirthDateScreen(
         isLoading = isLoading,
         onNext = onNext,
     ) {
-        val currentYear = LocalDate.now().year
-
-        val monthOptions = remember {
-            (1..12).map { month ->
-                val name = Month.of(month)
-                    .getDisplayName(TextStyle.FULL, Locale("ro"))
-                    .replaceFirstChar { it.uppercase(Locale.ROOT) }
-
-                Option(
-                    value = month.toString().padStart(2, '0'),
-                    name = name
-                )
-            }
-        }
-
-        val yearOptions = remember {
-            (1900..currentYear).reversed().map {
-                Option(value = it.toString(), name = it.toString())
-            }
-        }
-
-        var dayOptions by remember { mutableStateOf<List<Option>>(emptyList()) }
-
-        fun getValidDayOptions(month: Int?, year: Int?): List<Option> {
-            return try {
-                if(month != null && year != null) {
-                    val lastDay = YearMonth.of(year, month).lengthOfMonth()
-                    (1..lastDay).map {
-                        Option(value = it.toString().padStart(2, '0'), name = it.toString())
-                    }
-                } else {
-                    (1..31).map {
-                        Option(value = it.toString().padStart(2, '0'), name = it.toString())
-                    }
-                }
-            } catch (e: Exception) {
-                emptyList()
-            }
-        }
-
-        LaunchedEffect(selectedMonth, selectedYear) {
-            val month = selectedMonth?.toIntOrNull()
-            val year = selectedYear?.toIntOrNull()
-
-            val newDayOptions = getValidDayOptions(month, year)
-
-            if(selectedDay !in newDayOptions.map { it.value }) {
-                viewModel.setSelectedDay(null)
-            }
-
-            dayOptions = newDayOptions
-        }
-
         Row(
             modifier = Modifier.padding(horizontal = SpacingXL),
             verticalAlignment = Alignment.CenterVertically
@@ -120,7 +118,8 @@ fun CollectClientBirthDateScreen(
                     options = dayOptions,
                     placeholder = stringResource(R.string.day),
                     selectedOption = selectedDay.toString(),
-                    onValueChange = { viewModel.setSelectedDay(it) }
+                    onValueChange = { viewModel.setSelectedDay(it) },
+                    isRequired = false
                 )
             }
 
@@ -131,7 +130,8 @@ fun CollectClientBirthDateScreen(
                     options = monthOptions,
                     placeholder = stringResource(R.string.month),
                     selectedOption = selectedMonth.toString(),
-                    onValueChange = { viewModel.setSelectedMonth(it) }
+                    onValueChange = { viewModel.setSelectedMonth(it) },
+                    isRequired = false
                 )
             }
 
@@ -142,7 +142,8 @@ fun CollectClientBirthDateScreen(
                     options = yearOptions,
                     placeholder = stringResource(R.string.year),
                     selectedOption = selectedYear.toString(),
-                    onValueChange = { viewModel.setSelectedYear(it) }
+                    onValueChange = { viewModel.setSelectedYear(it) },
+                    isRequired = false
                 )
             }
         }

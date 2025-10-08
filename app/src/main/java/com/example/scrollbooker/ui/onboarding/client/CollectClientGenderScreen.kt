@@ -41,7 +41,6 @@ fun CollectClientGenderScreen(
     val isLoading = isSaving is FeatureState.Loading
 
     FormLayout(
-        modifier = Modifier.padding(top = 50.dp),
         headLine = stringResource(R.string.chooseYourGender),
         subHeadLine = stringResource(R.string.genderLabelDescription),
         buttonTitle = stringResource(R.string.nextStep),
