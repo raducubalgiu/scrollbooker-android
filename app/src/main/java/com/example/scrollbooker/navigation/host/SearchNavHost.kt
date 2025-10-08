@@ -4,9 +4,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.entity.nomenclature.businessType.domain.model.BusinessType
-import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
@@ -21,7 +18,6 @@ fun SearchNavHost(
     navController: NavHostController,
     appointmentsNumber: Int,
     notificationsNumber: Int,
-    onChangeTab: (MainTab) -> Unit
 ) {
     NavHost(
         navController = navController,
@@ -38,7 +34,6 @@ fun SearchNavHost(
                 onNavigateToBusinessProfile = { navController.navigate(MainRoute.BusinessProfile.route) },
                 appointmentsNumber = appointmentsNumber,
                 notificationsNumber = notificationsNumber,
-                onChangeTab = onChangeTab,
             )
         }
         composable(MainRoute.BusinessProfile.route) { backStackEntry ->

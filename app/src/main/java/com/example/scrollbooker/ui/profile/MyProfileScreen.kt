@@ -42,7 +42,6 @@ fun MyProfileScreen(
     myPosts: LazyPagingItems<Post>,
     appointmentsNumber: Int,
     notificationsNumber: Int,
-    onChangeTab: (MainTab) -> Unit,
     profileNavigate: ProfileNavigator
 ) {
     val menuSheetState = rememberModalBottomSheetState()
@@ -91,8 +90,6 @@ fun MyProfileScreen(
             BottomBar(
                 appointmentsNumber = appointmentsNumber,
                 notificationsNumber = notificationsNumber,
-                currentTab = MainTab.Profile,
-                onChangeTab = onChangeTab
             )
         },
         containerColor = Background

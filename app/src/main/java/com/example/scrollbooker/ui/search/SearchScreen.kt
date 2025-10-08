@@ -144,7 +144,6 @@ fun SearchScreen(
     onNavigateToBusinessProfile: () -> Unit,
     appointmentsNumber: Int,
     notificationsNumber: Int,
-    onChangeTab: (MainTab) -> Unit
 ) {
     val videoViewModel: SearchPlayerViewModel = hiltViewModel()
 
@@ -176,8 +175,6 @@ fun SearchScreen(
             BottomBar(
                 appointmentsNumber = appointmentsNumber,
                 notificationsNumber = notificationsNumber,
-                currentTab = MainTab.Search,
-                onChangeTab = onChangeTab
             )
         }
     ) { innerPadding ->

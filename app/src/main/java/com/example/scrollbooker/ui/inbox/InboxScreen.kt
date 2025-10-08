@@ -25,7 +25,6 @@ fun InboxScreen(
     viewModel: InboxViewModel,
     appointmentsNumber: Int,
     notificationsNumber: Int,
-    onChangeTab: (MainTab) -> Unit,
     inboxNavigate: InboxNavigator
 ) {
     val notifications = viewModel.notifications.collectAsLazyPagingItems()
@@ -39,8 +38,6 @@ fun InboxScreen(
             BottomBar(
                 appointmentsNumber = appointmentsNumber,
                 notificationsNumber = notificationsNumber,
-                currentTab = MainTab.Inbox,
-                onChangeTab = onChangeTab
             )
         }
     ) { innerPadding ->

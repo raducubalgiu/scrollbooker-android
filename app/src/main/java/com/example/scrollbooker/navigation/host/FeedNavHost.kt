@@ -19,13 +19,11 @@ import androidx.compose.runtime.getValue
 import androidx.media3.common.util.UnstableApi
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.entity.social.post.domain.model.Post
-import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
-import com.example.scrollbooker.ui.feed.FeedScreenViewModel
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -38,7 +36,6 @@ fun FeedNavHost(
     notificationsNumber: Int,
     onOpenDrawer: () -> Unit,
     drawerState: DrawerState,
-    onChangeTab: (MainTab) -> Unit,
 ) {
     val userSearch by mainViewModel.userSearch.collectAsState()
     val feedNavigate = remember(rootNavController, navController) {
@@ -57,7 +54,6 @@ fun FeedNavHost(
                 posts = bookNowPosts,
                 drawerState = drawerState,
                 onOpenDrawer = onOpenDrawer,
-                onChangeTab = onChangeTab,
                 appointmentsNumber = appointmentsNumber,
                 notificationsNumber = notificationsNumber,
                 feedNavigate = feedNavigate

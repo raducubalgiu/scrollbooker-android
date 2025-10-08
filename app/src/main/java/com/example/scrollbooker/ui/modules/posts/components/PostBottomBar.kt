@@ -32,10 +32,9 @@ fun PostBottomBar(
     shouldDisplayBottomBar: Boolean,
     appointmentsNumber: Int,
     notificationsNumber: Int,
-    onChangeTab: (MainTab) -> Unit
 ) {
     val currentOnAction by rememberUpdatedState(onAction)
-    val currentOnChangeTab by rememberUpdatedState(onChangeTab)
+    //val currentOnChangeTab by rememberUpdatedState(onChangeTab)
 
     AnimatedContent(
         targetState = shouldDisplayBottomBar,
@@ -47,8 +46,6 @@ fun PostBottomBar(
                 BottomBar(
                     appointmentsNumber = appointmentsNumber,
                     notificationsNumber = notificationsNumber,
-                    currentTab = MainTab.Feed,
-                    onChangeTab = currentOnChangeTab
                 )
             } else {
                 val bottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()

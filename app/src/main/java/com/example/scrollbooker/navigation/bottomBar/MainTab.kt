@@ -1,13 +1,14 @@
 package com.example.scrollbooker.navigation.bottomBar
 
+import androidx.annotation.DrawableRes
 import com.example.scrollbooker.R
 import com.example.scrollbooker.navigation.routes.MainRoute
 
 sealed class MainTab(
     val route: String,
     val label: String,
-    val painterSolid: Int,
-    val painterOutline: Int
+    @DrawableRes val painterSolid: Int,
+    @DrawableRes val painterOutline: Int
 ) {
     object Feed: MainTab(
         MainRoute.Feed.route, "Acasa",
@@ -36,14 +37,8 @@ sealed class MainTab(
     )
 
     companion object {
-        fun fromRoute(route: String): MainTab = when(route) {
-            Feed.route -> Feed
-            Inbox.route -> Inbox
-            Search.route -> Search
-            Appointments.route -> Appointments
-            Profile.route -> Profile
-            else -> Feed
-        }
+        fun fromRoute(route: String?): MainTab =
+            route?.let(::fromRoute) ?: Feed
 
         val allTabs = listOf(Feed, Inbox, Search, Appointments, Profile)
     }

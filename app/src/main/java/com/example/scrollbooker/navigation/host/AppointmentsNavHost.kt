@@ -2,7 +2,6 @@ package com.example.scrollbooker.navigation.host
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.navigation.graphs.appointmentsGraph
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
@@ -14,7 +13,6 @@ fun AppointmentsNavHost(
     navController: NavHostController,
     appointmentsNumber: Int,
     notificationsNumber: Int,
-    onChangeTab: (MainTab) -> Unit
 ) {
     NavHost(
         navController = navController,
@@ -27,7 +25,6 @@ fun AppointmentsNavHost(
             navController = navController,
             appointmentsNumber = appointmentsNumber,
             notificationsNumber = notificationsNumber,
-            onChangeTab = onChangeTab,
         )
     }
 }

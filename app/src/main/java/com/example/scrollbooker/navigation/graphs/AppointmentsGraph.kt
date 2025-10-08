@@ -7,8 +7,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import com.example.scrollbooker.navigation.bottomBar.MainTab
-import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
@@ -26,7 +24,6 @@ fun NavGraphBuilder.appointmentsGraph(
     navController: NavHostController,
     appointmentsNumber: Int,
     notificationsNumber: Int,
-    onChangeTab: (MainTab) -> Unit
 ) {
     navigation(
         route = MainRoute.AppointmentsNavigator.route,
@@ -51,7 +48,6 @@ fun NavGraphBuilder.appointmentsGraph(
                 },
                 appointmentsNumber = appointmentsNumber,
                 notificationsNumber = notificationsNumber,
-                onChangeTab = onChangeTab
             )
         }
 

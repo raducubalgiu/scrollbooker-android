@@ -11,7 +11,6 @@ import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
-import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.navigation.graphs.editProfileGraph
 import com.example.scrollbooker.navigation.graphs.myBusinessGraph
 import com.example.scrollbooker.navigation.graphs.settingsGraph
@@ -36,7 +35,6 @@ fun MyProfileNavHost(
     navController: NavHostController,
     appointmentsNumber: Int,
     notificationsNumber: Int,
-    onChangeTab: (MainTab) -> Unit
 ) {
     NavHost(
         navController = navController,
@@ -64,7 +62,6 @@ fun MyProfileNavHost(
                     myPosts = myPosts,
                     appointmentsNumber = appointmentsNumber,
                     notificationsNumber = notificationsNumber,
-                    onChangeTab = onChangeTab,
                     profileNavigate = profileNavigate
                 )
             }

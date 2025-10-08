@@ -8,9 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.navigation.navigators.InboxNavigator
-import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
@@ -28,7 +26,6 @@ fun InboxNavHost(
     navController: NavHostController,
     appointmentsNumber: Int,
     notificationsNumber: Int,
-    onChangeTab: (MainTab) -> Unit
 ) {
     NavHost(
         navController = navController,
@@ -43,7 +40,6 @@ fun InboxNavHost(
                 viewModel = viewModel,
                 appointmentsNumber = appointmentsNumber,
                 notificationsNumber = notificationsNumber,
-                onChangeTab = onChangeTab,
                 inboxNavigate = inboxNavigate,
             )
         }

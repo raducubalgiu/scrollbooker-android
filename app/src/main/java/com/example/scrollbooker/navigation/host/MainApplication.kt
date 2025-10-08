@@ -9,12 +9,9 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.Saver
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -22,6 +19,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.scrollbooker.navigation.LocalTabsController
 import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.ui.auth.AuthViewModel
 import com.example.scrollbooker.ui.MainDrawer
@@ -30,18 +28,16 @@ import com.example.scrollbooker.ui.profile.MyProfileViewModel
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import kotlinx.coroutines.launch
 
-val MainTabSaver: Saver<MainTab, String> = Saver(
-    save = { it.route },
-    restore = { route -> MainTab.fromRoute(route) }
-)
-
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(UnstableApi::class)
 @Composable
-fun MainNavHost(
+fun MainApplication(
     authViewModel: AuthViewModel,
-    rootNavController: NavHostController
+    rootNavController: NavHostController,
 ) {
+    val tabsController = LocalTabsController.current
+    val currentTab by tabsController.currentTab.collectAsState()
+
     // MainUIViewModel
     val mainViewModel: MainUIViewModel = hiltViewModel()
     val appointmentsNumber by mainViewModel.appointmentsState.collectAsState()
@@ -65,10 +61,10 @@ fun MainNavHost(
             controllers.putIfAbsent(tab, rememberNavController())
         }
     }
-
-    var currentTab by rememberSaveable(stateSaver = MainTabSaver) {
-        mutableStateOf(MainTab.Feed)
-    }
+//
+//    var currentTab by rememberSaveable(stateSaver = MainTabSaver) {
+//        mutableStateOf(MainTab.Feed)
+//    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         saveableStateHolder.SaveableStateProvider(currentTab.route) {
@@ -95,7 +91,6 @@ fun MainNavHost(
                             notificationsNumber = notificationsNumber,
                             onOpenDrawer = { scope.launch { drawerState.open() } },
                             drawerState = drawerState,
-                            onChangeTab = { currentTab = it },
                         )
                     }
                 }
@@ -106,7 +101,6 @@ fun MainNavHost(
                         navController = navControllers[MainTab.Inbox]!!,
                         appointmentsNumber = appointmentsNumber,
                         notificationsNumber = notificationsNumber,
-                        onChangeTab = { currentTab = it },
                     )
                 }
 
@@ -114,8 +108,7 @@ fun MainNavHost(
                     SearchNavHost(
                         navController = navControllers[MainTab.Search]!!,
                         appointmentsNumber = appointmentsNumber,
-                        notificationsNumber = notificationsNumber,
-                        onChangeTab = { currentTab = it }
+                        notificationsNumber = notificationsNumber
                     )
                 }
 
@@ -125,7 +118,6 @@ fun MainNavHost(
                         navController = navControllers[MainTab.Appointments]!!,
                         appointmentsNumber = appointmentsNumber,
                         notificationsNumber = notificationsNumber,
-                        onChangeTab = { currentTab = it }
                     )
                 }
                 is MainTab.Profile -> {
@@ -138,7 +130,6 @@ fun MainNavHost(
                         myPosts = myPosts,
                         appointmentsNumber = appointmentsNumber,
                         notificationsNumber = notificationsNumber,
-                        onChangeTab = { currentTab = it }
                     )
                 }
             }

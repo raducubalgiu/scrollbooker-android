@@ -19,44 +19,35 @@ fun RootNavHost(
 ) {
     val authState by viewModel.authState.collectAsState()
 
-    val startDestination = when(val state = authState) {
+    when(val state = authState) {
         is FeatureState.Success -> {
             if(state.data.isValidated) {
-                GlobalRoute.MAIN
+                NavHost(
+                    navController = navController,
+                    startDestination = GlobalRoute.MAIN
+                ) {
+                    composable(GlobalRoute.MAIN) {
+                        MainApplication(
+                            authViewModel = viewModel,
+                            rootNavController = navController,
+                        )
+                    }
+
+                    // Global Routes
+                    globalGraph(navController = navController)
+                    calendarGraph(navController = navController)
+                    appointmentsGraph(
+                        rootNavController = navController,
+                        navController = navController,
+                        appointmentsNumber = 0,
+                        notificationsNumber = 0,
+                    )
+                }
             } else {
-                GlobalRoute.AUTH
+                AuthNavHost(viewModel)
             }
         }
         is FeatureState.Error -> GlobalRoute.AUTH
         else -> null
-    }
-
-    if(startDestination != null) {
-        NavHost(
-            navController = navController,
-            startDestination = startDestination
-        ) {
-            composable(GlobalRoute.AUTH) {
-                AuthNavHost(viewModel)
-            }
-
-            composable(GlobalRoute.MAIN) {
-                MainNavHost(
-                    authViewModel = viewModel,
-                    rootNavController = navController
-                )
-            }
-
-            // Global Routes
-            globalGraph(navController = navController)
-            calendarGraph(navController = navController)
-            appointmentsGraph(
-                rootNavController = navController,
-                navController = navController,
-                appointmentsNumber = 0,
-                notificationsNumber = 0,
-                onChangeTab = {}
-            )
-        }
     }
 }

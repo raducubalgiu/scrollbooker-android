@@ -39,7 +39,6 @@ fun FeedScreen(
     appointmentsNumber: Int,
     notificationsNumber: Int,
     onOpenDrawer: () -> Unit,
-    onChangeTab: (MainTab) -> Unit,
     feedNavigate: FeedNavigator
 ) {
     val feedViewModel: FeedScreenViewModel = hiltViewModel()
@@ -71,7 +70,6 @@ fun FeedScreen(
                 shouldDisplayBottomBar = shouldDisplayBottomBar,
                 appointmentsNumber = appointmentsNumber,
                 notificationsNumber = notificationsNumber,
-                onChangeTab = onChangeTab,
             )
         }
     ) {

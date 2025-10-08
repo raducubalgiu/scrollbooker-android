@@ -48,7 +48,6 @@ fun AppointmentsScreen(
     onNavigateToAppointmentDetails: (Appointment) -> Unit,
     appointmentsNumber: Int,
     notificationsNumber: Int,
-    onChangeTab: (MainTab) -> Unit
 ) {
     val appointments = viewModel.appointments.collectAsLazyPagingItems()
     val permissionsState by viewModel.permissionsState.collectAsState()
@@ -95,8 +94,6 @@ fun AppointmentsScreen(
             BottomBar(
                 appointmentsNumber = appointmentsNumber,
                 notificationsNumber = notificationsNumber,
-                currentTab = MainTab.Appointments,
-                onChangeTab = onChangeTab
             )
         }
     ) { innerPadding ->
