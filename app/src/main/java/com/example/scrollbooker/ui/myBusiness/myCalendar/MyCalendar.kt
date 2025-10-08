@@ -1,6 +1,4 @@
 package com.example.scrollbooker.ui.myBusiness.myCalendar
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -47,7 +45,6 @@ import androidx.compose.material3.SheetValue
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.sheets.ownClient.OwnClientSheet
 
 @OptIn(ExperimentalMaterial3Api::class)
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MyCalendarScreen(
     viewModel: MyCalendarViewModel,

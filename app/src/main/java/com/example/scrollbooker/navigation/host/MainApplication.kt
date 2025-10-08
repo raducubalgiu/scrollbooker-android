@@ -1,6 +1,4 @@
 package com.example.scrollbooker.navigation.host
-import android.annotation.SuppressLint
-import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.DrawerValue
@@ -11,11 +9,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -28,13 +24,8 @@ import com.example.scrollbooker.ui.profile.MyProfileViewModel
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import kotlinx.coroutines.launch
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(UnstableApi::class)
 @Composable
-fun MainApplication(
-    authViewModel: AuthViewModel,
-    rootNavController: NavHostController,
-) {
+fun MainApplication(authViewModel: AuthViewModel) {
     val tabsController = LocalTabsController.current
     val currentTab by tabsController.currentTab.collectAsState()
 
@@ -61,10 +52,6 @@ fun MainApplication(
             controllers.putIfAbsent(tab, rememberNavController())
         }
     }
-//
-//    var currentTab by rememberSaveable(stateSaver = MainTabSaver) {
-//        mutableStateOf(MainTab.Feed)
-//    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         saveableStateHolder.SaveableStateProvider(currentTab.route) {
@@ -83,7 +70,6 @@ fun MainApplication(
                         gesturesEnabled = drawerState.currentValue == DrawerValue.Open,
                     ) {
                         FeedNavHost(
-                            rootNavController = rootNavController,
                             navController = navControllers[MainTab.Feed]!!,
                             mainViewModel = mainViewModel,
                             bookNowPosts = bookNowPosts,
@@ -97,7 +83,6 @@ fun MainApplication(
 
                 is MainTab.Inbox -> {
                     InboxNavHost(
-                        rootNavController = rootNavController,
                         navController = navControllers[MainTab.Inbox]!!,
                         appointmentsNumber = appointmentsNumber,
                         notificationsNumber = notificationsNumber,
@@ -114,7 +99,6 @@ fun MainApplication(
 
                 is MainTab.Appointments -> {
                     AppointmentsNavHost(
-                        rootNavController = rootNavController,
                         navController = navControllers[MainTab.Appointments]!!,
                         appointmentsNumber = appointmentsNumber,
                         notificationsNumber = notificationsNumber,
@@ -122,7 +106,6 @@ fun MainApplication(
                 }
                 is MainTab.Profile -> {
                     MyProfileNavHost(
-                        rootNavController = rootNavController,
                         navController = navControllers[MainTab.Profile]!!,
                         viewModel = myProfileViewModel,
                         authViewModel = authViewModel,

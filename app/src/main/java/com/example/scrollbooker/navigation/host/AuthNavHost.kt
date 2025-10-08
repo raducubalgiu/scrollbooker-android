@@ -13,7 +13,6 @@ import com.example.scrollbooker.ui.theme.Background
 import androidx.compose.runtime.getValue
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.auth.data.remote.RoleNameEnum
-import com.example.scrollbooker.navigation.graphs.onBoardingGraph
 import com.example.scrollbooker.navigation.routes.AuthRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
@@ -110,11 +109,6 @@ fun AuthNavHost(authViewModel: AuthViewModel) {
                     },
                 )
             }
-
-            onBoardingGraph(
-                navController = navController,
-                authViewModel = authViewModel
-            )
         }
     }
 }

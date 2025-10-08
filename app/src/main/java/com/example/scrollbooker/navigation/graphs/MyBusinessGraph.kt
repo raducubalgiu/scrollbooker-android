@@ -1,6 +1,4 @@
 package com.example.scrollbooker.navigation.graphs
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.stringResource
@@ -14,7 +12,6 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.scrollbooker.R
 import com.example.scrollbooker.navigation.navigators.MyBusinessNavigator
-import com.example.scrollbooker.navigation.navigators.SettingsNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessServices.MyServicesScreen
 import com.example.scrollbooker.ui.myBusiness.MyBusinessScreen
@@ -40,7 +37,6 @@ import com.example.scrollbooker.ui.myBusiness.mySchedules.MySchedulesViewModel
 import com.example.scrollbooker.ui.myBusiness.myServices.MyServicesViewModel
 import kotlinx.coroutines.launch
 
-@RequiresApi(Build.VERSION_CODES.O)
 fun NavGraphBuilder.myBusinessGraph(
     navController: NavHostController
 ) {

@@ -7,6 +7,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import com.example.scrollbooker.navigation.LocalRootNavController
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
@@ -20,7 +21,6 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 fun NavGraphBuilder.appointmentsGraph(
-    rootNavController: NavHostController,
     navController: NavHostController,
     appointmentsNumber: Int,
     notificationsNumber: Int,
@@ -52,6 +52,8 @@ fun NavGraphBuilder.appointmentsGraph(
         }
 
         composable(route = MainRoute.AppointmentDetails.route) { backStackEntry ->
+            val rootNavController = LocalRootNavController.current
+
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(MainRoute.AppointmentsNavigator.route)
             }

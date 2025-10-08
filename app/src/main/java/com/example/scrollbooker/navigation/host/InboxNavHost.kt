@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.example.scrollbooker.navigation.LocalRootNavController
 import com.example.scrollbooker.navigation.navigators.InboxNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
@@ -22,7 +23,6 @@ import com.example.scrollbooker.ui.inbox.employmentRequestRespond.EmploymentRequ
 
 @Composable
 fun InboxNavHost(
-    rootNavController: NavHostController,
     navController: NavHostController,
     appointmentsNumber: Int,
     notificationsNumber: Int,
@@ -33,8 +33,14 @@ fun InboxNavHost(
     ) {
         composable(MainRoute.Inbox.route) { backStackEntry ->
             val viewModel = hiltViewModel<InboxViewModel>(backStackEntry)
+            val rootNavController = LocalRootNavController.current
 
-            val inboxNavigate = remember(navController) { InboxNavigator(rootNavController, navController) }
+            val inboxNavigate = remember(rootNavController, navController) {
+                InboxNavigator(
+                    rootNavController = rootNavController,
+                    navController = navController
+                )
+            }
 
             InboxScreen(
                 viewModel = viewModel,

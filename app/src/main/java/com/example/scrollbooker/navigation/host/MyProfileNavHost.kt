@@ -1,6 +1,4 @@
 package com.example.scrollbooker.navigation.host
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
@@ -11,6 +9,7 @@ import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
+import com.example.scrollbooker.navigation.LocalRootNavController
 import com.example.scrollbooker.navigation.graphs.editProfileGraph
 import com.example.scrollbooker.navigation.graphs.myBusinessGraph
 import com.example.scrollbooker.navigation.graphs.settingsGraph
@@ -24,14 +23,12 @@ import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.profile.MyProfileScreen
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MyProfileNavHost(
     viewModel: MyProfileViewModel,
     authViewModel: AuthViewModel,
     myProfileData: FeatureState<UserProfile>,
     myPosts: LazyPagingItems<Post>,
-    rootNavController: NavHostController,
     navController: NavHostController,
     appointmentsNumber: Int,
     notificationsNumber: Int,
@@ -49,7 +46,9 @@ fun MyProfileNavHost(
             popExitTransition = { slideOutToRight() }
         ) {
             composable(route = MainRoute.MyProfile.route) {
-                val profileNavigate = remember(navController) {
+                val rootNavController = LocalRootNavController.current
+
+                val profileNavigate = remember(rootNavController, navController) {
                     ProfileNavigator(
                         rootNavController = rootNavController,
                         navController = navController

@@ -9,7 +9,6 @@ import com.example.scrollbooker.navigation.transition.slideOutToRight
 
 @Composable
 fun AppointmentsNavHost(
-    rootNavController: NavHostController,
     navController: NavHostController,
     appointmentsNumber: Int,
     notificationsNumber: Int,
@@ -21,7 +20,6 @@ fun AppointmentsNavHost(
         popExitTransition = { slideOutToRight() }
     ) {
         appointmentsGraph(
-            rootNavController = rootNavController,
             navController = navController,
             appointmentsNumber = appointmentsNumber,
             notificationsNumber = notificationsNumber,

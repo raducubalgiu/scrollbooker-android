@@ -33,7 +33,9 @@ class AuthViewModel @Inject constructor(
     private val _verifyEmailState = MutableStateFlow<FeatureState<Unit>>(FeatureState.Loading)
     val verifyEmailState: StateFlow<FeatureState<Unit>> = _verifyEmailState.asStateFlow()
 
-    init { checkIsLoggedIn() }
+    init {
+        checkIsLoggedIn()
+    }
 
     fun checkIsLoggedIn() {
         viewModelScope.launch {
@@ -86,12 +88,7 @@ class AuthViewModel @Inject constructor(
             authDataStore.clearUserSession()
             tokenProvider.clearTokens()
 
-            _authState.value = FeatureState.Success(
-                AuthState(
-                    isValidated = false,
-                    registrationStep = null
-                )
-            )
+            _authState.value = FeatureState.Error()
         }
     }
 }
