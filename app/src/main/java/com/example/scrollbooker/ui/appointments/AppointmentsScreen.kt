@@ -33,8 +33,6 @@ import com.example.scrollbooker.core.enums.has
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointment
-import com.example.scrollbooker.navigation.bottomBar.MainTab
-import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.appointments.components.AppointmentFilter
 import com.example.scrollbooker.ui.appointments.components.AppointmentFilterTitleEnum
 import com.example.scrollbooker.ui.appointments.components.AppointmentsFilterSheet
@@ -106,10 +104,18 @@ fun AppointmentsScreen(
                         if(permissions.has(PermissionEnum.FILTER_APPOINTMENTS_VIEW)) {
                             ArrowButton(
                                 title = selectedFilter?.title?.getLabel() ?: AppointmentFilterTitleEnum.ALL.getLabel(),
-                                onClick = {
-                                    scope.launch {
-                                        sheetState.show()
-                                    }
+                                onClick = { scope.launch { sheetState.show() } },
+                                isFiltered = selectedFilter?.title?.key != AppointmentFilterTitleEnum.ALL.key,
+                                onDeleteFilter = {
+                                    selectedFilter = AppointmentFilter(
+                                        title = AppointmentFilterTitleEnum.ALL,
+                                        asCustomer = null
+                                    )
+                                    selectedOption = AppointmentFilter(
+                                        title = AppointmentFilterTitleEnum.ALL,
+                                        asCustomer = null
+                                    )
+                                    viewModel.loadAppointments(selectedFilter?.asCustomer)
                                 }
                             )
                         }
