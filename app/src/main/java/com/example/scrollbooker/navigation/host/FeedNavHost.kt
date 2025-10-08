@@ -30,14 +30,15 @@ import com.example.scrollbooker.ui.feed.FeedScreenViewModel
 @OptIn(UnstableApi::class)
 @Composable
 fun FeedNavHost(
-    feedViewModel: FeedScreenViewModel,
-    mainViewModel: MainUIViewModel,
     rootNavController: NavHostController,
     navController: NavHostController,
+    mainViewModel: MainUIViewModel,
     bookNowPosts: LazyPagingItems<Post>,
+    appointmentsNumber: Int,
+    notificationsNumber: Int,
     onOpenDrawer: () -> Unit,
     drawerState: DrawerState,
-    onChangeTab: (MainTab) -> Unit
+    onChangeTab: (MainTab) -> Unit,
 ) {
     val userSearch by mainViewModel.userSearch.collectAsState()
     val feedNavigate = remember(rootNavController, navController) {
@@ -53,12 +54,12 @@ fun FeedNavHost(
             popExitTransition = { slideOutToRight() }
         ) { backStackEntry ->
             FeedScreen(
-                feedViewModel = feedViewModel,
                 posts = bookNowPosts,
                 drawerState = drawerState,
                 onOpenDrawer = onOpenDrawer,
                 onChangeTab = onChangeTab,
-                appointmentsNumber = mainViewModel.appointmentsState,
+                appointmentsNumber = appointmentsNumber,
+                notificationsNumber = notificationsNumber,
                 feedNavigate = feedNavigate
             )
         }

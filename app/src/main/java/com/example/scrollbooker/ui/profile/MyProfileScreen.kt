@@ -41,6 +41,7 @@ fun MyProfileScreen(
     myProfileData: FeatureState<UserProfile>,
     myPosts: LazyPagingItems<Post>,
     appointmentsNumber: Int,
+    notificationsNumber: Int,
     onChangeTab: (MainTab) -> Unit,
     profileNavigate: ProfileNavigator
 ) {
@@ -89,8 +90,8 @@ fun MyProfileScreen(
         bottomBar = {
             BottomBar(
                 appointmentsNumber = appointmentsNumber,
+                notificationsNumber = notificationsNumber,
                 currentTab = MainTab.Profile,
-                currentRoute = MainRoute.MyProfile.route,
                 onChangeTab = onChangeTab
             )
         },

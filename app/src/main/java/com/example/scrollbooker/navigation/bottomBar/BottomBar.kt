@@ -7,13 +7,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.NavigationBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.navigation.bottomBar.BottomBarItem
 import com.example.scrollbooker.navigation.bottomBar.MainTab
-import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import com.example.scrollbooker.ui.theme.Divider
@@ -21,50 +19,37 @@ import com.example.scrollbooker.ui.theme.Divider
 @Composable
 fun BottomBar(
     appointmentsNumber: Int,
+    notificationsNumber: Int,
     currentTab: MainTab,
-    currentRoute: String?,
     onChangeTab: (MainTab) -> Unit
 ) {
     val allTabs = MainTab.allTabs
     val isFeedTab = currentTab == MainTab.Feed
 
-    val visibleRoutes = listOf(
-        MainRoute.Feed.route,
-        MainRoute.Inbox.route,
-        MainRoute.Search.route,
-        MainRoute.Appointments.route,
-        MainRoute.MyProfile.route
-    )
-
-    val isVisible = remember(currentRoute) {
-        currentRoute in visibleRoutes
-    }
-
     val dividerColor = if (isFeedTab) Color(0xFF3A3A3A) else Divider
     val containerColor = if(isFeedTab) BackgroundDark else Background
 
-    if(isVisible) {
-        Column(modifier = Modifier.height(90.dp)) {
-            HorizontalDivider(color = dividerColor, thickness = 1.dp)
-            NavigationBar(
-                tonalElevation = 0.dp,
-                modifier = Modifier.fillMaxWidth(),
-                containerColor = containerColor
+    Column(modifier = Modifier.height(90.dp)) {
+        HorizontalDivider(color = dividerColor, thickness = 1.dp)
+        NavigationBar(
+            tonalElevation = 0.dp,
+            modifier = Modifier.fillMaxWidth(),
+            containerColor = containerColor
+        ) {
+            Row(modifier = Modifier
+                .fillMaxSize()
+                .padding(vertical = 5.dp)
             ) {
-                Row(modifier = Modifier
-                    .fillMaxSize()
-                    .padding(vertical = 5.dp)
-                ) {
-                    allTabs.forEach { tab ->
-                        BottomBarItem(
-                            appointmentsNumber = appointmentsNumber,
-                            modifier = Modifier.then(Modifier.weight(1f)),
-                            onNavigate = { onChangeTab(tab) },
-                            isSelected = currentTab == tab,
-                            isFeedTab = isFeedTab,
-                            tab = tab
-                        )
-                    }
+                allTabs.forEach { tab ->
+                    BottomBarItem(
+                        appointmentsNumber = appointmentsNumber,
+                        notificationsNumber = notificationsNumber,
+                        modifier = Modifier.then(Modifier.weight(1f)),
+                        onNavigate = { onChangeTab(tab) },
+                        isSelected = currentTab == tab,
+                        isFeedTab = isFeedTab,
+                        tab = tab
+                    )
                 }
             }
         }

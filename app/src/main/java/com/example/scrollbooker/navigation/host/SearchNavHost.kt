@@ -20,6 +20,7 @@ import com.example.scrollbooker.ui.search.businessProfile.BusinessProfileScreen
 fun SearchNavHost(
     navController: NavHostController,
     appointmentsNumber: Int,
+    notificationsNumber: Int,
     onChangeTab: (MainTab) -> Unit
 ) {
     NavHost(
@@ -36,6 +37,7 @@ fun SearchNavHost(
                 viewModel = viewModel,
                 onNavigateToBusinessProfile = { navController.navigate(MainRoute.BusinessProfile.route) },
                 appointmentsNumber = appointmentsNumber,
+                notificationsNumber = notificationsNumber,
                 onChangeTab = onChangeTab,
             )
         }

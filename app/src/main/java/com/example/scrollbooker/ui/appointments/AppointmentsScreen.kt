@@ -47,6 +47,7 @@ fun AppointmentsScreen(
     viewModel: AppointmentsViewModel,
     onNavigateToAppointmentDetails: (Appointment) -> Unit,
     appointmentsNumber: Int,
+    notificationsNumber: Int,
     onChangeTab: (MainTab) -> Unit
 ) {
     val appointments = viewModel.appointments.collectAsLazyPagingItems()
@@ -93,8 +94,8 @@ fun AppointmentsScreen(
         bottomBar = {
             BottomBar(
                 appointmentsNumber = appointmentsNumber,
+                notificationsNumber = notificationsNumber,
                 currentTab = MainTab.Appointments,
-                currentRoute = MainRoute.Appointments.route,
                 onChangeTab = onChangeTab
             )
         }

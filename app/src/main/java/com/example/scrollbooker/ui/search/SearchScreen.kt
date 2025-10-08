@@ -143,6 +143,7 @@ fun SearchScreen(
     viewModel: SearchViewModel,
     onNavigateToBusinessProfile: () -> Unit,
     appointmentsNumber: Int,
+    notificationsNumber: Int,
     onChangeTab: (MainTab) -> Unit
 ) {
     val videoViewModel: SearchPlayerViewModel = hiltViewModel()
@@ -168,14 +169,14 @@ fun SearchScreen(
             Text("Hello World")
             Text("Hello World")
         }
-        }
+    }
 
     Scaffold(
         bottomBar = {
             BottomBar(
                 appointmentsNumber = appointmentsNumber,
+                notificationsNumber = notificationsNumber,
                 currentTab = MainTab.Search,
-                currentRoute = MainRoute.Search.route,
                 onChangeTab = onChangeTab
             )
         }

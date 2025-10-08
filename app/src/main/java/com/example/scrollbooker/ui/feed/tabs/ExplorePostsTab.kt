@@ -45,7 +45,6 @@ import com.example.scrollbooker.core.util.getOrNull
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.ui.feed.FeedScreenViewModel
-import com.example.scrollbooker.ui.modules.posts.components.PostShimmer
 import com.example.scrollbooker.ui.modules.posts.components.postOverlay.PostOverlay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce

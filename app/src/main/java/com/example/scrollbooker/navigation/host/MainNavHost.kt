@@ -24,7 +24,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.ui.auth.AuthViewModel
-import com.example.scrollbooker.ui.feed.FeedScreenViewModel
 import com.example.scrollbooker.ui.MainDrawer
 import com.example.scrollbooker.ui.MainUIViewModel
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
@@ -43,10 +42,12 @@ fun MainNavHost(
     authViewModel: AuthViewModel,
     rootNavController: NavHostController
 ) {
-    val myProfileViewModel: MyProfileViewModel = hiltViewModel()
-    val feedViewModel: FeedScreenViewModel = hiltViewModel()
-
+    // MainUIViewModel
     val mainViewModel: MainUIViewModel = hiltViewModel()
+    val appointmentsNumber by mainViewModel.appointmentsState.collectAsState()
+    val notificationsNumber by mainViewModel.notificationsState.collectAsState()
+
+    val myProfileViewModel: MyProfileViewModel = hiltViewModel()
     val myProfileData by myProfileViewModel.userProfileState.collectAsState()
     val myPosts = myProfileViewModel.userPosts.collectAsLazyPagingItems()
 
@@ -86,14 +87,15 @@ fun MainNavHost(
                         gesturesEnabled = drawerState.currentValue == DrawerValue.Open,
                     ) {
                         FeedNavHost(
-                            feedViewModel = feedViewModel,
-                            mainViewModel = mainViewModel,
-                            bookNowPosts = bookNowPosts,
                             rootNavController = rootNavController,
                             navController = navControllers[MainTab.Feed]!!,
+                            mainViewModel = mainViewModel,
+                            bookNowPosts = bookNowPosts,
+                            appointmentsNumber = appointmentsNumber,
+                            notificationsNumber = notificationsNumber,
                             onOpenDrawer = { scope.launch { drawerState.open() } },
                             drawerState = drawerState,
-                            onChangeTab = { currentTab = it }
+                            onChangeTab = { currentTab = it },
                         )
                     }
                 }
@@ -102,15 +104,17 @@ fun MainNavHost(
                     InboxNavHost(
                         rootNavController = rootNavController,
                         navController = navControllers[MainTab.Inbox]!!,
-                        appointmentsNumber = mainViewModel.appointmentsState,
-                        onChangeTab = { currentTab = it }
+                        appointmentsNumber = appointmentsNumber,
+                        notificationsNumber = notificationsNumber,
+                        onChangeTab = { currentTab = it },
                     )
                 }
 
                 is MainTab.Search -> {
                     SearchNavHost(
                         navController = navControllers[MainTab.Search]!!,
-                        appointmentsNumber = mainViewModel.appointmentsState,
+                        appointmentsNumber = appointmentsNumber,
+                        notificationsNumber = notificationsNumber,
                         onChangeTab = { currentTab = it }
                     )
                 }
@@ -119,7 +123,8 @@ fun MainNavHost(
                     AppointmentsNavHost(
                         rootNavController = rootNavController,
                         navController = navControllers[MainTab.Appointments]!!,
-                        appointmentsNumber = mainViewModel.appointmentsState,
+                        appointmentsNumber = appointmentsNumber,
+                        notificationsNumber = notificationsNumber,
                         onChangeTab = { currentTab = it }
                     )
                 }
@@ -131,7 +136,8 @@ fun MainNavHost(
                         authViewModel = authViewModel,
                         myProfileData = myProfileData,
                         myPosts = myPosts,
-                        appointmentsNumber = mainViewModel.appointmentsState,
+                        appointmentsNumber = appointmentsNumber,
+                        notificationsNumber = notificationsNumber,
                         onChangeTab = { currentTab = it }
                     )
                 }

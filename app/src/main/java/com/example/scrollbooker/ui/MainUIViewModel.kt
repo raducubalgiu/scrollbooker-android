@@ -1,8 +1,5 @@
 package com.example.scrollbooker.ui
-
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -21,12 +18,12 @@ import com.example.scrollbooker.entity.search.domain.useCase.DeleteUserSearchUse
 import com.example.scrollbooker.entity.search.domain.useCase.GetUserSearchUseCase
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetBookNowPostsUseCase
-import com.example.scrollbooker.entity.social.post.domain.useCase.GetFollowingPostsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
@@ -44,10 +41,14 @@ class MainUIViewModel @Inject constructor(
     private val createUserSearchUseCase: CreateUserSearchUseCase,
     private val deleteUserSearchUseCase: DeleteUserSearchUseCase,
     private val getBookNowPostsUseCase: GetBookNowPostsUseCase,
-    private val getFollowingPostsUseCase: GetFollowingPostsUseCase,
 ): ViewModel() {
-    var appointmentsState by mutableIntStateOf(0)
-        private set
+    // Appointments State
+    private val _appointmentsState = MutableStateFlow<Int>(0)
+    val appointmentsState: StateFlow<Int> = _appointmentsState.asStateFlow()
+
+    // Notifications State
+    private val _notificationsState = MutableStateFlow<Int>(0)
+    val notificationsState: StateFlow<Int> = _notificationsState.asStateFlow()
 
     private val _userSearch = MutableStateFlow<FeatureState<UserSearch>>(FeatureState.Loading)
     val userSearch: StateFlow<FeatureState<UserSearch>> = _userSearch
@@ -76,12 +77,6 @@ class MainUIViewModel @Inject constructor(
         .flatMapLatest { selectedTypes -> getBookNowPostsUseCase(selectedTypes) }
         .cachedIn(viewModelScope)
 
-    private val _followingPosts: Flow<PagingData<Post>> by lazy {
-        getFollowingPostsUseCase()
-            .cachedIn(viewModelScope)
-    }
-    val followingPosts: Flow<PagingData<Post>> get() = _followingPosts
-
     fun updateBusinessTypes() {
         _filteredBusinessTypes.value = _selectedBusinessTypes.value
     }
@@ -97,12 +92,12 @@ class MainUIViewModel @Inject constructor(
     }
 
     fun increaseAppointmentsNumber() {
-        appointmentsState = appointmentsState + 1
+        _appointmentsState.value = _appointmentsState.value + 1
     }
 
     fun decreaseAppointmentsNumber() {
-        if(appointmentsState > 0) {
-            appointmentsState = appointmentsState - 1
+        if(_appointmentsState.value > 0) {
+            _appointmentsState.value = _appointmentsState.value - 1
         }
     }
 
@@ -203,7 +198,7 @@ class MainUIViewModel @Inject constructor(
 
     private fun loadAppointmentsNumber() {
         viewModelScope.launch {
-            appointmentsState = getUserAppointmentsNumberUseCase()
+            _appointmentsState.value = getUserAppointmentsNumberUseCase()
         }
     }
 

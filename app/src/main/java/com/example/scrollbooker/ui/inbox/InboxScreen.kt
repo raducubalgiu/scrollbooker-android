@@ -18,13 +18,13 @@ import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.core.layout.MessageScreen
 import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.navigation.navigators.InboxNavigator
-import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.inbox.components.NotificationsList
 
 @Composable
 fun InboxScreen(
     viewModel: InboxViewModel,
     appointmentsNumber: Int,
+    notificationsNumber: Int,
     onChangeTab: (MainTab) -> Unit,
     inboxNavigate: InboxNavigator
 ) {
@@ -38,8 +38,8 @@ fun InboxScreen(
         bottomBar = {
             BottomBar(
                 appointmentsNumber = appointmentsNumber,
+                notificationsNumber = notificationsNumber,
                 currentTab = MainTab.Inbox,
-                currentRoute = MainRoute.Inbox.route,
                 onChangeTab = onChangeTab
             )
         }

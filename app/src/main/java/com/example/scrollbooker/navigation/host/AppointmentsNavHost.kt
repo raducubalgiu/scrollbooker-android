@@ -13,6 +13,7 @@ fun AppointmentsNavHost(
     rootNavController: NavHostController,
     navController: NavHostController,
     appointmentsNumber: Int,
+    notificationsNumber: Int,
     onChangeTab: (MainTab) -> Unit
 ) {
     NavHost(
@@ -25,6 +26,7 @@ fun AppointmentsNavHost(
             rootNavController = rootNavController,
             navController = navController,
             appointmentsNumber = appointmentsNumber,
+            notificationsNumber = notificationsNumber,
             onChangeTab = onChangeTab,
         )
     }

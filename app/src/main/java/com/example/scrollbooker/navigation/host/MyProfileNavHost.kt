@@ -1,4 +1,6 @@
 package com.example.scrollbooker.navigation.host
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
@@ -23,6 +25,7 @@ import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.profile.MyProfileScreen
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MyProfileNavHost(
     viewModel: MyProfileViewModel,
@@ -32,6 +35,7 @@ fun MyProfileNavHost(
     rootNavController: NavHostController,
     navController: NavHostController,
     appointmentsNumber: Int,
+    notificationsNumber: Int,
     onChangeTab: (MainTab) -> Unit
 ) {
     NavHost(
@@ -46,9 +50,7 @@ fun MyProfileNavHost(
             popEnterTransition = { slideInFromLeft() },
             popExitTransition = { slideOutToRight() }
         ) {
-            composable(
-                route = MainRoute.MyProfile.route,
-            ) {
+            composable(route = MainRoute.MyProfile.route) {
                 val profileNavigate = remember(navController) {
                     ProfileNavigator(
                         rootNavController = rootNavController,
@@ -61,6 +63,7 @@ fun MyProfileNavHost(
                     myProfileData = myProfileData,
                     myPosts = myPosts,
                     appointmentsNumber = appointmentsNumber,
+                    notificationsNumber = notificationsNumber,
                     onChangeTab = onChangeTab,
                     profileNavigate = profileNavigate
                 )

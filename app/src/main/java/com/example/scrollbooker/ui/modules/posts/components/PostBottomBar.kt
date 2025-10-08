@@ -25,13 +25,13 @@ import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.navigation.bottomBar.MainTab
-import com.example.scrollbooker.navigation.routes.MainRoute
 
 @Composable
 fun PostBottomBar(
     onAction: () -> Unit,
     shouldDisplayBottomBar: Boolean,
     appointmentsNumber: Int,
+    notificationsNumber: Int,
     onChangeTab: (MainTab) -> Unit
 ) {
     val currentOnAction by rememberUpdatedState(onAction)
@@ -46,8 +46,8 @@ fun PostBottomBar(
             if(display) {
                 BottomBar(
                     appointmentsNumber = appointmentsNumber,
+                    notificationsNumber = notificationsNumber,
                     currentTab = MainTab.Feed,
-                    currentRoute = MainRoute.Feed.route,
                     onChangeTab = currentOnChangeTab
                 )
             } else {

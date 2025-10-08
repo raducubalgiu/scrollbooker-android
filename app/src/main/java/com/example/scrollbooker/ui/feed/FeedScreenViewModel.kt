@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.HandlerThread
 import android.os.Process
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
@@ -12,10 +13,14 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.scrollbooker.core.util.VideoPlayerCache
 import com.example.scrollbooker.entity.social.post.domain.model.Post
+import com.example.scrollbooker.entity.social.post.domain.useCase.GetFollowingPostsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,8 +37,17 @@ data class PlayerUIState(
 @UnstableApi
 @HiltViewModel
 class FeedScreenViewModel @Inject constructor(
-    @ApplicationContext private val application: Context
+    @ApplicationContext private val application: Context,
+    private val getFollowingPostsUseCase: GetFollowingPostsUseCase,
 ) : ViewModel() {
+
+    // Following Posts
+    private val _followingPosts: Flow<PagingData<Post>> by lazy {
+        getFollowingPostsUseCase()
+            .cachedIn(viewModelScope)
+    }
+    val followingPosts: Flow<PagingData<Post>> get() = _followingPosts
+
     private val playerPool = mutableMapOf<Int, ExoPlayer>()
     private val _playerStates = mutableMapOf<Int, MutableStateFlow<PlayerUIState>>()
 

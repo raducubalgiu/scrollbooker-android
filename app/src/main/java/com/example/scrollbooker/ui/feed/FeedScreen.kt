@@ -17,6 +17,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.scrollbooker.navigation.bottomBar.MainTab
 import androidx.media3.common.util.UnstableApi
 import androidx.paging.compose.LazyPagingItems
@@ -33,14 +34,15 @@ import kotlinx.coroutines.launch
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun FeedScreen(
-    feedViewModel: FeedScreenViewModel,
     posts: LazyPagingItems<Post>,
     drawerState: DrawerState,
     appointmentsNumber: Int,
+    notificationsNumber: Int,
     onOpenDrawer: () -> Unit,
     onChangeTab: (MainTab) -> Unit,
     feedNavigate: FeedNavigator
 ) {
+    val feedViewModel: FeedScreenViewModel = hiltViewModel()
     val horizontalPagerState = rememberPagerState { 2 }
     val scope = rememberCoroutineScope()
 
@@ -68,6 +70,7 @@ fun FeedScreen(
                 },
                 shouldDisplayBottomBar = shouldDisplayBottomBar,
                 appointmentsNumber = appointmentsNumber,
+                notificationsNumber = notificationsNumber,
                 onChangeTab = onChangeTab,
             )
         }

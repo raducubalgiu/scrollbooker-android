@@ -25,6 +25,7 @@ fun NavGraphBuilder.appointmentsGraph(
     rootNavController: NavHostController,
     navController: NavHostController,
     appointmentsNumber: Int,
+    notificationsNumber: Int,
     onChangeTab: (MainTab) -> Unit
 ) {
     navigation(
@@ -49,6 +50,7 @@ fun NavGraphBuilder.appointmentsGraph(
                     navController.navigate(MainRoute.AppointmentDetails.route)
                 },
                 appointmentsNumber = appointmentsNumber,
+                notificationsNumber = notificationsNumber,
                 onChangeTab = onChangeTab
             )
         }

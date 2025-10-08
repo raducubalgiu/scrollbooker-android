@@ -27,6 +27,7 @@ fun InboxNavHost(
     rootNavController: NavHostController,
     navController: NavHostController,
     appointmentsNumber: Int,
+    notificationsNumber: Int,
     onChangeTab: (MainTab) -> Unit
 ) {
     NavHost(
@@ -41,6 +42,7 @@ fun InboxNavHost(
             InboxScreen(
                 viewModel = viewModel,
                 appointmentsNumber = appointmentsNumber,
+                notificationsNumber = notificationsNumber,
                 onChangeTab = onChangeTab,
                 inboxNavigate = inboxNavigate,
             )
