@@ -3,7 +3,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import androidx.paging.map
 import com.example.scrollbooker.core.enums.AppointmentStatusEnum
 import com.example.scrollbooker.core.enums.PermissionEnum
 import com.example.scrollbooker.core.util.FeatureState
@@ -15,13 +14,14 @@ import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -34,16 +34,18 @@ class AppointmentsViewModel @Inject constructor(
 ): ViewModel() {
     private val _asCustomer = MutableStateFlow<Boolean?>(null)
 
+    private val _reload = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+
     private val _isSaving = MutableStateFlow<Boolean>(false)
     val isSaving: StateFlow<Boolean> = _isSaving
 
-    private val _appointmentsState = MutableStateFlow<Flow<PagingData<Appointment>>?>(null)
-
     @OptIn(ExperimentalCoroutinesApi::class)
     val appointments: Flow<PagingData<Appointment>> =
-        _appointmentsState
-            .filterNotNull()
-            .flatMapLatest { it }
+        combine(_asCustomer, _reload.onStart { emit(Unit) }) { asCustomer, _ -> asCustomer }
+            .flatMapLatest { asCustomer ->
+                getUserAppointmentsUseCase(asCustomer)
+            }
+            .cachedIn(viewModelScope)
 
     private val _selectedAppointment = MutableStateFlow<Appointment?>(null)
     val selectedAppointment: StateFlow<Appointment?> = _selectedAppointment
@@ -74,8 +76,11 @@ class AppointmentsViewModel @Inject constructor(
 
     fun loadAppointments(asCustomer: Boolean?) {
         _asCustomer.value = asCustomer
-        _appointmentsState.value = getUserAppointmentsUseCase(asCustomer)
-            .cachedIn(viewModelScope)
+        _reload.tryEmit(Unit)
+    }
+
+    fun refreshAppointments() {
+        _reload.tryEmit(Unit)
     }
 
     fun setAppointment(appointment: Appointment) {
@@ -94,28 +99,15 @@ class AppointmentsViewModel @Inject constructor(
                 Timber.tag("Appointments").e("ERROR: on Cancelling Appointment $e")
             }
             .onSuccess {
-                val currentFlow = _appointmentsState.value ?: return@onSuccess
+                _reload.tryEmit(Unit)
 
-                val updatedFlow = currentFlow.map { pagingData ->
-                    pagingData.map { appointment ->
-                        if (appointment.id == appointmentId) {
-                            appointment.copy(
-                                status = AppointmentStatusEnum.CANCELED.key,
-                                message = message
-                            )
-                        } else appointment
-                    }
-                }.cachedIn(viewModelScope)
-
-                _appointmentsState.value = updatedFlow
-
-                val currentSelected = _selectedAppointment.value ?: return@onSuccess
-
-                if(currentSelected.id == appointmentId) {
-                    _selectedAppointment.value = currentSelected.copy(
-                        status = AppointmentStatusEnum.CANCELED.key,
-                        message = message
-                    )
+                _selectedAppointment.value = _selectedAppointment.value?.let { current ->
+                    if(current.id == appointmentId) {
+                        current.copy(
+                            status = AppointmentStatusEnum.CANCELED.key,
+                            message = message
+                        )
+                    } else current
                 }
             }
 

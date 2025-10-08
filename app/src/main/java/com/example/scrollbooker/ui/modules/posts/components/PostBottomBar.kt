@@ -24,7 +24,6 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
-import com.example.scrollbooker.navigation.bottomBar.MainTab
 
 @Composable
 fun PostBottomBar(
@@ -34,7 +33,6 @@ fun PostBottomBar(
     notificationsNumber: Int,
 ) {
     val currentOnAction by rememberUpdatedState(onAction)
-    //val currentOnChangeTab by rememberUpdatedState(onChangeTab)
 
     AnimatedContent(
         targetState = shouldDisplayBottomBar,

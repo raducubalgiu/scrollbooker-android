@@ -9,7 +9,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,7 +17,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.scrollbooker.navigation.bottomBar.MainTab
 import androidx.media3.common.util.UnstableApi
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.entity.social.post.domain.model.Post
@@ -26,6 +24,7 @@ import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.ui.feed.components.FeedTabs
 import com.example.scrollbooker.ui.feed.tabs.ExplorePostsTab
 import com.example.scrollbooker.ui.modules.posts.components.PostBottomBar
+import com.example.scrollbooker.ui.modules.posts.components.PostShimmer
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
@@ -99,7 +98,7 @@ fun FeedScreen(
                     }
                     1 -> {
                         Box(Modifier.fillMaxSize()) {
-                            Text("Book Now Posts Here")
+                            PostShimmer()
                         }
                     }
                 }

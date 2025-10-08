@@ -1,25 +1,40 @@
 package com.example.scrollbooker.ui.profile.edit
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.example.scrollbooker.R
+import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.components.core.list.ItemListInfo
 import com.example.scrollbooker.core.enums.GenderTypeEnum
+import com.example.scrollbooker.core.util.Dimens.AvatarXXL
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.navigation.navigators.EditProfileNavigator
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
-import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.titleMedium
+
+data class EditProfileAction(
+    val title: String,
+    val value: String,
+    val navigate: () -> Unit
+)
 
 @Composable
 fun EditProfileScreen(
@@ -29,47 +44,104 @@ fun EditProfileScreen(
 ) {
     val userState by viewModel.userProfileState.collectAsState()
     val user = (userState as? FeatureState.Success)?.data
+    val verticalScroll = rememberScrollState()
+
+    val aboutList = listOf<EditProfileAction>(
+        EditProfileAction(
+            title = stringResource(R.string.name),
+            value = user?.fullName ?: "",
+            navigate = { editProfileNavigate.toEditFullName() }
+        ),
+        EditProfileAction(
+            title = stringResource(R.string.username),
+            value = user?.username ?: "",
+            navigate = { editProfileNavigate.toEditUsername() }
+        ),
+        EditProfileAction(
+            title = stringResource(R.string.biography),
+            value = user?.bio ?: "",
+            navigate = { editProfileNavigate.toEditBio() }
+        ),
+        EditProfileAction(
+            title = stringResource(R.string.gender),
+            value = GenderTypeEnum.fromKey(user?.gender)?.getLabel() ?: "",
+            navigate = { editProfileNavigate.toEditGender() }
+        ),
+        EditProfileAction(
+            title = stringResource(R.string.profession),
+            value = user?.profession ?: "",
+            navigate = { editProfileNavigate.toEditProfession() }
+        )
+    )
+
+    val actionsList = listOf<EditProfileAction>(
+        EditProfileAction(
+            title = stringResource(R.string.email),
+            value = "",
+            navigate = {  }
+        ),
+        EditProfileAction(
+            title = stringResource(R.string.website),
+            value = "",
+            navigate = {  }
+        )
+    )
 
     Layout(
         headerTitle = stringResource(R.string.editProfile),
         onBack = onBack,
         enablePaddingH = false
     ) {
-        Column(Modifier.padding(BasePadding)) {
-            Text(
-                style = titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = OnSurfaceBG,
-                text = stringResource(R.string.aboutYou)
-            )
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(verticalScroll)
+        ) {
+            Box(
+                modifier = Modifier.fillMaxWidth().padding(vertical = BasePadding),
+                contentAlignment = Alignment.Center
+            ) { Avatar(url = "", size = AvatarXXL) }
+
+            EditProfileSectionTitle(title = stringResource(R.string.aboutYou))
+
+            aboutList.forEachIndexed { index, about ->
+                ItemListInfo(
+                    headLine = about.title,
+                    supportingText = about.value,
+                    onClick = about.navigate
+                )
+
+                if(index <= aboutList.size) {
+                    Spacer(Modifier.padding(vertical = SpacingXXS))
+                }
+            }
+
+            Spacer(Modifier.height(BasePadding))
+
+            EditProfileSectionTitle(title = "Butoane de actiune in profil")
+
+            actionsList.forEachIndexed { index, about ->
+                ItemListInfo(
+                    headLine = about.title,
+                    supportingText = about.value,
+                    onClick = about.navigate
+                )
+
+                if(index <= aboutList.size) {
+                    Spacer(Modifier.padding(vertical = SpacingXXS))
+                }
+            }
         }
-        ItemListInfo(
-            headLine = stringResource(R.string.name),
-            supportingText = user?.fullName ?: "",
-            onClick = { editProfileNavigate.toEditFullName() }
-        )
-        Spacer(Modifier.padding(vertical = SpacingXXS))
-        ItemListInfo(
-            headLine = stringResource(R.string.username),
-            supportingText = user?.username ?: "",
-            onClick = { editProfileNavigate.toEditUsername() }
-        )
-        Spacer(Modifier.padding(vertical = SpacingXXS))
-        ItemListInfo(
-            headLine = stringResource(R.string.biography),
-            supportingText = user?.bio ?: "",
-            onClick = { editProfileNavigate.toEditBio() }
-        )
-        Spacer(Modifier.padding(vertical = SpacingXXS))
-        ItemListInfo(
-            headLine = stringResource(R.string.gender),
-            supportingText = GenderTypeEnum.fromKey(user?.gender)?.getLabel() ?: "",
-            onClick = { editProfileNavigate.toEditGender() }
-        )
-        ItemListInfo(
-            headLine = stringResource(R.string.profession),
-            supportingText = user?.profession ?: "",
-            onClick = { editProfileNavigate.toEditProfession() }
+    }
+}
+
+@Composable
+private fun EditProfileSectionTitle(title: String) {
+    Column(Modifier.padding(BasePadding)) {
+        Text(
+            style = titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = Color.Gray,
+            text = title
         )
     }
 }

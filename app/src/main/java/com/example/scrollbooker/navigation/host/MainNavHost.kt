@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.scrollbooker.navigation.graphs.appointmentsGraph
 import com.example.scrollbooker.navigation.graphs.calendarGraph
 import com.example.scrollbooker.navigation.graphs.globalGraph
 import com.example.scrollbooker.navigation.routes.GlobalRoute
@@ -26,10 +25,5 @@ fun MainNavHost(
         // Global Routes
         globalGraph(navController = navController)
         calendarGraph(navController = navController)
-        appointmentsGraph(
-            navController = navController,
-            appointmentsNumber = 0,
-            notificationsNumber = 0,
-        )
     }
 }

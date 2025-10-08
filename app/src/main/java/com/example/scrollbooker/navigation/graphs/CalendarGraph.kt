@@ -3,13 +3,16 @@ package com.example.scrollbooker.navigation.graphs
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import com.example.scrollbooker.navigation.LocalRootNavController
+import com.example.scrollbooker.navigation.LocalTabsController
+import com.example.scrollbooker.navigation.bottomBar.MainTab
+import com.example.scrollbooker.navigation.routes.GlobalRoute
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
@@ -63,6 +66,9 @@ fun NavGraphBuilder.calendarGraph(navController: NavHostController) {
         }
 
         composable(route = MainRoute.AppointmentConfirmation.route) { backStackEntry ->
+            val root = LocalRootNavController.current
+            val tabs = LocalTabsController.current
+
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(MainRoute.CalendarNavigator.route)
             }
@@ -77,11 +83,11 @@ fun NavGraphBuilder.calendarGraph(navController: NavHostController) {
                         val result = viewModel.createAppointment()
 
                         result.onSuccess {
-                            navController.navigate(MainRoute.Appointments.route) {
-                                popUpTo(navController.graph.findStartDestination().id) { inclusive = true }
-                                launchSingleTop = true
-                                restoreState = false
-                            }
+                            val mainEntry = root.getBackStackEntry(GlobalRoute.MAIN)
+                            mainEntry.savedStateHandle["APPOINTMENT_CREATED"] = true
+
+                            root.popBackStack(GlobalRoute.MAIN, inclusive = false)
+                            tabs.setTab(MainTab.Appointments)
                         }
                     }
                 }

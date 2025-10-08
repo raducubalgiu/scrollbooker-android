@@ -21,7 +21,6 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.scrollbooker.navigation.LocalRootNavController
 import com.example.scrollbooker.navigation.LocalTabsController
 import com.example.scrollbooker.navigation.TabsController

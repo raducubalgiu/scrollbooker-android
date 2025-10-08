@@ -18,6 +18,9 @@ object Dimens {
     val AvatarSizeXS = 40.dp
     val AvatarSizeS = 50.dp
     val AvatarSizeM = 55.dp
+    val AvatarSizeL = 75.dp
+    val AvatarXL = 90.dp
+    val AvatarXXL = 105.dp
 
     // Icons
     val IconSizeXS = 16.dp
