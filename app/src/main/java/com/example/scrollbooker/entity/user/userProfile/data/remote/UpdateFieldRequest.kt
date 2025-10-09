@@ -1,4 +1,5 @@
-package com.example.scrollbooker.entity.user.userProfile.domain.model
+package com.example.scrollbooker.entity.user.userProfile.data.remote
+import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -24,5 +25,15 @@ data class UpdateBioRequest(
 @Serializable
 data class UpdateGenderRequest(
     val gender: String
+)
+
+@Serializable
+data class UpdateWebsiteRequest(
+    val website: String
+)
+
+data class UpdatePublicEmailRequest(
+    @SerializedName("public_email")
+    val publicEmail: String
 )
 

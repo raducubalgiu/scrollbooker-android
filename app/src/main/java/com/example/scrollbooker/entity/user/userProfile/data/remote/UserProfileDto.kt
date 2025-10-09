@@ -5,29 +5,50 @@ import java.math.BigDecimal
 data class UserProfileDto (
     val id: Int,
     val username: String,
+
     @SerializedName("fullname")
     val fullName: String,
+
     val avatar: String?,
     val gender: String,
     val bio: String?,
+
+    val website: String?,
+
+    @SerializedName("public_email")
+    val publicEmail: String?,
+
+    val instagram: String?,
+    val tikTok: String?,
+    val youtube: String?,
+
     @SerializedName("business_id")
     val businessId: Int?,
+
     @SerializedName("business_type_id")
     val businessTypeId: Int?,
+
     val counters: UserCountersDto,
     val profession: String,
+
     @SerializedName("opening_hours")
     val openingHours: OpeningHoursDto,
+
     @SerializedName("is_follow")
     val isFollow: Boolean,
+
     @SerializedName("business_owner")
     val businessOwner: BusinessOwnerDto?,
+
     @SerializedName("is_own_profile")
     val isOwnProfile: Boolean,
+
     @SerializedName("is_business_or_employee")
     val isBusinessOrEmployee: Boolean,
+
     @SerializedName("distance_km")
     val distanceKm: Float?,
+
     @SerializedName("address")
     val address: String?
 )

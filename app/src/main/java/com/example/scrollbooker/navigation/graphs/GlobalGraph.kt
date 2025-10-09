@@ -39,38 +39,6 @@ fun NavGraphBuilder.globalGraph(
         popEnterTransition = { slideInFromLeft() },
         popExitTransition = { slideOutToRight() }
     ) {
-        composable(
-            route = MainRoute.Camera.route,
-            enterTransition = {
-                slideInVertically(
-                    animationSpec = tween(240, easing = LinearOutSlowInEasing),
-                    initialOffsetY = { full -> full }
-                ) + fadeIn(animationSpec = tween(150))
-            },
-            exitTransition = {
-                slideOutVertically(
-                    animationSpec = tween(180, easing = FastOutLinearInEasing),
-                    targetOffsetY = { full -> full / 8 }
-                ) + fadeOut(animationSpec = tween(150))
-            },
-            popEnterTransition = {
-                slideInVertically(
-                    animationSpec = tween(200, easing = LinearOutSlowInEasing),
-                    initialOffsetY = { full -> full / 8 }
-                ) + fadeIn(animationSpec = tween(150))
-            },
-            popExitTransition = {
-                slideOutVertically(
-                    animationSpec = tween(260, easing = FastOutLinearInEasing),
-                    targetOffsetY = { full -> full }
-                ) + fadeOut(animationSpec = tween(150))
-            }
-        ) { backStackEntry ->
-            CameraScreen(
-                onBack = { navController.popBackStack() }
-            )
-        }
-
         composable("${MainRoute.UserProfile.route}/{userId}",
             arguments = listOf(navArgument("userId") { type = NavType.IntType })
         ) { backStackEntry ->
@@ -88,6 +56,19 @@ fun NavGraphBuilder.globalGraph(
                 onBack = { navController.popBackStack() },
                 profileNavigate = profileNavigate
             )
+        }
+
+        composable("${MainRoute.ProfilePostDetail.route}/{postId}",
+            arguments = listOf(navArgument("postId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val postId = backStackEntry.arguments?.getInt("postId")
+            //val viewModel = hiltViewModel<ProfilePostsTabViewModel>(backStackEntry)
+
+//                ProfilePostDetailScreen(
+//                    postId = postId,
+//                    posts = viewModel.userPosts.collectAsLazyPagingItems(),
+//                    onBack = { navController.popBackStack() }
+//                )
         }
 
         composable(route = "${MainRoute.UserSocial.route}/{initialPage}/{userId}/{username}/{isBusinessOrEmployee}",
@@ -131,17 +112,36 @@ fun NavGraphBuilder.globalGraph(
             )
         }
 
-        composable("${MainRoute.ProfilePostDetail.route}/{postId}",
-            arguments = listOf(navArgument("postId") { type = NavType.IntType })
+        composable(
+            route = MainRoute.Camera.route,
+            enterTransition = {
+                slideInVertically(
+                    animationSpec = tween(240, easing = LinearOutSlowInEasing),
+                    initialOffsetY = { full -> full }
+                ) + fadeIn(animationSpec = tween(150))
+            },
+            exitTransition = {
+                slideOutVertically(
+                    animationSpec = tween(180, easing = FastOutLinearInEasing),
+                    targetOffsetY = { full -> full / 8 }
+                ) + fadeOut(animationSpec = tween(150))
+            },
+            popEnterTransition = {
+                slideInVertically(
+                    animationSpec = tween(200, easing = LinearOutSlowInEasing),
+                    initialOffsetY = { full -> full / 8 }
+                ) + fadeIn(animationSpec = tween(150))
+            },
+            popExitTransition = {
+                slideOutVertically(
+                    animationSpec = tween(260, easing = FastOutLinearInEasing),
+                    targetOffsetY = { full -> full }
+                ) + fadeOut(animationSpec = tween(150))
+            }
         ) { backStackEntry ->
-            val postId = backStackEntry.arguments?.getInt("postId")
-            //val viewModel = hiltViewModel<ProfilePostsTabViewModel>(backStackEntry)
-
-//                ProfilePostDetailScreen(
-//                    postId = postId,
-//                    posts = viewModel.userPosts.collectAsLazyPagingItems(),
-//                    onBack = { navController.popBackStack() }
-//                )
+            CameraScreen(
+                onBack = { navController.popBackStack() }
+            )
         }
     }
 }

@@ -4,12 +4,11 @@ import com.example.scrollbooker.entity.auth.data.remote.AuthStateDto
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessHasEmployeesUpdateRequest
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessServicesUpdateRequest
 import com.example.scrollbooker.entity.booking.schedule.data.remote.ScheduleDto
-import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateBirthDateRequest
-import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateGenderRequest
-import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateUsernameRequest
+import com.example.scrollbooker.entity.user.userProfile.data.remote.UpdateBirthDateRequest
+import com.example.scrollbooker.entity.user.userProfile.data.remote.UpdateGenderRequest
+import com.example.scrollbooker.entity.user.userProfile.data.remote.UpdateUsernameRequest
 import retrofit2.http.Body
 import retrofit2.http.PATCH
-import retrofit2.http.PUT
 
 interface OnboardingApiService {
     // Shared

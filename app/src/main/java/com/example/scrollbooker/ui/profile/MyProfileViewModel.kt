@@ -17,7 +17,9 @@ import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserPr
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateBioUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateFullNameUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateGenderUseCase
+import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdatePublicEmailUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateUsernameUseCase
+import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateWebsiteUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -42,6 +44,8 @@ class MyProfileViewModel @Inject constructor(
     private val updateUsernameUseCase: UpdateUsernameUseCase,
     private val updateBioUseCase: UpdateBioUseCase,
     private val updateGenderUseCase: UpdateGenderUseCase,
+    private val updateWebsiteUseCase: UpdateWebsiteUseCase,
+    private val updatePublicEmailUseCase: UpdatePublicEmailUseCase,
     private val getUserPostsUseCase: GetUserPostsUseCase,
     private val getUserProfileUseCase: GetUserProfileUseCase,
     private val authDataStore: AuthDataStore
@@ -207,6 +211,54 @@ class MyProfileViewModel @Inject constructor(
                 }
                 .onFailure { error ->
                     Timber.Forest.tag("EditProfile").e(error, "ERROR: on Edit Gender User Data")
+                    _editState.value = FeatureState.Error(error = null)
+                }
+        }
+    }
+
+    fun updateWebsite(newWebsite: String) {
+        viewModelScope.launch {
+            _editState.value = FeatureState.Loading
+
+            val result = withVisibleLoading { updateWebsiteUseCase(newWebsite) }
+
+            result
+                .onSuccess {
+                    _editState.value = FeatureState.Success(Unit)
+
+                    val currentProfile = (_userProfileState.value as? FeatureState.Success)?.data
+                    if(currentProfile != null) {
+                        val updatedProfile = currentProfile.copy(website = newWebsite)
+                        _userProfileState.value = FeatureState.Success(updatedProfile)
+                    }
+                    isSaved = true
+                }
+                .onFailure { error ->
+                    Timber.Forest.tag("EditProfile").e(error, "ERROR: on Edit Website User Data")
+                    _editState.value = FeatureState.Error(error = null)
+                }
+        }
+    }
+
+    fun updatePublicEmail(newPublicEmail: String) {
+        viewModelScope.launch {
+            _editState.value = FeatureState.Loading
+
+            val result = withVisibleLoading { updatePublicEmailUseCase(newPublicEmail) }
+
+            result
+                .onSuccess {
+                    _editState.value = FeatureState.Success(Unit)
+
+                    val currentProfile = (_userProfileState.value as? FeatureState.Success)?.data
+                    if(currentProfile != null) {
+                        val updatedProfile = currentProfile.copy(publicEmail = newPublicEmail)
+                        _userProfileState.value = FeatureState.Success(updatedProfile)
+                    }
+                    isSaved = true
+                }
+                .onFailure { error ->
+                    Timber.Forest.tag("EditProfile").e(error, "ERROR: on Edit Public Email User Data")
                     _editState.value = FeatureState.Error(error = null)
                 }
         }

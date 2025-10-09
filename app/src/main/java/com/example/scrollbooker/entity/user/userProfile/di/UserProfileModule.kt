@@ -6,8 +6,13 @@ import com.example.scrollbooker.entity.user.userProfile.data.repository.UserProf
 import com.example.scrollbooker.entity.user.userProfile.domain.repository.UserProfileRepository
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserProfileUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.SearchUsernameUseCase
+import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateBioUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateBirthDateUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateFullNameUseCase
+import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateGenderUseCase
+import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdatePublicEmailUseCase
+import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateUsernameUseCase
+import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateWebsiteUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -47,10 +52,18 @@ object UserProfileModule {
 
     @Provides
     @Singleton
-    fun provideUpdateFullNameUseCase(
+    fun provideSearchUsernameUseCase(
         repository: UserProfileRepository
-    ): UpdateFullNameUseCase {
-        return UpdateFullNameUseCase(repository)
+    ): SearchUsernameUseCase {
+        return SearchUsernameUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUpdateBioUseCase(
+        repository: UserProfileRepository
+    ): UpdateBioUseCase {
+        return UpdateBioUseCase(repository)
     }
 
     @Provides
@@ -63,9 +76,41 @@ object UserProfileModule {
 
     @Provides
     @Singleton
-    fun searchUsernameUseCase(
+    fun provideUpdateFullNameUseCase(
         repository: UserProfileRepository
-    ): SearchUsernameUseCase {
-        return SearchUsernameUseCase(repository)
+    ): UpdateFullNameUseCase {
+        return UpdateFullNameUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUpdateGenderUseCase(
+        repository: UserProfileRepository
+    ): UpdateGenderUseCase {
+        return UpdateGenderUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun providePublicEmailUseCase(
+        repository: UserProfileRepository
+    ): UpdatePublicEmailUseCase {
+        return UpdatePublicEmailUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUpdateUsernameUseCase(
+        repository: UserProfileRepository
+    ): UpdateUsernameUseCase {
+        return UpdateUsernameUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUpdateWebsiteUseCase(
+        repository: UserProfileRepository
+    ): UpdateWebsiteUseCase {
+        return UpdateWebsiteUseCase(repository)
     }
 }

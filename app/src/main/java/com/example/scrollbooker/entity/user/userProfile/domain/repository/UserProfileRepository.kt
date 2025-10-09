@@ -11,6 +11,8 @@ interface UserProfileRepository {
     suspend fun updateUsername(username: String)
     suspend fun updateBirthDate(birthdate: String?): AuthState
     suspend fun updateGender(gender: String): AuthState
+    suspend fun updateWebsite(website: String)
+    suspend fun updatePublicEmail(publicEmail: String)
 
     suspend fun updateBio(bio: String)
     suspend fun searchUsername(username: String): SearchUsernameResponse

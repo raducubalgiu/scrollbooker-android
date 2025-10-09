@@ -17,7 +17,9 @@ import com.example.scrollbooker.ui.profile.edit.EditFullNameScreen
 import com.example.scrollbooker.ui.profile.edit.EditGenderScreen
 import com.example.scrollbooker.ui.profile.edit.EditProfessionScreen
 import com.example.scrollbooker.ui.profile.edit.EditProfileScreen
+import com.example.scrollbooker.ui.profile.edit.EditPublicEmailScreen
 import com.example.scrollbooker.ui.profile.edit.EditUsernameScreen
+import com.example.scrollbooker.ui.profile.edit.EditWebsiteScreen
 
 fun NavGraphBuilder.editProfileGraph(
     navController: NavHostController,
@@ -74,6 +76,20 @@ fun NavGraphBuilder.editProfileGraph(
 
         composable(route = MainRoute.EditGender.route) {
             EditGenderScreen(
+                viewModel=viewModel,
+                onBack= { navController.popBackStack() }
+            )
+        }
+
+        composable(route = MainRoute.EditPublicEmail.route) {
+            EditPublicEmailScreen(
+                viewModel=viewModel,
+                onBack= { navController.popBackStack() }
+            )
+        }
+
+        composable(route = MainRoute.EditWebsite.route) {
+            EditWebsiteScreen(
                 viewModel=viewModel,
                 onBack= { navController.popBackStack() }
             )

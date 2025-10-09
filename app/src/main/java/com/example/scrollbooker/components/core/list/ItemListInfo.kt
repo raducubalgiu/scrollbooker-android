@@ -36,6 +36,7 @@ fun ItemListInfo(
     headLineTextStyle: TextStyle = bodyLarge,
     supportingText: String,
     supportingTextStyle: TextStyle = bodyMedium,
+    leadingContent: @Composable (() -> Unit)? = null,
     onClick: () -> Unit,
 ) {
     ListItem(
@@ -52,6 +53,7 @@ fun ItemListInfo(
                 overflow = TextOverflow.Ellipsis,
             )
         },
+        leadingContent = leadingContent,
         trailingContent = {
             Row(
                 modifier = Modifier

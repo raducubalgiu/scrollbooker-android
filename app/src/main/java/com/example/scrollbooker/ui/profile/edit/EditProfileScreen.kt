@@ -77,14 +77,29 @@ fun EditProfileScreen(
     val actionsList = listOf<EditProfileAction>(
         EditProfileAction(
             title = stringResource(R.string.email),
-            value = "",
-            navigate = {  }
+            value = user?.publicEmail ?: "",
+            navigate = { editProfileNavigate.toEditPublicEmail() }
         ),
         EditProfileAction(
             title = stringResource(R.string.website),
-            value = "",
+            value = user?.website ?: "",
+            navigate = { editProfileNavigate.toEditWebsite() }
+        ),
+        EditProfileAction(
+            title = stringResource(R.string.instagram),
+            value = user?.instagram ?: "",
             navigate = {  }
-        )
+        ),
+        EditProfileAction(
+            title = stringResource(R.string.youtube),
+            value = user?.youtube ?: "",
+            navigate = {  }
+        ),
+        EditProfileAction(
+            title = stringResource(R.string.tikTok),
+            value = user?.tikTok ?: "",
+            navigate = {  }
+        ),
     )
 
     Layout(
@@ -117,7 +132,7 @@ fun EditProfileScreen(
 
             Spacer(Modifier.height(BasePadding))
 
-            EditProfileSectionTitle(title = "Butoane de actiune in profil")
+            EditProfileSectionTitle(title = stringResource(R.string.buttonActionInProfile))
 
             actionsList.forEachIndexed { index, about ->
                 ItemListInfo(

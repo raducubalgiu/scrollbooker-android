@@ -21,4 +21,10 @@ class EditProfileNavigator (
     fun toEditProfession() {
         navController.navigate(MainRoute.EditProfession.route)
     }
+    fun toEditPublicEmail() {
+        navController.navigate(MainRoute.EditPublicEmail.route)
+    }
+    fun toEditWebsite() {
+        navController.navigate(MainRoute.EditWebsite.route)
+    }
 }

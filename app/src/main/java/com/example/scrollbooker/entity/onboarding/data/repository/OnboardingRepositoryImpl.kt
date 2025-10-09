@@ -8,9 +8,9 @@ import com.example.scrollbooker.entity.booking.schedule.data.mappers.toDto
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
 import com.example.scrollbooker.entity.onboarding.data.remote.OnboardingApiService
 import com.example.scrollbooker.entity.onboarding.domain.repository.OnboardingRepository
-import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateBirthDateRequest
-import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateGenderRequest
-import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateUsernameRequest
+import com.example.scrollbooker.entity.user.userProfile.data.remote.UpdateBirthDateRequest
+import com.example.scrollbooker.entity.user.userProfile.data.remote.UpdateGenderRequest
+import com.example.scrollbooker.entity.user.userProfile.data.remote.UpdateUsernameRequest
 import javax.inject.Inject
 
 class OnboardingRepositoryImpl @Inject constructor(

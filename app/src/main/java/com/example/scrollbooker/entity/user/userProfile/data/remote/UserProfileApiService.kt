@@ -1,12 +1,6 @@
 package com.example.scrollbooker.entity.user.userProfile.data.remote
 import com.example.scrollbooker.entity.auth.data.remote.AuthStateDto
 import com.example.scrollbooker.entity.user.userProfile.domain.model.SearchUsernameResponse
-import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateBioRequest
-import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateBirthDateRequest
-import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateFullNameRequest
-import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateGenderRequest
-import com.example.scrollbooker.entity.user.userProfile.domain.model.UpdateUsernameRequest
-import com.example.scrollbooker.entity.user.userSocial.data.remote.UserSocialDto
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
@@ -42,6 +36,16 @@ interface UserProfileApiService {
     @PATCH("users/user-info/bio")
     suspend fun updateBio(
         @Body request: UpdateBioRequest
+    )
+
+    @PATCH("users/user-info/website")
+    suspend fun updateWebsite(
+        @Body request: UpdateWebsiteRequest
+    )
+
+    @PATCH("users/user-info/public-email")
+    suspend fun updatePublicEmail(
+        @Body request: UpdatePublicEmailRequest
     )
 
     @GET("users/available-username")

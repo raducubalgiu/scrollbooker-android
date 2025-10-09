@@ -95,7 +95,7 @@ fun ExplorePostsTab(
                 }
 
                 LaunchedEffect(pagerState) {
-                    snapshotFlow { pagerState.currentPage }
+                    snapshotFlow { pagerState.settledPage }
                         .debounce(150)
                         .collectLatest { page ->
                             val post = posts.getOrNull(page)
@@ -130,10 +130,6 @@ fun ExplorePostsTab(
                         }
                         val playerState by feedViewModel.getPlayerState(post.id)
                             .collectAsState()
-
-//                        if (playerState.isBuffering || !playerState.isPlaying) {
-//                            PostShimmer()
-//                        }
 
                         Box(
                             modifier = Modifier
