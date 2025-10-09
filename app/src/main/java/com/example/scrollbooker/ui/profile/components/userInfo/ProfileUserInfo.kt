@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,11 +27,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.Avatar
+import com.example.scrollbooker.core.util.Dimens.AvatarXL
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
+import com.example.scrollbooker.ui.profile.components.userInfo.components.INTENT_ACTION_SPECS
+import com.example.scrollbooker.ui.profile.components.userInfo.components.IntentAction
 import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileBio
 import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileBusinessEmployee
 import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileIntentActionsList
@@ -39,6 +43,31 @@ import com.example.scrollbooker.ui.profile.components.userInfo.components.Profil
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.titleMedium
+
+@Composable
+fun rememberIntentActions(user: UserProfile): List<IntentAction> {
+    return remember(user) {
+        INTENT_ACTION_SPECS.map { spec ->
+            IntentAction(
+                icon = spec.icon,
+                title = spec.title,
+                value = spec.valueOf(user),
+                isBusinessOrEmployee = spec.onlyBusinessOrEmployee
+            )
+        }
+    }
+}
+
+fun filterIntentActions(
+    actions: List<IntentAction>,
+    isBusinessOrEmployee: Boolean
+): List<IntentAction> {
+        return if (!isBusinessOrEmployee) {
+        actions.filter { it.value.isNotEmpty() && !it.isBusinessOrEmployee }
+    } else {
+        actions.filter { it.value.isNotEmpty() }
+    }
+}
 
 @Composable
 fun ProfileUserInfo(
@@ -50,6 +79,11 @@ fun ProfileUserInfo(
     val isBusinessOrEmployee = user.isBusinessOrEmployee
     val isOpenNow = user.openingHours.openNow
 
+    val intentActions = rememberIntentActions(user)
+    val filteredIntentList = remember(user, intentActions) {
+        filterIntentActions(intentActions, user.isBusinessOrEmployee)
+    }
+
     Column(modifier = Modifier
         .padding(horizontal = SpacingXL)
         .fillMaxWidth(),
@@ -59,7 +93,7 @@ fun ProfileUserInfo(
             Box(contentAlignment = Alignment.BottomEnd) {
                 Avatar(
                     url = user.avatar ?: "",
-                    size = 90.dp
+                    size = AvatarXL
                 )
                 if(isBusinessOrEmployee) {
                     Box(modifier = Modifier
@@ -143,7 +177,7 @@ fun ProfileUserInfo(
 
         Spacer(Modifier.height(SpacingM))
 
-        ProfileIntentActionsList()
+        ProfileIntentActionsList(intentList = filteredIntentList)
 
         if(!user.isOwnProfile && user.distanceKm != null) {
             ProfileLocationDistance(distance = user.distanceKm)
