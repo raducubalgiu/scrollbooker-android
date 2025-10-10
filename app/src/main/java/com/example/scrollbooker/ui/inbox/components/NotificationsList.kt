@@ -73,7 +73,11 @@ fun NotificationsList(
                                 trailingContent = {
                                     MainButtonSmall(
                                         title = stringResource(R.string.seeMore),
-                                        onClick = { inboxNavigate.toEmploymentRespond(notification.id) },
+                                        onClick = {
+                                            notification.data?.employmentRequestId?.let { empId ->
+                                                inboxNavigate.toEmploymentRespond(empId)
+                                            }
+                                        },
                                         colors = ButtonColors(
                                             containerColor = Error,
                                             contentColor = OnError,

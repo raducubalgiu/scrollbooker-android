@@ -6,7 +6,7 @@ data class Notification(
     val type: NotificationTypeEnum,
     val senderId: Int,
     val receiverId: Int,
-    val data: Map<String, Any>?,
+    val data: EmploymentRequestData?,
     val message: String?,
     val isRead: Boolean,
     val isDeleted: Boolean,
@@ -19,4 +19,9 @@ data class Sender(
     val fullName: String?,
     val username: String,
     val avatar: String?
+)
+
+data class EmploymentRequestData(
+    val employmentRequestId: Int,
+    val professionId: Int,
 )

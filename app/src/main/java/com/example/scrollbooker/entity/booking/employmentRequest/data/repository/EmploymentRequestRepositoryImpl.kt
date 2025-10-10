@@ -21,7 +21,7 @@ class EmploymentRequestRepositoryImpl @Inject constructor(
         return apiService.createEmploymentRequest(requestDto)
     }
 
-    override suspend fun responseEmploymentRequest(
+    override suspend fun respondEmploymentRequest(
         status: EmploymentRequestStatusEnum,
         employmentId: Int
     ) {

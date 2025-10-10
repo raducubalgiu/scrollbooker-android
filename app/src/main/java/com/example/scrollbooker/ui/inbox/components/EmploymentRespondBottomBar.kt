@@ -22,8 +22,7 @@ import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable
 fun EmploymentRespondBottomBar(
-    isLoading: Boolean,
-    isEnabled: Boolean,
+    isSaving: Boolean,
     onDeny: () -> Unit,
     onAccept: () -> Unit
 ) {
@@ -37,8 +36,8 @@ fun EmploymentRespondBottomBar(
             MainButton(
                 modifier = Modifier.weight(0.5f),
                 title = stringResource(R.string.deny),
-                isLoading = isLoading,
-                enabled = isEnabled,
+                isLoading = isSaving,
+                enabled = !isSaving,
                 onClick = onDeny,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = SurfaceBG,
@@ -51,8 +50,7 @@ fun EmploymentRespondBottomBar(
             MainButton(
                 modifier = Modifier.weight(0.5f),
                 title = stringResource(R.string.accept),
-                isLoading = isLoading,
-                enabled = isEnabled,
+                enabled = !isSaving,
                 onClick = onAccept,
             )
         }

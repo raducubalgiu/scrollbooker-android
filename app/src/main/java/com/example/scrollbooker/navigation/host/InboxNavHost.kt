@@ -2,6 +2,7 @@ package com.example.scrollbooker.navigation.host
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -17,9 +18,9 @@ import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.ui.inbox.InboxScreen
 import com.example.scrollbooker.ui.inbox.InboxViewModel
-import com.example.scrollbooker.ui.inbox.employmentRespond.EmploymentRespondConsentScreen
-import com.example.scrollbooker.ui.inbox.employmentRespond.EmploymentRespondScreen
-import com.example.scrollbooker.ui.inbox.employmentRespond.EmploymentRespondViewModel
+import com.example.scrollbooker.ui.inbox.EmploymentRespondConsentScreen
+import com.example.scrollbooker.ui.inbox.EmploymentRespondScreen
+import kotlinx.coroutines.launch
 
 @Composable
 fun InboxNavHost(
@@ -29,76 +30,92 @@ fun InboxNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = MainRoute.Inbox.route,
+        startDestination = MainRoute.InboxNavigator.route,
         enterTransition = { slideInFromRight() },
         exitTransition = { slideOutToLeft() },
         popEnterTransition = { slideInFromLeft() },
         popExitTransition = { slideOutToRight() }
     ) {
-        composable(MainRoute.Inbox.route) { backStackEntry ->
-            val viewModel = hiltViewModel<InboxViewModel>(backStackEntry)
-            val rootNavController = LocalRootNavController.current
+        navigation(
+            route = MainRoute.InboxNavigator.route,
+            startDestination = MainRoute.Inbox.route,
+        ) {
+            composable(MainRoute.Inbox.route) { backStackEntry ->
+                val rootNavController = LocalRootNavController.current
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(MainRoute.InboxNavigator.route)
+                }
 
-            val inboxNavigate = remember(rootNavController, navController) {
-                InboxNavigator(
-                    rootNavController = rootNavController,
-                    navController = navController
+                val viewModel = hiltViewModel<InboxViewModel>(parentEntry)
+
+                val inboxNavigate = remember(rootNavController, navController) {
+                    InboxNavigator(
+                        rootNavController = rootNavController,
+                        navController = navController
+                    )
+                }
+
+                InboxScreen(
+                    viewModel = viewModel,
+                    appointmentsNumber = appointmentsNumber,
+                    notificationsNumber = notificationsNumber,
+                    inboxNavigate = inboxNavigate,
                 )
             }
 
-            InboxScreen(
-                viewModel = viewModel,
-                appointmentsNumber = appointmentsNumber,
-                notificationsNumber = notificationsNumber,
-                inboxNavigate = inboxNavigate,
-            )
-        }
-
-        navigation(
-            route = MainRoute.EmploymentRespondNavigator.route,
-            startDestination = "${MainRoute.EmploymentRespond.route}/{employmentId}",
-        ) {
             composable(route = "${MainRoute.EmploymentRespond.route}/{employmentId}",
                 arguments = listOf(navArgument("employmentId") { type = NavType.IntType }),
             ) { backStackEntry ->
                 val employmentId = backStackEntry.arguments?.getInt("employmentId")
 
                 val parentEntry = remember(backStackEntry) {
-                    navController.getBackStackEntry(
-                        "${MainRoute.EmploymentRespond.route}/${employmentId}"
-                    )
+                    navController.getBackStackEntry(MainRoute.InboxNavigator.route)
                 }
-                val viewModel = hiltViewModel<EmploymentRespondViewModel>(parentEntry)
+                val viewModel = hiltViewModel<InboxViewModel>(parentEntry)
 
                 EmploymentRespondScreen(
+                    employmentId = employmentId,
                     viewModel = viewModel,
                     onBack = { navController.popBackStack() },
-                    onNavigateToConsent = {
-                        navController.navigate("${MainRoute.EmploymentRespondConsent.route}/${employmentId}")
+                    onNavigateToConsent = { navController.navigate(MainRoute.EmploymentRespondConsent.route) },
+                    onDenyEmployment = {
+                        navController.currentBackStackEntry?.lifecycleScope?.launch {
+                            val denied = viewModel.respondToRequest(status = it)
+
+                            denied.onSuccess {
+                                navController.navigate(MainRoute.Inbox.route) {
+                                    popUpTo(MainRoute.AppointmentsNavigator.route) {
+                                        inclusive = true
+                                    }
+                                }
+                            }
+                        }
                     }
                 )
             }
 
-            composable(route = "${MainRoute.EmploymentRespondConsent.route}/{employmentId}",
-                arguments = listOf(navArgument("employmentId") { type = NavType.IntType }),
-                enterTransition = { slideInFromRight() },
-                exitTransition = { slideOutToLeft() },
-                popEnterTransition = { slideInFromLeft() },
-                popExitTransition = { slideOutToRight() }
-            ) { backStackEntry ->
-                val employmentId = backStackEntry.arguments?.getInt("employmentId")
-
+            composable(route = MainRoute.EmploymentRespondConsent.route,) { backStackEntry ->
                 val parentEntry = remember(backStackEntry) {
-                    navController.getBackStackEntry(
-                        "${MainRoute.EmploymentRespond.route}/${employmentId}"
-                    )
+                    navController.getBackStackEntry(MainRoute.InboxNavigator.route)
                 }
-                val viewModel = hiltViewModel<EmploymentRespondViewModel>(parentEntry)
+                val viewModel = hiltViewModel<InboxViewModel>(parentEntry)
 
                 EmploymentRespondConsentScreen(
                     viewModel = viewModel,
                     onBack = { navController.popBackStack() },
-                    onRespond = { viewModel.respondToRequest(status = it) }
+                    onAcceptEmployment = {
+                        navController.currentBackStackEntry?.lifecycleScope?.launch {
+                            val accepted = viewModel.respondToRequest(status = it)
+
+                            accepted.onSuccess {
+                                navController.navigate(MainRoute.Inbox.route) {
+                                    popUpTo(MainRoute.AppointmentsNavigator.route) {
+                                        inclusive = true
+                                    }
+                                }
+                            }
+                        }
+                    }
                 )
             }
         }

@@ -8,6 +8,6 @@ class RespondEmploymentRequestUseCase @Inject constructor(
     private val repository: EmploymentRequestRepository
 ) {
     suspend operator fun invoke(status: EmploymentRequestStatusEnum, employmentId: Int): Result<Unit> = runCatching {
-        repository.responseEmploymentRequest(status, employmentId)
+        repository.respondEmploymentRequest(status, employmentId)
     }
 }

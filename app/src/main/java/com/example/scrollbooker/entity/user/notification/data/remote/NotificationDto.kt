@@ -12,7 +12,7 @@ data class NotificationDto(
     @SerializedName("receiver_id")
     val receiverId: Int,
 
-    val data: Map<String, Any>?,
+    val data: EmploymentRequestDataDto?,
     val message: String?,
 
     @SerializedName("is_read")
@@ -35,4 +35,12 @@ data class SenderDto(
 
     val username: String,
     val avatar: String?
+)
+
+data class EmploymentRequestDataDto(
+    @SerializedName("employment_request_id")
+    val employmentRequestId: Int,
+
+    @SerializedName("profession_id")
+    val professionId: Int,
 )
