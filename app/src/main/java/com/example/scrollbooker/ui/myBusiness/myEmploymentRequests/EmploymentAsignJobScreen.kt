@@ -1,7 +1,6 @@
 package com.example.scrollbooker.ui.myBusiness.myEmploymentRequests
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.HorizontalDivider
@@ -30,7 +29,6 @@ fun EmploymentAssignJobScreen(
     val selectedProfession by viewModel.selectedProfession.collectAsState()
 
     FormLayout(
-        modifier = Modifier.safeDrawingPadding(),
         headLine = stringResource(R.string.assignJob),
         subHeadLine = stringResource(R.string.chooseProfessionsFromTheList),
         onBack = onBack,

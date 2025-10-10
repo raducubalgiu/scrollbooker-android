@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.inbox.employmentRequestRespond
+package com.example.scrollbooker.ui.inbox.employmentRespond
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,8 +33,8 @@ import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.ui.theme.bodyLarge
 
 @Composable
-fun EmploymentRequestRespondConsentScreen(
-    viewModel: EmploymentRequestRespondViewModel,
+fun EmploymentRespondConsentScreen(
+    viewModel: EmploymentRespondViewModel,
     onBack: () -> Unit,
     onRespond: (EmploymentRequestStatusEnum) -> Unit
 ) {

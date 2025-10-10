@@ -1,9 +1,9 @@
 package com.example.scrollbooker.ui.inbox
 import BottomBar
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,10 +16,10 @@ import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.core.layout.MessageScreen
-import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.navigation.navigators.InboxNavigator
 import com.example.scrollbooker.ui.inbox.components.NotificationsList
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InboxScreen(
     viewModel: InboxViewModel,
@@ -31,9 +31,7 @@ fun InboxScreen(
     val refreshState = notifications.loadState.refresh
 
     Scaffold(
-        topBar = {
-            Header(title = stringResource(id = R.string.inbox))
-        },
+        topBar = { Header(title = stringResource(id = R.string.inbox)) },
         bottomBar = {
             BottomBar(
                 appointmentsNumber = appointmentsNumber,
@@ -45,20 +43,18 @@ fun InboxScreen(
             .fillMaxSize()
             .padding(innerPadding)
         ) {
-            Column(Modifier.fillMaxSize()) {
-                when(refreshState) {
-                    is LoadState.Loading -> { LoadingScreen() }
-                    is LoadState.Error -> ErrorScreen()
-                    is LoadState.NotLoading -> {
-                        NotificationsList(
-                            viewModel = viewModel,
-                            notifications = notifications,
-                            onFollow = { isFollowed, userId ->
-                                viewModel.follow(isFollowed, userId)
-                            },
-                            inboxNavigate = inboxNavigate
-                        )
-                    }
+            when(refreshState) {
+                is LoadState.Loading -> { LoadingScreen() }
+                is LoadState.Error -> ErrorScreen()
+                is LoadState.NotLoading -> {
+                    NotificationsList(
+                        viewModel = viewModel,
+                        notifications = notifications,
+                        onFollow = { isFollowed, userId ->
+                            viewModel.follow(isFollowed, userId)
+                        },
+                        inboxNavigate = inboxNavigate
+                    )
                 }
             }
 

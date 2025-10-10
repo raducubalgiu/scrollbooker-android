@@ -10,9 +10,11 @@ import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
 import com.example.scrollbooker.entity.user.userSocial.domain.useCase.FollowUserUseCase
 import com.example.scrollbooker.entity.user.userSocial.domain.useCase.UnfollowUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -26,17 +28,22 @@ class InboxViewModel @Inject constructor(
     private val followUserUseCase: FollowUserUseCase,
     private val unfollowUserUseCase: UnfollowUserUseCase,
 ): ViewModel() {
-    private val _notifications: Flow<PagingData<Notification>> by lazy {
-        getNotificationsUseCase().cachedIn(viewModelScope)
-    }
+    private val _notificationRefreshTrigger = MutableStateFlow(0)
 
-    val notifications:  Flow<PagingData<Notification>> get() = _notifications
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val notifications: Flow<PagingData<Notification>> = _notificationRefreshTrigger
+        .flatMapLatest { getNotificationsUseCase() }
+        .cachedIn(viewModelScope)
 
     private val _followState = MutableStateFlow<Map<Int, Boolean>>(emptyMap())
     val followState = _followState.asStateFlow()
 
     private val _isFollowSaving = MutableStateFlow<Set<Int>>(emptySet())
     val isFollowSaving = _isFollowSaving.asStateFlow()
+
+    fun refreshNotifications() {
+        _notificationRefreshTrigger.value += 1
+    }
 
     fun follow(isFollow: Boolean, userId: Int) {
         if(_isFollowSaving.value.contains(userId)) {

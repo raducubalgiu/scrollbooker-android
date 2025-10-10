@@ -73,12 +73,12 @@ class UserSocialViewModel @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val userFollowers: Flow<PagingData<UserSocial>> = _followersRefreshTrigger
-        .flatMapLatest { getUserSocialFollowersUseCase(userId).cachedIn(viewModelScope) }
+        .flatMapLatest { getUserSocialFollowersUseCase(userId) }
         .cachedIn(viewModelScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val userFollowings: Flow<PagingData<UserSocial>> = _followingsRefreshTrigger
-        .flatMapLatest { getUserSocialFollowingsUseCase(userId).cachedIn(viewModelScope) }
+        .flatMapLatest { getUserSocialFollowingsUseCase(userId) }
         .cachedIn(viewModelScope)
 
     fun refreshFollowers() {

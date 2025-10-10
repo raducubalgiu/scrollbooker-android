@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.inbox.employmentRequestRespond
+package com.example.scrollbooker.ui.inbox.employmentRespond
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,13 +10,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,29 +31,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.ui.theme.Background
-import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
-import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
-import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.titleMedium
 import androidx.compose.runtime.getValue
+import com.example.scrollbooker.core.enums.EmploymentRequestStatusEnum
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.ui.inbox.components.EmploymentRespondBottomBar
 
 @Composable
-fun EmploymentRequestRespondScreen(
-    viewModel: EmploymentRequestRespondViewModel,
+fun EmploymentRespondScreen(
+    viewModel: EmploymentRespondViewModel,
     onBack: () -> Unit,
-    onNavigate: () -> Unit
+    onNavigateToConsent: () -> Unit
 ) {
     val isSaving by viewModel.isSaving.collectAsState()
 
@@ -72,9 +66,7 @@ fun EmploymentRequestRespondScreen(
     )
 
     Layout(
-        modifier = Modifier
-            .background(Background)
-            .statusBarsPadding(),
+        modifier = Modifier.background(Background),
         enablePaddingH = false,
         onBack = onBack
     ) {
@@ -155,38 +147,13 @@ fun EmploymentRequestRespondScreen(
 
                 Spacer(Modifier.height(BasePadding))
             }
-            Column {
-                HorizontalDivider(color = Divider, thickness = 0.5.dp)
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = BasePadding)
-                        .padding(top = SpacingM, bottom = SpacingM)
-                ) {
-                    MainButton(
-                        modifier = Modifier.weight(0.5f),
-                        title = stringResource(R.string.deny),
-                        isLoading = isSaving is FeatureState.Loading,
-                        enabled = isSaving != FeatureState.Loading,
-                        onClick = {  },
-                        colors = ButtonColors(
-                            containerColor = SurfaceBG,
-                            contentColor = OnSurfaceBG,
-                            disabledContainerColor = Divider,
-                            disabledContentColor = OnSurfaceBG
-                        ),
-                    )
 
-                    Spacer(Modifier.width(SpacingS))
-                    MainButton(
-                        modifier = Modifier.weight(0.5f),
-                        title = stringResource(R.string.accept),
-                        isLoading = isSaving is FeatureState.Loading,
-                        enabled = isSaving != FeatureState.Loading,
-                        onClick = onNavigate,
-                    )
-                }
-            }
+            EmploymentRespondBottomBar(
+                isLoading = isSaving is FeatureState.Loading,
+                isEnabled = isSaving != FeatureState.Loading,
+                onDeny = { viewModel.respondToRequest(status = EmploymentRequestStatusEnum.DENIED) },
+                onAccept = onNavigateToConsent
+            )
         }
     }
 }

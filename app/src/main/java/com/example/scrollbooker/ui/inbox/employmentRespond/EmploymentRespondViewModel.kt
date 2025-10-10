@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.inbox.employmentRequestRespond
+package com.example.scrollbooker.ui.inbox.employmentRespond
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,7 +17,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class EmploymentRequestRespondViewModel @Inject constructor(
+class EmploymentRespondViewModel @Inject constructor(
     private val respondEmploymentRequestUseCase: RespondEmploymentRequestUseCase,
     private val getConsentsByNameUseCase: GetConsentsByNameUseCase,
     savedStateHandle: SavedStateHandle
@@ -53,6 +53,8 @@ class EmploymentRequestRespondViewModel @Inject constructor(
     }
 
     fun respondToRequest(status: EmploymentRequestStatusEnum) {
+        Timber.tag("EMPLOYMENT REQUEST!!!").e("EMPLOYMENT ID!!! $employmentId")
+
         viewModelScope.launch {
             _isSaving.value = FeatureState.Loading
 

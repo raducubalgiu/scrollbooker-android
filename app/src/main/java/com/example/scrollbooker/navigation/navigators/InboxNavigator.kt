@@ -8,7 +8,7 @@ class InboxNavigator (
     private val navController: NavHostController
 ) {
     fun toEmploymentRespond(employmentId: Int) {
-        navController.navigate("${MainRoute.EmploymentRequestRespond.route}/${employmentId}")
+        navController.navigate("${MainRoute.EmploymentRespond.route}/${employmentId}")
     }
 
     fun toUserProfile(userId: Int) {

@@ -29,6 +29,8 @@
     <string name="following">Urmărești</string>
     <string name="startedFollowingYou">a început să te urmărească</string>
     <string name="sentYouAnEmploymentRequest">ți-a trimis o cerere de angajare</string>
+    <string name="acceptedYourEmploymentRequest">ți-a acceptat cererea de angajare</string>
+    <string name="deniedYourEmploymentRequest">ți-a refuzat cererea de angajare</string>
     <string name="likedYourPost">ți-a apreciat postarea</string>
     <string name="settings">Setări</string>
     <string name="privacy">Confidențialitate</string>
