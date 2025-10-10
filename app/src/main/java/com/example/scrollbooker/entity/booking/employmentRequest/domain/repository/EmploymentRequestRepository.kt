@@ -5,6 +5,7 @@ import com.example.scrollbooker.entity.booking.employmentRequest.domain.model.Em
 import com.example.scrollbooker.entity.booking.employmentRequest.domain.model.EmploymentRequestCreate
 
 interface EmploymentRequestRepository {
+    suspend fun getEmploymentRequestById(employmentId: Int): EmploymentRequest
     suspend fun getUserEmploymentRequests(userId: Int): List<EmploymentRequest>
     suspend fun createEmploymentRequest(requestCreateDto: EmploymentRequestCreate)
     suspend fun respondEmploymentRequest(status: EmploymentRequestStatusEnum, employmentId: Int)

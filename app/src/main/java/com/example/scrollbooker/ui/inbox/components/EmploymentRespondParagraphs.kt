@@ -28,12 +28,11 @@ import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.titleMedium
 
-
 @Composable
-fun EmploymentRespondParagraphs() {
+fun EmploymentRespondParagraphs(employerFullName: String) {
     val paragraphs = listOf(
         stringResource(R.string.youWillReceiveAccessToYourOwnCalendarAndAppointments),
-        "${stringResource(R.string.youWillBeAbleToEditAndAddServicesWithinYourBusiness)} Frizeria Figaro",
+        "${stringResource(R.string.youWillBeAbleToEditAndAddServicesWithinYourBusiness)} ${employerFullName}",
         stringResource(R.string.clientsWillBeAbleToSelectYouDirectlyBasedYourAvailability),
         stringResource(R.string.youWillAppearInThePublicBusinessProfile),
         stringResource(R.string.youWillReceiveReviewsFromYourClients),

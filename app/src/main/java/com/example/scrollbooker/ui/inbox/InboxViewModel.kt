@@ -7,6 +7,8 @@ import com.example.scrollbooker.core.enums.ConsentEnum
 import com.example.scrollbooker.core.enums.EmploymentRequestStatusEnum
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
+import com.example.scrollbooker.entity.booking.employmentRequest.domain.model.EmploymentRequest
+import com.example.scrollbooker.entity.booking.employmentRequest.domain.useCase.GetEmploymentRequestByIdUseCase
 import com.example.scrollbooker.entity.booking.employmentRequest.domain.useCase.RespondEmploymentRequestUseCase
 import com.example.scrollbooker.entity.nomenclature.consent.domain.model.Consent
 import com.example.scrollbooker.entity.nomenclature.consent.domain.useCase.GetConsentsByNameUseCase
@@ -34,7 +36,8 @@ class InboxViewModel @Inject constructor(
     private val followUserUseCase: FollowUserUseCase,
     private val unfollowUserUseCase: UnfollowUserUseCase,
     private val respondEmploymentRequestUseCase: RespondEmploymentRequestUseCase,
-    private val getConsentsByNameUseCase: GetConsentsByNameUseCase
+    private val getConsentsByNameUseCase: GetConsentsByNameUseCase,
+    private val getEmploymentRequestByIdUseCase: GetEmploymentRequestByIdUseCase
 ): ViewModel() {
     private val _notificationRefreshTrigger = MutableStateFlow(0)
 
@@ -45,6 +48,9 @@ class InboxViewModel @Inject constructor(
 
     private val _employmentRequestId = MutableStateFlow<Int?>(null)
     val employmentRequestId: StateFlow<Int?> = _employmentRequestId.asStateFlow()
+
+    private val _employmentRequestState = MutableStateFlow<FeatureState<EmploymentRequest>>(FeatureState.Loading)
+    val employmentRequestState: StateFlow<FeatureState<EmploymentRequest>> = _employmentRequestState.asStateFlow()
 
     private val _followState = MutableStateFlow<Map<Int, Boolean>>(emptyMap())
     val followState = _followState.asStateFlow()
@@ -98,6 +104,23 @@ class InboxViewModel @Inject constructor(
             val response = withVisibleLoading { getConsentsByNameUseCase(consentName) }
 
             _consentState.value = response
+        }
+    }
+
+    fun loadEmploymentRequest() {
+        viewModelScope.launch {
+            val employmentId = _employmentRequestId.value
+
+            if(employmentId == null) {
+                Timber.tag("Employment Requests").e("ERROR: Employment Id is not defined")
+                return@launch
+            }
+
+            _employmentRequestState.value = FeatureState.Loading
+
+            _employmentRequestState.value = withVisibleLoading {
+                getEmploymentRequestByIdUseCase(employmentId = employmentId)
+            }
         }
     }
 

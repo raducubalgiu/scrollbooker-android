@@ -14,7 +14,10 @@ import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.ui.theme.Background
 import androidx.compose.runtime.getValue
+import com.example.scrollbooker.components.core.layout.ErrorScreen
+import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.enums.EmploymentRequestStatusEnum
+import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.ui.inbox.components.EmploymentDetails
 import com.example.scrollbooker.ui.inbox.components.EmploymentRespondBottomBar
 import com.example.scrollbooker.ui.inbox.components.EmploymentRespondParagraphs
@@ -28,11 +31,13 @@ fun EmploymentRespondScreen(
     onDenyEmployment: (EmploymentRequestStatusEnum) -> Unit
 ) {
     val isSaving by viewModel.isSaving.collectAsState()
+    val employmentRequest by viewModel.employmentRequestState.collectAsState()
     val verticalScroll = rememberScrollState()
 
     LaunchedEffect(employmentId) {
         if(employmentId != null) {
             viewModel.setEmploymentId(employmentId)
+            viewModel.loadEmploymentRequest()
         }
     }
 
@@ -45,13 +50,19 @@ fun EmploymentRespondScreen(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Column(modifier = Modifier
-                .weight(1f)
-                .padding(horizontal = SpacingXXL)
-                .verticalScroll(verticalScroll)
-            ) {
-                EmploymentDetails()
-                EmploymentRespondParagraphs()
+            when(val employment = employmentRequest) {
+                is FeatureState.Error -> ErrorScreen()
+                is FeatureState.Loading -> LoadingScreen()
+                is FeatureState.Success -> {
+                    Column(modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = SpacingXXL)
+                        .verticalScroll(verticalScroll)
+                    ) {
+                        EmploymentDetails(employmentRequest = employment.data)
+                        EmploymentRespondParagraphs(employerFullName = employment.data.employer.fullName)
+                    }
+                }
             }
 
             EmploymentRespondBottomBar(

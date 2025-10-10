@@ -1,4 +1,6 @@
 package com.example.scrollbooker.ui.inbox
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,6 +26,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.ui.theme.Divider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
@@ -44,6 +47,8 @@ fun EmploymentRespondConsentScreen(
 
     val verticalScroll = rememberScrollState()
     val isEnabled = consent is FeatureState.Success && agreedConsent && !isSaving
+
+    val interactionSource = remember { MutableInteractionSource() }
 
     LaunchedEffect(Unit) {
         viewModel.loadConsent()
@@ -81,13 +86,18 @@ fun EmploymentRespondConsentScreen(
                 HorizontalDivider(color = Divider, thickness = 0.5.dp)
                 Row(modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = BasePadding),
+                    .padding(top = BasePadding)
+                    .clickable(
+                        onClick = { viewModel.setAgreed(!agreedConsent) },
+                        interactionSource = interactionSource,
+                        indication = null
+                    ),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Checkbox(
                         checked = agreedConsent,
                         onCheckedChange = {
-                            viewModel.setAgreed(it)
+                            viewModel.setAgreed(!agreedConsent)
                         }
                     )
                     Text(
@@ -104,7 +114,7 @@ fun EmploymentRespondConsentScreen(
                         ),
                     enabled = isEnabled,
                     isLoading = isSaving,
-                    title = "Accepta angajarea",
+                    title = stringResource(R.string.acceptEmployment),
                     onClick = {
                         onAcceptEmployment(EmploymentRequestStatusEnum.ACCEPTED)
                     }

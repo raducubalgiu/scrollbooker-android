@@ -13,18 +13,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
+import com.example.scrollbooker.entity.booking.employmentRequest.domain.model.EmploymentRequest
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge
 
 @Composable
-fun EmploymentDetails() {
+fun EmploymentDetails(
+    employmentRequest: EmploymentRequest
+) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -38,13 +38,9 @@ fun EmploymentDetails() {
         )
         Spacer(Modifier.height(SpacingXL))
         Text(
-            buildAnnotatedString {
-                withStyle(style = SpanStyle(fontWeight = FontWeight.ExtraBold)) {
-                    append("Frizeria Figaro ")
-                }
-                append(stringResource(R.string.sentYouAnEmploymentRequest))
-            },
-            style = bodyLarge
+            style = bodyLarge,
+            fontWeight = FontWeight.ExtraBold,
+            text = "${employmentRequest.employer.fullName} ${stringResource(R.string.sentYouAnEmploymentRequest)}"
         )
     }
 }

@@ -1,9 +1,11 @@
 package com.example.scrollbooker.entity.booking.employmentRequest.di
 
 import com.example.scrollbooker.core.util.Constants
-import com.example.scrollbooker.entity.booking.employmentRequest.data.remote.EmploymentRequestsApiService
+import com.example.scrollbooker.entity.booking.employmentRequest.data.remote.EmploymentRequestApiService
 import com.example.scrollbooker.entity.booking.employmentRequest.data.repository.EmploymentRequestRepositoryImpl
 import com.example.scrollbooker.entity.booking.employmentRequest.domain.repository.EmploymentRequestRepository
+import com.example.scrollbooker.entity.booking.employmentRequest.domain.useCase.CreateEmploymentRequestUseCase
+import com.example.scrollbooker.entity.booking.employmentRequest.domain.useCase.GetEmploymentRequestByIdUseCase
 import com.example.scrollbooker.entity.booking.employmentRequest.domain.useCase.GetEmploymentRequestsUseCase
 import com.example.scrollbooker.entity.booking.employmentRequest.domain.useCase.RespondEmploymentRequestUseCase
 import com.example.scrollbooker.store.AuthDataStore
@@ -21,18 +23,18 @@ import javax.inject.Singleton
 object EmploymentRequestModule {
     @Provides
     @Singleton
-    fun provideEmploymentRequestsApiService(okHttpClient: OkHttpClient): EmploymentRequestsApiService {
+    fun provideEmploymentRequestsApiService(okHttpClient: OkHttpClient): EmploymentRequestApiService {
         return Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(EmploymentRequestsApiService::class.java)
+            .create(EmploymentRequestApiService::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideEmploymentRequestRepository(apiService: EmploymentRequestsApiService): EmploymentRequestRepository {
+    fun provideEmploymentRequestRepository(apiService: EmploymentRequestApiService): EmploymentRequestRepository {
         return EmploymentRequestRepositoryImpl(apiService)
     }
 
@@ -43,6 +45,22 @@ object EmploymentRequestModule {
         repository: EmploymentRequestRepository,
     ): GetEmploymentRequestsUseCase {
         return GetEmploymentRequestsUseCase(authDataStore, repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetEmploymentRequestByIdUseCase(
+        repository: EmploymentRequestRepository,
+    ): GetEmploymentRequestByIdUseCase {
+        return GetEmploymentRequestByIdUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCreateEmploymentRequestUseCase(
+        repository: EmploymentRequestRepository,
+    ): CreateEmploymentRequestUseCase {
+        return CreateEmploymentRequestUseCase(repository)
     }
 
     @Provides

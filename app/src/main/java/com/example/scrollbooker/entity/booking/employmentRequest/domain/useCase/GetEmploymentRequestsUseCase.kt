@@ -1,4 +1,5 @@
 package com.example.scrollbooker.entity.booking.employmentRequest.domain.useCase
+
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.employmentRequest.domain.model.EmploymentRequest
 import com.example.scrollbooker.entity.booking.employmentRequest.domain.repository.EmploymentRequestRepository
