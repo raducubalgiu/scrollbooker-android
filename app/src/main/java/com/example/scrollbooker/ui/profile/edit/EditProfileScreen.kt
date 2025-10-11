@@ -22,7 +22,7 @@ import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.components.core.list.ItemListInfo
 import com.example.scrollbooker.core.enums.GenderTypeEnum
-import com.example.scrollbooker.core.util.Dimens.AvatarXXL
+import com.example.scrollbooker.core.util.Dimens.AvatarSizeXL
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.core.util.FeatureState
@@ -114,7 +114,7 @@ fun EditProfileScreen(
             Box(
                 modifier = Modifier.fillMaxWidth().padding(vertical = BasePadding),
                 contentAlignment = Alignment.Center
-            ) { Avatar(url = "", size = AvatarXXL) }
+            ) { Avatar(url = "", size = AvatarSizeXL) }
 
             EditProfileSectionTitle(title = stringResource(R.string.aboutYou))
 

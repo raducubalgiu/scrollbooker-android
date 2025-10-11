@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.Avatar
-import com.example.scrollbooker.core.util.Dimens.AvatarXL
+import com.example.scrollbooker.core.util.Dimens.AvatarSizeXL
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
@@ -93,7 +93,7 @@ fun ProfileUserInfo(
             Box(contentAlignment = Alignment.BottomEnd) {
                 Avatar(
                     url = user.avatar ?: "",
-                    size = AvatarXL
+                    size = AvatarSizeXL
                 )
                 if(isBusinessOrEmployee) {
                     Box(modifier = Modifier
