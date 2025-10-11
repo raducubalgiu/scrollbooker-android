@@ -45,7 +45,8 @@ fun EditInput(
     leadingIcon: (@Composable () -> Unit)? = null,
     isInputValid: Boolean = true,
     errorMessage: String = "",
-    maxLength: Int = 0
+    maxLength: Int = 0,
+    indicatorColor: Color = Divider
 ) {
     TextField(
         modifier = modifier
@@ -68,8 +69,8 @@ fun EditInput(
             focusedContainerColor = Color.Transparent,
             unfocusedContainerColor = Color.Transparent,
             cursorColor = if(isError) Error.copy(alpha = 0.5f) else Primary,
-            focusedIndicatorColor = if(isError) Error.copy(alpha = 0.5f) else Divider,
-            unfocusedIndicatorColor = if(isError) Error.copy(alpha = 0.5f) else Divider,
+            focusedIndicatorColor = if(isError) Error.copy(alpha = 0.5f) else indicatorColor,
+            unfocusedIndicatorColor = if(isError) Error.copy(alpha = 0.5f) else indicatorColor,
             focusedLabelColor = if(isError) Error.copy(alpha = 0.5f) else Divider,
             unfocusedLabelColor = Color.Transparent,
             focusedTextColor = OnBackground,

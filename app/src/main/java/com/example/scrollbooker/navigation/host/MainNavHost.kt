@@ -1,10 +1,10 @@
 package com.example.scrollbooker.navigation.host
-
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.scrollbooker.navigation.graphs.calendarGraph
+import com.example.scrollbooker.navigation.graphs.cameraGraph
 import com.example.scrollbooker.navigation.graphs.globalGraph
 import com.example.scrollbooker.navigation.routes.GlobalRoute
 import com.example.scrollbooker.ui.auth.AuthViewModel
@@ -23,7 +23,8 @@ fun MainNavHost(
         }
 
         // Global Routes
-        globalGraph(navController = navController)
-        calendarGraph(navController = navController)
+        globalGraph(navController)
+        calendarGraph(navController)
+        cameraGraph(navController)
     }
 }

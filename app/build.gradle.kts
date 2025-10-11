@@ -79,6 +79,7 @@ dependencies {
 
     // Coil
     implementation(libs.coil.compose)
+    implementation(libs.coil.kt.coil.video)
 
     // Data Store
     implementation(libs.androidx.datastore.preferences)

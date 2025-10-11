@@ -7,6 +7,8 @@ annotation = "1.0.0"
 cameraCore = "1.5.0"
 cameraLifecycle = "1.5.0"
 coilCompose = "2.4.0"
+coilVideo = "2.7.0"
+coilVideoVersion = "2.7.0"
 converterGson = "2.11.0"
 coreSplashscreen = "1.0.1"
 datastorePreferencesCore = "1.1.7"
@@ -66,6 +68,8 @@ androidx-paging-compose = { module = "androidx.paging:paging-compose", version.r
 androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "pagingRuntime" }
 annotation = { module = "org.maplibre.plugin:annotation", version.ref = "annotation" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+coil-kt-coil-video = { module = "io.coil-kt:coil-video", version.ref = "coilVideoVersion" }
+coil-video = { module = "io.ciol-kt:coil-video", version.ref = "coilVideo" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 extension-maps-compose = { module = "com.mapbox.extension:maps-compose", version.ref = "mapsComposeVersion" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }

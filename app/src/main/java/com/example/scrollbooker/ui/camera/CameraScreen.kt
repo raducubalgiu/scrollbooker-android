@@ -3,6 +3,7 @@
 package com.example.scrollbooker.ui.camera
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -17,45 +18,36 @@ import androidx.camera.video.Recording
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBackIosNew
-import androidx.compose.material.icons.filled.Cameraswitch
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.compose.ui.zIndex
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.scrollbooker.components.customized.MediaFilter
+import com.example.scrollbooker.components.customized.MediaLibraryBottomSheet
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.camera.components.CameraActions
 import com.example.scrollbooker.ui.camera.components.CameraBackButton
 import com.example.scrollbooker.ui.camera.components.CameraBottomBar
-import com.example.scrollbooker.ui.camera.components.RecordButton
 import com.example.scrollbooker.ui.theme.BackgroundDark
-import com.example.scrollbooker.ui.theme.OnBackground
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.concurrent.Executor
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun CameraScreen(
-    onBack: () -> Unit,
-    viewModel: CameraViewModel = viewModel()
+    viewModel: CameraViewModel,
+    onNavigateToCameraPreview: () -> Unit,
+    onBack: () -> Unit
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -114,8 +106,20 @@ fun CameraScreen(
     }
 
     var isCameraReady by remember { mutableStateOf(false) }
-
     var isRecording by remember { mutableStateOf(false) }
+
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true,
+        confirmValueChange = { newState ->
+            when (newState) {
+                SheetValue.Hidden -> {
+                    false
+                }
+                else -> true
+            }
+        }
+    )
+    val bottomBarHeight = 90.dp
 
     LaunchedEffect(Unit) {
         scope.launch {
@@ -124,11 +128,24 @@ fun CameraScreen(
         }
     }
 
+    var showSheetLibrary by remember { mutableStateOf(false) }
+
+    if(showSheetLibrary) {
+        MediaLibraryBottomSheet(
+            sheetState = sheetState,
+            initialFilter = MediaFilter.VIDEOS,
+            onClose = {
+                scope.launch {
+                    showSheetLibrary = false
+                }
+            }
+        )
+    }
+
     Scaffold(
         containerColor = BackgroundDark,
-        bottomBar = { CameraBottomBar() }
+        bottomBar = { CameraBottomBar(bottomBarHeight=bottomBarHeight) }
     ) { innerPadding ->
-        // --- UI overlay ---
         Box(modifier = Modifier
             .fillMaxSize()
             .background(BackgroundDark)
@@ -161,7 +178,10 @@ fun CameraScreen(
                 },
                 isRecording = isRecording,
                 onRecord = { isRecording = !isRecording },
-                onLongPressRecord = {}
+                onLongPressRecord = {},
+                onOpenMediaLibrary = {
+                    showSheetLibrary = true
+                },
             )
         }
     }

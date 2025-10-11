@@ -13,7 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
@@ -21,14 +21,14 @@ import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
-fun CameraBottomBar() {
-    Row(modifier = Modifier.fillMaxWidth().height(90.dp),
+fun CameraBottomBar(bottomBarHeight: Dp) {
+    Row(modifier = Modifier.fillMaxWidth().height(bottomBarHeight),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
             modifier = Modifier
-                .height(90.dp)
+                .height(bottomBarHeight)
                 .padding(
                     top = SpacingXL,
                     start = BasePadding,
@@ -48,7 +48,7 @@ fun CameraBottomBar() {
 
         Box(
             modifier = Modifier
-                .height(90.dp)
+                .height(bottomBarHeight)
                 .padding(
                     top = SpacingXL,
                     start = BasePadding,
@@ -68,7 +68,7 @@ fun CameraBottomBar() {
 
         Box(
             modifier = Modifier
-                .height(90.dp)
+                .height(bottomBarHeight)
                 .padding(
                     top = SpacingXL,
                     start = BasePadding,
