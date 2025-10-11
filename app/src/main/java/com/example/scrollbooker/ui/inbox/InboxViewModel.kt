@@ -6,6 +6,7 @@ import androidx.paging.cachedIn
 import com.example.scrollbooker.core.enums.ConsentEnum
 import com.example.scrollbooker.core.enums.EmploymentRequestStatusEnum
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.util.cachedByKey
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.employmentRequest.domain.model.EmploymentRequest
 import com.example.scrollbooker.entity.booking.employmentRequest.domain.useCase.GetEmploymentRequestByIdUseCase
@@ -23,6 +24,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -49,14 +51,8 @@ class InboxViewModel @Inject constructor(
     private val _employmentRequestId = MutableStateFlow<Int?>(null)
     val employmentRequestId: StateFlow<Int?> = _employmentRequestId.asStateFlow()
 
-    private val _employmentRequestState = MutableStateFlow<FeatureState<EmploymentRequest>>(FeatureState.Loading)
-    val employmentRequestState: StateFlow<FeatureState<EmploymentRequest>> = _employmentRequestState.asStateFlow()
-
     private val _followState = MutableStateFlow<Map<Int, Boolean>>(emptyMap())
     val followState = _followState.asStateFlow()
-
-    private val _consentState = MutableStateFlow<FeatureState<Consent>>(FeatureState.Loading)
-    val consentState: StateFlow<FeatureState<Consent>> = _consentState
 
     private val _agreedTerms = MutableStateFlow<Boolean>(false)
     val agreedTerms: StateFlow<Boolean> = _agreedTerms
@@ -96,32 +92,35 @@ class InboxViewModel @Inject constructor(
         }
     }
 
+    private val consentKey = ConsentEnum.EMPLOYMENT_REQUESTS_INITIATION.key
+
+    private val cachedConsent = cachedByKey(
+        scope = viewModelScope,
+        keyFlow = flowOf(consentKey),
+    ) { name -> withVisibleLoading { getConsentsByNameUseCase(name) } }
+
+    val consentState: StateFlow<FeatureState<Consent>> = cachedConsent.first
+    private val refreshConsentKey = cachedConsent.second
+
     fun loadConsent() {
-        viewModelScope.launch {
-            _consentState.value = FeatureState.Loading
-
-            val consentName = ConsentEnum.EMPLOYMENT_REQUESTS_INITIATION.key
-            val response = withVisibleLoading { getConsentsByNameUseCase(consentName) }
-
-            _consentState.value = response
-        }
+        viewModelScope.launch { refreshConsentKey(consentKey) }
     }
 
+    private val cachedEmployment = cachedByKey(
+        scope = viewModelScope,
+        keyFlow = employmentRequestId,
+    ) { id -> withVisibleLoading { getEmploymentRequestByIdUseCase(id) } }
+
+    val employmentRequestState: StateFlow<FeatureState<EmploymentRequest>> = cachedEmployment.first
+    private val refreshEmploymentKey = cachedEmployment.second
+
     fun loadEmploymentRequest() {
-        viewModelScope.launch {
-            val employmentId = _employmentRequestId.value
-
-            if(employmentId == null) {
-                Timber.tag("Employment Requests").e("ERROR: Employment Id is not defined")
-                return@launch
-            }
-
-            _employmentRequestState.value = FeatureState.Loading
-
-            _employmentRequestState.value = withVisibleLoading {
-                getEmploymentRequestByIdUseCase(employmentId = employmentId)
-            }
+        val id = _employmentRequestId.value ?: run {
+            Timber.tag("Employment Requests").e("ERROR: Employment Id is not defined")
+            return
         }
+
+        viewModelScope.launch { refreshEmploymentKey(id) }
     }
 
     fun setEmploymentId(employmentId: Int) {

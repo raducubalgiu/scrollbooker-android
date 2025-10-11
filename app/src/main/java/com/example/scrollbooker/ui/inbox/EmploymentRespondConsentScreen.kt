@@ -15,7 +15,6 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -49,10 +48,6 @@ fun EmploymentRespondConsentScreen(
     val isEnabled = consent is FeatureState.Success && agreedConsent && !isSaving
 
     val interactionSource = remember { MutableInteractionSource() }
-
-    LaunchedEffect(Unit) {
-        viewModel.loadConsent()
-    }
 
     Layout(
         headerTitle = stringResource(R.string.termsAndConditions),

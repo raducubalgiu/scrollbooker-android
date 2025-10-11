@@ -17,13 +17,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
-import com.example.scrollbooker.entity.booking.employmentRequest.domain.model.EmploymentRequest
+import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge
 
 @Composable
 fun EmploymentDetails(
-    employmentRequest: EmploymentRequest
+    employer: UserSocial
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -40,7 +40,7 @@ fun EmploymentDetails(
         Text(
             style = bodyLarge,
             fontWeight = FontWeight.ExtraBold,
-            text = "${employmentRequest.employer.fullName} ${stringResource(R.string.sentYouAnEmploymentRequest)}"
+            text = "${employer.fullName} ${stringResource(R.string.sentYouAnEmploymentRequest)}"
         )
     }
 }

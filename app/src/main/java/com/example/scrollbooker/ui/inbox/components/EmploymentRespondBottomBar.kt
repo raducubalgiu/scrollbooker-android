@@ -36,7 +36,6 @@ fun EmploymentRespondBottomBar(
             MainButton(
                 modifier = Modifier.weight(0.5f),
                 title = stringResource(R.string.deny),
-                isLoading = isSaving,
                 enabled = !isSaving,
                 onClick = onDeny,
                 colors = ButtonDefaults.buttonColors(

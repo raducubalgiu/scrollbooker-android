@@ -14,6 +14,12 @@ import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.ui.theme.Background
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
+import com.example.scrollbooker.R
+import com.example.scrollbooker.components.core.dialog.DialogConfirm
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.enums.EmploymentRequestStatusEnum
@@ -30,6 +36,7 @@ fun EmploymentRespondScreen(
     onNavigateToConsent: () -> Unit,
     onDenyEmployment: (EmploymentRequestStatusEnum) -> Unit
 ) {
+    var openModal by remember { mutableStateOf(false) }
     val isSaving by viewModel.isSaving.collectAsState()
     val employmentRequest by viewModel.employmentRequestState.collectAsState()
     val verticalScroll = rememberScrollState()
@@ -38,7 +45,21 @@ fun EmploymentRespondScreen(
         if(employmentId != null) {
             viewModel.setEmploymentId(employmentId)
             viewModel.loadEmploymentRequest()
+            viewModel.loadConsent()
         }
+    }
+
+    if(openModal) {
+        DialogConfirm(
+            onDismissRequest = { openModal = false },
+            onConfirmation = {
+                onDenyEmployment(EmploymentRequestStatusEnum.DENIED)
+                openModal = true
+            },
+            title = stringResource(R.string.denyEmploymentRequest),
+            text = stringResource(R.string.areYouSureDenyEmployment),
+            confirmText = stringResource(R.string.deny)
+        )
     }
 
     Layout(
@@ -59,7 +80,7 @@ fun EmploymentRespondScreen(
                         .padding(horizontal = SpacingXXL)
                         .verticalScroll(verticalScroll)
                     ) {
-                        EmploymentDetails(employmentRequest = employment.data)
+                        EmploymentDetails(employer = employment.data.employer)
                         EmploymentRespondParagraphs(employerFullName = employment.data.employer.fullName)
                     }
                 }
@@ -67,7 +88,7 @@ fun EmploymentRespondScreen(
 
             EmploymentRespondBottomBar(
                 isSaving = isSaving,
-                onDeny = { onDenyEmployment(EmploymentRequestStatusEnum.DENIED) },
+                onDeny = { openModal = true },
                 onAccept = onNavigateToConsent
             )
         }

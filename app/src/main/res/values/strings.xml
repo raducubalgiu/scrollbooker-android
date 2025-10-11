@@ -31,6 +31,8 @@
     <string name="sentYouAnEmploymentRequest">ți-a trimis o cerere de angajare</string>
     <string name="acceptedYourEmploymentRequest">ți-a acceptat cererea de angajare</string>
     <string name="deniedYourEmploymentRequest">ți-a refuzat cererea de angajare</string>
+    <string name="denyEmploymentRequest">Refuză cererea de angajare</string>
+    <string name="areYouSureDenyEmployment">Ești sigur că dorești să refuzi cererea de angajare?</string>
     <string name="likedYourPost">ți-a apreciat postarea</string>
     <string name="settings">Setări</string>
     <string name="privacy">Confidențialitate</string>
