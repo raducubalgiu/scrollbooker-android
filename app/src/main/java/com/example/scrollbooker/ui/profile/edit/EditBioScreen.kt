@@ -27,13 +27,12 @@ fun EditBioScreen(
     var newBio by rememberSaveable { mutableStateOf(user?.bio ?: "") }
     val state = viewModel.editState.collectAsState().value
 
-    val maxLength = 100
+    val maxLength = 160
 
     val checkBio = checkLength(LocalContext.current, newBio, maxLength = maxLength)
     val isInputValid = checkBio.isNullOrBlank()
 
     val isLoading = state == FeatureState.Loading
-    val isError = state == FeatureState.Error(error = null)
     val isEnabled = newBio != user?.bio && isInputValid
 
     if(viewModel.isSaved) {
@@ -61,10 +60,9 @@ fun EditBioScreen(
             singleLine = false,
             minLines = 5,
             maxLines = 5,
-            isError = isError,
+            isError = !isInputValid,
             isEnabled = !isLoading,
-            isInputValid = isInputValid,
-            errorMessage = checkBio.toString(),
+            errorMessage = checkBio,
             maxLength = maxLength
         )
     }

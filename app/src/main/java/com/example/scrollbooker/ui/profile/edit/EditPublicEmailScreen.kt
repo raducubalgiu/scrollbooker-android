@@ -28,11 +28,12 @@ fun EditPublicEmailScreen(
     var newPublicEmail by rememberSaveable { mutableStateOf(user?.publicEmail ?: "") }
     val state = viewModel.editState.collectAsState().value
 
-    val checkPublicEmail = checkLength(LocalContext.current, newPublicEmail, minLength = 3, maxLength = 255)
+    val maxLength = 255
+
+    val checkPublicEmail = checkLength(LocalContext.current, newPublicEmail, maxLength = maxLength)
     val isInputValid = checkPublicEmail.isNullOrBlank()
 
     val isLoading = state == FeatureState.Loading
-    val isError = state == FeatureState.Error(error = null)
     val isEnabled = newPublicEmail != user?.publicEmail && isInputValid
 
     if(viewModel.isSaved) {
@@ -57,10 +58,10 @@ fun EditPublicEmailScreen(
             value = newPublicEmail,
             onValueChange = { newPublicEmail = it },
             placeholder = stringResource(R.string.email),
-            isError = isError || !isInputValid,
+            isError = !isInputValid,
             isEnabled = !isLoading,
-            isInputValid = isInputValid,
-            errorMessage = newPublicEmail.toString()
+            errorMessage = checkPublicEmail,
+            maxLength = maxLength
         )
     }
 }

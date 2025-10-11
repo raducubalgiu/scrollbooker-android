@@ -134,14 +134,13 @@ fun AppointmentCancelScreen(
                         EditInput(
                             modifier = Modifier.padding(horizontal = BasePadding),
                             value = message,
-                            onValueChange = { if(it.length <= maxLength) message = it },
+                            onValueChange = { message = it },
                             singleLine = false,
                             placeholder = stringResource(R.string.writeCancelReason),
                             minLines = 5,
                             maxLines = 5,
                             maxLength = maxLength,
-                            isEnabled = selectedReason == AppointmentCancelReason.OTHER,
-                            isInputValid = isMessageValid,
+                            isEnabled = selectedReason == AppointmentCancelReason.OTHER && !isSaving,
                             errorMessage = checkMessage.toString(),
                         )
                     }

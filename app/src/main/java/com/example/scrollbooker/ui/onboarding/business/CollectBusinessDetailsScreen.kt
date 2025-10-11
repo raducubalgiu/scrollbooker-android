@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.inputs.EditInput
 import com.example.scrollbooker.components.core.layout.FormLayout
@@ -32,10 +31,16 @@ fun CollectBusinessDetailsScreen(
     val name by viewModel.currentName.collectAsState()
     val description by viewModel.currentDescription.collectAsState()
 
-    val checkName = checkLength(LocalContext.current, name, minLength = 3, maxLength = 35)
+    val fullNameMinLength = 3
+    val fullNameMaxLength = 35
+    val descriptionMaxLength = 255
+
+    val checkName = checkLength(
+        LocalContext.current, name, minLength=fullNameMinLength, maxLength=fullNameMaxLength
+    )
     val isNameValid = checkName.isNullOrBlank()
 
-    val checkDescription = checkLength(LocalContext.current, description, maxLength = 300)
+    val checkDescription = checkLength(LocalContext.current, description, maxLength = descriptionMaxLength)
     val isDescriptionValid = checkDescription.isNullOrBlank()
 
     val isEnabled = !name.isEmpty() && isNameValid && isDescriptionValid
@@ -64,10 +69,10 @@ fun CollectBusinessDetailsScreen(
                 value = name,
                 placeholder = stringResource(R.string.yourBusinessName),
                 onValueChange = { viewModel.setBusinessName(it) },
-                isError = false,
                 isEnabled = true,
-                isInputValid = isNameValid,
-                errorMessage = checkName.toString(),
+                isError = !isNameValid,
+                errorMessage = checkName,
+                maxLength = fullNameMaxLength
             )
 
             Spacer(Modifier.height(SpacingXXL))
@@ -84,10 +89,9 @@ fun CollectBusinessDetailsScreen(
                 singleLine = false,
                 minLines = 5,
                 maxLines = 5,
-                isError = false,
-                isEnabled = true,
-                isInputValid = isDescriptionValid,
-                errorMessage = checkDescription.toString(),
+                isError = !isDescriptionValid,
+                errorMessage = checkDescription,
+                maxLength = descriptionMaxLength
             )
         }
     }

@@ -28,11 +28,12 @@ fun EditWebsiteScreen(
     var newWebsite by rememberSaveable { mutableStateOf(user?.website ?: "") }
     val state = viewModel.editState.collectAsState().value
 
-    val checkWebsite = checkLength(LocalContext.current, newWebsite, minLength = 3, maxLength = 255)
+    val maxLength = 255
+
+    val checkWebsite = checkLength(LocalContext.current, newWebsite, maxLength = maxLength)
     val isInputValid = checkWebsite.isNullOrBlank()
 
     val isLoading = state == FeatureState.Loading
-    val isError = state == FeatureState.Error(error = null)
     val isEnabled = newWebsite != user?.website && isInputValid
 
     if(viewModel.isSaved) {
@@ -57,10 +58,10 @@ fun EditWebsiteScreen(
             value = newWebsite,
             onValueChange = { newWebsite = it },
             placeholder = stringResource(R.string.website),
-            isError = isError || !isInputValid,
+            isError = !isInputValid,
             isEnabled = !isLoading,
-            isInputValid = isInputValid,
-            errorMessage = checkWebsite.toString()
+            maxLength = maxLength,
+            errorMessage = checkWebsite
         )
     }
 }

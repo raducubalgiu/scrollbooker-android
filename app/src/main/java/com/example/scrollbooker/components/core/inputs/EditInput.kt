@@ -1,4 +1,5 @@
 package com.example.scrollbooker.components.core.inputs
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -43,9 +44,8 @@ fun EditInput(
     isError: Boolean = false,
     isEnabled: Boolean = true,
     leadingIcon: (@Composable () -> Unit)? = null,
-    isInputValid: Boolean = true,
-    errorMessage: String = "",
-    maxLength: Int = 0,
+    errorMessage: String? = "",
+    maxLength: Int? = null,
     indicatorColor: Color = Divider
 ) {
     TextField(
@@ -53,7 +53,16 @@ fun EditInput(
             .fillMaxWidth()
             .then(modifier),
         value = value,
-        onValueChange = onValueChange,
+        onValueChange = { newValue ->
+            if(maxLength != null) {
+                val isDeleting = newValue.length < value.length
+                if(newValue.length <= maxLength || isDeleting) {
+                    onValueChange(newValue)
+                }
+            } else {
+                onValueChange(newValue)
+            }
+        },
         leadingIcon = leadingIcon,
         trailingIcon = {
             if(singleLine && value.isNotEmpty()) {
@@ -82,7 +91,7 @@ fun EditInput(
         maxLines = maxLines,
         enabled = isEnabled,
         supportingText = {
-            EditInputSupportingText(maxLength, value, isInputValid, errorMessage)
+            EditInputSupportingText(maxLength, value, isError, errorMessage)
         }
     )
 }
@@ -108,26 +117,31 @@ private fun EditInputTrailingIcon(
 
 @Composable
 private fun EditInputSupportingText(
-    maxLength: Int,
+    maxLength: Int? = null,
     value: String,
-    isInputValid: Boolean,
-    errorMessage: String
+    isError: Boolean,
+    errorMessage: String?
 ) {
     Column {
         Spacer(Modifier.height(BasePadding))
 
-        if(maxLength > 0) {
-            Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
-                Text(
-                    style = bodyLarge,
-                    text = "${value.length} / $maxLength"
-                )
+        maxLength?.let { length ->
+            if(length > 0) {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.CenterEnd
+                ) {
+                    Text(
+                        style = bodyLarge,
+                        text = "${value.length} / $length"
+                    )
+                }
             }
         }
 
         Spacer(Modifier.height(BasePadding))
 
-        if (!isInputValid) {
+        AnimatedVisibility(visible = isError && errorMessage?.isNotEmpty() == true) {
             Column(modifier = Modifier.padding(vertical = BasePadding)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
@@ -137,7 +151,7 @@ private fun EditInputSupportingText(
                     )
                     Spacer(Modifier.width(SpacingS))
                     Text(
-                        text = errorMessage,
+                        text = errorMessage ?: "",
                         color = Error,
                         style = bodyMedium
                     )

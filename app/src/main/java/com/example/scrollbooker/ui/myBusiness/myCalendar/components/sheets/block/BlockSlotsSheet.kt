@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -82,9 +84,11 @@ fun BlockSlotsSheet(
     )
     var selectedReason by rememberSaveable { mutableStateOf(BlockReason.OTHER) }
     val isOtherReason = selectedReason == BlockReason.OTHER
+
+    val minLength = 3
     val maxLength = 50
 
-    val checkNote = checkLength(LocalContext.current, state.message, minLength = 3, maxLength = maxLength)
+    val checkNote = checkLength(LocalContext.current, state.message, minLength, maxLength)
     val isInputValid = checkNote.isNullOrBlank()
 
     val dayLabel = state.selectedDay?.toIsoString()
@@ -108,6 +112,7 @@ fun BlockSlotsSheet(
                 .fillMaxWidth()
                 .navigationBarsPadding()
                 .imePadding()
+                .verticalScroll(rememberScrollState())
                 .padding(
                     horizontal = BasePadding,
                     vertical = SpacingM
@@ -180,14 +185,12 @@ fun BlockSlotsSheet(
                 EditInput(
                     value = state.message,
                     placeholder = stringResource(R.string.addMessage),
-                    onValueChange = {
-                        if (it.length <= maxLength) onAction(BlockSlotsAction.MessageChanged(it))
-                    },
+                    onValueChange = { onAction(BlockSlotsAction.MessageChanged(it)) },
                     singleLine = false,
                     minLines = 3,
                     maxLines = 3,
-                    isInputValid = isInputValid,
-                    errorMessage = checkNote.toString(),
+                    isError = !isInputValid,
+                    errorMessage = checkNote,
                     maxLength = maxLength
                 )
             }
