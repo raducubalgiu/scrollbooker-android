@@ -53,6 +53,7 @@ fun FeedNavHost(
             popExitTransition = { slideOutToRight() }
         ) { backStackEntry ->
             FeedScreen(
+                mainViewModel = mainViewModel,
                 posts = bookNowPosts,
                 drawerState = drawerState,
                 onOpenDrawer = onOpenDrawer,

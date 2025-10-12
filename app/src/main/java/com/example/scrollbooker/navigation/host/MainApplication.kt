@@ -2,7 +2,6 @@ package com.example.scrollbooker.navigation.host
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -18,10 +17,8 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.navigation.LocalTabsController
 import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.ui.auth.AuthViewModel
-import com.example.scrollbooker.ui.MainDrawer
 import com.example.scrollbooker.ui.MainUIViewModel
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
-import com.example.scrollbooker.ui.theme.BackgroundDark
 import kotlinx.coroutines.launch
 
 @Composable
@@ -57,28 +54,15 @@ fun MainApplication(authViewModel: AuthViewModel) {
         saveableStateHolder.SaveableStateProvider(currentTab.route) {
             when (currentTab) {
                 is MainTab.Feed -> {
-                    ModalNavigationDrawer(
-                        drawerContent = {
-                            MainDrawer(
-                                viewModel = mainViewModel,
-                                businessDomainsState = businessDomainsState,
-                                onClose = { scope.launch { drawerState.close() } }
-                            )
-                        },
-                        scrimColor = BackgroundDark.copy(0.7f),
+                    FeedNavHost(
+                        navController = navControllers[MainTab.Feed]!!,
+                        mainViewModel = mainViewModel,
+                        bookNowPosts = bookNowPosts,
+                        appointmentsNumber = appointmentsNumber,
+                        notificationsNumber = notificationsNumber,
+                        onOpenDrawer = { scope.launch { drawerState.open() } },
                         drawerState = drawerState,
-                        gesturesEnabled = drawerState.currentValue == DrawerValue.Open,
-                    ) {
-                        FeedNavHost(
-                            navController = navControllers[MainTab.Feed]!!,
-                            mainViewModel = mainViewModel,
-                            bookNowPosts = bookNowPosts,
-                            appointmentsNumber = appointmentsNumber,
-                            notificationsNumber = notificationsNumber,
-                            onOpenDrawer = { scope.launch { drawerState.open() } },
-                            drawerState = drawerState,
-                        )
-                    }
+                    )
                 }
 
                 is MainTab.Inbox -> {
