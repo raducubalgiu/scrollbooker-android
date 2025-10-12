@@ -128,7 +128,7 @@ fun CameraPreviewScreen(
         ) {
             CustomIconButton(
                 imageVector = Icons.Default.Close,
-                boxSize = 70.dp,
+                boxSize = 60.dp,
                 iconSize = 30.dp,
                 tint = Color.White,
                 onClick = onBack

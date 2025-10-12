@@ -2,6 +2,9 @@ package com.example.scrollbooker.ui.camera
 
 import android.content.Context
 import android.net.Uri
+import androidx.camera.core.CameraSelector
+import androidx.camera.view.LifecycleCameraController
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.AudioAttributes
@@ -23,6 +26,31 @@ import javax.inject.Inject
 class CameraViewModel @Inject constructor(
     @ApplicationContext private val context: Context
 ): ViewModel() {
+    val cameraController: LifecycleCameraController by lazy {
+        LifecycleCameraController(context).apply {
+            setEnabledUseCases(LifecycleCameraController.VIDEO_CAPTURE)
+            cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+        }
+    }
+
+    private val _isBound = MutableStateFlow(false)
+    val isBound: StateFlow<Boolean> = _isBound.asStateFlow()
+
+    fun bindIfNeeded(owner: LifecycleOwner) {
+        if(_isBound.value) return
+        cameraController.bindToLifecycle(owner)
+        _isBound.value = true
+    }
+
+    fun switchCamera() {
+        cameraController.cameraSelector =
+            if (cameraController.cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
+                CameraSelector.DEFAULT_FRONT_CAMERA
+            } else {
+                CameraSelector.DEFAULT_BACK_CAMERA
+            }
+    }
+
     private val _selectedVideo = MutableStateFlow<MediaItem?>(null)
     val selectedVideo: StateFlow<MediaItem?> = _selectedVideo.asStateFlow()
 

@@ -105,15 +105,14 @@ fun CameraGalleryScreen(
             .padding(innerPadding)
         ) {
             Row(modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 2.dp),
+                .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 CustomIconButton(
                     imageVector = Icons.Default.Close,
                     tint = Color.White,
-                    boxSize = 70.dp,
+                    boxSize = 60.dp,
                     iconSize = 30.dp,
                     onClick = onBack
                 )

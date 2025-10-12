@@ -35,25 +35,26 @@ fun CameraScreen(
     onNavigateToCameraGallery: () -> Unit,
     onBack: () -> Unit
 ) {
-    val isCameraMounted by viewModel.isCameraMounted.collectAsState()
     val context = LocalContext.current
+    val isCameraMounted by viewModel.isCameraMounted.collectAsState()
     val lifecycleOwner = LocalLifecycleOwner.current
 
     val permissions = remember {
-        arrayOf(
-            Manifest.permission.CAMERA,
-            Manifest.permission.RECORD_AUDIO
-        )
+        arrayOf(Manifest.permission.RECORD_AUDIO)
     }
 
+    val hasPerms = rememberHasAllPermissions(permissions)
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
     ) { /* handle individually if you want */ }
 
-    val hasPerms = rememberHasAllPermissions(permissions)
-
     LaunchedEffect(hasPerms) {
         if (!hasPerms) { permissionLauncher.launch(permissions) }
+    }
+
+    DisposableEffect(lifecycleOwner, hasPerms) {
+        if(hasPerms) viewModel.bindIfNeeded(lifecycleOwner)
+        onDispose {  }
     }
 
     val previewView = remember {
@@ -63,23 +64,8 @@ fun CameraScreen(
         }
     }
 
-    val controller = remember(context) {
-        LifecycleCameraController(context).apply {
-            setEnabledUseCases(
-                LifecycleCameraController.IMAGE_CAPTURE or
-                LifecycleCameraController.VIDEO_CAPTURE
-            )
-            cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        previewView.controller = controller
-    }
-
-    DisposableEffect(lifecycleOwner, hasPerms) {
-        if(hasPerms) controller.bindToLifecycle(lifecycleOwner)
-        onDispose {  }
+    LaunchedEffect(viewModel.cameraController) {
+        previewView.controller = viewModel.cameraController
     }
 
     LaunchedEffect(Unit) {
@@ -115,17 +101,13 @@ fun CameraScreen(
                         .fillMaxSize()
                         .clip(RoundedCornerShape(BasePadding))
                         .background(BackgroundDark),
-                    factory = { previewView }
+                    factory = { previewView },
+                    update = { it.controller = viewModel.cameraController }
                 )
             }
 
             CameraActions(
-                onSwitchCamera = {
-                    controller.cameraSelector =
-                        if (controller.cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA)
-                            CameraSelector.DEFAULT_FRONT_CAMERA
-                        else CameraSelector.DEFAULT_BACK_CAMERA
-                },
+                onSwitchCamera = { viewModel.switchCamera() },
                 isRecording = isRecording,
                 onRecord = { isRecording = !isRecording },
                 onLongPressRecord = {},

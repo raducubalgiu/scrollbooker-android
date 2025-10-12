@@ -1,6 +1,4 @@
 package com.example.scrollbooker.navigation.graphs
-
-import androidx.annotation.OptIn
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.FiniteAnimationSpec
@@ -10,13 +8,9 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.IntOffset
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.media3.common.MediaItem
-import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -32,16 +26,11 @@ import com.example.scrollbooker.ui.camera.CameraScreen
 import com.example.scrollbooker.ui.camera.CameraViewModel
 import com.example.scrollbooker.ui.camera.CreatePostScreen
 
-@OptIn(UnstableApi::class)
 fun NavGraphBuilder.cameraGraph(navController: NavHostController) {
-    val pushSpec: FiniteAnimationSpec<IntOffset> =
-        tween(320, easing = LinearOutSlowInEasing)
-    val popSpec: FiniteAnimationSpec<IntOffset> =
-        tween(280, easing = LinearOutSlowInEasing)
-    val fadeInSpec: FiniteAnimationSpec<Float> =
-        tween(220, easing = LinearOutSlowInEasing)
-    val fadeOutSpec: FiniteAnimationSpec<Float> =
-        tween(220, easing = LinearOutSlowInEasing)
+    val pushSpec: FiniteAnimationSpec<IntOffset> = tween(320, easing = LinearOutSlowInEasing)
+    val popSpec: FiniteAnimationSpec<IntOffset> = tween(280, easing = LinearOutSlowInEasing)
+    val fadeInSpec: FiniteAnimationSpec<Float> = tween(220, easing = LinearOutSlowInEasing)
+    val fadeOutSpec: FiniteAnimationSpec<Float> = tween(220, easing = LinearOutSlowInEasing)
 
     navigation(
         route = MainRoute.CalendarNavigator.route,
@@ -66,7 +55,11 @@ fun NavGraphBuilder.cameraGraph(navController: NavHostController) {
             )
         }
 
-        composable(route = MainRoute.CameraGallery.route) { backStackEntry ->
+        composable(
+            route = MainRoute.CameraGallery.route,
+            enterTransition = { fadeIn() },
+            popExitTransition = { ExitTransition.None }
+        ) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(MainRoute.CalendarNavigator.route)
             }
@@ -81,7 +74,10 @@ fun NavGraphBuilder.cameraGraph(navController: NavHostController) {
             )
         }
 
-        composable(route = MainRoute.CameraPreview.route) { backStackEntry ->
+        composable(
+            route = MainRoute.CameraPreview.route,
+            popExitTransition = { slideOutVertically(popSpec) { it } }
+        ) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(MainRoute.CalendarNavigator.route)
             }
