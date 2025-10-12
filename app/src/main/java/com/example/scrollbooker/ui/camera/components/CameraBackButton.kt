@@ -15,11 +15,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.example.scrollbooker.components.core.iconButton.CustomIconButton
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 
 @Composable
 fun CameraBackButton(onBack: () -> Unit) {
     val interactionSource = remember { MutableInteractionSource() }
+
+    CustomIconButton(
+        imageVector = Icons.Default.Close,
+        iconSize = 30.dp,
+        tint = Color.White,
+        onClick = onBack
+    )
 
     Box(modifier = Modifier
         .zIndex(5f)

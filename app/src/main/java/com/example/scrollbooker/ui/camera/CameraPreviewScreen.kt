@@ -1,53 +1,113 @@
 package com.example.scrollbooker.ui.camera
+import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.annotation.OptIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.LifecycleStartEffect
+import androidx.media3.common.Player
+import androidx.media3.common.VideoSize
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import androidx.media3.ui.PlayerView.SHOW_BUFFERING_NEVER
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
+import com.example.scrollbooker.components.core.iconButton.CustomIconButton
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.ui.camera.components.CameraBackButton
 import com.example.scrollbooker.ui.theme.BackgroundDark
+import kotlin.math.max
 
+@SuppressLint("ConfigurationScreenWidthHeight")
 @OptIn(UnstableApi::class)
 @Composable
 fun CameraPreviewScreen(
     viewModel: CameraViewModel,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onNavigateToCreatePostScreen: () -> Unit
 ) {
-    val isPrepared by viewModel.isPrepared.collectAsState()
-    val isPlaying by viewModel.isPlaying.collectAsState()
-
-    val context = LocalContext.current
     val player = viewModel.player
-
-    val currentOnReleasePlayer by rememberUpdatedState(viewModel::releasePlayer)
+    val isPrepared by viewModel.isPrepared.collectAsState()
 
     LifecycleStartEffect(true) {
         onStopOrDispose {
-            currentOnReleasePlayer()
+            viewModel.releasePlayer()
         }
+    }
+
+    val context = LocalContext.current
+    val configuration = LocalConfiguration.current
+    val density = LocalDensity.current
+
+    val screenWidthPx = with(density) { configuration.screenWidthDp.dp.toPx() }
+    val screenHeightPx = with(density) { configuration.screenHeightDp.dp.toPx() }
+    val screenRatio = screenWidthPx / screenHeightPx
+
+    val playerView = remember {
+        PlayerView(context).apply {
+            useController = false
+            controllerAutoShow = false
+            controllerShowTimeoutMs = 0
+
+            setShowBuffering(SHOW_BUFFERING_NEVER)
+
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+            )
+        }
+    }
+
+    DisposableEffect(player) {
+        playerView.player = player
+        onDispose { playerView.player = null }
+    }
+
+    DisposableEffect(player) {
+        val listener = object : Player.Listener {
+            override fun onVideoSizeChanged(videoSize: VideoSize) {
+                // raport real al clipului (ține cont de pixel ratio)
+                val videoRatio =
+                    (videoSize.width * videoSize.pixelWidthHeightRatio) /
+                            max(1, videoSize.height).toFloat()
+
+                // Regula: landscape -> FIT, portrait/square -> ZOOM
+                playerView.resizeMode =
+                    if (videoRatio >= 1f) {
+                        AspectRatioFrameLayout.RESIZE_MODE_FIT
+                    } else {
+                    // opțional: dacă vrei să compari cu ecranul:
+                    // if (videoRatio < screenRatio) ZOOM else FIT
+                        AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                    }
+            }
+        }
+        player.addListener(listener)
+        onDispose { player.removeListener(listener) }
     }
 
     Scaffold(
@@ -56,7 +116,7 @@ fun CameraPreviewScreen(
             Box(modifier = Modifier.padding(BasePadding)) {
                 MainButton(
                     modifier = Modifier.padding(bottom = BasePadding),
-                    onClick = {},
+                    onClick = onNavigateToCreatePostScreen,
                     title = stringResource(R.string.nextStep),
                 )
             }
@@ -66,41 +126,23 @@ fun CameraPreviewScreen(
             .fillMaxSize()
             .padding(innerPadding)
         ) {
-            CameraBackButton(onBack)
-
-            AndroidView(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(BasePadding))
-                    .background(BackgroundDark.copy(alpha = 0.6f)),
-                factory = { context ->
-                    PlayerView(context).apply {
-                        useController = false
-                        controllerAutoShow = false
-                        controllerShowTimeoutMs = 0
-
-                        setShowBuffering(SHOW_BUFFERING_NEVER)
-
-                        layoutParams = ViewGroup.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                        )
-                    }
-                },
-                update = { playerView ->
-                    playerView.player = player
-                    playerView.resizeMode =
-                        AspectRatioFrameLayout.RESIZE_MODE_FILL
-                },
+            CustomIconButton(
+                imageVector = Icons.Default.Close,
+                boxSize = 70.dp,
+                iconSize = 30.dp,
+                tint = Color.White,
+                onClick = onBack
             )
 
-            if(!isPrepared) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
+            if(isPrepared) {
+                AndroidView(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(BasePadding))
+                        .background(BackgroundDark.copy(alpha = 0.6f)),
+                    factory = { playerView },
+                    update = { playerView },
+                )
             }
         }
     }

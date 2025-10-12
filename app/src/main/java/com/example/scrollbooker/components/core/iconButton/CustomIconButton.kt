@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.example.scrollbooker.ui.theme.OnBackground
 
 @Composable
@@ -29,6 +30,7 @@ fun CustomIconButton(
     Box(
         modifier = Modifier
             .size(boxSize)
+            .zIndex(5f)
             .then(modifier)
             .clickable(
                 onClick = onClick,

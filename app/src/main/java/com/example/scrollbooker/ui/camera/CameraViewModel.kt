@@ -1,40 +1,36 @@
 package com.example.scrollbooker.ui.camera
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.os.HandlerThread
-import android.os.Process
+import android.net.Uri
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
-import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
-import com.example.scrollbooker.components.customized.MediaLibraryBottomSheet.MediaFile
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@UnstableApi
 @HiltViewModel
 class CameraViewModel @Inject constructor(
     @ApplicationContext private val context: Context
 ): ViewModel() {
-    private val _isSheetOpen = MutableStateFlow<Boolean>(false)
-    val isSheetOpen: StateFlow<Boolean> = _isSheetOpen.asStateFlow()
-
     private val _selectedVideo = MutableStateFlow<MediaItem?>(null)
     val selectedVideo: StateFlow<MediaItem?> = _selectedVideo.asStateFlow()
 
     private val _isPrepared = MutableStateFlow<Boolean>(false)
     val isPrepared: StateFlow<Boolean> = _isPrepared.asStateFlow()
 
-    private val _isPlaying = MutableStateFlow<Boolean>(false)
-    val isPlaying: StateFlow<Boolean> = _isPlaying.asStateFlow()
+    private val _isPreparingSelectedVideo = MutableStateFlow<Uri?>(null)
+    val isPreparingSelectedVideo: StateFlow<Uri?> = _isPreparingSelectedVideo.asStateFlow()
 
     private var _player: ExoPlayer? = null
     val player: ExoPlayer get() = ensurePlayer()
@@ -44,10 +40,6 @@ class CameraViewModel @Inject constructor(
 
     fun setIsCameraMounted(mounted: Boolean) {
         _isCameraMounted.value = mounted
-    }
-
-    fun openSheet(open: Boolean) {
-        _isSheetOpen.value = open
     }
 
     private fun ensurePlayer(): ExoPlayer {
@@ -74,11 +66,11 @@ class CameraViewModel @Inject constructor(
         override fun onPlaybackStateChanged(state: Int) {
             val ready = state == Player.STATE_READY
             _isPrepared.value = ready
-            if(ready) _player?.play()
-        }
 
-        override fun onIsPlayingChanged(isPlaying: Boolean) {
-            _isPlaying.value = isPlaying
+            if(ready) {
+                _isPreparingSelectedVideo.value = null
+                _player?.play()
+            }
         }
     }
 
@@ -86,22 +78,23 @@ class CameraViewModel @Inject constructor(
         _selectedVideo.value = video
     }
 
+    private var prepareJob: Job? = null
+
     fun prepareSelectedVideo() {
         val item = _selectedVideo.value ?: return
         _isPrepared.value = false
-        val p = ensurePlayer()
+        _isPreparingSelectedVideo.value = item.localConfiguration?.uri
 
-        p.stop()
-        p.clearMediaItems()
-
-        p.setMediaItem(item)
-        p.prepare()
+        prepareJob?.cancel()
+        prepareJob = viewModelScope.launch(Dispatchers.Main) {
+            val player = ensurePlayer()
+            player.setMediaItem(item)
+            player.prepare()
+        }
     }
 
-    fun play() = _player?.play()
-    fun pause() = _player?.pause()
-
     fun releasePlayer() {
+        _player?.pause()
         _player?.removeListener(playerListener)
         _player?.release()
         _player = null

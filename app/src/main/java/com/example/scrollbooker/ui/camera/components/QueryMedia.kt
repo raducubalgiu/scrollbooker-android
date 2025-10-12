@@ -1,8 +1,21 @@
-package com.example.scrollbooker.components.customized.MediaLibraryBottomSheet
+package com.example.scrollbooker.ui.camera.components
 
 import android.content.ContentUris
 import android.content.Context
+import android.net.Uri
 import android.provider.MediaStore
+
+enum class MediaFilter { ALL, PHOTOS, VIDEOS }
+enum class MediaType { PHOTO, VIDEO }
+
+data class MediaFile(
+    val id: Long,
+    val uri: Uri,
+    val mimeType: String?,
+    val dateAddedSeconds: Long,
+    val durationMs: Long?,
+    val type: MediaType
+)
 
 fun queryMedia(
     context: Context,
@@ -68,13 +81,15 @@ fun queryMedia(
 
             val type = if (dur != null) MediaType.VIDEO else MediaType.PHOTO
 
-            items += MediaFile(
-                id = id,
-                uri = contentUri,
-                mimeType = mime,
-                dateAddedSeconds = dateAdded,
-                durationMs = dur,
-                type = type
+            items.add(
+                MediaFile(
+                    id = id,
+                    uri = contentUri,
+                    mimeType = mime,
+                    dateAddedSeconds = dateAdded,
+                    durationMs = dur,
+                    type = type
+                )
             )
         }
     }

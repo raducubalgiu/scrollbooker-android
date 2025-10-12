@@ -44,6 +44,7 @@ sealed class MainRoute(val route: String) {
 
     object CameraNavigator: MainRoute(route = "cameraNavigator")
     object Camera: MainRoute(route = "camera")
+    object CameraGallery: MainRoute(route = "cameraGallery")
     object CameraPreview: MainRoute(route = "cameraPreview")
     object CreatePost: MainRoute(route = "createPost")
 
