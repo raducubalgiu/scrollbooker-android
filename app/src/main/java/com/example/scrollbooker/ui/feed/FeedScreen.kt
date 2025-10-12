@@ -5,10 +5,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -19,8 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.util.UnstableApi
-import androidx.paging.compose.LazyPagingItems
-import com.example.scrollbooker.entity.social.post.domain.model.Post
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.ui.MainDrawer
 import com.example.scrollbooker.ui.MainUIViewModel
@@ -36,16 +35,15 @@ import kotlinx.coroutines.launch
 @Composable
 fun FeedScreen(
     mainViewModel: MainUIViewModel,
-    posts: LazyPagingItems<Post>,
-    drawerState: DrawerState,
     appointmentsNumber: Int,
     notificationsNumber: Int,
-    onOpenDrawer: () -> Unit,
     feedNavigate: FeedNavigator
 ) {
     val feedViewModel: FeedScreenViewModel = hiltViewModel()
+    val bookNowPosts = mainViewModel.bookNowPosts.collectAsLazyPagingItems()
     val businessDomainsState by mainViewModel.businessDomainsState.collectAsState()
 
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
     val horizontalPagerState = rememberPagerState { 2 }
     val scope = rememberCoroutineScope()
 
@@ -92,7 +90,7 @@ fun FeedScreen(
                 FeedTabs(
                     selectedTabIndex = horizontalPagerState.currentPage,
                     onChangeTab = { scope.launch { horizontalPagerState.animateScrollToPage(it) } },
-                    onOpenDrawer = onOpenDrawer,
+                    onOpenDrawer = { scope.launch { drawerState.open() } },
                     onNavigateSearch = { feedNavigate.toFeedSearch() },
                     onNavigateToCamera = { feedNavigate.toCamera() }
                 )
@@ -105,7 +103,7 @@ fun FeedScreen(
                         0 -> {
                             ExplorePostsTab(
                                 feedViewModel = feedViewModel,
-                                posts = posts,
+                                posts = bookNowPosts,
                                 drawerState = drawerState,
                                 shouldDisplayBottomBar = shouldDisplayBottomBar,
                                 onShowBottomBar = { shouldDisplayBottomBar = !shouldDisplayBottomBar },

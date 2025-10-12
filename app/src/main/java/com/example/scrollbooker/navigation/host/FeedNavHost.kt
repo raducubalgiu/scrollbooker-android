@@ -31,11 +31,8 @@ import com.example.scrollbooker.navigation.transition.slideOutToRight
 fun FeedNavHost(
     navController: NavHostController,
     mainViewModel: MainUIViewModel,
-    bookNowPosts: LazyPagingItems<Post>,
     appointmentsNumber: Int,
-    notificationsNumber: Int,
-    onOpenDrawer: () -> Unit,
-    drawerState: DrawerState,
+    notificationsNumber: Int
 ) {
     val rootNavController = LocalRootNavController.current
     val userSearch by mainViewModel.userSearch.collectAsState()
@@ -54,9 +51,6 @@ fun FeedNavHost(
         ) { backStackEntry ->
             FeedScreen(
                 mainViewModel = mainViewModel,
-                posts = bookNowPosts,
-                drawerState = drawerState,
-                onOpenDrawer = onOpenDrawer,
                 appointmentsNumber = appointmentsNumber,
                 notificationsNumber = notificationsNumber,
                 feedNavigate = feedNavigate

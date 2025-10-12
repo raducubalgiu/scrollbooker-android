@@ -1,13 +1,10 @@
 package com.example.scrollbooker.navigation.host
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -19,7 +16,6 @@ import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.ui.auth.AuthViewModel
 import com.example.scrollbooker.ui.MainUIViewModel
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
-import kotlinx.coroutines.launch
 
 @Composable
 fun MainApplication(authViewModel: AuthViewModel) {
@@ -35,12 +31,7 @@ fun MainApplication(authViewModel: AuthViewModel) {
     val myProfileData by myProfileViewModel.userProfileState.collectAsState()
     val myPosts = myProfileViewModel.userPosts.collectAsLazyPagingItems()
 
-    val bookNowPosts = mainViewModel.bookNowPosts.collectAsLazyPagingItems()
-    val businessDomainsState by mainViewModel.businessDomainsState.collectAsState()
-
     val saveableStateHolder = rememberSaveableStateHolder()
-    val drawerState = rememberDrawerState(DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
 
     val navControllers = remember {
         mutableMapOf<MainTab, NavHostController>()
@@ -57,11 +48,8 @@ fun MainApplication(authViewModel: AuthViewModel) {
                     FeedNavHost(
                         navController = navControllers[MainTab.Feed]!!,
                         mainViewModel = mainViewModel,
-                        bookNowPosts = bookNowPosts,
                         appointmentsNumber = appointmentsNumber,
                         notificationsNumber = notificationsNumber,
-                        onOpenDrawer = { scope.launch { drawerState.open() } },
-                        drawerState = drawerState,
                     )
                 }
 
