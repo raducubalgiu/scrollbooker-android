@@ -17,6 +17,9 @@ import androidx.camera.core.ImageProxy
 import androidx.camera.video.Recording
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -29,19 +32,28 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.example.scrollbooker.components.customized.MediaFilter
-import com.example.scrollbooker.components.customized.MediaLibraryBottomSheet
+import androidx.media3.common.MediaItem
+import androidx.media3.common.util.UnstableApi
+import com.example.scrollbooker.components.customized.MediaLibraryBottomSheet.MediaFile
+import com.example.scrollbooker.components.customized.MediaLibraryBottomSheet.MediaFilter
+import com.example.scrollbooker.components.customized.MediaLibraryBottomSheet.MediaLibraryBottomSheet
+import com.example.scrollbooker.components.customized.MediaLibraryBottomSheet.queryMedia
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.camera.components.CameraActions
 import com.example.scrollbooker.ui.camera.components.CameraBackButton
 import com.example.scrollbooker.ui.camera.components.CameraBottomBar
 import com.example.scrollbooker.ui.theme.BackgroundDark
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.concurrent.Executor
 
+
+@androidx.annotation.OptIn(UnstableApi::class)
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun CameraScreen(
@@ -49,17 +61,18 @@ fun CameraScreen(
     onNavigateToCameraPreview: () -> Unit,
     onBack: () -> Unit
 ) {
+    val isSheetOpen by viewModel.isSheetOpen.collectAsState()
+    val isCameraMounted by viewModel.isCameraMounted.collectAsState()
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    val mainExecutor: Executor = ContextCompat.getMainExecutor(context)
-    val scope = rememberCoroutineScope()
 
-    var recording: Recording? = null
-
-    // --- Permissions (modern) ---
     val permissions = remember {
-        arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
+        arrayOf(
+            Manifest.permission.CAMERA,
+            Manifest.permission.RECORD_AUDIO
+        )
     }
+
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
     ) { /* handle individually if you want */ }
@@ -67,45 +80,42 @@ fun CameraScreen(
     val hasPerms = rememberHasAllPermissions(permissions)
 
     LaunchedEffect(hasPerms) {
-        if (!hasPerms) {
-            permissionLauncher.launch(permissions)
+        if (!hasPerms) { permissionLauncher.launch(permissions) }
+    }
+
+    val previewView = remember {
+        PreviewView(context).apply {
+            implementationMode = PreviewView.ImplementationMode.PERFORMANCE
+            scaleType = PreviewView.ScaleType.FILL_CENTER
         }
     }
 
-    if(!hasPerms) {
-        Box(modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text("Nu ai permisiuni")
-        }
-
-        return
-    }
-
-    // --- Camera controller ---
     val controller = remember(context) {
         LifecycleCameraController(context).apply {
-            // PREVIEW este implicit când folosești controller + PreviewView
             setEnabledUseCases(
                 LifecycleCameraController.IMAGE_CAPTURE or
                 LifecycleCameraController.VIDEO_CAPTURE
             )
+            cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
         }
     }
 
-    LaunchedEffect(lifecycleOwner) {
-        controller.bindToLifecycle(lifecycleOwner)
+    LaunchedEffect(Unit) {
+        previewView.controller = controller
     }
 
-    fun recordVideo(controller: LifecycleCameraController) {
-        if(recording != null) {
-            recording?.stop()
-            recording = null
-            return
+    DisposableEffect(lifecycleOwner, hasPerms) {
+        if(hasPerms) controller.bindToLifecycle(lifecycleOwner)
+        onDispose {  }
+    }
+
+    LaunchedEffect(Unit) {
+        if(!isCameraMounted) {
+            delay(200)
+            viewModel.setIsCameraMounted(true)
         }
     }
 
-    var isCameraReady by remember { mutableStateOf(false) }
     var isRecording by remember { mutableStateOf(false) }
 
     val sheetState = rememberModalBottomSheetState(
@@ -119,25 +129,21 @@ fun CameraScreen(
             }
         }
     )
+
     val bottomBarHeight = 90.dp
 
-    LaunchedEffect(Unit) {
-        scope.launch {
-            delay(200)
-            isCameraReady = true
-        }
-    }
-
-    var showSheetLibrary by remember { mutableStateOf(false) }
-
-    if(showSheetLibrary) {
+    if(isSheetOpen) {
         MediaLibraryBottomSheet(
             sheetState = sheetState,
-            initialFilter = MediaFilter.VIDEOS,
+            onSelect = {
+                val mediaItem = MediaItem.Builder().setUri(it.uri).build()
+
+                viewModel.setVideo(mediaItem)
+                viewModel.prepareSelectedVideo()
+                onNavigateToCameraPreview()
+            },
             onClose = {
-                scope.launch {
-                    showSheetLibrary = false
-                }
+                viewModel.openSheet(false)
             }
         )
     }
@@ -153,19 +159,13 @@ fun CameraScreen(
         ) {
             CameraBackButton(onBack)
 
-            // Compose PreviewView wrapper (dacă ai deja CameraPreview(...), folosește-l)
-            if(isCameraReady) {
+            if(isCameraMounted) {
                 AndroidView(
                     modifier = Modifier
                         .fillMaxSize()
                         .clip(RoundedCornerShape(BasePadding))
-                        .background(BackgroundDark.copy(alpha = 0.6f)),
-                    factory = { ctx ->
-                        PreviewView(ctx).also { previewView ->
-                            previewView.controller = controller
-                            previewView.scaleType = PreviewView.ScaleType.FILL_CENTER
-                        }
-                    }
+                        .background(BackgroundDark),
+                    factory = { previewView }
                 )
             }
 
@@ -180,56 +180,20 @@ fun CameraScreen(
                 onRecord = { isRecording = !isRecording },
                 onLongPressRecord = {},
                 onOpenMediaLibrary = {
-                    showSheetLibrary = true
+                    viewModel.openSheet(true)
                 },
             )
         }
     }
 }
 
-// Folosește asta dintr-un LaunchedEffect în composable și treci contextul
-private fun hasAllPermissions(context: Context, perms: Array<String>): Boolean {
-    return perms.all {
-        ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
-    }
-}
-
 @Composable
 private fun rememberHasAllPermissions(perms: Array<String>): Boolean {
     val ctx = LocalContext.current
-    return remember(perms.joinToString()) { hasAllPermissions(ctx, perms) }
-}
-
-private fun takePhoto(
-    controller: LifecycleCameraController,
-    executor: Executor,
-    onPhotoTaken: (Bitmap) -> Unit
-) {
-    controller.takePicture(
-        executor,
-        object : ImageCapture.OnImageCapturedCallback() {
-            override fun onCaptureSuccess(image: ImageProxy) {
-                try {
-                    // extensia toBitmap() vine din camera-view
-                    val src = image.toBitmap()
-                    val matrix = Matrix().apply {
-                        postRotate(image.imageInfo.rotationDegrees.toFloat())
-                    }
-                    val rotated = Bitmap.createBitmap(
-                        src, 0, 0, src.width, src.height, matrix, true
-                    )
-                    onPhotoTaken(rotated)
-                } catch (t: Throwable) {
-                    Timber.tag("Camera").e(t, "Failed to process image")
-                } finally {
-                    image.close()
-                }
-            }
-
-            override fun onError(exception: ImageCaptureException) {
-                Timber.tag("Camera").e(exception, "Couldn't take photo")
-            }
+    return remember(perms.joinToString("|")) {
+        perms.all {
+            ContextCompat.checkSelfPermission(ctx, it) == PackageManager.PERMISSION_GRANTED
         }
-    )
+    }
 }
 

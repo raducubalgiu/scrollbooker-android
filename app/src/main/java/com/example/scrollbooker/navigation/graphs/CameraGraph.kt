@@ -14,6 +14,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.example.scrollbooker.navigation.routes.MainRoute
+import com.example.scrollbooker.navigation.transition.slideInFromLeft
+import com.example.scrollbooker.navigation.transition.slideInFromRight
+import com.example.scrollbooker.navigation.transition.slideOutToLeft
+import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.ui.camera.CameraPreviewScreen
 import com.example.scrollbooker.ui.camera.CameraScreen
 import com.example.scrollbooker.ui.camera.CameraViewModel
@@ -22,34 +26,34 @@ import com.example.scrollbooker.ui.camera.CreatePostScreen
 fun NavGraphBuilder.cameraGraph(navController: NavHostController) {
     navigation(
         route = MainRoute.CalendarNavigator.route,
-        startDestination = MainRoute.Camera.route
+        startDestination = MainRoute.Camera.route,
+        enterTransition = {
+            slideInVertically(
+                animationSpec = tween(240, easing = LinearOutSlowInEasing),
+                initialOffsetY = { full -> full }
+            ) + fadeIn(animationSpec = tween(150))
+        },
+        exitTransition = {
+            slideOutVertically(
+                animationSpec = tween(180, easing = FastOutLinearInEasing),
+                targetOffsetY = { full -> full / 8 }
+            ) + fadeOut(animationSpec = tween(150))
+        },
+        popEnterTransition = {
+            slideInVertically(
+                animationSpec = tween(200, easing = LinearOutSlowInEasing),
+                initialOffsetY = { full -> full / 8 }
+            ) + fadeIn(animationSpec = tween(150))
+        },
+        popExitTransition = {
+            slideOutVertically(
+                animationSpec = tween(260, easing = FastOutLinearInEasing),
+                targetOffsetY = { full -> full }
+            ) + fadeOut(animationSpec = tween(150))
+        }
     ) {
         composable(
             route = MainRoute.Camera.route,
-            enterTransition = {
-                slideInVertically(
-                    animationSpec = tween(240, easing = LinearOutSlowInEasing),
-                    initialOffsetY = { full -> full }
-                ) + fadeIn(animationSpec = tween(150))
-            },
-            exitTransition = {
-                slideOutVertically(
-                    animationSpec = tween(180, easing = FastOutLinearInEasing),
-                    targetOffsetY = { full -> full / 8 }
-                ) + fadeOut(animationSpec = tween(150))
-            },
-            popEnterTransition = {
-                slideInVertically(
-                    animationSpec = tween(200, easing = LinearOutSlowInEasing),
-                    initialOffsetY = { full -> full / 8 }
-                ) + fadeIn(animationSpec = tween(150))
-            },
-            popExitTransition = {
-                slideOutVertically(
-                    animationSpec = tween(260, easing = FastOutLinearInEasing),
-                    targetOffsetY = { full -> full }
-                ) + fadeOut(animationSpec = tween(150))
-            }
         ) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(MainRoute.CalendarNavigator.route)
@@ -60,19 +64,22 @@ fun NavGraphBuilder.cameraGraph(navController: NavHostController) {
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
                 onNavigateToCameraPreview = {
-                    navController.navigate(MainRoute.CreatePost.route)
-                }
+                    navController.navigate(MainRoute.CameraPreview.route)
+                },
             )
         }
 
-        composable(route = MainRoute.CameraPreview.route) { backStackEntry ->
+        composable(
+            route = MainRoute.CameraPreview.route,
+        ) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(MainRoute.CalendarNavigator.route)
             }
             val viewModel = hiltViewModel<CameraViewModel>(parentEntry)
 
             CameraPreviewScreen(
-                viewModel = viewModel
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() }
             )
         }
 

@@ -30,7 +30,6 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
@@ -64,7 +63,7 @@ fun BusinessMediaLauncher(
             ExoPlayer.Builder(context)
                 .build()
                 .apply {
-                    this.setMediaItem(MediaItem.fromUri(uri))
+                    this.setMediaItem(androidx.media3.common.MediaItem.fromUri(uri))
                     this.prepare()
                     this.playWhenReady = true
                     this.repeatMode = Player.REPEAT_MODE_ALL
