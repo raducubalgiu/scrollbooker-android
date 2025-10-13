@@ -23,13 +23,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class PlayerUIState(
-    val isPlaying: Boolean = false,
-    val isBuffering: Boolean = false,
-    val isFirstFrameRendered: Boolean = false,
-    val hasStartedPlayback: Boolean = false
-)
-
 @HiltViewModel
 class FeedScreenViewModel @Inject constructor(
     private val getFollowingPostsUseCase: GetFollowingPostsUseCase,

@@ -7,5 +7,5 @@ enum class PostOverlayActionEnum {
     OPEN_CALENDAR,
     LIKE,
     BOOKMARK,
-    SHARE
+    REPOST
 }

@@ -64,7 +64,7 @@ data class PostCounters(
     val commentCount: Int,
     val likeCount: Int,
     val bookmarkCount: Int,
-    val shareCount: Int,
+    val repostCount: Int,
     val bookingsCount: Int
 )
 

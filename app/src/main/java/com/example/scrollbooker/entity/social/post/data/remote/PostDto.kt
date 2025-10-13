@@ -105,7 +105,7 @@ data class PostCountersDto(
     val bookmarkCount: Int,
 
     @SerializedName("share_count")
-    val shareCount: Int,
+    val repostCount: Int,
 
     @SerializedName("bookings_count")
     val bookingsCount: Int

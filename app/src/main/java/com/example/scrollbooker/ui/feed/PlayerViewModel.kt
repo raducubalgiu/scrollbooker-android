@@ -23,6 +23,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import timber.log.Timber
 import javax.inject.Inject
 
+data class PlayerUIState(
+    val isReady: Boolean = false,
+    val isPlaying: Boolean = false,
+    val isBuffering: Boolean = false,
+    val isFirstFrameRendered: Boolean = false,
+    val hasStartedPlayback: Boolean = false
+)
+
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
     @ApplicationContext private val application: Context,
@@ -63,6 +71,7 @@ class PlayerViewModel @Inject constructor(
 
             override fun onPlaybackStateChanged(state: Int) {
                 updatePlayerState(postId) { it.copy(
+                    isReady = state == Player.STATE_READY,
                     isBuffering = state == Player.STATE_BUFFERING
                 )}
             }
@@ -191,22 +200,6 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    fun releaseInactivePlayers(postId: Int) {
-        val currentPlayer = playerPool[postId]
-
-        playerPool.entries
-            .filter { it.key != postId }
-            .forEach {
-                it.value.release()
-            }
-
-        playerPool.clear()
-
-        if(currentPlayer != null) {
-            playerPool[postId] = currentPlayer
-        }
-    }
-
     private fun limitPlayerPoolSize(postId: Int) {
         if(playerPool.size > 5) {
             playerPool.entries
@@ -225,9 +218,7 @@ class PlayerViewModel @Inject constructor(
             playerPool[id]?.apply {
                 playWhenReady = false
                 pause()
-                playerListeners.remove(id)?.let { removeListener(it) }
             }
-            _playerStates.remove(id)
 
             resetInactivePlayerStates(postId)
             limitPlayerPoolSize(postId)

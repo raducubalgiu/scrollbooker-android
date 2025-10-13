@@ -137,7 +137,7 @@ fun PostOverlay(
                 ),
                 onAction = onAction,
                 commentCount = post.counters.commentCount,
-                shareCount = post.counters.shareCount,
+                repostCount = post.counters.repostCount,
                 shouldDisplayBottomBar = shouldDisplayBottomBar,
                 onShowBottomBar = onShowBottomBar,
                 onNavigateToUser = { onNavigateToUserProfile(post.user.id) }

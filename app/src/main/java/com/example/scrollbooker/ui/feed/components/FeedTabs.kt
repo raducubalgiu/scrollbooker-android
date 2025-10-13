@@ -28,10 +28,12 @@ fun FeedTabs(
     selectedTabIndex: Int,
     onOpenDrawer: () -> Unit,
     onNavigateSearch: () -> Unit,
-    onNavigateToCamera: () -> Unit,
     onChangeTab: (Int) -> Unit,
 ) {
-    val tabs = listOf(stringResource(R.string.following), stringResource(R.string.explore))
+    val tabs = listOf(
+        stringResource(R.string.explore),
+        stringResource(R.string.following)
+    )
 
     Row(
         modifier = Modifier

@@ -93,7 +93,7 @@ fun PostCountersDto.toDomain(): PostCounters {
         commentCount = commentCount,
         likeCount = likeCount,
         bookmarkCount = bookmarkCount,
-        shareCount = shareCount,
+        repostCount = repostCount,
         bookingsCount = bookingsCount
     )
 }

@@ -35,7 +35,7 @@ fun PostOverlayActions(
     interactionState: PostInteractionState,
     onAction: (PostOverlayActionEnum) -> Unit,
     commentCount: Int,
-    shareCount: Int,
+    repostCount: Int,
     shouldDisplayBottomBar: Boolean,
     onShowBottomBar: () -> Unit,
     onNavigateToUser: () -> Unit
@@ -97,10 +97,10 @@ fun PostOverlayActions(
             onClick = { onAction(PostOverlayActionEnum.BOOKMARK) }
         )
         PostActionButton(
-            counter = shareCount,
+            counter = repostCount,
             icon = painterResource(R.drawable.ic_send_solid),
             tint = Color.White,
-            onClick = { onAction(PostOverlayActionEnum.SHARE) }
+            onClick = { onAction(PostOverlayActionEnum.REPOST) }
         )
 
         IconButton(

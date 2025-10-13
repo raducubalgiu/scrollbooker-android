@@ -21,8 +21,6 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.ui.MainDrawer
 import com.example.scrollbooker.ui.feed.components.FeedTabs
-import com.example.scrollbooker.ui.feed.tabs.ExplorePostsTab
-import com.example.scrollbooker.ui.feed.tabs.FollowingPostsTab
 import com.example.scrollbooker.ui.modules.posts.components.PostBottomBar
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import kotlinx.coroutines.launch
@@ -87,8 +85,7 @@ fun FeedScreen(
                     selectedTabIndex = horizontalPagerState.currentPage,
                     onChangeTab = { scope.launch { horizontalPagerState.animateScrollToPage(it) } },
                     onOpenDrawer = { scope.launch { drawerState.open() } },
-                    onNavigateSearch = { feedNavigate.toFeedSearch() },
-                    onNavigateToCamera = { feedNavigate.toCamera() }
+                    onNavigateSearch = { feedNavigate.toFeedSearch() }
                 )
 
                 HorizontalPager(
@@ -98,7 +95,7 @@ fun FeedScreen(
                 ) { page ->
                     when(page) {
                         0 -> {
-                            ExplorePostsTab(
+                            VerticalPostPager(
                                 posts = explorePosts,
                                 drawerState = drawerState,
                                 shouldDisplayBottomBar = shouldDisplayBottomBar,
@@ -107,7 +104,7 @@ fun FeedScreen(
                             )
                         }
                         1 -> {
-                            FollowingPostsTab(
+                            VerticalPostPager(
                                 posts = followingPosts,
                                 drawerState = drawerState,
                                 shouldDisplayBottomBar = shouldDisplayBottomBar,
