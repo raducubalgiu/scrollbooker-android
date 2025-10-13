@@ -25,7 +25,7 @@ class PostBookNowPagingSource(
         val limit = 10
 
         return try {
-            val response = api.getBookNowPosts(selectedBusinessTypes, page, limit)
+            val response = api.getExplorePosts(selectedBusinessTypes, page, limit)
 
             val posts = response.results.map { it.toDomain() }
 

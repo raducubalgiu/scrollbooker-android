@@ -8,8 +8,8 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface PostApiService {
-    @GET("posts/book-now")
-    suspend fun getBookNowPosts(
+    @GET("posts/explore")
+    suspend fun getExplorePosts(
         @Query("business_types") selectedBusinessTypes: List<Int?>,
         @Query("page") page: Int,
         @Query("limit") limit: Int

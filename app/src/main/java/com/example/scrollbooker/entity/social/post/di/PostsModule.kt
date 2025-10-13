@@ -5,7 +5,7 @@ import com.example.scrollbooker.entity.social.post.data.remote.PostApiService
 import com.example.scrollbooker.entity.social.post.data.repository.PostRepositoryImpl
 import com.example.scrollbooker.entity.social.post.domain.repository.PostRepository
 import com.example.scrollbooker.entity.social.post.domain.useCase.BookmarkPostUseCase
-import com.example.scrollbooker.entity.social.post.domain.useCase.GetBookNowPostsUseCase
+import com.example.scrollbooker.entity.social.post.domain.useCase.GetExplorePostsUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetFollowingPostsUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetUserPostsUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.LikePostUseCase
@@ -50,10 +50,10 @@ object PostsModule {
 
     @Provides
     @Singleton
-    fun provideGetBookNowPostsUseCase(
+    fun provideGetExplorePostsUseCase(
         repository: PostRepository,
-    ): GetBookNowPostsUseCase {
-        return GetBookNowPostsUseCase(repository)
+    ): GetExplorePostsUseCase {
+        return GetExplorePostsUseCase(repository)
     }
 
     @Provides

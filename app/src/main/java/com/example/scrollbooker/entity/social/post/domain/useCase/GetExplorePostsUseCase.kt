@@ -5,10 +5,10 @@ import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.social.post.domain.repository.PostRepository
 import kotlinx.coroutines.flow.Flow
 
-class GetBookNowPostsUseCase(
+class GetExplorePostsUseCase(
     private val repository: PostRepository
 ) {
     operator fun invoke(selectedBusinessTypes: List<Int?>): Flow<PagingData<Post>> {
-        return repository.getBookNowPosts(selectedBusinessTypes)
+        return repository.getExplorePosts(selectedBusinessTypes)
     }
 }

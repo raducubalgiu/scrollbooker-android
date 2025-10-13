@@ -52,7 +52,7 @@ import kotlinx.coroutines.flow.debounce
 
 @OptIn(UnstableApi::class)
 @Composable
-fun ExplorePostsTab(
+fun FollowingPostsTab(
     posts: LazyPagingItems<Post>,
     drawerState: DrawerState,
     shouldDisplayBottomBar: Boolean,

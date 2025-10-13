@@ -10,7 +10,7 @@ import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.useCas
 import com.example.scrollbooker.entity.nomenclature.businessType.domain.model.BusinessType
 import com.example.scrollbooker.entity.nomenclature.businessType.domain.useCase.GetAllBusinessTypesByBusinessDomainUseCase
 import com.example.scrollbooker.entity.social.post.domain.model.Post
-import com.example.scrollbooker.entity.social.post.domain.useCase.GetBookNowPostsUseCase
+import com.example.scrollbooker.entity.social.post.domain.useCase.GetExplorePostsUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetFollowingPostsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -35,7 +35,7 @@ class FeedScreenViewModel @Inject constructor(
     private val getFollowingPostsUseCase: GetFollowingPostsUseCase,
     private val getAllBusinessDomainsUseCase: GetAllBusinessDomainsUseCase,
     private val getAllBusinessTypesByBusinessDomainUseCase: GetAllBusinessTypesByBusinessDomainUseCase,
-    private val getBookNowPostsUseCase: GetBookNowPostsUseCase,
+    private val getExplorePostsUseCase: GetExplorePostsUseCase,
 ) : ViewModel() {
     private val _businessDomainsState =
         MutableStateFlow<FeatureState<List<BusinessDomain>>>(FeatureState.Loading)
@@ -53,9 +53,9 @@ class FeedScreenViewModel @Inject constructor(
 
     // Explore Posts
     @OptIn(ExperimentalCoroutinesApi::class)
-    val bookNowPosts: Flow<PagingData<Post>> = filteredBusinessTypes
+    val explorePosts: Flow<PagingData<Post>> = filteredBusinessTypes
         .map { it.toList() }
-        .flatMapLatest { selectedTypes -> getBookNowPostsUseCase(selectedTypes) }
+        .flatMapLatest { selectedTypes -> getExplorePostsUseCase(selectedTypes) }
         .cachedIn(viewModelScope)
 
     // Following Posts

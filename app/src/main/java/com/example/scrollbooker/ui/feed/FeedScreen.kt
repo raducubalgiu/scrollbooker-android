@@ -1,6 +1,5 @@
 package com.example.scrollbooker.ui.feed
 import android.annotation.SuppressLint
-import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.pager.HorizontalPager
@@ -18,18 +17,16 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.media3.common.util.UnstableApi
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.ui.MainDrawer
 import com.example.scrollbooker.ui.feed.components.FeedTabs
 import com.example.scrollbooker.ui.feed.tabs.ExplorePostsTab
+import com.example.scrollbooker.ui.feed.tabs.FollowingPostsTab
 import com.example.scrollbooker.ui.modules.posts.components.PostBottomBar
-import com.example.scrollbooker.ui.modules.posts.components.PostShimmer
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import kotlinx.coroutines.launch
 
-@OptIn(UnstableApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun FeedScreen(
@@ -38,7 +35,8 @@ fun FeedScreen(
     feedNavigate: FeedNavigator
 ) {
     val feedViewModel: FeedScreenViewModel = hiltViewModel()
-    val bookNowPosts = feedViewModel.bookNowPosts.collectAsLazyPagingItems()
+    val explorePosts = feedViewModel.explorePosts.collectAsLazyPagingItems()
+    val followingPosts = feedViewModel.followingPosts.collectAsLazyPagingItems()
     val businessDomainsState by feedViewModel.businessDomainsState.collectAsState()
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -95,12 +93,13 @@ fun FeedScreen(
 
                 HorizontalPager(
                     state = horizontalPagerState,
+                    overscrollEffect = null,
                     beyondViewportPageCount = 0
                 ) { page ->
                     when(page) {
                         0 -> {
                             ExplorePostsTab(
-                                posts = bookNowPosts,
+                                posts = explorePosts,
                                 drawerState = drawerState,
                                 shouldDisplayBottomBar = shouldDisplayBottomBar,
                                 onShowBottomBar = { shouldDisplayBottomBar = !shouldDisplayBottomBar },
@@ -108,9 +107,13 @@ fun FeedScreen(
                             )
                         }
                         1 -> {
-                            Box(Modifier.fillMaxSize()) {
-                                PostShimmer()
-                            }
+                            FollowingPostsTab(
+                                posts = followingPosts,
+                                drawerState = drawerState,
+                                shouldDisplayBottomBar = shouldDisplayBottomBar,
+                                onShowBottomBar = { shouldDisplayBottomBar = !shouldDisplayBottomBar },
+                                feedNavigate = feedNavigate
+                            )
                         }
                     }
                 }

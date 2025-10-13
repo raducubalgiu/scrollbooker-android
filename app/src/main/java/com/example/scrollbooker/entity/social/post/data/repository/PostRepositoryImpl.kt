@@ -15,7 +15,7 @@ import javax.inject.Inject
 class PostRepositoryImpl @Inject constructor(
     private val apiService: PostApiService
 ): PostRepository {
-    override fun getBookNowPosts(selectedBusinessTypes: List<Int?>): Flow<PagingData<Post>> {
+    override fun getExplorePosts(selectedBusinessTypes: List<Int?>): Flow<PagingData<Post>> {
         return Pager(
             config = PagingConfig(pageSize = 10),
             pagingSourceFactory = { PostBookNowPagingSource(apiService, selectedBusinessTypes) }
