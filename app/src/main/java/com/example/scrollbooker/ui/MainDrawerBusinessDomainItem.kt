@@ -46,11 +46,12 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.inputs.InputCheckbox
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.ui.feed.FeedScreenViewModel
 
 @Composable
 fun MainDrawerBusinessDomainItem(
     selectedBusinessTypes: Set<Int>,
-    viewModel: MainUIViewModel,
+    viewModel: FeedScreenViewModel,
     businessDomain: BusinessDomain,
     onSetBusinessType: (Int) -> Unit
 ) {

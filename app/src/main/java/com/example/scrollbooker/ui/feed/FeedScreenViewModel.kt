@@ -1,30 +1,26 @@
 package com.example.scrollbooker.ui.feed
-
-import android.content.Context
-import android.os.HandlerThread
-import android.os.Process
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.media3.common.AudioAttributes
-import androidx.media3.common.C
-import androidx.media3.common.MediaItem
-import androidx.media3.common.Player
-import androidx.media3.common.util.UnstableApi
-import androidx.media3.exoplayer.DefaultLoadControl
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.example.scrollbooker.core.util.VideoPlayerCache
+import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.util.withVisibleLoading
+import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.BusinessDomain
+import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.useCase.GetAllBusinessDomainsUseCase
+import com.example.scrollbooker.entity.nomenclature.businessType.domain.model.BusinessType
+import com.example.scrollbooker.entity.nomenclature.businessType.domain.useCase.GetAllBusinessTypesByBusinessDomainUseCase
 import com.example.scrollbooker.entity.social.post.domain.model.Post
+import com.example.scrollbooker.entity.social.post.domain.useCase.GetBookNowPostsUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetFollowingPostsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import timber.log.Timber
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class PlayerUIState(
@@ -34,12 +30,33 @@ data class PlayerUIState(
     val hasStartedPlayback: Boolean = false
 )
 
-@UnstableApi
 @HiltViewModel
 class FeedScreenViewModel @Inject constructor(
-    @ApplicationContext private val application: Context,
     private val getFollowingPostsUseCase: GetFollowingPostsUseCase,
+    private val getAllBusinessDomainsUseCase: GetAllBusinessDomainsUseCase,
+    private val getAllBusinessTypesByBusinessDomainUseCase: GetAllBusinessTypesByBusinessDomainUseCase,
+    private val getBookNowPostsUseCase: GetBookNowPostsUseCase,
 ) : ViewModel() {
+    private val _businessDomainsState =
+        MutableStateFlow<FeatureState<List<BusinessDomain>>>(FeatureState.Loading)
+    val businessDomainsState: StateFlow<FeatureState<List<BusinessDomain>>> = _businessDomainsState
+
+    private val _businessTypesByBusinessDomainState =
+        MutableStateFlow<Map<Int, FeatureState<List<BusinessType>>>>(emptyMap())
+    val businessTypesByBusinessDomainState: StateFlow<Map<Int, FeatureState<List<BusinessType>>>> = _businessTypesByBusinessDomainState
+
+    private val _selectedBusinessTypes = MutableStateFlow<Set<Int>>(emptySet())
+    val selectedBusinessTypes: StateFlow<Set<Int>> = _selectedBusinessTypes
+
+    private val _filteredBusinessTypes = MutableStateFlow<Set<Int>>(emptySet())
+    val filteredBusinessTypes: StateFlow<Set<Int>> = _filteredBusinessTypes
+
+    // Explore Posts
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val bookNowPosts: Flow<PagingData<Post>> = filteredBusinessTypes
+        .map { it.toList() }
+        .flatMapLatest { selectedTypes -> getBookNowPostsUseCase(selectedTypes) }
+        .cachedIn(viewModelScope)
 
     // Following Posts
     private val _followingPosts: Flow<PagingData<Post>> by lazy {
@@ -48,218 +65,50 @@ class FeedScreenViewModel @Inject constructor(
     }
     val followingPosts: Flow<PagingData<Post>> get() = _followingPosts
 
-    private val playerPool = mutableMapOf<Int, ExoPlayer>()
-    private val _playerStates = mutableMapOf<Int, MutableStateFlow<PlayerUIState>>()
-
-    private var playerThread: HandlerThread = HandlerThread("ExoPlayer Thread", Process.THREAD_PRIORITY_AUDIO)
-        .apply { start() }
-
-    private val _currentPost = MutableStateFlow<Post?>(null)
-    val currentPost: StateFlow<Post?> = _currentPost.asStateFlow()
-
-    private fun createLoadControl(): DefaultLoadControl {
-        return DefaultLoadControl.Builder()
-            .setBufferDurationsMs(
-                1500,
-                5000,
-                500,
-                1500
-            )
-            .setTargetBufferBytes(C.LENGTH_UNSET)
-            .setPrioritizeTimeOverSizeThresholds(true)
-            .build()
+    fun updateBusinessTypes() {
+        _filteredBusinessTypes.value = _selectedBusinessTypes.value
     }
 
-    private val playerListeners = mutableMapOf<Int, Player.Listener>()
+    fun setBusinessType(id: Int) {
+        _selectedBusinessTypes.update { current ->
+            if(current.contains(id)) current - id else current + id
+        }
+    }
 
-    private fun attachPlayerStateListener(postId: Int, player: ExoPlayer) {
-        val listener = object : Player.Listener {
-            override fun onIsPlayingChanged(isPlaying: Boolean) {
-                updatePlayerState(postId) { it.copy(
-                    isPlaying = isPlaying,
-                    hasStartedPlayback = isPlaying || it.hasStartedPlayback)
-                }
+    fun clearBusinessTypes() {
+        _selectedBusinessTypes.value = emptySet()
+    }
+
+    fun hasBusinessTypesForMain(businessDomainId: Int): Boolean {
+        return _businessTypesByBusinessDomainState.value[businessDomainId] != null
+    }
+
+    fun fetchBusinessTypesByBusinessDomain(businessDomainId: Int) {
+        viewModelScope.launch {
+            _businessTypesByBusinessDomainState.update { current ->
+                current + (businessDomainId to FeatureState.Loading)
             }
 
-            override fun onPlaybackStateChanged(state: Int) {
-                updatePlayerState(postId) { it.copy(
-                    isBuffering = state == Player.STATE_BUFFERING
-                )}
+            val result = withVisibleLoading {
+                getAllBusinessTypesByBusinessDomainUseCase(businessDomainId)
             }
 
-            override fun onRenderedFirstFrame() {
-                updatePlayerState(postId) { it.copy(
-                    isFirstFrameRendered = true
-                )}
-            }
-        }
-
-        player.addListener(listener)
-        playerListeners[postId] = listener
-    }
-
-    fun getPlayerState(postId: Int): StateFlow<PlayerUIState> {
-        return _playerStates.getOrPut(postId) { MutableStateFlow(PlayerUIState()) }
-    }
-
-    private fun updatePlayerState(postId: Int, transform: (PlayerUIState) -> PlayerUIState) {
-        _playerStates[postId]?.let { mutableFlow ->
-            mutableFlow.value = transform(mutableFlow.value)
-        }
-    }
-
-    fun initializePlayer(
-        post: Post?,
-        previousPost: Post?,
-        nextPost: Post?
-    ) {
-        if (post == null) return
-        _currentPost.value = post
-
-        val player = getOrCreatePlayer(post = post)
-
-        resetInactivePlayerStates(post.id)
-
-        val newMediaItem = MediaItem.fromUri(post.mediaFiles.first().url)
-
-        if(player.currentMediaItem?.localConfiguration?.uri != newMediaItem.localConfiguration?.uri) {
-            player.setMediaItem(newMediaItem)
-            player.prepare()
-        }
-        player.playWhenReady = true
-
-        preloadVideo(previousPost)
-        preloadVideo(nextPost)
-    }
-
-    private fun resetInactivePlayerStates(postId: Int) {
-        _playerStates
-            .filterKeys { it != postId }
-            .forEach { (_, state) ->
-                state.value = PlayerUIState()
-            }
-    }
-
-    private fun preloadVideo(post: Post?) {
-        if(post == null) return
-
-        val player = getOrCreatePlayer(post)
-        val mediaItem = MediaItem.fromUri(post.mediaFiles.first().url)
-
-        if(player.currentMediaItem?.localConfiguration?.uri == mediaItem.localConfiguration?.uri) return
-
-        player.setMediaItem(mediaItem)
-        player.prepare()
-        player.playWhenReady = false
-    }
-
-    fun getOrCreatePlayer(post: Post): ExoPlayer {
-        return playerPool.getOrPut(post.id) {
-            ExoPlayer.Builder(application.applicationContext)
-                .setLoadControl(createLoadControl())
-                .setPlaybackLooper(playerThread.looper)
-                .setMediaSourceFactory(DefaultMediaSourceFactory(VideoPlayerCache.getFactory(application.applicationContext)))
-                .setHandleAudioBecomingNoisy(true)
-                .setAudioAttributes(
-                    AudioAttributes.Builder()
-                        .setUsage(C.USAGE_MEDIA)
-                        .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
-                        .build(), true
-                )
-                .build()
-                .also {
-                    it.repeatMode = ExoPlayer.REPEAT_MODE_ONE
-                    it.playWhenReady = false
-                    attachPlayerStateListener(post.id, it)
-                }
-        }
-    }
-
-    fun togglePlayer(postId: Int) {
-        val player = playerPool[postId] ?: return
-
-        if(player.isPlaying) {
-            player.pause()
-            player.playWhenReady = false
-        } else {
-            player.playWhenReady = true
-        }
-    }
-
-    fun pauseIfPlaying(postId: Int) {
-        val player = playerPool[postId]
-        if(player?.isPlaying == true) {
-            player.pause()
-            player.playWhenReady = false
-        }
-    }
-
-    fun resumeIfPlaying(postId: Int) {
-        val player = playerPool[postId]
-        if(player != null && !player.isPlaying) {
-            player.playWhenReady = true
-        }
-    }
-
-    fun pauseUnusedPlayers(visiblePostId: Int) {
-        playerPool.forEach { (postId, player) ->
-            if(postId != visiblePostId) {
-                player.playWhenReady = false
-                player.pause()
+            _businessTypesByBusinessDomainState.update { current ->
+                current + (businessDomainId to result)
             }
         }
     }
 
-    fun releaseInactivePlayers(postId: Int) {
-        val currentPlayer = playerPool[postId]
-
-        playerPool.entries
-            .filter { it.key != postId }
-            .forEach {
-                it.value.release()
-            }
-
-        playerPool.clear()
-
-        if(currentPlayer != null) {
-            playerPool[postId] = currentPlayer
+    private fun loadAllBusinessDomains() {
+        viewModelScope.launch {
+            _businessDomainsState.value = FeatureState.Loading
+            _businessDomainsState.value = getAllBusinessDomainsUseCase()
         }
     }
 
-    private fun limitPlayerPoolSize(postId: Int) {
-        if(playerPool.size > 5) {
-            playerPool.entries
-                .filter { it.key != postId }
-                .take(playerPool.size - 5)
-                .forEach {
-                    Timber.d("Release player for postId: $postId")
-                    it.value.release()
-                    playerPool.remove(it.key)
-                }
+    init {
+        viewModelScope.launch {
+            loadAllBusinessDomains()
         }
-    }
-
-    fun releasePlayer(postId: Int?) {
-        postId?.let { id ->
-            playerPool[id]?.apply {
-                playWhenReady = false
-                pause()
-                playerListeners.remove(id)?.let { removeListener(it) }
-            }
-            _playerStates.remove(id)
-
-            resetInactivePlayerStates(postId)
-            limitPlayerPoolSize(postId)
-        }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-
-        playerPool.values.forEach {
-            it.release()
-        }
-        playerPool.clear()
-        playerThread.quitSafely()
     }
 }

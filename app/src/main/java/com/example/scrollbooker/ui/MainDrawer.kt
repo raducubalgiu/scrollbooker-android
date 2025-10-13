@@ -41,6 +41,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.ui.feed.FeedScreenViewModel
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.bodyMedium
@@ -49,7 +50,7 @@ import com.example.scrollbooker.ui.theme.headlineSmall
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun MainDrawer(
-    viewModel: MainUIViewModel,
+    viewModel: FeedScreenViewModel,
     businessDomainsState: FeatureState<List<BusinessDomain>>,
     onClose: () -> Unit
 ) {

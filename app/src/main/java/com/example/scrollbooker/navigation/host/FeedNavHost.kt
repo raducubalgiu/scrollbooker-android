@@ -1,6 +1,6 @@
 package com.example.scrollbooker.navigation.host
-import androidx.annotation.OptIn
-import androidx.compose.material3.DrawerState
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
@@ -16,9 +16,6 @@ import com.example.scrollbooker.ui.feed.search.FeedSearchScreen
 import com.example.scrollbooker.ui.feed.search.FeedSearchViewModel
 import com.example.scrollbooker.ui.MainUIViewModel
 import androidx.compose.runtime.getValue
-import androidx.media3.common.util.UnstableApi
-import androidx.paging.compose.LazyPagingItems
-import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.LocalRootNavController
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
@@ -26,7 +23,6 @@ import com.example.scrollbooker.navigation.transition.slideInFromRight
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
 
-@OptIn(UnstableApi::class)
 @Composable
 fun FeedNavHost(
     navController: NavHostController,
@@ -43,14 +39,17 @@ fun FeedNavHost(
 
     NavHost(
         navController = navController,
-        startDestination = MainRoute.Feed.route
+        startDestination = MainRoute.Feed.route,
+        enterTransition = { slideInFromRight() },
+        exitTransition = { slideOutToLeft() },
+        popEnterTransition = { slideInFromLeft() },
+        popExitTransition = { slideOutToRight() }
     ) {
         composable(route = MainRoute.Feed.route,
-            popEnterTransition = { slideInFromLeft() },
-            popExitTransition = { slideOutToRight() }
+            popEnterTransition = { EnterTransition.None },
+            popExitTransition = { ExitTransition.None }
         ) { backStackEntry ->
             FeedScreen(
-                mainViewModel = mainViewModel,
                 appointmentsNumber = appointmentsNumber,
                 notificationsNumber = notificationsNumber,
                 feedNavigate = feedNavigate
@@ -61,13 +60,7 @@ fun FeedNavHost(
             route = MainRoute.FeedSearchNavigator.route,
             startDestination = MainRoute.FeedSearch.route
         ) {
-            composable(
-                route = MainRoute.FeedSearch.route,
-                enterTransition = { slideInFromRight() },
-                exitTransition = { slideOutToLeft() },
-                popEnterTransition = { slideInFromLeft() },
-                popExitTransition = { slideOutToRight() }
-            ) { backStackEntry ->
+            composable(route = MainRoute.FeedSearch.route) { backStackEntry ->
                 val parentEntry = remember(backStackEntry) {
                     navController.getBackStackEntry(MainRoute.FeedSearchNavigator.route)
                 }
@@ -82,13 +75,7 @@ fun FeedNavHost(
                     onDeleteRecentlySearch = { mainViewModel.deleteUserSearch(searchId = it) }
                 )
             }
-            composable(
-                route = MainRoute.FeedSearchResults.route,
-                enterTransition = { slideInFromRight() },
-                exitTransition = { slideOutToLeft() },
-                popEnterTransition = { slideInFromLeft() },
-                popExitTransition = { slideOutToRight() }
-            ) { backStackEntry ->
+            composable(route = MainRoute.FeedSearchResults.route) { backStackEntry ->
                 val parentEntry = remember(backStackEntry) {
                     navController.getBackStackEntry(MainRoute.FeedSearchNavigator.route)
                 }

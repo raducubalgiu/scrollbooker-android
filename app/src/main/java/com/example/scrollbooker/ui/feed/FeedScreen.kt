@@ -22,7 +22,6 @@ import androidx.media3.common.util.UnstableApi
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.ui.MainDrawer
-import com.example.scrollbooker.ui.MainUIViewModel
 import com.example.scrollbooker.ui.feed.components.FeedTabs
 import com.example.scrollbooker.ui.feed.tabs.ExplorePostsTab
 import com.example.scrollbooker.ui.modules.posts.components.PostBottomBar
@@ -34,14 +33,13 @@ import kotlinx.coroutines.launch
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun FeedScreen(
-    mainViewModel: MainUIViewModel,
     appointmentsNumber: Int,
     notificationsNumber: Int,
     feedNavigate: FeedNavigator
 ) {
     val feedViewModel: FeedScreenViewModel = hiltViewModel()
-    val bookNowPosts = mainViewModel.bookNowPosts.collectAsLazyPagingItems()
-    val businessDomainsState by mainViewModel.businessDomainsState.collectAsState()
+    val bookNowPosts = feedViewModel.bookNowPosts.collectAsLazyPagingItems()
+    val businessDomainsState by feedViewModel.businessDomainsState.collectAsState()
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val horizontalPagerState = rememberPagerState { 2 }
@@ -65,7 +63,7 @@ fun FeedScreen(
     ModalNavigationDrawer(
         drawerContent = {
             MainDrawer(
-                viewModel = mainViewModel,
+                viewModel = feedViewModel,
                 businessDomainsState = businessDomainsState,
                 onClose = { scope.launch { drawerState.close() } }
             )
@@ -102,7 +100,6 @@ fun FeedScreen(
                     when(page) {
                         0 -> {
                             ExplorePostsTab(
-                                feedViewModel = feedViewModel,
                                 posts = bookNowPosts,
                                 drawerState = drawerState,
                                 shouldDisplayBottomBar = shouldDisplayBottomBar,

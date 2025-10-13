@@ -1,4 +1,6 @@
 package com.example.scrollbooker.navigation.host
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
@@ -36,16 +38,20 @@ fun MyProfileNavHost(
     NavHost(
         navController = navController,
         startDestination = MainRoute.MyProfileNavigator.route,
+        enterTransition = { slideInFromRight() },
+        exitTransition = { slideOutToLeft() },
+        popEnterTransition = { slideInFromLeft() },
+        popExitTransition = { slideOutToRight() }
     ) {
         navigation(
             route = MainRoute.MyProfileNavigator.route,
             startDestination = MainRoute.MyProfile.route,
-            enterTransition = { slideInFromRight() },
-            exitTransition = { slideOutToLeft() },
-            popEnterTransition = { slideInFromLeft() },
-            popExitTransition = { slideOutToRight() }
         ) {
-            composable(route = MainRoute.MyProfile.route) {
+            composable(
+                route = MainRoute.MyProfile.route,
+                popEnterTransition = { EnterTransition.None},
+                popExitTransition = { ExitTransition.None }
+            ) {
                 val rootNavController = LocalRootNavController.current
 
                 val profileNavigate = remember(rootNavController, navController) {

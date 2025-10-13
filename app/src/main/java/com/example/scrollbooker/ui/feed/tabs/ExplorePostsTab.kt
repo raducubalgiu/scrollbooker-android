@@ -32,6 +32,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.AspectRatioFrameLayout
@@ -44,7 +45,7 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.getOrNull
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
-import com.example.scrollbooker.ui.feed.FeedScreenViewModel
+import com.example.scrollbooker.ui.feed.PlayerViewModel
 import com.example.scrollbooker.ui.modules.posts.components.postOverlay.PostOverlay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
@@ -52,17 +53,17 @@ import kotlinx.coroutines.flow.debounce
 @OptIn(UnstableApi::class)
 @Composable
 fun ExplorePostsTab(
-    feedViewModel: FeedScreenViewModel,
     posts: LazyPagingItems<Post>,
     drawerState: DrawerState,
     shouldDisplayBottomBar: Boolean,
     onShowBottomBar: () -> Unit,
     feedNavigate: FeedNavigator
 ) {
-    val currentPost by feedViewModel.currentPost.collectAsState()
+    val playerViewModel: PlayerViewModel = hiltViewModel()
+    val currentPost by playerViewModel.currentPost.collectAsState()
 
     val pagerState = rememberPagerState(pageCount = { posts.itemCount })
-    val currentOnReleasePlayer by rememberUpdatedState(feedViewModel::releasePlayer)
+    val currentOnReleasePlayer by rememberUpdatedState(playerViewModel::releasePlayer)
 
     LifecycleStartEffect(true) {
         onStopOrDispose {
@@ -86,9 +87,9 @@ fun ExplorePostsTab(
                         .collectLatest { drawerValue ->
                             postId?.let {
                                 if (drawerValue == DrawerValue.Open) {
-                                    feedViewModel.pauseIfPlaying(it)
+                                    playerViewModel.pauseIfPlaying(it)
                                 } else {
-                                    feedViewModel.resumeIfPlaying(it)
+                                    playerViewModel.resumeIfPlaying(it)
                                 }
                             }
                         }
@@ -103,12 +104,12 @@ fun ExplorePostsTab(
                             val nextPost = posts.getOrNull(page + 1)
 
                             post?.let {
-                                feedViewModel.initializePlayer(
+                                playerViewModel.initializePlayer(
                                     post = post,
                                     previousPost = previousPost,
                                     nextPost = nextPost
                                 )
-                                feedViewModel.pauseUnusedPlayers(visiblePostId = post.id)
+                                playerViewModel.pauseUnusedPlayers(visiblePostId = post.id)
                             }
                         }
                 }
@@ -126,9 +127,9 @@ fun ExplorePostsTab(
 
                     if (post != null) {
                         val player = remember(post.id) {
-                            feedViewModel.getOrCreatePlayer(post)
+                            playerViewModel.getOrCreatePlayer(post)
                         }
-                        val playerState by feedViewModel.getPlayerState(post.id)
+                        val playerState by playerViewModel.getPlayerState(post.id)
                             .collectAsState()
 
                         Box(
@@ -137,7 +138,7 @@ fun ExplorePostsTab(
                                 .clickable(
                                     interactionSource = remember { MutableInteractionSource() },
                                     indication = null,
-                                    onClick = { feedViewModel.togglePlayer(post.id) }
+                                    onClick = { playerViewModel.togglePlayer(post.id) }
                                 )
                         ) {
 

@@ -34,13 +34,9 @@ import javax.inject.Inject
 @HiltViewModel
 class MainUIViewModel @Inject constructor(
     private val getUserAppointmentsNumberUseCase: GetUserAppointmentsNumberUseCase,
-    private val getAllBusinessTypesUseCase: GetAllBusinessTypesUseCase,
-    private val getAllBusinessDomainsUseCase: GetAllBusinessDomainsUseCase,
-    private val getAllBusinessTypesByBusinessDomainUseCase: GetAllBusinessTypesByBusinessDomainUseCase,
     private val getUserSearchUseCase: GetUserSearchUseCase,
     private val createUserSearchUseCase: CreateUserSearchUseCase,
     private val deleteUserSearchUseCase: DeleteUserSearchUseCase,
-    private val getBookNowPostsUseCase: GetBookNowPostsUseCase,
 ): ViewModel() {
     // Appointments State
     private val _appointmentsState = MutableStateFlow<Int>(0)
@@ -53,43 +49,6 @@ class MainUIViewModel @Inject constructor(
     private val _userSearch = MutableStateFlow<FeatureState<UserSearch>>(FeatureState.Loading)
     val userSearch: StateFlow<FeatureState<UserSearch>> = _userSearch
 
-    private val _businessTypesState =
-        MutableStateFlow<FeatureState<List<BusinessType>>>(FeatureState.Loading)
-    val businessTypesState: StateFlow<FeatureState<List<BusinessType>>> = _businessTypesState
-
-    private val _businessTypesByBusinessDomainState =
-        MutableStateFlow<Map<Int, FeatureState<List<BusinessType>>>>(emptyMap())
-    val businessTypesByBusinessDomainState: StateFlow<Map<Int, FeatureState<List<BusinessType>>>> = _businessTypesByBusinessDomainState
-
-    private val _businessDomainsState =
-        MutableStateFlow<FeatureState<List<BusinessDomain>>>(FeatureState.Loading)
-    val businessDomainsState: StateFlow<FeatureState<List<BusinessDomain>>> = _businessDomainsState
-
-    private val _filteredBusinessTypes = MutableStateFlow<Set<Int>>(emptySet())
-    val filteredBusinessTypes: StateFlow<Set<Int>> = _filteredBusinessTypes
-
-    private val _selectedBusinessTypes = MutableStateFlow<Set<Int>>(emptySet())
-    val selectedBusinessTypes: StateFlow<Set<Int>> = _selectedBusinessTypes
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val bookNowPosts: Flow<PagingData<Post>> = filteredBusinessTypes
-        .map { it.toList() }
-        .flatMapLatest { selectedTypes -> getBookNowPostsUseCase(selectedTypes) }
-        .cachedIn(viewModelScope)
-
-    fun updateBusinessTypes() {
-        _filteredBusinessTypes.value = _selectedBusinessTypes.value
-    }
-
-    fun setBusinessType(id: Int) {
-        _selectedBusinessTypes.update { current ->
-            if(current.contains(id)) current - id else current + id
-        }
-    }
-
-    fun clearBusinessTypes() {
-        _selectedBusinessTypes.value = emptySet()
-    }
 
     fun increaseAppointmentsNumber() {
         _appointmentsState.value = _appointmentsState.value + 1
@@ -98,26 +57,6 @@ class MainUIViewModel @Inject constructor(
     fun decreaseAppointmentsNumber() {
         if(_appointmentsState.value > 0) {
             _appointmentsState.value = _appointmentsState.value - 1
-        }
-    }
-
-    fun hasBusinessTypesForMain(businessDomainId: Int): Boolean {
-        return _businessTypesByBusinessDomainState.value[businessDomainId] != null
-    }
-
-    fun fetchBusinessTypesByBusinessDomain(businessDomainId: Int) {
-        viewModelScope.launch {
-            _businessTypesByBusinessDomainState.update { current ->
-                current + (businessDomainId to FeatureState.Loading)
-            }
-
-            val result = withVisibleLoading {
-                getAllBusinessTypesByBusinessDomainUseCase(businessDomainId)
-            }
-
-            _businessTypesByBusinessDomainState.update { current ->
-                current + (businessDomainId to result)
-            }
         }
     }
 
@@ -182,20 +121,6 @@ class MainUIViewModel @Inject constructor(
         }
     }
 
-    private fun loadAllBusinessTypes() {
-        viewModelScope.launch {
-            _businessTypesState.value = FeatureState.Loading
-            _businessTypesState.value = getAllBusinessTypesUseCase()
-        }
-    }
-
-    private fun loadAllBusinessDomains() {
-        viewModelScope.launch {
-            _businessDomainsState.value = FeatureState.Loading
-            _businessDomainsState.value = getAllBusinessDomainsUseCase()
-        }
-    }
-
     private fun loadAppointmentsNumber() {
         viewModelScope.launch {
             _appointmentsState.value = getUserAppointmentsNumberUseCase()
@@ -205,8 +130,8 @@ class MainUIViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             launch { loadAppointmentsNumber() }
-            launch { loadAllBusinessTypes() }
-            launch { loadAllBusinessDomains() }
+            //launch { loadAllBusinessTypes() }
+            //launch { loadAllBusinessDomains() }
             launch { loadUserSearch() }
         }
     }
