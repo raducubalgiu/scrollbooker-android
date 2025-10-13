@@ -5,6 +5,7 @@ import com.example.scrollbooker.entity.nomenclature.businessDomain.data.remote.B
 import com.example.scrollbooker.entity.nomenclature.businessDomain.data.repository.BusinessDomainRepositoryImpl
 import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.repository.BusinessDomainRepository
 import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.useCase.GetAllBusinessDomainsUseCase
+import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.useCase.GetAllBusinessDomainsWithBusinessTypesUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -40,5 +41,13 @@ object BusinessModule {
         repository: BusinessDomainRepository,
     ): GetAllBusinessDomainsUseCase {
         return GetAllBusinessDomainsUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetAllBusinessDomainsWithBusinessTypesUseCase(
+        repository: BusinessDomainRepository,
+    ): GetAllBusinessDomainsWithBusinessTypesUseCase {
+        return GetAllBusinessDomainsWithBusinessTypesUseCase(repository)
     }
 }

@@ -19,8 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
-import com.example.scrollbooker.ui.MainDrawer
 import com.example.scrollbooker.ui.feed.components.FeedTabs
+import com.example.scrollbooker.ui.feed.drawer.FeedDrawer
 import com.example.scrollbooker.ui.modules.posts.components.PostBottomBar
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import kotlinx.coroutines.launch
@@ -34,8 +34,7 @@ fun FeedScreen(
 ) {
     val feedViewModel: FeedScreenViewModel = hiltViewModel()
     val explorePosts = feedViewModel.explorePosts.collectAsLazyPagingItems()
-    val followingPosts = feedViewModel.followingPosts.collectAsLazyPagingItems()
-    val businessDomainsState by feedViewModel.businessDomainsState.collectAsState()
+    val businessDomainsState by feedViewModel.businessDomainsWithBusinessTypes.collectAsState()
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val horizontalPagerState = rememberPagerState { 2 }
@@ -56,12 +55,19 @@ fun FeedScreen(
 //        }
     }
 
+    fun handleDrawerFilter() {
+        scope.launch {
+            feedViewModel.updateBusinessTypes()
+            drawerState.close()
+        }
+    }
+
     ModalNavigationDrawer(
         drawerContent = {
-            MainDrawer(
+            FeedDrawer(
                 viewModel = feedViewModel,
                 businessDomainsState = businessDomainsState,
-                onClose = { scope.launch { drawerState.close() } }
+                onFilter = { handleDrawerFilter() }
             )
         },
         scrimColor = BackgroundDark.copy(0.7f),
@@ -104,6 +110,8 @@ fun FeedScreen(
                             )
                         }
                         1 -> {
+                            val followingPosts = feedViewModel.followingPosts.collectAsLazyPagingItems()
+
                             VerticalPostPager(
                                 posts = followingPosts,
                                 drawerState = drawerState,

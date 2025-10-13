@@ -3,15 +3,11 @@ package com.example.scrollbooker.ui.modules.posts.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -35,43 +31,30 @@ fun PostShimmer(
         .fillMaxSize()
         .padding(SpacingS)
         .padding(bottom = paddingBottom),
-        contentAlignment = Alignment.BottomCenter
+        contentAlignment = Alignment.BottomStart
     ) {
         Column {
-            Row(modifier = Modifier.fillMaxWidth()) {
-                Box(
-                    modifier = Modifier
-                        .size(50.dp)
-                        .clip(CircleShape)
-                        .background(brush)
-                )
+            Spacer(modifier = Modifier
+                .fillMaxWidth(fraction = 0.3f)
+                .height(20.dp)
+                .clip(shape = ShapeDefaults.Medium)
+                .background(brush)
+            )
 
-                Spacer(Modifier.width(SpacingS))
+            Spacer(Modifier.height(SpacingM))
 
-                Column {
-                    Spacer(modifier = Modifier
-                        .fillMaxWidth(fraction = 0.3f)
-                        .height(20.dp)
-                        .clip(shape = ShapeDefaults.Medium)
-                        .background(brush)
-                    )
-
-                    Spacer(Modifier.height(SpacingM))
-
-                    Spacer(modifier = Modifier
-                        .fillMaxWidth(fraction = 0.6f)
-                        .height(20.dp)
-                        .clip(shape = ShapeDefaults.Medium)
-                        .background(brush)
-                    )
-                }
-            }
+            Spacer(modifier = Modifier
+                .fillMaxWidth(fraction = 0.6f)
+                .height(20.dp)
+                .clip(shape = ShapeDefaults.Medium)
+                .background(brush)
+            )
 
             Spacer(Modifier.height(BasePadding))
 
             Spacer(modifier = Modifier
                 .fillMaxWidth(fraction = 0.8f)
-                .height(40.dp)
+                .height(35.dp)
                 .clip(shape = ShapeDefaults.Medium)
                 .background(brush)
             )

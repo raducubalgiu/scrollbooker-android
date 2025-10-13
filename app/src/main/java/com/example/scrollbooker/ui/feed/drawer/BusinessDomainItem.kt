@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui
+package com.example.scrollbooker.ui.feed.drawer
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
@@ -26,7 +26,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,30 +34,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
-import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.BusinessDomain
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.inputs.InputCheckbox
-import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.ui.feed.FeedScreenViewModel
+import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.BusinessDomainsWithBusinessTypes
+import com.example.scrollbooker.ui.theme.BackgroundDark
 
 @Composable
-fun MainDrawerBusinessDomainItem(
+fun BusinessDomainItem(
     selectedBusinessTypes: Set<Int>,
-    viewModel: FeedScreenViewModel,
-    businessDomain: BusinessDomain,
+    businessDomain: BusinessDomainsWithBusinessTypes,
     onSetBusinessType: (Int) -> Unit
 ) {
     var isExpanded by rememberSaveable { mutableStateOf(false) }
-    val businessTypesDomainState by viewModel.businessTypesByBusinessDomainState.collectAsState()
-    val businessTypesState = businessTypesDomainState[businessDomain.id]
-
     val inputHeight = 60.dp
 
     val rotation by animateFloatAsState(
@@ -76,12 +69,7 @@ fun MainDrawerBusinessDomainItem(
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
-                onClick = {
-                    if(!viewModel.hasBusinessTypesForMain(businessDomain.id)) {
-                        viewModel.fetchBusinessTypesByBusinessDomain(businessDomain.id)
-                    }
-                    isExpanded = !isExpanded
-                }
+                onClick = { isExpanded = !isExpanded }
             ),
     ) {
         Row(
@@ -116,39 +104,24 @@ fun MainDrawerBusinessDomainItem(
         enter = slideInVertically(initialOffsetY = { -20 }) + fadeIn(animationSpec = tween(250)),
         exit = slideOutVertically(targetOffsetY = { -20 }) + fadeOut(animationSpec = tween(250))
     ) {
-        when(businessTypesState) {
-            is FeatureState.Error -> Unit
-            is FeatureState.Loading -> MainDrawerBusinessTypeShimmer()
-            is FeatureState.Success<*> -> {
-                val businessTypes = (businessTypesState as FeatureState.Success).data
+        val businessTypes = businessDomain.businessTypes
 
-                if(businessTypes.isEmpty()) {
-                    Box(modifier = Modifier
-                        .fillMaxWidth()
-                        .height(inputHeight),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = stringResource(R.string.notFoundAnyResult),
-                            color = Color(0xFFAAAAAA)
-                        )
-                    }
-                } else {
-                    LazyColumn(modifier = Modifier.height(inputHeight * businessTypes.size)) {
-                        items(businessTypes) { businessType ->
-                            InputCheckbox(
-                                modifier = Modifier.background(Color(0xFF121212)),
-                                contentColor = Color(0xFFE0E0E0),
-                                checked = selectedBusinessTypes.contains(businessType.id),
-                                onCheckedChange = { onSetBusinessType(businessType.id) },
-                                headLine = businessType.plural,
-                                height = inputHeight
-                            )
-                        }
-                    }
-                }
+        LazyColumn(
+            modifier = Modifier
+                .padding(vertical = SpacingS)
+                .height(inputHeight * businessTypes.size),
+            overscrollEffect = null
+        ) {
+            items(businessTypes) { businessType ->
+                InputCheckbox(
+                    modifier = Modifier.background(BackgroundDark),
+                    contentColor = Color(0xFFE0E0E0),
+                    checked = selectedBusinessTypes.contains(businessType.id),
+                    onCheckedChange = { onSetBusinessType(businessType.id) },
+                    headLine = businessType.plural,
+                    height = inputHeight
+                )
             }
-            null -> Unit
         }
     }
 
