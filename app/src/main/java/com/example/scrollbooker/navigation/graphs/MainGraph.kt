@@ -12,6 +12,9 @@ import com.example.scrollbooker.navigation.TabsViewModel
 import com.example.scrollbooker.navigation.host.MainApplication
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.routes.RootRoute
+import com.example.scrollbooker.ui.BottomBarController
+import com.example.scrollbooker.ui.LocalBottomBarController
+import com.example.scrollbooker.ui.MainUIViewModel
 
 fun NavGraphBuilder.mainGraph(
     navController: NavHostController,
@@ -23,7 +26,6 @@ fun NavGraphBuilder.mainGraph(
     ) {
         composable(route = MainRoute.Tabs.route) {
             val tabsViewModel: TabsViewModel = hiltViewModel()
-
             val tabsController = remember(tabsViewModel) {
                 TabsController(
                     currentTab = tabsViewModel.currentTab,
@@ -31,7 +33,23 @@ fun NavGraphBuilder.mainGraph(
                 )
             }
 
-            CompositionLocalProvider(LocalTabsController provides tabsController) {
+            val mainUiViewModel: MainUIViewModel = hiltViewModel()
+
+            val bottomBarController = remember(mainUiViewModel) {
+                BottomBarController(
+                    appointments = mainUiViewModel.appointments,
+                    notifications = mainUiViewModel.notifications,
+                    incAppointments = mainUiViewModel::incAppointmentsNumber,
+                    decAppointments = mainUiViewModel::decAppointmentsNumber,
+                    setAppointments = mainUiViewModel::setAppointments,
+                    setNotifications = mainUiViewModel::setNotifications,
+                )
+            }
+
+            CompositionLocalProvider(
+                LocalTabsController provides tabsController,
+                LocalBottomBarController provides bottomBarController
+            ) {
                 MainApplication(onLogout)
             }
         }

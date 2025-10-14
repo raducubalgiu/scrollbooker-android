@@ -6,6 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -13,33 +14,44 @@ import javax.inject.Inject
 class MainUIViewModel @Inject constructor(
     private val getUserAppointmentsNumberUseCase: GetUserAppointmentsNumberUseCase,
 ): ViewModel() {
-    // Appointments State
-    private val _appointmentsState = MutableStateFlow<Int>(0)
-    val appointmentsState: StateFlow<Int> = _appointmentsState.asStateFlow()
+    private val _appointments = MutableStateFlow<Int>(0)
+    val appointments: StateFlow<Int> = _appointments.asStateFlow()
 
-    // Notifications State
-    private val _notificationsState = MutableStateFlow<Int>(0)
-    val notificationsState: StateFlow<Int> = _notificationsState.asStateFlow()
+    private val _notifications = MutableStateFlow<Int>(0)
+    val notifications: StateFlow<Int> = _notifications.asStateFlow()
 
-    fun increaseAppointmentsNumber() {
-        _appointmentsState.value = _appointmentsState.value + 1
+    fun incAppointmentsNumber() {
+        _appointments.value++
     }
 
-    fun decreaseAppointmentsNumber() {
-        if(_appointmentsState.value > 0) {
-            _appointmentsState.value = _appointmentsState.value - 1
+    fun decAppointmentsNumber() {
+        if(_appointments.value > 0) {
+            _appointments.value--
         }
     }
 
-    private fun loadAppointmentsNumber() {
-        viewModelScope.launch {
-            _appointmentsState.value = getUserAppointmentsNumberUseCase()
-        }
+    fun setAppointments(n: Int) {
+        _appointments.value = n.coerceAtLeast(0)
+    }
+
+    fun setNotifications(n: Int) {
+        _notifications.value = n.coerceAtLeast(0)
+    }
+
+    private suspend fun loadAppointmentsNumber() {
+        _appointments.value = getUserAppointmentsNumberUseCase()
+    }
+
+    private suspend fun loadNotificationsNumber() {
+        // To be implemented here with the notifications number
+        _notifications.value = getUserAppointmentsNumberUseCase()
     }
 
     init {
         viewModelScope.launch {
-            launch { loadAppointmentsNumber() }
+            val p1 = launch { loadAppointmentsNumber() }
+            val p2 = launch { loadNotificationsNumber() }
+            joinAll(p1, p2)
         }
     }
 }

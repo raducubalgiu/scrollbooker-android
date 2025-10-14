@@ -14,11 +14,7 @@ import com.example.scrollbooker.ui.search.SearchViewModel
 import com.example.scrollbooker.ui.search.businessProfile.BusinessProfileScreen
 
 @Composable
-fun SearchNavHost(
-    navController: NavHostController,
-    appointmentsNumber: Int,
-    notificationsNumber: Int,
-) {
+fun SearchNavHost(navController: NavHostController) {
     NavHost(
         navController = navController,
         startDestination = MainRoute.Search.route,
@@ -31,9 +27,7 @@ fun SearchNavHost(
             val viewModel = hiltViewModel<SearchViewModel>(backStackEntry)
             SearchScreen(
                 viewModel = viewModel,
-                onNavigateToBusinessProfile = { navController.navigate(MainRoute.BusinessProfile.route) },
-                appointmentsNumber = appointmentsNumber,
-                notificationsNumber = notificationsNumber,
+                onNavigateToBusinessProfile = { navController.navigate(MainRoute.BusinessProfile.route) }
             )
         }
         composable(MainRoute.BusinessProfile.route) { backStackEntry ->

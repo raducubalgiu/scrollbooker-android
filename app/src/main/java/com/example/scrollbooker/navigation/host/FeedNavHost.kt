@@ -24,8 +24,6 @@ import com.example.scrollbooker.navigation.transition.slideOutToRight
 @Composable
 fun FeedNavHost(
     navController: NavHostController,
-    appointmentsNumber: Int,
-    notificationsNumber: Int,
     feedSearchViewModel: FeedSearchViewModel,
     userSearch: FeatureState<UserSearch>
 ) {
@@ -46,11 +44,7 @@ fun FeedNavHost(
             popEnterTransition = { EnterTransition.None },
             popExitTransition = { ExitTransition.None }
         ) { backStackEntry ->
-            FeedScreen(
-                appointmentsNumber = appointmentsNumber,
-                notificationsNumber = notificationsNumber,
-                feedNavigate = feedNavigate
-            )
+            FeedScreen(feedNavigate)
         }
 
         navigation(

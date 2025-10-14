@@ -28,8 +28,6 @@ import kotlinx.coroutines.launch
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun FeedScreen(
-    appointmentsNumber: Int,
-    notificationsNumber: Int,
     feedNavigate: FeedNavigator
 ) {
     val feedViewModel: FeedScreenViewModel = hiltViewModel()
@@ -80,9 +78,7 @@ fun FeedScreen(
                 PostBottomBar(
                     onAction = { //navigateToCalendar()
                     },
-                    shouldDisplayBottomBar = shouldDisplayBottomBar,
-                    appointmentsNumber = appointmentsNumber,
-                    notificationsNumber = notificationsNumber,
+                    shouldDisplayBottomBar = shouldDisplayBottomBar
                 )
             }
         ) {

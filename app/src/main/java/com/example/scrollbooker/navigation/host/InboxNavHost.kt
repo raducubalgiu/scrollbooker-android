@@ -23,11 +23,7 @@ import com.example.scrollbooker.ui.inbox.EmploymentRespondScreen
 import kotlinx.coroutines.launch
 
 @Composable
-fun InboxNavHost(
-    navController: NavHostController,
-    appointmentsNumber: Int,
-    notificationsNumber: Int,
-) {
+fun InboxNavHost(navController: NavHostController) {
     NavHost(
         navController = navController,
         startDestination = MainRoute.InboxNavigator.route,
@@ -57,8 +53,6 @@ fun InboxNavHost(
 
                 InboxScreen(
                     viewModel = viewModel,
-                    appointmentsNumber = appointmentsNumber,
-                    notificationsNumber = notificationsNumber,
                     inboxNavigate = inboxNavigate,
                 )
             }

@@ -43,9 +43,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun AppointmentsScreen(
     viewModel: AppointmentsViewModel,
-    onNavigateToAppointmentDetails: (Appointment) -> Unit,
-    appointmentsNumber: Int,
-    notificationsNumber: Int,
+    onNavigateToAppointmentDetails: (Appointment) -> Unit
 ) {
     val appointments = viewModel.appointments.collectAsLazyPagingItems()
     val permissionsState by viewModel.permissionsState.collectAsState()
@@ -88,12 +86,7 @@ fun AppointmentsScreen(
 
     Scaffold(
         topBar = { Header(title = stringResource(R.string.appointments)) },
-        bottomBar = {
-            BottomBar(
-                appointmentsNumber = appointmentsNumber,
-                notificationsNumber = notificationsNumber,
-            )
-        }
+        bottomBar = { BottomBar() }
     ) { innerPadding ->
         Box(Modifier.fillMaxSize().padding(innerPadding)) {
             Column(Modifier.fillMaxSize()) {

@@ -23,8 +23,6 @@ import timber.log.Timber
 
 fun NavGraphBuilder.appointmentsGraph(
     navController: NavHostController,
-    appointmentsNumber: Int,
-    notificationsNumber: Int,
     appointmentCreated: Boolean
 ) {
     navigation(
@@ -53,9 +51,7 @@ fun NavGraphBuilder.appointmentsGraph(
                 onNavigateToAppointmentDetails = {
                     viewModel.setAppointment(it)
                     navController.navigate(MainRoute.AppointmentDetails.route)
-                },
-                appointmentsNumber = appointmentsNumber,
-                notificationsNumber = notificationsNumber,
+                }
             )
         }
 

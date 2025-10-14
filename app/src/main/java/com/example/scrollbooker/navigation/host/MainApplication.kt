@@ -13,7 +13,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.navigation.LocalTabsController
 import com.example.scrollbooker.navigation.bottomBar.MainTab
-import com.example.scrollbooker.ui.MainUIViewModel
 import com.example.scrollbooker.ui.feed.search.FeedSearchViewModel
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
 
@@ -21,11 +20,6 @@ import com.example.scrollbooker.ui.profile.MyProfileViewModel
 fun MainApplication(onLogout: () -> Unit) {
     val tabsController = LocalTabsController.current
     val currentTab by tabsController.currentTab.collectAsState()
-
-    // MainUIViewModel
-    val mainViewModel: MainUIViewModel = hiltViewModel()
-    val appointmentsNumber by mainViewModel.appointmentsState.collectAsState()
-    val notificationsNumber by mainViewModel.notificationsState.collectAsState()
 
     // My Profile View Model
     val myProfileViewModel: MyProfileViewModel = hiltViewModel()
@@ -51,8 +45,6 @@ fun MainApplication(onLogout: () -> Unit) {
                 is MainTab.Feed -> {
                     FeedNavHost(
                         navController = navControllers[MainTab.Feed]!!,
-                        appointmentsNumber = appointmentsNumber,
-                        notificationsNumber = notificationsNumber,
                         feedSearchViewModel = feedSearchViewModel,
                         userSearch = userSearch
                     )
@@ -61,24 +53,18 @@ fun MainApplication(onLogout: () -> Unit) {
                 is MainTab.Inbox -> {
                     InboxNavHost(
                         navController = navControllers[MainTab.Inbox]!!,
-                        appointmentsNumber = appointmentsNumber,
-                        notificationsNumber = notificationsNumber,
                     )
                 }
 
                 is MainTab.Search -> {
                     SearchNavHost(
                         navController = navControllers[MainTab.Search]!!,
-                        appointmentsNumber = appointmentsNumber,
-                        notificationsNumber = notificationsNumber
                     )
                 }
 
                 is MainTab.Appointments -> {
                     AppointmentsNavHost(
                         navController = navControllers[MainTab.Appointments]!!,
-                        appointmentsNumber = appointmentsNumber,
-                        notificationsNumber = notificationsNumber,
                     )
                 }
                 is MainTab.Profile -> {
@@ -87,8 +73,6 @@ fun MainApplication(onLogout: () -> Unit) {
                         viewModel = myProfileViewModel,
                         myProfileData = myProfileData,
                         myPosts = myPosts,
-                        appointmentsNumber = appointmentsNumber,
-                        notificationsNumber = notificationsNumber,
                         onLogout = onLogout
                     )
                 }

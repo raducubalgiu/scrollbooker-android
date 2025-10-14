@@ -18,14 +18,16 @@ import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import com.example.scrollbooker.ui.theme.Divider
 import androidx.compose.runtime.getValue
+import com.example.scrollbooker.ui.LocalBottomBarController
 
 @Composable
-fun BottomBar(
-    appointmentsNumber: Int,
-    notificationsNumber: Int,
-) {
+fun BottomBar() {
     val tabs = LocalTabsController.current
     val currentTab by tabs.currentTab.collectAsState()
+
+    val bottom = LocalBottomBarController.current
+    val appointmentsNumber by bottom.appointments.collectAsState()
+    val notificationsNumber by bottom.notifications.collectAsState()
 
     val allTabs = MainTab.allTabs
     val isFeedTab = currentTab == MainTab.Feed

@@ -28,9 +28,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingM
 @Composable
 fun PostBottomBar(
     onAction: () -> Unit,
-    shouldDisplayBottomBar: Boolean,
-    appointmentsNumber: Int,
-    notificationsNumber: Int,
+    shouldDisplayBottomBar: Boolean
 ) {
     val currentOnAction by rememberUpdatedState(onAction)
 
@@ -41,10 +39,7 @@ fun PostBottomBar(
     ) { display ->
         key(display) {
             if(display) {
-                BottomBar(
-                    appointmentsNumber = appointmentsNumber,
-                    notificationsNumber = notificationsNumber,
-                )
+                BottomBar()
             } else {
                 val bottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 

@@ -15,11 +15,7 @@ import androidx.compose.runtime.getValue
 
 @SuppressLint("UnrememberedGetBackStackEntry")
 @Composable
-fun AppointmentsNavHost(
-    navController: NavHostController,
-    appointmentsNumber: Int,
-    notificationsNumber: Int,
-) {
+fun AppointmentsNavHost(navController: NavHostController) {
     val root = LocalRootNavController.current
     val mainEntry = remember(root) { root.getBackStackEntry(RootRoute.MAIN) }
 
@@ -36,8 +32,6 @@ fun AppointmentsNavHost(
 
         appointmentsGraph(
             navController = navController,
-            appointmentsNumber = appointmentsNumber,
-            notificationsNumber = notificationsNumber,
             appointmentCreated = appointmentCreated
         )
     }

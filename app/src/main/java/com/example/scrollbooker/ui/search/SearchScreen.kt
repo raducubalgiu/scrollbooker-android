@@ -21,12 +21,10 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -54,8 +52,6 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.sheet.Sheet
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
-import com.example.scrollbooker.navigation.bottomBar.MainTab
-import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.search.components.SearchBusinessCard
 import com.example.scrollbooker.ui.search.components.SearchHeader
 import com.example.scrollbooker.ui.search.components.SearchSheetHeader
@@ -141,9 +137,7 @@ val dummyBusinesses = listOf(
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel,
-    onNavigateToBusinessProfile: () -> Unit,
-    appointmentsNumber: Int,
-    notificationsNumber: Int,
+    onNavigateToBusinessProfile: () -> Unit
 ) {
     val videoViewModel: SearchPlayerViewModel = hiltViewModel()
 
@@ -171,12 +165,7 @@ fun SearchScreen(
     }
 
     Scaffold(
-        bottomBar = {
-            BottomBar(
-                appointmentsNumber = appointmentsNumber,
-                notificationsNumber = notificationsNumber,
-            )
-        }
+        bottomBar = { BottomBar() }
     ) { innerPadding ->
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
             val density = LocalDensity.current

@@ -20,7 +20,6 @@ import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
-import com.example.scrollbooker.ui.auth.AuthViewModel
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.profile.MyProfileScreen
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
@@ -31,8 +30,6 @@ fun MyProfileNavHost(
     myProfileData: FeatureState<UserProfile>,
     myPosts: LazyPagingItems<Post>,
     navController: NavHostController,
-    appointmentsNumber: Int,
-    notificationsNumber: Int,
     onLogout: () -> Unit
 ) {
     NavHost(
@@ -65,8 +62,6 @@ fun MyProfileNavHost(
                     viewModel = viewModel,
                     myProfileData = myProfileData,
                     myPosts = myPosts,
-                    appointmentsNumber = appointmentsNumber,
-                    notificationsNumber = notificationsNumber,
                     profileNavigate = profileNavigate
                 )
             }

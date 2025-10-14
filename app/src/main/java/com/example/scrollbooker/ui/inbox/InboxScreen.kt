@@ -23,8 +23,6 @@ import com.example.scrollbooker.ui.inbox.components.NotificationsList
 @Composable
 fun InboxScreen(
     viewModel: InboxViewModel,
-    appointmentsNumber: Int,
-    notificationsNumber: Int,
     inboxNavigate: InboxNavigator
 ) {
     val notifications = viewModel.notifications.collectAsLazyPagingItems()
@@ -33,10 +31,7 @@ fun InboxScreen(
     Scaffold(
         topBar = { Header(title = stringResource(id = R.string.inbox)) },
         bottomBar = {
-            BottomBar(
-                appointmentsNumber = appointmentsNumber,
-                notificationsNumber = notificationsNumber,
-            )
+            BottomBar()
         }
     ) { innerPadding ->
         Box(modifier = Modifier

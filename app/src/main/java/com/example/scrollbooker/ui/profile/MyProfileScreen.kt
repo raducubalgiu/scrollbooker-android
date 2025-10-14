@@ -38,8 +38,6 @@ fun MyProfileScreen(
     viewModel: MyProfileViewModel,
     myProfileData: FeatureState<UserProfile>,
     myPosts: LazyPagingItems<Post>,
-    appointmentsNumber: Int,
-    notificationsNumber: Int,
     profileNavigate: ProfileNavigator
 ) {
     val menuSheetState = rememberModalBottomSheetState()
@@ -84,12 +82,7 @@ fun MyProfileScreen(
                 }
             )
         },
-        bottomBar = {
-            BottomBar(
-                appointmentsNumber = appointmentsNumber,
-                notificationsNumber = notificationsNumber,
-            )
-        },
+        bottomBar = { BottomBar() },
         containerColor = Background
     ) { innerPadding ->
         Box(modifier = Modifier
