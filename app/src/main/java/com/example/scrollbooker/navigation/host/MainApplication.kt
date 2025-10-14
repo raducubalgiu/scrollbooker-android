@@ -13,8 +13,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.navigation.LocalTabsController
 import com.example.scrollbooker.navigation.bottomBar.MainTab
-import com.example.scrollbooker.ui.auth.AuthViewModel
 import com.example.scrollbooker.ui.MainUIViewModel
+import com.example.scrollbooker.ui.feed.search.FeedSearchViewModel
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
 
 @Composable
@@ -27,9 +27,13 @@ fun MainApplication(onLogout: () -> Unit) {
     val appointmentsNumber by mainViewModel.appointmentsState.collectAsState()
     val notificationsNumber by mainViewModel.notificationsState.collectAsState()
 
+    // My Profile View Model
     val myProfileViewModel: MyProfileViewModel = hiltViewModel()
     val myProfileData by myProfileViewModel.userProfileState.collectAsState()
     val myPosts = myProfileViewModel.userPosts.collectAsLazyPagingItems()
+
+    // Feed Search View Model
+    val feedSearchViewModel: FeedSearchViewModel = hiltViewModel()
 
     val saveableStateHolder = rememberSaveableStateHolder()
 
@@ -47,9 +51,9 @@ fun MainApplication(onLogout: () -> Unit) {
                 is MainTab.Feed -> {
                     FeedNavHost(
                         navController = navControllers[MainTab.Feed]!!,
-                        mainViewModel = mainViewModel,
                         appointmentsNumber = appointmentsNumber,
                         notificationsNumber = notificationsNumber,
+                        feedSearchViewModel = feedSearchViewModel
                     )
                 }
 
