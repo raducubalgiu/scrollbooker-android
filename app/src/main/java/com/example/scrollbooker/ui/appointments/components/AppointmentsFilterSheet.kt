@@ -1,5 +1,6 @@
 package com.example.scrollbooker.ui.appointments.components
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -22,7 +23,11 @@ import com.example.scrollbooker.components.core.sheet.Sheet
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
+import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.OnSurfaceBG
+import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,6 +39,8 @@ fun AppointmentsFilterSheet(
     onCloseSheet: () -> Unit,
     onFilter: () -> Unit
 ) {
+    val isSystemInDarkMode = isSystemInDarkTheme()
+
     val filters = listOf(
         AppointmentFilter(
             title = AppointmentFilterTitleEnum.ALL,
@@ -51,7 +58,7 @@ fun AppointmentsFilterSheet(
 
     Sheet(
         sheetState = sheetState,
-        onClose = onCloseSheet
+        onClose = onCloseSheet,
     ) {
         Box(
             modifier = Modifier
@@ -69,6 +76,8 @@ fun AppointmentsFilterSheet(
         LazyColumn {
             itemsIndexed(filters) { index, filter ->
                 InputRadio(
+                    containerColor = if(isSystemInDarkMode) SurfaceBG else Background,
+                    contentColor = if(isSystemInDarkMode) OnSurfaceBG else OnBackground,
                     selected = filter.title == selectedOption?.title,
                     headLine = filter.title.getLabel(),
                     onSelect = { onChange(filter) },
@@ -82,8 +91,6 @@ fun AppointmentsFilterSheet(
                     )
                 }
             }
-
-
         }
 
         MainButton(

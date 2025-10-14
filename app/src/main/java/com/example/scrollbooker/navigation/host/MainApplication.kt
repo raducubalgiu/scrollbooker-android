@@ -50,23 +50,10 @@ fun MainApplication(onLogout: () -> Unit) {
                     )
                 }
 
-                is MainTab.Inbox -> {
-                    InboxNavHost(
-                        navController = navControllers[MainTab.Inbox]!!,
-                    )
-                }
+                is MainTab.Inbox -> InboxNavHost(navControllers[MainTab.Inbox]!!)
+                is MainTab.Search -> SearchNavHost(navControllers[MainTab.Search]!!)
+                is MainTab.Appointments -> AppointmentsNavHost(navControllers[MainTab.Appointments]!!)
 
-                is MainTab.Search -> {
-                    SearchNavHost(
-                        navController = navControllers[MainTab.Search]!!,
-                    )
-                }
-
-                is MainTab.Appointments -> {
-                    AppointmentsNavHost(
-                        navController = navControllers[MainTab.Appointments]!!,
-                    )
-                }
                 is MainTab.Profile -> {
                     MyProfileNavHost(
                         navController = navControllers[MainTab.Profile]!!,

@@ -31,6 +31,7 @@ fun FeedScreen(
     feedNavigate: FeedNavigator
 ) {
     val feedViewModel: FeedScreenViewModel = hiltViewModel()
+
     val explorePosts = feedViewModel.explorePosts.collectAsLazyPagingItems()
     val businessDomainsState by feedViewModel.businessDomainsWithBusinessTypes.collectAsState()
 

@@ -32,6 +32,7 @@ fun InputRadio(
     selected: Boolean,
     onSelect: () -> Unit,
     headLine: String,
+    containerColor: Color = Background,
     contentColor: Color = OnBackground,
     leadingIcon: (@Composable () -> Unit)? = null
 ) {
@@ -39,7 +40,7 @@ fun InputRadio(
         Modifier
             .fillMaxWidth()
             .height(70.dp)
-            .background(Background)
+            .background(containerColor)
             .selectable(
                 selected = selected,
                 onClick = onSelect,
