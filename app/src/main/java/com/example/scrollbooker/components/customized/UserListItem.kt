@@ -71,7 +71,12 @@ fun UserListItem(
                 AvatarWithRating(
                     url = avatar,
                     rating = rating,
-                    size = 60.dp
+                    size = 60.dp,
+                    onClick = {
+                        if (isEnabled) {
+                            onNavigateUserProfile()
+                        }
+                    }
                 )
             } else {
                 Avatar(url = avatar, size = 60.dp)

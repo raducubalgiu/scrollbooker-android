@@ -41,7 +41,8 @@ fun UserProductsScreen(
         ) {
             AvatarWithRating(
                 rating = 4.5f,
-                size = 100.dp
+                size = 100.dp,
+                onClick = {}
             )
 
             Spacer(Modifier.height(BasePadding))

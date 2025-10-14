@@ -1,6 +1,7 @@
 package com.example.scrollbooker.ui.modules.posts.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -22,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.scrollbooker.components.core.icon.ShadowedIcon
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.ui.modules.posts.util.formatCounters
@@ -35,13 +38,19 @@ fun PostActionButton(
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+
     Box(modifier = Modifier
         .width(65.dp)
-        .clickable {
-            if(isEnabled) {
-                onClick?.invoke()
-            }
-        },
+        .clickable(
+            onClick = {
+                if(isEnabled) {
+                    onClick?.invoke()
+                }
+            },
+            interactionSource = interactionSource,
+            indication = null
+        ),
         contentAlignment = Alignment.Center
     ) {
         Column(

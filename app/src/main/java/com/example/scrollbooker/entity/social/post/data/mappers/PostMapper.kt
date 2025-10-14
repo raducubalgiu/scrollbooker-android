@@ -1,6 +1,4 @@
 package com.example.scrollbooker.entity.social.post.data.mappers
-
-import com.example.scrollbooker.entity.booking.products.data.mappers.toDomain
 import com.example.scrollbooker.entity.social.post.data.remote.FixedSlotsDto
 import com.example.scrollbooker.entity.social.post.data.remote.HashtagDto
 import com.example.scrollbooker.entity.social.post.data.remote.LastMinuteDto
@@ -19,12 +17,14 @@ import com.example.scrollbooker.entity.social.post.domain.model.PostMediaFile
 import com.example.scrollbooker.entity.social.post.domain.model.PostProduct
 import com.example.scrollbooker.entity.social.post.domain.model.PostProductCurrency
 import com.example.scrollbooker.entity.social.post.domain.model.UserPostActions
+import com.example.scrollbooker.entity.user.userSocial.data.mappers.toDomain
+import com.example.scrollbooker.ui.feed.PostActionUiState
 
 fun PostDto.toDomain(): Post {
     return Post(
         id = id,
         description = description,
-        user = user,
+        user = user.toDomain(),
         product = product?.toDomain(),
         userActions = userActions.toDomain(),
         mediaFiles = mediaFiles.map { it.toDomain() },
@@ -114,3 +114,18 @@ fun LastMinuteDto.toDomain(): LastMinute {
         fixedSlots = fixedSlots.map { it.toDomain() }
     )
 }
+
+fun UserPostActions.applyUiState(ui: PostActionUiState): UserPostActions =
+    copy(
+        isLiked = ui.isLiked ?: isLiked,
+        isBookmarked = ui.isBookmarked ?: isBookmarked,
+        isReposted = ui.isReposted ?: isReposted
+    )
+
+fun PostCounters.applyUiState(ui: PostActionUiState): PostCounters =
+    copy(
+        likeCount = likeCount + ui.likeCountDelta,
+        bookingsCount = bookingsCount + ui.bookmarkCountDelta,
+        repostCount = repostCount + ui.reportCountDelta,
+        commentCount = commentCount + ui.commentCountDelta
+    )

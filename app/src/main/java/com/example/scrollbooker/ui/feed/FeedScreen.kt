@@ -102,6 +102,7 @@ fun FeedScreen(
                     when(page) {
                         0 -> {
                             VerticalPostPager(
+                                feedViewModel = feedViewModel,
                                 posts = explorePosts,
                                 drawerState = drawerState,
                                 shouldDisplayBottomBar = shouldDisplayBottomBar,
@@ -113,6 +114,7 @@ fun FeedScreen(
                             val followingPosts = feedViewModel.followingPosts.collectAsLazyPagingItems()
 
                             VerticalPostPager(
+                                feedViewModel = feedViewModel,
                                 posts = followingPosts,
                                 drawerState = drawerState,
                                 shouldDisplayBottomBar = shouldDisplayBottomBar,

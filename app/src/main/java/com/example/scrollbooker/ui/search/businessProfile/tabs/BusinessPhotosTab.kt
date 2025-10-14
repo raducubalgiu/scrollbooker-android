@@ -50,7 +50,8 @@ fun BusinessPhotosTab(
             AvatarWithRating(
                 url = "https://media.scrollbooker.ro/logo.jpg",
                 size = 100.dp,
-                rating = 4.5f
+                rating = 4.5f,
+                onClick = {}
             )
 
             Column(Modifier.fillMaxWidth()

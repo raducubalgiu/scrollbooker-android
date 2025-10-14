@@ -195,7 +195,8 @@ fun BusinessServicesTab() {
                         AvatarWithRating(
                             modifier = Modifier.size(90.dp),
                             url = emp.avatar,
-                            rating = emp.rating
+                            rating = emp.rating,
+                            onClick = {}
                         )
                         Spacer(Modifier.height(SpacingM))
                         Text(

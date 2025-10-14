@@ -1,9 +1,6 @@
 package com.example.scrollbooker.ui.modules.posts.components.postOverlay
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -12,10 +9,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardDoubleArrowUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonColors
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -26,22 +22,22 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.AvatarWithRating
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.ui.modules.posts.PostInteractionState
+import com.example.scrollbooker.entity.social.post.domain.model.PostCounters
+import com.example.scrollbooker.entity.social.post.domain.model.UserPostActions
+import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
 import com.example.scrollbooker.ui.modules.posts.components.PostActionButton
 import com.example.scrollbooker.ui.theme.Error
 
 @Composable
 fun PostOverlayActions(
-    interactionState: PostInteractionState,
+    user: UserSocial,
+    counters: PostCounters,
+    userActions: UserPostActions,
     onAction: (PostOverlayActionEnum) -> Unit,
-    commentCount: Int,
-    repostCount: Int,
     shouldDisplayBottomBar: Boolean,
     onShowBottomBar: () -> Unit,
     onNavigateToUser: () -> Unit
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
-
     val rotation by animateFloatAsState(
         targetValue = if(shouldDisplayBottomBar) 180f else 0f,
         label = "ArrowRotation"
@@ -51,53 +47,51 @@ fun PostOverlayActions(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Box(
-            modifier = Modifier
-                .clickable(
-                    onClick = onNavigateToUser,
-                    interactionSource = interactionSource,
-                    indication = null
-                )
-        ) {
-            AvatarWithRating(
-                url = "https://media.scrollbooker.ro/avatar-men-22.jpg",
-                rating = 4.5f,
-                size = 55.dp
-            )
-        }
+        AvatarWithRating(
+            url = user.avatar ?: "",
+            rating = user.ratingsAverage,
+            size = 55.dp,
+            onClick = onNavigateToUser
+        )
 
         Spacer(Modifier.height(SpacingS))
 
         PostActionButton(
-            isEnabled = !interactionState.isLiking,
-            counter = interactionState.likeCount,
+            //isEnabled = !interactionState.isLiking,
+            counter = counters.likeCount,
             icon = painterResource(R.drawable.ic_heart_solid),
-            tint = if (interactionState.isLiked) Error else Color.White,
-            onClick = { onAction(PostOverlayActionEnum.LIKE) }
+            tint = if (userActions.isLiked) Error else Color.White,
+            onClick = {
+                onAction(PostOverlayActionEnum.LIKE)
+            }
         )
 
         PostActionButton(
             counter = 120,
             icon = painterResource(R.drawable.ic_clipboard_check_solid),
             tint = Color.White,
-            onClick = { onAction(PostOverlayActionEnum.OPEN_REVIEWS) }
+            onClick = {
+                //onAction(PostOverlayActionEnum.OPEN_REVIEWS)
+            }
         )
 
         PostActionButton(
-            counter = commentCount,
+            counter = counters.commentCount,
             icon = painterResource(R.drawable.ic_comment_solid),
             tint = Color.White,
-            onClick = { onAction(PostOverlayActionEnum.OPEN_COMMENTS) }
+            onClick = {
+                //onAction(PostOverlayActionEnum.OPEN_COMMENTS)
+            }
         )
         PostActionButton(
-            isEnabled = !interactionState.isBookmarking,
-            counter = interactionState.bookmarkCount,
+            //isEnabled = !interactionState.isBookmarking,
+            counter = counters.bookmarkCount,
             icon = painterResource(R.drawable.ic_bookmark_solid),
-            tint = if (interactionState.isBookmarked) Color(0xFFF3BA2F) else Color.White,
+            tint = if (userActions.isBookmarked) Color(0xFFF3BA2F) else Color.White,
             onClick = { onAction(PostOverlayActionEnum.BOOKMARK) }
         )
         PostActionButton(
-            counter = repostCount,
+            counter = counters.repostCount,
             icon = painterResource(R.drawable.ic_send_solid),
             tint = Color.White,
             onClick = { onAction(PostOverlayActionEnum.REPOST) }
@@ -106,11 +100,9 @@ fun PostOverlayActions(
         IconButton(
             modifier = Modifier.padding(vertical = BasePadding),
             onClick = onShowBottomBar,
-            colors = IconButtonColors(
-                contentColor = Color.White,
+            colors = IconButtonDefaults.iconButtonColors(
                 containerColor = Color.Black.copy(alpha = 0.5f),
-                disabledContainerColor = Color.Black.copy(alpha = 0.7f),
-                disabledContentColor = Color.White
+                contentColor = Color.Black.copy(alpha = 0.5f)
             )
         ) {
             Icon(

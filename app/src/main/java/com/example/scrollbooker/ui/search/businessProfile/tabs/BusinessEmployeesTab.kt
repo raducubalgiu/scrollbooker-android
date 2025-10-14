@@ -89,7 +89,8 @@ fun BusinessEmployeesTab() {
                     AvatarWithRating(
                         url = employee.avatar,
                         rating = employee.rating,
-                        size = 90.dp
+                        size = 90.dp,
+                        onClick = {}
                     )
                     Spacer(Modifier.height(BasePadding))
                     Text(

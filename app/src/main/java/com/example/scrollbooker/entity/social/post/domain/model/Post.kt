@@ -1,13 +1,12 @@
 package com.example.scrollbooker.entity.social.post.domain.model
-import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.user.userSocial.data.remote.UserSocialDto
-import com.google.gson.annotations.SerializedName
+import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
 import java.math.BigDecimal
 
 data class Post(
     val id: Int,
     val description: String?,
-    val user: UserSocialDto,
+    val user: UserSocial,
     val product: PostProduct?,
     val userActions: UserPostActions,
     val mediaFiles: List<PostMediaFile>,

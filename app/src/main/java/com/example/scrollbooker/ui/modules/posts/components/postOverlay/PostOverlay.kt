@@ -26,6 +26,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
+import com.example.scrollbooker.ui.feed.PostActionUiState
 import com.example.scrollbooker.ui.modules.posts.PostInteractionState
 import com.example.scrollbooker.ui.modules.posts.components.PostActionButtonSmall
 import com.example.scrollbooker.ui.theme.Error
@@ -35,6 +36,7 @@ import java.math.BigDecimal
 @Composable
 fun PostOverlay(
     post: Post,
+    postActionState: PostActionUiState,
     onAction: (PostOverlayActionEnum) -> Unit,
     shouldDisplayBottomBar: Boolean,
     onShowBottomBar: () -> Unit,
@@ -127,17 +129,10 @@ fun PostOverlay(
             }
 
             PostOverlayActions(
-                interactionState = PostInteractionState(
-                    isLiked = post.userActions.isLiked,
-                    likeCount = post.counters.likeCount,
-                    isLiking = false,
-                    isBookmarked = post.userActions.isBookmarked,
-                    bookmarkCount = post.counters.bookmarkCount,
-                    isBookmarking = false
-                ),
+                user = post.user,
+                counters = post.counters,
+                userActions = post.userActions,
                 onAction = onAction,
-                commentCount = post.counters.commentCount,
-                repostCount = post.counters.repostCount,
                 shouldDisplayBottomBar = shouldDisplayBottomBar,
                 onShowBottomBar = onShowBottomBar,
                 onNavigateToUser = { onNavigateToUserProfile(post.user.id) }
