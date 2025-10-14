@@ -34,9 +34,9 @@ fun MainApplication(onLogout: () -> Unit) {
 
     // Feed Search View Model
     val feedSearchViewModel: FeedSearchViewModel = hiltViewModel()
+    val userSearch by feedSearchViewModel.userSearch.collectAsState()
 
     val saveableStateHolder = rememberSaveableStateHolder()
-
     val navControllers = remember {
         mutableMapOf<MainTab, NavHostController>()
     }.also { controllers ->
@@ -53,7 +53,8 @@ fun MainApplication(onLogout: () -> Unit) {
                         navController = navControllers[MainTab.Feed]!!,
                         appointmentsNumber = appointmentsNumber,
                         notificationsNumber = notificationsNumber,
-                        feedSearchViewModel = feedSearchViewModel
+                        feedSearchViewModel = feedSearchViewModel,
+                        userSearch = userSearch
                     )
                 }
 

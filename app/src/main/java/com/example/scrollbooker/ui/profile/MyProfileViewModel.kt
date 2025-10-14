@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -71,21 +72,19 @@ class MyProfileViewModel @Inject constructor(
         .cachedIn(viewModelScope)
         .stateIn(viewModelScope, SharingStarted.Companion.Lazily, PagingData.Companion.empty())
 
-    fun loadUserProfile() {
-        viewModelScope.launch {
-            val userId = authDataStore.getUserId().firstOrNull()
+    private suspend fun loadUserProfile() {
+        val userId = authDataStore.getUserId().firstOrNull()
 
-            if(userId == null) {
-                Timber.Forest.tag("Refetch UserProfile").e("ERROR: on Refetching User Profile. User Id not found ")
-                throw IllegalStateException("User id not found in datastore")
-            }
-
-            _userProfileState.value = FeatureState.Loading
-
-            val response = withVisibleLoading { getUserProfileUseCase(userId) }
-
-            _userProfileState.value = response
+        if(userId == null) {
+            Timber.Forest.tag("Refetch UserProfile").e("ERROR: on Refetching User Profile. User Id not found ")
+            throw IllegalStateException("User id not found in datastore")
         }
+
+        _userProfileState.value = FeatureState.Loading
+
+        val response = withVisibleLoading { getUserProfileUseCase(userId) }
+
+        _userProfileState.value = response
     }
 
     fun loadPermissions() {
@@ -105,8 +104,9 @@ class MyProfileViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            loadUserProfile()
-            loadPermissions()
+            val p1 = launch { loadUserProfile() }
+            val p2 = launch { loadPermissions() }
+            joinAll(p1, p2)
         }
     }
 
@@ -114,10 +114,6 @@ class MyProfileViewModel @Inject constructor(
     val editState: StateFlow<FeatureState<Unit>?> = _editState
 
     var isSaved by mutableStateOf(false)
-
-    fun setUserProfile(userProfileData: FeatureState<UserProfile>) {
-        _userProfileState.value = userProfileData
-    }
 
     fun updateFullName(newFullName: String) {
         viewModelScope.launch {

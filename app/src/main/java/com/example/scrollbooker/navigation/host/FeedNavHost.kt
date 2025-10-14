@@ -2,7 +2,6 @@ package com.example.scrollbooker.navigation.host
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -13,7 +12,8 @@ import com.example.scrollbooker.ui.feed.FeedScreen
 import com.example.scrollbooker.ui.feed.searchResults.FeedSearchResultsScreen
 import com.example.scrollbooker.ui.feed.search.FeedSearchScreen
 import com.example.scrollbooker.ui.feed.search.FeedSearchViewModel
-import androidx.compose.runtime.getValue
+import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.entity.search.domain.model.UserSearch
 import com.example.scrollbooker.navigation.LocalRootNavController
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
@@ -26,7 +26,8 @@ fun FeedNavHost(
     navController: NavHostController,
     appointmentsNumber: Int,
     notificationsNumber: Int,
-    feedSearchViewModel: FeedSearchViewModel
+    feedSearchViewModel: FeedSearchViewModel,
+    userSearch: FeatureState<UserSearch>
 ) {
     val rootNavController = LocalRootNavController.current
     val feedNavigate = remember(rootNavController, navController) {
@@ -57,8 +58,6 @@ fun FeedNavHost(
             startDestination = MainRoute.FeedSearch.route
         ) {
             composable(route = MainRoute.FeedSearch.route) {
-                val userSearch by feedSearchViewModel.userSearch.collectAsState()
-
                 FeedSearchScreen(
                     viewModel = feedSearchViewModel,
                     userSearch = userSearch,
