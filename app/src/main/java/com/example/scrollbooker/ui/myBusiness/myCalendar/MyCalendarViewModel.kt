@@ -19,9 +19,8 @@ import com.example.scrollbooker.entity.nomenclature.currency.domain.useCase.GetU
 import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
 import com.example.scrollbooker.entity.nomenclature.service.domain.useCase.GetServicesByBusinessIdUseCase
 import com.example.scrollbooker.store.AuthDataStore
-import com.example.scrollbooker.ui.modules.calendar.CalendarConfig
-import com.example.scrollbooker.ui.modules.calendar.CalendarHeaderState
-import com.mapbox.geojson.Feature
+import com.example.scrollbooker.ui.shared.calendar.CalendarConfig
+import com.example.scrollbooker.ui.shared.calendar.CalendarHeaderState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow

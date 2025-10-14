@@ -13,8 +13,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.ui.modules.calendar.Calendar
-import com.example.scrollbooker.ui.modules.calendar.CalendarViewModel
+import com.example.scrollbooker.ui.shared.calendar.Calendar
+import com.example.scrollbooker.ui.shared.calendar.CalendarViewModel
 import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable

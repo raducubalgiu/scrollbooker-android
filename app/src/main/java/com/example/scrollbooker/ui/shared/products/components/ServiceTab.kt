@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.userProducts.components
+package com.example.scrollbooker.ui.shared.products.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

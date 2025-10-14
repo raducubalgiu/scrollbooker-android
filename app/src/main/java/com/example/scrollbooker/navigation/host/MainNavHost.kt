@@ -7,19 +7,18 @@ import com.example.scrollbooker.navigation.graphs.calendarGraph
 import com.example.scrollbooker.navigation.graphs.cameraGraph
 import com.example.scrollbooker.navigation.graphs.globalGraph
 import com.example.scrollbooker.navigation.routes.GlobalRoute
-import com.example.scrollbooker.ui.auth.AuthViewModel
 
 @Composable
 fun MainNavHost(
     navController: NavHostController,
-    authViewModel: AuthViewModel
+    onLogout: () -> Unit
 ) {
     NavHost(
         navController = navController,
         startDestination = GlobalRoute.MAIN
     ) {
         composable(GlobalRoute.MAIN) {
-            MainApplication(authViewModel = authViewModel)
+            MainApplication(onLogout)
         }
 
         // Global Routes

@@ -15,7 +15,7 @@ import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.ui.profile.ProfileViewModel
 import com.example.scrollbooker.ui.profile.UserProfileScreen
-import com.example.scrollbooker.ui.shared.userProducts.UserProductsScreen
+import com.example.scrollbooker.ui.shared.products.UserProductsScreen
 import com.example.scrollbooker.ui.social.UserSocialScreen
 import com.example.scrollbooker.ui.social.UserSocialViewModel
 

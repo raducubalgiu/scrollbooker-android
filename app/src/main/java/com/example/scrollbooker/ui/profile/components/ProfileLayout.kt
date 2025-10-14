@@ -50,7 +50,7 @@ import com.example.scrollbooker.ui.profile.tabs.bookmarks.ProfileBookmarksTab
 import com.example.scrollbooker.ui.profile.tabs.info.ProfileInfoTab
 import com.example.scrollbooker.ui.profile.tabs.posts.ProfilePostsTab
 import com.example.scrollbooker.ui.profile.tabs.reposts.ProfileRepostsTab
-import com.example.scrollbooker.ui.shared.modules.products.UserProductsServiceTabs
+import com.example.scrollbooker.ui.shared.products.UserProductsServiceTabs
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

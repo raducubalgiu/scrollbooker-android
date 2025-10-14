@@ -48,10 +48,10 @@ class PlayerViewModel @Inject constructor(
     private fun createLoadControl(): DefaultLoadControl {
         return DefaultLoadControl.Builder()
             .setBufferDurationsMs(
-                1500,
-                5000,
+                15_000,
+                50_000,
                 500,
-                1500
+                250
             )
             .setTargetBufferBytes(C.LENGTH_UNSET)
             .setPrioritizeTimeOverSizeThresholds(true)
@@ -105,18 +105,19 @@ class PlayerViewModel @Inject constructor(
         if (post == null) return
         _currentPost.value = post
 
-        val player = getOrCreatePlayer(post = post)
-
-        resetInactivePlayerStates(post.id)
+        val player = getOrCreatePlayer(post)
 
         val newMediaItem = MediaItem.fromUri(post.mediaFiles.first().url)
+        val sameItem = player.currentMediaItem?.localConfiguration?.uri == newMediaItem.localConfiguration?.uri
 
-        if(player.currentMediaItem?.localConfiguration?.uri != newMediaItem.localConfiguration?.uri) {
+        if(!sameItem) {
             player.setMediaItem(newMediaItem)
             player.prepare()
+            player.seekTo(0)
         }
         player.playWhenReady = true
 
+        resetInactivePlayerStates(post.id)
         preloadVideo(previousPost)
         preloadVideo(nextPost)
     }

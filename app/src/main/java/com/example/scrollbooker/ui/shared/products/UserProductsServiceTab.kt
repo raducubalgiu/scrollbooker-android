@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.modules.products
+package com.example.scrollbooker.ui.shared.products
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
@@ -27,7 +27,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
 import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
-import com.example.scrollbooker.ui.shared.userProducts.components.EmployeesList
+import com.example.scrollbooker.ui.shared.products.components.EmployeesList
 import com.example.scrollbooker.ui.theme.Divider
 
 @SuppressLint("ConfigurationScreenWidthHeight")

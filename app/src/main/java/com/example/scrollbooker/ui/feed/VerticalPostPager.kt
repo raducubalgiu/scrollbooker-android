@@ -74,152 +74,114 @@ fun VerticalPostPager(
         }
     }
 
-    val refreshState = posts.loadState.refresh
-
-    when (refreshState) {
-        is LoadState.Error -> ErrorScreen()
-        is LoadState.Loading -> PostShimmer()
-        is LoadState.NotLoading -> {
-            if(posts.itemCount == 0) {
-                NotFoundPosts()
-            }
-
-            val postId by remember {
-                derivedStateOf {
-                    posts.getOrNull(pagerState.currentPage)?.id
+    posts.apply {
+        when (loadState.refresh) {
+            is LoadState.Error -> ErrorScreen()
+            is LoadState.Loading -> PostShimmer()
+            is LoadState.NotLoading -> {
+                if(posts.itemCount == 0) {
+                    NotFoundPosts()
                 }
-            }
 
-            LaunchedEffect(drawerState.currentValue) {
-                snapshotFlow { drawerState.currentValue }
-                    .collectLatest { drawerValue ->
-                        postId?.let {
-                            if (drawerValue == DrawerValue.Open) {
-                                playerViewModel.pauseIfPlaying(it)
-                            } else {
-                                playerViewModel.resumeIfPlaying(it)
+                LaunchedEffect(drawerState.currentValue) {
+                    snapshotFlow { drawerState.currentValue }
+                        .collectLatest { drawerValue ->
+                            currentPost?.id?.let {
+                                if (drawerValue == DrawerValue.Open) {
+                                    playerViewModel.pauseIfPlaying(it)
+                                } else {
+                                    playerViewModel.resumeIfPlaying(it)
+                                }
                             }
                         }
-                    }
-            }
+                }
 
-            LaunchedEffect(pagerState) {
-                snapshotFlow { pagerState.settledPage }
-                    .debounce(150)
-                    .collectLatest { page ->
-                        val post = posts.getOrNull(page)
-                        val previousPost = posts.getOrNull(page - 1)
-                        val nextPost = posts.getOrNull(page + 1)
+                LaunchedEffect(pagerState) {
+                    snapshotFlow { pagerState.currentPage }
+                        .collectLatest { page ->
+                            val post = posts.getOrNull(page)
+                            val previousPost = posts.getOrNull(page - 1)
+                            val nextPost = posts.getOrNull(page + 1)
 
-                        post?.let {
-                            playerViewModel.initializePlayer(
-                                post = post,
-                                previousPost = previousPost,
-                                nextPost = nextPost
-                            )
-                            playerViewModel.pauseUnusedPlayers(visiblePostId = post.id)
-                        }
-                    }
-            }
-
-            VerticalPager(
-                state = pagerState,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = 90.dp),
-                overscrollEffect = null,
-                pageSize = PageSize.Fill,
-                pageSpacing = 0.dp,
-                beyondViewportPageCount = 1
-            ) { page ->
-                val post = posts[page]
-
-                if (post != null) {
-                    val postActionState by feedViewModel.observePostUi(post.id).collectAsState()
-
-                    val postUi = remember(post, postActionState) {
-                        post.copy(
-                            userActions = post.userActions.applyUiState(postActionState),
-                            counters = post.counters.applyUiState(postActionState)
-                        )
-                    }
-
-                    val player = remember(post.id) {
-                        playerViewModel.getOrCreatePlayer(post)
-                    }
-                    val playerState by playerViewModel.getPlayerState(post.id)
-                        .collectAsState()
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null,
-                                onClick = { playerViewModel.togglePlayer(post.id) }
-                            )
-                    ) {
-
-                        AndroidView(
-                            factory = { context ->
-                                PlayerView(context).apply {
-                                    useController = false
-                                    controllerAutoShow = false
-                                    controllerShowTimeoutMs = 0
-
-                                    setShowBuffering(SHOW_BUFFERING_NEVER)
-
-                                    layoutParams = ViewGroup.LayoutParams(
-                                        ViewGroup.LayoutParams.MATCH_PARENT,
-                                        ViewGroup.LayoutParams.MATCH_PARENT,
-                                    )
-                                }
-                            },
-                            update = { playerView ->
-                                playerView.player = player
-                                playerView.resizeMode =
-                                    AspectRatioFrameLayout.RESIZE_MODE_FILL
-                            },
-                            modifier = Modifier.fillMaxSize(),
-                        )
-
-                        PostOverlay(
-                            post = postUi,
-                            postActionState = postActionState,
-                            onAction = { action ->
-                                when(action) {
-                                    PostOverlayActionEnum.LIKE -> feedViewModel.toggleLike(post)
-                                    PostOverlayActionEnum.BOOKMARK -> feedViewModel.toggleBookmark(post)
-                                    PostOverlayActionEnum.REPOST -> {}
-                                }
-                            },
-                            shouldDisplayBottomBar = shouldDisplayBottomBar,
-                            onShowBottomBar = onShowBottomBar,
-                            onNavigateToUserProfile = { feedNavigate.toUserProfile(it) },
-                            onNavigateToCalendar = { feedNavigate.toCalendar(it) },
-                            onNavigateToProducts = { feedNavigate.toUserProducts(userId = post.user.id) }
-                        )
-
-                        AnimatedVisibility(
-                            visible = playerState.hasStartedPlayback &&
-                                    !playerState.isPlaying &&
-                                    !playerState.isBuffering &&
-                                    !drawerState.isOpen,
-                            enter = fadeIn(),
-                            exit = fadeOut()
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .zIndex(5f),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    modifier = Modifier.size(75.dp),
-                                    painter = painterResource(R.drawable.ic_play_solid),
-                                    contentDescription = null,
-                                    tint = Color.White.copy(0.5f)
+                            post?.let {
+                                playerViewModel.initializePlayer(
+                                    post = post,
+                                    previousPost = previousPost,
+                                    nextPost = nextPost
                                 )
+                                //playerViewModel.pauseUnusedPlayers(visiblePostId = post.id)
+                            }
+                        }
+                }
+
+                VerticalPager(
+                    state = pagerState,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = 90.dp),
+                    overscrollEffect = null,
+                    pageSize = PageSize.Fill,
+                    pageSpacing = 0.dp,
+                    beyondViewportPageCount = 1
+                ) { page ->
+                    val post = posts[page]
+
+                    if (post != null) {
+                        val postActionState by feedViewModel.observePostUi(post.id).collectAsState()
+
+                        val postUi = remember(post, postActionState) {
+                            post.copy(
+                                userActions = post.userActions.applyUiState(postActionState),
+                                counters = post.counters.applyUiState(postActionState)
+                            )
+                        }
+
+                        val player = remember(post.id) {
+                            playerViewModel.getOrCreatePlayer(post)
+                        }
+
+                        val playerState by playerViewModel.getPlayerState(post.id)
+                            .collectAsState()
+
+                        fun handleAction(action: PostOverlayActionEnum) {
+                            when(action) {
+                                PostOverlayActionEnum.LIKE -> feedViewModel.toggleLike(post)
+                                PostOverlayActionEnum.BOOKMARK -> feedViewModel.toggleBookmark(post)
+                                PostOverlayActionEnum.REPOST -> {}
+                            }
+                        }
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clickable(
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = null,
+                                    onClick = { playerViewModel.togglePlayer(post.id) }
+                                )
+                        ) {
+                            PostPlayerView(player)
+
+                            PostOverlay(
+                                post = postUi,
+                                postActionState = postActionState,
+                                onAction = { handleAction(it) },
+                                shouldDisplayBottomBar = shouldDisplayBottomBar,
+                                onShowBottomBar = onShowBottomBar,
+                                onNavigateToUserProfile = { feedNavigate.toUserProfile(it) },
+                                onNavigateToCalendar = { feedNavigate.toCalendar(it) },
+                                onNavigateToProducts = { feedNavigate.toUserProducts(userId = post.user.id) }
+                            )
+
+                            AnimatedVisibility(
+                                visible = playerState.hasStartedPlayback &&
+                                        !playerState.isPlaying &&
+                                        !playerState.isBuffering &&
+                                        !drawerState.isOpen,
+                                enter = fadeIn(),
+                                exit = fadeOut()
+                            ) {
+                                PostControls()
                             }
                         }
                     }

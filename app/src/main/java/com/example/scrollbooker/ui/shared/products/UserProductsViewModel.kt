@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.modules.products
+package com.example.scrollbooker.ui.shared.products
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

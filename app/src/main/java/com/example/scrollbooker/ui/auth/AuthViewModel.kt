@@ -83,12 +83,15 @@ class AuthViewModel @Inject constructor(
         _authState.value = FeatureState.Success(authState)
     }
 
-    fun logout() {
-        viewModelScope.launch {
-            authDataStore.clearUserSession()
-            tokenProvider.clearTokens()
+    suspend fun logout(): Result<Unit> = runCatching {
+        authDataStore.clearUserSession()
+        tokenProvider.clearTokens()
 
-            _authState.value = FeatureState.Error()
-        }
+        _authState.value = FeatureState.Success(
+            AuthState(
+                isValidated = false,
+                registrationStep = null
+            )
+        )
     }
 }

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.modules.calendar
+package com.example.scrollbooker.ui.shared.calendar
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,9 +31,9 @@ import org.threeten.bp.LocalDate
 import java.util.Locale
 import com.example.scrollbooker.core.util.displayShortDayOfWeek
 import com.example.scrollbooker.entity.booking.calendar.domain.model.Slot
-import com.example.scrollbooker.ui.modules.calendar.components.CalendarDayTab
-import com.example.scrollbooker.ui.modules.calendar.components.CalendarHeader
-import com.example.scrollbooker.ui.modules.calendar.components.slots.SlotsList
+import com.example.scrollbooker.ui.shared.calendar.components.CalendarDayTab
+import com.example.scrollbooker.ui.shared.calendar.components.CalendarHeader
+import com.example.scrollbooker.ui.shared.calendar.components.slots.SlotsList
 
 @Composable
 fun Calendar(

@@ -3,7 +3,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.scrollbooker.ui.modules.calendar.CalendarViewModel
+import com.example.scrollbooker.ui.shared.calendar.CalendarViewModel
 
 @Composable
 fun PostCalendarSheet() {

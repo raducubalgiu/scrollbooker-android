@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.modules.calendar.components.slots
+package com.example.scrollbooker.ui.shared.calendar.components.slots
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,7 +27,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
-fun FullyBookedDayMessage(
+fun ClosedDayMessage(
     onClick: () -> Unit
 ) {
     Column(
@@ -39,20 +39,20 @@ fun FullyBookedDayMessage(
     ) {
         Icon(
             modifier = Modifier.size(60.dp),
-            painter = painterResource(R.drawable.ic_calendar_outline),
+            painter = painterResource(R.drawable.ic_lock_closed_outline),
             contentDescription = null,
             tint = Color.Gray.copy(alpha = 0.8f)
         )
         Spacer(Modifier.height(SpacingXL))
         Text(
-            text = stringResource(R.string.youArrivedToLate),
+            text = stringResource(R.string.locationIsClosed),
             style = titleMedium,
             fontWeight = FontWeight.SemiBold,
             fontSize = 19.sp
         )
         Spacer(Modifier.height(SpacingS))
         Text(
-            text = stringResource(R.string.doesntHaveOpenSeatsThisDay),
+            text = stringResource(R.string.thisDayDoesntBelongToSchedule),
             textAlign = TextAlign.Center
         )
         Spacer(Modifier.height(SpacingXXL))

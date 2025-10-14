@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.userCalendar
+package com.example.scrollbooker.ui.shared.calendar
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,7 +33,6 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.ui.modules.calendar.CalendarViewModel
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.headlineMedium

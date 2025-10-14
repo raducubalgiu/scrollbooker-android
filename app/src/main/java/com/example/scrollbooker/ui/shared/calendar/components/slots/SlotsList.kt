@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.modules.calendar.components.slots
+package com.example.scrollbooker.ui.shared.calendar.components.slots
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.calendar.domain.model.Slot
-import com.example.scrollbooker.ui.modules.calendar.CalendarViewModel
+import com.example.scrollbooker.ui.shared.calendar.CalendarViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

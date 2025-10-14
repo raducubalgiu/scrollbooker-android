@@ -7,7 +7,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.example.scrollbooker.navigation.navigators.SettingsNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
-import com.example.scrollbooker.ui.auth.AuthViewModel
 import com.example.scrollbooker.ui.settings.SettingsScreen
 import com.example.scrollbooker.ui.settings.account.AccountScreen
 import com.example.scrollbooker.ui.settings.display.DisplayScreen
@@ -21,7 +20,7 @@ import com.example.scrollbooker.ui.settings.terms.TermsAndConditionsScreen
 
 fun NavGraphBuilder.settingsGraph(
     navController: NavHostController,
-    authViewModel: AuthViewModel
+    onLogout: () -> Unit
 ) {
     navigation(
         route = MainRoute.SettingsNavigator.route,
@@ -37,7 +36,7 @@ fun NavGraphBuilder.settingsGraph(
             SettingsScreen(
                 onBack = { navController.popBackStack() },
                 settingsNavigate = settingsNavigate,
-                onLogout = { authViewModel.logout() }
+                onLogout = onLogout
             )
         }
 

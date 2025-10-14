@@ -18,7 +18,7 @@ import com.example.scrollbooker.ui.MainUIViewModel
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
 
 @Composable
-fun MainApplication(authViewModel: AuthViewModel) {
+fun MainApplication(onLogout: () -> Unit) {
     val tabsController = LocalTabsController.current
     val currentTab by tabsController.currentTab.collectAsState()
 
@@ -80,11 +80,11 @@ fun MainApplication(authViewModel: AuthViewModel) {
                     MyProfileNavHost(
                         navController = navControllers[MainTab.Profile]!!,
                         viewModel = myProfileViewModel,
-                        authViewModel = authViewModel,
                         myProfileData = myProfileData,
                         myPosts = myPosts,
                         appointmentsNumber = appointmentsNumber,
                         notificationsNumber = notificationsNumber,
+                        onLogout = onLogout
                     )
                 }
             }

@@ -28,12 +28,12 @@ import com.example.scrollbooker.ui.profile.MyProfileViewModel
 @Composable
 fun MyProfileNavHost(
     viewModel: MyProfileViewModel,
-    authViewModel: AuthViewModel,
     myProfileData: FeatureState<UserProfile>,
     myPosts: LazyPagingItems<Post>,
     navController: NavHostController,
     appointmentsNumber: Int,
     notificationsNumber: Int,
+    onLogout: () -> Unit
 ) {
     NavHost(
         navController = navController,
@@ -75,7 +75,7 @@ fun MyProfileNavHost(
             myBusinessGraph(navController)
             settingsGraph(
                 navController = navController,
-                authViewModel = authViewModel
+                onLogout = onLogout
             )
         }
     }

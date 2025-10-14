@@ -1,8 +1,8 @@
 package com.example.scrollbooker.navigation.host
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.example.scrollbooker.entity.auth.data.remote.RoleNameEnum
 import com.example.scrollbooker.navigation.routes.AuthRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
@@ -16,9 +16,10 @@ import com.example.scrollbooker.ui.auth.RegisterClientScreen
 import com.example.scrollbooker.ui.onboarding.shared.CollectEmailVerificationScreen
 
 @Composable
-fun AuthNavHost(authViewModel: AuthViewModel) {
-    val navController = rememberNavController()
-
+fun AuthNavHost(
+    authViewModel: AuthViewModel,
+    navController: NavHostController
+) {
     NavHost(
         navController = navController,
         startDestination = AuthRoute.Login.route

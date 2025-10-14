@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.userProducts
+package com.example.scrollbooker.ui.shared.products
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -18,7 +18,6 @@ import com.example.scrollbooker.components.core.avatar.AvatarWithRating
 import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
-import com.example.scrollbooker.ui.shared.modules.products.UserProductsServiceTabs
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.titleMedium
 

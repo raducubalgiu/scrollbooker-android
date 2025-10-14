@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.modules.calendar.components
+package com.example.scrollbooker.ui.shared.calendar.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

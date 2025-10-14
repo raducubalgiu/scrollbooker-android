@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.modules.calendar
+package com.example.scrollbooker.ui.shared.calendar
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState

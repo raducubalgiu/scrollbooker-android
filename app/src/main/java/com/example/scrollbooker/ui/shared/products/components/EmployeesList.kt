@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.userProducts.components
+package com.example.scrollbooker.ui.shared.products.components
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Spacer

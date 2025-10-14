@@ -102,7 +102,7 @@ fun PostOverlayActions(
             onClick = onShowBottomBar,
             colors = IconButtonDefaults.iconButtonColors(
                 containerColor = Color.Black.copy(alpha = 0.5f),
-                contentColor = Color.Black.copy(alpha = 0.5f)
+                contentColor = Color.White
             )
         ) {
             Icon(
