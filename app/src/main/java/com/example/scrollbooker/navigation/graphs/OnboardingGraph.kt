@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.example.scrollbooker.R
 import com.example.scrollbooker.navigation.routes.AuthRoute
+import com.example.scrollbooker.navigation.routes.OnboardingRoute
 import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessServices.MyServicesScreen
 import com.example.scrollbooker.ui.auth.AuthViewModel
 import com.example.scrollbooker.ui.myBusiness.myBusinessLocation.MyBusinessLocationViewModel
@@ -32,6 +33,7 @@ import com.example.scrollbooker.ui.onboarding.client.CollectClientGenderScreen
 import com.example.scrollbooker.ui.onboarding.client.CollectClientGenderViewModel
 import com.example.scrollbooker.ui.onboarding.client.CollectClientLocationPermissionScreen
 import com.example.scrollbooker.ui.onboarding.client.CollectClientLocationPermissionViewModel
+import com.example.scrollbooker.ui.onboarding.shared.CollectEmailVerificationScreen
 import com.example.scrollbooker.ui.onboarding.shared.CollectUserUsernameScreen
 import com.example.scrollbooker.ui.onboarding.shared.CollectUserUsernameViewModel
 import kotlinx.coroutines.launch
@@ -41,7 +43,16 @@ fun NavGraphBuilder.onBoardingGraph(
     navController: NavHostController
 ) {
     // Shared
-    composable(AuthRoute.CollectUserUsername.route) { backStackEntry ->
+    composable(OnboardingRoute.CollectEmailVerification.route) {
+        CollectEmailVerificationScreen(
+            onNext = {
+                authViewModel.verifyEmail()
+                navController.navigate(OnboardingRoute.CollectUserUsername.route)
+            },
+        )
+    }
+
+    composable(OnboardingRoute.CollectUserUsername.route) { backStackEntry ->
         val scope = rememberCoroutineScope()
         val viewModel: CollectUserUsernameViewModel = hiltViewModel(backStackEntry)
 
@@ -58,7 +69,7 @@ fun NavGraphBuilder.onBoardingGraph(
         )
     }
 
-    composable(AuthRoute.CollectClientLocationPermission.route) { backStackEntry ->
+    composable(OnboardingRoute.CollectClientLocationPermission.route) { backStackEntry ->
         val viewModel: CollectClientLocationPermissionViewModel = hiltViewModel(backStackEntry)
 
         CollectClientLocationPermissionScreen(
@@ -74,7 +85,7 @@ fun NavGraphBuilder.onBoardingGraph(
     }
 
     // Client
-    composable(AuthRoute.CollectClientBirthDate.route) { backStackEntry ->
+    composable(OnboardingRoute.CollectClientBirthDate.route) { backStackEntry ->
         val viewModel: CollectClientBirthDateViewModel = hiltViewModel(backStackEntry)
 
         CollectClientBirthDateScreen(
@@ -89,7 +100,7 @@ fun NavGraphBuilder.onBoardingGraph(
         )
     }
 
-    composable(AuthRoute.CollectClientGender.route) { backStackEntry ->
+    composable(OnboardingRoute.CollectClientGender.route) { backStackEntry ->
         val viewModel: CollectClientGenderViewModel = hiltViewModel(backStackEntry)
 
         CollectClientGenderScreen(
@@ -106,37 +117,37 @@ fun NavGraphBuilder.onBoardingGraph(
 
     // Business
     navigation(
-        route = AuthRoute.CollectBusiness.route,
-        startDestination = AuthRoute.CollectBusinessType.route
+        route = OnboardingRoute.CollectBusiness.route,
+        startDestination = OnboardingRoute.CollectBusinessType.route
     ) {
-        composable(route = AuthRoute.CollectBusinessType.route) { backStackEntry ->
+        composable(route = OnboardingRoute.CollectBusinessType.route) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(AuthRoute.CollectBusiness.route)
+                navController.getBackStackEntry(OnboardingRoute.CollectBusiness.route)
             }
             val viewModel: MyBusinessLocationViewModel = hiltViewModel(parentEntry)
 
             CollectBusinessTypeScreen(
                 viewModel = viewModel,
-                onNext = { navController.navigate(AuthRoute.CollectBusinessDetails.route) },
+                onNext = { navController.navigate(OnboardingRoute.CollectBusinessDetails.route) },
             )
         }
 
-        composable(route = AuthRoute.CollectBusinessDetails.route) { backStackEntry ->
+        composable(route = OnboardingRoute.CollectBusinessDetails.route) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(AuthRoute.CollectBusiness.route)
+                navController.getBackStackEntry(OnboardingRoute.CollectBusiness.route)
             }
             val viewModel: MyBusinessLocationViewModel = hiltViewModel(parentEntry)
 
             CollectBusinessDetailsScreen(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
-                onNext = { navController.navigate(AuthRoute.CollectBusinessLocation.route) }
+                onNext = { navController.navigate(OnboardingRoute.CollectBusinessLocation.route) }
             )
         }
 
-        composable(route = AuthRoute.CollectBusinessLocation.route) { backStackEntry ->
+        composable(route = OnboardingRoute.CollectBusinessLocation.route) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(AuthRoute.CollectBusiness.route)
+                navController.getBackStackEntry(OnboardingRoute.CollectBusiness.route)
             }
             val viewModel: MyBusinessLocationViewModel = hiltViewModel(parentEntry)
 
@@ -144,15 +155,15 @@ fun NavGraphBuilder.onBoardingGraph(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
                 onNextOrSave = {
-                    navController.navigate(AuthRoute.CollectBusinessGallery.route)
+                    navController.navigate(OnboardingRoute.CollectBusinessGallery.route)
                 }
             )
         }
 
-        composable(route = AuthRoute.CollectBusinessGallery.route) { backStackEntry ->
+        composable(route = OnboardingRoute.CollectBusinessGallery.route) { backStackEntry ->
             val scope = rememberCoroutineScope()
             val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(AuthRoute.CollectBusiness.route)
+                navController.getBackStackEntry(OnboardingRoute.CollectBusiness.route)
             }
             val viewModel: MyBusinessLocationViewModel = hiltViewModel(parentEntry)
 
@@ -172,7 +183,7 @@ fun NavGraphBuilder.onBoardingGraph(
         }
     }
 
-    composable(AuthRoute.CollectBusinessServices.route) { backStackEntry ->
+    composable(OnboardingRoute.CollectBusinessServices.route) { backStackEntry ->
         val scope = rememberCoroutineScope()
         val viewModel: CollectBusinessServicesViewModel = hiltViewModel(backStackEntry)
         val buttonTitle = stringResource(R.string.nextStep)
@@ -180,7 +191,7 @@ fun NavGraphBuilder.onBoardingGraph(
         CollectBusinessServicesScreen(
             viewModel = viewModel,
             buttonTitle = buttonTitle,
-            onBack = { navController.navigate(AuthRoute.CollectBusinessLocation.route) },
+            onBack = { navController.navigate(OnboardingRoute.CollectBusinessLocation.route) },
             onNextOrSave = {
                 scope.launch {
                     val authState = viewModel.updateBusinessServices()
@@ -192,13 +203,13 @@ fun NavGraphBuilder.onBoardingGraph(
         )
     }
 
-    composable(AuthRoute.CollectBusinessSchedules.route) { backStackEntry ->
+    composable(OnboardingRoute.CollectBusinessSchedules.route) { backStackEntry ->
         val scope = rememberCoroutineScope()
         val viewModel: CollectBusinessSchedulesViewModel = hiltViewModel(backStackEntry)
 
         CollectBusinessSchedulesScreen(
             viewModel = viewModel,
-            onBack = { navController.navigate(AuthRoute.CollectBusinessServices.route) },
+            onBack = { navController.navigate(OnboardingRoute.CollectBusinessServices.route) },
             onNextOrSave = {
                 scope.launch {
                     val authState = viewModel.updateSchedules()
@@ -210,7 +221,7 @@ fun NavGraphBuilder.onBoardingGraph(
         )
     }
 
-    composable(AuthRoute.CollectBusinessHasEmployees.route) { backStackEntry ->
+    composable(OnboardingRoute.CollectBusinessHasEmployees.route) { backStackEntry ->
         val scope = rememberCoroutineScope()
         val viewModel: CollectBusinessHasEmployeesViewModel = hiltViewModel(backStackEntry)
 
@@ -227,7 +238,7 @@ fun NavGraphBuilder.onBoardingGraph(
         )
     }
 
-    composable(AuthRoute.CollectBusinessValidation.route) { backStackEntry ->
+    composable(OnboardingRoute.CollectBusinessValidation.route) { backStackEntry ->
         CollectBusinessValidationScreen()
     }
 }

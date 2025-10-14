@@ -20,11 +20,7 @@ import com.example.scrollbooker.ui.theme.ScrollBookerTheme
 import com.jakewharton.threetenabp.AndroidThreeTen
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import com.example.scrollbooker.navigation.LocalRootNavController
-import com.example.scrollbooker.navigation.LocalTabsController
-import com.example.scrollbooker.navigation.TabsController
-import com.example.scrollbooker.navigation.TabsViewModel
 import com.example.scrollbooker.navigation.host.RootNavHost
 import com.example.scrollbooker.ui.auth.AuthViewModel
 
@@ -35,7 +31,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         val viewModel by viewModels<AuthViewModel>()
-        val tabsViewModel by viewModels<TabsViewModel>()
 
         splashScreen.setKeepOnScreenCondition {
             viewModel.authState.value is FeatureState.Loading
@@ -49,22 +44,14 @@ class MainActivity : ComponentActivity() {
             val rootNavController = rememberNavController()
             val themePreferenceEnum by themeViewModel.themePreferences.collectAsState()
 
-            val tabsController = remember(tabsViewModel) {
-                TabsController(
-                    currentTab = tabsViewModel.currentTab,
-                    setTab = tabsViewModel::setTab
-                )
-            }
-
             CompositionLocalProvider(
-                LocalRootNavController provides rootNavController,
-                LocalTabsController provides tabsController
+                LocalRootNavController provides rootNavController
             ) {
                 ScrollBookerTheme(themePreferenceEnum) {
                     Surface(Modifier.fillMaxSize().background(Background)) {
                         RootNavHost(
                             navController = rootNavController,
-                            viewModel = viewModel
+                            authViewModel = viewModel
                         )
                     }
                 }

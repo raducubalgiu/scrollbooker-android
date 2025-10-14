@@ -1,6 +1,7 @@
 package com.example.scrollbooker.navigation.routes
 
-object GlobalRoute {
+object RootRoute {
     const val AUTH = "auth"
     const val MAIN = "main"
+    const val ONBOARDING = "onboarding"
 }

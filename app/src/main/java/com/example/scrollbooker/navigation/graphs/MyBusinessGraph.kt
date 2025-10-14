@@ -159,9 +159,7 @@ fun NavGraphBuilder.myBusinessGraph(
             }
         }
 
-        composable(
-            MainRoute.MySchedules.route,
-        ) { backStackEntry ->
+        composable(MainRoute.MySchedules.route) { backStackEntry ->
             val viewModel = hiltViewModel<MySchedulesViewModel>(backStackEntry)
             val coroutineScope = rememberCoroutineScope()
 

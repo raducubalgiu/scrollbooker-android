@@ -12,7 +12,7 @@ import androidx.navigation.compose.navigation
 import com.example.scrollbooker.navigation.LocalRootNavController
 import com.example.scrollbooker.navigation.LocalTabsController
 import com.example.scrollbooker.navigation.bottomBar.MainTab
-import com.example.scrollbooker.navigation.routes.GlobalRoute
+import com.example.scrollbooker.navigation.routes.RootRoute
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
@@ -83,10 +83,10 @@ fun NavGraphBuilder.calendarGraph(navController: NavHostController) {
                         val result = viewModel.createAppointment()
 
                         result.onSuccess {
-                            val mainEntry = root.getBackStackEntry(GlobalRoute.MAIN)
+                            val mainEntry = root.getBackStackEntry(RootRoute.MAIN)
                             mainEntry.savedStateHandle["APPOINTMENT_CREATED"] = true
 
-                            root.popBackStack(GlobalRoute.MAIN, inclusive = false)
+                            root.popBackStack(RootRoute.MAIN, inclusive = false)
                             tabs.setTab(MainTab.Appointments)
                         }
                     }
