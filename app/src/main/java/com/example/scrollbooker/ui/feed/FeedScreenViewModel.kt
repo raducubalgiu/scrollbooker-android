@@ -14,6 +14,7 @@ import com.example.scrollbooker.entity.social.post.domain.useCase.LikePostUseCas
 import com.example.scrollbooker.entity.social.post.domain.useCase.UnBookmarkPostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.UnLikePostUseCase
 import com.example.scrollbooker.ui.profile.components.ProfileLayout
+import com.example.scrollbooker.ui.shared.posts.PostActionUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow

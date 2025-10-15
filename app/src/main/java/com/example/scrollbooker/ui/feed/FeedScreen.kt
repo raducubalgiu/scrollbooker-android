@@ -21,7 +21,8 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.ui.feed.components.FeedTabs
 import com.example.scrollbooker.ui.feed.drawer.FeedDrawer
-import com.example.scrollbooker.ui.modules.posts.components.PostBottomBar
+import com.example.scrollbooker.ui.shared.posts.PostScreen
+import com.example.scrollbooker.ui.shared.posts.components.PostBottomBar
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import kotlinx.coroutines.launch
 
@@ -98,7 +99,7 @@ fun FeedScreen(
                 ) { page ->
                     when(page) {
                         0 -> {
-                            VerticalPostPager(
+                            PostScreen(
                                 feedViewModel = feedViewModel,
                                 posts = explorePosts,
                                 drawerState = drawerState,
@@ -110,7 +111,7 @@ fun FeedScreen(
                         1 -> {
                             val followingPosts = feedViewModel.followingPosts.collectAsLazyPagingItems()
 
-                            VerticalPostPager(
+                            PostScreen(
                                 feedViewModel = feedViewModel,
                                 posts = followingPosts,
                                 drawerState = drawerState,
