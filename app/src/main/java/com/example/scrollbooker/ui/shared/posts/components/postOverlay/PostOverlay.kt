@@ -85,11 +85,12 @@ fun PostOverlay(
                 Spacer(Modifier.height(SpacingM))
 
                 PostOverlayUser(
-                    fullName = post.user.fullName,
-                    profession = post.user.profession ?: "",
-                    ratingsAverage = "4.5",
+                    user = post.user,
+                    businessOwner = post.businessOwner,
+                    employee = post.employee,
+                    isVideoReview = post.isVideoReview,
                     distance = 5f,
-                    onNavigateToUser = { onNavigateToUserProfile(post.user.id) }
+                    onNavigateToUser = onNavigateToUserProfile
                 )
 
                 Spacer(Modifier.height(SpacingM))

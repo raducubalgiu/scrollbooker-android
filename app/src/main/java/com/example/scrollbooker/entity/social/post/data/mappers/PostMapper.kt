@@ -2,8 +2,10 @@ package com.example.scrollbooker.entity.social.post.data.mappers
 import com.example.scrollbooker.entity.social.post.data.remote.FixedSlotsDto
 import com.example.scrollbooker.entity.social.post.data.remote.HashtagDto
 import com.example.scrollbooker.entity.social.post.data.remote.LastMinuteDto
+import com.example.scrollbooker.entity.social.post.data.remote.PostBusinessOwnerDto
 import com.example.scrollbooker.entity.social.post.data.remote.PostCountersDto
 import com.example.scrollbooker.entity.social.post.data.remote.PostDto
+import com.example.scrollbooker.entity.social.post.data.remote.PostEmployeeDto
 import com.example.scrollbooker.entity.social.post.data.remote.PostMediaFileDto
 import com.example.scrollbooker.entity.social.post.data.remote.PostProductCurrencyDto
 import com.example.scrollbooker.entity.social.post.data.remote.PostProductDto
@@ -12,7 +14,9 @@ import com.example.scrollbooker.entity.social.post.domain.model.FixedSlots
 import com.example.scrollbooker.entity.social.post.domain.model.Hashtag
 import com.example.scrollbooker.entity.social.post.domain.model.LastMinute
 import com.example.scrollbooker.entity.social.post.domain.model.Post
+import com.example.scrollbooker.entity.social.post.domain.model.PostBusinessOwner
 import com.example.scrollbooker.entity.social.post.domain.model.PostCounters
+import com.example.scrollbooker.entity.social.post.domain.model.PostEmployee
 import com.example.scrollbooker.entity.social.post.domain.model.PostMediaFile
 import com.example.scrollbooker.entity.social.post.domain.model.PostProduct
 import com.example.scrollbooker.entity.social.post.domain.model.PostProductCurrency
@@ -25,17 +29,35 @@ fun PostDto.toDomain(): Post {
         id = id,
         description = description,
         user = user.toDomain(),
+        businessOwner = businessOwner.toDomain(),
+        employee = employee?.toDomain(),
         product = product?.toDomain(),
         userActions = userActions.toDomain(),
         mediaFiles = mediaFiles.map { it.toDomain() },
         counters = counters.toDomain(),
         mentions = mentions,
         hashtags = hashtags.map { it.toDomain() },
+        isVideoReview = isVideoReview,
         bookable = bookable,
         businessId = businessId,
-        instantBooking = instantBooking,
         lastMinute = lastMinute.toDomain(),
         createdAt = createdAt,
+    )
+}
+
+fun PostBusinessOwnerDto.toDomain(): PostBusinessOwner {
+    return PostBusinessOwner(
+        id = id,
+        fullName = fullName,
+        avatar = avatar
+    )
+}
+
+fun PostEmployeeDto.toDomain(): PostEmployee {
+    return PostEmployee(
+        id = id,
+        fullName = fullName,
+        avatar = avatar
     )
 }
 

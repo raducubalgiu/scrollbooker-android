@@ -9,6 +9,11 @@ data class PostDto(
 
     val user: UserSocialDto,
 
+    @SerializedName("business_owner")
+    val businessOwner: PostBusinessOwnerDto,
+
+    val employee: PostEmployeeDto?,
+
     val product: PostProductDto?,
     val counters: PostCountersDto,
 
@@ -20,19 +25,38 @@ data class PostDto(
 
     val mentions: List<UserSocialDto>,
     val hashtags: List<HashtagDto>,
+
+    @SerializedName("is_video_review")
+    val isVideoReview: Boolean,
+
     val bookable: Boolean,
 
     @SerializedName("business_id")
     val businessId: Int?,
-
-    @SerializedName("instant_booking")
-    val instantBooking: Boolean,
 
     @SerializedName("last_minute")
     val lastMinute: LastMinuteDto,
 
     @SerializedName("created_at")
     val createdAt: String
+)
+
+data class PostBusinessOwnerDto(
+    val id: Int,
+
+    @SerializedName("fullname")
+    val fullName: String,
+
+    val avatar: String?
+)
+
+data class PostEmployeeDto(
+    val id: Int,
+
+    @SerializedName("fullname")
+    val fullName: String,
+
+    val avatar: String?
 )
 
 data class PostProductDto(

@@ -7,17 +7,31 @@ data class Post(
     val id: Int,
     val description: String?,
     val user: UserSocial,
+    val businessOwner: PostBusinessOwner,
+    val employee: PostEmployee?,
     val product: PostProduct?,
     val userActions: UserPostActions,
     val mediaFiles: List<PostMediaFile>,
     val counters: PostCounters,
     val mentions: List<UserSocialDto>,
     val hashtags: List<Hashtag>,
+    val isVideoReview: Boolean,
     val bookable: Boolean,
     val businessId: Int?,
-    val instantBooking: Boolean,
     val lastMinute: LastMinute,
     val createdAt: String
+)
+
+data class PostBusinessOwner(
+    val id: Int,
+    val fullName: String,
+    val avatar: String?
+)
+
+data class PostEmployee(
+    val id: Int,
+    val fullName: String,
+    val avatar: String?
 )
 
 data class PostProduct(

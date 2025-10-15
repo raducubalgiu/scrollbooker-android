@@ -19,30 +19,31 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.core.util.Dimens.AvatarSizeXXS
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.core.util.Dimens.SpacingXS
+import com.example.scrollbooker.entity.social.post.domain.model.PostBusinessOwner
+import com.example.scrollbooker.entity.social.post.domain.model.PostEmployee
+import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
 
 @Composable
 fun PostOverlayUser(
-    fullName: String,
-    profession: String,
-    ratingsAverage: String,
+    user: UserSocial,
+    businessOwner: PostBusinessOwner,
+    employee: PostEmployee?,
+    isVideoReview: Boolean,
     distance: Float?,
-    onNavigateToUser: () -> Unit
+    onNavigateToUser: (Int) -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+    val isBusiness = user.id == businessOwner.id
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -52,13 +53,13 @@ fun PostOverlayUser(
             Column(
                 modifier = Modifier
                     .clickable(
-                        onClick = onNavigateToUser,
+                        onClick = { onNavigateToUser(user.id) },
                         interactionSource = interactionSource,
                         indication = null
                     )
             ) {
                 Text(
-                    text = fullName,
+                    text = user.fullName,
                     style = bodyLarge,
                     fontWeight = FontWeight.SemiBold,
                     color = Color.White,
@@ -66,121 +67,229 @@ fun PostOverlayUser(
                 )
             }
 
-            Spacer(Modifier.height(SpacingS))
+            when {
+                isVideoReview && employee != null -> {
+                   Column {
+                       Spacer(Modifier.height(SpacingS))
 
-            Text(
-                text = profession,
-                style = TextStyle(
-                    shadow = Shadow(
-                        color = Color.Black.copy(alpha = 0.6f),
-                        offset = Offset(1f, 1f),
-                        blurRadius = 3f
-                    ),
-                    fontSize = 16.sp,
-                    lineHeight = 24.sp,
-                    letterSpacing = 0.5.sp
-                ),
-                fontWeight = FontWeight.SemiBold,
-                color = Primary.copy(alpha = 0.85f)
-            )
+                       Text(
+                           text = user.profession ?: "",
+                           style = TextStyle(
+                               shadow = Shadow(
+                                   color = Color.Black.copy(alpha = 0.6f),
+                                   offset = Offset(1f, 1f),
+                                   blurRadius = 3f
+                               ),
+                               fontSize = 16.sp,
+                               lineHeight = 24.sp,
+                               letterSpacing = 0.5.sp
+                           ),
+                           fontWeight = FontWeight.SemiBold,
+                           color = Primary.copy(alpha = 0.85f)
+                       )
 
-            Spacer(Modifier.height(SpacingS))
+                       Spacer(Modifier.height(SpacingS))
+                       Row(
+                           modifier = Modifier.fillMaxWidth(),
+                           verticalAlignment = Alignment.CenterVertically
+                       ) {
+                           Icon(
+                               imageVector = Icons.Default.Repeat,
+                               contentDescription = "Repeat Icon",
+                               tint = Primary
+                           )
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Repeat,
-                    contentDescription = "Repeat Icon",
-                    tint = Primary
-                )
-                Spacer(Modifier.width(SpacingM))
-                Avatar(
-                    url = "",
-                    size = AvatarSizeXXS
-                )
-                Spacer(Modifier.width(SpacingM))
-                Text(
-                    text = "Frizeria Figaro",
-                    style = bodyMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.White,
-                    fontSize = 16.sp
-                )
-                Spacer(Modifier.width(SpacingS))
-                Text(
-                    text = "$distance km",
-                    style = TextStyle(
-                        shadow = Shadow(
-                            color = Color.Black.copy(alpha = 0.6f),
-                            offset = Offset(1f, 1f),
-                            blurRadius = 3f
-                        ),
-                        fontSize = 16.sp,
-                        lineHeight = 24.sp,
-                        letterSpacing = 0.5.sp
-                    ),
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.White.copy(alpha = 0.85f)
-                )
-                Spacer(Modifier.width(SpacingS))
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowDown,
-                    contentDescription = null,
-                    tint = Color.White.copy(alpha = 0.85f),
-                )
+                           Spacer(Modifier.width(SpacingM))
+
+                           Row(
+                               modifier = Modifier.clickable(
+                                   interactionSource = interactionSource,
+                                   indication = null,
+                                   onClick = { onNavigateToUser(employee.id) }
+                               ),
+                               verticalAlignment = Alignment.CenterVertically
+                           ) {
+                               Avatar(
+                                   url = employee.avatar ?: "",
+                                   size = AvatarSizeXXS
+                               )
+
+                               Spacer(Modifier.width(SpacingM))
+
+                               Text(
+                                   text = employee.fullName,
+                                   style = bodyMedium,
+                                   fontWeight = FontWeight.SemiBold,
+                                   color = Color.White,
+                                   fontSize = 16.sp
+                               )
+                           }
+
+                           Spacer(Modifier.width(SpacingS))
+
+                           Text(
+                               text = "$distance km",
+                               style = TextStyle(
+                                   shadow = Shadow(
+                                       color = Color.Black.copy(alpha = 0.6f),
+                                       offset = Offset(1f, 1f),
+                                       blurRadius = 3f
+                                   ),
+                                   fontSize = 16.sp,
+                                   lineHeight = 24.sp,
+                                   letterSpacing = 0.5.sp
+                               ),
+                               fontWeight = FontWeight.SemiBold,
+                               color = Color.White.copy(alpha = 0.85f)
+                           )
+
+                           Spacer(Modifier.width(SpacingS))
+
+                           Icon(
+                               imageVector = Icons.Default.KeyboardArrowDown,
+                               contentDescription = null,
+                               tint = Color.White.copy(alpha = 0.85f),
+                           )
+                       }
+                   }
+                }
+
+                !isBusiness -> {
+                    Column {
+                        Spacer(Modifier.height(SpacingS))
+
+                        Text(
+                            text = user.profession ?: "",
+                            style = TextStyle(
+                                shadow = Shadow(
+                                    color = Color.Black.copy(alpha = 0.6f),
+                                    offset = Offset(1f, 1f),
+                                    blurRadius = 3f
+                                ),
+                                fontSize = 16.sp,
+                                lineHeight = 24.sp,
+                                letterSpacing = 0.5.sp
+                            ),
+                            fontWeight = FontWeight.SemiBold,
+                            color = Primary.copy(alpha = 0.85f)
+                        )
+
+                        Spacer(Modifier.height(SpacingS))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Repeat,
+                                contentDescription = "Repeat Icon",
+                                tint = Primary
+                            )
+
+                            Spacer(Modifier.width(SpacingM))
+
+                            Row(
+                                modifier = Modifier.clickable(
+                                    interactionSource = interactionSource,
+                                    indication = null,
+                                    onClick = { onNavigateToUser(businessOwner.id) }
+                                ),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Avatar(
+                                    url = businessOwner.avatar ?: "",
+                                    size = AvatarSizeXXS
+                                )
+
+                                Spacer(Modifier.width(SpacingM))
+
+                                Text(
+                                    text = businessOwner.fullName,
+                                    style = bodyMedium,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = Color.White,
+                                    fontSize = 16.sp
+                                )
+                            }
+
+                            Spacer(Modifier.width(SpacingS))
+
+                            Text(
+                                text = "$distance km",
+                                style = TextStyle(
+                                    shadow = Shadow(
+                                        color = Color.Black.copy(alpha = 0.6f),
+                                        offset = Offset(1f, 1f),
+                                        blurRadius = 3f
+                                    ),
+                                    fontSize = 16.sp,
+                                    lineHeight = 24.sp,
+                                    letterSpacing = 0.5.sp
+                                ),
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color.White.copy(alpha = 0.85f)
+                            )
+
+                            Spacer(Modifier.width(SpacingS))
+
+                            Icon(
+                                imageVector = Icons.Default.KeyboardArrowDown,
+                                contentDescription = null,
+                                tint = Color.White.copy(alpha = 0.85f),
+                            )
+                        }
+                    }
+                }
+
+                else -> {
+                    Column {
+                        Spacer(Modifier.height(SpacingS))
+
+                        Row {
+                            Text(
+                                text = user.profession ?: "",
+                                style = TextStyle(
+                                    shadow = Shadow(
+                                        color = Color.Black.copy(alpha = 0.6f),
+                                        offset = Offset(1f, 1f),
+                                        blurRadius = 3f
+                                    ),
+                                    fontSize = 16.sp,
+                                    lineHeight = 24.sp,
+                                    letterSpacing = 0.5.sp
+                                ),
+                                fontWeight = FontWeight.SemiBold,
+                                color = Primary.copy(alpha = 0.85f)
+                            )
+
+                            Spacer(Modifier.width(SpacingS))
+
+                            Text(
+                                text = "$distance km",
+                                style = TextStyle(
+                                    shadow = Shadow(
+                                        color = Color.Black.copy(alpha = 0.6f),
+                                        offset = Offset(1f, 1f),
+                                        blurRadius = 3f
+                                    ),
+                                    fontSize = 16.sp,
+                                    lineHeight = 24.sp,
+                                    letterSpacing = 0.5.sp
+                                ),
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color.White.copy(alpha = 0.85f)
+                            )
+
+                            Spacer(Modifier.width(SpacingS))
+
+                            Icon(
+                                imageVector = Icons.Default.KeyboardArrowDown,
+                                contentDescription = null,
+                                tint = Color.White.copy(alpha = 0.85f),
+                            )
+                        }
+                    }
+                }
             }
-
-//            Row(verticalAlignment = Alignment.CenterVertically) {
-//                Text(
-//                    text = profession,
-//                    style = TextStyle(
-//                        shadow = Shadow(
-//                            color = Color.Black.copy(alpha = 0.6f),
-//                            offset = Offset(1f, 1f),
-//                            blurRadius = 3f
-//                        ),
-//                        fontSize = 16.sp,
-//                        lineHeight = 24.sp,
-//                        letterSpacing = 0.5.sp
-//                    ),
-//                    fontWeight = FontWeight.SemiBold,
-//                    color = Primary.copy(alpha = 0.85f)
-//                )
-//                distance?.let {
-//                    Spacer(Modifier.width(SpacingM))
-//                    Row(verticalAlignment = Alignment.CenterVertically) {
-//                        Icon(
-//                            painter = painterResource(R.drawable.ic_location_outline),
-//                            contentDescription = null,
-//                            tint = Color.White.copy(alpha = 0.85f)
-//                        )
-//                        Spacer(Modifier.width(SpacingXS))
-//                        Text(
-//                            text = "$distance km",
-//                            style = TextStyle(
-//                                shadow = Shadow(
-//                                    color = Color.Black.copy(alpha = 0.6f),
-//                                    offset = Offset(1f, 1f),
-//                                    blurRadius = 3f
-//                                ),
-//                                fontSize = 16.sp,
-//                                lineHeight = 24.sp,
-//                                letterSpacing = 0.5.sp
-//                            ),
-//                            fontWeight = FontWeight.SemiBold,
-//                            color = Color.White.copy(alpha = 0.85f)
-//                        )
-//                        Spacer(Modifier.width(SpacingS))
-//                        Icon(
-//                            imageVector = Icons.Default.KeyboardArrowDown,
-//                            contentDescription = null,
-//                            tint = Color.White.copy(alpha = 0.85f),
-//                        )
-//                    }
-//                }
-//            }
         }
     }
 }

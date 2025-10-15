@@ -3,6 +3,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -30,41 +31,46 @@ fun ProfilePostsTab(
     posts: LazyPagingItems<Post>,
     onNavigateToPostDetail: (Int) -> Unit
 ) {
-    when(posts.loadState.refresh) {
-        is LoadState.Error -> ErrorScreen()
-        is LoadState.Loading -> Unit
-        is LoadState.NotLoading -> {
-            Box(Modifier.fillMaxSize()) {
-                if(posts.itemCount == 0) {
-                    EmptyScreen(
-                        modifier = Modifier.padding(top = 50.dp + paddingTop),
-                        arrangement = Arrangement.Top,
-                        message = if(isOwnProfile) "Inca nu ai postat nici un review video" else stringResource(R.string.notFoundPosts),
-                        icon = painterResource(R.drawable.ic_video_outline)
-                    )
-                }
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(top = paddingTop)
+    ) {
+        when(posts.loadState.refresh) {
+            is LoadState.Error -> ErrorScreen()
+            is LoadState.Loading -> Unit
+            is LoadState.NotLoading -> {
+                Box(Modifier.fillMaxSize()) {
+                    if(posts.itemCount == 0) {
+                        EmptyScreen(
+                            modifier = Modifier.padding(top = 50.dp),
+                            arrangement = Arrangement.Top,
+                            message = stringResource(R.string.notFoundPosts),
+                            icon = painterResource(R.drawable.ic_video_outline)
+                        )
+                    }
 
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(3),
-                    verticalArrangement = Arrangement.spacedBy(1.dp),
-                    horizontalArrangement = Arrangement.spacedBy(1.dp),
-                    modifier = Modifier.fillMaxSize().padding(top = paddingTop)
-                ) {
-                    items(posts.itemCount) { index ->
-                        val post = posts[index]
-                        if(post != null) {
-                            PostGrid(
-                                post = post,
-                                onNavigateToPost = onNavigateToPostDetail
-                            )
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(3),
+                        verticalArrangement = Arrangement.spacedBy(1.dp),
+                        horizontalArrangement = Arrangement.spacedBy(1.dp),
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        items(posts.itemCount) { index ->
+                            val post = posts[index]
+                            if(post != null) {
+                                PostGrid(
+                                    post = post,
+                                    onNavigateToPost = onNavigateToPostDetail
+                                )
+                            }
                         }
                     }
-                }
 
-                when(posts.loadState.append) {
-                    is LoadState.Loading -> LoadMoreSpinner()
-                    is LoadState.Error -> { Text("Ceva nu a mers cum trebuie") }
-                    is LoadState.NotLoading -> Unit
+                    when(posts.loadState.append) {
+                        is LoadState.Loading -> LoadMoreSpinner()
+                        is LoadState.Error -> { Text("Ceva nu a mers cum trebuie") }
+                        is LoadState.NotLoading -> Unit
+                    }
                 }
             }
         }
