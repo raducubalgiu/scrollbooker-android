@@ -40,7 +40,7 @@ import timber.log.Timber
 @Composable
 fun AvatarWithRating(
     modifier: Modifier = Modifier,
-    url: String =  "https://media.scrollbooker.ro/frizerie-1-cover.jpg",
+    url: String,
     rating: Float?,
     size: Dp = 75.dp,
     onClick: () -> Unit

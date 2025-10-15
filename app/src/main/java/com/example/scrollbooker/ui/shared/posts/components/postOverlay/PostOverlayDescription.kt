@@ -34,7 +34,7 @@ fun PostOverlayDescription(description: String) {
             modifier = Modifier.animateContentSize(),
             text = description,
             color = Color.White,
-            maxLines = if(isDescriptionCollapsed) Int.MAX_VALUE else 2,
+            maxLines = if(isDescriptionCollapsed) Int.MAX_VALUE else 1,
             overflow = if(isDescriptionCollapsed) TextOverflow.Visible else TextOverflow.Ellipsis
         )
     }

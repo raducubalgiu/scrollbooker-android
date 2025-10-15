@@ -39,6 +39,7 @@ fun UserProductsScreen(
             verticalArrangement = Arrangement.Center
         ) {
             AvatarWithRating(
+                url = "",
                 rating = 4.5f,
                 size = 100.dp,
                 onClick = {}

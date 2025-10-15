@@ -94,10 +94,15 @@ fun PostVerticalPager(
                     onNavigateToProducts = { feedNavigate.toUserProducts(userId = post.user.id) }
                 )
 
-                PostControls(visible = playerState.hasStartedPlayback &&
+                PostControls(
+                    player = player,
+                    post = post,
+                    isPlaying = playerState.isPlaying,
+                    visible = playerState.hasStartedPlayback &&
                         !playerState.isPlaying &&
                         !playerState.isBuffering &&
-                        !isDrawerOpen)
+                        !isDrawerOpen
+                )
             }
         }
     }

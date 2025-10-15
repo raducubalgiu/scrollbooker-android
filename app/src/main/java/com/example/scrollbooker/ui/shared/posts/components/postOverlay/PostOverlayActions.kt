@@ -66,14 +66,14 @@ fun PostOverlayActions(
             }
         )
 
-        PostActionButton(
-            counter = 120,
-            icon = painterResource(R.drawable.ic_clipboard_check_solid),
-            tint = Color.White,
-            onClick = {
-                //onAction(PostOverlayActionEnum.OPEN_REVIEWS)
-            }
-        )
+//        PostActionButton(
+//            counter = 120,
+//            icon = painterResource(R.drawable.ic_clipboard_check_solid),
+//            tint = Color.White,
+//            onClick = {
+//                //onAction(PostOverlayActionEnum.OPEN_REVIEWS)
+//            }
+//        )
 
         PostActionButton(
             counter = counters.commentCount,
