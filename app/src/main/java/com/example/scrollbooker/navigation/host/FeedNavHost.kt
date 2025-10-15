@@ -40,10 +40,7 @@ fun FeedNavHost(
         popEnterTransition = { slideInFromLeft() },
         popExitTransition = { slideOutToRight() }
     ) {
-        composable(route = MainRoute.Feed.route,
-            popEnterTransition = { EnterTransition.None },
-            popExitTransition = { ExitTransition.None }
-        ) { backStackEntry ->
+        composable(route = MainRoute.Feed.route) { backStackEntry ->
             FeedScreen(feedNavigate)
         }
 

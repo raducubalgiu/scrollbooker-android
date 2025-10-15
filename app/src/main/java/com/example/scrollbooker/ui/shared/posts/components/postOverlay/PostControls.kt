@@ -52,26 +52,26 @@ fun PostControls(
         }
     }
 
-    var progress by remember(post.id) { mutableFloatStateOf(0f) }
-
-    LaunchedEffect(player) {
-        while (true) {
-            val duration = player.duration.takeIf { it > 0 } ?: 1L
-            val position = player.currentPosition
-            progress = (position / duration.toFloat()).coerceIn(0f, 1f)
-            delay(100)
-        }
-    }
-
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.BottomCenter
-    ) {
-        VideoSlider(
-            progress = progress,
-            isPlaying = isPlaying,
-            onSeek = {},
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
+//    var progress by remember(post.id) { mutableFloatStateOf(0f) }
+//
+//    LaunchedEffect(player) {
+//        while (true) {
+//            val duration = player.duration.takeIf { it > 0 } ?: 1L
+//            val position = player.currentPosition
+//            progress = (position / duration.toFloat()).coerceIn(0f, 1f)
+//            delay(100)
+//        }
+//    }
+//
+//    Box(
+//        modifier = Modifier.fillMaxSize(),
+//        contentAlignment = Alignment.BottomCenter
+//    ) {
+//        VideoSlider(
+//            progress = progress,
+//            isPlaying = isPlaying,
+//            onSeek = {},
+//            modifier = Modifier.fillMaxWidth()
+//        )
+//    }
 }

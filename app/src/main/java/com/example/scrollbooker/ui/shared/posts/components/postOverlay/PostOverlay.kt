@@ -70,7 +70,7 @@ fun PostOverlay(
                         PostOverlayLabel(
                             icon = R.drawable.ic_bolt_solid,
                             title = stringResource(R.string.lastMinute),
-                            containerColor = LastMinute
+                            containerColor = Error
                         )
                     }
 
