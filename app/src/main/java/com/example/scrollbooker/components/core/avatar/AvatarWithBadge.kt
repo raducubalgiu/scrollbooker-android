@@ -16,17 +16,21 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
+import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.AvatarSizeXL
 import com.example.scrollbooker.ui.theme.Background
-import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.Primary
+import timber.log.Timber
 
 @Composable
 fun AvatarWithBadge(
@@ -51,14 +55,22 @@ fun AvatarWithBadge(
 
     Box(modifier = modifier.size(size)) {
         AsyncImage(
-            model = url,
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(url)
+                .diskCachePolicy(CachePolicy.ENABLED)
+                .memoryCachePolicy(CachePolicy.ENABLED)
+                .crossfade(true)
+                .build(),
             contentDescription = null,
             contentScale = contentScale,
             modifier = Modifier
                 .matchParentSize()
                 .clip(CircleShape)
                 .background(background)
-                .border(1.dp, Divider, CircleShape)
+                .border(1.dp, Color(0xFFCCCCCC), CircleShape),
+            placeholder = painterResource(R.drawable.ic_user),
+            error = painterResource(R.drawable.ic_user),
+            onError = { Timber.tag("Avatar Error").e("ERROR: ${it.result.throwable.message}") }
         )
 
         Surface(

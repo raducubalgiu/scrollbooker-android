@@ -7,6 +7,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -17,7 +18,6 @@ import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.AvatarSizeS
-import com.example.scrollbooker.ui.theme.Divider
 import timber.log.Timber
 
 @Composable
@@ -34,7 +34,7 @@ fun Avatar(url: String, size: Dp = AvatarSizeS ) {
             .size(size)
             .clip(CircleShape)
             .background(MaterialTheme.colorScheme.surfaceVariant)
-            .border(1.dp, Divider, CircleShape),
+            .border(1.dp, Color(0xFFCCCCCC), CircleShape),
         placeholder = painterResource(R.drawable.ic_user),
         error = painterResource(R.drawable.ic_user),
         contentScale = ContentScale.Crop,
