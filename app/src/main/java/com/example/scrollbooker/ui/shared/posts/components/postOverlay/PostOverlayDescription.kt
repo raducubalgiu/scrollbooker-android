@@ -38,5 +38,6 @@ fun PostOverlayDescription(description: String) {
             overflow = if(isDescriptionCollapsed) TextOverflow.Visible else TextOverflow.Ellipsis
         )
     }
+
     Spacer(Modifier.height(SpacingM))
 }

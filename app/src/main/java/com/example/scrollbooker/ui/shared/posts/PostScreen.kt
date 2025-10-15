@@ -68,7 +68,7 @@ fun PostScreen(
             }
 
             LaunchedEffect(pagerState) {
-                snapshotFlow { pagerState.currentPage }
+                snapshotFlow { pagerState.settledPage }
                     .collectLatest { page ->
                         val post = posts.getOrNull(page)
                         val previousPost = posts.getOrNull(page - 1)
