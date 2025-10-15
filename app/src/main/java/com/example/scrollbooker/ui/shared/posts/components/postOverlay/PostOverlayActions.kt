@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
+import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.components.core.avatar.AvatarWithRating
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
@@ -31,6 +32,7 @@ import com.example.scrollbooker.ui.theme.Error
 @Composable
 fun PostOverlayActions(
     user: UserSocial,
+    isVideoReview: Boolean,
     counters: PostCounters,
     userActions: UserPostActions,
     onAction: (PostOverlayActionEnum) -> Unit,
@@ -47,12 +49,20 @@ fun PostOverlayActions(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        AvatarWithRating(
-            url = user.avatar ?: "",
-            rating = user.ratingsAverage,
-            size = 55.dp,
-            onClick = onNavigateToUser
-        )
+        if(isVideoReview) {
+            Avatar(
+                url = user.avatar ?: "",
+                size = 55.dp,
+                onClick = onNavigateToUser
+            )
+        } else {
+            AvatarWithRating(
+                url = user.avatar ?: "",
+                rating = user.ratingsAverage,
+                size = 55.dp,
+                onClick = onNavigateToUser
+            )
+        }
 
         Spacer(Modifier.height(SpacingS))
 

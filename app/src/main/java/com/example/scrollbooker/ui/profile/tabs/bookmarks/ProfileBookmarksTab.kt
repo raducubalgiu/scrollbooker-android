@@ -1,6 +1,5 @@
 package com.example.scrollbooker.ui.profile.tabs.bookmarks
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,7 +27,6 @@ import com.example.scrollbooker.ui.profile.tabs.ProfileTabViewModel
 fun ProfileBookmarksTab(
     paddingTop: Dp,
     viewModel: ProfileTabViewModel,
-    isOwnProfile: Boolean,
     onNavigateToPostDetail: (Int) -> Unit
 ) {
     val posts = viewModel.userBookmarkedPosts.collectAsLazyPagingItems()
@@ -73,7 +71,7 @@ fun ProfileBookmarksTab(
                     EmptyScreen(
                         modifier = Modifier.padding(top = 50.dp),
                         arrangement = Arrangement.Top,
-                        message = if(isOwnProfile) "Inca nu ai salvat nici un videoclip" else stringResource(R.string.notFoundPosts),
+                        message = stringResource(R.string.notFoundPosts),
                         icon = painterResource(R.drawable.ic_bookmark_outline)
                     )
                 }

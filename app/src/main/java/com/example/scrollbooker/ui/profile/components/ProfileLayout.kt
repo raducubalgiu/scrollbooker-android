@@ -148,7 +148,6 @@ fun ProfileLayout(
                         when (tabs[page]) {
                             ProfileTab.Posts -> ProfilePostsTab(
                                 paddingTop = currentHeaderHeightDp,
-                                isOwnProfile = user.isOwnProfile,
                                 posts = posts,
                                 onNavigateToPostDetail = { profileNavigate.toPostDetail() }
                             )
@@ -164,14 +163,12 @@ fun ProfileLayout(
                             ProfileTab.Reposts -> ProfileRepostsTab(
                                 paddingTop = currentHeaderHeightDp,
                                 viewModel = viewModel,
-                                isOwnProfile = user.isOwnProfile,
                                 onNavigateToPostDetail = { profileNavigate.toPostDetail() }
                             )
 
                             ProfileTab.Bookmarks -> ProfileBookmarksTab(
                                 paddingTop = currentHeaderHeightDp,
                                 viewModel = viewModel,
-                                isOwnProfile = user.isOwnProfile,
                                 onNavigateToPostDetail = { profileNavigate.toPostDetail() }
                             )
 

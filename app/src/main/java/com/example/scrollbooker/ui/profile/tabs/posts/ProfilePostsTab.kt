@@ -14,7 +14,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
@@ -27,7 +26,6 @@ import com.example.scrollbooker.entity.social.post.domain.model.Post
 @Composable
 fun ProfilePostsTab(
     paddingTop: Dp,
-    isOwnProfile: Boolean,
     posts: LazyPagingItems<Post>,
     onNavigateToPostDetail: (Int) -> Unit
 ) {

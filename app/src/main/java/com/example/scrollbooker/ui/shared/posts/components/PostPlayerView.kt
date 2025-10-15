@@ -33,7 +33,7 @@ fun PostPlayerView(player: ExoPlayer) {
         update = { playerView ->
             playerView.player = player
             playerView.resizeMode =
-                AspectRatioFrameLayout.RESIZE_MODE_FILL
+                AspectRatioFrameLayout.RESIZE_MODE_ZOOM
         },
         modifier = Modifier.fillMaxSize(),
     )

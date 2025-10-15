@@ -1,6 +1,5 @@
 package com.example.scrollbooker.ui.profile.tabs.reposts
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,7 +27,6 @@ import com.example.scrollbooker.ui.profile.tabs.ProfileTabViewModel
 fun ProfileRepostsTab(
     paddingTop: Dp,
     viewModel: ProfileTabViewModel,
-    isOwnProfile: Boolean,
     onNavigateToPostDetail: (Int) -> Unit
 ) {
     val posts = viewModel.userReposts.collectAsLazyPagingItems()
@@ -72,7 +70,7 @@ fun ProfileRepostsTab(
                     EmptyScreen(
                         modifier = Modifier.padding(top = 50.dp),
                         arrangement = Arrangement.Top,
-                        message = if(isOwnProfile) "Inca nu ai repostat nici un videoclip" else stringResource(R.string.notFoundPosts),
+                        message = stringResource(R.string.notFoundPosts),
                         icon = painterResource(R.drawable.ic_video_outline)
                     )
                 }

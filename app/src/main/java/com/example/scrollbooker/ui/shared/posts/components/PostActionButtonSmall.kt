@@ -25,6 +25,7 @@ import com.example.scrollbooker.ui.theme.bodyLarge
 
 @Composable
 fun PostActionButtonSmall(
+    title: String,
     onNavigateToCalendar: () -> Unit,
     onNavigateToProducts: () -> Unit
 ) {
@@ -33,7 +34,7 @@ fun PostActionButtonSmall(
             .fillMaxWidth()
             .padding(bottom = BasePadding),
         onClick = onNavigateToProducts,
-        shape = ShapeDefaults.Medium,
+        shape = ShapeDefaults.Small,
         colors = ButtonColors(
             containerColor = Primary,
             contentColor = OnPrimary,
@@ -52,7 +53,7 @@ fun PostActionButtonSmall(
             )
             Spacer(Modifier.width(BasePadding))
             Text(
-                text = stringResource(R.string.book),
+                text = title,
                 style = bodyLarge,
                 fontWeight = FontWeight.SemiBold,
                 color = OnPrimary

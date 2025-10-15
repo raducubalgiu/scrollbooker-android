@@ -29,6 +29,8 @@ data class PostDto(
     @SerializedName("is_video_review")
     val isVideoReview: Boolean,
 
+    val rating: Int?,
+
     val bookable: Boolean,
 
     @SerializedName("business_id")

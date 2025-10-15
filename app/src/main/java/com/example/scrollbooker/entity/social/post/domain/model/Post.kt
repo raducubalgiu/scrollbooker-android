@@ -16,6 +16,7 @@ data class Post(
     val mentions: List<UserSocialDto>,
     val hashtags: List<Hashtag>,
     val isVideoReview: Boolean,
+    val rating: Int?,
     val bookable: Boolean,
     val businessId: Int?,
     val lastMinute: LastMinute,
