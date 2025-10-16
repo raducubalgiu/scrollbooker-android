@@ -19,7 +19,7 @@ fun AppointmentsNavHost(navController: NavHostController) {
     val mainNavController = LocalMainNavController.current
 
     val mainEntry = remember(mainNavController) {
-        mainNavController.getBackStackEntry(RootRoute.MAIN)
+        mainNavController.getBackStackEntry(MainRoute.Tabs.route)
     }
 
     val appointmentCreated by mainEntry.savedStateHandle
@@ -32,7 +32,6 @@ fun AppointmentsNavHost(navController: NavHostController) {
         popEnterTransition = { slideInFromLeft() },
         popExitTransition = { slideOutToRight() }
     ) {
-
         appointmentsGraph(
             navController = navController,
             appointmentCreated = appointmentCreated

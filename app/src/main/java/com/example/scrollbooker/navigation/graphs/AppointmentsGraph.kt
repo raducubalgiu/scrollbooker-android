@@ -43,6 +43,7 @@ fun NavGraphBuilder.appointmentsGraph(
             LaunchedEffect(appointmentCreated) {
                 if(appointmentCreated) {
                     viewModel.refreshAppointments()
+                    parentEntry.savedStateHandle["APPOINTMENT_CREATED"] = false
                 }
             }
 

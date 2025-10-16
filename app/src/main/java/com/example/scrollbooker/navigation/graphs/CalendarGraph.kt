@@ -11,7 +11,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.example.scrollbooker.navigation.LocalTabsController
 import com.example.scrollbooker.navigation.bottomBar.MainTab
-import com.example.scrollbooker.navigation.routes.RootRoute
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
@@ -23,7 +22,9 @@ import com.example.scrollbooker.ui.shared.calendar.CalendarScreen
 import com.example.scrollbooker.ui.shared.calendar.CalendarViewModel
 import kotlinx.coroutines.launch
 
-fun NavGraphBuilder.calendarGraph(navController: NavHostController) {
+fun NavGraphBuilder.calendarGraph(
+    mainNavController: NavHostController
+) {
     navigation(
         route = MainRoute.CalendarNavigator.route,
         startDestination = "${MainRoute.Calendar.route}/{userId}/{slotDuration}/{productId}/{productName}",
@@ -42,7 +43,7 @@ fun NavGraphBuilder.calendarGraph(navController: NavHostController) {
             ),
         ) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(MainRoute.CalendarNavigator.route)
+                mainNavController.getBackStackEntry(MainRoute.CalendarNavigator.route)
             }
 
             val viewModel: CalendarViewModel = hiltViewModel(parentEntry)
@@ -58,9 +59,9 @@ fun NavGraphBuilder.calendarGraph(navController: NavHostController) {
                 slotDuration = slotDuration,
                 productId = productId,
                 productName = productName,
-                onBack = { navController.popBackStack() },
+                onBack = { mainNavController.popBackStack() },
                 onNavigateToConfirmation = {
-                    navController.navigate(MainRoute.AppointmentConfirmation.route)
+                    mainNavController.navigate(MainRoute.AppointmentConfirmation.route)
                 }
             )
         }
@@ -70,23 +71,23 @@ fun NavGraphBuilder.calendarGraph(navController: NavHostController) {
             val tabs = LocalTabsController.current
 
             val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(MainRoute.CalendarNavigator.route)
+                mainNavController.getBackStackEntry(MainRoute.CalendarNavigator.route)
             }
 
             val viewModel: CalendarViewModel = hiltViewModel(parentEntry)
 
             AppointmentConfirmationScreen(
                 viewModel = viewModel,
-                onBack = { navController.popBackStack() },
+                onBack = { mainNavController.popBackStack() },
                 onSubmit = {
-                    navController.currentBackStackEntry?.lifecycleScope?.launch {
+                    mainNavController.currentBackStackEntry?.lifecycleScope?.launch {
                         val result = viewModel.createAppointment()
 
                         result.onSuccess {
-                            val mainEntry = mainNavController.getBackStackEntry(RootRoute.MAIN)
-                            mainEntry.savedStateHandle["APPOINTMENT_CREATED"] = true
+                            val tabsEntry = mainNavController.getBackStackEntry(MainRoute.Tabs.route)
+                            tabsEntry.savedStateHandle["APPOINTMENT_CREATED"] = true
 
-                            mainNavController.popBackStack(RootRoute.MAIN, inclusive = false)
+                            mainNavController.popBackStack(MainRoute.Tabs.route, inclusive = false)
                             tabs.setTab(MainTab.Appointments)
                         }
                     }
