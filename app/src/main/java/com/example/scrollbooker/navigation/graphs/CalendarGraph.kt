@@ -9,7 +9,6 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import com.example.scrollbooker.navigation.LocalRootNavController
 import com.example.scrollbooker.navigation.LocalTabsController
 import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.navigation.routes.RootRoute
@@ -18,6 +17,7 @@ import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
+import com.example.scrollbooker.ui.LocalMainNavController
 import com.example.scrollbooker.ui.shared.calendar.AppointmentConfirmationScreen
 import com.example.scrollbooker.ui.shared.calendar.CalendarScreen
 import com.example.scrollbooker.ui.shared.calendar.CalendarViewModel
@@ -66,7 +66,7 @@ fun NavGraphBuilder.calendarGraph(navController: NavHostController) {
         }
 
         composable(route = MainRoute.AppointmentConfirmation.route) { backStackEntry ->
-            val root = LocalRootNavController.current
+            val mainNavController = LocalMainNavController.current
             val tabs = LocalTabsController.current
 
             val parentEntry = remember(backStackEntry) {
@@ -83,10 +83,10 @@ fun NavGraphBuilder.calendarGraph(navController: NavHostController) {
                         val result = viewModel.createAppointment()
 
                         result.onSuccess {
-                            val mainEntry = root.getBackStackEntry(RootRoute.MAIN)
+                            val mainEntry = mainNavController.getBackStackEntry(RootRoute.MAIN)
                             mainEntry.savedStateHandle["APPOINTMENT_CREATED"] = true
 
-                            root.popBackStack(RootRoute.MAIN, inclusive = false)
+                            mainNavController.popBackStack(RootRoute.MAIN, inclusive = false)
                             tabs.setTab(MainTab.Appointments)
                         }
                     }

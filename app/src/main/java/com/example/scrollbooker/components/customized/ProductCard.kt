@@ -23,6 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
+import com.example.scrollbooker.components.customized.Protected.Protected
+import com.example.scrollbooker.core.enums.PermissionEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
@@ -109,19 +111,21 @@ fun ProductCard(
                     }
                 }
 
-                MainButtonOutlined(
-                    title = stringResource(R.string.book),
-                    onClick = {
-                        onNavigateToCalendar(
-                            NavigateCalendarParam(
-                                userId = product.userId,
-                                slotDuration = product.duration,
-                                productId = product.id,
-                                productName = product.name
+                Protected(permission = PermissionEnum.BOOK_BUTTON_VIEW) {
+                    MainButtonOutlined(
+                        title = stringResource(R.string.book),
+                        onClick = {
+                            onNavigateToCalendar(
+                                NavigateCalendarParam(
+                                    userId = product.userId,
+                                    slotDuration = product.duration,
+                                    productId = product.id,
+                                    productName = product.name
+                                )
                             )
-                        )
-                    },
-                )
+                        },
+                    )
+                }
             }
 
             Spacer(Modifier.height(BasePadding))

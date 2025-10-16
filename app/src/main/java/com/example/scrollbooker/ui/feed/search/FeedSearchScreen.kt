@@ -16,8 +16,8 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.search.domain.model.UserSearch
-import com.example.scrollbooker.navigation.LocalRootNavController
 import com.example.scrollbooker.navigation.routes.MainRoute
+import com.example.scrollbooker.ui.LocalMainNavController
 import com.example.scrollbooker.ui.feed.components.search.FeedSearchList
 import com.example.scrollbooker.ui.feed.components.search.FeedRecentlySearchList
 import com.example.scrollbooker.ui.feed.components.search.FeedSearchHeader
@@ -33,7 +33,7 @@ fun FeedSearchScreen(
     onCreateUserSearch: (String) -> Unit,
     onDeleteRecentlySearch: (Int) -> Unit
 ) {
-    val rootNavController = LocalRootNavController.current
+    val mainNavController = LocalMainNavController.current
     val searchState by viewModel.searchState.collectAsState()
 
     var query by remember { mutableStateOf("") }
@@ -48,7 +48,7 @@ fun FeedSearchScreen(
 
     fun handleNavigateToUserProfile(userId: Int) {
         keyboardController?.hide()
-        rootNavController.navigate("${MainRoute.UserProfile.route}/$userId")
+        mainNavController.navigate("${MainRoute.UserProfile.route}/$userId")
     }
 
     fun handleSearch(keyword: String) {

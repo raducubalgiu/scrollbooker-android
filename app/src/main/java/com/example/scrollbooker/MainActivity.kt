@@ -8,7 +8,6 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -20,7 +19,6 @@ import com.example.scrollbooker.ui.theme.ScrollBookerTheme
 import com.jakewharton.threetenabp.AndroidThreeTen
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.compose.runtime.getValue
-import com.example.scrollbooker.navigation.LocalRootNavController
 import com.example.scrollbooker.navigation.host.RootNavHost
 import com.example.scrollbooker.ui.auth.AuthViewModel
 
@@ -44,16 +42,12 @@ class MainActivity : ComponentActivity() {
             val rootNavController = rememberNavController()
             val themePreferenceEnum by themeViewModel.themePreferences.collectAsState()
 
-            CompositionLocalProvider(
-                LocalRootNavController provides rootNavController
-            ) {
-                ScrollBookerTheme(themePreferenceEnum) {
-                    Surface(Modifier.fillMaxSize().background(Background)) {
-                        RootNavHost(
-                            navController = rootNavController,
-                            authViewModel = viewModel
-                        )
-                    }
+            ScrollBookerTheme(themePreferenceEnum) {
+                Surface(Modifier.fillMaxSize().background(Background)) {
+                    RootNavHost(
+                        rootNavController = rootNavController,
+                        authViewModel = viewModel
+                    )
                 }
             }
         }

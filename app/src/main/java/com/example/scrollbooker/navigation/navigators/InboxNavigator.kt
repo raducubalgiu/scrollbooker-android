@@ -4,7 +4,7 @@ import androidx.navigation.NavHostController
 import com.example.scrollbooker.navigation.routes.MainRoute
 
 class InboxNavigator (
-    private val rootNavController: NavHostController,
+    private val mainNavController: NavHostController,
     private val navController: NavHostController
 ) {
     fun toEmploymentRespond(employmentId: Int) {
@@ -12,6 +12,6 @@ class InboxNavigator (
     }
 
     fun toUserProfile(userId: Int) {
-        rootNavController.navigate("${MainRoute.UserProfile.route}/${userId}")
+        mainNavController.navigate("${MainRoute.UserProfile.route}/${userId}")
     }
 }

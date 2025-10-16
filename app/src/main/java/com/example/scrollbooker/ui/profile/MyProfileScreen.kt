@@ -19,6 +19,7 @@ import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.iconButton.CustomIconButton
+import com.example.scrollbooker.components.customized.Protected.Protected
 import com.example.scrollbooker.core.enums.PermissionEnum
 import com.example.scrollbooker.core.util.Dimens.IconSizeXL
 import com.example.scrollbooker.core.util.FeatureState
@@ -55,7 +56,6 @@ fun MyProfileScreen(
     }
 
     val userData = (myProfileData as? FeatureState.Success)?.data
-    val canCreatePost = permissionController.has(PermissionEnum.POST_CREATE)
 
     Scaffold(
         topBar = {
@@ -63,7 +63,7 @@ fun MyProfileScreen(
                 title = "@${userData?.username ?: ""}",
                 actions = {
                     Row {
-                        if(canCreatePost) {
+                        Protected(permission = PermissionEnum.POST_CREATE) {
                             CustomIconButton(
                                 painter = R.drawable.ic_circle_plus_outline,
                                 onClick = { profileNavigate.toCamera() },

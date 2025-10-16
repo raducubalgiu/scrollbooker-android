@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun RootNavHost(
-    navController: NavHostController,
+    rootNavController: NavHostController,
     authViewModel: AuthViewModel
 ) {
     val authState by authViewModel.authState.collectAsState()
@@ -40,25 +40,25 @@ fun RootNavHost(
 
     key(startDestination) {
         NavHost(
-            navController = navController,
+            navController = rootNavController,
             startDestination = startDestination
         ) {
             navigation(
                 route = RootRoute.AUTH,
                 startDestination = AuthRoute.Login.route
-            ) { authGraph(authViewModel, navController) }
+            ) { authGraph(authViewModel, rootNavController) }
 
             navigation(
                 route = RootRoute.ONBOARDING,
                 startDestination = onboardingStepKey
-            ) { onBoardingGraph(authViewModel, navController) }
+            ) { onBoardingGraph(authViewModel, rootNavController) }
 
             mainGraph(
-                navController = navController,
+                //rootNavController = rootNavController,
                 onLogout = {
                     scope.launch {
                         if(authViewModel.logout().isSuccess) {
-                            navController.navigate(RootRoute.AUTH) {
+                            rootNavController.navigate(RootRoute.AUTH) {
                                 popUpTo(0) { inclusive = true }
                                 launchSingleTop = true
                             }

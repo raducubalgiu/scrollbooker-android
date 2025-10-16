@@ -11,7 +11,6 @@ import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
-import com.example.scrollbooker.navigation.LocalRootNavController
 import com.example.scrollbooker.navigation.graphs.editProfileGraph
 import com.example.scrollbooker.navigation.graphs.myBusinessGraph
 import com.example.scrollbooker.navigation.graphs.settingsGraph
@@ -21,6 +20,7 @@ import com.example.scrollbooker.navigation.transition.slideInFromRight
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
+import com.example.scrollbooker.ui.LocalMainNavController
 import com.example.scrollbooker.ui.LocalUserPermissions
 import com.example.scrollbooker.ui.profile.MyProfileScreen
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
@@ -50,12 +50,12 @@ fun MyProfileNavHost(
                 popEnterTransition = { EnterTransition.None},
                 popExitTransition = { ExitTransition.None }
             ) {
-                val rootNavController = LocalRootNavController.current
+                val mainNavController = LocalMainNavController.current
                 val permissionController = LocalUserPermissions.current
 
-                val profileNavigate = remember(rootNavController, navController) {
+                val profileNavigate = remember(mainNavController, navController) {
                     ProfileNavigator(
-                        rootNavController = rootNavController,
+                        rootNavController = mainNavController,
                         navController = navController
                     )
                 }

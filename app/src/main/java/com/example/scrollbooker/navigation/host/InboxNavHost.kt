@@ -9,13 +9,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.example.scrollbooker.navigation.LocalRootNavController
 import com.example.scrollbooker.navigation.navigators.InboxNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
+import com.example.scrollbooker.ui.LocalMainNavController
 import com.example.scrollbooker.ui.inbox.InboxScreen
 import com.example.scrollbooker.ui.inbox.InboxViewModel
 import com.example.scrollbooker.ui.inbox.EmploymentRespondConsentScreen
@@ -37,16 +37,16 @@ fun InboxNavHost(navController: NavHostController) {
             startDestination = MainRoute.Inbox.route,
         ) {
             composable(MainRoute.Inbox.route) { backStackEntry ->
-                val rootNavController = LocalRootNavController.current
+                val mainNavController = LocalMainNavController.current
                 val parentEntry = remember(backStackEntry) {
                     navController.getBackStackEntry(MainRoute.InboxNavigator.route)
                 }
 
                 val viewModel = hiltViewModel<InboxViewModel>(parentEntry)
 
-                val inboxNavigate = remember(rootNavController, navController) {
+                val inboxNavigate = remember(mainNavController, navController) {
                     InboxNavigator(
-                        rootNavController = rootNavController,
+                        mainNavController = mainNavController,
                         navController = navController
                     )
                 }

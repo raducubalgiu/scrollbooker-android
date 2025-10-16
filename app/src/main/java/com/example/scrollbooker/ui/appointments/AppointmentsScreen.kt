@@ -27,10 +27,10 @@ import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.core.layout.MessageScreen
+import com.example.scrollbooker.components.customized.Protected.Protected
 import com.example.scrollbooker.core.enums.PermissionEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointment
-import com.example.scrollbooker.ui.UserPermissionsController
 import com.example.scrollbooker.ui.appointments.components.AppointmentFilter
 import com.example.scrollbooker.ui.appointments.components.AppointmentFilterTitleEnum
 import com.example.scrollbooker.ui.appointments.components.AppointmentsFilterSheet
@@ -41,7 +41,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun AppointmentsScreen(
     viewModel: AppointmentsViewModel,
-    permissionController: UserPermissionsController,
     onNavigateToAppointmentDetails: (Appointment) -> Unit
 ) {
     val appointments = viewModel.appointments.collectAsLazyPagingItems()
@@ -88,7 +87,7 @@ fun AppointmentsScreen(
     ) { innerPadding ->
         Box(Modifier.fillMaxSize().padding(innerPadding)) {
             Column(Modifier.fillMaxSize()) {
-                if(permissionController.has(PermissionEnum.FILTER_APPOINTMENTS_VIEW)) {
+                Protected(permission = PermissionEnum.FILTER_APPOINTMENTS_VIEW) {
                     ArrowButton(
                         title = selectedFilter?.title?.getLabel() ?: AppointmentFilterTitleEnum.ALL.getLabel(),
                         onClick = { scope.launch { sheetState.show() } },
