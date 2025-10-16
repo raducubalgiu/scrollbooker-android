@@ -31,7 +31,7 @@ fun FormLayout(
     isEnabled: Boolean = true,
     isLoading: Boolean = false,
     headLine: String,
-    subHeadLine: String,
+    subHeadLine: String? = "",
     headerTitle: String? = "",
     buttonTitle: String? = "",
     onBack: (() -> Unit)? = null,
@@ -66,13 +66,15 @@ fun FormLayout(
                         fontWeight = FontWeight.ExtraBold,
                         text = headLine
                     )
-                    Spacer(Modifier.height(SpacingXXS))
-                    Text(
-                        style = bodyLarge,
-                        fontWeight = FontWeight.Normal,
-                        color = Color.Gray,
-                        text = subHeadLine,
-                    )
+                    if(subHeadLine?.isNotEmpty() == true) {
+                        Spacer(Modifier.height(SpacingXXS))
+                        Text(
+                            style = bodyLarge,
+                            fontWeight = FontWeight.Normal,
+                            color = Color.Gray,
+                            text = subHeadLine,
+                        )
+                    }
                 }
                 Spacer(Modifier.height(BasePadding))
                 content()

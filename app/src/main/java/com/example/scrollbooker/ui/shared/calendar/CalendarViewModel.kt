@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -44,16 +45,16 @@ class CalendarViewModel @Inject constructor(
     private val slotDuration = MutableStateFlow<Int?>(null)
 
     private val _product = MutableStateFlow<FeatureState<Product>>(FeatureState.Loading)
-    val product: StateFlow<FeatureState<Product>> = _product
+    val product: StateFlow<FeatureState<Product>> = _product.asStateFlow()
 
     private val _selectedSlot = MutableStateFlow<Slot?>(null)
-    val selectedSlot: StateFlow<Slot?> = _selectedSlot
+    val selectedSlot: StateFlow<Slot?> = _selectedSlot.asStateFlow()
 
-    private val _isSaving = MutableStateFlow<FeatureState<Unit>?>(null)
-    val isSaving: StateFlow<FeatureState<Unit>?> = _isSaving
+    private val _isSaving = MutableStateFlow<Boolean>(false)
+    val isSaving: StateFlow<Boolean> = _isSaving.asStateFlow()
 
     private val _forceRefresh = MutableStateFlow<Boolean>(false)
-    val forceRefresh: StateFlow<Boolean> = _forceRefresh
+    val forceRefresh: StateFlow<Boolean> = _forceRefresh.asStateFlow()
 
     private val cachedSlots = mutableMapOf<LocalDate, FeatureState<AvailableDay>>()
 
@@ -192,7 +193,7 @@ class CalendarViewModel @Inject constructor(
     }
 
     suspend fun createAppointment(): Result<Unit> {
-        _isSaving.value = FeatureState.Loading
+        _isSaving.value = true
 
         val selectedProduct = _product.value
         val startDate = _selectedSlot.value?.startDateUtc
@@ -214,15 +215,17 @@ class CalendarViewModel @Inject constructor(
             productId = selectedProduct.data.id,
         )
 
-        val result = withVisibleLoading { createScrollBookerAppointmentUseCase(appointment) }
+        val result = withVisibleLoading {
+            createScrollBookerAppointmentUseCase(appointment)
+        }
 
         result
             .onFailure { e ->
-                _isSaving.value = FeatureState.Error(e)
+                _isSaving.value = false
                 Timber.tag("Appointment").e("ERROR: onCreating ScrollBooker Appointment $e")
             }
             .onSuccess {
-                _isSaving.value = FeatureState.Success(Unit)
+                _isSaving.value = false
             }
 
         return result
