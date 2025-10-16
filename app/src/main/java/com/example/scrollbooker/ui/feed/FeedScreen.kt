@@ -1,5 +1,6 @@
 package com.example.scrollbooker.ui.feed
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.pager.HorizontalPager
@@ -16,6 +17,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
@@ -84,7 +86,10 @@ fun FeedScreen(
                 )
             }
         ) {
-            Box(modifier = Modifier.fillMaxSize()) {
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .background(BackgroundDark)
+            ) {
                 FeedTabs(
                     selectedTabIndex = horizontalPagerState.currentPage,
                     onChangeTab = { scope.launch { horizontalPagerState.animateScrollToPage(it) } },

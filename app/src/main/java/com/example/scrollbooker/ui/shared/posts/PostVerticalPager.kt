@@ -1,4 +1,6 @@
 package com.example.scrollbooker.ui.shared.posts
+import androidx.annotation.OptIn
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -18,10 +20,12 @@ import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.ui.feed.FeedScreenViewModel
+import com.example.scrollbooker.ui.shared.posts.components.NotFoundPosts
 import com.example.scrollbooker.ui.shared.posts.components.PostPlayerView
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostControls
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlay
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlayActionEnum
+import com.example.scrollbooker.ui.theme.BackgroundDark
 
 @Composable
 fun PostVerticalPager(
@@ -75,6 +79,7 @@ fun PostVerticalPager(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(BackgroundDark)
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
@@ -103,6 +108,8 @@ fun PostVerticalPager(
                         !playerState.isBuffering &&
                         !isDrawerOpen
                 )
+
+                if(posts.itemCount == 0) NotFoundPosts()
             }
         }
     }
