@@ -10,20 +10,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import com.example.scrollbooker.components.core.iconButton.CustomIconButton
-import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun SheetHeader(
+    modifier: Modifier = Modifier,
     title: String? = "",
     customTitle: (@Composable () -> Unit)? = null,
-    padding: Dp = BasePadding,
     onClose: () -> Unit
 ) {
-    Row(modifier = Modifier
-        .fillMaxWidth(),
+    Row(modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

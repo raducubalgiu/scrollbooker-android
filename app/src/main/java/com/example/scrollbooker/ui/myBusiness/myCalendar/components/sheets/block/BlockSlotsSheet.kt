@@ -121,7 +121,6 @@ fun BlockSlotsSheet(
             SheetHeader(
                 title = "",
                 onClose = { onAction(BlockSlotsAction.Dismiss) },
-                padding = 0.dp
             )
 
             Spacer(Modifier.height(12.dp))

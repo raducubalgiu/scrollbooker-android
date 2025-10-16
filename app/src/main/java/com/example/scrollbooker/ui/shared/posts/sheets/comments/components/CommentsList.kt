@@ -1,6 +1,6 @@
 package com.example.scrollbooker.ui.shared.posts.sheets.comments.components
 
-import androidx.compose.foundation.layout.Arrangement
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,50 +16,40 @@ import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.entity.social.comment.data.remote.LikeCommentDto
 import com.example.scrollbooker.entity.social.comment.domain.model.Comment
-import com.example.scrollbooker.entity.social.comment.domain.model.CreateComment
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun CommentsList(
     comments: LazyPagingItems<Comment>,
     newComments: List<Comment>,
-    onLike: (LikeCommentDto) -> Unit,
-    onCreateComment: (CreateComment) -> Unit
+    onLike: (LikeCommentDto) -> Unit
 ) {
-    Column (
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.SpaceBetween
-    ) {
-        Column(modifier = Modifier.weight(1f)) {
-            if(comments.itemCount == 0) {
-                EmptyScreen(
-                    icon = painterResource(R.drawable.ic_comment_outline),
-                    message = stringResource(R.string.notFoundComments),
-                )
-            } else {
-                LazyColumn(Modifier.weight(1f)) {
-                    items(newComments) { comment ->
+    Column(Modifier.fillMaxSize()) {
+        if(comments.itemCount == 0) {
+            EmptyScreen(
+                icon = painterResource(R.drawable.ic_comment_outline),
+                message = stringResource(R.string.notFoundComments),
+            )
+        } else {
+            LazyColumn(Modifier.fillMaxSize()) {
+                items(newComments) { comment ->
+                    CommentItem(comment, onLike)
+                }
+
+                items(comments.itemCount) { index ->
+                    comments[index]?.let { comment ->
                         CommentItem(comment, onLike)
                     }
+                }
 
-                    items(comments.itemCount) { index ->
-                        comments[index]?.let { comment ->
-                            CommentItem(comment, onLike)
-                        }
-                    }
-
-                    item {
-                        when(comments.loadState.append) {
-                            is LoadState.Loading -> LoadMoreSpinner()
-                            is LoadState.Error -> "Something went wrong"
-                            is LoadState.NotLoading -> Unit
-                        }
+                item {
+                    when(comments.loadState.append) {
+                        is LoadState.Loading -> LoadMoreSpinner()
+                        is LoadState.Error -> "Something went wrong"
+                        is LoadState.NotLoading -> Unit
                     }
                 }
             }
         }
-
-        CommentFooter(
-            onCreateComment = onCreateComment
-        )
     }
 }

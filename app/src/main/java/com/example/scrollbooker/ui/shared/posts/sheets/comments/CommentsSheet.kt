@@ -1,18 +1,27 @@
 package com.example.scrollbooker.ui.shared.posts.sheets.comments
+import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.core.sheet.SheetHeader
-import com.example.scrollbooker.ui.shared.posts.sheets.comments.components.CommentItemShimmer
+import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.ui.shared.posts.sheets.comments.components.CommentFooter
 import com.example.scrollbooker.ui.shared.posts.sheets.comments.components.CommentsList
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun CommentsSheet(
     postId: Int,
@@ -28,31 +37,68 @@ fun CommentsSheet(
     val comments = viewModel.commentsState.collectAsLazyPagingItems()
     val newComments by viewModel.newComments.collectAsState()
 
-    SheetHeader(
-        title = stringResource(R.string.comments),
-        onClose = onClose
-    )
-
-    if(isSheetVisible) {
-        when (comments.loadState.refresh) {
-            is LoadState.Loading -> repeat(6) {
-                repeat(7) {
-                    CommentItemShimmer()
+    Scaffold(
+        topBar = {
+            SheetHeader(
+                modifier = Modifier.padding(bottom = BasePadding),
+                title = stringResource(R.string.comments),
+                onClose = onClose
+            )
+        },
+        bottomBar = {
+            CommentFooter(onCreateComment = {
+                viewModel.createComment(
+                    postId = postId,
+                    text = it.text,
+                    parentId = it.parentId
+                )
+            })
+        }
+    ) { innerPadding ->
+        Box(Modifier.fillMaxSize().padding(innerPadding)) {
+            if(isSheetVisible) {
+                when (comments.loadState.refresh) {
+                    is LoadState.Loading -> LoadingScreen()
+                    is LoadState.Error -> ErrorScreen()
+                    is LoadState.NotLoading -> {
+                        CommentsList(
+                            comments = comments,
+                            newComments = newComments,
+                            onLike = { viewModel.toggleLikeComment(it) },
+                        )
+                    }
                 }
             }
-            is LoadState.Error -> ErrorScreen()
-            is LoadState.NotLoading -> CommentsList(
-                comments = comments,
-                newComments = newComments,
-                onLike = { viewModel.toggleLikeComment(it) },
-                onCreateComment = {
-                    viewModel.createComment(
-                        postId = postId,
-                        text = it.text,
-                        parentId = it.parentId
-                    )
-                }
-            )
         }
     }
+
+//    Column(modifier = Modifier
+//        .fillMaxSize()
+//    ) {
+//        SheetHeader(
+//            title = stringResource(R.string.comments),
+//            onClose = onClose
+//        )
+//
+//        if(isSheetVisible) {
+//            when (comments.loadState.refresh) {
+//                is LoadState.Loading -> LoadingScreen()
+//                is LoadState.Error -> ErrorScreen()
+//                is LoadState.NotLoading -> {
+//                    CommentsList(
+//                        comments = comments,
+//                        newComments = newComments,
+//                        onLike = { viewModel.toggleLikeComment(it) },
+//                        onCreateComment = {
+//                            viewModel.createComment(
+//                                postId = postId,
+//                                text = it.text,
+//                                parentId = it.parentId
+//                            )
+//                        }
+//                    )
+//                }
+//            }
+//        }
+//    }
 }

@@ -3,11 +3,14 @@ package com.example.scrollbooker.ui.shared.posts.sheets.comments.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AlternateEmail
@@ -16,6 +19,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonColors
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -47,115 +51,114 @@ import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyMedium
 
 @Composable
-fun CommentFooter(
-    onCreateComment: (CreateComment) -> Unit
-) {
+fun CommentFooter(onCreateComment: (CreateComment) -> Unit) {
     val emoticons = listOf("\uD83D\uDC4C", "\uD83D\uDE01", "\uD83D\uDE07", "\uD83E\uDD23", "\uD83D\uDE0D", "\uD83E\uDD70")
     var text by remember { mutableStateOf("") }
     var parentId by remember { mutableStateOf<Int?>(null) }
 
-    HorizontalDivider(color = Divider, thickness = 0.5.dp)
+    Column {
+        HorizontalDivider(color = Divider, thickness = 0.5.dp)
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = BasePadding),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        emoticons.forEach { emoji ->
-            Box(
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .clickable { text = text + emoji }
-            ) {
-                Text(
-                    modifier = Modifier.padding(vertical = SpacingM),
-                    text = emoji,
-                    style = TextStyle(
-                        fontSize = 24.sp
-                    )
-                )
-            }
-        }
-    }
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = BasePadding),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Avatar(
-            url = "",
-            size = AvatarSizeXS
-        )
-        Spacer(Modifier.width(SpacingS))
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(shape = ShapeDefaults.ExtraLarge),
+                .padding(horizontal = BasePadding),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            emoticons.forEach { emoji ->
+                Box(
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .clickable { text = text + emoji }
+                ) {
+                    Text(
+                        modifier = Modifier.padding(vertical = SpacingM),
+                        text = emoji,
+                        style = TextStyle(
+                            fontSize = 24.sp
+                        )
+                    )
+                }
+            }
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = BasePadding)
+                .padding(bottom = BasePadding),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            TextField(
+            Avatar(
+                url = "",
+                size = AvatarSizeXS
+            )
+            Spacer(Modifier.width(SpacingS))
+            Row(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                shape = ShapeDefaults.Large,
-                value = text,
-                onValueChange = { text = it },
-                placeholder = {
-                    Text(
-                        text = "Adauga un comentariu..",
-                        style = bodyMedium,
-                        color = Divider
-                    )
-                },
-                singleLine = false,
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = SurfaceBG,
-                    unfocusedContainerColor = SurfaceBG,
-                    cursorColor = Primary,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    focusedLabelColor = Primary,
-                    unfocusedLabelColor = OnSurfaceBG.copy(alpha = 0.7f),
-                    focusedTextColor = OnSurfaceBG,
-                    unfocusedTextColor = OnSurfaceBG,
-                    disabledContainerColor = SurfaceBG,
-                    disabledTextColor = Divider,
-                    disabledIndicatorColor = Color.Transparent
-                ),
-                trailingIcon = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Default.AlternateEmail,
-                            contentDescription = "Mention Icon",
-                            tint = OnBackground
+                    .fillMaxWidth()
+                    .clip(shape = ShapeDefaults.ExtraLarge),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                TextField(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    shape = ShapeDefaults.Large,
+                    value = text,
+                    onValueChange = { text = it },
+                    placeholder = {
+                        Text(
+                            text = "Adauga un comentariu..",
+                            style = bodyMedium,
+                            color = Divider
                         )
-
-                        Spacer(Modifier.width(SpacingS))
-
-                        IconButton(
-                            onClick = {
-                                onCreateComment(CreateComment(text, parentId))
-                                text = ""
-                            },
-                            enabled = text.isNotEmpty(),
-                            colors = IconButtonColors(
-                                containerColor = Primary,
-                                contentColor = OnPrimary,
-                                disabledContainerColor = Divider,
-                                disabledContentColor = OnSurfaceBG.copy(alpha = 0.5f)
-                            )
-                        ) {
+                    },
+                    singleLine = false,
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = SurfaceBG,
+                        unfocusedContainerColor = SurfaceBG,
+                        cursorColor = Primary,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        focusedLabelColor = Primary,
+                        unfocusedLabelColor = OnSurfaceBG.copy(alpha = 0.7f),
+                        focusedTextColor = OnSurfaceBG,
+                        unfocusedTextColor = OnSurfaceBG,
+                        disabledContainerColor = SurfaceBG,
+                        disabledTextColor = Divider,
+                        disabledIndicatorColor = Color.Transparent
+                    ),
+                    trailingIcon = {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
-                                imageVector = Icons.Default.ArrowUpward,
-                                contentDescription = null
+                                imageVector = Icons.Default.AlternateEmail,
+                                contentDescription = "Mention Icon",
+                                tint = OnBackground
                             )
+
+                            Spacer(Modifier.width(SpacingS))
+
+                            IconButton(
+                                onClick = {
+                                    onCreateComment(CreateComment(text, parentId))
+                                    text = ""
+                                },
+                                enabled = text.isNotEmpty(),
+                                colors = IconButtonDefaults.iconButtonColors(
+                                    containerColor = Primary,
+                                    contentColor = OnPrimary,
+                                )
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.ArrowUpward,
+                                    contentDescription = null
+                                )
+                            }
                         }
                     }
-                }
-            )
+                )
+            }
         }
     }
 }
