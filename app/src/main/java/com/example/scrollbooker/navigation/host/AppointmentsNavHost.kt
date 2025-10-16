@@ -6,7 +6,6 @@ import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.example.scrollbooker.navigation.graphs.appointmentsGraph
-import com.example.scrollbooker.navigation.routes.RootRoute
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight

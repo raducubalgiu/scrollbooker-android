@@ -13,6 +13,7 @@ import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
+import com.example.scrollbooker.ui.LocalBottomBarController
 import com.example.scrollbooker.ui.LocalMainNavController
 import com.example.scrollbooker.ui.appointments.AppointmentCancelScreen
 import com.example.scrollbooker.ui.appointments.AppointmentDetailsScreen
@@ -77,6 +78,8 @@ fun NavGraphBuilder.appointmentsGraph(
         }
 
         composable(route = MainRoute.AppointmentCancel.route) { backStackEntry ->
+            val bottom = LocalBottomBarController.current
+
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(MainRoute.AppointmentsNavigator.route)
             }
@@ -91,7 +94,7 @@ fun NavGraphBuilder.appointmentsGraph(
 
                         result
                             .onSuccess {
-                                //mainViewModel.decreaseAppointmentsNumber()
+                                bottom.decAppointments()
                                 navController.popBackStack()
                             }
                             .onFailure { e ->

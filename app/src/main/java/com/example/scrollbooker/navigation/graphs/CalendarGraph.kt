@@ -16,6 +16,7 @@ import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
+import com.example.scrollbooker.ui.LocalBottomBarController
 import com.example.scrollbooker.ui.LocalMainNavController
 import com.example.scrollbooker.ui.shared.calendar.AppointmentConfirmationScreen
 import com.example.scrollbooker.ui.shared.calendar.CalendarScreen
@@ -68,6 +69,7 @@ fun NavGraphBuilder.calendarGraph(
 
         composable(route = MainRoute.AppointmentConfirmation.route) { backStackEntry ->
             val mainNavController = LocalMainNavController.current
+            val bottom = LocalBottomBarController.current
             val tabs = LocalTabsController.current
 
             val parentEntry = remember(backStackEntry) {
@@ -86,6 +88,7 @@ fun NavGraphBuilder.calendarGraph(
                         result.onSuccess {
                             val tabsEntry = mainNavController.getBackStackEntry(MainRoute.Tabs.route)
                             tabsEntry.savedStateHandle["APPOINTMENT_CREATED"] = true
+                            bottom.incAppointments()
 
                             mainNavController.popBackStack(MainRoute.Tabs.route, inclusive = false)
                             tabs.setTab(MainTab.Appointments)
