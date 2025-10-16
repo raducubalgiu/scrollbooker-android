@@ -38,7 +38,7 @@ fun PostOverlayActions(
     onAction: (PostOverlayActionEnum) -> Unit,
     shouldDisplayBottomBar: Boolean,
     onShowBottomBar: (() -> Unit)? = null,
-    onNavigateToUser: () -> Unit
+    onNavigateToUser: () -> Unit,
 ) {
     val rotation by animateFloatAsState(
         targetValue = if(shouldDisplayBottomBar) 180f else 0f,
@@ -76,21 +76,21 @@ fun PostOverlayActions(
             }
         )
 
-//        PostActionButton(
-//            counter = 120,
-//            icon = painterResource(R.drawable.ic_clipboard_check_solid),
-//            tint = Color.White,
-//            onClick = {
-//                //onAction(PostOverlayActionEnum.OPEN_REVIEWS)
-//            }
-//        )
+        PostActionButton(
+            counter = 120,
+            icon = painterResource(R.drawable.ic_clipboard_check_solid),
+            tint = Color.White,
+            onClick = {
+                onAction(PostOverlayActionEnum.OPEN_REVIEWS)
+            }
+        )
 
         PostActionButton(
             counter = counters.commentCount,
             icon = painterResource(R.drawable.ic_comment_solid),
             tint = Color.White,
             onClick = {
-                //onAction(PostOverlayActionEnum.OPEN_COMMENTS)
+                onAction(PostOverlayActionEnum.OPEN_COMMENTS)
             }
         )
         PostActionButton(
