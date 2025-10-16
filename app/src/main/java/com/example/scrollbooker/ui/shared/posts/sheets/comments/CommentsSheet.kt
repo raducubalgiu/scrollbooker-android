@@ -71,34 +71,4 @@ fun CommentsSheet(
             }
         }
     }
-
-//    Column(modifier = Modifier
-//        .fillMaxSize()
-//    ) {
-//        SheetHeader(
-//            title = stringResource(R.string.comments),
-//            onClose = onClose
-//        )
-//
-//        if(isSheetVisible) {
-//            when (comments.loadState.refresh) {
-//                is LoadState.Loading -> LoadingScreen()
-//                is LoadState.Error -> ErrorScreen()
-//                is LoadState.NotLoading -> {
-//                    CommentsList(
-//                        comments = comments,
-//                        newComments = newComments,
-//                        onLike = { viewModel.toggleLikeComment(it) },
-//                        onCreateComment = {
-//                            viewModel.createComment(
-//                                postId = postId,
-//                                text = it.text,
-//                                parentId = it.parentId
-//                            )
-//                        }
-//                    )
-//                }
-//            }
-//        }
-//    }
 }
