@@ -26,7 +26,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
@@ -55,10 +54,6 @@ class MyProfileViewModel @Inject constructor(
         MutableStateFlow<FeatureState<UserProfile>>(FeatureState.Loading)
     val userProfileState: StateFlow<FeatureState<UserProfile>> = _userProfileState
 
-    private val _permissionsState = MutableStateFlow<FeatureState<List<PermissionEnum>>>(
-        FeatureState.Loading)
-    val permissionsState: StateFlow<FeatureState<List<PermissionEnum>>> = _permissionsState.asStateFlow()
-
     private val _initCompleted = MutableStateFlow(false)
     val isInitLoading = combine(_userProfileState, _initCompleted) { profile, done ->
         (profile is FeatureState.Loading || !done)
@@ -72,42 +67,25 @@ class MyProfileViewModel @Inject constructor(
         .cachedIn(viewModelScope)
         .stateIn(viewModelScope, SharingStarted.Companion.Lazily, PagingData.Companion.empty())
 
-    private suspend fun loadUserProfile() {
-        val userId = authDataStore.getUserId().firstOrNull()
-
-        if(userId == null) {
-            Timber.Forest.tag("Refetch UserProfile").e("ERROR: on Refetching User Profile. User Id not found ")
-            throw IllegalStateException("User id not found in datastore")
-        }
-
-        _userProfileState.value = FeatureState.Loading
-
-        val response = withVisibleLoading { getUserProfileUseCase(userId) }
-
-        _userProfileState.value = response
-    }
-
-    fun loadPermissions() {
+    private fun loadUserProfile() {
         viewModelScope.launch {
-            try {
-                val results = withVisibleLoading {
-                    val rawList = authDataStore.getUserPermissions().first()
-                    PermissionEnum.fromKeys(rawList)
-                }
-                _permissionsState.value = FeatureState.Success(results)
-            } catch (e: Exception) {
-                Timber.tag("Permissions dataStore").e("ERROR: on loading permission from authDataStore $e")
-                FeatureState.Error()
+            val userId = authDataStore.getUserId().firstOrNull()
+
+            if(userId == null) {
+                Timber.Forest.tag("Refetch UserProfile").e("ERROR: on Refetching User Profile. User Id not found ")
+                throw IllegalStateException("User id not found in datastore")
             }
+
+            _userProfileState.value = FeatureState.Loading
+
+            val response = withVisibleLoading { getUserProfileUseCase(userId) }
+
+            _userProfileState.value = response
         }
     }
 
     init {
-        viewModelScope.launch {
-            val p1 = launch { loadUserProfile() }
-            val p2 = launch { loadPermissions() }
-            joinAll(p1, p2)
-        }
+        loadUserProfile()
     }
 
     private val _editState = MutableStateFlow<FeatureState<Unit>?>(null)

@@ -21,6 +21,7 @@ import com.example.scrollbooker.navigation.transition.slideInFromRight
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
+import com.example.scrollbooker.ui.LocalUserPermissions
 import com.example.scrollbooker.ui.profile.MyProfileScreen
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
 
@@ -50,6 +51,7 @@ fun MyProfileNavHost(
                 popExitTransition = { ExitTransition.None }
             ) {
                 val rootNavController = LocalRootNavController.current
+                val permissionController = LocalUserPermissions.current
 
                 val profileNavigate = remember(rootNavController, navController) {
                     ProfileNavigator(
@@ -60,6 +62,7 @@ fun MyProfileNavHost(
 
                 MyProfileScreen(
                     viewModel = viewModel,
+                    permissionController = permissionController,
                     myProfileData = myProfileData,
                     myPosts = myPosts,
                     profileNavigate = profileNavigate

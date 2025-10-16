@@ -1,5 +1,6 @@
 package com.example.scrollbooker.navigation.graphs
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
@@ -15,6 +16,11 @@ import com.example.scrollbooker.navigation.routes.RootRoute
 import com.example.scrollbooker.ui.BottomBarController
 import com.example.scrollbooker.ui.LocalBottomBarController
 import com.example.scrollbooker.ui.MainUIViewModel
+import androidx.compose.runtime.getValue
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.rememberNavController
+import com.example.scrollbooker.ui.LocalUserPermissions
+import com.example.scrollbooker.ui.UserPermissionsController
 
 fun NavGraphBuilder.mainGraph(
     navController: NavHostController,
@@ -22,9 +28,9 @@ fun NavGraphBuilder.mainGraph(
 ) {
     navigation(
         route = RootRoute.MAIN,
-        startDestination = MainRoute.Tabs.route
+        startDestination = MainRoute.Sheel.route
     ) {
-        composable(route = MainRoute.Tabs.route) {
+        composable(route = MainRoute.Sheel.route) {
             val tabsViewModel: TabsViewModel = hiltViewModel()
             val tabsController = remember(tabsViewModel) {
                 TabsController(
@@ -34,6 +40,7 @@ fun NavGraphBuilder.mainGraph(
             }
 
             val mainUiViewModel: MainUIViewModel = hiltViewModel()
+            val permissions by mainUiViewModel.permissions.collectAsState()
 
             val bottomBarController = remember(mainUiViewModel) {
                 BottomBarController(
@@ -46,17 +53,31 @@ fun NavGraphBuilder.mainGraph(
                 )
             }
 
+            val permissionsController = remember(permissions) {
+                UserPermissionsController(permissions)
+            }
+
+            val mainNavChild = rememberNavController()
+
             CompositionLocalProvider(
                 LocalTabsController provides tabsController,
-                LocalBottomBarController provides bottomBarController
+                LocalBottomBarController provides bottomBarController,
+                LocalUserPermissions provides permissionsController
             ) {
-                MainApplication(onLogout)
+                NavHost(
+                    navController = mainNavChild,
+                    startDestination = MainRoute.Tabs.route
+                ) {
+                    composable(MainRoute.Tabs.route) {
+                        MainApplication(onLogout)
+                    }
+
+                    // Global Routes
+                    globalGraph(navController)
+                    calendarGraph(navController)
+                    cameraGraph(navController)
+                }
             }
         }
-
-        // Global Routes
-        globalGraph(navController)
-        calendarGraph(navController)
-        cameraGraph(navController)
     }
 }

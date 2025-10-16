@@ -14,6 +14,8 @@ import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
+import com.example.scrollbooker.ui.LocalUserPermissions
+import com.example.scrollbooker.ui.UserPermissionsController
 import com.example.scrollbooker.ui.appointments.AppointmentCancelScreen
 import com.example.scrollbooker.ui.appointments.AppointmentDetailsScreen
 import com.example.scrollbooker.ui.appointments.AppointmentsScreen
@@ -39,6 +41,7 @@ fun NavGraphBuilder.appointmentsGraph(
             }
 
             val viewModel = hiltViewModel<AppointmentsViewModel>(parentEntry)
+            val permissionController = LocalUserPermissions.current
 
             LaunchedEffect(appointmentCreated) {
                 if(appointmentCreated) {
@@ -48,6 +51,7 @@ fun NavGraphBuilder.appointmentsGraph(
 
             AppointmentsScreen(
                 viewModel = viewModel,
+                permissionController = permissionController,
                 onNavigateToAppointmentDetails = {
                     viewModel.setAppointment(it)
                     navController.navigate(MainRoute.AppointmentDetails.route)

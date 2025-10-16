@@ -20,12 +20,12 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.iconButton.CustomIconButton
 import com.example.scrollbooker.core.enums.PermissionEnum
-import com.example.scrollbooker.core.enums.has
 import com.example.scrollbooker.core.util.Dimens.IconSizeXL
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
+import com.example.scrollbooker.ui.UserPermissionsController
 import com.example.scrollbooker.ui.profile.components.ProfileLayout
 import com.example.scrollbooker.ui.profile.components.sheets.ProfileMenuSheet
 import com.example.scrollbooker.ui.theme.Background
@@ -36,6 +36,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun MyProfileScreen(
     viewModel: MyProfileViewModel,
+    permissionController: UserPermissionsController,
     myProfileData: FeatureState<UserProfile>,
     myPosts: LazyPagingItems<Post>,
     profileNavigate: ProfileNavigator
@@ -44,20 +45,17 @@ fun MyProfileScreen(
     val scope = rememberCoroutineScope()
 
     val isInitLoading by viewModel.isInitLoading.collectAsState()
-    val permissionsState by viewModel.permissionsState.collectAsState()
 
     if(menuSheetState.isVisible) {
         ProfileMenuSheet(
             sheetState = menuSheetState,
             profileNavigate = profileNavigate,
-            permissionsState = permissionsState
+            permissionController = permissionController
         )
     }
 
     val userData = (myProfileData as? FeatureState.Success)?.data
-    val permissions = (permissionsState as FeatureState.Success).data
-
-    val canCreatePost = permissions.has(PermissionEnum.POST_CREATE)
+    val canCreatePost = permissionController.has(PermissionEnum.POST_CREATE)
 
     Scaffold(
         topBar = {

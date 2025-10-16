@@ -22,6 +22,7 @@ import com.example.scrollbooker.core.enums.has
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
+import com.example.scrollbooker.ui.UserPermissionsController
 import kotlinx.coroutines.launch
 
 data class ProfileMenuItem(
@@ -36,7 +37,7 @@ data class ProfileMenuItem(
 fun ProfileMenuSheet(
     sheetState: SheetState,
     profileNavigate: ProfileNavigator,
-    permissionsState:  FeatureState<List<PermissionEnum>>,
+    permissionController: UserPermissionsController
 ) {
     val scope = rememberCoroutineScope()
 
@@ -80,41 +81,33 @@ fun ProfileMenuSheet(
                 .fillMaxWidth()
                 .padding(vertical = BasePadding)
         ) {
-            when(permissionsState) {
-                is FeatureState.Error -> ErrorScreen()
-                is FeatureState.Loading -> LoadingScreen()
-                is FeatureState.Success<*> -> {
-                    val permissions = (permissionsState as FeatureState.Success).data
-                    val visiblePages = links.filter { permissions.has(it.permission) }
+            val visiblePages = links.filter { permissionController.has(it.permission) }
 
-                    LazyColumn {
-                        items(visiblePages) { link ->
-                            ItemList(
-                                headLine = link.headLine,
-                                leftIcon = link.leftIcon,
-                                displayRightIcon = false,
-                                onClick = link.onNavigate
-                            )
-                        }
+            LazyColumn {
+                items(visiblePages) { link ->
+                    ItemList(
+                        headLine = link.headLine,
+                        leftIcon = link.leftIcon,
+                        displayRightIcon = false,
+                        onClick = link.onNavigate
+                    )
+                }
 
-                        item {
-                            ItemList(
-                                headLine = stringResource(id = R.string.settings),
-                                leftIcon = painterResource(R.drawable.ic_settings_outline),
-                                displayRightIcon = false,
-                                onClick = {
-                                    scope.launch {
-                                        sheetState.hide()
+                item {
+                    ItemList(
+                        headLine = stringResource(id = R.string.settings),
+                        leftIcon = painterResource(R.drawable.ic_settings_outline),
+                        displayRightIcon = false,
+                        onClick = {
+                            scope.launch {
+                                sheetState.hide()
 
-                                        if (!sheetState.isVisible) {
-                                            profileNavigate.toSettings()
-                                        }
-                                    }
+                                if (!sheetState.isVisible) {
+                                    profileNavigate.toSettings()
                                 }
-                            )
+                            }
                         }
-                    }
-
+                    )
                 }
             }
         }

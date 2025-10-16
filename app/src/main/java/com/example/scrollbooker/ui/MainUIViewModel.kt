@@ -2,16 +2,21 @@ package com.example.scrollbooker.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.GetUserAppointmentsNumberUseCase
+import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainUIViewModel @Inject constructor(
+    private val authDataStore: AuthDataStore,
     private val getUserAppointmentsNumberUseCase: GetUserAppointmentsNumberUseCase,
 ): ViewModel() {
     private val _appointments = MutableStateFlow<Int>(0)
@@ -19,6 +24,15 @@ class MainUIViewModel @Inject constructor(
 
     private val _notifications = MutableStateFlow<Int>(0)
     val notifications: StateFlow<Int> = _notifications.asStateFlow()
+
+    val permissions: StateFlow<Set<String>> =
+        authDataStore.getUserPermissions()
+            .map { it.toSet() }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.Eagerly,
+                initialValue = emptySet()
+            )
 
     fun incAppointmentsNumber() {
         _appointments.value++

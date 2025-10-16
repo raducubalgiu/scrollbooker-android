@@ -1,6 +1,7 @@
 package com.example.scrollbooker.navigation.routes
 
 sealed class MainRoute(val route: String) {
+    object Sheel: MainRoute(route = "shell")
     object Tabs: MainRoute(route = "tabs")
 
     object Feed: MainRoute(route = "feed")

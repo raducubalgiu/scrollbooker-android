@@ -17,6 +17,7 @@ import androidx.compose.runtime.getValue
 @Composable
 fun AppointmentsNavHost(navController: NavHostController) {
     val root = LocalRootNavController.current
+
     val mainEntry = remember(root) { root.getBackStackEntry(RootRoute.MAIN) }
 
     val appointmentCreated by mainEntry.savedStateHandle
