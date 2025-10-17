@@ -20,6 +20,7 @@ import com.example.scrollbooker.components.core.sheet.SheetHeader
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.shared.posts.sheets.comments.components.CommentFooter
 import com.example.scrollbooker.ui.shared.posts.sheets.comments.components.CommentsList
+import timber.log.Timber
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -35,7 +36,18 @@ fun CommentsSheet(
     }
 
     val comments = viewModel.commentsState.collectAsLazyPagingItems()
-    val newComments by viewModel.newComments.collectAsState()
+    val newComments by viewModel.newCommentsFor(postId).collectAsState()
+    val patches by viewModel.commentPatches.collectAsState()
+    val inFlight by viewModel.inFlight.collectAsState()
+
+    LaunchedEffect(comments.loadState.refresh, comments.itemCount) {
+        if(comments.loadState.refresh is LoadState.NotLoading) {
+            val ids = comments.itemSnapshotList.items.map { it.id }.toSet()
+            viewModel.reconciliateNewWithPaging(postId, ids)
+        }
+    }
+
+    Timber.tag("PATCH").e("PATCHES: $patches")
 
     Scaffold(
         topBar = {
@@ -64,7 +76,11 @@ fun CommentsSheet(
                         CommentsList(
                             comments = comments,
                             newComments = newComments,
-                            onLike = { viewModel.toggleLikeComment(it) },
+                            inFlight = inFlight,
+                            patches = patches,
+                            onToggleLike = { comment, action ->
+                                viewModel.toggleLikeComment(comment, action)
+                            },
                         )
                     }
                 }

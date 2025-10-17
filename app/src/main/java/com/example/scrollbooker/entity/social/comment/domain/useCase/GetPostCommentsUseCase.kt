@@ -5,7 +5,7 @@ import com.example.scrollbooker.entity.social.comment.domain.model.Comment
 import com.example.scrollbooker.entity.social.comment.domain.repository.CommentRepository
 import kotlinx.coroutines.flow.Flow
 
-class GetPaginatedPostCommentsUseCase(
+class GetPostCommentsUseCase(
     private val repository: CommentRepository
 ) {
     operator fun invoke(postId: Int): Flow<PagingData<Comment>> {

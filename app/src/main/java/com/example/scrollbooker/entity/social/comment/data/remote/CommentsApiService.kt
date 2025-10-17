@@ -21,15 +21,13 @@ interface CommentsApiService {
         @Body request: CreateCommentDto
     ): CommentDto
 
-    @POST("posts/{postId}/comments/{commentId}/likes")
+    @POST("comments/{commentId}/likes")
     suspend fun likeComment(
-        @Path("postId") postId: Int,
         @Path("commentId") commentId: Int
     )
 
-    @POST("posts/{postId}/comments/{commentId}/likes")
+    @POST("comments/{commentId}/likes")
     suspend fun unlikeComment(
-        @Path("postId") postId: Int,
         @Path("commentId") commentId: Int
     )
 }

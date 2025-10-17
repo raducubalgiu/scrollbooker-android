@@ -31,6 +31,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,21 +54,19 @@ import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.bodyLarge
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @Composable
 fun CommentItem(
     comment: Comment,
-    onLike: (LikeCommentDto) -> Unit
+    likedInFlight: Boolean,
+    onLikeClick: () -> Unit
 ) {
-    var isLiked by remember { mutableStateOf(comment.isLiked) }
-    var likeCount by remember { mutableIntStateOf(comment.likeCount) }
-    var scale by remember { mutableFloatStateOf(1f) }
+    Timber.tag("PATCH!!!").e("IS LIKED!! ${comment.isLiked}")
 
-    LaunchedEffect(isLiked) {
-        scale = if(isLiked) 0.8f else 1.2f
-        delay(100)
-        scale = 1f
-    }
+    val scope = rememberCoroutineScope()
+    var scale by remember { mutableFloatStateOf(1f) }
 
     val animatedScale by animateFloatAsState(
         targetValue = scale,
@@ -75,16 +74,16 @@ fun CommentItem(
         label = "iconScale"
     )
 
-    fun handleLike() {
-        onLike(
-            LikeCommentDto(
-            postId = comment.postId,
-            commentId = comment.id,
-            action = if(isLiked) LikeCommentEnum.UNLIKE else LikeCommentEnum.LIKE)
-        )
-        isLiked = !isLiked
-        if(isLiked) likeCount += 1 else likeCount -= 1
-    }
+//    fun handleLike() {
+//        val action = if(comment.isLiked) LikeCommentEnum.UNLIKE else LikeCommentEnum.LIKE
+//        onLikeClick(action)
+//
+//        scope.launch {
+//            scale = if(comment.isLiked) 0.8f else 1.2f
+//            delay(100)
+//            scale = 1f
+//        }
+//    }
 
     Row(
         modifier = Modifier
@@ -143,50 +142,36 @@ fun CommentItem(
                         )
                         Spacer(Modifier.width(BasePadding))
                     }
+
                     Row(
                         modifier = Modifier.clickable(
-                            onClick = { handleLike() },
+                            onClick = { if(!likedInFlight) onLikeClick() },
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         AnimatedVisibility(
-                            visible = likeCount > 0,
+                            visible = comment.likeCount > 0,
                             enter = fadeIn() + scaleIn(),
                             exit = fadeOut() + scaleOut()
                         ) {
                             Text(
-                                text = "${likeCount}",
+                                text = "${comment.likeCount}",
                                 style = bodyLarge,
                                 fontWeight = FontWeight.SemiBold,
-                                color = if(isLiked) Error else Color.Gray
+                                color = if(comment.isLiked) Error else Color.Gray
                             )
                         }
                         Spacer(Modifier.width(SpacingXS))
                         Icon(
                             modifier = Modifier.scale(animatedScale),
-                            imageVector = if(isLiked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                            imageVector = if(comment.isLiked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                             contentDescription = null,
-                            tint = if(isLiked) Error else Color.Gray
+                            tint = if(comment.isLiked) Error else Color.Gray
                         )
                     }
                 }
             }
-
-            Spacer(Modifier.height(SpacingS))
-
-            if(comment.repliesCount > 0) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    HorizontalDivider(Modifier.width(25.dp))
-                    Spacer(Modifier.width(BasePadding))
-                    Text(
-                        text = "Vezi ${comment.repliesCount} raspunsuri",
-                        color = Color.Gray
-                    )
-                }
-            }
         }
     }
-
-    Spacer(Modifier.height(BasePadding))
 }

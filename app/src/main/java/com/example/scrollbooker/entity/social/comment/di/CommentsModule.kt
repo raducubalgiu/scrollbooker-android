@@ -5,7 +5,7 @@ import com.example.scrollbooker.entity.social.comment.data.remote.CommentsApiSer
 import com.example.scrollbooker.entity.social.comment.data.repository.CommentRepositoryImpl
 import com.example.scrollbooker.entity.social.comment.domain.repository.CommentRepository
 import com.example.scrollbooker.entity.social.comment.domain.useCase.CreateCommentUseCase
-import com.example.scrollbooker.entity.social.comment.domain.useCase.GetPaginatedPostCommentsUseCase
+import com.example.scrollbooker.entity.social.comment.domain.useCase.GetPostCommentsUseCase
 import com.example.scrollbooker.entity.social.comment.domain.useCase.LikeCommentUseCase
 import com.example.scrollbooker.entity.social.comment.domain.useCase.UnLikeCommentUseCase
 import dagger.Module
@@ -39,10 +39,10 @@ object CommentsModule {
 
     @Provides
     @Singleton
-    fun provideGetPaginatedPostCommentsUseCase(
+    fun provideGetPostCommentsUseCase(
         repository: CommentRepository,
-    ): GetPaginatedPostCommentsUseCase {
-        return GetPaginatedPostCommentsUseCase(repository)
+    ): GetPostCommentsUseCase {
+        return GetPostCommentsUseCase(repository)
     }
 
     @Provides

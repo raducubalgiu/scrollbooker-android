@@ -3,8 +3,8 @@ package com.example.scrollbooker.entity.social.comment.data.repository
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.example.scrollbooker.entity.social.comment.data.mappers.toDomain
 import com.example.scrollbooker.entity.social.comment.data.mappers.toDto
-import com.example.scrollbooker.entity.social.comment.data.remote.CommentDto
 import com.example.scrollbooker.entity.social.comment.data.remote.CommentsApiService
 import com.example.scrollbooker.entity.social.comment.data.remote.CommentsPagingSource
 import com.example.scrollbooker.entity.social.comment.domain.model.Comment
@@ -26,23 +26,17 @@ class CommentRepositoryImpl @Inject constructor(
         ).flow
     }
 
-    override suspend fun createComment(postId: Int, text: String, parentId: Int?): CommentDto {
+    override suspend fun createComment(postId: Int, text: String, parentId: Int?): Comment {
         val request = CreateComment(text = text, parentId = parentId).toDto()
-        return apiService.createComment(postId, request)
+        return apiService.createComment(postId, request).toDomain()
     }
 
-    override suspend fun likeComment(
-        postId: Int,
-        commentId: Int
-    ) {
-        return apiService.likeComment(postId, commentId)
+    override suspend fun likeComment(commentId: Int) {
+        return apiService.likeComment(commentId)
     }
 
-    override suspend fun unLikeComment(
-        postId: Int,
-        commentId: Int
-    ) {
-        return apiService.unlikeComment(postId, commentId)
+    override suspend fun unLikeComment(commentId: Int) {
+        return apiService.unlikeComment(commentId)
     }
 
 }

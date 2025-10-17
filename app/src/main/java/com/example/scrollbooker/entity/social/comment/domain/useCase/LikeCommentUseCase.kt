@@ -6,11 +6,7 @@ import javax.inject.Inject
 class LikeCommentUseCase @Inject constructor(
     private val repository: CommentRepository
 ) {
-    suspend operator fun invoke(postId: Int, commentId: Int): Result<Unit>  {
-        return runCatching {
-            repository.likeComment(postId, commentId)
-        }.onFailure {
-            Timber.tag("Like Comment").e("ERROR: on Liking Comment: $it")
-        }
+    suspend operator fun invoke(commentId: Int): Result<Unit> = runCatching {
+        repository.likeComment(commentId)
     }
 }
