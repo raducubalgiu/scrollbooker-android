@@ -2,41 +2,60 @@ package com.example.scrollbooker.ui.shared.posts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.PageSize
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.VerticalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.paging.compose.LazyPagingItems
+import com.example.scrollbooker.core.util.getOrNull
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.ui.feed.FeedScreenViewModel
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlayActionEnum
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheets
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostVerticalPager(
-    pagerState: PagerState,
     posts: LazyPagingItems<Post>,
     feedViewModel: FeedScreenViewModel,
-    playerViewModel: PlayerViewModel,
-
+    drawerState: DrawerState,
     shouldDisplayBottomBar: Boolean = false,
     onShowBottomBar: (() -> Unit)? = null,
     isDrawerOpen: Boolean = false,
     feedNavigate: FeedNavigator
 ) {
+    val playerViewModel: PlayerViewModel = hiltViewModel()
+    val currentPost by playerViewModel.currentPost.collectAsState()
+
+    val pagerState = rememberPagerState(pageCount = { posts.itemCount })
+    val currentOnReleasePlayer by rememberUpdatedState(playerViewModel::releasePlayer)
+
+    LifecycleStartEffect(true) {
+        onStopOrDispose {
+            currentOnReleasePlayer(posts.getOrNull(pagerState.currentPage)?.id)
+        }
+    }
+
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var sheetContent by remember { mutableStateOf<PostSheetsContent>(PostSheetsContent.None) }
@@ -56,6 +75,37 @@ fun PostVerticalPager(
             },
         )
     }
+
+    LaunchedEffect(drawerState.currentValue) {
+        snapshotFlow { drawerState.currentValue }
+            .collectLatest { drawerValue ->
+                currentPost?.id?.let {
+                    if (drawerValue == DrawerValue.Open) {
+                        playerViewModel.pauseIfPlaying(it)
+                    } else {
+                        playerViewModel.resumeIfPlaying(it)
+                    }
+                }
+            }
+    }
+
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.settledPage }
+            .collectLatest { page ->
+                val post = posts.getOrNull(page)
+                val previousPost = posts.getOrNull(page - 1)
+                val nextPost = posts.getOrNull(page + 1)
+
+                post?.let {
+                    playerViewModel.initializePlayer(
+                        post = post,
+                        previousPost = previousPost,
+                        nextPost = nextPost
+                    )
+                }
+            }
+    }
+
 
     VerticalPager(
         state = pagerState,
