@@ -1,10 +1,9 @@
 package com.example.scrollbooker.entity.social.comment.domain.model
-import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
 
 data class Comment(
     val id: Int,
     val text: String,
-    val user: UserSocial,
+    val user: CommentUser,
     val postId: Int,
     val repliesCount: Int,
     val likeCount: Int,
@@ -12,4 +11,11 @@ data class Comment(
     val likedByPostAuthor: Boolean,
     val parentId: Int?,
     //val createdAt: Instant,
+)
+
+data class CommentUser(
+    val id: Int,
+    val username: String,
+    val fullname: String,
+    val avatar: String?
 )

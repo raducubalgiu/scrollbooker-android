@@ -7,7 +7,7 @@ data class CommentDto(
     val id: Int,
     val text: String,
 
-    val user: UserSocialDto,
+    val user: CommentUserDto,
 
     @SerializedName("post_id")
     val postId: Int,
@@ -29,4 +29,14 @@ data class CommentDto(
 
 //    @SerializedName("created_at")
 //    val createdAt: Instant,
+)
+
+data class CommentUserDto(
+    val id: Int,
+    val username: String,
+
+    @SerializedName("fullname")
+    val fullName: String,
+
+    val avatar: String?
 )

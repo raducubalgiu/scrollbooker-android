@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.util.UnstableApi
@@ -41,7 +40,7 @@ fun PostPlayerView(player: ExoPlayer) {
         update = { playerView ->
             playerView.player = player
             playerView.resizeMode =
-                AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                AspectRatioFrameLayout.RESIZE_MODE_FILL
         },
         modifier = Modifier.fillMaxSize(),
     )

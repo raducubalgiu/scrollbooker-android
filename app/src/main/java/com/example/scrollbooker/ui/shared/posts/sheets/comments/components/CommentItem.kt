@@ -176,9 +176,7 @@ fun CommentItem(
             Spacer(Modifier.height(SpacingS))
 
             if(comment.repliesCount > 0) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     HorizontalDivider(Modifier.width(25.dp))
                     Spacer(Modifier.width(BasePadding))
                     Text(

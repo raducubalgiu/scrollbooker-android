@@ -30,7 +30,6 @@ class CommentsViewModel @Inject constructor(
     private val likeCommentUseCase: LikeCommentUseCase,
     private val unLikeCommentUseCase: UnLikeCommentUseCase
 ): ViewModel() {
-
     private val _postId = MutableStateFlow<Int?>(null)
     val postId = _postId.asStateFlow()
 
@@ -38,9 +37,7 @@ class CommentsViewModel @Inject constructor(
     val commentsState: Flow<PagingData<Comment>> = postId
         .filterNotNull()
         .distinctUntilChanged()
-        .flatMapLatest { id ->
-            getPostCommentsUseCase(id)
-        }
+        .flatMapLatest { id -> getPostCommentsUseCase(id) }
         .cachedIn(viewModelScope)
 
     fun setPostId(newPostId: Int) {
@@ -54,11 +51,7 @@ class CommentsViewModel @Inject constructor(
 
     fun createComment(postId: Int, text: String, parentId: Int?) {
         viewModelScope.launch {
-            val comment = createCommentUseCase(
-                postId = postId,
-                text = text,
-                parentId = parentId
-            )
+            val comment = createCommentUseCase(postId, text, parentId)
 
             if(comment != null) {
                 _newComments.value = listOf(comment) + _newComments.value

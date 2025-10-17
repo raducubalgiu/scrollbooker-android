@@ -1,7 +1,8 @@
 package com.example.scrollbooker.entity.social.comment.data.mappers
 import com.example.scrollbooker.entity.social.comment.data.remote.CommentDto
+import com.example.scrollbooker.entity.social.comment.data.remote.CommentUserDto
 import com.example.scrollbooker.entity.social.comment.domain.model.Comment
-import com.example.scrollbooker.entity.user.userSocial.data.mappers.toDomain
+import com.example.scrollbooker.entity.social.comment.domain.model.CommentUser
 
 fun CommentDto.toDomain(): Comment {
     return Comment(
@@ -15,5 +16,14 @@ fun CommentDto.toDomain(): Comment {
         likedByPostAuthor = likedByPostAuthor,
         parentId = parentId,
         //createdAt = createdAt
+    )
+}
+
+fun CommentUserDto.toDomain(): CommentUser {
+    return CommentUser(
+        id = id,
+        username = username,
+        fullname = fullName,
+        avatar = avatar
     )
 }
