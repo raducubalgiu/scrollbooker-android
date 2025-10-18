@@ -6,14 +6,12 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
@@ -54,9 +52,10 @@ fun PostView(
     }
 
     val playerState by playerViewModel.getPlayerState(post.id)
-        .collectAsState()
+        .collectAsStateWithLifecycle()
 
-    val controlsVisible by remember {
+    val isPlaying = playerState.isPlaying
+    val showControls by remember(playerState, isDrawerOpen) {
         derivedStateOf {
             playerState.hasStartedPlayback &&
                     !playerState.isPlaying &&
@@ -77,6 +76,13 @@ fun PostView(
     ) {
         PostPlayerView(player)
 
+        PostControls(
+            player = player,
+            post = post,
+            isPlaying = isPlaying,
+            visible = showControls
+        )
+
         PostOverlay(
             post = postUi,
             postActionState = postActionState,
@@ -88,27 +94,6 @@ fun PostView(
             onNavigateToProducts = { feedNavigate.toUserProducts(userId = post.user.id) },
         )
 
-        PostControls(
-            player = player,
-            post = post,
-            isPlaying = playerState.isPlaying,
-            visible = controlsVisible
-        )
-
         //if(posts.itemCount == 0) NotFoundPosts()
     }
 }
-
-//@Composable
-//private fun PostPlayerHost(
-//    post: Post,
-//    playerViewModel: PlayerViewModel
-//) {
-//    key(post.id) {
-//        val player = remember { playerViewModel.getOrCreatePlayer(post) }
-//        DisposableEffect(Unit) {
-//            onDispose { playerViewModel.releasePlayer(post.id) }
-//        }
-//        PostPlayerView(player)
-//    }
-//}

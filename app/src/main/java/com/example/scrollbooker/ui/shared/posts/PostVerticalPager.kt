@@ -47,7 +47,7 @@ fun PostVerticalPager(
     feedNavigate: FeedNavigator
 ) {
     val playerViewModel: PlayerViewModel = hiltViewModel()
-    val currentPost by playerViewModel.currentPost.collectAsState()
+    val currentPost by playerViewModel.currentPost.collectAsStateWithLifecycle()
 
     val pagerState = rememberPagerState(pageCount = { posts.itemCount })
     val currentOnReleasePlayer by rememberUpdatedState(playerViewModel::releasePlayer)
@@ -94,7 +94,7 @@ fun PostVerticalPager(
     }
 
     LaunchedEffect(pagerState) {
-        snapshotFlow { pagerState.settledPage }
+        snapshotFlow { pagerState.currentPage }
             .collectLatest { page ->
                 val post = posts.getOrNull(page)
                 val previousPost = posts.getOrNull(page - 1)
