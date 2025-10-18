@@ -103,11 +103,17 @@ fun PostOverlay(
                 PostActionButtonSmall(
                     show = shouldDisplayBottomBar,
                     title =  when {
-                        post.isVideoReview -> "Vezi detalii"
-                        post.product != null -> "Locuri libere"
-                        else -> "Produse"
+                        post.isVideoReview -> stringResource(R.string.seeMore)
+                        post.product != null -> stringResource(R.string.freeSeats)
+                        else -> stringResource(R.string.product)
                     },
-                    onClick = onNavigateToProducts
+                    onClick = {
+                        when {
+                            post.isVideoReview -> onNavigateToProducts
+                            post.product != null -> onNavigateToCalendar
+                            else -> onNavigateToProducts
+                        }
+                    }
                 )
             }
 

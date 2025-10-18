@@ -293,4 +293,6 @@
     <string name="tikTok">Tik Tok</string>
     <string name="buttonActionInProfile">Butoane de acțiune în profil</string>
     <string name="acceptEmployment">Acceptă angajarea</string>
+    <string name="seeDetails">Vezi detalii</string>
+    <string name="freeSeats">Locuri libere</string>
 </resources>

@@ -48,10 +48,10 @@ class PlayerViewModel @Inject constructor(
     private fun createLoadControl(): DefaultLoadControl {
         return DefaultLoadControl.Builder()
             .setBufferDurationsMs(
-                15_000,
-                50_000,
+                1500,
+                5000,
                 500,
-                250
+                1500
             )
             .setTargetBufferBytes(C.LENGTH_UNSET)
             .setPrioritizeTimeOverSizeThresholds(true)

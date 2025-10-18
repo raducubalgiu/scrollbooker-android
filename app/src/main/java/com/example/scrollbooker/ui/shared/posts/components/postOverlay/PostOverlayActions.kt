@@ -67,7 +67,6 @@ fun PostOverlayActions(
 
         Spacer(Modifier.height(SpacingS))
 
-
         PostActionButton(
             isEnabled = !postActionState.isSavingLike,
             counter = counters.likeCount,
@@ -107,10 +106,9 @@ fun PostOverlayActions(
         )
 
         PostActionButton(
-            counter = counters.repostCount,
-            icon = R.drawable.ic_send_solid,
+            icon = R.drawable.ic_elipsis_horizontal,
             tint = Color.White,
-            onClick = { onAction(PostOverlayActionEnum.REPOST) }
+            onClick = {  }
         )
 
         onShowBottomBar?.let {

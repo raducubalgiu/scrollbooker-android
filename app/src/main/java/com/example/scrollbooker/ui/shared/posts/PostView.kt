@@ -6,9 +6,13 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
@@ -30,6 +34,14 @@ fun PostView(
     shouldDisplayBottomBar: Boolean = false,
     onShowBottomBar: (() -> Unit)? = null,
 ) {
+    val latestOnAction by rememberUpdatedState(onAction)
+
+    val stableOnAction = remember(post.id) {
+        {  action: PostOverlayActionEnum ->
+            latestOnAction(action, post)
+        }
+    }
+
     val postUi = remember(post, postActionState) {
         post.copy(
             userActions = post.userActions.applyUiState(postActionState),
@@ -43,6 +55,15 @@ fun PostView(
 
     val playerState by playerViewModel.getPlayerState(post.id)
         .collectAsState()
+
+    val controlsVisible by remember {
+        derivedStateOf {
+            playerState.hasStartedPlayback &&
+                    !playerState.isPlaying &&
+                    !playerState.isBuffering &&
+                    !isDrawerOpen
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -59,7 +80,7 @@ fun PostView(
         PostOverlay(
             post = postUi,
             postActionState = postActionState,
-            onAction = { onAction(it, post) },
+            onAction = stableOnAction,
             shouldDisplayBottomBar = shouldDisplayBottomBar,
             onShowBottomBar = onShowBottomBar,
             onNavigateToUserProfile = { feedNavigate.toUserProfile(it) },
@@ -71,12 +92,23 @@ fun PostView(
             player = player,
             post = post,
             isPlaying = playerState.isPlaying,
-            visible = playerState.hasStartedPlayback &&
-                    !playerState.isPlaying &&
-                    !playerState.isBuffering &&
-                    !isDrawerOpen
+            visible = controlsVisible
         )
 
         //if(posts.itemCount == 0) NotFoundPosts()
     }
 }
+
+//@Composable
+//private fun PostPlayerHost(
+//    post: Post,
+//    playerViewModel: PlayerViewModel
+//) {
+//    key(post.id) {
+//        val player = remember { playerViewModel.getOrCreatePlayer(post) }
+//        DisposableEffect(Unit) {
+//            onDispose { playerViewModel.releasePlayer(post.id) }
+//        }
+//        PostPlayerView(player)
+//    }
+//}

@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -22,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleStartEffect
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.core.util.getOrNull
 import com.example.scrollbooker.entity.social.post.domain.model.Post
@@ -66,14 +68,16 @@ fun PostVerticalPager(
     }
 
     if(sheetState.isVisible) {
-        PostSheets(
-            sheetState = sheetState,
-            sheetContent = sheetContent,
-            onClose = {
-                sheetContent = PostSheetsContent.None
-                scope.launch { sheetState.hide() }
-            },
-        )
+        key(sheetContent) {
+            PostSheets(
+                sheetState = sheetState,
+                sheetContent = sheetContent,
+                onClose = {
+                    sheetContent = PostSheetsContent.None
+                    scope.launch { sheetState.hide() }
+                },
+            )
+        }
     }
 
     LaunchedEffect(drawerState.currentValue) {
@@ -117,28 +121,33 @@ fun PostVerticalPager(
         pageSpacing = 0.dp,
         beyondViewportPageCount = 1
     ) { page -> posts[page]?.let { post ->
-        val postActionState by feedViewModel.observePostUi(post.id).collectAsState()
 
-        PostView(
-            postActionState = postActionState,
-            playerViewModel = playerViewModel,
-            post = post,
-            onAction = { action, post ->
-                when(action) {
-                    PostOverlayActionEnum.LIKE -> feedViewModel.toggleLike(post)
-                    PostOverlayActionEnum.BOOKMARK -> feedViewModel.toggleBookmark(post)
-                    PostOverlayActionEnum.REPOST -> {}
-                    PostOverlayActionEnum.OPEN_REVIEWS -> handleOpenSheet(PostSheetsContent.ReviewsSheet(post.user.id))
-                    PostOverlayActionEnum.OPEN_COMMENTS -> handleOpenSheet(PostSheetsContent.CommentsSheet(post.id))
-                    PostOverlayActionEnum.OPEN_LOCATION -> handleOpenSheet(PostSheetsContent.LocationSheet(post.businessId))
-                    PostOverlayActionEnum.OPEN_CALENDAR -> {}
-                }
-            },
-            feedNavigate = feedNavigate,
-            isDrawerOpen = isDrawerOpen,
-            shouldDisplayBottomBar = shouldDisplayBottomBar,
-            onShowBottomBar = onShowBottomBar
-        )
+        key(post.id) {
+            val postActionState by feedViewModel
+                .observePostUi(post.id)
+                .collectAsStateWithLifecycle()
+
+            PostView(
+                postActionState = postActionState,
+                playerViewModel = playerViewModel,
+                post = post,
+                onAction = { action, post ->
+                    when(action) {
+                        PostOverlayActionEnum.LIKE -> feedViewModel.toggleLike(post)
+                        PostOverlayActionEnum.BOOKMARK -> feedViewModel.toggleBookmark(post)
+                        PostOverlayActionEnum.REPOST -> {}
+                        PostOverlayActionEnum.OPEN_REVIEWS -> handleOpenSheet(PostSheetsContent.ReviewsSheet(post.user.id))
+                        PostOverlayActionEnum.OPEN_COMMENTS -> handleOpenSheet(PostSheetsContent.CommentsSheet(post.id))
+                        PostOverlayActionEnum.OPEN_LOCATION -> handleOpenSheet(PostSheetsContent.LocationSheet(post.businessId))
+                        PostOverlayActionEnum.OPEN_CALENDAR -> {}
+                    }
+                },
+                feedNavigate = feedNavigate,
+                isDrawerOpen = isDrawerOpen,
+                shouldDisplayBottomBar = shouldDisplayBottomBar,
+                onShowBottomBar = onShowBottomBar
+            )
+        }
     }
     }
 }
