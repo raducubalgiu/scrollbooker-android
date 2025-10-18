@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.modules.reviews
+package com.example.scrollbooker.ui.shared.reviews
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf

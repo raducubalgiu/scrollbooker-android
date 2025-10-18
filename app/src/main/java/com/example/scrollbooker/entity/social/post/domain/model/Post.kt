@@ -26,7 +26,8 @@ data class Post(
 data class PostBusinessOwner(
     val id: Int,
     val fullName: String,
-    val avatar: String?
+    val avatar: String?,
+    val ratingsAverage: Float
 )
 
 data class PostEmployee(

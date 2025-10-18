@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.modules.reviews.list
+package com.example.scrollbooker.ui.shared.reviews.list
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -22,7 +22,7 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.LoadMoreSpinner
-import com.example.scrollbooker.ui.modules.reviews.summary.ReviewsSummarySection
+import com.example.scrollbooker.ui.shared.reviews.summary.ReviewsSummarySection
 import com.example.scrollbooker.ui.social.UserSocialViewModel
 import com.example.scrollbooker.ui.theme.SurfaceBG
 

@@ -90,7 +90,7 @@ fun PostOverlay(
                     onNavigateToUser = onNavigateToUserProfile
                 )
 
-                Spacer(Modifier.height(SpacingM))
+                Spacer(Modifier.height(SpacingS))
 
                 post.description?.takeIf { it.isNotBlank() }?.let { description ->
                     PostOverlayDescription(description)
@@ -104,7 +104,8 @@ fun PostOverlay(
                     show = shouldDisplayBottomBar,
                     title =  when {
                         post.isVideoReview -> "Vezi detalii"
-                        else -> "Rezerva"
+                        post.product != null -> "Locuri libere"
+                        else -> "Produse"
                     },
                     onClick = onNavigateToProducts
                 )

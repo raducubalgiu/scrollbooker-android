@@ -29,11 +29,11 @@ import com.example.scrollbooker.components.core.tabs.Tabs
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.entity.booking.review.domain.model.ReviewsSummary
-import com.example.scrollbooker.ui.modules.reviews.ReviewsViewModel
-import com.example.scrollbooker.ui.modules.reviews.list.ReviewItem
-import com.example.scrollbooker.ui.modules.reviews.list.ReviewItemShimmer
-import com.example.scrollbooker.ui.modules.reviews.summary.ReviewSummaryShimmer
-import com.example.scrollbooker.ui.modules.reviews.summary.ReviewsSummarySection
+import com.example.scrollbooker.ui.shared.reviews.ReviewsViewModel
+import com.example.scrollbooker.ui.shared.reviews.list.ReviewItem
+import com.example.scrollbooker.ui.shared.reviews.list.ReviewItemShimmer
+import com.example.scrollbooker.ui.shared.reviews.summary.ReviewSummaryShimmer
+import com.example.scrollbooker.ui.shared.reviews.summary.ReviewsSummarySection
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ConfigurationScreenWidthHeight")

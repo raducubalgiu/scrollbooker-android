@@ -32,7 +32,6 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.social.post.domain.model.Post
-import com.example.scrollbooker.ui.modules.posts.PostsPager
 import com.example.scrollbooker.ui.theme.labelLarge
 
 @OptIn(UnstableApi::class)
@@ -57,12 +56,12 @@ fun ProfilePostDetailScreen(
         .fillMaxSize()
         .background(Color(0xFF121212))
     ) {
-        PostsPager(
-            posts = posts,
-            isVisibleTab = true,
-            paddingBottom = 80.dp,
-            onDisplayBottomBar = {},
-        )
+//        PostsPager(
+//            posts = posts,
+//            isVisibleTab = true,
+//            paddingBottom = 80.dp,
+//            onDisplayBottomBar = {},
+//        )
 
         Box(modifier = Modifier
             .fillMaxWidth()

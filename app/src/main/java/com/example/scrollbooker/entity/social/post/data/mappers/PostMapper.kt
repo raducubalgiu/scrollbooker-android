@@ -50,7 +50,8 @@ fun PostBusinessOwnerDto.toDomain(): PostBusinessOwner {
     return PostBusinessOwner(
         id = id,
         fullName = fullName,
-        avatar = avatar
+        avatar = avatar,
+        ratingsAverage = ratingsAverage
     )
 }
 
