@@ -58,6 +58,7 @@ fun PostView(
 
         PostOverlay(
             post = postUi,
+            postActionState = postActionState,
             onAction = { onAction(it, post) },
             shouldDisplayBottomBar = shouldDisplayBottomBar,
             onShowBottomBar = onShowBottomBar,

@@ -38,9 +38,8 @@ fun PostBottomBar(
         label = "PostBottomBar"
     ) { display ->
         key(display) {
-            if(display) {
-                BottomBar()
-            } else {
+            if(display) BottomBar()
+            else {
                 val bottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
                 Row(

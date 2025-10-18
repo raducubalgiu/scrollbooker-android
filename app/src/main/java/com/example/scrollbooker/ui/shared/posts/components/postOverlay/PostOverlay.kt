@@ -22,6 +22,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
+import com.example.scrollbooker.ui.shared.posts.PostActionUiState
 import com.example.scrollbooker.ui.shared.posts.components.PostActionButtonSmall
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.labels.PostOverlayLabel
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.labels.VideoReviewLabel
@@ -31,6 +32,7 @@ import java.math.BigDecimal
 @Composable
 fun PostOverlay(
     post: Post,
+    postActionState: PostActionUiState,
     onAction: (PostOverlayActionEnum) -> Unit,
 
     shouldDisplayBottomBar: Boolean,
@@ -110,6 +112,7 @@ fun PostOverlay(
 
             PostOverlayActions(
                 user = post.user,
+                postActionState = postActionState,
                 isVideoReview = post.isVideoReview,
                 counters = post.counters,
                 userActions = post.userActions,

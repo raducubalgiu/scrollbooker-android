@@ -19,6 +19,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -33,7 +34,7 @@ fun PostActionButton(
     isEnabled: Boolean = true,
     tint: Color = Color.White,
     counter: Int,
-    icon: Painter,
+    icon: Int,
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null
 ) {
@@ -58,7 +59,7 @@ fun PostActionButton(
         ) {
             Icon(
                 modifier = Modifier.size(35.dp),
-                painter = icon,
+                painter = painterResource(icon),
                 contentDescription = null,
                 tint = tint
             )

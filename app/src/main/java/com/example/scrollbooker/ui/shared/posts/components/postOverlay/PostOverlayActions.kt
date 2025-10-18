@@ -16,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.Avatar
@@ -26,12 +25,14 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.social.post.domain.model.PostCounters
 import com.example.scrollbooker.entity.social.post.domain.model.UserPostActions
 import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
+import com.example.scrollbooker.ui.shared.posts.PostActionUiState
 import com.example.scrollbooker.ui.shared.posts.components.PostActionButton
 import com.example.scrollbooker.ui.theme.Error
 
 @Composable
 fun PostOverlayActions(
     user: UserSocial,
+    postActionState: PostActionUiState,
     isVideoReview: Boolean,
     counters: PostCounters,
     userActions: UserPostActions,
@@ -66,10 +67,11 @@ fun PostOverlayActions(
 
         Spacer(Modifier.height(SpacingS))
 
+
         PostActionButton(
-            //isEnabled = !interactionState.isLiking,
+            isEnabled = !postActionState.isSavingLike,
             counter = counters.likeCount,
-            icon = painterResource(R.drawable.ic_heart_solid),
+            icon = R.drawable.ic_heart_solid,
             tint = if (userActions.isLiked) Error else Color.White,
             onClick = {
                 onAction(PostOverlayActionEnum.LIKE)
@@ -79,7 +81,7 @@ fun PostOverlayActions(
         if(!isVideoReview) {
             PostActionButton(
                 counter = 120,
-                icon = painterResource(R.drawable.ic_clipboard_check_solid),
+                icon = R.drawable.ic_clipboard_check_solid,
                 tint = Color.White,
                 onClick = {
                     onAction(PostOverlayActionEnum.OPEN_REVIEWS)
@@ -89,22 +91,24 @@ fun PostOverlayActions(
 
         PostActionButton(
             counter = counters.commentCount,
-            icon = painterResource(R.drawable.ic_comment_solid),
+            icon = R.drawable.ic_comment_solid,
             tint = Color.White,
             onClick = {
                 onAction(PostOverlayActionEnum.OPEN_COMMENTS)
             }
         )
+
         PostActionButton(
-            //isEnabled = !interactionState.isBookmarking,
+            isEnabled = !postActionState.isSavingBookmark,
             counter = counters.bookmarkCount,
-            icon = painterResource(R.drawable.ic_bookmark_solid),
+            icon = R.drawable.ic_bookmark_solid,
             tint = if (userActions.isBookmarked) Color(0xFFF3BA2F) else Color.White,
             onClick = { onAction(PostOverlayActionEnum.BOOKMARK) }
         )
+
         PostActionButton(
             counter = counters.repostCount,
-            icon = painterResource(R.drawable.ic_send_solid),
+            icon = R.drawable.ic_send_solid,
             tint = Color.White,
             onClick = { onAction(PostOverlayActionEnum.REPOST) }
         )
