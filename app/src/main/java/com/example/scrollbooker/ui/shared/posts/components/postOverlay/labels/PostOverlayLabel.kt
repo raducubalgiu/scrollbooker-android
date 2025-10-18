@@ -31,7 +31,7 @@ fun PostOverlayLabel(
 ) {
     Row(
         modifier = Modifier
-            .clip(shape = ShapeDefaults.Small)
+            .clip(shape = ShapeDefaults.ExtraLarge)
             .background(containerColor.copy(alpha = 0.9f))
             .padding(vertical = SpacingS, horizontal = SpacingS),
         verticalAlignment = Alignment.CenterVertically

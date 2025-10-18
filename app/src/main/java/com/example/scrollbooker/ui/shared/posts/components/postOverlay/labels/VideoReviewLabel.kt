@@ -17,8 +17,8 @@ import com.example.scrollbooker.ui.theme.labelLarge
 fun VideoReviewLabel() {
     Column(
         modifier = Modifier
-            .clip(shape = ShapeDefaults.ExtraSmall)
-            .background(Color.Black.copy(alpha = 0.2f))
+            .clip(shape = ShapeDefaults.ExtraLarge)
+            .background(Color.White.copy(alpha = 0.2f))
             .padding(vertical = 8.dp, horizontal = 12.dp),
     ) {
         Text(

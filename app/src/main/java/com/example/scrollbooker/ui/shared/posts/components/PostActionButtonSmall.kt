@@ -44,7 +44,6 @@ fun PostActionButtonSmall(
                     .fillMaxWidth()
                     .padding(bottom = BasePadding),
                 onClick = onClick,
-                shape = ShapeDefaults.Small,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Primary,
                     contentColor = OnPrimary
