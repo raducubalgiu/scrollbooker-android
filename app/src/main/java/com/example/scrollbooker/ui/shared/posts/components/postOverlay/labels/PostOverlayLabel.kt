@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.posts.components.postOverlay
+package com.example.scrollbooker.ui.shared.posts.components.postOverlay.labels
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row

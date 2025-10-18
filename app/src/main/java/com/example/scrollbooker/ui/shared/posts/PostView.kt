@@ -37,7 +37,7 @@ fun PostView(
         )
     }
 
-    val player = remember(post.id) {
+    val player = remember {
         playerViewModel.getOrCreatePlayer(post)
     }
 

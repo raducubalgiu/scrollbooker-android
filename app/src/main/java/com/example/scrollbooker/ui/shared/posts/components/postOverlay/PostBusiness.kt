@@ -1,9 +1,10 @@
-package com.example.scrollbooker.ui.shared.posts.components.postOverlay.userSection
+package com.example.scrollbooker.ui.shared.posts.components.postOverlay
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Repeat
@@ -19,24 +20,19 @@ import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.core.util.Dimens.AvatarSizeXXS
 import com.example.scrollbooker.core.util.Dimens.SpacingM
+import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyMedium
 
 @Composable
-fun PostBusinessOrEmployeeLabel(
+fun PostBusiness(
     fullName: String,
     avatar: String?,
     onNavigateToUser: () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
-    Icon(
-        imageVector = Icons.Default.Repeat,
-        contentDescription = "Repeat Icon",
-        tint = Primary
-    )
-
-    Spacer(Modifier.width(SpacingM))
+    Spacer(Modifier.height(SpacingS))
 
     Row(
         modifier = Modifier.clickable(
@@ -46,6 +42,14 @@ fun PostBusinessOrEmployeeLabel(
         ),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        Icon(
+            imageVector = Icons.Default.Repeat,
+            contentDescription = "Repeat Icon",
+            tint = Primary
+        )
+
+        Spacer(Modifier.width(SpacingM))
+
         Avatar(
             url = avatar ?: "",
             size = AvatarSizeXXS
@@ -61,4 +65,6 @@ fun PostBusinessOrEmployeeLabel(
             fontSize = 16.sp
         )
     }
+
+    Spacer(Modifier.height(SpacingS))
 }
