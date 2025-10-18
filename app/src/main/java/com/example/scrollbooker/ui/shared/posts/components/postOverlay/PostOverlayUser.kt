@@ -24,6 +24,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -35,14 +36,14 @@ import com.example.scrollbooker.core.util.Dimens.AvatarSizeXXS
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.social.post.domain.model.PostBusinessOwner
-import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
+import com.example.scrollbooker.entity.social.post.domain.model.PostUser
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
 
 @Composable
 fun PostOverlayUser(
-    user: UserSocial,
+    user: PostUser,
     businessOwner: PostBusinessOwner,
     isVideoReview: Boolean,
     onNavigateToUser: (Int) -> Unit
@@ -72,13 +73,13 @@ fun PostOverlayUser(
         when {
             isVideoReview -> {
                 SecondaryText(
-                    text = "a testat serviciul Tuns",
+                    text = "${stringResource(R.string.hasTestedTheService)} Tuns",
                     color = Color.White,
                     fontWeight = FontWeight.Normal,
                     fontStyle = FontStyle.Italic
                 )
             }
-            else -> SecondaryText(user.profession ?: "")
+            else -> SecondaryText(user.profession)
         }
 
         Spacer(Modifier.height(SpacingM))

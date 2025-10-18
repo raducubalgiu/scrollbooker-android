@@ -10,7 +10,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -32,6 +31,7 @@ import com.example.scrollbooker.ui.feed.FeedScreenViewModel
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlayActionEnum
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheets
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent
+import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.*
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -60,7 +60,7 @@ fun PostVerticalPager(
 
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    var sheetContent by remember { mutableStateOf<PostSheetsContent>(PostSheetsContent.None) }
+    var sheetContent by remember { mutableStateOf<PostSheetsContent>(None) }
 
     fun handleOpenSheet(targetSheet: PostSheetsContent) {
         scope.launch {
@@ -77,7 +77,7 @@ fun PostVerticalPager(
                 onClose = {
                     scope.launch {
                         sheetState.hide()
-                        sheetContent = PostSheetsContent.None
+                        sheetContent = None
                     }
                 },
             )
@@ -140,10 +140,11 @@ fun PostVerticalPager(
                         PostOverlayActionEnum.LIKE -> feedViewModel.toggleLike(post)
                         PostOverlayActionEnum.BOOKMARK -> feedViewModel.toggleBookmark(post)
                         PostOverlayActionEnum.REPOST -> {}
-                        PostOverlayActionEnum.OPEN_REVIEWS -> handleOpenSheet(PostSheetsContent.ReviewsSheet(post.user.id))
-                        PostOverlayActionEnum.OPEN_COMMENTS -> handleOpenSheet(PostSheetsContent.CommentsSheet(post.id))
-                        PostOverlayActionEnum.OPEN_LOCATION -> handleOpenSheet(PostSheetsContent.LocationSheet(post.businessId))
+                        PostOverlayActionEnum.OPEN_REVIEWS -> handleOpenSheet(ReviewsSheet(post.user.id))
+                        PostOverlayActionEnum.OPEN_COMMENTS -> handleOpenSheet(CommentsSheet(post.id))
+                        PostOverlayActionEnum.OPEN_LOCATION -> handleOpenSheet(LocationSheet(post.businessId))
                         PostOverlayActionEnum.OPEN_CALENDAR -> {}
+                        PostOverlayActionEnum.OPEN_MORE_OPTIONS -> handleOpenSheet(MoreOptionsSheet(post.user.id))
                     }
                 },
                 feedNavigate = feedNavigate,

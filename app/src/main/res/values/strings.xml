@@ -295,4 +295,8 @@
     <string name="acceptEmployment">Acceptă angajarea</string>
     <string name="seeDetails">Vezi detalii</string>
     <string name="freeSeats">Locuri libere</string>
+    <string name="share">Distribuie</string>
+    <string name="repost">Repostează</string>
+    <string name="copyLink">Copiază linkul</string>
+    <string name="hasTestedTheService">a testat serviciul</string>
 </resources>

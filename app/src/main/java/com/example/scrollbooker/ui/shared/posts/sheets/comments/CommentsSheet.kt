@@ -1,9 +1,11 @@
 package com.example.scrollbooker.ui.shared.posts.sheets.comments
 import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -20,7 +22,6 @@ import com.example.scrollbooker.components.core.sheet.SheetHeader
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.shared.posts.sheets.comments.components.CommentFooter
 import com.example.scrollbooker.ui.shared.posts.sheets.comments.components.CommentsList
-import timber.log.Timber
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -47,17 +48,40 @@ fun CommentsSheet(
         }
     }
 
-    Timber.tag("PATCH").e("PATCHES: $patches")
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .fillMaxHeight(fraction = 0.85f)
+    ) {
+        SheetHeader(
+            modifier = Modifier.padding(bottom = BasePadding),
+            title = stringResource(R.string.comments),
+            onClose = onClose
+        )
 
-    Scaffold(
-        topBar = {
-            SheetHeader(
-                modifier = Modifier.padding(bottom = BasePadding),
-                title = stringResource(R.string.comments),
-                onClose = onClose
-            )
-        },
-        bottomBar = {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column(Modifier.weight(1f)) {
+                if(isSheetVisible) {
+                    when (comments.loadState.refresh) {
+                        is LoadState.Loading -> LoadingScreen()
+                        is LoadState.Error -> ErrorScreen()
+                        is LoadState.NotLoading -> {
+                            CommentsList(
+                                comments = comments,
+                                newComments = newComments,
+                                inFlight = inFlight,
+                                patches = patches,
+                                onToggleLike = { comment, action ->
+                                    viewModel.toggleLikeComment(comment, action)
+                                },
+                            )
+                        }
+                    }
+                }
+            }
+
             CommentFooter(onCreateComment = {
                 viewModel.createComment(
                     postId = postId,
@@ -65,26 +89,6 @@ fun CommentsSheet(
                     parentId = it.parentId
                 )
             })
-        }
-    ) { innerPadding ->
-        Box(Modifier.fillMaxSize().padding(innerPadding)) {
-            if(isSheetVisible) {
-                when (comments.loadState.refresh) {
-                    is LoadState.Loading -> LoadingScreen()
-                    is LoadState.Error -> ErrorScreen()
-                    is LoadState.NotLoading -> {
-                        CommentsList(
-                            comments = comments,
-                            newComments = newComments,
-                            inFlight = inFlight,
-                            patches = patches,
-                            onToggleLike = { comment, action ->
-                                viewModel.toggleLikeComment(comment, action)
-                            },
-                        )
-                    }
-                }
-            }
         }
     }
 }

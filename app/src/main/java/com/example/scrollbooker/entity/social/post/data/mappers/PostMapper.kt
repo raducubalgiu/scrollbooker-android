@@ -9,6 +9,7 @@ import com.example.scrollbooker.entity.social.post.data.remote.PostEmployeeDto
 import com.example.scrollbooker.entity.social.post.data.remote.PostMediaFileDto
 import com.example.scrollbooker.entity.social.post.data.remote.PostProductCurrencyDto
 import com.example.scrollbooker.entity.social.post.data.remote.PostProductDto
+import com.example.scrollbooker.entity.social.post.data.remote.PostUserDto
 import com.example.scrollbooker.entity.social.post.data.remote.UserPostActionsDto
 import com.example.scrollbooker.entity.social.post.domain.model.FixedSlots
 import com.example.scrollbooker.entity.social.post.domain.model.Hashtag
@@ -20,6 +21,7 @@ import com.example.scrollbooker.entity.social.post.domain.model.PostEmployee
 import com.example.scrollbooker.entity.social.post.domain.model.PostMediaFile
 import com.example.scrollbooker.entity.social.post.domain.model.PostProduct
 import com.example.scrollbooker.entity.social.post.domain.model.PostProductCurrency
+import com.example.scrollbooker.entity.social.post.domain.model.PostUser
 import com.example.scrollbooker.entity.social.post.domain.model.UserPostActions
 import com.example.scrollbooker.entity.user.userSocial.data.mappers.toDomain
 import com.example.scrollbooker.ui.shared.posts.PostActionUiState
@@ -43,6 +45,19 @@ fun PostDto.toDomain(): Post {
         businessId = businessId,
         lastMinute = lastMinute.toDomain(),
         createdAt = createdAt,
+    )
+}
+
+fun PostUserDto.toDomain(): PostUser {
+    return PostUser(
+        id = id,
+        fullName = fullName,
+        username = username,
+        avatar = avatar,
+        isFollow = isFollow,
+        profession = profession,
+        ratingsAverage = ratingsAverage,
+        ratingsCount = ratingsCount
     )
 }
 

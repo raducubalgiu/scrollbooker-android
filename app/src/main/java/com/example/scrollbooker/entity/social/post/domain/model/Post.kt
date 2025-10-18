@@ -1,12 +1,11 @@
 package com.example.scrollbooker.entity.social.post.domain.model
 import com.example.scrollbooker.entity.user.userSocial.data.remote.UserSocialDto
-import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
 import java.math.BigDecimal
 
 data class Post(
     val id: Int,
     val description: String?,
-    val user: UserSocial,
+    val user: PostUser,
     val businessOwner: PostBusinessOwner,
     val employee: PostEmployee?,
     val product: PostProduct?,
@@ -21,6 +20,17 @@ data class Post(
     val businessId: Int?,
     val lastMinute: LastMinute,
     val createdAt: String
+)
+
+data class PostUser(
+    val id: Int,
+    val fullName: String,
+    val username: String,
+    val avatar: String?,
+    val isFollow: Boolean,
+    val profession: String,
+    val ratingsAverage: Float,
+    val ratingsCount: Int
 )
 
 data class PostBusinessOwner(

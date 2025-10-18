@@ -55,83 +55,85 @@ fun ReviewsListSheet(
     val tabs = listOf("Recenzii standard", "Recenzii video")
     val pagerState = rememberPagerState(initialPage = 0 ) { 2 }
 
-    SheetHeader(
-        title = stringResource(R.string.reviews),
-        onClose = onClose
-    )
+    Column(modifier = Modifier.fillMaxSize()) {
+        SheetHeader(
+            title = stringResource(R.string.reviews),
+            onClose = onClose
+        )
 
-    LazyColumn {
-        item {
-            Column(Modifier.height(320.dp)) {
-                when(reviewsSummary) {
-                    is FeatureState.Error -> ErrorScreen()
-                    is FeatureState.Loading -> ReviewSummaryShimmer()
-                    is FeatureState.Success -> {
-                        val summary = (reviewsSummary as FeatureState.Success<ReviewsSummary>).data
+        LazyColumn {
+            item {
+                Column {
+                    when(reviewsSummary) {
+                        is FeatureState.Error -> ErrorScreen()
+                        is FeatureState.Loading -> ReviewSummaryShimmer()
+                        is FeatureState.Success -> {
+                            val summary = (reviewsSummary as FeatureState.Success<ReviewsSummary>).data
 
-                        ReviewsSummarySection(
-                            summary = summary,
-                            onRatingClick = { viewModel.toggleRatings(it) },
-                            selectedRatings = selectedRatings,
-                        )
+                            ReviewsSummarySection(
+                                summary = summary,
+                                onRatingClick = { viewModel.toggleRatings(it) },
+                                selectedRatings = selectedRatings,
+                            )
+                        }
                     }
                 }
             }
-        }
 
-        stickyHeader {
-            Tabs(
-                tabs = tabs,
-                selectedTabIndex = 0,
-                onChangeTab = {}
-            )
-        }
+            stickyHeader {
+                Tabs(
+                    tabs = tabs,
+                    selectedTabIndex = 0,
+                    onChangeTab = {}
+                )
+            }
 
-        item {
-            HorizontalPager(
-                state = pagerState,
-                beyondViewportPageCount = 0,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(LocalConfiguration.current.screenHeightDp.dp * 0.9f)
-            ) { page ->
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.TopStart
-                ) {
-                    when(page) {
-                        0 -> {
-                            when (reviews.loadState.refresh) {
-                                is LoadState.Loading -> {
-                                    Column(Modifier.fillMaxSize()) {
-                                        repeat(7) { ReviewItemShimmer() }
-                                    }
-                                }
-                                is LoadState.Error -> ErrorScreen()
-                                is LoadState.NotLoading -> {
-                                    LazyColumn {
-                                        items(reviews.itemCount) { index ->
-                                            reviews[index]?.let { review ->
-                                                ReviewItem(review = review)
-                                            }
+            item {
+                HorizontalPager(
+                    state = pagerState,
+                    beyondViewportPageCount = 0,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(LocalConfiguration.current.screenHeightDp.dp * 0.9f)
+                ) { page ->
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.TopStart
+                    ) {
+                        when(page) {
+                            0 -> {
+                                when (reviews.loadState.refresh) {
+                                    is LoadState.Loading -> {
+                                        Column(Modifier.fillMaxSize()) {
+                                            repeat(7) { ReviewItemShimmer() }
                                         }
+                                    }
+                                    is LoadState.Error -> ErrorScreen()
+                                    is LoadState.NotLoading -> {
+                                        LazyColumn {
+                                            items(reviews.itemCount) { index ->
+                                                reviews[index]?.let { review ->
+                                                    ReviewItem(review = review)
+                                                }
+                                            }
 
-                                        item {
-                                            when(reviews.loadState.append) {
-                                                is LoadState.Loading -> LoadMoreSpinner()
-                                                is LoadState.Error -> "Something went wrong"
-                                                is LoadState.NotLoading -> Unit
+                                            item {
+                                                when(reviews.loadState.append) {
+                                                    is LoadState.Loading -> LoadMoreSpinner()
+                                                    is LoadState.Error -> "Something went wrong"
+                                                    is LoadState.NotLoading -> Unit
+                                                }
                                             }
                                         }
                                     }
                                 }
                             }
-                        }
-                        1 -> {
-                            LazyColumn {
-                                items(40) {
-                                    Box(Modifier.fillMaxSize()) {
-                                        Text("Index ${it}")
+                            1 -> {
+                                LazyColumn {
+                                    items(40) {
+                                        Box(Modifier.fillMaxSize()) {
+                                            Text("Index ${it}")
+                                        }
                                     }
                                 }
                             }

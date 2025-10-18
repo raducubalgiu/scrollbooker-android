@@ -7,7 +7,7 @@ data class PostDto(
     val id: Int,
     val description: String?,
 
-    val user: UserSocialDto,
+    val user: PostUserDto,
 
     @SerializedName("business_owner")
     val businessOwner: PostBusinessOwnerDto,
@@ -41,6 +41,27 @@ data class PostDto(
 
     @SerializedName("created_at")
     val createdAt: String
+)
+
+data class PostUserDto(
+    val id: Int,
+
+    @SerializedName("fullname")
+    val fullName: String,
+
+    val username: String,
+    val avatar: String?,
+
+    @SerializedName("is_follow")
+    val isFollow: Boolean,
+
+    val profession: String,
+
+    @SerializedName("ratings_average")
+    val ratingsAverage: Float,
+
+    @SerializedName("ratings_count")
+    val ratingsCount: Int
 )
 
 data class PostBusinessOwnerDto(
