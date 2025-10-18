@@ -63,8 +63,10 @@ fun PostVerticalPager(
     var sheetContent by remember { mutableStateOf<PostSheetsContent>(PostSheetsContent.None) }
 
     fun handleOpenSheet(targetSheet: PostSheetsContent) {
-        sheetContent = targetSheet
-        scope.launch { sheetState.show() }
+        scope.launch {
+            sheetState.show()
+            sheetContent = targetSheet
+        }
     }
 
     if(sheetState.isVisible) {
@@ -73,8 +75,10 @@ fun PostVerticalPager(
                 sheetState = sheetState,
                 sheetContent = sheetContent,
                 onClose = {
-                    sheetContent = PostSheetsContent.None
-                    scope.launch { sheetState.hide() }
+                    scope.launch {
+                        sheetState.hide()
+                        sheetContent = PostSheetsContent.None
+                    }
                 },
             )
         }

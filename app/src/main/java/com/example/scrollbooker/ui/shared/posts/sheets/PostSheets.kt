@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.sheet.Sheet
 import com.example.scrollbooker.ui.shared.posts.sheets.calendar.PostCalendarSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.comments.CommentsSheet
+import com.example.scrollbooker.ui.shared.posts.sheets.reviews.ReviewsListSheet
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
