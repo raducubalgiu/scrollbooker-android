@@ -47,9 +47,7 @@ fun PostView(
         )
     }
 
-    val player = remember {
-        playerViewModel.getOrCreatePlayer(post)
-    }
+    val player = remember { playerViewModel.getOrCreatePlayer(post) }
 
     val playerState by playerViewModel.getPlayerState(post.id)
         .collectAsStateWithLifecycle()
@@ -89,9 +87,7 @@ fun PostView(
             onAction = stableOnAction,
             shouldDisplayBottomBar = shouldDisplayBottomBar,
             onShowBottomBar = onShowBottomBar,
-            onNavigateToUserProfile = { feedNavigate.toUserProfile(it) },
-            onNavigateToCalendar = { feedNavigate.toCalendar(it) },
-            onNavigateToProducts = { feedNavigate.toUserProducts(userId = post.user.id) },
+            onNavigateToUserProfile = { feedNavigate.toUserProfile(it) }
         )
 
         //if(posts.itemCount == 0) NotFoundPosts()

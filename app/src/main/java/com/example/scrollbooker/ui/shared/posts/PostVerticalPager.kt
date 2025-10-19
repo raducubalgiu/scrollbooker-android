@@ -114,7 +114,6 @@ fun PostVerticalPager(
             }
     }
 
-
     VerticalPager(
         state = pagerState,
         modifier = Modifier
@@ -139,11 +138,15 @@ fun PostVerticalPager(
                     when(action) {
                         PostOverlayActionEnum.LIKE -> feedViewModel.toggleLike(post)
                         PostOverlayActionEnum.BOOKMARK -> feedViewModel.toggleBookmark(post)
-                        PostOverlayActionEnum.REPOST -> {}
-                        PostOverlayActionEnum.OPEN_REVIEWS -> handleOpenSheet(ReviewsSheet(post.user.id))
+                        PostOverlayActionEnum.OPEN_REVIEWS -> {
+                            val id = if(post.isVideoReview) post.businessOwner.id else post.user.id
+                            handleOpenSheet(ReviewsSheet(id))
+                        }
                         PostOverlayActionEnum.OPEN_COMMENTS -> handleOpenSheet(CommentsSheet(post.id))
                         PostOverlayActionEnum.OPEN_LOCATION -> handleOpenSheet(LocationSheet(post.businessId))
-                        PostOverlayActionEnum.OPEN_CALENDAR -> {}
+                        PostOverlayActionEnum.OPEN_CALENDAR -> handleOpenSheet(CalendarSheet(post.user.id))
+                        PostOverlayActionEnum.OPEN_PRODUCTS -> handleOpenSheet(ProductsSheet(post.user.id))
+                        PostOverlayActionEnum.OPEN_REVIEW_DETAILS -> handleOpenSheet(ReviewDetailsSheet(post.user.id))
                         PostOverlayActionEnum.OPEN_MORE_OPTIONS -> handleOpenSheet(MoreOptionsSheet(post.user.id))
                     }
                 },

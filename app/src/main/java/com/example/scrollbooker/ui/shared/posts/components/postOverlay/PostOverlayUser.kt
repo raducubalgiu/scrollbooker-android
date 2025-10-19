@@ -46,7 +46,8 @@ fun PostOverlayUser(
     user: PostUser,
     businessOwner: PostBusinessOwner,
     isVideoReview: Boolean,
-    onNavigateToUser: (Int) -> Unit
+    onNavigateToUser: (Int) -> Unit,
+    onOpenReviews: () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isBusiness = user.id == businessOwner.id
@@ -91,7 +92,8 @@ fun PostOverlayUser(
             avatar = businessOwner.avatar,
             rating = businessOwner.ratingsAverage,
             showRating = isVideoReview,
-            onNavigateToUser = {}
+            onNavigateToUser = {},
+            onOpenReviews = onOpenReviews
         )
     }
 }
@@ -127,7 +129,8 @@ fun PostBusiness(
     avatar: String?,
     rating: Float,
     showRating: Boolean = false,
-    onNavigateToUser: () -> Unit
+    onNavigateToUser: () -> Unit,
+    onOpenReviews: () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -178,6 +181,7 @@ fun PostBusiness(
                         shape = RoundedCornerShape(15.dp)
                     )
                     .padding(horizontal = 8.dp, vertical = 6.dp)
+                    .clickable { onOpenReviews() }
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_star_solid),

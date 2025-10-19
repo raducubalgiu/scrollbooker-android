@@ -1,8 +1,10 @@
 package com.example.scrollbooker.ui.feed
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.BusinessDomainsWithBusinessTypes
 import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.useCase.GetAllBusinessDomainsWithBusinessTypesUseCase
@@ -29,6 +31,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+//data class CurrentPostUi(
+//    val id: Int,
+//    val ctaTitle: String
+//)
+
 @HiltViewModel
 class FeedScreenViewModel @Inject constructor(
     private val getFollowingPostsUseCase: GetFollowingPostsUseCase,
@@ -41,6 +48,28 @@ class FeedScreenViewModel @Inject constructor(
 ) : ViewModel() {
     private val _businessDomainsWithBusinessTypes = MutableStateFlow<FeatureState<List<BusinessDomainsWithBusinessTypes>>>(FeatureState.Loading)
     val businessDomainsWithBusinessTypes: StateFlow<FeatureState<List<BusinessDomainsWithBusinessTypes>>> = _businessDomainsWithBusinessTypes.asStateFlow()
+//
+//    private val _currentByTab = MutableStateFlow<Map<Int, CurrentPostUi?>>(emptyMap())
+//    val currentByTab: StateFlow<Map<Int, CurrentPostUi?>> = _currentByTab.asStateFlow()
+//
+//    fun updateCurrentPost(tab: Int, post: Post?) {
+//        val ui = post?.let {
+//            CurrentPostUi(
+//                id = it.id,
+//                ctaTitle = when {
+//                    it.isVideoReview -> "Vezi mai mult"
+//                    it.product != null -> "Locuri libere"
+//                    else -> "Produs"
+//                }
+//            )
+//        }
+//        _currentByTab.update { it + (tab to ui) }
+//    }
+//
+//    fun currentPostFor(tab: Int): StateFlow<CurrentPostUi?> =
+//        currentByTab
+//            .map { it[tab] }
+//            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
     private val _selectedBusinessTypes = MutableStateFlow<Set<Int>>(emptySet())
     val selectedBusinessTypes: StateFlow<Set<Int>> = _selectedBusinessTypes

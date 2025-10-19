@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -21,7 +22,6 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.entity.social.post.domain.model.Post
-import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
 import com.example.scrollbooker.ui.shared.posts.PostActionUiState
 import com.example.scrollbooker.ui.shared.posts.components.PostActionButtonSmall
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.labels.PostOverlayLabel
@@ -38,10 +38,20 @@ fun PostOverlay(
     shouldDisplayBottomBar: Boolean,
     onShowBottomBar: (() -> Unit)? = null,
     onNavigateToUserProfile: (Int) -> Unit,
-    onNavigateToCalendar: (NavigateCalendarParam) -> Unit,
-    onNavigateToProducts: () -> Unit,
 ) {
     val discount = post.product?.discount
+    val isVideoReview = post.isVideoReview
+    val hasProduct = post.product != null
+    val hasDiscount = discount?.let { it > BigDecimal.ZERO } == true
+    val isLastMinute = post.lastMinute.isLastMinute
+
+    val actionType = remember(isVideoReview, hasProduct) {
+        when {
+            isVideoReview -> PostOverlayActionEnum.OPEN_REVIEW_DETAILS
+            hasProduct -> PostOverlayActionEnum.OPEN_CALENDAR
+            else -> PostOverlayActionEnum.OPEN_PRODUCTS
+        }
+    }
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -63,8 +73,8 @@ fun PostOverlay(
                 .padding(end = SpacingXL)
             ) {
                 when {
-                    post.isVideoReview -> VideoReviewLabel()
-                    post.lastMinute.isLastMinute -> {
+                    isVideoReview -> VideoReviewLabel()
+                    isLastMinute -> {
                         PostOverlayLabel(
                             icon = R.drawable.ic_bolt_solid,
                             title = stringResource(R.string.lastMinute),
@@ -72,7 +82,7 @@ fun PostOverlay(
                         )
                     }
 
-                    discount?.let { it > BigDecimal.ZERO } == true -> {
+                    hasDiscount -> {
                         PostOverlayLabel(
                             icon = R.drawable.ic_percent_badge_solid,
                             title = stringResource(R.string.sale),
@@ -86,34 +96,29 @@ fun PostOverlay(
                 PostOverlayUser(
                     user = post.user,
                     businessOwner = post.businessOwner,
-                    isVideoReview = post.isVideoReview,
-                    onNavigateToUser = onNavigateToUserProfile
+                    isVideoReview = isVideoReview,
+                    onNavigateToUser = onNavigateToUserProfile,
+                    onOpenReviews = { onAction(PostOverlayActionEnum.OPEN_REVIEWS) }
                 )
 
                 Spacer(Modifier.height(SpacingS))
 
-                post.description?.takeIf { it.isNotBlank() }?.let { description ->
-                    PostOverlayDescription(description)
-                }
+                post.description
+                    ?.takeIf { it.isNotBlank() }
+                    ?.let { PostOverlayDescription(it) }
 
-                if(!post.isVideoReview && post.product != null) {
+                if(!isVideoReview && hasProduct) {
                     PostOverlayProduct(product = post.product)
                 }
 
                 PostActionButtonSmall(
                     show = shouldDisplayBottomBar,
                     title =  when {
-                        post.isVideoReview -> stringResource(R.string.seeMore)
-                        post.product != null -> stringResource(R.string.freeSeats)
+                        isVideoReview -> stringResource(R.string.seeMore)
+                        hasProduct -> stringResource(R.string.freeSeats)
                         else -> stringResource(R.string.product)
                     },
-                    onClick = {
-                        when {
-                            post.isVideoReview -> onNavigateToProducts
-                            post.product != null -> onNavigateToCalendar
-                            else -> onNavigateToProducts
-                        }
-                    }
+                    onClick = { onAction(actionType) }
                 )
             }
 

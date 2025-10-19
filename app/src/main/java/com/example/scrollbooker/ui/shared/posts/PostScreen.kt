@@ -16,8 +16,8 @@ import com.example.scrollbooker.ui.theme.BackgroundDark
 
 @Composable
 fun PostScreen(
-    feedViewModel: FeedScreenViewModel,
     posts: LazyPagingItems<Post>,
+    feedViewModel: FeedScreenViewModel,
     drawerState: DrawerState,
     shouldDisplayBottomBar: Boolean,
     onShowBottomBar: () -> Unit,

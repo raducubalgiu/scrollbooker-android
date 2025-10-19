@@ -19,7 +19,6 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.core.util.Dimens.BasePadding
@@ -28,7 +27,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingM
 @Composable
 fun PostBottomBar(
     onAction: () -> Unit,
-    shouldDisplayBottomBar: Boolean
+    shouldDisplayBottomBar: Boolean,
 ) {
     val currentOnAction by rememberUpdatedState(onAction)
 
@@ -54,7 +53,7 @@ fun PostBottomBar(
                         contentPadding = PaddingValues(SpacingM),
                         leadingIcon = R.drawable.ic_shopping_outline,
                         onClick = currentOnAction,
-                        title = stringResource(R.string.book),
+                        title = "Rezerva",
                     )
                 }
             }

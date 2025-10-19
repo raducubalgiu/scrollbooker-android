@@ -7,9 +7,11 @@ import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.example.scrollbooker.ui.shared.posts.sheets.calendar.PostCalendarSheet
+import com.example.scrollbooker.ui.shared.posts.sheets.calendar.CalendarSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.comments.CommentsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.moreOptions.MoreOptionsSheet
+import com.example.scrollbooker.ui.shared.posts.sheets.products.ProductsSheet
+import com.example.scrollbooker.ui.shared.posts.sheets.reviewDetails.ReviewDetailsScreen
 import com.example.scrollbooker.ui.shared.posts.sheets.reviews.ReviewsSheet
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
@@ -47,10 +49,28 @@ fun PostSheets(
                     onClose = onClose
                 )
             }
-            is PostSheetsContent.CalendarSheet -> PostCalendarSheet()
-            is PostSheetsContent.LocationSheet -> {}
+            is PostSheetsContent.CalendarSheet -> {
+                CalendarSheet(
+                    userId = content.userId,
+                    onClose = onClose
+                )
+            }
+            is PostSheetsContent.LocationSheet -> {
+                
+            }
             is PostSheetsContent.MoreOptionsSheet -> {
                 MoreOptionsSheet(
+                    onClose = onClose
+                )
+            }
+            is PostSheetsContent.ProductsSheet -> {
+                ProductsSheet(
+                    userId = content.userId,
+                    onClose = onClose
+                )
+            }
+            is PostSheetsContent.ReviewDetailsSheet -> {
+                ReviewDetailsScreen(
                     onClose = onClose
                 )
             }

@@ -11,13 +11,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.ui.feed.components.FeedTabs
@@ -43,19 +47,6 @@ fun FeedScreen(
 
     var shouldDisplayBottomBar by rememberSaveable { mutableStateOf(true) }
 
-    fun navigateToCalendar() {
-//        val userId = currentPost?.user?.id
-//        val slotDuration = currentPost?.product?.duration
-//        val productId = currentPost?.product?.id
-//        val productName = currentPost?.product?.name
-//
-//        if(userId != null && slotDuration != null && productId != null && productName != null) {
-//            feedNavigate.toCalendar(
-//                NavigateCalendarParam(userId, slotDuration, productId, productName)
-//            )
-//        }
-    }
-
     fun handleDrawerFilter() {
         scope.launch {
             feedViewModel.updateBusinessTypes()
@@ -79,9 +70,8 @@ fun FeedScreen(
             containerColor = BackgroundDark,
             bottomBar = {
                 PostBottomBar(
-                    onAction = { //navigateToCalendar()
-                    },
-                    shouldDisplayBottomBar = shouldDisplayBottomBar
+                    onAction = { },
+                    shouldDisplayBottomBar = shouldDisplayBottomBar,
                 )
             }
         ) {
