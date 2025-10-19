@@ -17,8 +17,9 @@ import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.ui.profile.ProfileViewModel
 import com.example.scrollbooker.ui.profile.UserProfileScreen
 import com.example.scrollbooker.ui.shared.products.UserProductsScreen
-import com.example.scrollbooker.ui.social.UserSocialScreen
-import com.example.scrollbooker.ui.social.UserSocialViewModel
+import com.example.scrollbooker.ui.shared.reviews.ReviewDetailScreen
+import com.example.scrollbooker.ui.social.SocialScreen
+import com.example.scrollbooker.ui.social.SocialViewModel
 
 fun NavGraphBuilder.globalGraph(
     navController: NavHostController
@@ -63,7 +64,7 @@ fun NavGraphBuilder.globalGraph(
 //                )
         }
 
-        composable(route = "${MainRoute.UserSocial.route}/{tabIndex}/{userId}/{username}/{isBusinessOrEmployee}",
+        composable(route = "${MainRoute.Social.route}/{tabIndex}/{userId}/{username}/{isBusinessOrEmployee}",
             arguments = listOf(
                 navArgument("tabIndex") { type = NavType.IntType },
                 navArgument("userId") { type = NavType.IntType },
@@ -76,14 +77,20 @@ fun NavGraphBuilder.globalGraph(
             val username = backStackEntry.arguments?.getString("username") ?: return@composable
             val isBusinessOrEmployee = backStackEntry.arguments?.getBoolean("isBusinessOrEmployee") ?: return@composable
 
-            val viewModel = hiltViewModel<UserSocialViewModel>(backStackEntry)
+            val viewModel = hiltViewModel<SocialViewModel>(backStackEntry)
             val socialParams = NavigateSocialParam(tabIndex, userId, username, isBusinessOrEmployee)
 
-            UserSocialScreen(
+            SocialScreen(
                 viewModal = viewModel,
                 socialParam = socialParams,
                 onBack = { navController.popBackStack() },
                 onNavigateUserProfile = { navController.navigate("${MainRoute.UserProfile.route}/$it") }
+            )
+        }
+
+        composable(route = MainRoute.ReviewDetail.route) { backStackEntry ->
+            ReviewDetailScreen(
+                onBack = { navController.popBackStack() }
             )
         }
 

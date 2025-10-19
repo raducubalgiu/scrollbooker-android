@@ -35,7 +35,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun ReviewsScreen(
     viewModel: ReviewsViewModel,
-    userId: Int
+    userId: Int,
+    onNavigateToReviewDetail: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val tabs = listOf(stringResource(R.string.written), stringResource(R.string.video))
@@ -122,7 +123,12 @@ fun ReviewsScreen(
                         contentAlignment = Alignment.TopStart
                     ) {
                         when(page) {
-                            0 -> WrittenReviewsTab(writtenReviews)
+                            0 -> {
+                                WrittenReviewsTab(
+                                    writtenReviews = writtenReviews,
+                                    onNavigateToReviewDetail = onNavigateToReviewDetail
+                                )
+                            }
                             1 -> VideoReviewsTab(videoReviews)
                         }
                     }

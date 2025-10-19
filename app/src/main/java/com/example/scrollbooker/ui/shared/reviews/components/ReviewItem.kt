@@ -1,6 +1,7 @@
 package com.example.scrollbooker.ui.shared.reviews.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -41,7 +42,8 @@ import org.threeten.bp.format.DateTimeFormatter
 
 @Composable
 fun ReviewItem(
-    review: Review
+    review: Review,
+    onNavigateToReviewDetail: () -> Unit
 ) {
     Column(modifier = Modifier
         .padding(
@@ -51,7 +53,7 @@ fun ReviewItem(
         )
         .clip(ShapeDefaults.Small)
         .background(Background)
-
+        .clickable { onNavigateToReviewDetail() }
     ) {
         Column(modifier = Modifier
             .fillMaxSize()

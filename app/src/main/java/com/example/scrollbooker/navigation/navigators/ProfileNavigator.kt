@@ -15,7 +15,7 @@ class ProfileNavigator (
         val ( tabIndex, userId, username, isBusinessOrEmployee ) = socialParams
 
         rootNavController.navigate(
-            "${MainRoute.UserSocial.route}/${tabIndex}/${userId}/${username}/${isBusinessOrEmployee}"
+            "${MainRoute.Social.route}/${tabIndex}/${userId}/${username}/${isBusinessOrEmployee}"
         )
     }
 

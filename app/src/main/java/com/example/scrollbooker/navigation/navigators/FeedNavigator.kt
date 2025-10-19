@@ -4,7 +4,7 @@ import androidx.navigation.NavHostController
 import com.example.scrollbooker.navigation.routes.MainRoute
 
 class FeedNavigator (
-    private val rootNavController: NavHostController,
+    private val mainNavController: NavHostController,
     private val navController: NavHostController
 ) {
     fun toFeedSearch() {
@@ -12,20 +12,16 @@ class FeedNavigator (
     }
 
     fun toUserProducts(userId: Int) {
-        rootNavController.navigate("${MainRoute.UserProducts.route}/${userId}")
+        mainNavController.navigate("${MainRoute.UserProducts.route}/${userId}")
     }
 
     fun toUserProfile(userId: Int) {
-        rootNavController.navigate("${MainRoute.UserProfile.route}/${userId}")
-    }
-
-    fun toCamera() {
-        rootNavController.navigate(MainRoute.Camera.route)
+        mainNavController.navigate("${MainRoute.UserProfile.route}/${userId}")
     }
 
     fun toCalendar (calendarParams: NavigateCalendarParam) {
         val (userId, slotDuration, productId, productName) = calendarParams
-        rootNavController.navigate(
+        mainNavController.navigate(
             "${MainRoute.Calendar.route}/${userId}/${slotDuration}/${productId}/${productName}"
         )
     }

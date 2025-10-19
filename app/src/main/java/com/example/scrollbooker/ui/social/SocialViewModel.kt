@@ -23,7 +23,7 @@ import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
-class UserSocialViewModel @Inject constructor(
+class SocialViewModel @Inject constructor(
     private val getUserSocialFollowingsUseCase: GetUserSocialFollowingsUseCase,
     private val getUserSocialFollowersUseCase: GetUserSocialFollowersUseCase,
     private val followUserUseCase: FollowUserUseCase,

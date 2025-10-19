@@ -21,7 +21,8 @@ import com.example.scrollbooker.ui.shared.reviews.components.ReviewItem
 
 @Composable
 fun WrittenReviewsTab(
-    writtenReviews: LazyPagingItems<Review>
+    writtenReviews: LazyPagingItems<Review>,
+    onNavigateToReviewDetail: () -> Unit
 ) {
     when (writtenReviews.loadState.refresh) {
         is LoadState.Loading -> {
@@ -44,7 +45,7 @@ fun WrittenReviewsTab(
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(writtenReviews.itemCount) { index ->
                     writtenReviews[index]?.let { review ->
-                        ReviewItem(review = review)
+                        ReviewItem(review, onNavigateToReviewDetail)
                     }
                 }
 

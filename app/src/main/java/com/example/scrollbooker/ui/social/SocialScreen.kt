@@ -23,8 +23,8 @@ import com.example.scrollbooker.ui.social.tab.UserFollowersTab
 import com.example.scrollbooker.ui.social.tab.UserFollowingsTab
 
 @Composable
-fun UserSocialScreen(
-    viewModal: UserSocialViewModel,
+fun SocialScreen(
+    viewModal: SocialViewModel,
     socialParam: NavigateSocialParam,
     onBack: () -> Unit,
     onNavigateUserProfile: (Int) -> Unit
@@ -63,7 +63,8 @@ fun UserSocialScreen(
                         SocialTab.Bookings -> BookingsTab()
                         SocialTab.Reviews -> ReviewsScreen(
                             userId = socialParam.userId,
-                            viewModel = reviewsViewModel
+                            viewModel = reviewsViewModel,
+                            onNavigateToReviewDetail = {}
                         )
                         SocialTab.Followers -> UserFollowersTab(viewModal, onNavigateUserProfile)
                         SocialTab.Followings -> UserFollowingsTab(viewModal, onNavigateUserProfile)
