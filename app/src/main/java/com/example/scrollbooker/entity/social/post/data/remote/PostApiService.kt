@@ -28,6 +28,13 @@ interface PostApiService {
         @Query("limit") limit: Int
     ): PaginatedResponseDto<PostDto>
 
+    @GET("users/{userId}/posts/video-reviews")
+    suspend fun getUserVideoReviewsPosts(
+        @Path("userId") userId: Int,
+        @Query("page") page: Int,
+        @Query("limit") limit: Int
+    ): PaginatedResponseDto<PostDto>
+
     @POST("posts/{postId}/likes/")
     suspend fun likePost(
         @Path("postId") postId: Int

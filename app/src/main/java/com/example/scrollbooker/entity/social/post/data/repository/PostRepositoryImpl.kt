@@ -7,6 +7,7 @@ import com.example.scrollbooker.entity.social.post.data.remote.PostApiService
 import com.example.scrollbooker.entity.social.post.data.remote.PostBookNowPagingSource
 import com.example.scrollbooker.entity.social.post.data.remote.PostFollowingPagingSource
 import com.example.scrollbooker.entity.social.post.data.remote.PostPagingSource
+import com.example.scrollbooker.entity.social.post.data.remote.PostVideoReviewsPagingSource
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.social.post.domain.repository.PostRepository
 import kotlinx.coroutines.flow.Flow
@@ -33,6 +34,13 @@ class PostRepositoryImpl @Inject constructor(
         return Pager(
             config = PagingConfig(pageSize = 10),
             pagingSourceFactory = { PostPagingSource(apiService, userId) }
+        ).flow
+    }
+
+    override fun getUserVideoReviewsPosts(userId: Int): Flow<PagingData<Post>> {
+        return Pager(
+            config = PagingConfig(pageSize = 10),
+            pagingSourceFactory = { PostVideoReviewsPagingSource(apiService, userId) }
         ).flow
     }
 
