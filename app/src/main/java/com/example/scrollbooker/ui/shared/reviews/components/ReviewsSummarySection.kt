@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.reviews.summary
+package com.example.scrollbooker.ui.shared.reviews.components
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background

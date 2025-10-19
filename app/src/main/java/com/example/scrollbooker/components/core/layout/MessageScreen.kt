@@ -1,5 +1,5 @@
 package com.example.scrollbooker.components.core.layout
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,32 +23,29 @@ import com.example.scrollbooker.ui.theme.bodyLarge
 @Composable
 fun MessageScreen(
     modifier: Modifier = Modifier,
+    arrangement: Arrangement.Vertical = Arrangement.Center,
     icon: Painter,
     message: String,
     iconSize: Dp = 64.dp,
 ) {
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .then(modifier),
-        contentAlignment = Alignment.Center
+    Column(
+        modifier = Modifier.fillMaxSize().then(modifier),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = arrangement
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Icon(
-                painter = icon,
-                modifier = Modifier.size(iconSize),
-                tint = Divider,
-                contentDescription = null,
-            )
-            Spacer(Modifier.height(BasePadding))
-            Text(
-                text = message,
-                style = bodyLarge,
-                color = OnBackground,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Normal
-            )
-        }
+        Icon(
+            painter = icon,
+            modifier = Modifier.size(iconSize),
+            tint = Divider,
+            contentDescription = null,
+        )
+        Spacer(Modifier.height(BasePadding))
+        Text(
+            text = message,
+            style = bodyLarge,
+            color = OnBackground,
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Normal
+        )
     }
 }

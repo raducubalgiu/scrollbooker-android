@@ -39,8 +39,7 @@ fun ProfileBookmarksTab(
             is LoadState.Error -> ErrorScreen()
             is LoadState.Loading -> {
                 LoadingScreen(
-                    modifier = Modifier
-                        .padding(top = 50.dp),
+                    modifier = Modifier.padding(top = 50.dp),
                     arrangement = Arrangement.Top
                 )
             }

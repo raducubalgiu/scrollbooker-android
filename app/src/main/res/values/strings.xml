@@ -139,6 +139,9 @@
     <string name="notFoundPosts">Nu au fost găsite postări</string>
     <string name="notFoundBookmarks">Încă nu ai salvat nici o postare</string>
     <string name="notFoundReposts">Încă nu ai repostat nimic</string>
+    <string name="notFoundReviews">Nu au fost găsite review-uri</string>
+    <string name="notFoundWrittenReviews">Nu au fost găsite review-uri scrise</string>
+    <string name="notFoundVideoReviews">Nu au fost găsite review-uri video</string>
     <string name="businessLocationDetails">Detalii despre locația business-ului meu</string>
     <string name="userScheduleDetails">Detalii despre programul meu</string>
     <string name="userProductsDetails">Detalii despre produsele mele</string>
@@ -299,4 +302,5 @@
     <string name="repost">Repostează</string>
     <string name="copyLink">Copiază linkul</string>
     <string name="hasTestedTheService">a testat serviciul</string>
+    <string name="written">Scrise</string>
 </resources>

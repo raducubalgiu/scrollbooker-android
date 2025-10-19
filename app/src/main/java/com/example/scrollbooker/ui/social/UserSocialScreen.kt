@@ -21,7 +21,7 @@ import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.ui.social.tab.BookingsTab
 import com.example.scrollbooker.ui.social.tab.UserFollowersTab
 import com.example.scrollbooker.ui.social.tab.UserFollowingsTab
-import com.example.scrollbooker.ui.shared.reviews.list.ReviewsList
+import com.example.scrollbooker.ui.shared.reviews.components.ReviewsList
 
 @Composable
 fun UserSocialScreen(
