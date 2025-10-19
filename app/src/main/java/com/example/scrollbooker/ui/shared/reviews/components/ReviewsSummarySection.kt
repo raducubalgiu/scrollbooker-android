@@ -45,6 +45,7 @@ fun ReviewsSummarySection(
     modifier: Modifier = Modifier
 ) {
     val maxCount = summary.breakdown.maxOfOrNull { it.count } ?: 1
+    val isEnabled = summary.totalReviews > 0
 
     Column(
         modifier = modifier
@@ -76,8 +77,6 @@ fun ReviewsSummarySection(
             RatingsStars(
                 rating = summary.averageRating
             )
-
-//            Spacer(Modifier.height(SpacingS))
         }
 
         summary.breakdown.sortedByDescending { it.rating }.forEach { item ->
@@ -88,6 +87,7 @@ fun ReviewsSummarySection(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Checkbox(
+                    enabled = isEnabled,
                     checked = item.rating in selectedRatings,
                     onCheckedChange = {
                         onRatingClick(item.rating)
@@ -116,9 +116,7 @@ fun ReviewsSummarySection(
 
                 Spacer(Modifier.width(BasePadding))
 
-                Box(
-                    modifier = Modifier.weight(1f)
-                ) {
+                Box(modifier = Modifier.weight(1f)) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -132,15 +130,6 @@ fun ReviewsSummarySection(
                             .background(Primary)
                     )
                 }
-//
-//                LinearProgressIndicator(
-//                    modifier = Modifier
-//                        .height(5.dp)
-//                        .weight(1f),
-//                    progress = { progress },
-//                    color = Primary,
-//                    trackColor = Color.Gray.copy(alpha = 0.4f)
-//                )
 
                 Spacer(Modifier.width(8.dp))
 

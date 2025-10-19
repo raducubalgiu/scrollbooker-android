@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import com.example.scrollbooker.ui.shared.posts.sheets.calendar.PostCalendarSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.comments.CommentsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.moreOptions.MoreOptionsSheet
-import com.example.scrollbooker.ui.shared.posts.sheets.reviews.ReviewsListSheet
+import com.example.scrollbooker.ui.shared.posts.sheets.reviews.ReviewsSheet
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
 
@@ -35,7 +35,7 @@ fun PostSheets(
     ) {
         when (val content = sheetContent) {
             is PostSheetsContent.ReviewsSheet -> {
-                ReviewsListSheet(
+                ReviewsSheet(
                     userId = content.userId,
                     onClose = onClose,
                 )

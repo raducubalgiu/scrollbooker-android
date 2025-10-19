@@ -6,51 +6,42 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import com.example.scrollbooker.components.core.tabs.Tabs
 import kotlinx.coroutines.launch
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.scrollbooker.components.core.headers.Header
+import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
+import com.example.scrollbooker.ui.shared.reviews.ReviewsScreen
+import com.example.scrollbooker.ui.shared.reviews.ReviewsViewModel
 import com.example.scrollbooker.ui.social.tab.BookingsTab
 import com.example.scrollbooker.ui.social.tab.UserFollowersTab
 import com.example.scrollbooker.ui.social.tab.UserFollowingsTab
-import com.example.scrollbooker.ui.shared.reviews.components.ReviewsList
 
 @Composable
 fun UserSocialScreen(
     viewModal: UserSocialViewModel,
-    initialPage: Int,
-    username: String,
-    isBusinessOrEmployee: Boolean,
+    socialParam: NavigateSocialParam,
     onBack: () -> Unit,
     onNavigateUserProfile: (Int) -> Unit
 ) {
     val scope = rememberCoroutineScope()
-    var didLoadSummary by rememberSaveable { mutableStateOf(false) }
 
-    val tabs = remember(isBusinessOrEmployee) {
-        SocialTab.getTabs(isBusinessOrEmployee)
+    val tabs = remember(socialParam.isBusinessOrEmployee) {
+        SocialTab.getTabs(socialParam.isBusinessOrEmployee)
     }
 
-    val pagerState = rememberPagerState(initialPage = initialPage ) { tabs.size }
+    val reviewsViewModel: ReviewsViewModel = hiltViewModel()
+
+    val pagerState = rememberPagerState(initialPage = socialParam.tabIndex ) { tabs.size }
     val selectedTabIndex = pagerState.currentPage
 
-    LaunchedEffect(pagerState.currentPage) {
-        if(pagerState.currentPage == 0 && !didLoadSummary && isBusinessOrEmployee) {
-            viewModal.loadUserReviews()
-            didLoadSummary = true
-        }
-    }
-
     Scaffold(
-        topBar = { Header(title = username, onBack = onBack) }
+        topBar = { Header(title = socialParam.username, onBack = onBack) }
     ) { innerPadding ->
         Column(Modifier.padding(top = innerPadding.calculateTopPadding())) {
             Tabs(
@@ -65,11 +56,18 @@ fun UserSocialScreen(
                 beyondViewportPageCount = 0,
                 modifier = Modifier.fillMaxSize()
             ) { page ->
-                when(tabs[page]) {
-                    SocialTab.Bookings -> BookingsTab()
-                    SocialTab.Reviews -> ReviewsList(viewModal, onRatingClick = { viewModal.toggleRatingFilter(it) })
-                    SocialTab.Followers -> UserFollowersTab(viewModal, onNavigateUserProfile)
-                    SocialTab.Followings -> UserFollowingsTab(viewModal, onNavigateUserProfile)
+                val post = tabs[page]
+
+                key(post) {
+                    when(post) {
+                        SocialTab.Bookings -> BookingsTab()
+                        SocialTab.Reviews -> ReviewsScreen(
+                            userId = socialParam.userId,
+                            viewModel = reviewsViewModel
+                        )
+                        SocialTab.Followers -> UserFollowersTab(viewModal, onNavigateUserProfile)
+                        SocialTab.Followings -> UserFollowingsTab(viewModal, onNavigateUserProfile)
+                    }
                 }
             }
         }

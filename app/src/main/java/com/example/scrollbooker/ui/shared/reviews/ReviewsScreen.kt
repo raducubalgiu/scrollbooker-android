@@ -15,7 +15,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
@@ -23,9 +22,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
-import com.example.scrollbooker.components.core.layout.MessageScreen
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.core.util.isTrulyEmpty
 import com.example.scrollbooker.entity.booking.review.domain.model.ReviewsSummary
 import com.example.scrollbooker.ui.shared.reviews.components.ReviewsSummarySection
 import com.example.scrollbooker.ui.shared.reviews.tabs.ReviewsTabRow
@@ -60,18 +57,8 @@ fun ReviewsScreen(
         writtenReviews.loadState.refresh is LoadState.Loading && writtenReviews.itemCount == 0
     val isInitialLoading = isSummaryLoading || isFirstPageLoading
 
-    val showEmpty = writtenReviews.isTrulyEmpty() && videoReviews.isTrulyEmpty()
-
     if(isInitialLoading) {
         LoadingScreen()
-        return
-    }
-
-    if(showEmpty) {
-        MessageScreen(
-            icon = painterResource(R.drawable.ic_star_solid),
-            message = stringResource(R.string.notFoundReviews)
-        )
         return
     }
 
@@ -85,32 +72,27 @@ fun ReviewsScreen(
             }
     }
 
-    LazyColumn {
-        item {
-            when (summaryState) {
-                is FeatureState.Success -> {
-                    val summary = (summaryState as FeatureState.Success<ReviewsSummary>).data
+    Box(Modifier.fillMaxSize()) {
+        LazyColumn {
+            item {
+                when(summaryState) {
+                    is FeatureState.Error -> ErrorScreen()
+                    is FeatureState.Loading -> LoadingScreen()
+                    is FeatureState.Success -> {
+                        val summary = (summaryState as FeatureState.Success<ReviewsSummary>).data
 
-                    if(summary.totalReviews == 0) {
-                        return@item
+                        ReviewsSummarySection(
+                            summary = summary,
+                            onRatingClick = { viewModel.toggleRating(it) },
+                            selectedRatings = selectedRatings,
+                        )
                     }
-
-                    ReviewsSummarySection(
-                        summary = summary,
-                        onRatingClick = { viewModel.toggleRating(it) },
-                        selectedRatings = selectedRatings,
-                    )
                 }
-                is FeatureState.Error -> ErrorScreen()
-                is FeatureState.Loading -> LoadingScreen()
             }
-        }
 
-        stickyHeader {
-            val selectedTab = pagerState.currentPage
-            val summary = (summaryState as FeatureState.Success<ReviewsSummary>).data
+            stickyHeader {
+                val selectedTab = pagerState.currentPage
 
-            if(summary.totalReviews > 0) {
                 ReviewsTabRow(
                     tabs = tabs,
                     selectedTab = selectedTab,
@@ -126,23 +108,23 @@ fun ReviewsScreen(
                     }
                 )
             }
-        }
 
-        item {
-            HorizontalPager(
-                state = pagerState,
-                beyondViewportPageCount = 0,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(LocalConfiguration.current.screenHeightDp.dp * 0.9f)
-            ) { page ->
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.TopStart
-                ) {
-                    when(page) {
-                        0 -> WrittenReviewsTab(writtenReviews)
-                        1 -> VideoReviewsTab(videoReviews)
+            item {
+                HorizontalPager(
+                    state = pagerState,
+                    beyondViewportPageCount = 0,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(LocalConfiguration.current.screenHeightDp.dp * 0.9f)
+                ) { page ->
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.TopStart
+                    ) {
+                        when(page) {
+                            0 -> WrittenReviewsTab(writtenReviews)
+                            1 -> VideoReviewsTab(videoReviews)
+                        }
                     }
                 }
             }

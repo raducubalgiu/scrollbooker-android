@@ -7,6 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
+import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
@@ -62,25 +63,25 @@ fun NavGraphBuilder.globalGraph(
 //                )
         }
 
-        composable(route = "${MainRoute.UserSocial.route}/{initialPage}/{userId}/{username}/{isBusinessOrEmployee}",
+        composable(route = "${MainRoute.UserSocial.route}/{tabIndex}/{userId}/{username}/{isBusinessOrEmployee}",
             arguments = listOf(
-                navArgument("initialPage") { type = NavType.IntType },
+                navArgument("tabIndex") { type = NavType.IntType },
                 navArgument("userId") { type = NavType.IntType },
                 navArgument("username") { type = NavType.StringType },
                 navArgument("isBusinessOrEmployee") { type = NavType.BoolType }
             )
         ) { backStackEntry ->
-            val initialPage = backStackEntry.arguments?.getInt("initialPage") ?: return@composable
+            val tabIndex = backStackEntry.arguments?.getInt("tabIndex") ?: return@composable
+            val userId = backStackEntry.arguments?.getInt("userId") ?: return@composable
             val username = backStackEntry.arguments?.getString("username") ?: return@composable
             val isBusinessOrEmployee = backStackEntry.arguments?.getBoolean("isBusinessOrEmployee") ?: return@composable
 
             val viewModel = hiltViewModel<UserSocialViewModel>(backStackEntry)
+            val socialParams = NavigateSocialParam(tabIndex, userId, username, isBusinessOrEmployee)
 
             UserSocialScreen(
                 viewModal = viewModel,
-                initialPage = initialPage,
-                username = username,
-                isBusinessOrEmployee = isBusinessOrEmployee,
+                socialParam = socialParams,
                 onBack = { navController.popBackStack() },
                 onNavigateUserProfile = { navController.navigate("${MainRoute.UserProfile.route}/$it") }
             )
