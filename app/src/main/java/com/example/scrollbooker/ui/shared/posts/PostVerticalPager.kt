@@ -7,16 +7,11 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -29,15 +24,13 @@ import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.ui.feed.FeedScreenViewModel
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlayActionEnum
-import com.example.scrollbooker.ui.shared.posts.sheets.PostSheets
-import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent
-import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.*
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostVerticalPager(
+    tabIndex: Int,
+    onAction: (PostOverlayActionEnum, Post) -> Unit,
     posts: LazyPagingItems<Post>,
     feedViewModel: FeedScreenViewModel,
     drawerState: DrawerState,
@@ -47,7 +40,8 @@ fun PostVerticalPager(
     feedNavigate: FeedNavigator
 ) {
     val playerViewModel: PlayerViewModel = hiltViewModel()
-    val currentPost by playerViewModel.currentPost.collectAsStateWithLifecycle()
+    val currentPost by feedViewModel.currentPostFor(tabIndex).collectAsStateWithLifecycle()
+    val currentPostUi by feedViewModel.currentPostFor(tabIndex).collectAsStateWithLifecycle()
 
     val pagerState = rememberPagerState(pageCount = { posts.itemCount })
     val currentOnReleasePlayer by rememberUpdatedState(playerViewModel::releasePlayer)
@@ -55,32 +49,6 @@ fun PostVerticalPager(
     LifecycleStartEffect(true) {
         onStopOrDispose {
             currentOnReleasePlayer(posts.getOrNull(pagerState.currentPage)?.id)
-        }
-    }
-
-    val scope = rememberCoroutineScope()
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    var sheetContent by remember { mutableStateOf<PostSheetsContent>(None) }
-
-    fun handleOpenSheet(targetSheet: PostSheetsContent) {
-        scope.launch {
-            sheetState.show()
-            sheetContent = targetSheet
-        }
-    }
-
-    if(sheetState.isVisible) {
-        key(sheetContent) {
-            PostSheets(
-                sheetState = sheetState,
-                sheetContent = sheetContent,
-                onClose = {
-                    scope.launch {
-                        sheetState.hide()
-                        sheetContent = None
-                    }
-                },
-            )
         }
     }
 
@@ -111,6 +79,7 @@ fun PostVerticalPager(
                         nextPost = nextPost
                     )
                 }
+                feedViewModel.updateCurrentPost(tabIndex, post)
             }
     }
 
@@ -131,25 +100,11 @@ fun PostVerticalPager(
                 .collectAsStateWithLifecycle()
 
             PostView(
+                currentPostUi = currentPostUi,
                 postActionState = postActionState,
                 playerViewModel = playerViewModel,
                 post = post,
-                onAction = { action, post ->
-                    when(action) {
-                        PostOverlayActionEnum.LIKE -> feedViewModel.toggleLike(post)
-                        PostOverlayActionEnum.BOOKMARK -> feedViewModel.toggleBookmark(post)
-                        PostOverlayActionEnum.OPEN_REVIEWS -> {
-                            val id = if(post.isVideoReview) post.businessOwner.id else post.user.id
-                            handleOpenSheet(ReviewsSheet(id))
-                        }
-                        PostOverlayActionEnum.OPEN_COMMENTS -> handleOpenSheet(CommentsSheet(post.id))
-                        PostOverlayActionEnum.OPEN_LOCATION -> handleOpenSheet(LocationSheet(post.businessId))
-                        PostOverlayActionEnum.OPEN_CALENDAR -> handleOpenSheet(CalendarSheet(post.user.id))
-                        PostOverlayActionEnum.OPEN_PRODUCTS -> handleOpenSheet(ProductsSheet(post.user.id))
-                        PostOverlayActionEnum.OPEN_REVIEW_DETAILS -> handleOpenSheet(ReviewDetailsSheet(post.user.id))
-                        PostOverlayActionEnum.OPEN_MORE_OPTIONS -> handleOpenSheet(MoreOptionsSheet(post.user.id))
-                    }
-                },
+                onAction = onAction,
                 feedNavigate = feedNavigate,
                 isDrawerOpen = isDrawerOpen,
                 shouldDisplayBottomBar = shouldDisplayBottomBar,

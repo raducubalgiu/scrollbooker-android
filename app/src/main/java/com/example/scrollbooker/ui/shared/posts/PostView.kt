@@ -15,6 +15,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
+import com.example.scrollbooker.ui.feed.CurrentPostUi
 import com.example.scrollbooker.ui.shared.posts.components.PostPlayerView
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostControls
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlay
@@ -23,6 +24,7 @@ import com.example.scrollbooker.ui.theme.BackgroundDark
 
 @Composable
 fun PostView(
+    currentPostUi: CurrentPostUi?,
     postActionState: PostActionUiState,
     post: Post,
     playerViewModel: PlayerViewModel,
@@ -82,6 +84,7 @@ fun PostView(
         )
 
         PostOverlay(
+            currentPostUi = currentPostUi,
             post = postUi,
             postActionState = postActionState,
             onAction = stableOnAction,

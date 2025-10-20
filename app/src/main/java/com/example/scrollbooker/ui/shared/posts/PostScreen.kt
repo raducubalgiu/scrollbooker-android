@@ -3,6 +3,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.DrawerState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.paging.LoadState
@@ -12,10 +13,14 @@ import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.ui.feed.FeedScreenViewModel
 import com.example.scrollbooker.ui.shared.posts.components.PostShimmer
+import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlayActionEnum
 import com.example.scrollbooker.ui.theme.BackgroundDark
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostScreen(
+    tabIndex: Int,
+    onAction: (PostOverlayActionEnum, Post) -> Unit,
     posts: LazyPagingItems<Post>,
     feedViewModel: FeedScreenViewModel,
     drawerState: DrawerState,
@@ -34,7 +39,9 @@ fun PostScreen(
             is LoadState.Loading -> PostShimmer()
             is LoadState.NotLoading -> {
                 PostVerticalPager(
+                    tabIndex = tabIndex,
                     posts = posts,
+                    onAction = onAction,
                     feedViewModel = feedViewModel,
                     drawerState = drawerState,
                     shouldDisplayBottomBar = shouldDisplayBottomBar,

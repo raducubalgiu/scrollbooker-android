@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -21,21 +23,32 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.ui.feed.components.FeedTabs
 import com.example.scrollbooker.ui.feed.drawer.FeedDrawer
 import com.example.scrollbooker.ui.shared.posts.PostScreen
 import com.example.scrollbooker.ui.shared.posts.components.PostBottomBar
+import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlayActionEnum
+import com.example.scrollbooker.ui.shared.posts.sheets.PostSheets
+import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent
+import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.CalendarSheet
+import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.CommentsSheet
+import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.LocationSheet
+import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.MoreOptionsSheet
+import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.None
+import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.ProductsSheet
+import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.ReviewDetailsSheet
+import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.ReviewsSheet
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun FeedScreen(
-    feedNavigate: FeedNavigator
-) {
+fun FeedScreen(feedNavigate: FeedNavigator) {
     val feedViewModel: FeedScreenViewModel = hiltViewModel()
 
     val explorePosts = feedViewModel.explorePosts.collectAsLazyPagingItems()
@@ -47,10 +60,58 @@ fun FeedScreen(
 
     var shouldDisplayBottomBar by rememberSaveable { mutableStateOf(true) }
 
+    val currentTab by remember { derivedStateOf { horizontalPagerState.currentPage } }
+    val currentPostUi by feedViewModel.currentPostFor(currentTab).collectAsStateWithLifecycle()
+
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var sheetContent by remember { mutableStateOf<PostSheetsContent>(None) }
+
+    if(sheetState.isVisible) {
+        key(sheetContent) {
+            PostSheets(
+                sheetState = sheetState,
+                sheetContent = sheetContent,
+                onClose = {
+                    scope.launch {
+                        sheetState.hide()
+                        sheetContent = None
+                    }
+                },
+            )
+        }
+    }
+
+    fun handleOpenSheet(targetSheet: PostSheetsContent) {
+        scope.launch {
+            sheetState.show()
+            sheetContent = targetSheet
+        }
+    }
+
     fun handleDrawerFilter() {
         scope.launch {
             feedViewModel.updateBusinessTypes()
             drawerState.close()
+        }
+    }
+
+    fun handlePostAction(
+        action: PostOverlayActionEnum,
+        post: Post
+    ) {
+        when(action) {
+            PostOverlayActionEnum.LIKE -> feedViewModel.toggleLike(post)
+            PostOverlayActionEnum.BOOKMARK -> feedViewModel.toggleBookmark(post)
+            PostOverlayActionEnum.OPEN_REVIEWS -> {
+                val id = if(post.isVideoReview) post.businessOwner.id else post.user.id
+                handleOpenSheet(ReviewsSheet(id))
+            }
+            PostOverlayActionEnum.OPEN_COMMENTS -> handleOpenSheet(CommentsSheet(post.id))
+            PostOverlayActionEnum.OPEN_LOCATION -> handleOpenSheet(LocationSheet(post.businessId))
+            PostOverlayActionEnum.OPEN_CALENDAR -> handleOpenSheet(CalendarSheet(post.user.id))
+            PostOverlayActionEnum.OPEN_PRODUCTS -> handleOpenSheet(ProductsSheet(post.user.id))
+            PostOverlayActionEnum.OPEN_REVIEW_DETAILS -> handleOpenSheet(ReviewDetailsSheet(post.user.id))
+            PostOverlayActionEnum.OPEN_MORE_OPTIONS -> handleOpenSheet(MoreOptionsSheet(post.user.id))
         }
     }
 
@@ -70,8 +131,28 @@ fun FeedScreen(
             containerColor = BackgroundDark,
             bottomBar = {
                 PostBottomBar(
-                    onAction = { },
+                    onAction = { action ->
+                        when(action) {
+                            PostOverlayActionEnum.OPEN_CALENDAR -> {
+                                currentPostUi?.userId?.let { id ->
+                                    handleOpenSheet(CalendarSheet(id))
+                                }
+                            }
+                            PostOverlayActionEnum.OPEN_PRODUCTS -> {
+                                currentPostUi?.userId?.let { id ->
+                                    handleOpenSheet(ProductsSheet(id))
+                                }
+                            }
+                            PostOverlayActionEnum.OPEN_REVIEW_DETAILS -> {
+                                currentPostUi?.userId?.let { id ->
+                                    handleOpenSheet(ReviewDetailsSheet(id))
+                                }
+                            }
+                            else -> Unit
+                        }
+                    },
                     shouldDisplayBottomBar = shouldDisplayBottomBar,
+                    currentPostUi = currentPostUi
                 )
             }
         ) {
@@ -90,31 +171,20 @@ fun FeedScreen(
                     state = horizontalPagerState,
                     overscrollEffect = null,
                     beyondViewportPageCount = 0
-                ) { page ->
-                    when(page) {
-                        0 -> {
-                            PostScreen(
-                                feedViewModel = feedViewModel,
-                                posts = explorePosts,
-                                drawerState = drawerState,
-                                shouldDisplayBottomBar = shouldDisplayBottomBar,
-                                onShowBottomBar = { shouldDisplayBottomBar = !shouldDisplayBottomBar },
-                                feedNavigate = feedNavigate
-                            )
-                        }
-                        1 -> {
-                            val followingPosts = feedViewModel.followingPosts.collectAsLazyPagingItems()
+                ) { tabIndex ->
+                    val posts = if(tabIndex == 0) explorePosts
+                                else feedViewModel.followingPosts.collectAsLazyPagingItems()
 
-                            PostScreen(
-                                feedViewModel = feedViewModel,
-                                posts = followingPosts,
-                                drawerState = drawerState,
-                                shouldDisplayBottomBar = shouldDisplayBottomBar,
-                                onShowBottomBar = { shouldDisplayBottomBar = !shouldDisplayBottomBar },
-                                feedNavigate = feedNavigate
-                            )
-                        }
-                    }
+                    PostScreen(
+                        tabIndex = tabIndex,
+                        onAction = { action, post -> handlePostAction(action, post) },
+                        feedViewModel = feedViewModel,
+                        posts = posts,
+                        drawerState = drawerState,
+                        shouldDisplayBottomBar = shouldDisplayBottomBar,
+                        onShowBottomBar = { shouldDisplayBottomBar = !shouldDisplayBottomBar },
+                        feedNavigate = feedNavigate
+                    )
                 }
             }
         }

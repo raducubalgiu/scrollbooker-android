@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,13 +24,22 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
+import com.example.scrollbooker.ui.feed.CurrentPostUi
+import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlayActionEnum
 
 @Composable
 fun PostBottomBar(
-    onAction: () -> Unit,
+    onAction: (PostOverlayActionEnum) -> Unit,
     shouldDisplayBottomBar: Boolean,
+    currentPostUi: CurrentPostUi?
 ) {
-    val currentOnAction by rememberUpdatedState(onAction)
+    val latestOnAction by rememberUpdatedState(onAction)
+
+    val stableOnAction = remember(currentPostUi?.id) {
+        {  action: PostOverlayActionEnum ->
+            latestOnAction(action)
+        }
+    }
 
     AnimatedContent(
         targetState = shouldDisplayBottomBar,
@@ -48,13 +58,15 @@ fun PostBottomBar(
                         .padding(bottom = bottomPadding),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    MainButton(
-                        fullWidth = false,
-                        contentPadding = PaddingValues(SpacingM),
-                        leadingIcon = R.drawable.ic_shopping_outline,
-                        onClick = currentOnAction,
-                        title = "Rezerva",
-                    )
+                    currentPostUi?.let { postUi ->
+                        MainButton(
+                            fullWidth = false,
+                            contentPadding = PaddingValues(SpacingM),
+                            leadingIcon = R.drawable.ic_shopping_outline,
+                            onClick = { stableOnAction(postUi.action) },
+                            title = postUi.ctaTitle,
+                        )
+                    }
                 }
             }
         }

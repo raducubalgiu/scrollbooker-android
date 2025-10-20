@@ -1,5 +1,5 @@
 package com.example.scrollbooker.ui.feed
-import androidx.compose.ui.res.stringResource
+import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -15,8 +15,8 @@ import com.example.scrollbooker.entity.social.post.domain.useCase.GetFollowingPo
 import com.example.scrollbooker.entity.social.post.domain.useCase.LikePostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.UnBookmarkPostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.UnLikePostUseCase
-import com.example.scrollbooker.ui.profile.components.ProfileLayout
 import com.example.scrollbooker.ui.shared.posts.PostActionUiState
+import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlayActionEnum
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -31,10 +31,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-//data class CurrentPostUi(
-//    val id: Int,
-//    val ctaTitle: String
-//)
+data class CurrentPostUi(
+    val id: Int,
+    val userId: Int,
+    val ctaTitle: String,
+    val action: PostOverlayActionEnum
+)
 
 @HiltViewModel
 class FeedScreenViewModel @Inject constructor(
@@ -44,32 +46,39 @@ class FeedScreenViewModel @Inject constructor(
     private val likePostUseCase: LikePostUseCase,
     private val unLikePostUseCase: UnLikePostUseCase,
     private val bookmarkPostUseCase: BookmarkPostUseCase,
-    private val unBookmarkPostUseCase: UnBookmarkPostUseCase
+    private val unBookmarkPostUseCase: UnBookmarkPostUseCase,
+    private val application: Application
 ) : ViewModel() {
     private val _businessDomainsWithBusinessTypes = MutableStateFlow<FeatureState<List<BusinessDomainsWithBusinessTypes>>>(FeatureState.Loading)
     val businessDomainsWithBusinessTypes: StateFlow<FeatureState<List<BusinessDomainsWithBusinessTypes>>> = _businessDomainsWithBusinessTypes.asStateFlow()
-//
-//    private val _currentByTab = MutableStateFlow<Map<Int, CurrentPostUi?>>(emptyMap())
-//    val currentByTab: StateFlow<Map<Int, CurrentPostUi?>> = _currentByTab.asStateFlow()
-//
-//    fun updateCurrentPost(tab: Int, post: Post?) {
-//        val ui = post?.let {
-//            CurrentPostUi(
-//                id = it.id,
-//                ctaTitle = when {
-//                    it.isVideoReview -> "Vezi mai mult"
-//                    it.product != null -> "Locuri libere"
-//                    else -> "Produs"
-//                }
-//            )
-//        }
-//        _currentByTab.update { it + (tab to ui) }
-//    }
-//
-//    fun currentPostFor(tab: Int): StateFlow<CurrentPostUi?> =
-//        currentByTab
-//            .map { it[tab] }
-//            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+
+    private val _currentByTab = MutableStateFlow<Map<Int, CurrentPostUi?>>(emptyMap())
+    val currentByTab: StateFlow<Map<Int, CurrentPostUi?>> = _currentByTab.asStateFlow()
+
+    fun updateCurrentPost(tab: Int, post: Post?) {
+        val ui = post?.let {
+            CurrentPostUi(
+                id = it.id,
+                userId = it.id,
+                ctaTitle = when {
+                    it.isVideoReview -> application.getString(R.string.seeMore)
+                    it.product != null -> application.getString(R.string.freeSeats)
+                    else -> application.getString(R.string.products)
+                },
+                action = when {
+                    it.isVideoReview -> PostOverlayActionEnum.OPEN_REVIEW_DETAILS
+                    it.product != null -> PostOverlayActionEnum.OPEN_CALENDAR
+                    else -> PostOverlayActionEnum.OPEN_PRODUCTS
+                }
+            )
+        }
+        _currentByTab.update { it + (tab to ui) }
+    }
+
+    fun currentPostFor(tab: Int): StateFlow<CurrentPostUi?> =
+        currentByTab
+            .map { it[tab] }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
     private val _selectedBusinessTypes = MutableStateFlow<Set<Int>>(emptySet())
     val selectedBusinessTypes: StateFlow<Set<Int>> = _selectedBusinessTypes

@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -22,6 +21,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.entity.social.post.domain.model.Post
+import com.example.scrollbooker.ui.feed.CurrentPostUi
 import com.example.scrollbooker.ui.shared.posts.PostActionUiState
 import com.example.scrollbooker.ui.shared.posts.components.PostActionButtonSmall
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.labels.PostOverlayLabel
@@ -31,6 +31,7 @@ import java.math.BigDecimal
 
 @Composable
 fun PostOverlay(
+    currentPostUi: CurrentPostUi?,
     post: Post,
     postActionState: PostActionUiState,
     onAction: (PostOverlayActionEnum) -> Unit,
@@ -44,14 +45,6 @@ fun PostOverlay(
     val hasProduct = post.product != null
     val hasDiscount = discount?.let { it > BigDecimal.ZERO } == true
     val isLastMinute = post.lastMinute.isLastMinute
-
-    val actionType = remember(isVideoReview, hasProduct) {
-        when {
-            isVideoReview -> PostOverlayActionEnum.OPEN_REVIEW_DETAILS
-            hasProduct -> PostOverlayActionEnum.OPEN_CALENDAR
-            else -> PostOverlayActionEnum.OPEN_PRODUCTS
-        }
-    }
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -111,15 +104,13 @@ fun PostOverlay(
                     PostOverlayProduct(product = post.product)
                 }
 
-                PostActionButtonSmall(
-                    show = shouldDisplayBottomBar,
-                    title =  when {
-                        isVideoReview -> stringResource(R.string.seeMore)
-                        hasProduct -> stringResource(R.string.freeSeats)
-                        else -> stringResource(R.string.product)
-                    },
-                    onClick = { onAction(actionType) }
-                )
+                currentPostUi?.let { ui ->
+                    PostActionButtonSmall(
+                        show = shouldDisplayBottomBar,
+                        title =  ui.ctaTitle,
+                        onClick = { onAction(ui.action) }
+                    )
+                }
             }
 
             PostOverlayActions(
