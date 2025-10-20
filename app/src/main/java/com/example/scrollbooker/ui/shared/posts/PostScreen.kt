@@ -19,6 +19,7 @@ import com.example.scrollbooker.ui.theme.BackgroundDark
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostScreen(
+    isSheetOpen: Boolean,
     tabIndex: Int,
     onAction: (PostOverlayActionEnum, Post) -> Unit,
     posts: LazyPagingItems<Post>,

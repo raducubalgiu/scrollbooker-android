@@ -39,8 +39,9 @@ import java.math.BigDecimal
 @Composable
 fun ProductCard(
     product: Product,
-    onNavigateToEdit: ((Int) -> Unit)? = null,
+    displayActions: Boolean = false,
     isLoadingDelete: Boolean = false,
+    onNavigateToEdit: ((Int) -> Unit)? = null,
     onDeleteProduct: ((productId: Int) -> Unit)? = null,
     onNavigateToCalendar: (NavigateCalendarParam) -> Unit
 ) {
@@ -113,7 +114,7 @@ fun ProductCard(
 
                 Protected(permission = PermissionEnum.BOOK_BUTTON_VIEW) {
                     MainButtonOutlined(
-                        title = stringResource(R.string.book),
+                        title = stringResource(R.string.pick),
                         onClick = {
                             onNavigateToCalendar(
                                 NavigateCalendarParam(
@@ -130,35 +131,37 @@ fun ProductCard(
 
             Spacer(Modifier.height(BasePadding))
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                MainButtonOutlined(
+            if(displayActions) {
+                Row(
                     modifier = Modifier
-                        .weight(0.5f)
-                        .clip(shape = ShapeDefaults.ExtraLarge),
-                    title = stringResource(R.string.edit),
-                    onClick = { onNavigateToEdit?.invoke(product.id) },
-                    icon = painterResource(R.drawable.ic_edit_outline),
-                    iconColor = Color.Gray
-                )
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    MainButtonOutlined(
+                        modifier = Modifier
+                            .weight(0.5f)
+                            .clip(shape = ShapeDefaults.ExtraLarge),
+                        title = stringResource(R.string.edit),
+                        onClick = { onNavigateToEdit?.invoke(product.id) },
+                        icon = painterResource(R.drawable.ic_edit_outline),
+                        iconColor = Color.Gray
+                    )
 
-                Spacer(Modifier.width(SpacingS))
+                    Spacer(Modifier.width(SpacingS))
 
-                MainButtonOutlined(
-                    modifier = Modifier
-                        .weight(0.5f)
-                        .clip(shape = ShapeDefaults.ExtraLarge),
-                    title = stringResource(R.string.delete),
-                    isLoading = isLoadingDelete,
-                    isEnabled = !isLoadingDelete,
-                    onClick = { onDeleteProduct?.invoke(product.id) },
-                    icon = painterResource(R.drawable.ic_delete_outline),
-                    iconColor = Error
-                )
+                    MainButtonOutlined(
+                        modifier = Modifier
+                            .weight(0.5f)
+                            .clip(shape = ShapeDefaults.ExtraLarge),
+                        title = stringResource(R.string.delete),
+                        isLoading = isLoadingDelete,
+                        isEnabled = !isLoadingDelete,
+                        onClick = { onDeleteProduct?.invoke(product.id) },
+                        icon = painterResource(R.drawable.ic_delete_outline),
+                        iconColor = Error
+                    )
+                }
             }
         }
     }

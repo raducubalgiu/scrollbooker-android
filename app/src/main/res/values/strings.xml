@@ -303,4 +303,5 @@
     <string name="copyLink">Copiază linkul</string>
     <string name="hasTestedTheService">a testat serviciul</string>
     <string name="written">Scrise</string>
+    <string name="pick">Alege</string>
 </resources>

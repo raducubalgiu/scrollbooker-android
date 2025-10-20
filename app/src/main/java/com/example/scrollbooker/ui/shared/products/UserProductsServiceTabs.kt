@@ -35,7 +35,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun UserProductsServiceTabs(
-    paddingTop: Dp,
+    paddingTop: Dp = 0.dp,
     userId: Int,
     onNavigateToCalendar: (NavigateCalendarParam) -> Unit
 ) {

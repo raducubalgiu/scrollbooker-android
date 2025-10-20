@@ -105,7 +105,7 @@ fun Calendar(
                 }
             }
 
-            Column(modifier = Modifier.statusBarsPadding()) {
+            Column {
                 CalendarHeader(
                     period = displayDatePeriod(currentWeekDates.first(), currentWeekDates.last(), locale),
                     enableBack = enableBack,
