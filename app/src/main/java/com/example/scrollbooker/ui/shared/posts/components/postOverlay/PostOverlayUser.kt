@@ -93,7 +93,7 @@ fun PostOverlayUser(
             avatar = businessOwner.avatar,
             rating = businessOwner.ratingsAverage,
             showRating = isVideoReview,
-            onNavigateToUser = {},
+            onNavigateToUser = { onNavigateToUser(businessOwner.id) },
             onOpenReviews = onOpenReviews,
             onOpenLocation = onOpenLocation
         )

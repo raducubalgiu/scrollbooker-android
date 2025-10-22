@@ -33,6 +33,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
@@ -122,7 +123,7 @@ fun ProductCard(
                                 else stringResource(R.string.add),
                         onClick = { onSelect(product) },
                         trailingIcon = Icons.Default.Check,
-                        trailingIconTint = Color.Green,
+                        trailingIconTint = Primary,
                         showTrailingIcon = isSelected
                     )
                 }
