@@ -60,7 +60,7 @@ fun FeedScreen(feedNavigate: FeedNavigator) {
     var shouldDisplayBottomBar by rememberSaveable { mutableStateOf(true) }
 
     val currentTab by remember { derivedStateOf { horizontalPagerState.currentPage } }
-    val currentPostUi by feedViewModel.currentPostFor(currentTab).collectAsStateWithLifecycle()
+    val currentPost by feedViewModel.currentPost(currentTab).collectAsStateWithLifecycle()
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var sheetContent by remember { mutableStateOf<PostSheetsContent>(None) }
@@ -110,23 +110,16 @@ fun FeedScreen(feedNavigate: FeedNavigator) {
             containerColor = BackgroundDark,
             bottomBar = {
                 PostBottomBar(
-                    onAction = { action ->
-                        when(action) {
-                            PostOverlayActionEnum.OPEN_PRODUCTS -> {
-                                currentPostUi?.userId?.let { id ->
-                                    handleOpenSheet(BookingsSheet(id))
-                                }
-                            }
-                            PostOverlayActionEnum.OPEN_REVIEW_DETAILS -> {
-                                currentPostUi?.userId?.let { id ->
-                                    handleOpenSheet(ReviewDetailsSheet(id))
-                                }
-                            }
-                            else -> Unit
-                        }
-                    },
+                    onAction = { action -> currentPost?.let { post ->
+                        handlePostAction(
+                            feedViewModel = feedViewModel,
+                            action = action,
+                            handleOpenSheet = { handleOpenSheet(it) },
+                            post = post
+                        )
+                    } },
                     shouldDisplayBottomBar = shouldDisplayBottomBar,
-                    currentPostUi = currentPostUi
+                    currentPost = currentPost
                 )
             }
         ) {
@@ -177,6 +170,12 @@ private fun handlePostAction(
     post: Post
 ) {
     when(action) {
+        PostOverlayActionEnum.OPEN_BOOKINGS -> {
+            handleOpenSheet(BookingsSheet(post.user.id))
+        }
+        PostOverlayActionEnum.OPEN_REVIEW_DETAILS -> {
+            handleOpenSheet(ReviewDetailsSheet(post.user.id))
+        }
         PostOverlayActionEnum.LIKE -> {
             feedViewModel.toggleLike(post)
         }
@@ -192,12 +191,6 @@ private fun handlePostAction(
         }
         PostOverlayActionEnum.OPEN_LOCATION -> {
             handleOpenSheet(LocationSheet(post.businessId))
-        }
-        PostOverlayActionEnum.OPEN_PRODUCTS -> {
-            handleOpenSheet(BookingsSheet(post.user.id))
-        }
-        PostOverlayActionEnum.OPEN_REVIEW_DETAILS -> {
-            handleOpenSheet(ReviewDetailsSheet(post.user.id))
         }
         PostOverlayActionEnum.OPEN_MORE_OPTIONS -> {
             handleOpenSheet(MoreOptionsSheet(post.user.id))

@@ -40,8 +40,7 @@ fun PostVerticalPager(
     feedNavigate: FeedNavigator
 ) {
     val playerViewModel: PlayerViewModel = hiltViewModel()
-    val currentPost by feedViewModel.currentPostFor(tabIndex).collectAsStateWithLifecycle()
-    val currentPostUi by feedViewModel.currentPostFor(tabIndex).collectAsStateWithLifecycle()
+    val currentPost by feedViewModel.currentPost(tabIndex).collectAsStateWithLifecycle()
 
     val pagerState = rememberPagerState(pageCount = { posts.itemCount })
     val currentOnReleasePlayer by rememberUpdatedState(playerViewModel::releasePlayer)

@@ -110,8 +110,8 @@ data class LastMinute(
 
 fun Post.ctaAction(): PostOverlayActionEnum = when {
     isVideoReview -> PostOverlayActionEnum.OPEN_REVIEW_DETAILS
-    product != null -> PostOverlayActionEnum.OPEN_PRODUCTS
-    else -> PostOverlayActionEnum.OPEN_PRODUCTS
+    product != null -> PostOverlayActionEnum.OPEN_BOOKINGS
+    else -> PostOverlayActionEnum.OPEN_BOOKINGS
 }
 
 fun Post.ctaTitle(): Int = when {

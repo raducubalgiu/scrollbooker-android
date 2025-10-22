@@ -6,17 +6,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.example.scrollbooker.ui.shared.posts.sheets.comments.CommentsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.moreOptions.MoreOptionsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.bookings.ProductsSheet
@@ -25,9 +15,6 @@ import com.example.scrollbooker.ui.shared.posts.sheets.reviewDetails.ReviewDetai
 import com.example.scrollbooker.ui.shared.posts.sheets.reviews.ReviewsSheet
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
-import com.mapbox.maps.MapInitOptions
-import com.mapbox.maps.MapView
-import com.mapbox.maps.Style
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

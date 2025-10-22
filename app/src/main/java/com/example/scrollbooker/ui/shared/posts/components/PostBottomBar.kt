@@ -20,24 +20,25 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
-import com.example.scrollbooker.ui.feed.CurrentPostUi
+import com.example.scrollbooker.entity.social.post.domain.model.Post
+import com.example.scrollbooker.entity.social.post.domain.model.ctaAction
+import com.example.scrollbooker.entity.social.post.domain.model.ctaTitle
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlayActionEnum
 
 @Composable
 fun PostBottomBar(
     onAction: (PostOverlayActionEnum) -> Unit,
     shouldDisplayBottomBar: Boolean,
-    currentPostUi: CurrentPostUi?
+    currentPost: Post?
 ) {
     val latestOnAction by rememberUpdatedState(onAction)
 
-    val stableOnAction = remember(currentPostUi?.id) {
-        {  action: PostOverlayActionEnum ->
-            latestOnAction(action)
-        }
+    val stableOnAction = remember(currentPost?.id) {
+        {  action: PostOverlayActionEnum -> latestOnAction(action) }
     }
 
     AnimatedContent(
@@ -57,14 +58,12 @@ fun PostBottomBar(
                         .padding(bottom = bottomPadding),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    currentPostUi?.let { postUi ->
-                        MainButton(
-                            fullWidth = false,
-                            contentPadding = PaddingValues(SpacingM),
-                            onClick = { stableOnAction(postUi.action) },
-                            title = postUi.ctaTitle,
-                        )
-                    }
+                    MainButton(
+                        fullWidth = false,
+                        contentPadding = PaddingValues(SpacingM),
+                        onClick = { currentPost?.let { p -> stableOnAction(p.ctaAction()) } },
+                        title = currentPost?.let { p -> stringResource(p.ctaTitle()) } ?: "",
+                    )
                 }
             }
         }

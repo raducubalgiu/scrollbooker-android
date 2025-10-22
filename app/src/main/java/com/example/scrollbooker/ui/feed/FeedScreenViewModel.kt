@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.BusinessDomainsWithBusinessTypes
 import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.useCase.GetAllBusinessDomainsWithBusinessTypesUseCase
@@ -16,7 +15,6 @@ import com.example.scrollbooker.entity.social.post.domain.useCase.LikePostUseCas
 import com.example.scrollbooker.entity.social.post.domain.useCase.UnBookmarkPostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.UnLikePostUseCase
 import com.example.scrollbooker.ui.shared.posts.PostActionUiState
-import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlayActionEnum
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -30,13 +28,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
-data class CurrentPostUi(
-    val id: Int,
-    val userId: Int,
-    val ctaTitle: String,
-    val action: PostOverlayActionEnum
-)
 
 @HiltViewModel
 class FeedScreenViewModel @Inject constructor(
@@ -52,33 +43,17 @@ class FeedScreenViewModel @Inject constructor(
     private val _businessDomainsWithBusinessTypes = MutableStateFlow<FeatureState<List<BusinessDomainsWithBusinessTypes>>>(FeatureState.Loading)
     val businessDomainsWithBusinessTypes: StateFlow<FeatureState<List<BusinessDomainsWithBusinessTypes>>> = _businessDomainsWithBusinessTypes.asStateFlow()
 
-    private val _currentByTab = MutableStateFlow<Map<Int, CurrentPostUi?>>(emptyMap())
-    val currentByTab: StateFlow<Map<Int, CurrentPostUi?>> = _currentByTab.asStateFlow()
+    private val _currentByTab = MutableStateFlow<Map<Int, Post?>>(emptyMap())
+    val currentByTab: StateFlow<Map<Int, Post?>> = _currentByTab.asStateFlow()
 
-    fun updateCurrentPost(tab: Int, post: Post?) {
-        val ui = post?.let {
-            CurrentPostUi(
-                id = it.id,
-                userId = it.id,
-                ctaTitle = when {
-                    it.isVideoReview -> application.getString(R.string.seeMore)
-                    it.product != null -> application.getString(R.string.bookThisService)
-                    else -> application.getString(R.string.bookNow)
-                },
-                action = when {
-                    it.isVideoReview -> PostOverlayActionEnum.OPEN_REVIEW_DETAILS
-                    it.product != null -> PostOverlayActionEnum.OPEN_PRODUCTS
-                    else -> PostOverlayActionEnum.OPEN_PRODUCTS
-                }
-            )
-        }
-        _currentByTab.update { it + (tab to ui) }
-    }
-
-    fun currentPostFor(tab: Int): StateFlow<CurrentPostUi?> =
+    fun currentPost(tab: Int): StateFlow<Post?> =
         currentByTab
             .map { it[tab] }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+
+    fun updateCurrentPost(tab: Int, post: Post?) {
+        _currentByTab.update { it + (tab to post) }
+    }
 
     private val _selectedBusinessTypes = MutableStateFlow<Set<Int>>(emptySet())
     val selectedBusinessTypes: StateFlow<Set<Int>> = _selectedBusinessTypes
