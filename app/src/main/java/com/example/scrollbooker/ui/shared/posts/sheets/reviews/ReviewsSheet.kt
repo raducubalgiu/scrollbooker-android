@@ -21,6 +21,10 @@ fun ReviewsSheet(
             onClose = onClose
         )
 
-        ReviewsScreen(viewModel, userId, onNavigateToReviewDetail = {})
+        ReviewsScreen(
+            viewModel = viewModel,
+            userId = userId,
+            onNavigateToReviewDetail = {}
+        )
     }
 }

@@ -91,7 +91,8 @@ fun PostOverlay(
                     businessOwner = post.businessOwner,
                     isVideoReview = isVideoReview,
                     onNavigateToUser = onNavigateToUserProfile,
-                    onOpenReviews = { onAction(PostOverlayActionEnum.OPEN_REVIEWS) }
+                    onOpenReviews = { onAction(PostOverlayActionEnum.OPEN_REVIEWS) },
+                    onOpenLocation = { onAction(PostOverlayActionEnum.OPEN_LOCATION) }
                 )
 
                 Spacer(Modifier.height(SpacingS))

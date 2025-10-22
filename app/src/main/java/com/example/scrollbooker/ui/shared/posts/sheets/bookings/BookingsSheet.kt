@@ -16,6 +16,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -53,20 +54,26 @@ fun ProductsSheet(
     initialPage: Int,
     onClose: () -> Unit
 ) {
-    val productsViewModel: UserProductsViewModel = hiltViewModel()
-    val calendarViewModel: CalendarViewModel = hiltViewModel()
-
-    val selectedProducts by productsViewModel.selectedProducts.collectAsState()
-
-    val totalDuration = selectedProducts.sumOf { it.duration }
-    val totalPrice = selectedProducts.sumOf { it.priceWithDiscount }
-
     val scope = rememberCoroutineScope()
     val steps = listOf(
         "Alege serviciile",
         "Alege ora",
         "Confirma programarea"
     )
+
+    val productsViewModel: UserProductsViewModel = hiltViewModel()
+    val calendarViewModel: CalendarViewModel = hiltViewModel()
+
+    LaunchedEffect(Unit) {
+        productsViewModel.reset()
+        calendarViewModel.reset()
+    }
+
+    val selectedProducts by productsViewModel.selectedProducts.collectAsState()
+    val totalDuration = selectedProducts.sumOf { it.duration }
+    val totalPrice = selectedProducts.sumOf { it.priceWithDiscount }
+
+    val selectedSlot by calendarViewModel.selectedSlot.collectAsState()
 
     val pagerState = rememberPagerState { steps.size }
     val currentStep = pagerState.currentPage
@@ -101,9 +108,14 @@ fun ProductsSheet(
                         calendarViewModel = calendarViewModel,
                         slotDuration = totalDuration,
                         userId = userId,
-                        onSelectSlot = { scope.launch { pagerState.animateScrollToPage(page + 1) } }
+                        onSelectSlot = {
+                            calendarViewModel.setSelectedSlot(it)
+                            scope.launch { pagerState.animateScrollToPage(page + 1) }
+                        }
                     )
-                    2 -> ConfirmTab()
+                    2 -> ConfirmTab(
+                        selectedSlot = selectedSlot
+                    )
                 }
             }
         }

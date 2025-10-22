@@ -47,7 +47,8 @@ fun PostOverlayUser(
     businessOwner: PostBusinessOwner,
     isVideoReview: Boolean,
     onNavigateToUser: (Int) -> Unit,
-    onOpenReviews: () -> Unit
+    onOpenReviews: () -> Unit,
+    onOpenLocation: () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isBusiness = user.id == businessOwner.id
@@ -93,7 +94,8 @@ fun PostOverlayUser(
             rating = businessOwner.ratingsAverage,
             showRating = isVideoReview,
             onNavigateToUser = {},
-            onOpenReviews = onOpenReviews
+            onOpenReviews = onOpenReviews,
+            onOpenLocation = onOpenLocation
         )
     }
 }
@@ -130,7 +132,8 @@ fun PostBusiness(
     rating: Float,
     showRating: Boolean = false,
     onNavigateToUser: () -> Unit,
-    onOpenReviews: () -> Unit
+    onOpenReviews: () -> Unit,
+    onOpenLocation: () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -167,36 +170,39 @@ fun PostBusiness(
 
         Spacer(Modifier.width(SpacingM))
 
-        if(showRating) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .shadow(
-                        elevation = 1.dp,
-                        shape = CircleShape,
-                        clip = false
-                    )
-                    .background(
-                        color = Color.White,
-                        shape = RoundedCornerShape(15.dp)
-                    )
-                    .padding(horizontal = 8.dp, vertical = 6.dp)
-                    .clickable { onOpenReviews() }
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_star_solid),
-                    contentDescription = "Rating",
-                    tint = Primary,
-                    modifier = Modifier.size(16.dp)
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .shadow(
+                    elevation = 1.dp,
+                    shape = CircleShape,
+                    clip = false
                 )
-                Spacer(Modifier.width(2.dp))
-                Text(
-                    text = rating.toString(),
-                    color = Color.Black,
-                    fontWeight = FontWeight.ExtraBold,
-                    style = bodyMedium,
+                .background(
+                    color = Color.White,
+                    shape = RoundedCornerShape(15.dp)
                 )
-            }
+                .padding(horizontal = 8.dp, vertical = 6.dp)
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = { if(showRating) onOpenReviews() else onOpenLocation() }
+                )
+        ) {
+            Icon(
+                painter = if(showRating) painterResource(R.drawable.ic_star_solid)
+                          else painterResource(R.drawable.ic_location_outline),
+                contentDescription = "Rating",
+                tint = Primary,
+                modifier = Modifier.size(16.dp)
+            )
+            Spacer(Modifier.width(2.dp))
+            Text(
+                text = if(showRating) rating.toString() else stringResource(R.string.location),
+                color = Color.Black,
+                fontWeight = FontWeight.ExtraBold,
+                style = bodyMedium,
+            )
         }
     }
 

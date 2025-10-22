@@ -53,6 +53,11 @@ class UserProductsViewModel @Inject constructor(
         }
     }
 
+    fun reset() {
+        userIdFlow.value = null
+        _selectedProducts.value = emptySet()
+    }
+
     @OptIn(ExperimentalCoroutinesApi::class)
     val servicesState: StateFlow<FeatureState<List<ServiceWithEmployees>>> = userIdFlow
         .filterNotNull()

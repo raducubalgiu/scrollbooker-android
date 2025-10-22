@@ -165,6 +165,13 @@ class CalendarViewModel @Inject constructor(
         _selectedSlot.value = slot
     }
 
+    fun reset() {
+        userId.value = null
+        selectedDay.value = null
+        slotDuration.value = null
+        _selectedSlot.value = null
+    }
+
     fun handleRefresh() {
         _forceRefresh.value = true
 
