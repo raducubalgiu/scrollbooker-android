@@ -28,7 +28,6 @@ import androidx.compose.ui.text.font.FontWeight
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.sheet.SheetHeader
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.ui.theme.SurfaceBG
 
@@ -46,7 +45,7 @@ fun MoreOptionsSheet(onClose: () -> Unit) {
             text = stringResource(R.string.share)
         )
 
-        Spacer(Modifier.width(SpacingS))
+        Spacer(Modifier.width(BasePadding))
 
         ShareButton(
             modifier = Modifier.weight(0.5f),
@@ -86,7 +85,7 @@ private fun ShareButton(
     text: String
 ) {
     Column(modifier = modifier
-        .clip(shape = ShapeDefaults.Medium)
+        .clip(shape = ShapeDefaults.Large)
         .background(SurfaceBG)
         .padding(vertical = BasePadding),
         horizontalAlignment = Alignment.CenterHorizontally,

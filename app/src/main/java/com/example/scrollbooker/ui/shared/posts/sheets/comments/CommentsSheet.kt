@@ -53,7 +53,6 @@ fun CommentsSheet(
         .fillMaxHeight(fraction = 0.85f)
     ) {
         SheetHeader(
-            modifier = Modifier.padding(bottom = BasePadding),
             title = stringResource(R.string.comments),
             onClose = onClose
         )

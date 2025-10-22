@@ -97,17 +97,17 @@ fun PostVerticalPager(
                 .observePostUi(post.id)
                 .collectAsStateWithLifecycle()
 
-            PostView(
-                postActionState = postActionState,
-                playerViewModel = playerViewModel,
-                post = post,
-                onAction = onAction,
-                feedNavigate = feedNavigate,
-                isDrawerOpen = isDrawerOpen,
-                showBottomBar = showBottomBar,
-                onShowBottomBar = { feedViewModel.toggleBottomBar() }
-            )
+                PostView(
+                    postActionState = postActionState,
+                    playerViewModel = playerViewModel,
+                    post = post,
+                    onAction = onAction,
+                    feedNavigate = feedNavigate,
+                    isDrawerOpen = isDrawerOpen,
+                    showBottomBar = showBottomBar,
+                    onShowBottomBar = { feedViewModel.toggleBottomBar() }
+                )
+            }
         }
-    }
     }
 }

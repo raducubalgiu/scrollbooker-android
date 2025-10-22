@@ -12,6 +12,7 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.ui.feed.FeedScreenViewModel
+import com.example.scrollbooker.ui.shared.posts.components.NotFoundPosts
 import com.example.scrollbooker.ui.shared.posts.components.PostShimmer
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlayActionEnum
 import com.example.scrollbooker.ui.theme.BackgroundDark
@@ -36,6 +37,8 @@ fun PostScreen(
             is LoadState.Error -> ErrorScreen()
             is LoadState.Loading -> PostShimmer()
             is LoadState.NotLoading -> {
+                if(posts.itemCount == 0) NotFoundPosts()
+
                 PostVerticalPager(
                     tabIndex = tabIndex,
                     posts = posts,

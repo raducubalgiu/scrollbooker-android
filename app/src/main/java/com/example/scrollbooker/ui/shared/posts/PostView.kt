@@ -89,7 +89,5 @@ fun PostView(
             onShowBottomBar = onShowBottomBar,
             onNavigateToUserProfile = { feedNavigate.toUserProfile(it) }
         )
-
-        //if(posts.itemCount == 0) NotFoundPosts()
     }
 }
