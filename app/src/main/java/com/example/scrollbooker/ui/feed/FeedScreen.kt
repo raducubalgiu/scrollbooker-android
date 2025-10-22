@@ -19,7 +19,6 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -57,10 +56,9 @@ fun FeedScreen(feedNavigate: FeedNavigator) {
     val horizontalPagerState = rememberPagerState { 2 }
     val scope = rememberCoroutineScope()
 
-    var shouldDisplayBottomBar by rememberSaveable { mutableStateOf(true) }
-
     val currentTab by remember { derivedStateOf { horizontalPagerState.currentPage } }
     val currentPost by feedViewModel.currentPost(currentTab).collectAsStateWithLifecycle()
+    val showBottomBar by feedViewModel.showBottomBar.collectAsStateWithLifecycle()
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var sheetContent by remember { mutableStateOf<PostSheetsContent>(None) }
@@ -118,7 +116,7 @@ fun FeedScreen(feedNavigate: FeedNavigator) {
                             post = post
                         )
                     } },
-                    shouldDisplayBottomBar = shouldDisplayBottomBar,
+                    showBottomBar = showBottomBar,
                     currentPost = currentPost
                 )
             }
@@ -153,8 +151,6 @@ fun FeedScreen(feedNavigate: FeedNavigator) {
                         feedViewModel = feedViewModel,
                         posts = posts,
                         drawerState = drawerState,
-                        shouldDisplayBottomBar = shouldDisplayBottomBar,
-                        onShowBottomBar = { shouldDisplayBottomBar = !shouldDisplayBottomBar },
                         feedNavigate = feedNavigate
                     )
                 }

@@ -32,7 +32,7 @@ import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverl
 @Composable
 fun PostBottomBar(
     onAction: (PostOverlayActionEnum) -> Unit,
-    shouldDisplayBottomBar: Boolean,
+    showBottomBar: Boolean,
     currentPost: Post?
 ) {
     val latestOnAction by rememberUpdatedState(onAction)
@@ -42,7 +42,7 @@ fun PostBottomBar(
     }
 
     AnimatedContent(
-        targetState = shouldDisplayBottomBar,
+        targetState = showBottomBar,
         transitionSpec = { fadeIn(tween(300)) togetherWith fadeOut(tween(300)) },
         label = "PostBottomBar"
     ) { display ->

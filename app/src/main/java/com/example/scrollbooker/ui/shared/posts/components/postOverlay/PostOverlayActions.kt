@@ -37,12 +37,12 @@ fun PostOverlayActions(
     counters: PostCounters,
     userActions: UserPostActions,
     onAction: (PostOverlayActionEnum) -> Unit,
-    shouldDisplayBottomBar: Boolean,
+    showBottomBar: Boolean,
     onShowBottomBar: (() -> Unit)? = null,
     onNavigateToUser: () -> Unit,
 ) {
     val rotation by animateFloatAsState(
-        targetValue = if(shouldDisplayBottomBar) 180f else 0f,
+        targetValue = if(showBottomBar) 180f else 0f,
         label = "ArrowRotation"
     )
 

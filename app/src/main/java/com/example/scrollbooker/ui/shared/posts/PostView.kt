@@ -29,7 +29,7 @@ fun PostView(
     onAction: (PostOverlayActionEnum, Post) -> Unit,
     feedNavigate: FeedNavigator,
     isDrawerOpen: Boolean,
-    shouldDisplayBottomBar: Boolean = false,
+    showBottomBar: Boolean = false,
     onShowBottomBar: (() -> Unit)? = null,
 ) {
     val latestOnAction by rememberUpdatedState(onAction)
@@ -85,7 +85,7 @@ fun PostView(
             post = postUi,
             postActionState = postActionState,
             onAction = stableOnAction,
-            shouldDisplayBottomBar = shouldDisplayBottomBar,
+            showBottomBar = showBottomBar,
             onShowBottomBar = onShowBottomBar,
             onNavigateToUserProfile = { feedNavigate.toUserProfile(it) }
         )

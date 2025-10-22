@@ -34,12 +34,11 @@ fun PostVerticalPager(
     posts: LazyPagingItems<Post>,
     feedViewModel: FeedScreenViewModel,
     drawerState: DrawerState,
-    shouldDisplayBottomBar: Boolean = false,
-    onShowBottomBar: (() -> Unit)? = null,
     isDrawerOpen: Boolean = false,
     feedNavigate: FeedNavigator
 ) {
     val playerViewModel: PlayerViewModel = hiltViewModel()
+    val showBottomBar by feedViewModel.showBottomBar.collectAsStateWithLifecycle()
     val currentPost by feedViewModel.currentPost(tabIndex).collectAsStateWithLifecycle()
 
     val pagerState = rememberPagerState(pageCount = { posts.itemCount })
@@ -105,8 +104,8 @@ fun PostVerticalPager(
                 onAction = onAction,
                 feedNavigate = feedNavigate,
                 isDrawerOpen = isDrawerOpen,
-                shouldDisplayBottomBar = shouldDisplayBottomBar,
-                onShowBottomBar = onShowBottomBar
+                showBottomBar = showBottomBar,
+                onShowBottomBar = { feedViewModel.toggleBottomBar() }
             )
         }
     }

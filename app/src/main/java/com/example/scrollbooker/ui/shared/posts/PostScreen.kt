@@ -24,8 +24,6 @@ fun PostScreen(
     posts: LazyPagingItems<Post>,
     feedViewModel: FeedScreenViewModel,
     drawerState: DrawerState,
-    shouldDisplayBottomBar: Boolean,
-    onShowBottomBar: () -> Unit,
     feedNavigate: FeedNavigator
 ) {
     val refreshState = posts.loadState.refresh
@@ -44,8 +42,6 @@ fun PostScreen(
                     onAction = onAction,
                     feedViewModel = feedViewModel,
                     drawerState = drawerState,
-                    shouldDisplayBottomBar = shouldDisplayBottomBar,
-                    onShowBottomBar = onShowBottomBar,
                     isDrawerOpen = drawerState.isOpen,
                     feedNavigate = feedNavigate
                 )

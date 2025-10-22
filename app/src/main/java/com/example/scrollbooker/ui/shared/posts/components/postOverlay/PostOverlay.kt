@@ -36,7 +36,7 @@ fun PostOverlay(
     postActionState: PostActionUiState,
     onAction: (PostOverlayActionEnum) -> Unit,
 
-    shouldDisplayBottomBar: Boolean,
+    showBottomBar: Boolean,
     onShowBottomBar: (() -> Unit)? = null,
     onNavigateToUserProfile: (Int) -> Unit,
 ) {
@@ -106,7 +106,7 @@ fun PostOverlay(
                 }
 
                 PostActionButtonSmall(
-                    show = shouldDisplayBottomBar,
+                    show = showBottomBar,
                     title = stringResource(post.ctaTitle()),
                     onClick = { onAction(post.ctaAction()) }
                 )
@@ -119,7 +119,7 @@ fun PostOverlay(
                 counters = post.counters,
                 userActions = post.userActions,
                 onAction = onAction,
-                shouldDisplayBottomBar = shouldDisplayBottomBar,
+                showBottomBar = showBottomBar,
                 onShowBottomBar = onShowBottomBar,
                 onNavigateToUser = { onNavigateToUserProfile(post.user.id) },
             )

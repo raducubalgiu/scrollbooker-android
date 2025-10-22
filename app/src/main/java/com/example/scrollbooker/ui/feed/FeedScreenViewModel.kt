@@ -1,5 +1,4 @@
 package com.example.scrollbooker.ui.feed
-import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -27,6 +26,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,11 +37,16 @@ class FeedScreenViewModel @Inject constructor(
     private val likePostUseCase: LikePostUseCase,
     private val unLikePostUseCase: UnLikePostUseCase,
     private val bookmarkPostUseCase: BookmarkPostUseCase,
-    private val unBookmarkPostUseCase: UnBookmarkPostUseCase,
-    private val application: Application
+    private val unBookmarkPostUseCase: UnBookmarkPostUseCase
 ) : ViewModel() {
     private val _businessDomainsWithBusinessTypes = MutableStateFlow<FeatureState<List<BusinessDomainsWithBusinessTypes>>>(FeatureState.Loading)
     val businessDomainsWithBusinessTypes: StateFlow<FeatureState<List<BusinessDomainsWithBusinessTypes>>> = _businessDomainsWithBusinessTypes.asStateFlow()
+
+    private val _selectedBusinessTypes = MutableStateFlow<Set<Int>>(emptySet())
+    val selectedBusinessTypes: StateFlow<Set<Int>> = _selectedBusinessTypes
+
+    private val _filteredBusinessTypes = MutableStateFlow<Set<Int>>(emptySet())
+    val filteredBusinessTypes: StateFlow<Set<Int>> = _filteredBusinessTypes
 
     private val _currentByTab = MutableStateFlow<Map<Int, Post?>>(emptyMap())
     val currentByTab: StateFlow<Map<Int, Post?>> = _currentByTab.asStateFlow()
@@ -55,11 +60,10 @@ class FeedScreenViewModel @Inject constructor(
         _currentByTab.update { it + (tab to post) }
     }
 
-    private val _selectedBusinessTypes = MutableStateFlow<Set<Int>>(emptySet())
-    val selectedBusinessTypes: StateFlow<Set<Int>> = _selectedBusinessTypes
+    private val _showBottomBar = MutableStateFlow<Boolean>(true)
+    val showBottomBar: StateFlow<Boolean> = _showBottomBar.asStateFlow()
 
-    private val _filteredBusinessTypes = MutableStateFlow<Set<Int>>(emptySet())
-    val filteredBusinessTypes: StateFlow<Set<Int>> = _filteredBusinessTypes
+    fun toggleBottomBar() { _showBottomBar.value = !_showBottomBar.value }
 
     // Explore Posts
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -104,18 +108,22 @@ class FeedScreenViewModel @Inject constructor(
         crossinline doOff: suspend () -> Result<Unit>,
     ) {
         val currentPostAction = _postUi.value[postId] ?: PostActionUiState.EMPTY
+
         val currentFlag = isFlagOverridden(currentPostAction) ?: backendFlag
+
         val wantOn = !currentFlag
 
         _postUi.edit(postId) { s ->
             val base = backendCount
             val curr = base + getDelta(s)
             val next = if(wantOn) curr + 1 else curr - 1
+
             savingOn(setFlag(setDelta(s, next - base), wantOn))
         }
 
         viewModelScope.launch {
             val result = if(wantOn) doOn() else doOff()
+
             if(result.isSuccess) {
                 _postUi.edit(postId) { s -> savingOff(s) }
             } else {
