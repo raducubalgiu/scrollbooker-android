@@ -62,12 +62,12 @@ class FeedScreenViewModel @Inject constructor(
                 userId = it.id,
                 ctaTitle = when {
                     it.isVideoReview -> application.getString(R.string.seeMore)
-                    it.product != null -> application.getString(R.string.freeSeats)
-                    else -> application.getString(R.string.products)
+                    it.product != null -> application.getString(R.string.bookThisService)
+                    else -> application.getString(R.string.bookNow)
                 },
                 action = when {
                     it.isVideoReview -> PostOverlayActionEnum.OPEN_REVIEW_DETAILS
-                    it.product != null -> PostOverlayActionEnum.OPEN_CALENDAR
+                    it.product != null -> PostOverlayActionEnum.OPEN_PRODUCTS
                     else -> PostOverlayActionEnum.OPEN_PRODUCTS
                 }
             )

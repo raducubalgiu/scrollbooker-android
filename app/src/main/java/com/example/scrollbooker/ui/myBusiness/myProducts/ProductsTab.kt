@@ -67,7 +67,9 @@ fun ProductsTab(
                                     product = product,
                                     onNavigateToEdit = onNavigateToEdit,
                                     isLoadingDelete = isSaving && selectedProduct?.id == product.id,
-                                    onNavigateToCalendar = {},
+                                    isSelected = false,
+                                    onSelect = {},
+                                    //onNavigateToCalendar = {},
                                     onDeleteProduct = { productId: Int ->
                                         myProductsViewModel.deleteProduct(product, serviceId)
                                     },

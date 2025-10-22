@@ -221,7 +221,9 @@ fun BusinessServicesTab() {
                     onNavigateToEdit = {},
                     isLoadingDelete = false,
                     onDeleteProduct = {},
-                    onNavigateToCalendar = {}
+                    isSelected = false,
+                    onSelect = {}
+                    //onNavigateToCalendar = {}
                 )
 
                 if(index < products.size - 1) {

@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,11 +41,13 @@ import java.math.BigDecimal
 @Composable
 fun ProductCard(
     product: Product,
+    isSelected: Boolean = true,
     displayActions: Boolean = false,
     isLoadingDelete: Boolean = false,
     onNavigateToEdit: ((Int) -> Unit)? = null,
     onDeleteProduct: ((productId: Int) -> Unit)? = null,
-    onNavigateToCalendar: (NavigateCalendarParam) -> Unit
+    onSelect: (Product) -> Unit
+    //onNavigateToCalendar: (NavigateCalendarParam) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.padding(BasePadding)) {
@@ -114,17 +118,22 @@ fun ProductCard(
 
                 Protected(permission = PermissionEnum.BOOK_BUTTON_VIEW) {
                     MainButtonOutlined(
-                        title = stringResource(R.string.pick),
+                        title = if(isSelected) stringResource(R.string.added)
+                                else stringResource(R.string.add),
                         onClick = {
-                            onNavigateToCalendar(
-                                NavigateCalendarParam(
-                                    userId = product.userId,
-                                    slotDuration = product.duration,
-                                    productId = product.id,
-                                    productName = product.name
-                                )
-                            )
+                            onSelect(product)
+//                            onNavigateToCalendar(
+//                                NavigateCalendarParam(
+//                                    userId = product.userId,
+//                                    slotDuration = product.duration,
+//                                    productId = product.id,
+//                                    productName = product.name
+//                                )
+//                            )
                         },
+                        trailingIcon = Icons.Default.Check,
+                        trailingIconTint = Color.Green,
+                        showTrailingIcon = isSelected
                     )
                 }
             }

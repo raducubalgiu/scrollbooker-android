@@ -34,12 +34,11 @@ import com.example.scrollbooker.ui.shared.posts.components.PostBottomBar
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlayActionEnum
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheets
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent
-import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.CalendarSheet
+import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.BookingsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.CommentsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.LocationSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.MoreOptionsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.None
-import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.ProductsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.ReviewDetailsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.ReviewsSheet
 import com.example.scrollbooker.ui.theme.BackgroundDark
@@ -95,26 +94,6 @@ fun FeedScreen(feedNavigate: FeedNavigator) {
         }
     }
 
-    fun handlePostAction(
-        action: PostOverlayActionEnum,
-        post: Post
-    ) {
-        when(action) {
-            PostOverlayActionEnum.LIKE -> feedViewModel.toggleLike(post)
-            PostOverlayActionEnum.BOOKMARK -> feedViewModel.toggleBookmark(post)
-            PostOverlayActionEnum.OPEN_REVIEWS -> {
-                val id = if(post.isVideoReview) post.businessOwner.id else post.user.id
-                handleOpenSheet(ReviewsSheet(id))
-            }
-            PostOverlayActionEnum.OPEN_COMMENTS -> handleOpenSheet(CommentsSheet(post.id))
-            PostOverlayActionEnum.OPEN_LOCATION -> handleOpenSheet(LocationSheet(post.businessId))
-            PostOverlayActionEnum.OPEN_CALENDAR -> handleOpenSheet(CalendarSheet(post.user.id))
-            PostOverlayActionEnum.OPEN_PRODUCTS -> handleOpenSheet(ProductsSheet(post.user.id))
-            PostOverlayActionEnum.OPEN_REVIEW_DETAILS -> handleOpenSheet(ReviewDetailsSheet(post.user.id))
-            PostOverlayActionEnum.OPEN_MORE_OPTIONS -> handleOpenSheet(MoreOptionsSheet(post.user.id))
-        }
-    }
-
     ModalNavigationDrawer(
         drawerContent = {
             FeedDrawer(
@@ -133,14 +112,9 @@ fun FeedScreen(feedNavigate: FeedNavigator) {
                 PostBottomBar(
                     onAction = { action ->
                         when(action) {
-                            PostOverlayActionEnum.OPEN_CALENDAR -> {
-                                currentPostUi?.userId?.let { id ->
-                                    handleOpenSheet(CalendarSheet(id))
-                                }
-                            }
                             PostOverlayActionEnum.OPEN_PRODUCTS -> {
                                 currentPostUi?.userId?.let { id ->
-                                    handleOpenSheet(ProductsSheet(id))
+                                    handleOpenSheet(BookingsSheet(id))
                                 }
                             }
                             PostOverlayActionEnum.OPEN_REVIEW_DETAILS -> {
@@ -177,7 +151,12 @@ fun FeedScreen(feedNavigate: FeedNavigator) {
 
                     PostScreen(
                         tabIndex = tabIndex,
-                        onAction = { action, post -> handlePostAction(action, post) },
+                        onAction = { action, post -> handlePostAction(
+                            feedViewModel = feedViewModel,
+                            action = action,
+                            handleOpenSheet = { handleOpenSheet(it) },
+                            post = post
+                        ) },
                         feedViewModel = feedViewModel,
                         posts = posts,
                         drawerState = drawerState,
@@ -187,6 +166,41 @@ fun FeedScreen(feedNavigate: FeedNavigator) {
                     )
                 }
             }
+        }
+    }
+}
+
+private fun handlePostAction(
+    feedViewModel: FeedScreenViewModel,
+    action: PostOverlayActionEnum,
+    handleOpenSheet: (PostSheetsContent) -> Unit,
+    post: Post
+) {
+    when(action) {
+        PostOverlayActionEnum.LIKE -> {
+            feedViewModel.toggleLike(post)
+        }
+        PostOverlayActionEnum.BOOKMARK -> {
+            feedViewModel.toggleBookmark(post)
+        }
+        PostOverlayActionEnum.OPEN_REVIEWS -> {
+            val id = if(post.isVideoReview) post.businessOwner.id else post.user.id
+            handleOpenSheet(ReviewsSheet(id))
+        }
+        PostOverlayActionEnum.OPEN_COMMENTS -> {
+            handleOpenSheet(CommentsSheet(post.id))
+        }
+        PostOverlayActionEnum.OPEN_LOCATION -> {
+            handleOpenSheet(LocationSheet(post.businessId))
+        }
+        PostOverlayActionEnum.OPEN_PRODUCTS -> {
+            handleOpenSheet(BookingsSheet(post.user.id))
+        }
+        PostOverlayActionEnum.OPEN_REVIEW_DETAILS -> {
+            handleOpenSheet(ReviewDetailsSheet(post.user.id))
+        }
+        PostOverlayActionEnum.OPEN_MORE_OPTIONS -> {
+            handleOpenSheet(MoreOptionsSheet(post.user.id))
         }
     }
 }

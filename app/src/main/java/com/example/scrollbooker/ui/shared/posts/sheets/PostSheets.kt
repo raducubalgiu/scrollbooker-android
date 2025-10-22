@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import com.example.scrollbooker.ui.shared.posts.sheets.calendar.CalendarSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.comments.CommentsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.moreOptions.MoreOptionsSheet
-import com.example.scrollbooker.ui.shared.posts.sheets.products.ProductsSheet
+import com.example.scrollbooker.ui.shared.posts.sheets.bookings.ProductsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.reviewDetails.ReviewDetailsScreen
 import com.example.scrollbooker.ui.shared.posts.sheets.reviews.ReviewsSheet
 import com.example.scrollbooker.ui.theme.Background
@@ -49,12 +49,12 @@ fun PostSheets(
                     onClose = onClose
                 )
             }
-            is PostSheetsContent.CalendarSheet -> {
-                CalendarSheet(
-                    userId = content.userId,
-                    onClose = onClose
-                )
-            }
+//            is PostSheetsContent.CalendarSheet -> {
+//                CalendarSheet(
+//                    userId = content.userId,
+//                    onClose = onClose
+//                )
+//            }
             is PostSheetsContent.LocationSheet -> {
                 
             }
@@ -63,8 +63,9 @@ fun PostSheets(
                     onClose = onClose
                 )
             }
-            is PostSheetsContent.ProductsSheet -> {
+            is PostSheetsContent.BookingsSheet -> {
                 ProductsSheet(
+                    initialPage = 0,
                     userId = content.userId,
                     onClose = onClose
                 )

@@ -39,6 +39,8 @@ fun MainButtonOutlined(
     isEnabled: Boolean = true,
     icon: Painter? = null,
     iconColor: Color = Color.Black,
+    trailingIcon: ImageVector = Icons.Default.KeyboardArrowDown,
+    trailingIconTint: Color = OnBackground,
     showTrailingIcon: Boolean = false
 ) {
     OutlinedButton(
@@ -80,9 +82,9 @@ fun MainButtonOutlined(
                 Spacer(Modifier.width(SpacingS))
 
                 Icon(
-                    imageVector = Icons.Default.KeyboardArrowDown,
+                    imageVector = trailingIcon,
                     contentDescription = null,
-                    tint = OnBackground
+                    tint = trailingIconTint
                 )
             }
         }

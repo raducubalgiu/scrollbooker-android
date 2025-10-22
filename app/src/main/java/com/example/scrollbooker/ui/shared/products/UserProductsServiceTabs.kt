@@ -26,6 +26,7 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
 import com.example.scrollbooker.ui.shared.products.components.ServiceTab
 import com.example.scrollbooker.ui.theme.Background
@@ -35,11 +36,13 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun UserProductsServiceTabs(
+    viewModel: UserProductsViewModel = hiltViewModel(),
     paddingTop: Dp = 0.dp,
     userId: Int,
+    onSelect: (Product) -> Unit,
     onNavigateToCalendar: (NavigateCalendarParam) -> Unit
+    //onNavigateToCalendar: (NavigateCalendarParam) -> Unit
 ) {
-    val viewModel: UserProductsViewModel = hiltViewModel()
     val servicesState by viewModel.servicesState.collectAsState()
 
     LaunchedEffect(userId) {
@@ -120,7 +123,8 @@ fun UserProductsServiceTabs(
                             employees = employees,
                             userId = userId,
                             serviceId = serviceId,
-                            onNavigateToCalendar = onNavigateToCalendar
+                            onSelect = onSelect
+                            //onNavigateToCalendar = onNavigateToCalendar
                         )
                     }
                 }

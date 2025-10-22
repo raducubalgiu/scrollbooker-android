@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.posts.sheets.products.tabs
+package com.example.scrollbooker.ui.shared.posts.sheets.bookings.tabs
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

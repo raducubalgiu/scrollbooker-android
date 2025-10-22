@@ -20,7 +20,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
@@ -62,7 +61,6 @@ fun PostBottomBar(
                         MainButton(
                             fullWidth = false,
                             contentPadding = PaddingValues(SpacingM),
-                            leadingIcon = R.drawable.ic_shopping_outline,
                             onClick = { stableOnAction(postUi.action) },
                             title = postUi.ctaTitle,
                         )

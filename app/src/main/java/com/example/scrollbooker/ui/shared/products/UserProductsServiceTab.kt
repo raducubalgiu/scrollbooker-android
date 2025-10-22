@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -25,8 +26,9 @@ import com.example.scrollbooker.components.customized.ProductCard
 import com.example.scrollbooker.components.customized.ProductCardShimmer
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.LoadMoreSpinner
+import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
-import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
+import androidx.compose.runtime.getValue
 import com.example.scrollbooker.ui.shared.products.components.EmployeesList
 import com.example.scrollbooker.ui.theme.Divider
 
@@ -37,10 +39,12 @@ fun UserProductsServiceTab(
     employees: List<UserSocial>,
     serviceId: Int,
     userId: Int,
-    onNavigateToCalendar: (NavigateCalendarParam) -> Unit
+    onSelect: (Product) -> Unit
+    //onNavigateToCalendar: (NavigateCalendarParam) -> Unit
 ) {
     val firstEmployeesId = employees.firstOrNull()?.id
     val productsState = viewModel.loadProducts(serviceId, userId, firstEmployeesId).collectAsLazyPagingItems()
+    val selectedProducts by viewModel.selectedProducts.collectAsState()
 
     Column(Modifier.fillMaxSize()) {
         productsState.apply {
@@ -77,7 +81,9 @@ fun UserProductsServiceTab(
                             productsState[index]?.let { product ->
                                 ProductCard(
                                     product = product,
-                                    onNavigateToCalendar = onNavigateToCalendar
+                                    isSelected = product in selectedProducts,
+                                    onSelect = onSelect
+                                    //onNavigateToCalendar = onNavigateToCalendar
                                 )
 
                                 if(index < productsState.itemCount - 1) {

@@ -21,7 +21,8 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.entity.social.post.domain.model.Post
-import com.example.scrollbooker.ui.feed.CurrentPostUi
+import com.example.scrollbooker.entity.social.post.domain.model.ctaAction
+import com.example.scrollbooker.entity.social.post.domain.model.ctaTitle
 import com.example.scrollbooker.ui.shared.posts.PostActionUiState
 import com.example.scrollbooker.ui.shared.posts.components.PostActionButtonSmall
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.labels.PostOverlayLabel
@@ -31,7 +32,6 @@ import java.math.BigDecimal
 
 @Composable
 fun PostOverlay(
-    currentPostUi: CurrentPostUi?,
     post: Post,
     postActionState: PostActionUiState,
     onAction: (PostOverlayActionEnum) -> Unit,
@@ -104,13 +104,11 @@ fun PostOverlay(
                     PostOverlayProduct(product = post.product)
                 }
 
-                currentPostUi?.let { ui ->
-                    PostActionButtonSmall(
-                        show = shouldDisplayBottomBar,
-                        title =  ui.ctaTitle,
-                        onClick = { onAction(ui.action) }
-                    )
-                }
+                PostActionButtonSmall(
+                    show = shouldDisplayBottomBar,
+                    title = stringResource(post.ctaTitle()),
+                    onClick = { onAction(post.ctaAction()) }
+                )
             }
 
             PostOverlayActions(

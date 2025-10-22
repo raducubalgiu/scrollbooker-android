@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
@@ -33,9 +34,22 @@ class UserProductsViewModel @Inject constructor(
     private val userIdFlow = MutableStateFlow<Int?>(null)
     private val productsFlowCache = mutableMapOf<Int, Flow<PagingData<Product>>>()
 
+    private val _selectedProducts = MutableStateFlow<Set<Product>>(emptySet())
+    val selectedProducts: StateFlow<Set<Product>> = _selectedProducts.asStateFlow()
+
     fun setUserId(userId: Int) {
         if(userIdFlow.value != userId) {
             userIdFlow.value = userId
+        }
+    }
+
+    fun toggleProductId(product: Product) {
+        val current = _selectedProducts.value.toMutableSet()
+
+        if(!current.add(product)) {
+            current.remove(product)
+        } else {
+            _selectedProducts.value = current
         }
     }
 

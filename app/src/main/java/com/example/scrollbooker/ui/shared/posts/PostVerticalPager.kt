@@ -100,7 +100,6 @@ fun PostVerticalPager(
                 .collectAsStateWithLifecycle()
 
             PostView(
-                currentPostUi = currentPostUi,
                 postActionState = postActionState,
                 playerViewModel = playerViewModel,
                 post = post,

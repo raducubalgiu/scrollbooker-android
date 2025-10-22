@@ -51,6 +51,7 @@
     <string name="asEmployee">Ca angajat</string>
     <string name="asClient">Ca și client</string>
     <string name="add">Adaugă</string>
+    <string name="added">Adăugat</string>
     <string name="products">Produse</string>
     <string name="addNewProduct">Adaugă un produs nou</string>
     <string name="myProducts">Produsele mele</string>
@@ -304,4 +305,6 @@
     <string name="hasTestedTheService">a testat serviciul</string>
     <string name="written">Scrise</string>
     <string name="pick">Alege</string>
+    <string name="bookThisService">Rezervă acest serviciu</string>
+    <string name="bookNow">Rezervă acum</string>
 </resources>

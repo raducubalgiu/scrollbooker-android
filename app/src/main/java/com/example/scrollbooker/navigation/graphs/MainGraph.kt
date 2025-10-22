@@ -25,9 +25,9 @@ import com.example.scrollbooker.ui.UserPermissionsController
 fun NavGraphBuilder.mainGraph(onLogout: () -> Unit) {
     navigation(
         route = RootRoute.MAIN,
-        startDestination = MainRoute.Sheel.route
+        startDestination = MainRoute.Shell.route
     ) {
-        composable(route = MainRoute.Sheel.route) {
+        composable(route = MainRoute.Shell.route) {
             val tabsViewModel: TabsViewModel = hiltViewModel()
 
             val tabsController = remember(tabsViewModel) {

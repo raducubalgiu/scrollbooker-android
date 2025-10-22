@@ -62,8 +62,9 @@ fun UserProductsScreen(
         )
         UserProductsServiceTabs(
             userId = userId,
-            onNavigateToCalendar = onNavigateToCalendar,
-            paddingTop = 0.dp
+            onSelect = {},
+            onNavigateToCalendar = {},
+            //onNavigateToCalendar = onNavigateToCalendar,
         )
     }
 }
