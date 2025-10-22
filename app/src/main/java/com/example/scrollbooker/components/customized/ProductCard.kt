@@ -27,10 +27,10 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
 import com.example.scrollbooker.components.customized.Protected.Protected
 import com.example.scrollbooker.core.enums.PermissionEnum
+import com.example.scrollbooker.core.extensions.toTwoDecimals
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
-import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.bodyLarge
@@ -41,13 +41,12 @@ import java.math.BigDecimal
 @Composable
 fun ProductCard(
     product: Product,
-    isSelected: Boolean = true,
     displayActions: Boolean = false,
     isLoadingDelete: Boolean = false,
     onNavigateToEdit: ((Int) -> Unit)? = null,
     onDeleteProduct: ((productId: Int) -> Unit)? = null,
+    isSelected: Boolean = true,
     onSelect: (Product) -> Unit
-    //onNavigateToCalendar: (NavigateCalendarParam) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.padding(BasePadding)) {
@@ -93,21 +92,22 @@ fun ProductCard(
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text(
-                                    text = "${product.priceWithDiscount} RON",
+                                    text = "${product.priceWithDiscount.toTwoDecimals()} RON",
                                     style = titleMedium,
                                     fontSize = 17.sp,
                                     fontWeight = FontWeight.SemiBold
                                 )
                                 Spacer(Modifier.width(SpacingS))
-                                if(product.discount.compareTo(BigDecimal.ZERO) > 0) {
+
+                                if(product.discount > BigDecimal.ZERO) {
                                     Text(
-                                        text = "${product.price}",
+                                        text = product.price.toTwoDecimals(),
                                         style = bodyMedium,
                                         textDecoration = TextDecoration.LineThrough
                                     )
                                     Spacer(Modifier.width(SpacingS))
                                     Text(
-                                        text = "(-${product.discount}%)",
+                                        text = "(-${product.discount.toTwoDecimals()}%)",
                                         color = Error
                                     )
                                 }
@@ -120,17 +120,7 @@ fun ProductCard(
                     MainButtonOutlined(
                         title = if(isSelected) stringResource(R.string.added)
                                 else stringResource(R.string.add),
-                        onClick = {
-                            onSelect(product)
-//                            onNavigateToCalendar(
-//                                NavigateCalendarParam(
-//                                    userId = product.userId,
-//                                    slotDuration = product.duration,
-//                                    productId = product.id,
-//                                    productName = product.name
-//                                )
-//                            )
-                        },
+                        onClick = { onSelect(product) },
                         trailingIcon = Icons.Default.Check,
                         trailingIconTint = Color.Green,
                         showTrailingIcon = isSelected

@@ -156,8 +156,7 @@ fun ProfileLayout(
                                 UserProductsServiceTabs(
                                     paddingTop = currentHeaderHeightDp,
                                     userId = user.id,
-                                    onSelect = {},
-                                    onNavigateToCalendar = {},
+                                    onSelect = {}
 
                                     //onNavigateToCalendar = { profileNavigate.toCalendar(it) }
                                 )

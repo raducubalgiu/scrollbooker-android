@@ -27,7 +27,6 @@ import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
-import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
 import com.example.scrollbooker.ui.shared.products.components.ServiceTab
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
@@ -39,33 +38,25 @@ fun UserProductsServiceTabs(
     viewModel: UserProductsViewModel = hiltViewModel(),
     paddingTop: Dp = 0.dp,
     userId: Int,
-    onSelect: (Product) -> Unit,
-    onNavigateToCalendar: (NavigateCalendarParam) -> Unit
-    //onNavigateToCalendar: (NavigateCalendarParam) -> Unit
+    onSelect: (Product) -> Unit
 ) {
     val servicesState by viewModel.servicesState.collectAsState()
 
-    LaunchedEffect(userId) {
-        viewModel.setUserId(userId)
-    }
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(userId) { viewModel.setUserId(userId) }
 
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(top = paddingTop)
     ) {
-        when(servicesState) {
-            is FeatureState.Loading -> {
-                LoadingScreen(
-                    arrangement = Arrangement.Top,
-                    modifier = Modifier.padding(top = 50.dp)
-                )
-            }
+        when(val services = servicesState) {
+            is FeatureState.Loading -> Unit
             is FeatureState.Error -> ErrorScreen()
             is FeatureState.Success -> {
-                val services = (servicesState as FeatureState.Success).data
+                val services = services.data
 
                 val pagerState = rememberPagerState(initialPage = 0) { services.size }
-                val coroutineScope = rememberCoroutineScope()
                 val selectedTabIndex = pagerState.currentPage
 
                 Column(modifier = Modifier.fillMaxSize()) {
@@ -100,7 +91,7 @@ fun UserProductsServiceTabs(
                                 serviceName = serv.service.name,
                                 productsCount = serv.productsCount,
                                 onClick = {
-                                    coroutineScope.launch {
+                                    scope.launch {
                                         pagerState.animateScrollToPage(index)
                                     }
                                 }
@@ -124,7 +115,6 @@ fun UserProductsServiceTabs(
                             userId = userId,
                             serviceId = serviceId,
                             onSelect = onSelect
-                            //onNavigateToCalendar = onNavigateToCalendar
                         )
                     }
                 }

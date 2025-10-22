@@ -66,9 +66,7 @@ class UserProductsViewModel @Inject constructor(
             flow {
                 emit(FeatureState.Loading)
 
-                val result = withVisibleLoading {
-                    getServicesByUserIdUseCase(userId)
-                }
+                val result = getServicesByUserIdUseCase(userId)
 
                 emit(
                     result.fold(

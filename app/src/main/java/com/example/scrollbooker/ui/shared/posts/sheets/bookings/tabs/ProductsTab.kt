@@ -25,8 +25,7 @@ fun ProductsTab(
             UserProductsServiceTabs(
                 viewModel = productsViewModel,
                 userId = userId,
-                onSelect = onSelect,
-                onNavigateToCalendar = {}
+                onSelect = onSelect
             )
         }
     }
