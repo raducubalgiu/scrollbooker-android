@@ -7,7 +7,6 @@ import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.business.domain.model.Business
 import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessByIdUseCase
 import com.example.scrollbooker.store.AuthDataStore
-import com.mapbox.maps.Style
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,11 +22,11 @@ class LocationViewModel @Inject constructor(
     private val _businessState = MutableStateFlow<FeatureState<Business>>(FeatureState.Loading)
     val businessState: StateFlow<FeatureState<Business>> = _businessState.asStateFlow()
 
-    private val _mapStyle = MutableStateFlow<String>(Style.STANDARD)
-    val mapStyle: StateFlow<String> = _mapStyle.asStateFlow()
+    private val _isMapReady = MutableStateFlow<Boolean>(false)
+    val isMapReady: StateFlow<Boolean> = _isMapReady.asStateFlow()
 
-    fun changeMapStyle(style: String) {
-        _mapStyle.value = style
+    fun setIsMapReady(isReady: Boolean) {
+        _isMapReady.value = isReady
     }
 
     fun loadBusiness() {
@@ -47,7 +46,7 @@ class LocationViewModel @Inject constructor(
 //            }
 
             _businessState.value = FeatureState.Loading
-            _businessState.value = withVisibleLoading(minLoadingMs = 2000) {
+            _businessState.value = withVisibleLoading {
                 getBusinessByIdUseCase(7)
             }
         }

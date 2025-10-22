@@ -1,7 +1,9 @@
 package com.example.scrollbooker.ui.shared.posts.sheets.location
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,7 +15,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -29,10 +30,13 @@ import com.mapbox.maps.extension.compose.annotation.ViewAnnotation
 import com.mapbox.maps.viewannotation.geometry
 import com.mapbox.maps.viewannotation.viewAnnotationOptions
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.zIndex
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
@@ -41,24 +45,27 @@ import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.titleMedium
 import com.mapbox.maps.Style
+import com.mapbox.maps.extension.compose.MapEffect
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
-import com.mapbox.maps.extension.compose.style.MapStyle
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun LocationSheet(
     onClose: () -> Unit,
 ) {
     val viewModel: LocationViewModel = hiltViewModel()
-    val mapStyle by viewModel.mapStyle.collectAsState()
     val businessState by viewModel.businessState.collectAsState()
+    val isMapReady by viewModel.isMapReady.collectAsState()
 
-    val isSystemInDarkMode = isSystemInDarkTheme()
+    val alpha by animateFloatAsState(
+        targetValue = if(isMapReady) 1f else 0f,
+        animationSpec = tween(350),
+        label = "map-fade"
+    )
 
-    LaunchedEffect(isSystemInDarkMode) {
-        if(isSystemInDarkMode) Style.DARK
-        else Style.STANDARD
-    }
+    val scope = rememberCoroutineScope()
 
     SheetHeader(
         title = stringResource(R.string.location),
@@ -104,33 +111,57 @@ fun LocationSheet(
 
             Text(
                 modifier = Modifier.padding(horizontal = SpacingXL),
-                text = "Adresa: ${business.data.address}",
+                text = "${stringResource(R.string.address)}: ${business.data.address}",
                 color = Color.Gray
             )
 
-            MapboxMap(
-                modifier = Modifier
-                    .height(300.dp)
-                    .fillMaxWidth()
-                    .padding(SpacingXL)
-                    .clip(shape = ShapeDefaults.ExtraLarge)
-                    .background(SurfaceBG),
-                mapViewportState = mapViewportState,
-                style = { MapStyle(style = mapStyle) },
-                scaleBar = {},
+            Box(modifier = Modifier
+                .height(300.dp)
+                .fillMaxWidth()
+                .padding(SpacingXL)
+                .clip(shape = ShapeDefaults.ExtraLarge)
+                .background(SurfaceBG)
             ) {
-                ViewAnnotation(
-                    options = viewAnnotationOptions {
-                        geometry(Point.fromLngLat(longitude, latitude))
-                        allowOverlap(true)
-                    }
-                ) {
-                    Icon(
-                        modifier = Modifier.size(30.dp),
-                        painter = painterResource(R.drawable.ic_location_solid),
-                        contentDescription = null,
-                        tint = Primary
+                if(!isMapReady) {
+                    Box(modifier = Modifier
+                        .matchParentSize()
+                        .background(SurfaceBG)
+                        .zIndex(12f)
                     )
+                }
+
+                MapboxMap(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .graphicsLayer { this.alpha = alpha },
+                    mapViewportState = mapViewportState,
+                    scaleBar = {},
+                ) {
+                    ViewAnnotation(
+                        options = viewAnnotationOptions {
+                            geometry(Point.fromLngLat(longitude, latitude))
+                            allowOverlap(true)
+                        }
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(30.dp),
+                            painter = painterResource(R.drawable.ic_location_solid),
+                            contentDescription = null,
+                            tint = Primary
+                        )
+                    }
+
+                    MapEffect(Unit) { mapView ->
+                        viewModel.setIsMapReady(false)
+                        val mapboxMap = mapView.mapboxMap
+
+                        mapboxMap.loadStyle(Style.STANDARD) {
+                            scope.launch {
+                                delay(100)
+                                viewModel.setIsMapReady(true)
+                            }
+                        }
+                    }
                 }
             }
         }
