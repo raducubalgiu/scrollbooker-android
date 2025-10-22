@@ -15,11 +15,11 @@ data class UserSocialDto(
     @SerializedName("is_follow")
     val isFollow: Boolean,
 
-    val profession: String?,
+    val profession: String,
 
     @SerializedName("ratings_average")
-    val ratingsAverage: Float?,
+    val ratingsAverage: Float,
 
     @SerializedName("is_business_or_employee")
-    val isBusinessOrEmployee: Boolean?,
+    val isBusinessOrEmployee: Boolean,
 )

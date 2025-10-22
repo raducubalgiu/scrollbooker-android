@@ -39,7 +39,7 @@ fun EmployeeTab(
     isSelected: Boolean,
     avatar: String?,
     fullName: String,
-    ratingsAverage: Float?,
+    ratingsAverage: Float,
     onSelectedEmployee: () -> Unit
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp

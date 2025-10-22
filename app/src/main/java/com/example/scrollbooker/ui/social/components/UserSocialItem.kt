@@ -41,8 +41,7 @@ fun UserSocialItem(
     onNavigateUserProfile: (Int) -> Unit
 ) {
     val isFollowed = isFollowedOverrides ?: userSocial.isFollow
-    val isBusinessOrEmployee = userSocial.isBusinessOrEmployee == true
-    val displayProfession = isBusinessOrEmployee && userSocial.profession != null
+    val isBusinessOrEmployee = userSocial.isBusinessOrEmployee
 
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -69,7 +68,7 @@ fun UserSocialItem(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = bodyMedium,
-                text = if(displayProfession) userSocial.profession
+                text = if(isBusinessOrEmployee) userSocial.profession
                     else "@${userSocial.username}"
             )
         },

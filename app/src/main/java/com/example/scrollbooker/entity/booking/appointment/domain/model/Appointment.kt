@@ -28,9 +28,9 @@ data class AppointmentProduct(
 
 data class AppointmentUser(
     val id: Int?,
-    val avatar: String?,
     val fullName: String,
     val username: String?,
+    val avatar: String?,
     val profession: String?
 )
 

@@ -1,5 +1,4 @@
 package com.example.scrollbooker.entity.nomenclature.service.domain.model
-import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
 import com.google.gson.annotations.SerializedName
 
 data class ServiceWithEmployees(
@@ -8,5 +7,14 @@ data class ServiceWithEmployees(
     @SerializedName("products_count")
     val productsCount: Int,
 
-    val employees: List<UserSocial>
+    val employees: List<ServiceEmployee>
+)
+
+data class ServiceEmployee(
+    val id: Int,
+    val fullName: String,
+    val username: String,
+    val avatar: String?,
+    val profession: String,
+    val ratingsAverage: Float
 )

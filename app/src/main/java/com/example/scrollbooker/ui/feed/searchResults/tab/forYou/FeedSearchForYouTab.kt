@@ -22,6 +22,7 @@ import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.entity.booking.business.domain.model.RecommendedBusiness
+import com.example.scrollbooker.entity.booking.business.domain.model.RecommendedBusinessUser
 import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
 import com.example.scrollbooker.ui.feed.components.search.FeedSearchRecommendedBusiness
 import com.example.scrollbooker.ui.social.components.UserSocialItem
@@ -54,15 +55,13 @@ fun FeedSearchForYouTab(modifier: Modifier = Modifier) {
 
             FeedSearchRecommendedBusiness(
                 recommendedBusiness = RecommendedBusiness(
-                    user = UserSocial(
+                    user = RecommendedBusinessUser(
                         id = 0,
                         fullName = "Frizeria Figaro",
                         username = "frizeria_figaro",
                         avatar = null,
-                        isFollow = false,
                         profession = "Frizerie",
-                        ratingsAverage = 4.8f,
-                        isBusinessOrEmployee = true
+                        ratingsAverage = 4.8f
                     ),
                     distance = 1.2f,
                     isOpen = true
@@ -72,15 +71,13 @@ fun FeedSearchForYouTab(modifier: Modifier = Modifier) {
 
             FeedSearchRecommendedBusiness(
                 recommendedBusiness = RecommendedBusiness(
-                    user = UserSocial(
+                    user = RecommendedBusinessUser(
                         id = 0,
                         fullName = "Frizeria Busuresti",
                         username = "frizeria_bucuresti",
                         avatar = null,
-                        isFollow = false,
                         profession = "Frizerie",
                         ratingsAverage = 4.2f,
-                        isBusinessOrEmployee = true
                     ),
                     distance = 2.3f,
                     isOpen = true

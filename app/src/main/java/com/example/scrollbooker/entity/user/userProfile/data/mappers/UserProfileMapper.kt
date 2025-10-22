@@ -62,7 +62,6 @@ fun BusinessOwnerDto.toDomain(): BusinessOwner {
         id = id,
         fullName = fullName,
         username = username,
-        avatar = avatar,
-        isFollow = isFollow
+        avatar = avatar
     )
 }

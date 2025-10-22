@@ -18,13 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
+import com.example.scrollbooker.entity.nomenclature.service.domain.model.ServiceEmployee
 import com.example.scrollbooker.ui.theme.Divider
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun EmployeesList(
-    employees: List<UserSocial>,
+    employees: List<ServiceEmployee>,
     onSetEmployee: (Int) -> Unit
 ) {
     val lazyRowListState = rememberLazyListState()

@@ -11,3 +11,11 @@ data class EmploymentRequest(
     val employer: UserSocial,
     val profession: Profession
 )
+
+data class EmploymentRequestUser(
+    val id: Int,
+    val fullName: String,
+    val username: String,
+    val avatar: String?,
+    val profession: String
+)

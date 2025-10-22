@@ -14,3 +14,13 @@ data class EmploymentRequestDto(
     val employer: UserSocialDto,
     val profession: ProfessionDto
 )
+
+data class EmploymentRequestUserDto(
+    val id: Int,
+
+    @SerializedName("fullname")
+    val fullName: String,
+    val username: String,
+    val avatar: String?,
+    val profession: String
+)

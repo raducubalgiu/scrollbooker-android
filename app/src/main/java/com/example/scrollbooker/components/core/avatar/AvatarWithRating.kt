@@ -41,7 +41,7 @@ import timber.log.Timber
 fun AvatarWithRating(
     modifier: Modifier = Modifier,
     url: String,
-    rating: Float?,
+    rating: Float,
     size: Dp = 75.dp,
     onClick: () -> Unit
 ) {

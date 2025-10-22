@@ -1,5 +1,6 @@
 package com.example.scrollbooker.entity.user.notification.domain.model
 import com.example.scrollbooker.core.enums.NotificationTypeEnum
+import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
 
 data class Notification(
     val id: Int,
@@ -10,15 +11,8 @@ data class Notification(
     val message: String?,
     val isRead: Boolean,
     val isDeleted: Boolean,
-    val sender: Sender,
+    val sender: UserSocial,
     val isFollow: Boolean
-)
-
-data class Sender(
-    val id: Int,
-    val fullName: String?,
-    val username: String,
-    val avatar: String?
 )
 
 data class EmploymentRequestData(

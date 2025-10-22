@@ -1,5 +1,6 @@
 package com.example.scrollbooker.entity.user.notification.data.remote
 
+import com.example.scrollbooker.entity.user.userSocial.data.remote.UserSocialDto
 import com.google.gson.annotations.SerializedName
 
 data class NotificationDto(
@@ -21,20 +22,10 @@ data class NotificationDto(
     @SerializedName("is_deleted")
     val isDeleted: Boolean,
 
-    val sender: SenderDto,
+    val sender: UserSocialDto,
 
     @SerializedName("is_follow")
     val isFollow: Boolean
-)
-
-data class SenderDto(
-    val id: Int,
-
-    @SerializedName("fullname")
-    val fullName: String?,
-
-    val username: String,
-    val avatar: String?
 )
 
 data class EmploymentRequestDataDto(

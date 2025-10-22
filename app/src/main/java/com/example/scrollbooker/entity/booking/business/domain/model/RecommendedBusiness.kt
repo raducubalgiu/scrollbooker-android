@@ -1,8 +1,16 @@
 package com.example.scrollbooker.entity.booking.business.domain.model
-import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
 
 data class RecommendedBusiness(
-    val user: UserSocial,
+    val user: RecommendedBusinessUser,
     val distance: Float,
     val isOpen: Boolean
+)
+
+data class RecommendedBusinessUser(
+    val id: Int,
+    val fullName: String,
+    val username: String,
+    val avatar: String?,
+    val profession: String,
+    val ratingsAverage: Float
 )

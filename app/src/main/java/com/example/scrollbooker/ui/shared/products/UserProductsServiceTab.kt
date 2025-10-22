@@ -26,9 +26,9 @@ import com.example.scrollbooker.components.customized.ProductCard
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.LoadMoreSpinner
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
-import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
 import androidx.compose.runtime.getValue
 import com.example.scrollbooker.components.core.layout.LoadingScreen
+import com.example.scrollbooker.entity.nomenclature.service.domain.model.ServiceEmployee
 import com.example.scrollbooker.ui.shared.products.components.EmployeesList
 import com.example.scrollbooker.ui.theme.Divider
 
@@ -36,7 +36,7 @@ import com.example.scrollbooker.ui.theme.Divider
 @Composable
 fun UserProductsServiceTab(
     viewModel: UserProductsViewModel,
-    employees: List<UserSocial>,
+    employees: List<ServiceEmployee>,
     serviceId: Int,
     userId: Int,
     onSelect: (Product) -> Unit

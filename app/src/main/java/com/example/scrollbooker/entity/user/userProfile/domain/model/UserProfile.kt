@@ -1,5 +1,4 @@
 package com.example.scrollbooker.entity.user.userProfile.domain.model
-import com.google.gson.annotations.SerializedName
 import java.math.BigDecimal
 
 data class UserProfile(
@@ -32,7 +31,6 @@ data class BusinessOwner(
     val fullName: String,
     val username: String,
     val avatar: String?,
-    val isFollow: Boolean
 )
 
 data class OpeningHours(

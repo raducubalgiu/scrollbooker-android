@@ -1,6 +1,4 @@
 package com.example.scrollbooker.entity.nomenclature.service.data.remote
-
-import com.example.scrollbooker.entity.user.userSocial.data.remote.UserSocialDto
 import com.google.gson.annotations.SerializedName
 
 data class ServiceWithEmployeesDto(
@@ -9,5 +7,19 @@ data class ServiceWithEmployeesDto(
     @SerializedName("products_count")
     val productsCount: Int,
 
-    val employees: List<UserSocialDto>
+    val employees: List<ServiceEmployeeDto>
+)
+
+data class ServiceEmployeeDto(
+    val id: Int,
+
+    @SerializedName("fullname")
+    val fullName: String,
+
+    val username: String,
+    val avatar: String?,
+    val profession: String,
+
+    @SerializedName("ratings_average")
+    val ratingsAverage: Float
 )

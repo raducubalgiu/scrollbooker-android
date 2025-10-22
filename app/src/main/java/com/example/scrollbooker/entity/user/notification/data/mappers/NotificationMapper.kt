@@ -3,10 +3,9 @@ package com.example.scrollbooker.entity.user.notification.data.mappers
 import com.example.scrollbooker.core.enums.NotificationTypeEnum
 import com.example.scrollbooker.entity.user.notification.data.remote.EmploymentRequestDataDto
 import com.example.scrollbooker.entity.user.notification.data.remote.NotificationDto
-import com.example.scrollbooker.entity.user.notification.data.remote.SenderDto
 import com.example.scrollbooker.entity.user.notification.domain.model.EmploymentRequestData
 import com.example.scrollbooker.entity.user.notification.domain.model.Notification
-import com.example.scrollbooker.entity.user.notification.domain.model.Sender
+import com.example.scrollbooker.entity.user.userSocial.data.mappers.toDomain
 
 fun NotificationDto.toDomain(): Notification {
     return Notification(
@@ -20,15 +19,6 @@ fun NotificationDto.toDomain(): Notification {
         isDeleted = isDeleted,
         sender = sender.toDomain(),
         isFollow = isFollow
-    )
-}
-
-fun SenderDto.toDomain(): Sender {
-    return Sender(
-        id = id,
-        fullName = fullName,
-        username = username,
-        avatar = avatar
     )
 }
 
