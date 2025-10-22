@@ -20,7 +20,7 @@ import com.example.scrollbooker.components.customized.PostGrid.PostGrid
 import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
-import com.example.scrollbooker.core.util.LoadMoreSpinner
+import com.example.scrollbooker.components.customized.LoadMoreSpinner
 import com.example.scrollbooker.ui.profile.tabs.ProfileTabViewModel
 
 @Composable

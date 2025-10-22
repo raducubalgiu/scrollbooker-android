@@ -1,6 +1,7 @@
 package com.example.scrollbooker.core.util
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.stateIn
  * Dacă valoarea pentru cheie există în cache, o emite instant.
  * Altfel, apelează [loader], salvează în cache și emite rezultatul.
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 fun <K : Any, V : Any> cachedByKey(
     scope: CoroutineScope,
     keyFlow: Flow<K?>,

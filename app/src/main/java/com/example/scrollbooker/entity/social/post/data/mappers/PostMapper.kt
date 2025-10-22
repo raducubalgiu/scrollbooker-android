@@ -23,7 +23,6 @@ import com.example.scrollbooker.entity.social.post.domain.model.PostProduct
 import com.example.scrollbooker.entity.social.post.domain.model.PostProductCurrency
 import com.example.scrollbooker.entity.social.post.domain.model.PostUser
 import com.example.scrollbooker.entity.social.post.domain.model.UserPostActions
-import com.example.scrollbooker.entity.user.userSocial.data.mappers.toDomain
 import com.example.scrollbooker.ui.shared.posts.PostActionUiState
 
 fun PostDto.toDomain(): Post {
@@ -37,7 +36,6 @@ fun PostDto.toDomain(): Post {
         userActions = userActions.toDomain(),
         mediaFiles = mediaFiles.map { it.toDomain() },
         counters = counters.toDomain(),
-        mentions = mentions,
         hashtags = hashtags.map { it.toDomain() },
         isVideoReview = isVideoReview,
         bookable = bookable,

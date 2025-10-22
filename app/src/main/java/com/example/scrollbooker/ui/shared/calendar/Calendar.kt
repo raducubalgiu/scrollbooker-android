@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
@@ -23,13 +22,13 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.core.util.displayDatePeriod
+import com.example.scrollbooker.core.extensions.displayDatePeriod
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import java.util.Locale
-import com.example.scrollbooker.core.util.displayShortDayOfWeek
+import com.example.scrollbooker.core.extensions.displayShortDayOfWeek
 import com.example.scrollbooker.entity.booking.calendar.domain.model.Slot
 import com.example.scrollbooker.ui.shared.calendar.components.CalendarDayTab
 import com.example.scrollbooker.ui.shared.calendar.components.CalendarHeader

@@ -40,8 +40,8 @@ import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.buttons.SegmentedButtons
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
-import com.example.scrollbooker.core.util.parseDateStringFromLocalDateTimeString
-import com.example.scrollbooker.core.util.parseTimeStringFromLocalDateTimeString
+import com.example.scrollbooker.core.extensions.parseDateStringFromLocalDateTimeString
+import com.example.scrollbooker.core.extensions.parseTimeStringFromLocalDateTimeString
 import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentOwnClientCreate
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsSlot
 import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarViewModel

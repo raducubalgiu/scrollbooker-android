@@ -1,7 +1,7 @@
 package com.example.scrollbooker.ui.myBusiness.myCalendar
 
 import com.example.scrollbooker.core.enums.AppointmentChannelEnum
-import com.example.scrollbooker.core.util.parseDateTimeStringToLocalDateTime
+import com.example.scrollbooker.core.extensions.parseDateTimeStringToLocalDateTime
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEvents
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsCustomer
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsDay

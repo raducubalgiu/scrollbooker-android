@@ -1,4 +1,4 @@
-package com.example.scrollbooker.core.util
+package com.example.scrollbooker.components.customized
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding

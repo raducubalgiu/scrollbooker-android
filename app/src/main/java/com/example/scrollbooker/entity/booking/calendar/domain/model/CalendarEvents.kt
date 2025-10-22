@@ -1,9 +1,8 @@
 package com.example.scrollbooker.entity.booking.calendar.domain.model
 
 import com.example.scrollbooker.core.enums.AppointmentChannelEnum
-import com.example.scrollbooker.core.util.parseTimeStringFromLocalDateTimeString
+import com.example.scrollbooker.core.extensions.parseTimeStringFromLocalDateTimeString
 import com.example.scrollbooker.entity.nomenclature.currency.domain.model.Currency
-import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
 import org.threeten.bp.LocalDateTime
 import java.math.BigDecimal
 

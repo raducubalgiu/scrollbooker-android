@@ -28,7 +28,7 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.core.util.displayDatePeriod
+import com.example.scrollbooker.core.extensions.displayDatePeriod
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.CalendarBlockAction
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.DayTimeline
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.MyCalendarHeader

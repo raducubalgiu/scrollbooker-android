@@ -24,7 +24,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.core.util.LoadMoreSpinner
+import com.example.scrollbooker.components.customized.LoadMoreSpinner
 import com.example.scrollbooker.entity.social.comment.data.remote.LikeCommentEnum
 import com.example.scrollbooker.entity.social.comment.domain.model.Comment
 import com.example.scrollbooker.ui.shared.posts.sheets.comments.CommentPatch

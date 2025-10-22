@@ -38,8 +38,8 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.core.util.checkLength
-import com.example.scrollbooker.core.util.parseTimeStringFromLocalDateTimeString
-import com.example.scrollbooker.core.util.toIsoString
+import com.example.scrollbooker.core.extensions.parseTimeStringFromLocalDateTimeString
+import com.example.scrollbooker.core.extensions.toIsoString
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Error

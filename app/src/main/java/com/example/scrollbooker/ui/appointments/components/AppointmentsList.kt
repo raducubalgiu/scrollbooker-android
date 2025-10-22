@@ -13,7 +13,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
-import com.example.scrollbooker.core.util.LoadMoreSpinner
+import com.example.scrollbooker.components.customized.LoadMoreSpinner
 import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointment
 import com.example.scrollbooker.ui.appointments.components.AppointmentCard.AppointmentCard
 import com.example.scrollbooker.ui.theme.Divider

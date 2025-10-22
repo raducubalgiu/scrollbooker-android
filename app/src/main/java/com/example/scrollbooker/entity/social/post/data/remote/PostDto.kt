@@ -1,5 +1,4 @@
 package com.example.scrollbooker.entity.social.post.data.remote
-import com.example.scrollbooker.entity.user.userSocial.data.remote.UserSocialDto
 import com.google.gson.annotations.SerializedName
 import java.math.BigDecimal
 
@@ -23,7 +22,6 @@ data class PostDto(
     @SerializedName("media_files")
     val mediaFiles: List<PostMediaFileDto>,
 
-    val mentions: List<UserSocialDto>,
     val hashtags: List<HashtagDto>,
 
     @SerializedName("is_video_review")

@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.displayShortDayOfWeek
+import com.example.scrollbooker.core.extensions.displayShortDayOfWeek
 import com.example.scrollbooker.ui.shared.calendar.components.CalendarDayTab
 import com.example.scrollbooker.ui.shared.calendar.components.CalendarHeader
 import com.example.scrollbooker.ui.theme.OnBackground

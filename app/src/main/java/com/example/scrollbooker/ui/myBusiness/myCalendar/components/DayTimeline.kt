@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
-import com.example.scrollbooker.core.util.minutesBetween
+import com.example.scrollbooker.core.extensions.minutesBetween
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsSlot
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.Slot.CalendarSlot
 import com.example.scrollbooker.ui.theme.bodyLarge

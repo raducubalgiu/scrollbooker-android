@@ -15,7 +15,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButtonSmall
 import com.example.scrollbooker.components.customized.UserListItem
 import com.example.scrollbooker.core.enums.NotificationTypeEnum
-import com.example.scrollbooker.core.util.LoadMoreSpinner
+import com.example.scrollbooker.components.customized.LoadMoreSpinner
 import com.example.scrollbooker.entity.user.notification.domain.model.Notification
 import com.example.scrollbooker.navigation.navigators.InboxNavigator
 import com.example.scrollbooker.ui.inbox.InboxViewModel

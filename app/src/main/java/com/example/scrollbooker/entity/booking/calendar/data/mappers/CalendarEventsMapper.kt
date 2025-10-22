@@ -1,7 +1,7 @@
 package com.example.scrollbooker.entity.booking.calendar.data.mappers
 
 import com.example.scrollbooker.core.enums.AppointmentChannelEnum
-import com.example.scrollbooker.core.util.parseDateTimeStringToLocalDateTime
+import com.example.scrollbooker.core.extensions.parseDateTimeStringToLocalDateTime
 import com.example.scrollbooker.entity.booking.calendar.data.remote.CalendarEventsCustomerDto
 import com.example.scrollbooker.entity.booking.calendar.data.remote.CalendarEventsDayDto
 import com.example.scrollbooker.entity.booking.calendar.data.remote.CalendarEventsDto
@@ -14,7 +14,6 @@ import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEve
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsInfo
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsProduct
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsSlot
-import com.example.scrollbooker.entity.user.userSocial.data.mappers.toDomain
 
 fun CalendarEventsDto.toDomain(): CalendarEvents {
     return CalendarEvents(

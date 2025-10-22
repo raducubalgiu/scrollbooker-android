@@ -21,7 +21,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.ErrorScreen
-import com.example.scrollbooker.core.util.LoadMoreSpinner
+import com.example.scrollbooker.components.customized.LoadMoreSpinner
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.core.layout.MessageScreen
 import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial

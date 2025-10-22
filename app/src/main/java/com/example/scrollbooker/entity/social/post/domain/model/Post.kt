@@ -1,6 +1,5 @@
 package com.example.scrollbooker.entity.social.post.domain.model
 import com.example.scrollbooker.R
-import com.example.scrollbooker.entity.user.userSocial.data.remote.UserSocialDto
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlayActionEnum
 import java.math.BigDecimal
 
@@ -14,7 +13,6 @@ data class Post(
     val userActions: UserPostActions,
     val mediaFiles: List<PostMediaFile>,
     val counters: PostCounters,
-    val mentions: List<UserSocialDto>,
     val hashtags: List<Hashtag>,
     val isVideoReview: Boolean,
     val rating: Int?,

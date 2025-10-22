@@ -1,4 +1,4 @@
-package com.example.scrollbooker.core.util
+package com.example.scrollbooker.core.extensions
 import org.threeten.bp.Duration
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
