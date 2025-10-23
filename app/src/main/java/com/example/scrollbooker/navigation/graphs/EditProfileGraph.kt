@@ -43,7 +43,8 @@ fun NavGraphBuilder.editProfileGraph(
             EditProfileScreen(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
-                editProfileNavigate = editProfileNavigate
+                onNavigateToCropScreen = {},
+                editProfileNavigate = editProfileNavigate,
             )
         }
 

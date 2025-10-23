@@ -35,6 +35,8 @@
     <string name="areYouSureDenyEmployment">Ești sigur că dorești să refuzi cererea de angajare?</string>
     <string name="likedYourPost">ți-a apreciat postarea</string>
     <string name="settings">Setări</string>
+    <string name="chooseFromGallery">Alege din galerie</string>
+    <string name="photoShoot">Fotografiază</string>
     <string name="privacy">Confidențialitate</string>
     <string name="calendar">Calendar</string>
     <string name="myBusiness">Afacerea mea</string>
@@ -307,4 +309,5 @@
     <string name="pick">Alege</string>
     <string name="bookThisService">Rezervă acest serviciu</string>
     <string name="bookNow">Rezervă acum</string>
+    <string name="changePhoto">Schimbă poza</string>
 </resources>

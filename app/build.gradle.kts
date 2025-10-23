@@ -8,12 +8,12 @@ plugins {
 
 android {
     namespace = "com.example.scrollbooker"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.scrollbooker"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -102,8 +102,10 @@ dependencies {
     // Timber Logging
     implementation(libs.timber)
 
+    // Icons Extended
     implementation(libs.androidx.material.icons.extended.android)
 
+    // "threetenabp"
     implementation(libs.threetenabp)
 
     // Mapbox
@@ -113,14 +115,19 @@ dependencies {
     // The following line is optional, as the core library is included indirectly by camera-camera2
     implementation(libs.androidx.camera.core)
     implementation(libs.androidx.camera.camera2)
+
     // If you want to additionally use the CameraX Lifecycle library
     implementation(libs.androidx.camera.lifecycle)
+
     // If you want to additionally use the CameraX VideoCapture library
     implementation(libs.androidx.camera.video)
+
     // If you want to additionally use the CameraX View class
     implementation(libs.androidx.camera.view)
+
     // If you want to additionally add CameraX ML Kit Vision Integration
     implementation(libs.androidx.camera.mlkit.vision)
+
     // If you want to additionally use the CameraX Extensions library
     implementation(libs.androidx.camera.extensions)
 }

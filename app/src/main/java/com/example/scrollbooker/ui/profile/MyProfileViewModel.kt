@@ -1,5 +1,6 @@
 package com.example.scrollbooker.ui.profile
 
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -26,6 +27,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
@@ -58,6 +60,13 @@ class MyProfileViewModel @Inject constructor(
     val isInitLoading = combine(_userProfileState, _initCompleted) { profile, done ->
         (profile is FeatureState.Loading || !done)
     }.stateIn(viewModelScope, SharingStarted.Companion.Eagerly, true)
+
+    private val _photoUri = MutableStateFlow<Uri?>(null)
+    val photoUri: StateFlow<Uri?> = _photoUri.asStateFlow()
+
+    fun setPhoto(uri: Uri) {
+        _photoUri.value = uri
+    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val userPosts: StateFlow<PagingData<Post>> = authDataStore.getUserId()
