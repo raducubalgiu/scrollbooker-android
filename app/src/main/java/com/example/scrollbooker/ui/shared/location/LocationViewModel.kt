@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.posts.sheets.location
+package com.example.scrollbooker.ui.shared.location
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -31,20 +31,6 @@ class LocationViewModel @Inject constructor(
 
     fun loadBusiness() {
         viewModelScope.launch {
-//            val businessId = authDataStore.getBusinessId().firstOrNull()
-//
-//            if(businessId == null) {
-//                Timber.tag("Business").e("ERROR: Business Id not found")
-//                _businessState.value = FeatureState.Error()
-//            }
-//
-//            businessId?.let { bId ->
-//                _businessState.value = FeatureState.Loading
-//                _businessState.value = withVisibleLoading {
-//                    getBusinessByIdUseCase(7)
-//                }
-//            }
-
             _businessState.value = FeatureState.Loading
             _businessState.value = withVisibleLoading {
                 getBusinessByIdUseCase(7)

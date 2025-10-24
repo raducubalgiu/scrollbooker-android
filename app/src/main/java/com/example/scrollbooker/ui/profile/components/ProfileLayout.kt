@@ -70,9 +70,7 @@ fun ProfileLayout(
     val userId = (profileData as? FeatureState.Success<UserProfile>)?.data?.id
 
     if(scheduleSheetState.isVisible) {
-        userId?.let {
-            UserScheduleSheet(userId = it, sheetState = scheduleSheetState)
-        }
+        userId?.let { UserScheduleSheet(userId = it, sheetState = scheduleSheetState) }
     }
 
     val density = LocalDensity.current
@@ -157,8 +155,6 @@ fun ProfileLayout(
                                     paddingTop = currentHeaderHeightDp,
                                     userId = user.id,
                                     onSelect = {}
-
-                                    //onNavigateToCalendar = { profileNavigate.toCalendar(it) }
                                 )
                             }
 
@@ -237,13 +233,8 @@ fun ProfileLayout(
                                         )
                                     }
                                 },
-                                onOpenScheduleSheet = {
-                                    scope.launch {
-                                        scheduleSheetState.show()
-                                    }
-                                },
-                                onNavigateToBusinessOwner = { ownerId ->
-                                    ownerId?.let {
+                                onOpenScheduleSheet = { scope.launch { scheduleSheetState.show() } },
+                                onNavigateToBusinessOwner = { ownerId -> ownerId?.let {
                                         profileNavigate.toBusinessOwner(ownerId)
                                     }
                                 }

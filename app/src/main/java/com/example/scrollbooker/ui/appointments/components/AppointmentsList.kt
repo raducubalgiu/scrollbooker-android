@@ -23,8 +23,9 @@ fun AppointmentsList(
     appointments: LazyPagingItems<Appointment>,
     onNavigateToAppointmentDetails: (Appointment) -> Unit
 ) {
-    LazyColumn(modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(vertical = BasePadding)
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(BasePadding)
     ) {
         items(appointments.itemCount) { index ->
             appointments[index]?.let { appointment ->

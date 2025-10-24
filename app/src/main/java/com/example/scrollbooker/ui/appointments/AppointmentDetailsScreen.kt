@@ -4,44 +4,44 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.headers.Header
+import com.example.scrollbooker.components.core.sheet.Sheet
 import com.example.scrollbooker.core.enums.AppointmentStatusEnum
-import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
 import com.example.scrollbooker.ui.appointments.components.AppointmentCard.AppointmentCard
+import com.example.scrollbooker.ui.shared.location.LocationSection
+import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheet
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Error
-import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppointmentDetailsScreen(
     viewModel: AppointmentsViewModel,
@@ -50,17 +50,23 @@ fun AppointmentDetailsScreen(
     onNavigateToBookAgain: (NavigateCalendarParam) -> Unit
 ) {
     val appointment by viewModel.selectedAppointment.collectAsState()
-    val status = AppointmentStatusEnum.fromKey(appointment?.status)
 
-    fun navigateToCalendar() {
-        val userId = appointment?.user?.id
-        val productId = appointment?.product?.id
-        val productName = appointment?.product?.name
-        val slotDuration = appointment?.product?.duration
+    val scope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-        if(userId != null && productId != null && productName != null && slotDuration != null) {
-            val params = NavigateCalendarParam(userId, slotDuration, productId, productName)
-            onNavigateToBookAgain(params)
+    if(sheetState.isVisible) {
+        Sheet(
+            modifier = Modifier.statusBarsPadding(),
+            sheetState = sheetState,
+            onClose = { scope.launch { sheetState.hide() } }
+        ) {
+            appointment?.user?.id?.let { userId ->
+                BookingsSheet(
+                    userId = 13,
+                    initialPage = 0,
+                    onClose = { scope.launch { sheetState.hide() } }
+                )
+            }
         }
     }
 
@@ -68,30 +74,25 @@ fun AppointmentDetailsScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(Background)
-            .safeDrawingPadding()
     ) {
         Header(
             title = "",
             onBack = onBack
         )
 
-        Spacer(Modifier.height(SpacingXL))
-
         Column(modifier = Modifier
-            .weight(1f)
-            .padding(horizontal = BasePadding)
+            .fillMaxSize()
+            .padding(horizontal = SpacingXL)
         ) {
-            if(appointment != null) {
+            appointment?.let { a ->
                 AppointmentCard(
-                    appointment = appointment!!,
+                    appointment = a,
                     navigateToAppointmentDetails = {}
                 )
-            }
 
-            Spacer(Modifier.height(SpacingXL))
+                Spacer(Modifier.height(SpacingXL))
 
-            appointment?.id?.let {
-                when(status) {
+                when(a.status) {
                     AppointmentStatusEnum.IN_PROGRESS -> {
                         MainButton(
                             colors = ButtonDefaults.buttonColors(
@@ -105,27 +106,27 @@ fun AppointmentDetailsScreen(
                     AppointmentStatusEnum.FINISHED -> {
                         MainButton(
                             title = stringResource(R.string.bookAgain),
-                            onClick = { navigateToCalendar() }
+                            onClick = { scope.launch { sheetState.show() } }
                         )
                     }
                     else -> Unit
                 }
-            }
 
-            appointment?.message?.let {
-                Column {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Outlined.Warning,
-                            contentDescription = null,
-                            tint = Error
-                        )
-                        Spacer(Modifier.width(SpacingS))
-                        Text(
-                            text = "${stringResource(R.string.cancelReason)}: ${appointment?.message ?: ""}",
-                            color = Error,
-                            style = bodyMedium
-                        )
+                a.message?.let {
+                    Column {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = Icons.Outlined.Warning,
+                                contentDescription = null,
+                                tint = Error
+                            )
+                            Spacer(Modifier.width(SpacingS))
+                            Text(
+                                text = "${stringResource(R.string.cancelReason)}: ${appointment?.message ?: ""}",
+                                color = Error,
+                                style = bodyMedium
+                            )
+                        }
                     }
                 }
             }
@@ -138,34 +139,7 @@ fun AppointmentDetailsScreen(
                 fontWeight = FontWeight.SemiBold
             )
 
-            Spacer(Modifier.height(SpacingXL))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_location_outline),
-                    contentDescription = null,
-                    tint = Color.Gray
-                )
-                Spacer(Modifier.width(SpacingM))
-                Text(text = appointment?.business?.address ?: "")
-            }
-
-            Spacer(Modifier.height(BasePadding))
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(shape = ShapeDefaults.Medium)
-                    .height(200.dp)
-                    .background(SurfaceBG)
-            ) {
-
-            }
-
-            Spacer(Modifier.height(BasePadding))
+            LocationSection()
         }
     }
 }

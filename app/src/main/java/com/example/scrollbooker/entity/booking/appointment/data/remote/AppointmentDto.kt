@@ -1,4 +1,5 @@
 package com.example.scrollbooker.entity.booking.appointment.data.remote
+import com.example.scrollbooker.entity.nomenclature.currency.data.remote.CurrencyDto
 import com.google.gson.annotations.SerializedName
 import java.math.BigDecimal
 
@@ -14,13 +15,24 @@ data class AppointmentDto(
     val channel: String,
     val status: String,
     val message: String?,
-    val product: AppointmentProductDto,
-    val user: AppointmentUserDto,
-
     @SerializedName("is_customer")
     val isCustomer: Boolean,
 
-    val business: AppointmentBusinessDto
+    val products: List<AppointmentProductDto>,
+
+    val user: AppointmentUserDto,
+    val customer: AppointmentUserDto,
+
+    val business: AppointmentBusinessDto,
+
+    @SerializedName("total_price")
+    val totalPrice: BigDecimal,
+
+    @SerializedName("total_duration")
+    val totalDuration: Int,
+
+    @SerializedName("payment_currency")
+    val paymentCurrency: CurrencyDto
 )
 
 data class AppointmentProductDto(
@@ -34,10 +46,18 @@ data class AppointmentProductDto(
     val duration: Int,
 
     val discount: BigDecimal,
-    val currency: String,
 
-    @SerializedName("exchange_rate")
-    val exchangeRate: BigDecimal
+    @SerializedName("original_currency")
+    val originalCurrency: CurrencyDto,
+
+    @SerializedName("original_price")
+    val originalPrice: BigDecimal,
+
+    @SerializedName("converted_price")
+    val convertedPrice: BigDecimal,
+
+    @SerializedName("exchange_rate_used")
+    val exchangeRateUsed: BigDecimal?
 )
 
 data class AppointmentUserDto(

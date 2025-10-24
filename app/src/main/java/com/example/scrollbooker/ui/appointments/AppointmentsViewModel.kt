@@ -77,7 +77,7 @@ class AppointmentsViewModel @Inject constructor(
                 _selectedAppointment.value = _selectedAppointment.value?.let { current ->
                     if(current.id == appointmentId) {
                         current.copy(
-                            status = AppointmentStatusEnum.CANCELED.key,
+                            status = AppointmentStatusEnum.CANCELED,
                             message = message
                         )
                     } else current

@@ -49,7 +49,8 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import kotlinx.coroutines.delay
 
 @Composable
-fun ProductsSheet(
+fun BookingsSheet(
+    modifier: Modifier = Modifier,
     userId: Int,
     initialPage: Int,
     onClose: () -> Unit
@@ -80,7 +81,7 @@ fun ProductsSheet(
 
     var isSaving by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = modifier.fillMaxSize()) {
         BookingSheetHeader(
             stepTitle = steps[currentStep],
             onClose = onClose,

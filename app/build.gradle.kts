@@ -63,6 +63,9 @@ dependencies {
     // Splash Screen
     implementation(libs.androidx.core.splashscreen)
 
+    // App Compat
+    implementation(libs.androidx.appcompat)
+
     // Navigation
     implementation(libs.androidx.navigation.compose)
 

@@ -1,18 +1,35 @@
 package com.example.scrollbooker.entity.booking.appointment.domain.model
+import androidx.annotation.StringRes
+import androidx.compose.ui.graphics.Color
+import com.example.scrollbooker.R
+import com.example.scrollbooker.core.enums.AppointmentChannelEnum
+import com.example.scrollbooker.core.enums.AppointmentStatusEnum
+import com.example.scrollbooker.core.enums.AppointmentStatusEnum.CANCELED
+import com.example.scrollbooker.core.enums.AppointmentStatusEnum.FINISHED
+import com.example.scrollbooker.core.enums.AppointmentStatusEnum.IN_PROGRESS
+import com.example.scrollbooker.core.util.AppLocaleProvider
+import com.example.scrollbooker.entity.nomenclature.currency.domain.model.Currency
+import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
+import org.threeten.bp.format.DateTimeFormatter
 import java.math.BigDecimal
+import java.util.Locale
 
 data class Appointment(
     val id: Int,
     val startDate: ZonedDateTime,
     val endDate: ZonedDateTime,
-    val channel: String,
-    val status: String,
+    val channel: AppointmentChannelEnum?,
+    val status: AppointmentStatusEnum?,
     val message: String?,
-    val product: AppointmentProduct,
-    val user: AppointmentUser,
     val isCustomer: Boolean,
-    val business: AppointmentBusiness
+    val products: List<AppointmentProduct>,
+    val user: AppointmentUser,
+    val customer: AppointmentUser,
+    val business: AppointmentBusiness,
+    val totalPrice: BigDecimal,
+    val totalDuration: Int,
+    val paymentCurrency: Currency,
 )
 
 data class AppointmentProduct(
@@ -22,8 +39,10 @@ data class AppointmentProduct(
     val priceWithDiscount: BigDecimal,
     val duration: Int,
     val discount: BigDecimal,
-    val currency: String,
-    val exchangeRate: BigDecimal
+    val originalCurrency: Currency,
+    val originalPrice: BigDecimal,
+    val convertedPrice: BigDecimal,
+    val exchangeRateUsed: BigDecimal?
 )
 
 data class AppointmentUser(
@@ -43,3 +62,44 @@ data class AppointmentBusiness(
     val address: String,
     val coordinates: BusinessCoordinates
 )
+
+private val DAY_FMT = DateTimeFormatter.ofPattern("dd")
+private fun monthFmt(locale: Locale) = DateTimeFormatter.ofPattern("MMM", locale)
+private val TIME_FMT = DateTimeFormatter.ofPattern("HH:mm")
+
+fun Appointment.localStart(zone: ZoneId = ZoneId.systemDefault()): ZonedDateTime =
+    startDate.withZoneSameInstant(zone)
+
+fun Appointment.getDay(zone: ZoneId = ZoneId.systemDefault()): String =
+    localStart(zone).format(DAY_FMT)
+
+fun Appointment.getMonth(
+    zone: ZoneId = ZoneId.systemDefault(),
+    locale: Locale = AppLocaleProvider.current()
+): String =
+    localStart(zone).format(monthFmt(locale)).replaceFirstChar { it.uppercase() }
+
+fun Appointment.getTime(zone: ZoneId = ZoneId.systemDefault()): String =
+    localStart(zone).format(TIME_FMT)
+
+fun Appointment.getProductNames(): String =
+    products.joinToString(", ") { it.name }
+
+@StringRes
+fun Appointment.getStatusRes(): Int =
+    when(status) {
+        IN_PROGRESS -> R.string.confirmed
+        FINISHED -> R.string.finished
+        CANCELED -> R.string.canceled
+        null -> R.string.unknown
+    }
+
+fun Appointment.getStatusColor(): Color =
+    when(status) {
+        IN_PROGRESS -> Color(0xFF66BB6A)
+        FINISHED -> Color.Gray
+        CANCELED -> Color.Red
+        null -> Color.Gray
+    }
+
+

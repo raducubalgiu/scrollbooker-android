@@ -1,4 +1,6 @@
 package com.example.scrollbooker.entity.booking.appointment.data.mappers
+import com.example.scrollbooker.core.enums.AppointmentChannelEnum
+import com.example.scrollbooker.core.enums.AppointmentStatusEnum
 import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentBusinessDto
 import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentDto
 import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentProductDto
@@ -9,6 +11,7 @@ import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointm
 import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentProduct
 import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentUser
 import com.example.scrollbooker.entity.booking.appointment.domain.model.BusinessCoordinates
+import com.example.scrollbooker.entity.nomenclature.currency.data.mapper.toDomain
 import org.threeten.bp.ZonedDateTime
 
 fun AppointmentDto.toDomain(): Appointment {
@@ -16,13 +19,17 @@ fun AppointmentDto.toDomain(): Appointment {
         id = id,
         startDate = ZonedDateTime.parse(startDate),
         endDate = ZonedDateTime.parse(endDate),
-        channel = channel,
-        status = status,
+        channel = AppointmentChannelEnum.fromKey(channel),
+        status = AppointmentStatusEnum.fromKey(status),
         message = message,
-        product = product.toDomain(),
-        user = user.toDomain(),
         isCustomer = isCustomer,
-        business = business.toDomain()
+        products = products.map { it.toDomain() },
+        user = user.toDomain(),
+        customer = customer.toDomain(),
+        business = business.toDomain(),
+        totalPrice = totalPrice,
+        totalDuration = totalDuration,
+        paymentCurrency = paymentCurrency.toDomain()
     )
 }
 
@@ -34,8 +41,10 @@ fun AppointmentProductDto.toDomain(): AppointmentProduct {
         priceWithDiscount = priceWithDiscount,
         duration = duration,
         discount = discount,
-        currency = currency,
-        exchangeRate = exchangeRate
+        originalCurrency = originalCurrency.toDomain(),
+        originalPrice = originalPrice,
+        convertedPrice = convertedPrice,
+        exchangeRateUsed = exchangeRateUsed,
     )
 }
 

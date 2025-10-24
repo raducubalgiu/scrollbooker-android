@@ -49,7 +49,7 @@ fun AppointmentCardDate(
             )
             Text(
                 modifier = Modifier.padding(vertical = SpacingXS),
-                text = month.replaceFirstChar { it.uppercase() },
+                text = month,
                 color = Color.Gray,
                 style = titleSmall,
             )

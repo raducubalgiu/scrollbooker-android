@@ -238,6 +238,7 @@
     <string name="confirmed">Confirmat</string>
     <string name="finished">Finalizat</string>
     <string name="canceled">Anulat</string>
+    <string name="unknown">Necunoscut</string>
     <string name="all">Toate</string>
     <string name="filter">Filtrează</string>
     <string name="filterAppointments">Filtrează comenzile</string>

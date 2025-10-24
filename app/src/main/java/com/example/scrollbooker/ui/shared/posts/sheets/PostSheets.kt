@@ -7,9 +7,9 @@ import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.comments.CommentsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.moreOptions.MoreOptionsSheet
-import com.example.scrollbooker.ui.shared.posts.sheets.bookings.ProductsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.location.LocationSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.reviewDetails.ReviewDetailsScreen
 import com.example.scrollbooker.ui.shared.posts.sheets.reviews.ReviewsSheet
@@ -60,7 +60,7 @@ fun PostSheets(
                 )
             }
             is PostSheetsContent.BookingsSheet -> {
-                ProductsSheet(
+                BookingsSheet(
                     initialPage = 0,
                     userId = content.userId,
                     onClose = onClose

@@ -15,16 +15,12 @@ import com.example.scrollbooker.components.core.shimmer.rememberShimmerBrush
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
-import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 
 @Composable
 fun LocationSheetShimmer() {
     val brush = rememberShimmerBrush()
 
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .padding(horizontal = SpacingXL)
-    ) {
+    Column(modifier = Modifier.fillMaxWidth()) {
         Spacer(modifier = Modifier
             .fillMaxWidth(fraction = 0.3f)
             .height(20.dp)

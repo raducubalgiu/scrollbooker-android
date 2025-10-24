@@ -1,6 +1,7 @@
 [versions]
 agp = "8.10.1"
 android = "11.9.0"
+appcompat = "1.7.1"
 cameraCore = "1.5.1"
 cameraLifecycle = "1.5.1"
 coilCompose = "2.4.0"
@@ -33,6 +34,7 @@ timber = "5.0.1"
 
 [libraries]
 android = { module = "com.mapbox.maps:android", version.ref = "android" }
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraCore" }
 androidx-camera-core = { module = "androidx.camera:camera-core", version.ref = "cameraCore" }
 androidx-camera-extensions = { module = "androidx.camera:camera-extensions", version.ref = "cameraCore" }
