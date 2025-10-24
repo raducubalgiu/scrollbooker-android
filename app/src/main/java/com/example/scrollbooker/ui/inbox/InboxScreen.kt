@@ -30,9 +30,7 @@ fun InboxScreen(
 
     Scaffold(
         topBar = { Header(title = stringResource(id = R.string.inbox)) },
-        bottomBar = {
-            BottomBar()
-        }
+        bottomBar = { BottomBar() }
     ) { innerPadding ->
         Box(modifier = Modifier
             .fillMaxSize()

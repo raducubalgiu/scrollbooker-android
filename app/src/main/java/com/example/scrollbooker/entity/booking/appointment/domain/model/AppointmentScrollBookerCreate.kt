@@ -4,7 +4,6 @@ data class AppointmentScrollBookerCreate(
     val startDate: String,
     val endDate: String,
     val userId: Int,
-    val serviceId: Int,
-    val productId: Int,
+    val productIds: List<Int>,
     val currencyId: Int,
 )

@@ -9,7 +9,6 @@ fun AppointmentScrollBookerCreate.toDto(): AppointmentScrollBookerCreateDto {
         endDate = endDate,
         userId = userId,
         currencyId = currencyId,
-        serviceId = serviceId,
-        productId = productId,
+        productIds = productIds,
     )
 }

@@ -41,10 +41,9 @@ fun AppointmentProductDto.toDomain(): AppointmentProduct {
         priceWithDiscount = priceWithDiscount,
         duration = duration,
         discount = discount,
-        originalCurrency = originalCurrency.toDomain(),
-        originalPrice = originalPrice,
-        convertedPrice = convertedPrice,
-        exchangeRateUsed = exchangeRateUsed,
+        currency = currency.toDomain(),
+        convertedPriceWithDiscount = convertedPriceWithDiscount,
+        exchangeRate = exchangeRate,
     )
 }
 

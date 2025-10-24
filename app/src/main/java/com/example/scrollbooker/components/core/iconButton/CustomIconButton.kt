@@ -22,7 +22,7 @@ fun CustomIconButton(
     modifier: Modifier = Modifier,
     imageVector: ImageVector? = null,
     painter: Int? = null,
-    boxSize: Dp = 60.dp,
+    boxSize: Dp = 50.dp,
     iconSize: Dp = 24.dp,
     tint: Color = OnBackground,
     onClick: () -> Unit

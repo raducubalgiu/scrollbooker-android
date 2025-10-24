@@ -43,21 +43,18 @@ data class AppointmentProductDto(
     @SerializedName("price_with_discount")
     val priceWithDiscount: BigDecimal,
 
-    val duration: Int,
-
     val discount: BigDecimal,
 
-    @SerializedName("original_currency")
-    val originalCurrency: CurrencyDto,
+    val duration: Int,
 
-    @SerializedName("original_price")
-    val originalPrice: BigDecimal,
+    @SerializedName("currency")
+    val currency: CurrencyDto,
 
-    @SerializedName("converted_price")
-    val convertedPrice: BigDecimal,
+    @SerializedName("converted_price_with_discount")
+    val convertedPriceWithDiscount: BigDecimal,
 
     @SerializedName("exchange_rate_used")
-    val exchangeRateUsed: BigDecimal?
+    val exchangeRate: BigDecimal?
 )
 
 data class AppointmentUserDto(

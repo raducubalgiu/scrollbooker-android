@@ -37,12 +37,11 @@ data class AppointmentProduct(
     val name: String,
     val price: BigDecimal,
     val priceWithDiscount: BigDecimal,
-    val duration: Int,
     val discount: BigDecimal,
-    val originalCurrency: Currency,
-    val originalPrice: BigDecimal,
-    val convertedPrice: BigDecimal,
-    val exchangeRateUsed: BigDecimal?
+    val duration: Int,
+    val currency: Currency,
+    val convertedPriceWithDiscount: BigDecimal,
+    val exchangeRate: BigDecimal?
 )
 
 data class AppointmentUser(
