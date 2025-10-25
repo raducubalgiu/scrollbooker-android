@@ -1,159 +1,135 @@
 package com.example.scrollbooker.ui.shared.location
-
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.example.scrollbooker.R
+import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.ui.shared.posts.sheets.location.LocationSheetShimmer
+import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.titleMedium
-import com.mapbox.geojson.Point
-import com.mapbox.maps.Style
-import com.mapbox.maps.extension.compose.MapEffect
-import com.mapbox.maps.extension.compose.MapboxMap
-import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
-import com.mapbox.maps.extension.compose.annotation.ViewAnnotation
-import com.mapbox.maps.viewannotation.geometry
-import com.mapbox.maps.viewannotation.viewAnnotationOptions
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @Composable
 fun LocationSection(modifier: Modifier = Modifier) {
     val viewModel: LocationViewModel = hiltViewModel()
-    val businessState by viewModel.businessState.collectAsState()
-    val isMapReady by viewModel.isMapReady.collectAsState()
-
-    val alpha by animateFloatAsState(
-        targetValue = if(isMapReady) 1f else 0f,
-        animationSpec = tween(350),
-        label = "map-fade"
-    )
-
-    val scope = rememberCoroutineScope()
+    val businessLocation by viewModel.businessLocation.collectAsState()
 
     Column(modifier) {
         Spacer(Modifier.height(BasePadding))
 
-        when(val business = businessState) {
+        when(val business = businessLocation) {
             is FeatureState.Error -> ErrorScreen()
             is FeatureState.Loading -> LocationSheetShimmer()
             is FeatureState.Success -> {
-                val latitude = business.data.coordinates.lat.toDouble()
-                val longitude = business.data.coordinates.lng.toDouble()
+                val location = business.data
 
-                val mapViewportState = rememberMapViewportState {
-                    setCameraOptions {
-                        center(Point.fromLngLat(longitude, latitude))
-                        zoom(15.0)
-                        pitch(60.0)
-                    }
-                }
-
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_location_outline),
-                        contentDescription = null,
-                        tint = Primary
-                    )
-                    Spacer(Modifier.width(SpacingS))
-
-                    Text(
-                        text = "la 5 km de tine",
-                        style = titleMedium,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
-
-                Spacer(Modifier.height(SpacingM))
-
-                Text(
-                    text = "${stringResource(R.string.address)}: ${business.data.address}",
-                    color = Color.Gray
-                )
-
-                Box(modifier = Modifier
-                    .height(300.dp)
-                    .fillMaxWidth()
-                    .padding(vertical = SpacingXL)
-                    .clip(shape = ShapeDefaults.ExtraLarge)
-                    .background(SurfaceBG)
-                ) {
-                    if(!isMapReady) {
-                        Box(modifier = Modifier
-                            .matchParentSize()
-                            .background(SurfaceBG)
-                            .zIndex(12f)
-                        )
-                    }
-
-                    MapboxMap(
-                        modifier = Modifier
-                            .matchParentSize()
-                            .graphicsLayer { this.alpha = alpha },
-                        mapViewportState = mapViewportState,
-                        scaleBar = {},
-                    ) {
-                        ViewAnnotation(
-                            options = viewAnnotationOptions {
-                                geometry(Point.fromLngLat(longitude, latitude))
-                                allowOverlap(true)
-                            }
-                        ) {
+                Column {
+                    location.distance?.let {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
-                                modifier = Modifier.size(30.dp),
-                                painter = painterResource(R.drawable.ic_location_solid),
+                                painter = painterResource(R.drawable.ic_location_outline),
                                 contentDescription = null,
                                 tint = Primary
                             )
-                        }
 
-                        MapEffect(Unit) { mapView ->
-                            viewModel.setIsMapReady(false)
-                            val mapboxMap = mapView.mapboxMap
+                            Spacer(Modifier.width(SpacingS))
 
-                            mapboxMap.loadStyle(Style.STANDARD) {
-                                scope.launch {
-                                    delay(100)
-                                    viewModel.setIsMapReady(true)
-                                }
-                            }
+                            Text(
+                                text = "la $it km de tine",
+                                style = titleMedium,
+                                fontWeight = FontWeight.SemiBold
+                            )
+
+                            Spacer(Modifier.height(SpacingM))
                         }
                     }
+
+                    Text(
+                        text = "${stringResource(R.string.address)}: ${location.address}",
+                        color = Color.Gray
+                    )
+
+                    Spacer(Modifier.height(SpacingM))
+
+                    Box(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp)
+                        .clip(shape = ShapeDefaults.ExtraLarge)
+                    ) {
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(location.mapUrl)
+                                .diskCachePolicy(CachePolicy.ENABLED)
+                                .memoryCachePolicy(CachePolicy.ENABLED)
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = "Business Location Map",
+                            contentScale = ContentScale.Crop,
+                            onError = { Timber.tag("Business Map Error").e("ERROR: ${it.result.throwable.message}") },
+                            modifier = Modifier.fillMaxSize()
+                        )
+
+                        Box(modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color.Black.copy(alpha = 0.2f),
+                                        Color.Transparent,
+                                        Color.Black.copy(alpha = 0.4f)
+                                    )
+                                )
+                            )
+                        )
+                    }
+
+                    Spacer(Modifier.height(SpacingM))
+
+                    MainButton(
+                        title = "Directii de navigare",
+                        onClick = {},
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = SurfaceBG,
+                            contentColor = OnSurfaceBG
+                        )
+                    )
+
+                    Spacer(Modifier.height(BasePadding))
                 }
             }
         }

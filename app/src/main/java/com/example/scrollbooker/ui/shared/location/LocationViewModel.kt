@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.business.domain.model.Business
+import com.example.scrollbooker.entity.booking.business.domain.model.BusinessLocation
 import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessByIdUseCase
+import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessLocationUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,25 +18,19 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LocationViewModel @Inject constructor(
-    private val getBusinessByIdUseCase: GetBusinessByIdUseCase,
-    private val authDataStore: AuthDataStore
+    private val getBusinessLocationUseCase: GetBusinessLocationUseCase
 ): ViewModel() {
-    private val _businessState = MutableStateFlow<FeatureState<Business>>(FeatureState.Loading)
-    val businessState: StateFlow<FeatureState<Business>> = _businessState.asStateFlow()
-
-    private val _isMapReady = MutableStateFlow<Boolean>(false)
-    val isMapReady: StateFlow<Boolean> = _isMapReady.asStateFlow()
-
-    fun setIsMapReady(isReady: Boolean) {
-        _isMapReady.value = isReady
-    }
+    private val _businessLocation = MutableStateFlow<FeatureState<BusinessLocation>>(FeatureState.Loading)
+    val businessLocation: StateFlow<FeatureState<BusinessLocation>> = _businessLocation.asStateFlow()
 
     fun loadBusiness() {
         viewModelScope.launch {
-            _businessState.value = FeatureState.Loading
-            _businessState.value = withVisibleLoading {
-                getBusinessByIdUseCase(7)
-            }
+            _businessLocation.value = FeatureState.Loading
+            _businessLocation.value = getBusinessLocationUseCase(
+                businessId = 7,
+                userLat = null,
+                userLng = null
+            )
         }
     }
 

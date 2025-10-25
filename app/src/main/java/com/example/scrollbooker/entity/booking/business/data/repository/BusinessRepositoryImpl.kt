@@ -10,6 +10,7 @@ import com.example.scrollbooker.entity.booking.business.data.remote.BusinessServ
 import com.example.scrollbooker.entity.booking.business.domain.model.Business
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessAddress
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessCreateResponse
+import com.example.scrollbooker.entity.booking.business.domain.model.BusinessLocation
 import com.example.scrollbooker.entity.booking.business.domain.model.RecommendedBusiness
 import com.example.scrollbooker.entity.booking.business.domain.repository.BusinessRepository
 import com.example.scrollbooker.entity.nomenclature.service.data.mappers.toDomain
@@ -35,6 +36,14 @@ class BusinessRepositoryImpl @Inject constructor(
 
     override suspend fun getBusinessById(businessId: Int): Business {
         return apiService.getBusinessById(businessId).toDomain()
+    }
+
+    override suspend fun getBusinessLocation(
+        businessId: Int,
+        userLat: Float?,
+        userLng: Float?
+    ): BusinessLocation {
+        return apiService.getBusinessLocation(businessId, userLat, userLng).toDomain()
     }
 
     override suspend fun getRecommendedBusinesses(lng: Float?, lat: Float?, timezone: String): List<RecommendedBusiness> {

@@ -26,7 +26,7 @@ import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointm
 fun BookingsSheet(
     modifier: Modifier = Modifier,
     userId: Int,
-    initialPage: Int,
+    initialPage: Int = 0,
     onClose: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
@@ -51,7 +51,7 @@ fun BookingsSheet(
 
     val selectedSlot by calendarViewModel.selectedSlot.collectAsState()
 
-    val pagerState = rememberPagerState { steps.size }
+    val pagerState = rememberPagerState(initialPage = initialPage) { steps.size }
     val currentStep = pagerState.currentPage
 
     val isSaving by bookingsSheetViewModel.isSaving.collectAsState()

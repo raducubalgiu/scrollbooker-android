@@ -32,6 +32,13 @@ interface BusinessApiService {
         @Path("userId") userId: Int
     ): BusinessDto
 
+    @GET("/businesses/{businessId}/location")
+    suspend fun getBusinessLocation(
+        @Path("businessId") businessId: Int,
+        @Query("user_lat") userLat: Float?,
+        @Query("user_lng") userLng: Float?
+    ): BusinessLocationDto
+
     @PUT("/businesses/update-services")
     suspend fun updateBusinessServices(
         @Body request: BusinessServicesUpdateRequest

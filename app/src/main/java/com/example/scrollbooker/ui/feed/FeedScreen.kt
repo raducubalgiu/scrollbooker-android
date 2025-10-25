@@ -135,7 +135,8 @@ fun FeedScreen(feedNavigate: FeedNavigator) {
                 HorizontalPager(
                     state = horizontalPagerState,
                     overscrollEffect = null,
-                    beyondViewportPageCount = 0
+                    beyondViewportPageCount = 0,
+                    userScrollEnabled = false
                 ) { tabIndex ->
                     val posts = if(tabIndex == 0) explorePosts
                                 else feedViewModel.followingPosts.collectAsLazyPagingItems()

@@ -31,7 +31,6 @@ import com.example.scrollbooker.components.core.sheet.Sheet
 import com.example.scrollbooker.core.enums.AppointmentStatusEnum
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
-import com.example.scrollbooker.navigation.navigators.NavigateCalendarParam
 import com.example.scrollbooker.ui.appointments.components.AppointmentCard.AppointmentCard
 import com.example.scrollbooker.ui.shared.location.LocationSection
 import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheet
@@ -46,8 +45,7 @@ import kotlinx.coroutines.launch
 fun AppointmentDetailsScreen(
     viewModel: AppointmentsViewModel,
     onBack: () -> Unit,
-    onNavigateToCancel: () -> Unit,
-    onNavigateToBookAgain: (NavigateCalendarParam) -> Unit
+    onNavigateToCancel: () -> Unit
 ) {
     val appointment by viewModel.selectedAppointment.collectAsState()
 
@@ -63,7 +61,7 @@ fun AppointmentDetailsScreen(
             appointment?.user?.id?.let { userId ->
                 BookingsSheet(
                     userId = 13,
-                    initialPage = 0,
+                    initialPage = 1,
                     onClose = { scope.launch { sheetState.hide() } }
                 )
             }

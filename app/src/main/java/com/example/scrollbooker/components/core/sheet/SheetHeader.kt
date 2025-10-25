@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.iconButton.CustomIconButton
 import com.example.scrollbooker.ui.theme.titleMedium
 
@@ -25,6 +26,7 @@ fun SheetHeader(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         CustomIconButton(
+            boxSize = 60.dp,
             imageVector = Icons.Default.Close,
             tint = Color.Transparent,
             onClick = {}
@@ -41,6 +43,7 @@ fun SheetHeader(
         }
 
         CustomIconButton(
+            boxSize = 60.dp,
             imageVector = Icons.Default.Close,
             onClick = onClose
         )
