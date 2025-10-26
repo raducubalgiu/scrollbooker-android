@@ -91,6 +91,10 @@ dependencies {
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.compose)
 
+    // Google Maps
+    implementation(libs.play.services.maps)
+    implementation(libs.maps.compose)
+
     // Foundation
     implementation(libs.androidx.foundation)
 

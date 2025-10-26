@@ -22,60 +22,60 @@ import com.mapbox.maps.plugin.animation.MapAnimationOptions
 fun RememberedMap(
     viewModel: SearchViewModel
 ) {
-    val density = LocalDensity.current
-
-    //val composeInit = remember(density) { ComposeMapInitOptions(density, textureView = true) }
-
-    val lat by viewModel.latFlow.collectAsState()
-    val lon by viewModel.lonFlow.collectAsState()
-    val zoom by viewModel.zoomFlow.collectAsState()
-
-    val viewportState = rememberMapViewportState {
-        setCameraOptions {
-            center(Point.fromLngLat(lon.toDouble(), lat.toDouble()))
-            zoom(zoom.toDouble())
-        }
-    }
-
-    var first by remember { mutableStateOf(true) }
-
-    LaunchedEffect(lat, lon, zoom) {
-        val opts = CameraOptions.Builder()
-            .center(Point.fromLngLat(lon.toDouble(), lat.toDouble()))
-            .zoom(zoom.toDouble())
-            .build()
-
-        if(first) {
-            first = false
-            viewportState.setCameraOptions {
-                center(opts.center)
-                zoom(opts.zoom!!)
-            }
-        } else {
-            viewportState.easeTo(
-                cameraOptions = opts,
-                animationOptions = MapAnimationOptions.mapAnimationOptions {
-                    duration(250)
-                }
-            )
-        }
-    }
-
-    MapboxMap(
-        modifier = Modifier.fillMaxSize(),
-        //composeMapInitOptions = composeInit,
-        mapViewportState = viewportState,
-        style = { MapboxStandardStyle() },
-    )
-
-    LaunchedEffect(viewportState.cameraState) {
-        val cam = viewportState.cameraState
-        cam?.let {
-            viewModel.setCamera(
-                lat = cam.center.latitude().toFloat(),
-                lon = cam.center.longitude().toFloat(),
-                zoom = cam.zoom.toFloat()
-            )
-        }
-    }
+//    val density = LocalDensity.current
+//
+//    //val composeInit = remember(density) { ComposeMapInitOptions(density, textureView = true) }
+//
+//    val lat by viewModel.latFlow.collectAsState()
+//    val lon by viewModel.lonFlow.collectAsState()
+//    val zoom by viewModel.zoomFlow.collectAsState()
+//
+//    val viewportState = rememberMapViewportState {
+//        setCameraOptions {
+//            center(Point.fromLngLat(lon.toDouble(), lat.toDouble()))
+//            zoom(zoom.toDouble())
+//        }
+//    }
+//
+//    var first by remember { mutableStateOf(true) }
+//
+//    LaunchedEffect(lat, lon, zoom) {
+//        val opts = CameraOptions.Builder()
+//            .center(Point.fromLngLat(lon.toDouble(), lat.toDouble()))
+//            .zoom(zoom.toDouble())
+//            .build()
+//
+//        if(first) {
+//            first = false
+//            viewportState.setCameraOptions {
+//                center(opts.center)
+//                zoom(opts.zoom!!)
+//            }
+//        } else {
+//            viewportState.easeTo(
+//                cameraOptions = opts,
+//                animationOptions = MapAnimationOptions.mapAnimationOptions {
+//                    duration(250)
+//                }
+//            )
+//        }
+//    }
+//
+//    MapboxMap(
+//        modifier = Modifier.fillMaxSize(),
+//        //composeMapInitOptions = composeInit,
+//        mapViewportState = viewportState,
+//        style = { MapboxStandardStyle() },
+//    )
+//
+//    LaunchedEffect(viewportState.cameraState) {
+//        val cam = viewportState.cameraState
+//        cam?.let {
+//            viewModel.setCamera(
+//                lat = cam.center.latitude().toFloat(),
+//                lon = cam.center.longitude().toFloat(),
+//                zoom = cam.zoom.toFloat()
+//            )
+//        }
+//    }
 }

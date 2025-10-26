@@ -53,6 +53,7 @@ import com.example.scrollbooker.components.core.sheet.Sheet
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.ui.search.components.SearchBusinessCard
+import com.example.scrollbooker.ui.search.components.SearchGoogleMap
 import com.example.scrollbooker.ui.search.components.SearchHeader
 import com.example.scrollbooker.ui.search.components.SearchSheetHeader
 import com.example.scrollbooker.ui.search.components.ServiceUiModel
@@ -143,7 +144,6 @@ fun SearchScreen(
 
     val scope = rememberCoroutineScope()
     var stage by rememberSaveable { mutableStateOf(SheetStage.HalfExpanded) }
-    val isMapReady by viewModel.isMapReady.collectAsState()
 
     val sheetState = rememberModalBottomSheetState()
 
@@ -216,6 +216,9 @@ fun SearchScreen(
             }
 
             Box(Modifier.fillMaxSize()) {
+                SearchGoogleMap(
+                    viewModel = viewModel
+                )
                 //MapSearch(viewModel = viewModel)
 
                 SearchHeader(

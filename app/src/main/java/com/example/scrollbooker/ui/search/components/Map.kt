@@ -31,47 +31,47 @@ import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportS
 fun Map(viewModel: SearchViewModel = viewModel()) {
     var isMapReady by remember { mutableStateOf(false) }
 
-    val lat by viewModel.latFlow.collectAsState()
-    val lon by viewModel.lonFlow.collectAsState()
-    val zoom by viewModel.zoomFlow.collectAsState()
-
-    val viewportState = rememberMapViewportState {
-        setCameraOptions {
-            center(Point.fromLngLat(lon.toDouble(), lat.toDouble()))
-            zoom(zoom.toDouble())
-        }
-    }
-
-    if (isMapReady) {
-        val mapViewportState = viewportState
-
-        MapboxMap(
-            modifier = Modifier.fillMaxSize(),
-            mapViewportState = mapViewportState
-            // Add other properties like styleUri = "mapbox://styles/mapbox/streets-v12",
-            // gestureSettings = ..., etc. as per your app
-        ) {
-            MapEffect(Unit) { mapView ->
-                val map = mapView.mapboxMap
-
-                map.addOnCameraChangeListener {
-                    val cam = map.cameraState
-                    viewModel.setCamera(
-                        lat = cam.center.latitude().toFloat(),
-                        lon = cam.center.longitude().toFloat(),
-                        zoom = cam.zoom.toFloat()
-                    )
-                // Save more if needed
-                }
-                map.addOnStyleLoadedListener {
-                    isMapReady = true
-                }
-            }
-            // Add your annotations, circles, etc. here if any
-        }
-    } else {
-        Box(Modifier.fillMaxSize()) {
-            CircularProgressIndicator(Modifier.align(Alignment.Center))
-        }
-    }
+//    val lat by viewModel.latFlow.collectAsState()
+//    val lon by viewModel.lonFlow.collectAsState()
+//    val zoom by viewModel.zoomFlow.collectAsState()
+//
+//    val viewportState = rememberMapViewportState {
+//        setCameraOptions {
+//            center(Point.fromLngLat(lon.toDouble(), lat.toDouble()))
+//            zoom(zoom.toDouble())
+//        }
+//    }
+//
+//    if (isMapReady) {
+//        val mapViewportState = viewportState
+//
+//        MapboxMap(
+//            modifier = Modifier.fillMaxSize(),
+//            mapViewportState = mapViewportState
+//            // Add other properties like styleUri = "mapbox://styles/mapbox/streets-v12",
+//            // gestureSettings = ..., etc. as per your app
+//        ) {
+//            MapEffect(Unit) { mapView ->
+//                val map = mapView.mapboxMap
+//
+//                map.addOnCameraChangeListener {
+//                    val cam = map.cameraState
+//                    viewModel.setCamera(
+//                        lat = cam.center.latitude().toFloat(),
+//                        lon = cam.center.longitude().toFloat(),
+//                        zoom = cam.zoom.toFloat()
+//                    )
+//                // Save more if needed
+//                }
+//                map.addOnStyleLoadedListener {
+//                    isMapReady = true
+//                }
+//            }
+//            // Add your annotations, circles, etc. here if any
+//        }
+//    } else {
+//        Box(Modifier.fillMaxSize()) {
+//            CircularProgressIndicator(Modifier.align(Alignment.Center))
+//        }
+//    }
 }

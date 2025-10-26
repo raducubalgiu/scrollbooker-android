@@ -41,7 +41,6 @@ fun BottomBarItem(
     }
 
     val painter = if(isSelected) tab.painterSolid else tab.painterOutline
-    val iconSize = if(tab.route == MainTab.Search.route) 35.dp else 27.5.dp
 
     Column(modifier = modifier
         .clickable(
@@ -70,7 +69,7 @@ fun BottomBarItem(
         ) {
             Box {
                 Icon(
-                    modifier = Modifier.size(iconSize),
+                    modifier = Modifier.size(27.5.dp),
                     painter = painterResource(painter),
                     contentDescription = null,
                     tint = contentColor,
@@ -78,7 +77,7 @@ fun BottomBarItem(
             }
         }
         Text(
-            text = if(tab.route == MainTab.Search.route) "" else tab.label,
+            text = tab.label,
             color = contentColor,
             fontSize = 12.sp
         )
