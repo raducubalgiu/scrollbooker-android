@@ -19,28 +19,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
+import com.example.scrollbooker.ui.search.sheets.SearchSheetActionEnum
 import com.example.scrollbooker.ui.theme.Divider
 
 data class ButtonFilter(
-    val title: String
+    val title: String,
+    val action: SearchSheetActionEnum
 )
 
 @Composable
 fun SearchSheetHeader(
     onMeasured: (Dp) -> Unit,
-    onClick: () -> Unit
+    onAction: (SearchSheetActionEnum) -> Unit
 ) {
     val density = LocalDensity.current
     val buttons = listOf(
-        ButtonFilter("Servicii"),
-        ButtonFilter("Pret"),
-        ButtonFilter("Sort"),
-        ButtonFilter("Rating")
+        ButtonFilter(title = stringResource(R.string.services), action = SearchSheetActionEnum.OPEN_SERVICES),
+        ButtonFilter(title = stringResource(R.string.price), action = SearchSheetActionEnum.OPEN_PRICE),
+        ButtonFilter(title = "Sort", action = SearchSheetActionEnum.OPEN_SORT),
+        ButtonFilter(title = "Rating", action = SearchSheetActionEnum.OPEN_RATINGS)
     )
 
     Box(modifier = Modifier
@@ -65,14 +69,13 @@ fun SearchSheetHeader(
                     .background(Divider)
             )
 
-            LazyRow(
-                modifier = Modifier.padding(top = BasePadding),
-                contentPadding = PaddingValues(horizontal = BasePadding)
-            ) {
+            Spacer(Modifier.height(BasePadding))
+
+            LazyRow(contentPadding = PaddingValues(horizontal = BasePadding)) {
                 itemsIndexed(buttons) { index, button ->
                     MainButtonOutlined(
                         title = button.title,
-                        onClick = onClick,
+                        onClick = { onAction(button.action) },
                         showTrailingIcon = true
                     )
 

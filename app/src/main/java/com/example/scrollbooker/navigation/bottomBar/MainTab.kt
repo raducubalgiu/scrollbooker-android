@@ -1,38 +1,44 @@
 package com.example.scrollbooker.navigation.bottomBar
 
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import com.example.scrollbooker.R
 import com.example.scrollbooker.navigation.routes.MainRoute
 
 sealed class MainTab(
     val route: String,
-    val label: String,
+    @StringRes val label: Int,
     @DrawableRes val painterSolid: Int,
     @DrawableRes val painterOutline: Int
 ) {
     object Feed: MainTab(
-        MainRoute.Feed.route, "Acasa",
+        route = MainRoute.Feed.route,
+        label = R.string.home,
         painterSolid = R.drawable.ic_home_solid,
         painterOutline = R.drawable.ic_home_outline,
     )
     object Inbox: MainTab(
-        MainRoute.Inbox.route, "Inbox",
+        route = MainRoute.Inbox.route,
+        label = R.string.inbox,
         painterSolid = R.drawable.ic_notifications_solid,
         painterOutline = R.drawable.ic_notifications_outline
     )
     object Search: MainTab(
-        MainRoute.Search.route, "Search",
+        route = MainRoute.Search.route,
+        label = R.string.search,
         painterSolid = R.drawable.ic_search_solid,
         painterOutline = R.drawable.ic_search
     )
     object Appointments: MainTab(
-        MainRoute.Appointments.route, "Comenzi",
+        route = MainRoute.Appointments.route,
+        label = R.string.bookings,
         painterSolid = R.drawable.ic_clipboard_solid,
         painterOutline = R.drawable.ic_clipboard_outline
     )
     object Profile: MainTab(
-        MainRoute.MyProfile.route, "Profil",
-        painterSolid = R.drawable.ic_person_solid,
+        route = MainRoute.MyProfile.route,
+        label = R.string.profile,
+        painterSolid = R.drawable.ic_person_outline,
         painterOutline = R.drawable.ic_person_outline
     )
 

@@ -24,48 +24,48 @@ fun SearchGoogleMap(
     modifier: Modifier = Modifier,
     viewModel: SearchViewModel
 ) {
-    val vmCamera by viewModel.camera.collectAsState()
-    val isMapLoaded by viewModel.isMapLoaded.collectAsState()
-
-    val cameraState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(
-            LatLng(vmCamera.lat, vmCamera.lng),
-            vmCamera.zoom
-        ).let { pos ->
-            CameraPosition(pos.target, pos.zoom, vmCamera.tilt, vmCamera.bearing)
-        }
-    }
-
-    LaunchedEffect(vmCamera) {
-        val target = LatLng(vmCamera.lat, vmCamera.lng)
-        val desired = CameraPosition(target, vmCamera.zoom, vmCamera.tilt, vmCamera.bearing)
-        if(cameraState.position != desired) {
-            cameraState.animate(CameraUpdateFactory.newCameraPosition(desired))
-        }
-    }
-
-    LaunchedEffect(cameraState) {
-        snapshotFlow { cameraState.isMoving }
-            .collect { moving ->
-                viewModel.updateFromMap(cameraState.position)
-            }
-    }
-
-    GoogleMap(
-        modifier = Modifier.fillMaxSize(),
-        cameraPositionState = cameraState,
-        onMapLoaded = {
-            viewModel.onMapLoaded()
-        }
-    ) {
-        Marker(
-            state = rememberMarkerState(position=LatLng(44.450507, 25.993102)),
-            title = "Singapore",
-            snippet = "Marker in Singapore"
-        )
-    }
-
-    if(!isMapLoaded) {
-        Box(Modifier.fillMaxSize().background(SurfaceBG))
-    }
+//    val vmCamera by viewModel.camera.collectAsState()
+//    val isMapLoaded by viewModel.isMapLoaded.collectAsState()
+//
+//    val cameraState = rememberCameraPositionState {
+//        position = CameraPosition.fromLatLngZoom(
+//            LatLng(vmCamera.lat, vmCamera.lng),
+//            vmCamera.zoom
+//        ).let { pos ->
+//            CameraPosition(pos.target, pos.zoom, vmCamera.tilt, vmCamera.bearing)
+//        }
+//    }
+//
+//    LaunchedEffect(vmCamera) {
+//        val target = LatLng(vmCamera.lat, vmCamera.lng)
+//        val desired = CameraPosition(target, vmCamera.zoom, vmCamera.tilt, vmCamera.bearing)
+//        if(cameraState.position != desired) {
+//            cameraState.animate(CameraUpdateFactory.newCameraPosition(desired))
+//        }
+//    }
+//
+//    LaunchedEffect(cameraState) {
+//        snapshotFlow { cameraState.isMoving }
+//            .collect { moving ->
+//                viewModel.updateFromMap(cameraState.position)
+//            }
+//    }
+//
+//    GoogleMap(
+//        modifier = Modifier.fillMaxSize(),
+//        cameraPositionState = cameraState,
+//        onMapLoaded = {
+//            viewModel.onMapLoaded()
+//        }
+//    ) {
+//        Marker(
+//            state = rememberMarkerState(position=LatLng(44.450507, 25.993102)),
+//            title = "Singapore",
+//            snippet = "Marker in Singapore"
+//        )
+//    }
+//
+//    if(!isMapLoaded) {
+//        Box(Modifier.fillMaxSize().background(SurfaceBG))
+//    }
 }
