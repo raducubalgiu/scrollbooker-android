@@ -111,7 +111,7 @@ fun SearchResultsList(modifier: Modifier = Modifier) {
         state = listState,
         modifier = Modifier.fillMaxSize(),
         //userScrollEnabled = stage == SheetStage.Expanded,
-        contentPadding = PaddingValues(bottom = BasePadding),
+        //contentPadding = PaddingValues(bottom = BasePadding),
         overscrollEffect = null
     ) {
         item {

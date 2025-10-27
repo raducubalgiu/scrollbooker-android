@@ -311,4 +311,8 @@
     <string name="bookThisService">Rezervă acest serviciu</string>
     <string name="bookNow">Rezervă acum</string>
     <string name="changePhoto">Schimbă poza</string>
+    <string name="distance">Distanță</string>
+    <string name="sort">Sort</string>
+    <string name="maximumPrice">Prețul maxim</string>
+    <string name="maximumDistance">Distanța maximă</string>
 </resources>

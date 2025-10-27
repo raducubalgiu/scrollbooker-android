@@ -1,5 +1,6 @@
 package com.example.scrollbooker.ui.search.components
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,9 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,7 +34,7 @@ import com.example.scrollbooker.ui.search.sheets.SearchSheetActionEnum
 import com.example.scrollbooker.ui.theme.Divider
 
 data class ButtonFilter(
-    val title: String,
+    @StringRes val title: Int,
     val action: SearchSheetActionEnum
 )
 
@@ -40,11 +44,20 @@ fun SearchSheetHeader(
     onAction: (SearchSheetActionEnum) -> Unit
 ) {
     val density = LocalDensity.current
+
+    val latestOnMeasured by rememberUpdatedState(onMeasured)
+    val latestOnAction by rememberUpdatedState(onAction)
+
+    val sendAction: (SearchSheetActionEnum) -> Unit = remember {
+        {  action -> latestOnAction(action) }
+    }
+
     val buttons = listOf(
-        ButtonFilter(title = stringResource(R.string.services), action = SearchSheetActionEnum.OPEN_SERVICES),
-        ButtonFilter(title = stringResource(R.string.price), action = SearchSheetActionEnum.OPEN_PRICE),
-        ButtonFilter(title = "Sort", action = SearchSheetActionEnum.OPEN_SORT),
-        ButtonFilter(title = "Rating", action = SearchSheetActionEnum.OPEN_RATINGS)
+        ButtonFilter(title = R.string.services, action = SearchSheetActionEnum.OPEN_SERVICES),
+        ButtonFilter(title = R.string.price, action = SearchSheetActionEnum.OPEN_PRICE),
+        ButtonFilter(title = R.string.sort, action = SearchSheetActionEnum.OPEN_SORT),
+        ButtonFilter(title = R.string.distance, action = SearchSheetActionEnum.OPEN_DISTANCE),
+        ButtonFilter(title = R.string.reviews, action = SearchSheetActionEnum.OPEN_RATINGS)
     )
 
     Box(modifier = Modifier
@@ -52,7 +65,7 @@ fun SearchSheetHeader(
         .wrapContentHeight()
         .onGloballyPositioned {
             val h = with(density) { it.size.height.toDp() }
-            onMeasured(h)
+            latestOnMeasured(h)
         },
         contentAlignment = Alignment.TopCenter
     ) {
@@ -74,8 +87,8 @@ fun SearchSheetHeader(
             LazyRow(contentPadding = PaddingValues(horizontal = BasePadding)) {
                 itemsIndexed(buttons) { index, button ->
                     MainButtonOutlined(
-                        title = button.title,
-                        onClick = { onAction(button.action) },
+                        title = stringResource(button.title),
+                        onClick = { sendAction(button.action) },
                         showTrailingIcon = true
                     )
 

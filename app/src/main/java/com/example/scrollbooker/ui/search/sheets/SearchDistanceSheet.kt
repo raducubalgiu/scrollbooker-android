@@ -1,4 +1,5 @@
 package com.example.scrollbooker.ui.search.sheets
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -7,7 +8,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,20 +30,19 @@ import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.titleMedium
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchPriceSheet(
+fun SearchDistanceSheet(
     viewModel: SearchViewModel,
     onClose: () -> Unit
 ) {
     SearchSheetsHeader(
-        title = stringResource(R.string.price),
+        title = stringResource(R.string.distance),
         onClose = onClose
     )
 
     Spacer(Modifier.height(BasePadding))
 
-    var value by remember { mutableFloatStateOf(1400f) }
+    var value by remember { mutableFloatStateOf(1500f) }
 
     Row(
         modifier = Modifier
@@ -53,13 +52,13 @@ fun SearchPriceSheet(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = stringResource(R.string.maximumPrice),
+            text = "Distanta maxima",
             fontWeight = FontWeight.SemiBold,
             style = titleMedium
         )
 
         Text(
-            text = "${value.toInt()} RON",
+            text = "${value.toInt()} lm",
             style = bodyLarge
         )
     }
@@ -68,7 +67,7 @@ fun SearchPriceSheet(
         modifier = Modifier.padding(SpacingXL),
         value = value,
         onValueChange = { value = it },
-        valueRange = 0f..1400f
+        valueRange = 0f..1500f
     )
 
     Spacer(Modifier.height(SpacingXL))

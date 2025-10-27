@@ -1,10 +1,13 @@
 package com.example.scrollbooker.ui.search.sheets
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import com.example.scrollbooker.ui.search.SearchViewModel
 
 @Composable
-fun SearchSortSheet(onClose: () -> Unit) {
+fun SearchSortSheet(
+    viewModel: SearchViewModel,
+    onClose: () -> Unit
+) {
     SearchSheetsHeader(
         title = "Sort",
         onClose = onClose

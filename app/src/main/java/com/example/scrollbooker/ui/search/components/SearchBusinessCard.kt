@@ -97,33 +97,33 @@ fun SearchBusinessCard(
                 modifier = Modifier.matchParentSize()
             )
 
-            if(shouldShowVideoSurface) {
-                AndroidView(
-                    modifier = Modifier
-                        .matchParentSize()
-                        .graphicsLayer { alpha = videoAlpha },
-                    factory = { context ->
-                        PlayerView(context).apply {
-                            player = viewModel.player
-                            useController = false
-                            controllerAutoShow = false
-                            controllerShowTimeoutMs = 0
-
-                            setShowBuffering(SHOW_BUFFERING_NEVER)
-
-                            layoutParams = ViewGroup.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.MATCH_PARENT,
-                            )
-                        }
-                    },
-                    update = { playerView ->
-                        playerView.player = viewModel.player
-                        playerView.resizeMode =
-                            AspectRatioFrameLayout.RESIZE_MODE_FILL
-                    }
-                )
-            }
+//            if(shouldShowVideoSurface) {
+//                AndroidView(
+//                    modifier = Modifier
+//                        .matchParentSize()
+//                        .graphicsLayer { alpha = videoAlpha },
+//                    factory = { context ->
+//                        PlayerView(context).apply {
+//                            player = viewModel.player
+//                            useController = false
+//                            controllerAutoShow = false
+//                            controllerShowTimeoutMs = 0
+//
+//                            setShowBuffering(SHOW_BUFFERING_NEVER)
+//
+//                            layoutParams = ViewGroup.LayoutParams(
+//                                ViewGroup.LayoutParams.MATCH_PARENT,
+//                                ViewGroup.LayoutParams.MATCH_PARENT,
+//                            )
+//                        }
+//                    },
+//                    update = { playerView ->
+//                        playerView.player = viewModel.player
+//                        playerView.resizeMode =
+//                            AspectRatioFrameLayout.RESIZE_MODE_FILL
+//                    }
+//                )
+//            }
 
             Box(modifier = Modifier
                 .fillMaxSize()

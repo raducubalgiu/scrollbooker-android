@@ -15,7 +15,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -33,22 +35,21 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
-import com.example.scrollbooker.ui.search.SheetStage
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.titleMedium
-import kotlinx.coroutines.Job
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchHeader(
     modifier: Modifier = Modifier,
     headline: String,
     subHeadline: String,
-    sheetValue: SheetStage,
-    onMapToggle: () -> Job
+    sheetValue: SheetValue,
+    onMapToggle: () -> Unit
 ) {
-    val isSheetCollapsed = sheetValue == SheetStage.Collapsed
+    val isSheetExpanded = sheetValue == SheetValue.Expanded
     val interactionSource = remember { MutableInteractionSource() }
 
     Column(
@@ -122,7 +123,7 @@ fun SearchHeader(
                         .padding(SpacingM)
                         .size(22.5.dp),
                     painter = painterResource(
-                        if(isSheetCollapsed) R.drawable.ic_map_outline
+                        if(isSheetExpanded) R.drawable.ic_map_outline
                         else R.drawable.ic_list_bullet_outline
                     ),
                     contentDescription = null

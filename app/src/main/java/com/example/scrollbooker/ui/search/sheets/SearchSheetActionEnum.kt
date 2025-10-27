@@ -4,5 +4,7 @@ enum class SearchSheetActionEnum {
     OPEN_SERVICES,
     OPEN_PRICE,
     OPEN_SORT,
-    OPEN_RATINGS
+    OPEN_DISTANCE,
+    OPEN_RATINGS,
+    NONE
 }

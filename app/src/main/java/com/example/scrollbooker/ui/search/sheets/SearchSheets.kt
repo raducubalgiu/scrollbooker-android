@@ -8,14 +8,16 @@ import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.example.scrollbooker.ui.search.SearchViewModel
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchSheets(
+    viewModel: SearchViewModel,
     sheetState: SheetState,
-    sheetContent: SearchSheetsContent,
+    sheetAction: SearchSheetActionEnum,
     onClose: () -> Unit
 ) {
     ModalBottomSheet(
@@ -30,20 +32,13 @@ fun SearchSheets(
             shouldDismissOnBackPress = false
         ),
     ) {
-        when(val content = sheetContent) {
-            is SearchSheetsContent.ServicesSheet -> {
-                SearchServicesSheet(onClose)
-            }
-            is SearchSheetsContent.PriceSheet -> {
-                SearchPriceSheet(onClose)
-            }
-            is SearchSheetsContent.SortSheet -> {
-                SearchSortSheet(onClose)
-            }
-            is SearchSheetsContent.RatingSheet -> {
-                SearchRatingSheet(onClose)
-            }
-            is SearchSheetsContent.None -> Unit
+        when(sheetAction) {
+            SearchSheetActionEnum.OPEN_SERVICES -> SearchServicesSheet(viewModel, onClose)
+            SearchSheetActionEnum.OPEN_PRICE -> SearchPriceSheet(viewModel, onClose)
+            SearchSheetActionEnum.OPEN_SORT -> SearchSortSheet(viewModel, onClose)
+            SearchSheetActionEnum.OPEN_DISTANCE -> SearchDistanceSheet(viewModel, onClose)
+            SearchSheetActionEnum.OPEN_RATINGS -> SearchRatingSheet(viewModel, onClose)
+            SearchSheetActionEnum.NONE -> Unit
         }
     }
 }

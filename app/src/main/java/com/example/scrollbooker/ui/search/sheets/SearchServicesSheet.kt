@@ -5,9 +5,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.example.scrollbooker.ui.search.SearchViewModel
 
 @Composable
-fun SearchServicesSheet(onClose: () -> Unit) {
+fun SearchServicesSheet(
+    viewModel: SearchViewModel,
+    onClose: () -> Unit
+) {
     Column(modifier = Modifier
         .fillMaxSize()
         .statusBarsPadding()
