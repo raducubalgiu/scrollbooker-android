@@ -36,4 +36,24 @@ class SearchViewModel @Inject constructor(): ViewModel() {
     fun updateCamera(camera: CameraPositionState) {
         _cameraPosition.value = camera
     }
+
+    private val _maximumDistance = MutableStateFlow<Float>(50f)
+    val maximumDistance: StateFlow<Float> = _maximumDistance.asStateFlow()
+
+    private val _maximumPrice = MutableStateFlow<Float>(1400f)
+    val maximumPrice: StateFlow<Float> = _maximumPrice.asStateFlow()
+
+    private val _distance = MutableStateFlow<Float>(50f)
+    val distance: StateFlow<Float> = _distance.asStateFlow()
+
+    private val _price = MutableStateFlow<Float>(1400f)
+    val price: StateFlow<Float> = _price.asStateFlow()
+
+    fun setDistance(distance: Float) {
+        _distance.value = distance
+    }
+
+    fun setPrice(price: Float) {
+        _price.value = price
+    }
 }

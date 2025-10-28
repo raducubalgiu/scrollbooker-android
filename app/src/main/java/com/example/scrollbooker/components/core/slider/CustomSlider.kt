@@ -30,8 +30,8 @@ fun CustomSlider(
     value: Float,
     onValueChange: (Float) -> Unit,
     valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
-    trackHeight: Dp = 8.dp,
-    thumbRadius: Dp = 10.dp,
+    trackHeight: Dp = 6.dp,
+    thumbRadius: Dp = 8.dp,
     onDragEnd: (() -> Unit)? = null
 ) {
     var widthPx by remember { mutableFloatStateOf(1f) }
