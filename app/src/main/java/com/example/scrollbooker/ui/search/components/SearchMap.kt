@@ -15,15 +15,22 @@ import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.extension.compose.DisposableMapEffect
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
+import com.mapbox.maps.extension.compose.annotation.ViewAnnotation
+import com.mapbox.maps.viewannotation.geometry
+import com.mapbox.maps.viewannotation.viewAnnotationOptions
+import com.example.scrollbooker.components.core.shimmer.rememberShimmerBrush
+import com.example.scrollbooker.ui.search.BusinessAnnotation
+import com.example.scrollbooker.ui.search.components.markers.SearchMarkerDot
 
 @Composable
-fun MapSearch(
+fun SearchMap(
     viewModel: SearchViewModel,
-    modifier: Modifier = Modifier
+    dummyAnnotations: List<BusinessAnnotation>
 ) {
     val cameraPosition by viewModel.cameraPosition.collectAsState()
     val isMapReady by viewModel.isMapReady.collectAsState()
     val isStyleLoaded by viewModel.isStyleLoaded.collectAsState()
+    val brush = rememberShimmerBrush()
 
     val viewportState = rememberMapViewportState {
         setCameraOptions {
@@ -45,22 +52,17 @@ fun MapSearch(
         )
     }
 
+    val isReady = isMapReady && isStyleLoaded
+
     Box(modifier = Modifier
         .fillMaxSize()
         .background(SurfaceBG)
     ) {
-        if(!isMapReady) {
+        if(!isReady) {
             Box(modifier = Modifier
                 .matchParentSize()
                 .background(SurfaceBG)
-                .zIndex(12f)
-            )
-        }
-
-        if(!isStyleLoaded) {
-            Box(modifier = Modifier
-                .matchParentSize()
-                .background(SurfaceBG)
+                .background(brush)
                 .zIndex(12f)
             )
         }
@@ -72,19 +74,19 @@ fun MapSearch(
             mapViewportState = viewportState,
             scaleBar = {},
         ) {
-//            ViewAnnotation(
-//                options = viewAnnotationOptions {
-//                    geometry(Point.fromLngLat(longitude, latitude))
-//                    allowOverlap(true)
-//                }
-//            ) {
-//                Icon(
-//                    modifier = Modifier.size(30.dp),
-//                    painter = painterResource(R.drawable.ic_location_solid),
-//                    contentDescription = null,
-//                    tint = Primary
-//                )
-//            }
+            dummyAnnotations.map { a ->
+                ViewAnnotation(
+                    options = viewAnnotationOptions {
+                        geometry(Point.fromLngLat(
+                            a.longitude.toDouble(),
+                            a.latitude.toDouble())
+                        )
+                        allowOverlap(true)
+                    }
+                ) {
+                    SearchMarkerDot(category = a.businessCategory)
+                }
+            }
 
             DisposableMapEffect(Unit) { mapView ->
                 viewModel.setMapReady(false)

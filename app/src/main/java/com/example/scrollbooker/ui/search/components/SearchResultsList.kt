@@ -2,7 +2,6 @@ package com.example.scrollbooker.ui.search.components
 
 import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.util.UnstableApi
-import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.ui.search.SearchPlayerViewModel
 import com.example.scrollbooker.ui.theme.titleMedium
@@ -32,59 +30,16 @@ data class SearchBusinessCardModel(
     val id: Int,
     val title: String,
     val url: String,
-    val coverUrl: String
-)
-
-val dummyBusinesses = listOf(
-    SearchBusinessCardModel(
-        id=1,
-        title="Video 1",
-        url = "https://media.scrollbooker.ro/business-video-1.mp4",
-        coverUrl = "https://media.scrollbooker.ro/business-video-1-cover.jpeg"
-    ),
-    SearchBusinessCardModel(
-        id=2, title="Video 2",
-        url = "https://media.scrollbooker.ro/business-video-2.mp4",
-        coverUrl = "https://media.scrollbooker.ro/business-video-2-cover.jpeg"
-    ),
-    SearchBusinessCardModel(
-        id=3, title="Video 3",
-        url = "https://media.scrollbooker.ro/business-video-3.mp4",
-        coverUrl = "https://media.scrollbooker.ro/business-video-3-cover.jpeg"
-    ),
-    SearchBusinessCardModel(
-        id=4, title="Video 4",
-        url = "https://media.scrollbooker.ro/business-video-4.mp4",
-        coverUrl = "https://media.scrollbooker.ro/business-video-4-cover.jpeg"
-    ),
-    SearchBusinessCardModel(
-        id=5,
-        title="Video 5",
-        url = "https://media.scrollbooker.ro/business-video-5.mp4",
-        coverUrl = "https://media.scrollbooker.ro/business-video-5-cover.jpeg"
-    ),
-    SearchBusinessCardModel(
-        id=6,
-        title="Video 6",
-        url = "https://media.scrollbooker.ro/business-video-6.mp4",
-        coverUrl = "https://media.scrollbooker.ro/business-video-6-cover.jpeg"
-    ),
-    SearchBusinessCardModel(
-        id=7,
-        title="Video 7",
-        url = "https://media.scrollbooker.ro/business-video-7.mp4",
-        coverUrl = "https://media.scrollbooker.ro/business-video-7-cover.jpeg"
-    ),
-    SearchBusinessCardModel(
-        id=8, title="Video 8",
-        url = "https://media.scrollbooker.ro/business-video-8.mp4",
-        coverUrl = "https://media.scrollbooker.ro/business-video-8-cover.jpeg"
-    ),
+    val coverUrl: String,
+    val longitude: Float,
+    val latitude: Float
 )
 
 @OptIn(UnstableApi::class)
 @Composable
-fun SearchResultsList(modifier: Modifier = Modifier) {
+fun SearchResultsList(
+    dummyBusinesses: List<SearchBusinessCardModel>
+) {
     val videoViewModel: SearchPlayerViewModel = hiltViewModel()
     val listState = rememberLazyListState()
 
@@ -109,10 +64,7 @@ fun SearchResultsList(modifier: Modifier = Modifier) {
 
     LazyColumn(
         state = listState,
-        modifier = Modifier.fillMaxSize(),
-        //userScrollEnabled = stage == SheetStage.Expanded,
-        //contentPadding = PaddingValues(bottom = BasePadding),
-        overscrollEffect = null
+        modifier = Modifier.fillMaxSize()
     ) {
         item {
             Box(modifier = Modifier

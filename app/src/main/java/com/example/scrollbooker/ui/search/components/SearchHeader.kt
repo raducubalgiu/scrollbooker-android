@@ -47,7 +47,8 @@ fun SearchHeader(
     headline: String,
     subHeadline: String,
     sheetValue: SheetValue,
-    onMapToggle: () -> Unit
+    onMapToggle: () -> Unit,
+    onClick: () -> Unit
 ) {
     val isSheetExpanded = sheetValue == SheetValue.Expanded
     val interactionSource = remember { MutableInteractionSource() }
@@ -64,6 +65,7 @@ fun SearchHeader(
             )
             .clip(shape = CircleShape)
             .background(Background)
+            .clickable { onClick() }
             .then(modifier)
     ) {
         Row(
