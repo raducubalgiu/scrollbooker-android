@@ -38,16 +38,6 @@ fun ProfileLocationDistance(distance: Float) {
             tint = Color.Gray
         )
         Spacer(Modifier.width(4.dp))
-        Text(text =
-            buildAnnotatedString {
-                append("${stringResource(R.string.at)} ")
-                withStyle(SpanStyle(
-                    fontWeight = FontWeight.Bold
-                )) {
-                    append("${distance}km")
-                }
-                append(" ${stringResource(R.string.fromYou)}")
-            }
-        )
+        Text(text = stringResource(R.string.distanceText, distance))
     }
 }

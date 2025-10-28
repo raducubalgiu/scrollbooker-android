@@ -117,7 +117,7 @@ fun BusinessPhotosTab(
             )
             Spacer(Modifier.width(SpacingS))
             Text(
-                text = "la 5km de tine",
+                text = stringResource(R.string.distanceText, 5),
                 color = Color.Gray,
                 style = bodyLarge,
                 fontSize = 17.sp

@@ -59,25 +59,24 @@ fun LocationSection(modifier: Modifier = Modifier) {
                 val location = business.data
 
                 Column {
-                    location.distance?.let {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_location_outline),
-                                contentDescription = null,
-                                tint = Primary
-                            )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_location_outline),
+                            contentDescription = null,
+                            tint = Primary
+                        )
 
-                            Spacer(Modifier.width(SpacingS))
+                        Spacer(Modifier.width(SpacingS))
 
-                            Text(
-                                text = "la $it km de tine",
-                                style = titleMedium,
-                                fontWeight = FontWeight.SemiBold
-                            )
-
-                            Spacer(Modifier.height(SpacingM))
-                        }
+                        Text(
+                            text = location.distance?.let { stringResource(R.string.distanceText, 10) }
+                                ?: stringResource(R.string.activateLocationForSeeTheDistance),
+                            style = titleMedium,
+                            fontWeight = FontWeight.SemiBold
+                        )
                     }
+
+                    Spacer(Modifier.height(SpacingM))
 
                     Text(
                         text = "${stringResource(R.string.address)}: ${location.address}",
@@ -121,7 +120,7 @@ fun LocationSection(modifier: Modifier = Modifier) {
                     Spacer(Modifier.height(SpacingM))
 
                     MainButton(
-                        title = "Directii de navigare",
+                        title = stringResource(R.string.navigationDirections),
                         onClick = {},
                         colors = ButtonDefaults.buttonColors(
                             containerColor = SurfaceBG,
