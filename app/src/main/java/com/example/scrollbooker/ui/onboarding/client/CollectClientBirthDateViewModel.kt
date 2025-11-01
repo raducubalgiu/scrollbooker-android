@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
-import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectClientBirthDateUseCase
+import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectClientBirthdateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CollectClientBirthDateViewModel @Inject constructor(
-    private val collectClientBirthDateUseCase: CollectClientBirthDateUseCase
+    private val collectClientBirthDateUseCase: CollectClientBirthdateUseCase
 ): ViewModel() {
     val selectedDay = MutableStateFlow<String?>(null)
     val selectedMonth = MutableStateFlow<String?>(null)

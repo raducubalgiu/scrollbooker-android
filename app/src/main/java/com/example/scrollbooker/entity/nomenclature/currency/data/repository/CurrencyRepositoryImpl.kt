@@ -1,6 +1,4 @@
 package com.example.scrollbooker.entity.nomenclature.currency.data.repository
-import com.example.scrollbooker.entity.auth.data.mappers.toDomain
-import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.nomenclature.currency.data.mapper.toDomain
 import com.example.scrollbooker.entity.nomenclature.currency.data.remote.CurrenciesApiService
 import com.example.scrollbooker.entity.nomenclature.currency.data.remote.UserCurrencyUpdateRequest
@@ -19,9 +17,9 @@ class CurrencyRepositoryImpl @Inject constructor(
        apiService.getUserCurrencies(userId).map { it.toDomain() }
     }
 
-    override suspend fun updateUserCurrencies(currencyIds: List<Int>): AuthState {
+    override suspend fun updateUserCurrencies(currencyIds: List<Int>) {
         val request = UserCurrencyUpdateRequest(currencyIds)
 
-        return apiService.updateUserCurrencies(request).toDomain()
+        return apiService.updateUserCurrencies(request)
     }
 }

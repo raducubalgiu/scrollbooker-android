@@ -13,4 +13,5 @@ interface OnboardingRepository {
     suspend fun collectBusinessServices(serviceIds: List<Int>): AuthState
     suspend fun collectBusinessSchedules(schedules: List<Schedule>): AuthState
     suspend fun collectBusinessHasEmployees(hasEmployees: Boolean): AuthState
+    suspend fun collectBusinessCurrencies(currencyIds: List<Int>): AuthState
 }

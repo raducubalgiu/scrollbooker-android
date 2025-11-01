@@ -75,5 +75,6 @@ data class BusinessCoordinatesDto(
 
 data class AppointmentBusinessDto(
     val address: String,
-    val coordinates: BusinessCoordinatesDto
+    val coordinates: BusinessCoordinatesDto,
+    val mapUrl: String?
 )

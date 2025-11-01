@@ -16,6 +16,7 @@ enum class RegistrationStepEnum(val key: String) {
     COLLECT_BUSINESS_SERVICES("collect_business_services"),
     COLLECT_BUSINESS_SCHEDULES("collect_business_schedules"),
     COLLECT_BUSINESS_HAS_EMPLOYEES("collect_business_has_employees"),
+    COLLECT_BUSINESS_CURRENCIES("collect_business_currencies"),
     COLLECT_BUSINESS_VALIDATION("collect_business_validation");
 
     companion object {

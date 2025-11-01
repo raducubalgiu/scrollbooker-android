@@ -65,7 +65,8 @@ fun ProductCard(
                     )
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            text = "Femei",
+                            text = "${product.duration}min",
+                            style = bodyLarge,
                             color = Color.Gray
                         )
                         Text(
@@ -73,11 +74,19 @@ fun ProductCard(
                             text = "\u2022",
                             color = Color.Gray
                         )
-                        Text(
-                            text = "${product.duration}min",
-                            style = bodyLarge,
-                            color = Color.Gray
-                        )
+                        product.subFilters.mapIndexed { i, subFilter ->
+                            Text(
+                                text = subFilter.name,
+                                color = Color.Gray
+                            )
+                            if(i < product.subFilters.size - 1) {
+                                Text(
+                                    modifier = Modifier.padding(horizontal = 5.dp),
+                                    text = "\u2022",
+                                    color = Color.Gray
+                                )
+                            }
+                        }
                     }
 
                     Spacer(Modifier.height(SpacingS))

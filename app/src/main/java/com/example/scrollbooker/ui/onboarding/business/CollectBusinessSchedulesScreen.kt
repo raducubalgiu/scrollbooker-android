@@ -24,7 +24,6 @@ import com.example.scrollbooker.ui.myBusiness.mySchedules.components.ScheduleRow
 @Composable
 fun CollectBusinessSchedulesScreen(
     viewModel: CollectBusinessSchedulesViewModel,
-    onBack: () -> Unit,
     onNextOrSave: () -> Unit
 ) {
     val state by viewModel.schedulesState.collectAsState()
@@ -36,7 +35,6 @@ fun CollectBusinessSchedulesScreen(
         buttonTitle = stringResource(R.string.nextStep),
         isEnabled = isSaving != FeatureState.Loading,
         isLoading = isSaving is FeatureState.Loading,
-        onBack = onBack,
         onNext = onNextOrSave
     ) {
         Column(modifier = Modifier

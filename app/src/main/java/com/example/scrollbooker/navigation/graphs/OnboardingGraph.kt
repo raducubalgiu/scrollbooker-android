@@ -13,6 +13,8 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.navigation.routes.OnboardingRoute
 import com.example.scrollbooker.ui.auth.AuthViewModel
 import com.example.scrollbooker.ui.myBusiness.myBusinessLocation.MyBusinessLocationViewModel
+import com.example.scrollbooker.ui.onboarding.business.CollectBusinessCurrenciesScreen
+import com.example.scrollbooker.ui.onboarding.business.CollectBusinessCurrenciesViewModel
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessDetailsScreen
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessGalleryScreen
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessHasEmployeesScreen
@@ -188,7 +190,6 @@ fun NavGraphBuilder.onBoardingGraph(
         CollectBusinessServicesScreen(
             viewModel = viewModel,
             buttonTitle = buttonTitle,
-            onBack = { navController.navigate(OnboardingRoute.CollectBusinessLocation.route) },
             onNextOrSave = {
                 scope.launch {
                     val authState = viewModel.updateBusinessServices()
@@ -206,7 +207,6 @@ fun NavGraphBuilder.onBoardingGraph(
 
         CollectBusinessSchedulesScreen(
             viewModel = viewModel,
-            onBack = { navController.navigate(OnboardingRoute.CollectBusinessServices.route) },
             onNextOrSave = {
                 scope.launch {
                     val authState = viewModel.updateSchedules()
@@ -227,6 +227,23 @@ fun NavGraphBuilder.onBoardingGraph(
             onNext = {
                 scope.launch {
                     val authState = viewModel.updateHasEmployees()
+                    if(authState != null) {
+                        authViewModel.updateAuthState(authState)
+                    }
+                }
+            }
+        )
+    }
+
+    composable(OnboardingRoute.CollectBusinessCurrencies.route) { backStackEntry ->
+        val scope = rememberCoroutineScope()
+        val viewModel: CollectBusinessCurrenciesViewModel = hiltViewModel(backStackEntry)
+
+        CollectBusinessCurrenciesScreen(
+            viewModel = viewModel,
+            onNext = {
+                scope.launch {
+                    val authState = viewModel.collectBusinessCurrencies()
                     if(authState != null) {
                         authViewModel.updateAuthState(authState)
                     }

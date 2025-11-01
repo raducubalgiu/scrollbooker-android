@@ -3,9 +3,13 @@ package com.example.scrollbooker.ui.search.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.scrollbooker.ui.search.CameraPositionState
 import com.example.scrollbooker.ui.search.SearchViewModel
@@ -52,19 +56,30 @@ fun SearchMap(
         )
     }
 
-    val isReady = isMapReady && isStyleLoaded
-
     Box(modifier = Modifier
         .fillMaxSize()
         .background(SurfaceBG)
     ) {
-        if(!isReady) {
+        if(!isMapReady) {
             Box(modifier = Modifier
                 .matchParentSize()
                 .background(SurfaceBG)
-                .background(brush)
-                .zIndex(12f)
-            )
+                .zIndex(12f),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(Modifier.size(30.dp))
+            }
+        }
+
+        if(!isStyleLoaded) {
+            Box(modifier = Modifier
+                .matchParentSize()
+                .background(SurfaceBG)
+                .zIndex(12f),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(Modifier.size(30.dp))
+            }
         }
 
         MapboxMap(

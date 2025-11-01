@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface AppointmentRepository {
     fun getUserAppointments(asCustomer: Boolean?): Flow<PagingData<Appointment>>
+    suspend fun getAppointment(appointmentId: Int): Appointment
     suspend fun createScrollBookerAppointment(appointmentCreate: AppointmentScrollBookerCreate)
     suspend fun createOwnClientAppointment(appointmentCreate: AppointmentOwnClientCreate)
     suspend fun blockAppointments(request: AppointmentBlockRequest)

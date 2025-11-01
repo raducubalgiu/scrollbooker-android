@@ -10,7 +10,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface BusinessApiService {
-    @GET("/businesses/search")
+    @GET("/places")
     suspend fun searchBusinessAddress(
         @Query("query") query: String
     ): List<BusinessAddressDto>

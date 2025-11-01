@@ -18,5 +18,5 @@ interface CurrenciesApiService {
     @PUT("users/update-currencies")
     suspend fun updateUserCurrencies(
         @Body request: UserCurrencyUpdateRequest
-    ): AuthStateDto
+    )
 }

@@ -1,4 +1,5 @@
-package com.example.scrollbooker.ui.myBusiness.myCurrencies
+package com.example.scrollbooker.ui.onboarding.business
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,18 +18,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.inputs.InputCheckbox
-import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.FormLayout
 import com.example.scrollbooker.components.core.layout.LoadingScreen
+import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.ui.theme.Divider
 
 @Composable
-fun MyCurrenciesScreen(
-    viewModel: MyCurrenciesViewModel,
-    buttonTitle: String,
-    onBack: () -> Unit
+fun CollectBusinessCurrenciesScreen(
+    viewModel: CollectBusinessCurrenciesViewModel,
+    onNext: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
     val isSaving by viewModel.isSaving.collectAsState()
@@ -42,11 +42,10 @@ fun MyCurrenciesScreen(
     FormLayout(
         headLine = stringResource(R.string.acceptedCurrencies),
         subHeadLine = stringResource(R.string.chooseDesiredCurrencies),
-        buttonTitle = buttonTitle,
+        buttonTitle = stringResource(R.string.nextStep),
         isEnabled = isEnabled,
         isLoading = isLoading,
-        onBack = onBack,
-        onNext = { viewModel.updateCurrencies() }
+        onNext = onNext
     ) {
         when (val result = state) {
             is FeatureState.Loading -> LoadingScreen()

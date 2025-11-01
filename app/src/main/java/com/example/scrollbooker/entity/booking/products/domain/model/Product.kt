@@ -13,5 +13,17 @@ data class Product(
     val userId: Int,
     val serviceId: Int,
     val businessId: Int,
-    val currencyId: Int
+    val currencyId: Int,
+    val subFilters: List<ProductSubFilter>
+)
+
+data class ProductSubFilter(
+    val id: Int,
+    val name: String,
+    val filter: ProductFilter
+)
+
+data class ProductFilter(
+    val id: Int,
+    val name: String
 )

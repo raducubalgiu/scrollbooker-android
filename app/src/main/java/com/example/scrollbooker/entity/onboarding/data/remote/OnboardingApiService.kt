@@ -4,6 +4,7 @@ import com.example.scrollbooker.entity.auth.data.remote.AuthStateDto
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessHasEmployeesUpdateRequest
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessServicesUpdateRequest
 import com.example.scrollbooker.entity.booking.schedule.data.remote.ScheduleDto
+import com.example.scrollbooker.entity.nomenclature.currency.data.remote.UserCurrencyUpdateRequest
 import com.example.scrollbooker.entity.user.userProfile.data.remote.UpdateBirthDateRequest
 import com.example.scrollbooker.entity.user.userProfile.data.remote.UpdateGenderRequest
 import com.example.scrollbooker.entity.user.userProfile.data.remote.UpdateUsernameRequest
@@ -45,5 +46,10 @@ interface OnboardingApiService {
     @PATCH("/onboarding/collect-business-has-employees")
     suspend fun collectBusinessHasEmployees(
         @Body request: BusinessHasEmployeesUpdateRequest
+    ): AuthStateDto
+
+    @PATCH("/onboarding/collect-business-currencies")
+    suspend fun collectBusinessCurrencies(
+        @Body request: UserCurrencyUpdateRequest
     ): AuthStateDto
 }

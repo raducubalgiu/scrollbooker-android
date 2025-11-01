@@ -8,6 +8,7 @@ import com.example.scrollbooker.entity.booking.appointment.domain.useCase.Create
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.CreateOwnClientAppointmentUseCase
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.CreateScrollBookerAppointmentUseCase
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.DeleteAppointmentUseCase
+import com.example.scrollbooker.entity.booking.appointment.domain.useCase.GetAppointmentUseCase
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.GetUserAppointmentsNumberUseCase
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.GetUserAppointmentsUseCase
 import dagger.Module
@@ -45,6 +46,14 @@ object AppointmentsModule {
         repository: AppointmentRepository,
     ): GetUserAppointmentsUseCase {
         return GetUserAppointmentsUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetAppointmentUseCase(
+        repository: AppointmentRepository,
+    ): GetAppointmentUseCase {
+        return GetAppointmentUseCase(repository)
     }
 
     @Provides

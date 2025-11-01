@@ -1,13 +1,11 @@
 package com.example.scrollbooker.entity.nomenclature.currency.domain.useCase
-
-import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.nomenclature.currency.domain.repository.CurrencyRepository
 import javax.inject.Inject
 
 class UpdateUserCurrenciesUseCase @Inject constructor(
     private val repository: CurrencyRepository
 ) {
-    suspend operator fun invoke(currencyIds: List<Int>): Result<AuthState> = runCatching {
+    suspend operator fun invoke(currencyIds: List<Int>) = runCatching {
         repository.updateUserCurrencies(currencyIds)
     }
 }

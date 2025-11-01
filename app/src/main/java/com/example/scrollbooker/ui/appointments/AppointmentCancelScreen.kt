@@ -53,7 +53,7 @@ fun AppointmentCancelScreen(
     onCancelAppointment: (appointmentId: Int, message: String) -> Unit
 ) {
     val context = LocalContext.current
-    val appointment by viewModel.selectedAppointment.collectAsState()
+    //val appointment by viewModel.selectedAppointment.collectAsState()
     val isSaving by viewModel.isSaving.collectAsState()
 
     val reasons = AppointmentCancelReason.entries.toList()
@@ -91,12 +91,12 @@ fun AppointmentCancelScreen(
                         contentColor = OnPrimary
                     ),
                     onClick = {
-                        appointment?.id?.let { id ->
-                            if(isOtherReason) onCancelAppointment(id, message)
-                            else onCancelAppointment(
-                                id, context.getString(selectedReason.toLabel())
-                            )
-                        }
+//                        appointment?.id?.let { id ->
+//                            if(isOtherReason) onCancelAppointment(id, message)
+//                            else onCancelAppointment(
+//                                id, context.getString(selectedReason.toLabel())
+//                            )
+//                        }
                     }
                 )
             }

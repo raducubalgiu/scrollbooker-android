@@ -223,6 +223,51 @@ val dummyAnnotation = listOf(
         latitude = 44.411189f,
         businessCategory = BusinessCategory.AUTO
     ),
+    BusinessAnnotation(
+        longitude = 26.126095f,
+        latitude = 44.444416f,
+        businessCategory = BusinessCategory.AUTO
+    ),
+    BusinessAnnotation(
+        longitude = 26.049352f,
+        latitude = 44.437269f,
+        businessCategory = BusinessCategory.MEDICAL
+    ),
+    BusinessAnnotation(
+        longitude = 26.131285f,
+        latitude = 44.434622f,
+        businessCategory = BusinessCategory.BEAUTY
+    ),
+    BusinessAnnotation(
+        longitude = 26.064923f,
+        latitude = 44.431578f,
+        businessCategory = BusinessCategory.BEAUTY
+    ),
+    BusinessAnnotation(
+        longitude = 26.092358f,
+        latitude = 44.396887f,
+        businessCategory = BusinessCategory.AUTO
+    ),
+    BusinessAnnotation(
+        longitude = 26.037674f,
+        latitude = 44.430122f,
+        businessCategory = BusinessCategory.BEAUTY
+    ),
+    BusinessAnnotation(
+        longitude = 26.072894f,
+        latitude = 44.460559f,
+        businessCategory = BusinessCategory.BEAUTY
+    ),
+    BusinessAnnotation(
+        longitude = 26.095509f,
+        latitude = 44.46175f,
+        businessCategory = BusinessCategory.BEAUTY
+    ),
+    BusinessAnnotation(
+        longitude = 26.071782f,
+        latitude = 44.430519f,
+        businessCategory = BusinessCategory.BEAUTY
+    ),
 )
 
 val dummyBusinesses = listOf(
@@ -353,7 +398,6 @@ fun SearchScreen(
         )
 
         Box(modifier = Modifier
-            .fillMaxWidth()
             .padding(
                 top = padding.calculateTopPadding() + BasePadding,
                 bottom = padding.calculateBottomPadding()
@@ -361,23 +405,23 @@ fun SearchScreen(
         ) {
             //SearchMapLoading()
 
-            IconButton(
-                modifier = Modifier
-                    .padding(bottom = padding.calculateBottomPadding())
-                    .padding(SpacingXL)
-                    .size(52.dp)
-                    .align(Alignment.BottomEnd),
-                onClick = {},
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = Background,
-                    contentColor = OnBackground
-                )
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.NearMe,
-                    contentDescription = null
-                )
-            }
+//            IconButton(
+//                modifier = Modifier
+//                    .padding(bottom = padding.calculateBottomPadding())
+//                    .padding(SpacingXL)
+//                    .size(52.dp)
+//                    .align(Alignment.BottomEnd),
+//                onClick = {},
+//                colors = IconButtonDefaults.iconButtonColors(
+//                    containerColor = Background,
+//                    contentColor = OnBackground
+//                )
+//            ) {
+//                Icon(
+//                    imageVector = Icons.Outlined.NearMe,
+//                    contentDescription = null
+//                )
+//            }
 
             BottomSheetScaffold(
                 sheetPeekHeight = sheetHeaderDp,

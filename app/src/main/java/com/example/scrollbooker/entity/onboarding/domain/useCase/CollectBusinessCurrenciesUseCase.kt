@@ -4,10 +4,10 @@ import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.onboarding.domain.repository.OnboardingRepository
 import javax.inject.Inject
 
-class CollectClientBirthdateUseCase @Inject constructor(
+class CollectBusinessCurrenciesUseCase @Inject constructor(
     private val repository: OnboardingRepository
 ) {
-    suspend operator fun invoke(birthdate: String?): Result<AuthState> = runCatching {
-        repository.collectClientBirthDate(birthdate)
+    suspend operator fun invoke(currencyIds: List<Int>): Result<AuthState> = runCatching {
+        repository.collectBusinessCurrencies(currencyIds)
     }
 }

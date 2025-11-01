@@ -1,7 +1,6 @@
 package com.example.scrollbooker.entity.booking.products.data.remote
 
 import com.google.gson.annotations.SerializedName
-import java.io.Serial
 import java.math.BigDecimal
 
 data class ProductDto(
@@ -26,5 +25,19 @@ data class ProductDto(
     val businessId: Int,
 
     @SerializedName("currency_id")
-    val currencyId: Int
+    val currencyId: Int,
+
+    @SerializedName("sub_filters")
+    val subFilters: List<ProductSubFilterDto>
+)
+
+data class ProductSubFilterDto(
+    val id: Int,
+    val name: String,
+    val filter: ProductFilterDto
+)
+
+data class ProductFilterDto(
+    val id: Int,
+    val name: String
 )

@@ -4,10 +4,11 @@ import com.example.scrollbooker.core.util.Constants
 import com.example.scrollbooker.entity.onboarding.data.remote.OnboardingApiService
 import com.example.scrollbooker.entity.onboarding.data.repository.OnboardingRepositoryImpl
 import com.example.scrollbooker.entity.onboarding.domain.repository.OnboardingRepository
+import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectBusinessCurrenciesUseCase
 import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectBusinessHasEmployeesUseCase
 import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectBusinessSchedulesUseCase
 import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectBusinessServicesUseCase
-import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectClientBirthDateUseCase
+import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectClientBirthdateUseCase
 import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectClientGenderUseCase
 import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectUserLocationPermissionUseCase
 import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectUserUsernameUseCase
@@ -52,8 +53,8 @@ object BusinessModule {
     @Singleton
     fun provideCollectClientBirthdateUseCase(
         repository: OnboardingRepository,
-    ): CollectClientBirthDateUseCase {
-        return CollectClientBirthDateUseCase(repository)
+    ): CollectClientBirthdateUseCase {
+        return CollectClientBirthdateUseCase(repository)
     }
 
     @Provides
@@ -94,5 +95,13 @@ object BusinessModule {
         repository: OnboardingRepository,
     ): CollectBusinessHasEmployeesUseCase {
         return CollectBusinessHasEmployeesUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCollectBusinessCurrenciesUseCase(
+        repository: OnboardingRepository,
+    ): CollectBusinessCurrenciesUseCase {
+        return CollectBusinessCurrenciesUseCase(repository)
     }
 }

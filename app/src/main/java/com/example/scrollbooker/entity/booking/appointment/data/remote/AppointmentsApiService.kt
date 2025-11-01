@@ -5,6 +5,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface AppointmentsApiService {
@@ -14,6 +15,11 @@ interface AppointmentsApiService {
         @Query("limit") limit: Int,
         @Query("as_customer") asCustomer: Boolean?
     ): PaginatedResponseDto<AppointmentDto>
+
+    @GET("appointments/{appointmentId}")
+    suspend fun getAppointmentsById(
+        @Path("appointmentId") appointmentId: Int
+    ): AppointmentDto
 
     @GET("appointments/count")
     suspend fun getUserAppointmentsNumber(): Int

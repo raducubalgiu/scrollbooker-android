@@ -67,6 +67,7 @@ fun BusinessCoordinatesDto.toDomain(): BusinessCoordinates {
 fun AppointmentBusinessDto.toDomain(): AppointmentBusiness {
     return AppointmentBusiness(
         address = address,
-        coordinates = coordinates.toDomain()
+        coordinates = coordinates.toDomain(),
+        mapUrl = mapUrl
     )
 }

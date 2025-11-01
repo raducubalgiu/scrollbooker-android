@@ -15,7 +15,6 @@ import com.example.scrollbooker.navigation.navigators.MyBusinessNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessServices.MyServicesScreen
 import com.example.scrollbooker.ui.LocalUserPermissions
-import com.example.scrollbooker.ui.UserPermissionsController
 import com.example.scrollbooker.ui.myBusiness.MyBusinessScreen
 import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarScreen
 import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarViewModel
@@ -192,11 +191,6 @@ fun NavGraphBuilder.myBusinessGraph(
                 viewModel = viewModel,
                 buttonTitle = stringResource(R.string.save),
                 onBack = { navController.popBackStack() },
-                onNextOrSave = {
-                    coroutineScope.launch {
-                        viewModel.updateBusinessServices()
-                    }
-                },
             )
         }
 

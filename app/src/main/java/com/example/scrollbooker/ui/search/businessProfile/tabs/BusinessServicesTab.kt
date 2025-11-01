@@ -69,7 +69,8 @@ fun BusinessServicesTab() {
             userId = 2,
             serviceId = 2,
             businessId = 1,
-            currencyId = 1
+            currencyId = 1,
+            subFilters = emptyList()
         ),
         Product(
             id = 2,
@@ -82,7 +83,8 @@ fun BusinessServicesTab() {
             userId = 2,
             serviceId = 2,
             businessId = 1,
-            currencyId = 1
+            currencyId = 1,
+            subFilters = emptyList()
         ),
         Product(
             id = 3,
@@ -95,7 +97,8 @@ fun BusinessServicesTab() {
             userId = 2,
             serviceId = 2,
             businessId = 1,
-            currencyId = 1
+            currencyId = 1,
+            subFilters = emptyList()
         ),
         Product(
             id = 4,
@@ -108,7 +111,8 @@ fun BusinessServicesTab() {
             userId = 2,
             serviceId = 2,
             businessId = 1,
-            currencyId = 1
+            currencyId = 1,
+            subFilters = emptyList()
         )
     )
     val lazyRowListState = rememberLazyListState()

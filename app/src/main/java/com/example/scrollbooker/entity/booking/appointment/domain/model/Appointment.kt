@@ -59,7 +59,8 @@ data class BusinessCoordinates(
 
 data class AppointmentBusiness(
     val address: String,
-    val coordinates: BusinessCoordinates
+    val coordinates: BusinessCoordinates,
+    val mapUrl: String?
 )
 
 private val DAY_FMT = DateTimeFormatter.ofPattern("dd")

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.myBusiness.myCurrencies
+package com.example.scrollbooker.ui.onboarding.business
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,7 +8,7 @@ import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.nomenclature.currency.domain.model.Currency
 import com.example.scrollbooker.entity.nomenclature.currency.domain.useCase.GetAllCurrenciesUseCase
 import com.example.scrollbooker.entity.nomenclature.currency.domain.useCase.GetUserCurrenciesUseCase
-import com.example.scrollbooker.entity.nomenclature.currency.domain.useCase.UpdateUserCurrenciesUseCase
+import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectBusinessCurrenciesUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,11 +21,11 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class MyCurrenciesViewModel @Inject constructor(
+class CollectBusinessCurrenciesViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
     private val getAllCurrenciesUseCase: GetAllCurrenciesUseCase,
     private val getUserCurrenciesUseCase: GetUserCurrenciesUseCase,
-    private val updateUserCurrenciesUseCase: UpdateUserCurrenciesUseCase
+    private val collectBusinessCurrenciesUseCase: CollectBusinessCurrenciesUseCase
 ): ViewModel() {
     private val _state = MutableStateFlow<FeatureState<List<Currency>>>(FeatureState.Loading)
     val state: StateFlow<FeatureState<List<Currency>>> = _state
@@ -86,21 +86,20 @@ class MyCurrenciesViewModel @Inject constructor(
         }
     }
 
-    fun updateCurrencies() {
-        viewModelScope.launch {
-            _isSaving.value = FeatureState.Loading
+    suspend fun collectBusinessCurrencies(): AuthState? {
+        _isSaving.value = FeatureState.Loading
 
-            val currencyIds = _selectedCurrencyIds.value.toList()
-            val result = withVisibleLoading { updateUserCurrenciesUseCase(currencyIds) }
+        val currencyIds = _selectedCurrencyIds.value.toList()
+        val result = withVisibleLoading { collectBusinessCurrenciesUseCase(currencyIds) }
 
-            result
-                .onFailure { e ->
-                    _isSaving.value = FeatureState.Error(e)
-                    Timber.tag("Update Currencies").e("ERROR: on updating User Currencies $e")
-                }
-                .onSuccess {
-                    _isSaving.value = FeatureState.Success(Unit)
-                }
-        }
+        return result
+            .onFailure { e ->
+                _isSaving.value = FeatureState.Error(e)
+                Timber.tag("Update Currencies").e("ERROR: on updating User Currencies $e")
+            }
+            .onSuccess {
+                _isSaving.value = FeatureState.Success(Unit)
+            }
+            .getOrNull()
     }
 }

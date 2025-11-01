@@ -173,9 +173,7 @@ fun AddProductScreen(
     }
 
     Layout(
-        modifier = Modifier
-            .statusBarsPadding()
-            .padding(bottom = BasePadding),
+        modifier = Modifier.padding(bottom = BasePadding),
         onBack = {
             viewModel.removeSelectedFilters()
             onBack()
@@ -260,7 +258,8 @@ fun AddProductScreen(
                         label = stringResource(R.string.description),
                         isError = !validation.isDescriptionValid,
                         errorMessage = validation.descriptionError.toString(),
-                        singleLine = false
+                        singleLine = false,
+
                     )
                     Spacer(Modifier.height(BasePadding))
 
