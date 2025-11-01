@@ -96,13 +96,13 @@ class CollectBusinessServicesViewModel @Inject constructor(
         }
     }
 
-    suspend fun updateBusinessServices(): AuthState? {
+    suspend fun updateBusinessServices(): Result<AuthState> {
         _isSaving.value = FeatureState.Loading
 
         val serviceIds = _selectedServiceIds.value.toList()
         val result = withVisibleLoading { collectBusinessServicesUseCase(serviceIds) }
 
-        return result
+        result
             .onFailure { e ->
                 _isSaving.value = FeatureState.Error(e)
                 Timber.tag("Update Services").e("ERROR: on Collecting Business Services $e")
@@ -110,6 +110,7 @@ class CollectBusinessServicesViewModel @Inject constructor(
             .onSuccess {
                 _isSaving.value = FeatureState.Success(Unit)
             }
-            .getOrNull()
+
+        return result
     }
 }

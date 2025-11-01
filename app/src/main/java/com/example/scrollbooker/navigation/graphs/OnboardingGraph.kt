@@ -1,7 +1,6 @@
 package com.example.scrollbooker.navigation.graphs
 
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
@@ -52,17 +51,15 @@ fun NavGraphBuilder.onBoardingGraph(
     }
 
     composable(OnboardingRoute.CollectUserUsername.route) { backStackEntry ->
-        val scope = rememberCoroutineScope()
         val viewModel: CollectUserUsernameViewModel = hiltViewModel(backStackEntry)
 
         CollectUserUsernameScreen(
             viewModel = viewModel,
             onSubmit = {
-                scope.launch {
+                navController.currentBackStackEntry?.lifecycleScope?.launch {
                     val authState = viewModel.collectUserUsername(newUsername = it)
-                    if(authState != null) {
-                        authViewModel.updateAuthState(authState)
-                    }
+
+                    authState.onSuccess { authViewModel.updateAuthState(it) }
                 }
             }
         )
@@ -160,7 +157,6 @@ fun NavGraphBuilder.onBoardingGraph(
         }
 
         composable(route = OnboardingRoute.CollectBusinessGallery.route) { backStackEntry ->
-            val scope = rememberCoroutineScope()
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(OnboardingRoute.CollectBusiness.route)
             }
@@ -170,12 +166,10 @@ fun NavGraphBuilder.onBoardingGraph(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
                 onNext = {
-                    scope.launch {
+                    navController.currentBackStackEntry?.lifecycleScope?.launch {
                         val business = viewModel.createBusiness()
 
-                        if(business != null) {
-                            authViewModel.updateAuthState(business.authState)
-                        }
+                        business.onSuccess { authViewModel.updateAuthState(it.authState) }
                     }
                 }
             )
@@ -183,70 +177,62 @@ fun NavGraphBuilder.onBoardingGraph(
     }
 
     composable(OnboardingRoute.CollectBusinessServices.route) { backStackEntry ->
-        val scope = rememberCoroutineScope()
         val viewModel: CollectBusinessServicesViewModel = hiltViewModel(backStackEntry)
         val buttonTitle = stringResource(R.string.nextStep)
 
         CollectBusinessServicesScreen(
             viewModel = viewModel,
             buttonTitle = buttonTitle,
-            onNextOrSave = {
-                scope.launch {
+            onNext = {
+                navController.currentBackStackEntry?.lifecycleScope?.launch {
                     val authState = viewModel.updateBusinessServices()
-                    if(authState != null) {
-                        authViewModel.updateAuthState(authState)
-                    }
+
+                    authState.onSuccess { authViewModel.updateAuthState(it) }
                 }
             },
         )
     }
 
     composable(OnboardingRoute.CollectBusinessSchedules.route) { backStackEntry ->
-        val scope = rememberCoroutineScope()
         val viewModel: CollectBusinessSchedulesViewModel = hiltViewModel(backStackEntry)
 
         CollectBusinessSchedulesScreen(
             viewModel = viewModel,
-            onNextOrSave = {
-                scope.launch {
+            onNext = {
+                navController.currentBackStackEntry?.lifecycleScope?.launch {
                     val authState = viewModel.updateSchedules()
-                    if(authState != null) {
-                        authViewModel.updateAuthState(authState)
-                    }
+
+                    authState.onSuccess { authViewModel.updateAuthState(it) }
                 }
             }
         )
     }
 
     composable(OnboardingRoute.CollectBusinessHasEmployees.route) { backStackEntry ->
-        val scope = rememberCoroutineScope()
         val viewModel: CollectBusinessHasEmployeesViewModel = hiltViewModel(backStackEntry)
 
         CollectBusinessHasEmployeesScreen(
             viewModel = viewModel,
             onNext = {
-                scope.launch {
+                navController.currentBackStackEntry?.lifecycleScope?.launch {
                     val authState = viewModel.updateHasEmployees()
-                    if(authState != null) {
-                        authViewModel.updateAuthState(authState)
-                    }
+
+                    authState.onSuccess { authViewModel.updateAuthState(it) }
                 }
             }
         )
     }
 
     composable(OnboardingRoute.CollectBusinessCurrencies.route) { backStackEntry ->
-        val scope = rememberCoroutineScope()
         val viewModel: CollectBusinessCurrenciesViewModel = hiltViewModel(backStackEntry)
 
         CollectBusinessCurrenciesScreen(
             viewModel = viewModel,
             onNext = {
-                scope.launch {
+                navController.currentBackStackEntry?.lifecycleScope?.launch {
                     val authState = viewModel.collectBusinessCurrencies()
-                    if(authState != null) {
-                        authViewModel.updateAuthState(authState)
-                    }
+
+                    authState.onSuccess { authViewModel.updateAuthState(it) }
                 }
             }
         )

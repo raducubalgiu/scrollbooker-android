@@ -70,15 +70,15 @@ class CollectBusinessSchedulesViewModel @Inject constructor(
         }
     }
 
-    suspend fun updateSchedules(): AuthState? {
+    suspend fun updateSchedules(): Result<AuthState> {
         _isSaving.value = FeatureState.Loading
 
         val schedules = (_schedulesState.value as? FeatureState.Success)?.data
-        if (schedules.isNullOrEmpty()) return null
+        if (schedules.isNullOrEmpty()) return Result.failure(Throwable("Schedules not found"))
 
         val result = withVisibleLoading { collectBusinessSchedulesUseCase(schedules) }
 
-        return result
+        result
             .onFailure { error ->
                 _isSaving.value = FeatureState.Error(error)
                 Timber.Forest.tag("Schedules").e("ERROR: on Collecting Business Schedules $error")
@@ -86,6 +86,7 @@ class CollectBusinessSchedulesViewModel @Inject constructor(
             .onSuccess { updated ->
                 _isSaving.value = FeatureState.Success(Unit)
             }
-            .getOrNull()
+
+        return result
     }
 }

@@ -26,7 +26,7 @@ import com.example.scrollbooker.ui.theme.Divider
 fun CollectBusinessServicesScreen(
     viewModel: CollectBusinessServicesViewModel,
     buttonTitle: String,
-    onNextOrSave: () -> Unit
+    onNext: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
     val isSaving by viewModel.isSaving.collectAsState()
@@ -41,7 +41,7 @@ fun CollectBusinessServicesScreen(
         headLine = stringResource(id = R.string.services),
         subHeadLine = stringResource(id = R.string.addYourBusinessServices),
         buttonTitle = buttonTitle,
-        onNext = onNextOrSave,
+        onNext = onNext,
         isEnabled = isEnabled,
         isLoading = isLoading
     ) {

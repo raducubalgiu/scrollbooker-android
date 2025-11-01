@@ -63,7 +63,7 @@ class CollectUserUsernameViewModel @Inject constructor(
        }
     }
 
-    suspend fun collectUserUsername(newUsername: String): AuthState? {
+    suspend fun collectUserUsername(newUsername: String): Result<AuthState> {
         _isSaving.value = FeatureState.Loading
 
         val result = withVisibleLoading { collectUserUsernameUseCase(username = newUsername) }
@@ -80,16 +80,13 @@ class CollectUserUsernameViewModel @Inject constructor(
                     val response = refreshTokenUseCase(refreshToken)
 
                     if(response is FeatureState.Error) {
-                        return AuthState(
-                            isValidated = false,
-                            registrationStep = null
-                        )
+                        Timber.tag("Collect Username").e("ERROR: on Collecting User Username. Token could not be refreshed.")
+                        return Result.failure(Throwable("Token could not be refreshed"))
                     }
                 }
 
                 _isSaving.value = FeatureState.Success(Unit)
             }
-            .getOrNull()
     }
 
     private fun isTokenValid(token: String?): Boolean {

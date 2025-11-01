@@ -127,14 +127,14 @@ class MyBusinessLocationViewModel @Inject constructor(
         _videoState.value = null
     }
 
-    suspend fun createBusiness(): BusinessCreateResponse? {
+    suspend fun createBusiness(): Result<BusinessCreateResponse> {
         _isSaving.value = FeatureState.Loading
         val placeId = _selectedAddress.value?.placeId
         val businessTypeId = _selectedBusinessType.value?.id
 
         if(placeId.isNullOrEmpty() || businessTypeId == null) {
             Timber.tag("Create Business").e("Place Id or Business Type Id is null")
-            return null
+            return Result.failure(Throwable("Place Id or Business Type Id is null"))
         }
 
         val result = withVisibleLoading {
@@ -157,6 +157,5 @@ class MyBusinessLocationViewModel @Inject constructor(
                 authDataStore.setBusinessId(response.businessId)
                 authDataStore.setBusinessTypeId(businessTypeId)
             }
-            .getOrNull()
     }
 }

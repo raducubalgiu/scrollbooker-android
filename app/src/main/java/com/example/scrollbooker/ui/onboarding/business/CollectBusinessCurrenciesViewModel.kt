@@ -86,13 +86,13 @@ class CollectBusinessCurrenciesViewModel @Inject constructor(
         }
     }
 
-    suspend fun collectBusinessCurrencies(): AuthState? {
+    suspend fun collectBusinessCurrencies(): Result<AuthState> {
         _isSaving.value = FeatureState.Loading
 
         val currencyIds = _selectedCurrencyIds.value.toList()
         val result = withVisibleLoading { collectBusinessCurrenciesUseCase(currencyIds) }
 
-        return result
+        result
             .onFailure { e ->
                 _isSaving.value = FeatureState.Error(e)
                 Timber.tag("Update Currencies").e("ERROR: on updating User Currencies $e")
@@ -100,6 +100,7 @@ class CollectBusinessCurrenciesViewModel @Inject constructor(
             .onSuccess {
                 _isSaving.value = FeatureState.Success(Unit)
             }
-            .getOrNull()
+            
+        return result
     }
 }

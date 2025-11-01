@@ -47,7 +47,7 @@ class CollectBusinessHasEmployeesViewModel @Inject constructor(
         _businessState.value = FeatureState.Success(updatedBusiness)
     }
 
-    suspend fun updateHasEmployees(): AuthState? {
+    suspend fun updateHasEmployees(): Result<AuthState> {
         _isSaving.value = FeatureState.Loading
 
         val business = (_businessState.value as? FeatureState.Success)?.data
@@ -57,17 +57,17 @@ class CollectBusinessHasEmployeesViewModel @Inject constructor(
                 collectBusinessHasEmployeesUseCase(business.hasEmployees)
             }
 
-            response
+            return response
                 .onFailure { error ->
                     _isSaving.value = FeatureState.Error(error)
-                    Timber.Forest.tag("Business Has Employees").e("ERROR: on Collecting Business Has Employees $error")
+                    Timber.tag("Business Has Employees").e("ERROR: on Collecting Business Has Employees $error")
                 }
                 .onSuccess { updated ->
                     _isSaving.value = FeatureState.Success(Unit)
                 }
-                .getOrNull()
         } else {
-            null
+            Timber.tag("Business Has Employees").e("ERROR: on Collecting Business Has Employees. Field 'hasEmployees' is missing")
+            Result.failure(Throwable("Field 'hasEmployees' is missing"))
         }
     }
 }
