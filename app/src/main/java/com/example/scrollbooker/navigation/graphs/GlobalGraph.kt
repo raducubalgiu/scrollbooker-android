@@ -16,7 +16,6 @@ import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.ui.profile.ProfileViewModel
 import com.example.scrollbooker.ui.profile.UserProfileScreen
-import com.example.scrollbooker.ui.shared.products.UserProductsScreen
 import com.example.scrollbooker.ui.shared.reviews.ReviewDetailScreen
 import com.example.scrollbooker.ui.social.SocialScreen
 import com.example.scrollbooker.ui.social.SocialViewModel
@@ -91,23 +90,6 @@ fun NavGraphBuilder.globalGraph(
         composable(route = MainRoute.ReviewDetail.route) { backStackEntry ->
             ReviewDetailScreen(
                 onBack = { navController.popBackStack() }
-            )
-        }
-
-        composable(
-            route = "${MainRoute.UserProducts.route}/{userId}",
-            arguments = listOf(navArgument("userId") { type = NavType.IntType }),
-        ) { backStackEntry ->
-            val userId = backStackEntry.arguments?.getInt("userId") ?: return@composable
-
-            UserProductsScreen(
-                userId = userId,
-                onBack = { navController.popBackStack() },
-                onNavigateToCalendar = { (userId, slotDuration, productId, productName) ->
-                    navController.navigate(
-                        "${MainRoute.Calendar.route}/$userId/$slotDuration/$productId/$productName"
-                    )
-                }
             )
         }
     }

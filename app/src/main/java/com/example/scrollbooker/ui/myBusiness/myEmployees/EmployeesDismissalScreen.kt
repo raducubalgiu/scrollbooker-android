@@ -31,7 +31,7 @@ import com.example.scrollbooker.ui.theme.bodyLarge
 
 @Composable
 fun EmployeesDismissalScreen(
-    //viewModel: EmployeesDismissalViewModel,
+    viewModel: EmployeesViewModel,
     onBack: () -> Unit
 ) {
 //    val state by viewModel.employeeDismissalState.collectAsState()
@@ -39,10 +39,10 @@ fun EmployeesDismissalScreen(
 //    var agreed by remember { mutableStateOf(false) }
 //    var scrollState = rememberScrollState()
 //
-//    Layout(
-//        headerTitle = stringResource(R.string.dismissal),
-//        onBack = onBack
-//    ) {
+    Layout(
+        headerTitle = stringResource(R.string.dismissal),
+        onBack = onBack
+    ) {
 //        Column(modifier = Modifier
 //            .fillMaxSize()
 //            .padding(top = BasePadding),
@@ -88,5 +88,5 @@ fun EmployeesDismissalScreen(
 //                )
 //            }
 //        }
-//    }
+    }
 }

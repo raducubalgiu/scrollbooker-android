@@ -17,4 +17,19 @@ class EmployeesViewModel @Inject constructor(
 
     val employees: Flow<PagingData<Employee>> = getEmployeesUseCase()
         .cachedIn(viewModelScope)
+
+    //    private val _employeeDismissalState = MutableStateFlow<FeatureState<EmployeeDismissal>>(
+//        FeatureState.Loading)
+//    val employeeDismissalState: StateFlow<FeatureState<EmployeeDismissal>> = _employeeDismissalState
+//
+//    init {
+//        loadEmployeeDismissalConsent()
+//    }
+//
+//    fun loadEmployeeDismissalConsent() {
+//        viewModelScope.launch {
+//            _employeeDismissalState.value = FeatureState.Loading
+//            _employeeDismissalState.value = getEmployeeDismissalUseCase()
+//        }
+//    }
 }

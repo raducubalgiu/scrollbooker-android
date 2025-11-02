@@ -8,6 +8,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.scrollbooker.R
@@ -60,27 +61,38 @@ fun NavGraphBuilder.myBusinessGraph(
             )
         }
 
-        composable(MainRoute.MyEmployees.route) { backStackEntry ->
-            val viewModel = hiltViewModel<EmployeesViewModel>(backStackEntry)
+        navigation(
+            route = MainRoute.MyEmployeesNavigator.route,
+            startDestination = MainRoute.MyEmployees.route
+        ) {
+            composable(MainRoute.MyEmployees.route) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(MainRoute.MyEmployeesNavigator.route)
+                }
 
-            EmployeesScreen(
-                viewModel,
-                onBack = { navController.popBackStack() },
-                onNavigate = { navController.navigate(it) }
-            )
-        }
+                val viewModel = hiltViewModel<EmployeesViewModel>(parentEntry)
 
-        composable("${MainRoute.EmployeesDismissal.route}/{userId}",
-            arguments = listOf(
-                navArgument("userId") { type = NavType.IntType },
-            )
-        ) { backStackEntry ->
-            //val viewModel = hiltViewModel<EmployeesDismissalViewModel>(backStackEntry)
+                EmployeesScreen(
+                    viewModel = viewModel,
+                    onBack = { navController.popBackStack() },
+                    onNavigateToDismissalScreen = {
+                        navController.navigate(MainRoute.EmployeesDismissal.route)
+                    }
+                )
+            }
 
-            EmployeesDismissalScreen(
-                //viewModel,
-                onBack = { navController.popBackStack() }
-            )
+            composable(MainRoute.EmployeesDismissal.route) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(MainRoute.MyEmployeesNavigator.route)
+                }
+
+                val viewModel = hiltViewModel<EmployeesViewModel>(parentEntry)
+
+                EmployeesDismissalScreen(
+                    viewModel = viewModel,
+                    onBack = { navController.popBackStack() }
+                )
+            }
         }
 
         navigation(
@@ -185,7 +197,6 @@ fun NavGraphBuilder.myBusinessGraph(
 
         composable(MainRoute.MyCurrencies.route) { backStackEntry ->
             val viewModel = hiltViewModel<MyCurrenciesViewModel>(backStackEntry)
-            val coroutineScope = rememberCoroutineScope()
 
             MyCurrenciesScreen(
                 viewModel = viewModel,

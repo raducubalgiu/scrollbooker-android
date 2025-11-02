@@ -59,7 +59,7 @@ fun UserProductsServiceTabs(
                 val pagerState = rememberPagerState(initialPage = 0) { services.size }
                 val selectedTabIndex = pagerState.currentPage
 
-                Box(modifier = Modifier.fillMaxSize()) {
+                Column(modifier = Modifier.fillMaxSize()) {
                     if(services.isEmpty()) {
                         EmptyScreen(
                             modifier = Modifier.padding(top = 30.dp),

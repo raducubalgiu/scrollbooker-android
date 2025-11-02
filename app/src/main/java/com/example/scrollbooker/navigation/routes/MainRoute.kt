@@ -65,6 +65,7 @@ sealed class MainRoute(val route: String) {
     object AddProduct: MainRoute(route = "addProduct")
     object EditProduct: MainRoute(route = "editProduct")
 
+    object MyEmployeesNavigator: MainRoute(route = "myEmployeesNavigator")
     object MyEmployees: MainRoute(route = "myEmployees")
     object EmployeesDismissal: MainRoute(route = "employeesDismissal")
 
