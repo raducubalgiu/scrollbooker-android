@@ -1,6 +1,7 @@
 package com.example.scrollbooker.ui.shared.products
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -58,7 +59,7 @@ fun UserProductsServiceTabs(
                 val pagerState = rememberPagerState(initialPage = 0) { services.size }
                 val selectedTabIndex = pagerState.currentPage
 
-                Column(modifier = Modifier.fillMaxSize()) {
+                Box(modifier = Modifier.fillMaxSize()) {
                     if(services.isEmpty()) {
                         EmptyScreen(
                             modifier = Modifier.padding(top = 30.dp),

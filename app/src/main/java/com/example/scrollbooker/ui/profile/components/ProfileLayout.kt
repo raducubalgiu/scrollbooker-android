@@ -147,7 +147,7 @@ fun ProfileLayout(
                             ProfileTab.Posts -> ProfilePostsTab(
                                 paddingTop = currentHeaderHeightDp,
                                 posts = posts,
-                                onNavigateToPostDetail = { profileNavigate.toPostDetail() }
+                                onNavigateToPost = { profileNavigate.toPostDetail() }
                             )
 
                             ProfileTab.Products -> {
@@ -161,13 +161,13 @@ fun ProfileLayout(
                             ProfileTab.Reposts -> ProfileRepostsTab(
                                 paddingTop = currentHeaderHeightDp,
                                 viewModel = viewModel,
-                                onNavigateToPostDetail = { profileNavigate.toPostDetail() }
+                                onNavigateToPost = { profileNavigate.toPostDetail() }
                             )
 
                             ProfileTab.Bookmarks -> ProfileBookmarksTab(
                                 paddingTop = currentHeaderHeightDp,
                                 viewModel = viewModel,
-                                onNavigateToPostDetail = { profileNavigate.toPostDetail() }
+                                onNavigateToPost = { profileNavigate.toPostDetail() }
                             )
 
                             ProfileTab.Info -> ProfileInfoTab(paddingTop = currentHeaderHeightDp)

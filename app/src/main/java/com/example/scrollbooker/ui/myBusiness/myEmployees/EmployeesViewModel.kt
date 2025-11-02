@@ -15,6 +15,6 @@ class EmployeesViewModel @Inject constructor(
     private val getEmployeesUseCase: GetEmployeesUseCase
 ): ViewModel() {
 
-    val employeesFlow: Flow<PagingData<Employee>> = getEmployeesUseCase()
+    val employees: Flow<PagingData<Employee>> = getEmployeesUseCase()
         .cachedIn(viewModelScope)
 }

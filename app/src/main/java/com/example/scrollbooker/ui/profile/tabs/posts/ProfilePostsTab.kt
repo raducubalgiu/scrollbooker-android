@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -27,13 +26,16 @@ import com.example.scrollbooker.entity.social.post.domain.model.Post
 fun ProfilePostsTab(
     paddingTop: Dp,
     posts: LazyPagingItems<Post>,
-    onNavigateToPostDetail: (Int) -> Unit
+    onNavigateToPost: (Int) -> Unit
 ) {
+    val refreshState = posts.loadState.refresh
+    val appendState = posts.loadState.refresh
+
     Column(modifier = Modifier
         .fillMaxWidth()
         .padding(top = paddingTop)
     ) {
-        when(posts.loadState.refresh) {
+        when(refreshState) {
             is LoadState.Error -> ErrorScreen()
             is LoadState.Loading -> Unit
             is LoadState.NotLoading -> {
@@ -54,20 +56,17 @@ fun ProfilePostsTab(
                         modifier = Modifier.fillMaxSize()
                     ) {
                         items(posts.itemCount) { index ->
-                            val post = posts[index]
-                            if(post != null) {
-                                PostGrid(
-                                    post = post,
-                                    onNavigateToPost = onNavigateToPostDetail
-                                )
+                            posts[index]?.let {
+                                PostGrid(it, onNavigateToPost = onNavigateToPost)
                             }
                         }
-                    }
 
-                    when(posts.loadState.append) {
-                        is LoadState.Loading -> LoadMoreSpinner()
-                        is LoadState.Error -> { Text("Ceva nu a mers cum trebuie") }
-                        is LoadState.NotLoading -> Unit
+                        item {
+                            when(appendState) {
+                                is LoadState.Loading -> LoadMoreSpinner()
+                                else -> Unit
+                            }
+                        }
                     }
                 }
             }

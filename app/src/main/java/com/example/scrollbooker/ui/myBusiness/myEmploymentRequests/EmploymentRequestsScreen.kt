@@ -93,6 +93,7 @@ fun EmploymentRequestsScreen(
                 HorizontalDivider(color = Divider, thickness = 0.55.dp)
                 Spacer(Modifier.height(BasePadding))
                 MainButton(
+                    modifier = Modifier.padding(bottom = BasePadding),
                     title = stringResource(R.string.sendAnEmploymentRequest),
                     onClick = onNavigateSelectEmployee,
                 )

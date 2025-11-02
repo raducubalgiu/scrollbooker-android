@@ -141,6 +141,7 @@
     <string name="rating_4">Mi-a plăcut</string>
     <string name="rating_5">Mi-a plăcut foarte mult</string>
     <string name="notFoundPosts">Nu au fost găsite postări</string>
+    <string name="notFoundEmployees">Momentan nu ai nici un angajat</string>
     <string name="notFoundBookmarks">Încă nu ai salvat nici o postare</string>
     <string name="notFoundReposts">Încă nu ai repostat nimic</string>
     <string name="notFoundReviews">Nu au fost găsite review-uri</string>

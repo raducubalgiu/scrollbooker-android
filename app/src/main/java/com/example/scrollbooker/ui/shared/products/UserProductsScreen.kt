@@ -60,6 +60,7 @@ fun UserProductsScreen(
             color = Divider,
             thickness = 0.55.dp
         )
+
         UserProductsServiceTabs(
             userId = userId,
             onSelect = {}
