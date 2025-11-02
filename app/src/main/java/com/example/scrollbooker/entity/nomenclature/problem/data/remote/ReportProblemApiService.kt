@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.settings.reportProblem.data.remote
+package com.example.scrollbooker.entity.nomenclature.problem.data.remote
 import retrofit2.http.Body
 import retrofit2.http.POST
 

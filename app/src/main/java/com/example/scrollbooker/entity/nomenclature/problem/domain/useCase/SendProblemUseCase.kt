@@ -1,9 +1,9 @@
-package com.example.scrollbooker.ui.settings.reportProblem.domain.useCase
+package com.example.scrollbooker.entity.nomenclature.problem.domain.useCase
 
 import com.example.scrollbooker.core.util.FeatureState
 
 import com.example.scrollbooker.store.AuthDataStore
-import com.example.scrollbooker.ui.settings.reportProblem.domain.repository.ReportProblemRepository
+import com.example.scrollbooker.entity.nomenclature.problem.domain.repository.ReportProblemRepository
 import kotlinx.coroutines.flow.firstOrNull
 import timber.log.Timber
 import javax.inject.Inject

@@ -1,9 +1,9 @@
-package com.example.scrollbooker.ui.settings.reportProblem.di
+package com.example.scrollbooker.entity.nomenclature.problem.di
 
 import com.example.scrollbooker.core.util.Constants
-import com.example.scrollbooker.ui.settings.reportProblem.data.remote.ReportProblemApiService
-import com.example.scrollbooker.ui.settings.reportProblem.data.repository.ReportProblemRepositoryImpl
-import com.example.scrollbooker.ui.settings.reportProblem.domain.repository.ReportProblemRepository
+import com.example.scrollbooker.entity.nomenclature.problem.data.remote.ReportProblemApiService
+import com.example.scrollbooker.entity.nomenclature.problem.data.repository.ReportProblemRepositoryImpl
+import com.example.scrollbooker.entity.nomenclature.problem.domain.repository.ReportProblemRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.settings.reportProblem.domain.repository
+package com.example.scrollbooker.entity.nomenclature.problem.domain.repository
 
 interface ReportProblemRepository  {
     suspend fun sendReportProblem(text: String, userId: Int)

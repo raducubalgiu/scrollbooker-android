@@ -1,7 +1,6 @@
-package com.example.scrollbooker.ui.settings.reportProblem.presentation
+package com.example.scrollbooker.ui.settings.reportProblem
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -30,7 +29,6 @@ fun ReportProblemScreen(
     var text by rememberSaveable { mutableStateOf("") }
 
     Layout(
-        modifier = Modifier.statusBarsPadding(),
         onBack = onBack,
         header = {
             HeaderEdit(

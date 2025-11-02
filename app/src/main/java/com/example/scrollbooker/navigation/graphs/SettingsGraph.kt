@@ -12,8 +12,8 @@ import com.example.scrollbooker.ui.settings.account.AccountScreen
 import com.example.scrollbooker.ui.settings.display.DisplayScreen
 import com.example.scrollbooker.ui.settings.notifications.NotificationSettings
 import com.example.scrollbooker.ui.settings.privacy.PrivacyScreen
-import com.example.scrollbooker.ui.settings.reportProblem.presentation.ReportAProblemViewModel
-import com.example.scrollbooker.ui.settings.reportProblem.presentation.ReportProblemScreen
+import com.example.scrollbooker.ui.settings.reportProblem.ReportAProblemViewModel
+import com.example.scrollbooker.ui.settings.reportProblem.ReportProblemScreen
 import com.example.scrollbooker.ui.settings.security.SecurityScreen
 import com.example.scrollbooker.ui.settings.support.SupportScreen
 import com.example.scrollbooker.ui.settings.terms.TermsAndConditionsScreen

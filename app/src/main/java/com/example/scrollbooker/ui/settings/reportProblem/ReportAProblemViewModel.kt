@@ -1,9 +1,10 @@
-package com.example.scrollbooker.ui.settings.reportProblem.presentation
+package com.example.scrollbooker.ui.settings.reportProblem
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.ui.settings.reportProblem.domain.useCase.SendProblemUseCase
+import com.example.scrollbooker.core.util.withVisibleLoading
+import com.example.scrollbooker.entity.nomenclature.problem.domain.useCase.SendProblemUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -20,7 +21,7 @@ class ReportAProblemViewModel @Inject constructor(
     fun sendProblem(text: String) {
         viewModelScope.launch {
             _reportProblemState.value = FeatureState.Loading
-            _reportProblemState.value = sendProblemUseCase(text)
+            _reportProblemState.value = withVisibleLoading { sendProblemUseCase(text) }
         }
     }
 

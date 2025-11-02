@@ -49,7 +49,7 @@ fun EditInput(
     indicatorColor: Color = Divider
 ) {
     TextField(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .then(modifier),
         value = value,
