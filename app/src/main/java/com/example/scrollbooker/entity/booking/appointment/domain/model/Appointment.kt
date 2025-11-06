@@ -28,6 +28,8 @@ data class Appointment(
     val customer: AppointmentUser,
     val business: AppointmentBusiness,
     val totalPrice: BigDecimal,
+    val totalPriceWithDiscount: BigDecimal,
+    val totalDiscount: BigDecimal,
     val totalDuration: Int,
     val paymentCurrency: Currency,
 )
@@ -49,7 +51,9 @@ data class AppointmentUser(
     val fullName: String,
     val username: String?,
     val avatar: String?,
-    val profession: String?
+    val profession: String?,
+    val ratingsAverage: Float?,
+    val ratingsCount: Int?
 )
 
 data class BusinessCoordinates(
@@ -81,6 +85,26 @@ fun Appointment.getMonth(
 
 fun Appointment.getTime(zone: ZoneId = ZoneId.systemDefault()): String =
     localStart(zone).format(TIME_FMT)
+
+fun Appointment.displayAppointmentDate(
+    zone: ZoneId = ZoneId.systemDefault(),
+    locale: Locale = AppLocaleProvider.current()
+): String {
+    val dt = localStart(zone)
+
+    val dayOfWeek = dt.format(DateTimeFormatter.ofPattern("EEE", locale))
+        .replaceFirstChar { if (it.isLowerCase()) it.titlecase(locale) else it.toString() }
+
+    val day = dt.format(DateTimeFormatter.ofPattern("d", locale))
+
+    val month = dt.format(monthFmt(locale))
+        .lowercase()
+        .removeSuffix(".")
+
+    val time = dt.format(TIME_FMT)
+
+    return "$dayOfWeek, $day $month, $time"
+}
 
 fun Appointment.getProductNames(): String =
     products.joinToString(", ") { it.name }

@@ -28,6 +28,8 @@ fun AppointmentDto.toDomain(): Appointment {
         customer = customer.toDomain(),
         business = business.toDomain(),
         totalPrice = totalPrice,
+        totalPriceWithDiscount = totalPriceWithDiscount,
+        totalDiscount = totalDiscount,
         totalDuration = totalDuration,
         paymentCurrency = paymentCurrency.toDomain()
     )
@@ -54,6 +56,8 @@ fun AppointmentUserDto.toDomain(): AppointmentUser {
         fullName = fullName,
         username = username,
         profession = profession,
+        ratingsAverage = ratingsAverage,
+        ratingsCount = ratingsCount
     )
 }
 

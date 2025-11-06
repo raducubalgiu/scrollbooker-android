@@ -54,6 +54,7 @@ fun Input(
     errorMessage: String? = "",
     leadingIcon: (@Composable () -> Unit)? = null,
     trailingIcon: (@Composable () -> Unit)? = null,
+    maxLines: Int = 1
 ) {
     TextField(
         value = value,
@@ -77,6 +78,7 @@ fun Input(
         trailingIcon = trailingIcon,
         textStyle = bodyLarge,
         singleLine = singleLine,
+        maxLines = maxLines,
         shape = MaterialTheme.shapes.medium,
         colors = TextFieldDefaults.colors(
             focusedContainerColor = inputColor,

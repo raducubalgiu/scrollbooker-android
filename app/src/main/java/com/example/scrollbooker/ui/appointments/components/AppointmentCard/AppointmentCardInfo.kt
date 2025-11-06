@@ -13,40 +13,56 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.components.core.avatar.Avatar
+import com.example.scrollbooker.components.core.avatar.AvatarWithRating
 import com.example.scrollbooker.core.extensions.toTwoDecimals
+import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointment
 import com.example.scrollbooker.entity.booking.appointment.domain.model.getProductNames
+import com.example.scrollbooker.ui.theme.Error
+import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
+import java.math.BigDecimal
 
 @Composable
 fun AppointmentCardInfo(appointment: Appointment) {
+    val user = appointment.user
+    val customer = appointment.customer
+    val ratingsAverage = appointment.user.ratingsAverage
+
     Column {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Avatar(
-                url = (if(appointment.isCustomer) appointment.user.avatar
-                        else appointment.customer.avatar).toString(),
-                size = 50.dp
-            )
+            if(appointment.isCustomer && ratingsAverage != null) {
+                AvatarWithRating(
+                    url = user.avatar ?: "",
+                    onClick = {},
+                    rating = ratingsAverage,
+                    size = 60.dp,
+                )
+            } else {
+                Avatar(
+                    url = customer.avatar ?: "",
+                    size = 60.dp,
+                )
+            }
             Spacer(Modifier.width(SpacingM))
 
             Column {
                 Text(
-                    text = if(appointment.isCustomer) appointment.user.fullName
-                        else appointment.customer.fullName,
+                    text = if(appointment.isCustomer) user.fullName else customer.fullName,
                     style = titleMedium,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = (if(appointment.isCustomer) appointment.user.profession
-                    else appointment.customer.profession).toString(),
+                    text = (if(appointment.isCustomer) user.profession else customer.profession).toString(),
                     color = Color.Gray,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -54,7 +70,7 @@ fun AppointmentCardInfo(appointment: Appointment) {
             }
         }
 
-        Spacer(Modifier.height(SpacingM))
+        Spacer(Modifier.height(BasePadding))
 
         Text(
             text = appointment.getProductNames(),
@@ -74,25 +90,26 @@ fun AppointmentCardInfo(appointment: Appointment) {
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = "${appointment.totalPrice.toTwoDecimals()} ${appointment.paymentCurrency.name}",
+                    text = "${appointment.totalPriceWithDiscount.toTwoDecimals()} ${appointment.paymentCurrency.name}",
                     style = titleMedium,
                     fontSize = 17.sp,
                     fontWeight = FontWeight.SemiBold
                 )
                 Spacer(Modifier.width(SpacingS))
 
-//                if(discount > BigDecimal.ZERO) {
-//                    Text(
-//                        text = appointment.totalPrice,
-//                        style = bodyMedium,
-//                        textDecoration = TextDecoration.LineThrough
-//                    )
-//                    Spacer(Modifier.width(SpacingS))
-//                    Text(
-//                        text = "(-${discount}%)",
-//                        color = Error
-//                    )
-//                }
+                if(appointment.totalDiscount > BigDecimal.ZERO) {
+                    Text(
+                        text = appointment.totalPrice.toTwoDecimals(),
+                        style = bodyMedium,
+                        textDecoration = TextDecoration.LineThrough,
+                        color = Color.Gray
+                    )
+                    Spacer(Modifier.width(SpacingS))
+                    Text(
+                        text = "(-${appointment.totalDiscount.toTwoDecimals()}%)",
+                        color = Error
+                    )
+                }
             }
         }
     }

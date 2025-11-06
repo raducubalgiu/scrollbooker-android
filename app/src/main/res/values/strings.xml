@@ -319,4 +319,6 @@
     <string name="distanceText">la %1$s km de tine</string>
     <string name="opensOnDayAt">Deschide %s la %s</string>
     <string name="managedProducts">Produse gestionate</string>
+    <string name="bookedServices">Servicii rezervate</string>
+    <string name="total">Total</string>
 </resources>

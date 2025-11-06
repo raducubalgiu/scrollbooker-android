@@ -223,7 +223,9 @@ fun AddProductScreen(
                         onValueChange = { name = it },
                         label = stringResource(R.string.name),
                         isError = !validation.isNameValid,
-                        errorMessage = validation.nameError.toString()
+                        errorMessage = validation.nameError.toString(),
+                        singleLine = false,
+                        maxLines = 3
                     )
 
                     Spacer(Modifier.height(BasePadding))

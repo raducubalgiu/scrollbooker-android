@@ -69,6 +69,7 @@ fun ProductsTab(
                                     isLoadingDelete = isSaving && selectedProduct?.id == product.id,
                                     isSelected = false,
                                     onSelect = {},
+                                    displayActions = true,
                                     //onNavigateToCalendar = {},
                                     onDeleteProduct = { productId: Int ->
                                         myProductsViewModel.deleteProduct(product, serviceId)
@@ -80,7 +81,7 @@ fun ProductsTab(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .padding(horizontal = BasePadding)
-                                            .height(0.55.dp)
+                                            .height(1.dp)
                                             .background(Divider)
                                     )
                                 }

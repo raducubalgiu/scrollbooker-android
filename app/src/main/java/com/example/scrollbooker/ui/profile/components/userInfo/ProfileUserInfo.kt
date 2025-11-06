@@ -124,7 +124,8 @@ fun ProfileUserInfo(
                         style = titleMedium,
                         modifier = Modifier.weight(1f, fill = false),
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        color = Color.Gray
                     )
                     if(isBusinessOrEmployee) {
                         Spacer(Modifier.width(5.dp))

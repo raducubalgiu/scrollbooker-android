@@ -28,6 +28,12 @@ data class AppointmentDto(
     @SerializedName("total_price")
     val totalPrice: BigDecimal,
 
+    @SerializedName("total_price_with_discount")
+    val totalPriceWithDiscount: BigDecimal,
+
+    @SerializedName("total_discount")
+    val totalDiscount: BigDecimal,
+
     @SerializedName("total_duration")
     val totalDuration: Int,
 
@@ -65,7 +71,13 @@ data class AppointmentUserDto(
 
     val username: String?,
     val avatar: String?,
-    val profession: String?
+    val profession: String?,
+
+    @SerializedName("ratings_average")
+    val ratingsAverage: Float?,
+
+    @SerializedName("ratings_count")
+    val ratingsCount: Int?
 )
 
 data class BusinessCoordinatesDto(

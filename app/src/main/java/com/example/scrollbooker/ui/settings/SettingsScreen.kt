@@ -23,7 +23,7 @@ import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.headlineLarge
 
-data class EditProfileItem(
+data class SettingsItem(
     val icon: Int,
     val headline: String,
     val navigate: () -> Unit
@@ -36,42 +36,42 @@ fun SettingsScreen(
     onLogout: () -> Unit
 ) {
     val editProfileItems = listOf(
-        EditProfileItem(
+        SettingsItem(
             headline = stringResource(R.string.account),
             icon = R.drawable.ic_person_outline,
             navigate = { settingsNavigate.toAccount() }
         ),
-        EditProfileItem(
+        SettingsItem(
             headline = stringResource(R.string.privacy),
             icon = R.drawable.ic_lock_closed_outline,
             navigate = { settingsNavigate.toPrivacy() }
         ),
-        EditProfileItem(
+        SettingsItem(
             headline = stringResource(R.string.security),
             icon = R.drawable.ic_shield_check_outline,
             navigate = { settingsNavigate.toSecurity() }
         ),
-        EditProfileItem(
+        SettingsItem(
             headline = stringResource(R.string.display),
             icon = R.drawable.ic_moon_outline,
             navigate = { settingsNavigate.toDisplay() }
         ),
-        EditProfileItem(
+        SettingsItem(
             headline = stringResource(R.string.notifications),
             icon = R.drawable.ic_notifications_outline,
             navigate = { settingsNavigate.toNotifications() }
         ),
-        EditProfileItem(
+        SettingsItem(
             headline = stringResource(R.string.reportProblem),
             icon = R.drawable.ic_flag_outline,
             navigate = { settingsNavigate.toReportProblem() }
         ),
-        EditProfileItem(
+        SettingsItem(
             headline = stringResource(R.string.support),
             icon = R.drawable.ic_comment_outline,
             navigate = { settingsNavigate.toSupport() }
         ),
-        EditProfileItem(
+        SettingsItem(
             headline = stringResource(R.string.termsAndConditions),
             icon = R.drawable.ic_info_outline,
             navigate = { settingsNavigate.toTermsAndConditions() }
@@ -79,7 +79,6 @@ fun SettingsScreen(
     )
 
     Layout(
-        headerTitle = "",
         onBack = onBack,
         enablePaddingH = false
     ) {

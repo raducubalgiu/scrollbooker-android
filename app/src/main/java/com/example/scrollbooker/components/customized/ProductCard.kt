@@ -126,15 +126,17 @@ fun ProductCard(
                     }
                 }
 
-                Protected(permission = PermissionEnum.BOOK_BUTTON_VIEW) {
-                    MainButtonOutlined(
-                        title = if(isSelected) stringResource(R.string.added)
-                                else stringResource(R.string.add),
-                        onClick = { onSelect(product) },
-                        trailingIcon = Icons.Default.Check,
-                        trailingIconTint = Primary,
-                        showTrailingIcon = isSelected
-                    )
+                if(!displayActions) {
+                    Protected(permission = PermissionEnum.BOOK_BUTTON_VIEW) {
+                        MainButtonOutlined(
+                            title = if(isSelected) stringResource(R.string.added)
+                            else stringResource(R.string.add),
+                            onClick = { onSelect(product) },
+                            trailingIcon = Icons.Default.Check,
+                            trailingIconTint = Primary,
+                            showTrailingIcon = isSelected
+                        )
+                    }
                 }
             }
 
