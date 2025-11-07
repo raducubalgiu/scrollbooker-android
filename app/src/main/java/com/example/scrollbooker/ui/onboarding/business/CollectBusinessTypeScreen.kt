@@ -35,7 +35,6 @@ fun CollectBusinessTypeScreen(
     val selectedBusinessType by viewModel.selectedBusinessType.collectAsState()
 
     FormLayout(
-        modifier = Modifier.padding(top = 50.dp),
         isEnabled = selectedBusinessType != null,
         headLine = stringResource(id = R.string.collectBusinessTypeHeadline),
         subHeadLine = stringResource(id = R.string.collectBusinessTypeSubHeadline),

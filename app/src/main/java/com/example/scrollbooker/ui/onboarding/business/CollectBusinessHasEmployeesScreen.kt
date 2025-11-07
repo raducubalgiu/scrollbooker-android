@@ -55,7 +55,6 @@ fun CollectBusinessHasEmployeesScreen(
     val verticalScroll = rememberScrollState()
 
     FormLayout(
-        modifier = Modifier.padding(top = 50.dp),
         headLine = stringResource(R.string.doYouHaveEmployees),
         subHeadLine = "",
         buttonTitle = stringResource(R.string.nextStep),
