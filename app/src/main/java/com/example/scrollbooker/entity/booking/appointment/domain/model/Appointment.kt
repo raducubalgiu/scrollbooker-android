@@ -32,6 +32,8 @@ data class Appointment(
     val totalDiscount: BigDecimal,
     val totalDuration: Int,
     val paymentCurrency: Currency,
+    val hasWrittenReview: Boolean,
+    val hasVideoReview: Boolean
 )
 
 data class AppointmentProduct(

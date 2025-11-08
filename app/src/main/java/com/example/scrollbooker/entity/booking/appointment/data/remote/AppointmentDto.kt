@@ -38,7 +38,13 @@ data class AppointmentDto(
     val totalDuration: Int,
 
     @SerializedName("payment_currency")
-    val paymentCurrency: CurrencyDto
+    val paymentCurrency: CurrencyDto,
+
+    @SerializedName("has_written_review")
+    val hasWrittenReview: Boolean,
+
+    @SerializedName("has_video_review")
+    val hasVideoReview: Boolean,
 )
 
 data class AppointmentProductDto(
@@ -60,7 +66,7 @@ data class AppointmentProductDto(
     val convertedPriceWithDiscount: BigDecimal,
 
     @SerializedName("exchange_rate_used")
-    val exchangeRate: BigDecimal?
+    val exchangeRate: BigDecimal?,
 )
 
 data class AppointmentUserDto(

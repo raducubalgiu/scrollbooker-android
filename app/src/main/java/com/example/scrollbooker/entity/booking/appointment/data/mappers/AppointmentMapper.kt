@@ -31,7 +31,9 @@ fun AppointmentDto.toDomain(): Appointment {
         totalPriceWithDiscount = totalPriceWithDiscount,
         totalDiscount = totalDiscount,
         totalDuration = totalDuration,
-        paymentCurrency = paymentCurrency.toDomain()
+        paymentCurrency = paymentCurrency.toDomain(),
+        hasWrittenReview = hasWrittenReview,
+        hasVideoReview = hasVideoReview
     )
 }
 
