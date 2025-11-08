@@ -3,9 +3,9 @@ package com.example.scrollbooker.core.extensions
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-fun Float.toTwoDecimals(): String {
+fun Float.toDecimals(decimals: Int = 2): String {
     if(!this.isFinite()) return this.toString()
-    val scaled = BigDecimal(this.toString()).setScale(2, RoundingMode.HALF_UP)
+    val scaled = BigDecimal(this.toString()).setScale(decimals, RoundingMode.HALF_UP)
     val stripped = scaled.stripTrailingZeros()
     return if (stripped.scale() <= 0) {
         stripped.toBigInteger().toString()

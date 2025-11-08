@@ -1,7 +1,9 @@
 package com.example.scrollbooker.entity.booking.review.data.remote
 
 import com.example.scrollbooker.core.util.PaginatedResponseDto
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -18,4 +20,10 @@ interface ReviewsApiService {
     suspend fun getReviewsSummary(
         @Path("userId") userId: Int
     ): ReviewsSummaryDto
+
+    @POST("appointments/{appointmentId}/create-review")
+    suspend fun createWrittenReview(
+        @Path("appointmentId") appointmentId: Int,
+        @Body request: ReviewCreateRequest
+    )
 }

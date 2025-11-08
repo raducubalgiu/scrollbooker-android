@@ -4,6 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.example.scrollbooker.entity.booking.review.data.mappers.toDomain
+import com.example.scrollbooker.entity.booking.review.data.remote.ReviewCreateRequest
 import com.example.scrollbooker.entity.booking.review.data.remote.ReviewPagingSource
 import com.example.scrollbooker.entity.booking.review.data.remote.ReviewsApiService
 import com.example.scrollbooker.entity.booking.review.domain.model.Review
@@ -24,5 +25,9 @@ class ReviewRepositoryImpl @Inject constructor(
 
     override suspend fun getReviewsSummary(userId: Int): ReviewsSummary {
         return apiService.getReviewsSummary(userId).toDomain()
+    }
+
+    override suspend fun createWrittenReview(appointmentId: Int, request: ReviewCreateRequest) {
+        return apiService.createWrittenReview(appointmentId, request)
     }
 }

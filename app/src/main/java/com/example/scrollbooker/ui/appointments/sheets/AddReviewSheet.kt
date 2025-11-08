@@ -53,9 +53,11 @@ import com.example.scrollbooker.ui.theme.titleMedium
 @Composable
 fun AddReviewSheet(
     sheetState: SheetState,
+    isSaving: Boolean,
     selectedRating: Int?,
     onRatingClick: (Int) -> Unit,
-    onClose: () -> Unit
+    onClose: () -> Unit,
+    onCreateReview: (String) -> Unit
 ) {
     var review by rememberSaveable { mutableStateOf("") }
     val ratingLabel = selectedRating?.let { ReviewLabel.fromValue(it) }?.labelRes
@@ -67,9 +69,7 @@ fun AddReviewSheet(
         onClose = onClose
     ) {
         Column(Modifier.fillMaxSize()) {
-            SheetHeader(
-                onClose = onClose
-            )
+            SheetHeader(onClose = onClose)
 
             Column(
                 modifier = Modifier
@@ -86,7 +86,9 @@ fun AddReviewSheet(
                         val fill = selectedRating != null && index <= selectedRating
 
                         Box(
-                            modifier = Modifier.size(50.dp).clickable { onRatingClick(index) },
+                            modifier = Modifier
+                                .size(50.dp)
+                                .clickable { onRatingClick(index) },
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
@@ -167,8 +169,9 @@ fun AddReviewSheet(
                     MainButton(
                         modifier = Modifier.padding(bottom = BasePadding),
                         title = stringResource(R.string.add),
-                        onClick = {},
-                        enabled = false
+                        onClick = { onCreateReview(review) },
+                        enabled = !isSaving,
+                        isLoading = isSaving
                     )
                 }
             }

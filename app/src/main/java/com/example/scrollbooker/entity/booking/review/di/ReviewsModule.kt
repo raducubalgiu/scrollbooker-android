@@ -4,6 +4,7 @@ import com.example.scrollbooker.core.util.Constants
 import com.example.scrollbooker.entity.booking.review.data.remote.ReviewsApiService
 import com.example.scrollbooker.entity.booking.review.data.repository.ReviewRepositoryImpl
 import com.example.scrollbooker.entity.booking.review.domain.repository.ReviewRepository
+import com.example.scrollbooker.entity.booking.review.domain.useCase.CreateWrittenReviewUseCase
 import com.example.scrollbooker.entity.booking.review.domain.useCase.GetReviewsSummaryUseCase
 import com.example.scrollbooker.entity.booking.review.domain.useCase.GetReviewsUseCase
 import dagger.Module
@@ -49,5 +50,13 @@ object ReviewsModule {
         repository: ReviewRepository,
     ): GetReviewsSummaryUseCase {
         return GetReviewsSummaryUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCreateWrittenReviewUseCase(
+        repository: ReviewRepository,
+    ): CreateWrittenReviewUseCase {
+        return CreateWrittenReviewUseCase(repository)
     }
 }

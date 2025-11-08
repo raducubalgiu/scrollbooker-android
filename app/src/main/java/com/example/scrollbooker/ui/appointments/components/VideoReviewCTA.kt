@@ -45,6 +45,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
+import com.example.scrollbooker.core.extensions.toDecimals
 import com.example.scrollbooker.core.extensions.toTwoDecimals
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnPrimary
@@ -102,7 +103,7 @@ fun VideoReviewCTA(
                 fontSize = 15.sp
             )
         ) {
-            append("${discount.toTwoDecimals()}%")
+            append("${discount.toDecimals()}%")
         }
 
         append(" ${stringResource(R.string.discountForTheNextBooking)}")

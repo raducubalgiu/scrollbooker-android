@@ -51,6 +51,7 @@ fun AppointmentDetailsScreen(
     onNavigateToCancel: () -> Unit,
 ) {
     val appointment by viewModel.selectedAppointment.collectAsState()
+    val isSaving by viewModel.isSaving.collectAsState()
     var selectedRating by remember { mutableStateOf<Int?>(null) }
 
     val scope = rememberCoroutineScope()
@@ -78,7 +79,17 @@ fun AppointmentDetailsScreen(
             sheetState = reviewSheetState,
             selectedRating = selectedRating,
             onRatingClick = { selectedRating = it },
-            onClose = { scope.launch { reviewSheetState.hide()} }
+            onClose = { scope.launch { reviewSheetState.hide()} },
+            isSaving = isSaving,
+            onCreateReview = {
+                selectedRating?.let { rating ->
+                    viewModel.createReview(
+                        appointment = appointment,
+                        rating = rating,
+                        review = it
+                    )
+                }
+            }
         )
     }
 
