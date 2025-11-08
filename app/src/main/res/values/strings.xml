@@ -323,4 +323,8 @@
     <string name="total">Total</string>
     <string name="deleteRequest">Ștergere cerere</string>
     <string name="areYouSureDeleteEmploymentRequest">Ești sigur că vrei să ștergi această cerere de angajare?"</string>
+    <string name="youCanAddVideoReview">Poți adăuga un review video</string>
+    <string name="addVideoReview">Adaugă un review video</string>
+    <string name="discountForTheNextBooking">reducere pentru următoarea rezervare</string>
+    <string name="youGet">Primești</string>
 </resources>

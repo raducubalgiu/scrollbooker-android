@@ -50,6 +50,8 @@ import com.example.scrollbooker.entity.booking.appointment.domain.model.displayA
 import com.example.scrollbooker.entity.booking.appointment.domain.model.getStatusColor
 import com.example.scrollbooker.entity.booking.appointment.domain.model.getStatusRes
 import com.example.scrollbooker.ui.appointments.components.AppointmentProductPrice
+import com.example.scrollbooker.ui.appointments.components.ReviewCTA
+import com.example.scrollbooker.ui.appointments.components.VideoReviewCTA
 import com.example.scrollbooker.ui.shared.location.LocationSection
 import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheet
 import com.example.scrollbooker.ui.theme.Background
@@ -161,7 +163,7 @@ fun AppointmentDetailsScreen(
                                 overflow = TextOverflow.Ellipsis
                             )
                             Text(
-                                text = "${a.user.profession} - ${a.user.ratingsCount} Recenzii",
+                                text = "${a.user.profession} - ${a.user.ratingsCount} ${stringResource(R.string.reviews)}",
                                 color = Color.Gray,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
@@ -234,6 +236,16 @@ fun AppointmentDetailsScreen(
                     }
                     else -> Unit
                 }
+
+                Spacer(Modifier.height(SpacingXL))
+
+                ReviewCTA()
+
+                Spacer(Modifier.height(SpacingXL))
+
+                VideoReviewCTA(onClick = {})
+
+                Spacer(Modifier.height(SpacingXL))
 
                 a.message?.let {
                     Column {

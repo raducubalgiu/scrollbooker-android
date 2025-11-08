@@ -59,24 +59,24 @@ fun LocationSection(modifier: Modifier = Modifier) {
                 val location = business.data
 
                 Column {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_location_outline),
-                            contentDescription = null,
-                            tint = Primary
-                        )
-
-                        Spacer(Modifier.width(SpacingS))
-
-                        Text(
-                            text = location.distance?.let { stringResource(R.string.distanceText, 10) }
-                                ?: stringResource(R.string.activateLocationForSeeTheDistance),
-                            style = titleMedium,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                    }
-
-                    Spacer(Modifier.height(SpacingM))
+//                    Row(verticalAlignment = Alignment.CenterVertically) {
+//                        Icon(
+//                            painter = painterResource(R.drawable.ic_location_outline),
+//                            contentDescription = null,
+//                            tint = Primary
+//                        )
+//
+//                        Spacer(Modifier.width(SpacingS))
+//
+//                        Text(
+//                            text = location.distance?.let { stringResource(R.string.distanceText, 10) }
+//                                ?: stringResource(R.string.activateLocationForSeeTheDistance),
+//                            style = titleMedium,
+//                            fontWeight = FontWeight.SemiBold
+//                        )
+//                    }
+//
+//                    Spacer(Modifier.height(SpacingM))
 
                     Text(
                         text = "${stringResource(R.string.address)}: ${location.address}",
