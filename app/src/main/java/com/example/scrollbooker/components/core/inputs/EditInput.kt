@@ -4,12 +4,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.Icon
@@ -22,6 +26,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
@@ -43,7 +50,6 @@ fun EditInput(
     maxLines: Int = 1,
     isError: Boolean = false,
     isEnabled: Boolean = true,
-    leadingIcon: (@Composable () -> Unit)? = null,
     errorMessage: String? = "",
     maxLength: Int? = null,
     indicatorColor: Color = Divider
@@ -63,7 +69,11 @@ fun EditInput(
                 onValueChange(newValue)
             }
         },
-        leadingIcon = leadingIcon,
+        keyboardOptions = KeyboardOptions(
+            imeAction = ImeAction.Done,
+            keyboardType = KeyboardType.Text
+        ),
+        leadingIcon = null,
         trailingIcon = {
             if(singleLine && value.isNotEmpty()) {
                 EditInputTrailingIcon(isEnabled, onValueChange)
@@ -92,7 +102,7 @@ fun EditInput(
         enabled = isEnabled,
         supportingText = {
             EditInputSupportingText(maxLength, value, isError, errorMessage)
-        }
+        },
     )
 }
 

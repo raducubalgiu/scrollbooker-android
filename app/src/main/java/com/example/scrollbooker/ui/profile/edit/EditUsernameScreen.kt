@@ -53,12 +53,12 @@ fun EditUsernameScreen(
             value = newUsername,
             onValueChange = { newUsername = it },
             placeholder = stringResource(R.string.username),
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Default.AlternateEmail,
-                    contentDescription = null
-                )
-            }
+//            leadingIcon = {
+//                Icon(
+//                    imageVector = Icons.Default.AlternateEmail,
+//                    contentDescription = null
+//                )
+//            }
         )
     }
 }

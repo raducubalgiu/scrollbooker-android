@@ -14,7 +14,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Warning
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -26,7 +25,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -37,10 +39,8 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.components.core.avatar.AvatarWithRating
-import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.sheet.Sheet
-import com.example.scrollbooker.core.enums.AppointmentStatusEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
@@ -49,9 +49,11 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.entity.booking.appointment.domain.model.displayAppointmentDate
 import com.example.scrollbooker.entity.booking.appointment.domain.model.getStatusColor
 import com.example.scrollbooker.entity.booking.appointment.domain.model.getStatusRes
+import com.example.scrollbooker.ui.appointments.components.AppointmentDetailsActions
 import com.example.scrollbooker.ui.appointments.components.AppointmentProductPrice
 import com.example.scrollbooker.ui.appointments.components.ReviewCTA
 import com.example.scrollbooker.ui.appointments.components.VideoReviewCTA
+import com.example.scrollbooker.ui.appointments.sheets.AddReviewSheet
 import com.example.scrollbooker.ui.shared.location.LocationSection
 import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheet
 import com.example.scrollbooker.ui.theme.Background
@@ -68,12 +70,16 @@ import kotlinx.coroutines.launch
 fun AppointmentDetailsScreen(
     viewModel: AppointmentsViewModel,
     onBack: () -> Unit,
-    onNavigateToCancel: () -> Unit
+    onNavigateToCancel: () -> Unit,
 ) {
     val appointment by viewModel.selectedAppointment.collectAsState()
+    var selectedRating by remember { mutableStateOf<Int?>(null) }
 
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val reviewSheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true,
+    )
 
     if(sheetState.isVisible) {
         Sheet(
@@ -91,13 +97,22 @@ fun AppointmentDetailsScreen(
         }
     }
 
+    if(reviewSheetState.isVisible) {
+        AddReviewSheet(
+            sheetState = reviewSheetState,
+            selectedRating = selectedRating,
+            onRatingClick = { selectedRating = it },
+            onClose = { scope.launch { reviewSheetState.hide()} }
+        )
+    }
+
     Scaffold(
         topBar = { Header(onBack = onBack) },
         containerColor = Background
     ) { innerPadding ->
         Column(modifier = Modifier
             .fillMaxSize()
-            .padding(innerPadding)
+            .padding(top = innerPadding.calculateTopPadding())
             .padding(horizontal = SpacingXL)
             .verticalScroll(rememberScrollState())
         ) {
@@ -172,16 +187,12 @@ fun AppointmentDetailsScreen(
                     }
                 }
 
-
-                Spacer(Modifier.height(SpacingXL))
-
                 Text(
+                    modifier = Modifier.padding(vertical = SpacingXL),
                     text = "${stringResource(R.string.bookedServices)}:",
                     style = titleMedium,
                     fontWeight = FontWeight.SemiBold
                 )
-
-                Spacer(Modifier.height(SpacingXL))
 
                 a.products.forEachIndexed { index, prod ->
                     AppointmentProductPrice(
@@ -208,6 +219,7 @@ fun AppointmentDetailsScreen(
                 )
 
                 AppointmentProductPrice(
+                    modifier = Modifier.padding(bottom = SpacingXL),
                     name = stringResource(R.string.total),
                     price = a.totalPrice,
                     priceWithDiscount = a.totalPriceWithDiscount,
@@ -215,53 +227,41 @@ fun AppointmentDetailsScreen(
                     currencyName = a.paymentCurrency.name
                 )
 
-                Spacer(Modifier.height(SpacingXL))
+                AppointmentDetailsActions(
+                    modifier = Modifier.padding(bottom = SpacingXL),
+                    status = a.status,
+                    onNavigateToCancel = onNavigateToCancel,
+                    onShowBookingsSheet = { scope.launch { sheetState.show() } }
+                )
 
-                when(a.status) {
-                    AppointmentStatusEnum.IN_PROGRESS -> {
-                        MainButton(
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Error,
-                                contentColor = Color.White,
-                            ),
-                            title = stringResource(R.string.cancel),
-                            onClick = onNavigateToCancel
-                        )
+                ReviewCTA(
+                    modifier = Modifier.padding(bottom = SpacingXL),
+                    onRatingClick = {
+                        scope.launch {
+                            selectedRating = it
+                            reviewSheetState.show()
+                        }
                     }
-                    AppointmentStatusEnum.FINISHED -> {
-                        MainButton(
-                            title = stringResource(R.string.bookAgain),
-                            onClick = { scope.launch { sheetState.show() } }
-                        )
-                    }
-                    else -> Unit
-                }
-
-                Spacer(Modifier.height(SpacingXL))
-
-                ReviewCTA()
-
-                Spacer(Modifier.height(SpacingXL))
+                )
 
                 VideoReviewCTA(onClick = {})
 
-                Spacer(Modifier.height(SpacingXL))
-
                 a.message?.let {
-                    Column {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                imageVector = Icons.Outlined.Warning,
-                                contentDescription = null,
-                                tint = Error
-                            )
-                            Spacer(Modifier.width(SpacingS))
-                            Text(
-                                text = "${stringResource(R.string.cancelReason)}: ${appointment?.message ?: ""}",
-                                color = Error,
-                                style = bodyMedium
-                            )
-                        }
+                    Row(
+                        modifier = Modifier.padding(top = SpacingXL),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Warning,
+                            contentDescription = null,
+                            tint = Error
+                        )
+                        Spacer(Modifier.width(SpacingS))
+                        Text(
+                            text = "${stringResource(R.string.cancelReason)}: ${appointment?.message ?: ""}",
+                            color = Error,
+                            style = bodyMedium
+                        )
                     }
                 }
             }

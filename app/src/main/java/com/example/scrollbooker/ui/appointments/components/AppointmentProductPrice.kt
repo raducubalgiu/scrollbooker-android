@@ -24,6 +24,7 @@ import java.math.BigDecimal
 
 @Composable
 fun AppointmentProductPrice(
+    modifier: Modifier = Modifier,
     name: String,
     price: BigDecimal,
     priceWithDiscount: BigDecimal,
@@ -31,7 +32,7 @@ fun AppointmentProductPrice(
     currencyName: String
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().then(modifier),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

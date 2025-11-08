@@ -1,7 +1,9 @@
 package com.example.scrollbooker.ui.appointments.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,16 +21,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
-fun ReviewCTA(modifier: Modifier = Modifier) {
-    Column(modifier = Modifier
+fun ReviewCTA(
+    modifier: Modifier = Modifier,
+    onRatingClick: (Int) -> Unit
+) {
+    Column(modifier = modifier
         .fillMaxWidth()
         .clip(shape = ShapeDefaults.Medium)
         .background(SurfaceBG)
@@ -37,7 +43,7 @@ fun ReviewCTA(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "CLICK PE O STEA PENTRU A EVALUA",
+            text = stringResource(R.string.clickOnRatingToEvaluate),
             style = titleMedium,
             color = Color.Gray
         )
@@ -47,15 +53,20 @@ fun ReviewCTA(modifier: Modifier = Modifier) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(SpacingM, Alignment.CenterHorizontally)
+            horizontalArrangement = Arrangement.Center
         ) {
-            repeat(5) {
-                Icon(
-                    modifier = Modifier.size(37.5.dp),
-                    imageVector = Icons.Outlined.StarOutline,
-                    contentDescription = null,
-                    tint = Color.Gray
-                )
+            repeat(5) { rating ->
+                Box(
+                    modifier = Modifier.size(50.dp).clickable { onRatingClick(rating) },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        modifier = Modifier.size(37.5.dp),
+                        imageVector = Icons.Outlined.StarOutline,
+                        contentDescription = null,
+                        tint = Color.Gray
+                    )
+                }
             }
         }
     }

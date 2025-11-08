@@ -58,9 +58,8 @@ fun ProfileBookmarksTab(
 
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(3),
-                        contentPadding = PaddingValues(2.dp),
-                        verticalArrangement = Arrangement.spacedBy(2.dp),
-                        horizontalArrangement = Arrangement.spacedBy(2.dp),
+                        verticalArrangement = Arrangement.spacedBy(1.dp),
+                        horizontalArrangement = Arrangement.spacedBy(1.dp),
                         modifier = Modifier.fillMaxSize()
                     ) {
                         items(posts.itemCount) { index ->

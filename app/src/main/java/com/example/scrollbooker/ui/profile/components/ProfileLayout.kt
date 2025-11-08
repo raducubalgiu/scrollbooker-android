@@ -135,7 +135,8 @@ fun ProfileLayout(
                     HorizontalPager(
                         state = pagerState,
                         beyondViewportPageCount = 0,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        overscrollEffect = null
                     ) { page ->
                         val viewModel: ProfileTabViewModel = hiltViewModel()
 

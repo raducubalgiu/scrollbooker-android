@@ -327,4 +327,10 @@
     <string name="addVideoReview">Adaugă un review video</string>
     <string name="discountForTheNextBooking">reducere pentru următoarea rezervare</string>
     <string name="youGet">Primești</string>
+    <string name="yourReview">Recenzia ta</string>
+    <string name="howWasYourExperience">Cum a fost experiența ta?</string>
+    <string name="howWasYourExperienceDescription">Recenzia ta îi ajută pe alții să facă alegeri potrivite, iar business-ul să-și îmbunătățească serviciile.</string>
+    <string name="shareSomeDetailsAboutYourExperience">Împărtășește câteva detalii (atmosferă, rezultate, comunicare…)</string>
+    <string name="clickOnRatingToEvaluate">Click pe o stea pentru a evalua</string>
+    <string name="from5">din 5</string>
 </resources>
