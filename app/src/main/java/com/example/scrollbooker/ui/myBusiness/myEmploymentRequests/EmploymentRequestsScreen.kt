@@ -50,15 +50,16 @@ fun EmploymentRequestsScreen(
                 selectedEmployment = null
             },
             onConfirmation = {},
-            title = "Stergere cerere",
-            text = "Esti sigur ca vrei sa stergi aceasta cerere de angajare?",
-            confirmText = "Sterge"
+            title = stringResource(R.string.deleteRequest),
+            text = stringResource(R.string.areYouSureDeleteEmploymentRequest),
+            confirmText = stringResource(R.string.delete)
         )
     }
 
     Layout(
         headerTitle = stringResource(R.string.employmentRequests),
-        onBack = onBack
+        onBack = onBack,
+        enablePaddingH = false
     ) {
         Column(Modifier.fillMaxSize()) {
             when(val result = state) {
@@ -76,14 +77,6 @@ fun EmploymentRequestsScreen(
                                     selectedEmployment = it
                                 }
                             )
-
-                            if(index < result.data.size - 1) {
-                                HorizontalDivider(
-                                    modifier = Modifier.padding(vertical = SpacingXL),
-                                    color = Divider,
-                                    thickness = 0.55.dp
-                                )
-                            }
                         }
                     }
                 }
@@ -93,7 +86,11 @@ fun EmploymentRequestsScreen(
                 HorizontalDivider(color = Divider, thickness = 0.55.dp)
                 Spacer(Modifier.height(BasePadding))
                 MainButton(
-                    modifier = Modifier.padding(bottom = BasePadding),
+                    modifier = Modifier.padding(
+                        start = SpacingXL,
+                        end = SpacingXL,
+                        bottom = BasePadding
+                    ),
                     title = stringResource(R.string.sendAnEmploymentRequest),
                     onClick = onNavigateSelectEmployee,
                 )

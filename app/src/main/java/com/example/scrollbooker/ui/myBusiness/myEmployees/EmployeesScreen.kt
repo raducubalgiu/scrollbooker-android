@@ -29,7 +29,8 @@ fun EmployeesScreen(
 
     Layout(
         headerTitle = stringResource(R.string.employees),
-        onBack = onBack
+        onBack = onBack,
+        enablePaddingH = false
     ) {
         Column(Modifier.fillMaxSize()) {
             when(refreshState) {

@@ -321,4 +321,6 @@
     <string name="managedProducts">Produse gestionate</string>
     <string name="bookedServices">Servicii rezervate</string>
     <string name="total">Total</string>
+    <string name="deleteRequest">Ștergere cerere</string>
+    <string name="areYouSureDeleteEmploymentRequest">Ești sigur că vrei să ștergi această cerere de angajare?"</string>
 </resources>

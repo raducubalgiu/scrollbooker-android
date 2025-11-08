@@ -24,6 +24,7 @@ import com.example.scrollbooker.components.core.avatar.AvatarWithRating
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
+import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
 import com.example.scrollbooker.ui.theme.Divider
@@ -40,9 +41,13 @@ fun EmployeeCard(
 ) {
     Column(modifier = Modifier
         .fillMaxSize()
-        .padding(bottom = BasePadding)
+        .padding(
+            start = SpacingXL,
+            end = SpacingXL,
+            bottom = BasePadding
+        )
         .shadow(
-            elevation = 2.dp,
+            elevation = 1.dp,
             shape = ShapeDefaults.Medium,
             clip = false
         )
