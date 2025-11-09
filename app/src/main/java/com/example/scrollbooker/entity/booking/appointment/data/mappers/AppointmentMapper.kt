@@ -5,11 +5,13 @@ import com.example.scrollbooker.entity.booking.appointment.data.remote.Appointme
 import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentDto
 import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentProductDto
 import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentUserDto
+import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentWrittenReviewDto
 import com.example.scrollbooker.entity.booking.appointment.data.remote.BusinessCoordinatesDto
 import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointment
 import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentBusiness
 import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentProduct
 import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentUser
+import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentWrittenReview
 import com.example.scrollbooker.entity.booking.appointment.domain.model.BusinessCoordinates
 import com.example.scrollbooker.entity.nomenclature.currency.data.mapper.toDomain
 import org.threeten.bp.ZonedDateTime
@@ -33,7 +35,16 @@ fun AppointmentDto.toDomain(): Appointment {
         totalDuration = totalDuration,
         paymentCurrency = paymentCurrency.toDomain(),
         hasWrittenReview = hasWrittenReview,
-        hasVideoReview = hasVideoReview
+        hasVideoReview = hasVideoReview,
+        writtenReview = writtenReview?.toDomain()
+    )
+}
+
+fun AppointmentWrittenReviewDto.toDomain(): AppointmentWrittenReview {
+    return AppointmentWrittenReview(
+        id = id,
+        review = review,
+        rating = rating
     )
 }
 

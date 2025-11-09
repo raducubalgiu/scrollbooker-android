@@ -45,6 +45,15 @@ data class AppointmentDto(
 
     @SerializedName("has_video_review")
     val hasVideoReview: Boolean,
+
+    @SerializedName("written_review")
+    val writtenReview: AppointmentWrittenReviewDto?
+)
+
+data class AppointmentWrittenReviewDto(
+    val id: Int,
+    val review: String?,
+    val rating: Int
 )
 
 data class AppointmentProductDto(

@@ -33,7 +33,14 @@ data class Appointment(
     val totalDuration: Int,
     val paymentCurrency: Currency,
     val hasWrittenReview: Boolean,
-    val hasVideoReview: Boolean
+    val hasVideoReview: Boolean,
+    val writtenReview: AppointmentWrittenReview?
+)
+
+data class AppointmentWrittenReview(
+    val id: Int,
+    val review: String?,
+    val rating: Int
 )
 
 data class AppointmentProduct(
