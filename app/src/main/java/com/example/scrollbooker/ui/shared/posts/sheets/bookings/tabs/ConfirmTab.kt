@@ -9,11 +9,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -28,23 +30,19 @@ import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
-import com.example.scrollbooker.entity.booking.calendar.domain.model.Slot
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.ui.appointments.components.AppointmentProductPrice
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodySmall
-import com.example.scrollbooker.ui.theme.headlineMedium
 import com.example.scrollbooker.ui.theme.headlineSmall
 import com.example.scrollbooker.ui.theme.titleMedium
 import java.math.BigDecimal
 
 @Composable
 fun ConfirmTab(
-    totalPrice: BigDecimal,
     totalPriceWithDiscount: BigDecimal,
-    totalDiscount: BigDecimal,
-    selectedSlot: Slot?,
+    totalDuration: Int,
     products: Set<Product>,
     isSaving: Boolean,
     onSave: () -> Unit
@@ -63,6 +61,7 @@ fun ConfirmTab(
                     url = "",
                     onClick = {},
                     rating = 4.5f,
+                    size = 65.dp
                 )
 
                 Spacer(Modifier.width(SpacingM))
@@ -95,13 +94,23 @@ fun ConfirmTab(
                     fontWeight = FontWeight.SemiBold
                 )
 
-                Spacer(Modifier.height(SpacingS))
+                Spacer(Modifier.height(SpacingM))
 
-                Text(
-                    text = "(60 min)",
-                    style = bodyLarge,
-                    color = Color.Gray
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_clock_outline),
+                        contentDescription = null,
+                        tint = Color.Gray
+                    )
+
+                    Spacer(Modifier.width(SpacingS))
+
+                    Text(
+                        text = "($totalDuration min)",
+                        style = bodyLarge,
+                        color = Color.Gray
+                    )
+                }
             }
 
             Text(
@@ -155,7 +164,7 @@ fun ConfirmTab(
                 )
             }
 
-            Spacer(Modifier.height(SpacingS))
+            Spacer(Modifier.height(SpacingM))
 
             Text(
                 text = "*Plata se va efectua la locatie in numerar sau in modalitatile de plata acceptate",

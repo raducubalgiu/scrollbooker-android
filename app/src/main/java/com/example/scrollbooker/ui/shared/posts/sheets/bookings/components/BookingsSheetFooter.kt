@@ -75,7 +75,7 @@ fun BookingsSheetFooter(
             }
 
             Button(
-                shape = ShapeDefaults.Medium,
+                shape = ShapeDefaults.Small,
                 contentPadding = PaddingValues(
                     vertical = BasePadding,
                     horizontal = SpacingXXL

@@ -23,7 +23,6 @@ import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentScrollBookerCreate
-import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -90,11 +89,7 @@ fun BookingsSheet(
             currentStep = currentStep
         )
 
-        Box(
-            Modifier
-                .weight(1f)
-                .fillMaxWidth()
-        ) {
+        Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
             VerticalPager(
                 state = pagerState,
                 beyondViewportPageCount = 0,
@@ -122,18 +117,16 @@ fun BookingsSheet(
                         }
                     )
                     2 -> ConfirmTab(
-                        totalPrice = totalPrice,
                         totalPriceWithDiscount = totalPriceWithDiscount,
-                        totalDiscount = totalDiscount,
-                        selectedSlot = selectedSlot,
+                        totalDuration = totalDuration,
                         products = selectedProducts,
                         isSaving = isSaving,
                         onSave = {
                             selectedSlot?.let { slot ->
                                 bookingsSheetViewModel.createAppointment(
                                     AppointmentScrollBookerCreate(
-                                        startDate = slot.startDateUtc,
-                                        endDate = slot.endDateUtc,
+                                        startDate = slot.startDateUtc.toString(),
+                                        endDate = slot.endDateUtc.toString(),
                                         userId = userId,
                                         productIds = selectedProducts.map { it.id },
                                         currencyId = 1

@@ -40,22 +40,22 @@ fun InboxScreen(
                 is LoadState.Loading -> { LoadingScreen() }
                 is LoadState.Error -> ErrorScreen()
                 is LoadState.NotLoading -> {
-                    NotificationsList(
-                        viewModel = viewModel,
-                        notifications = notifications,
-                        onFollow = { isFollowed, userId ->
-                            viewModel.follow(isFollowed, userId)
-                        },
-                        inboxNavigate = inboxNavigate
-                    )
+                    if(notifications.itemCount == 0) {
+                        MessageScreen(
+                            message = stringResource(R.string.dontHaveAnyNotification),
+                            icon = painterResource(R.drawable.ic_notifications_alert_outline)
+                        )
+                    } else {
+                        NotificationsList(
+                            viewModel = viewModel,
+                            notifications = notifications,
+                            onFollow = { isFollowed, userId ->
+                                viewModel.follow(isFollowed, userId)
+                            },
+                            inboxNavigate = inboxNavigate
+                        )
+                    }
                 }
-            }
-
-            if(refreshState is LoadState.NotLoading && notifications.itemCount == 0) {
-                MessageScreen(
-                    message = stringResource(R.string.dontHaveAnyNotification),
-                    icon = painterResource(R.drawable.ic_notifications_alert_outline)
-                )
             }
         }
     }
