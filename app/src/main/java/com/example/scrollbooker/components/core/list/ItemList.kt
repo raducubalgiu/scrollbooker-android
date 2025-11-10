@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
@@ -21,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodySmall
 
@@ -34,7 +36,9 @@ fun ItemList(
     leftIcon: Painter? = null,
     displayRightIcon: Boolean = true,
     onClick: () -> Unit,
-    color: Color = OnBackground
+    color: Color = OnBackground,
+    isLoading: Boolean = false,
+    loadingColor: Color = Primary
 ) {
 
     ListItem(
@@ -64,12 +68,19 @@ fun ItemList(
             }
         },
         leadingContent = {
-            if(leftIcon != null) {
-                Icon(
-                    painter = leftIcon,
-                    contentDescription = null,
-                    tint = color
+            if(isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(21.dp),
+                    color = loadingColor
                 )
+            } else {
+                leftIcon?.let {
+                    Icon(
+                        painter = leftIcon,
+                        contentDescription = null,
+                        tint = color
+                    )
+                }
             }
         },
         trailingContent = {

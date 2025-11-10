@@ -58,6 +58,8 @@ fun NavGraphBuilder.appointmentsGraph(
         }
 
         composable(route = MainRoute.AppointmentDetails.route) { backStackEntry ->
+            val mainNavController = LocalMainNavController.current
+
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(MainRoute.AppointmentsNavigator.route)
             }
@@ -66,7 +68,8 @@ fun NavGraphBuilder.appointmentsGraph(
             AppointmentDetailsScreen(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
-                onNavigateToCancel = { navController.navigate(MainRoute.AppointmentCancel.route) }
+                onNavigateToCancel = { navController.navigate(MainRoute.AppointmentCancel.route) },
+                onNavigateToCamera = { mainNavController.navigate(MainRoute.Camera.route) }
             )
         }
 

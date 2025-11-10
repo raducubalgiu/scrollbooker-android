@@ -2,6 +2,7 @@ package com.example.scrollbooker.entity.booking.review.data.remote
 
 import com.example.scrollbooker.core.util.PaginatedResponseDto
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -25,5 +26,10 @@ interface ReviewsApiService {
     suspend fun createWrittenReview(
         @Path("appointmentId") appointmentId: Int,
         @Body request: ReviewCreateRequest
+    ): ReviewMiniDto
+
+    @DELETE("reviews/{reviewId}")
+    suspend fun deleteWrittenReview(
+        @Path("reviewId") reviewId: Int
     )
 }

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -22,6 +23,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -33,15 +36,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
+import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.inputs.EditInput
 import com.example.scrollbooker.components.core.sheet.Sheet
 import com.example.scrollbooker.components.core.sheet.SheetHeader
+import com.example.scrollbooker.core.util.Dimens.AvatarSizeXXS
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
+import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
+import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentUser
 import com.example.scrollbooker.entity.booking.review.data.remote.ReviewLabel
+import com.example.scrollbooker.ui.appointments.AppointmentsViewModel
+import com.example.scrollbooker.ui.appointments.RatingReviewUpdate
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
@@ -52,16 +62,31 @@ import com.example.scrollbooker.ui.theme.titleMedium
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddReviewSheet(
+    viewModel: AppointmentsViewModel,
     sheetState: SheetState,
+    user: AppointmentUser,
     isSaving: Boolean,
-    selectedRating: Int?,
-    onRatingClick: (Int) -> Unit,
     onClose: () -> Unit,
-    onCreateReview: (String) -> Unit
+    onCreateReview: () -> Unit
 ) {
-    var review by rememberSaveable { mutableStateOf("") }
-    val ratingLabel = selectedRating?.let { ReviewLabel.fromValue(it) }?.labelRes
+    val selectedWrittenReview by viewModel.selectedWrittenReview.collectAsState()
+
+    val ratingLabel = selectedWrittenReview?.rating?.let { ReviewLabel.fromValue(it) }?.labelRes
     val ratingLabelRes = ratingLabel?.let { stringResource(it) }
+    val createState by viewModel.createReviewState.collectAsState()
+
+    LaunchedEffect(createState) {
+        when(createState) {
+            is FeatureState.Success -> {
+                viewModel.consumeCreateReviewState()
+                onClose()
+            }
+            is FeatureState.Error -> {
+                viewModel.consumeCreateReviewState()
+            }
+            else -> Unit
+        }
+    }
 
     Sheet(
         modifier = Modifier.statusBarsPadding(),
@@ -69,7 +94,10 @@ fun AddReviewSheet(
         onClose = onClose
     ) {
         Column(Modifier.fillMaxSize()) {
-            SheetHeader(onClose = onClose)
+            AddReviewSheetHeader(
+                user = user,
+                onClose = onClose
+            )
 
             Column(
                 modifier = Modifier
@@ -77,54 +105,20 @@ fun AddReviewSheet(
                     .imePadding()
                     .verticalScroll(rememberScrollState())
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    repeat(5) { index ->
-                        val fill = selectedRating != null && index <= selectedRating
-
-                        Box(
-                            modifier = Modifier
-                                .size(50.dp)
-                                .clickable { onRatingClick(index) },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(37.5.dp),
-                                imageVector = if(fill) Icons.Default.Star else Icons.Outlined.StarOutline,
-                                contentDescription = null,
-                                tint = if(fill) Primary else Divider
+                AddReviewRatingSection(
+                    selectedRating = selectedWrittenReview?.rating,
+                    onRatingClick = {
+                        selectedWrittenReview?.let { selected ->
+                            viewModel.setSelectedWrittenReview(
+                                RatingReviewUpdate(
+                                    rating = it,
+                                    review = selected.review
+                                )
                             )
                         }
-                    }
-                }
-
-                Spacer(Modifier.height(SpacingM))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = "${selectedRating?.plus(1)} ${stringResource(R.string.from5)}",
-                        color = Color.Gray
-                    )
-
-                    Text(
-                        modifier = Modifier.padding(horizontal = SpacingM),
-                        text = "•"
-                    )
-
-                    Text(
-                        text = ratingLabelRes ?: "",
-                        style = titleMedium,
-                        fontWeight = FontWeight.SemiBold
-
-                    )
-                }
+                    },
+                    ratingLabel = ratingLabelRes ?: ""
+                )
 
                 Spacer(Modifier.height(SpacingXL))
 
@@ -155,12 +149,21 @@ fun AddReviewSheet(
                     Spacer(Modifier.height(SpacingM))
 
                     EditInput(
-                        value = review,
-                        onValueChange = { review = it },
+                        value = selectedWrittenReview?.review ?: "",
+                        onValueChange = {
+                            selectedWrittenReview?.let { selected ->
+                                viewModel.setSelectedWrittenReview(
+                                    RatingReviewUpdate(
+                                        rating = selected.rating,
+                                        review = it
+                                    )
+                                )
+                            }
+                        },
                         placeholder = stringResource(R.string.shareSomeDetailsAboutYourExperience),
                         singleLine = false,
-                        minLines = 5,
-                        maxLines = 5,
+                        minLines = 4,
+                        maxLines = 4,
                         maxLength = 200
                     )
 
@@ -169,12 +172,95 @@ fun AddReviewSheet(
                     MainButton(
                         modifier = Modifier.padding(bottom = BasePadding),
                         title = stringResource(R.string.add),
-                        onClick = { onCreateReview(review) },
+                        onClick = onCreateReview,
                         enabled = !isSaving,
                         isLoading = isSaving
                     )
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun AddReviewSheetHeader(
+    user: AppointmentUser,
+    onClose: () -> Unit
+) {
+    SheetHeader(
+        customTitle = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Avatar(url = user.avatar ?: "", size = 25.dp)
+
+                Spacer(Modifier.width(SpacingS))
+
+                Text(
+                    text = user.fullName,
+                    fontWeight = FontWeight.SemiBold,
+                    style = titleMedium
+                )
+            }
+        },
+        onClose = onClose
+    )
+}
+
+@Composable
+private fun AddReviewRatingSection(
+    selectedRating: Int?,
+    onRatingClick: (Int) -> Unit,
+    ratingLabel: String
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        repeat(5) { index ->
+            val rating = index + 1
+            val fill = selectedRating?.let { rating <= it } == true
+
+            Box(
+                modifier = Modifier
+                    .size(50.dp)
+                    .clickable { onRatingClick(rating) },
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    modifier = Modifier.size(37.5.dp),
+                    imageVector = if(fill) Icons.Default.Star else Icons.Outlined.StarOutline,
+                    contentDescription = null,
+                    tint = if(fill) Primary else Divider
+                )
+            }
+        }
+    }
+
+    Spacer(Modifier.height(SpacingM))
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "$selectedRating ${stringResource(R.string.from5)}",
+            color = Color.Gray
+        )
+
+        Text(
+            modifier = Modifier.padding(horizontal = SpacingM),
+            text = "•"
+        )
+
+        Text(
+            text = ratingLabel,
+            style = titleMedium,
+            fontWeight = FontWeight.SemiBold
+
+        )
     }
 }

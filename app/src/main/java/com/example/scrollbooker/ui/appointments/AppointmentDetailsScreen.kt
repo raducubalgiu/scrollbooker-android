@@ -1,60 +1,34 @@
 package com.example.scrollbooker.ui.appointments
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.currentComposer
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.sheet.Sheet
-import com.example.scrollbooker.components.customized.RatingsStars
 import com.example.scrollbooker.core.enums.AppointmentStatusEnum
-import com.example.scrollbooker.core.util.Dimens.AvatarSizeXS
-import com.example.scrollbooker.core.util.Dimens.AvatarSizeXXS
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingM
-import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
-import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.ui.appointments.components.AppointmentDetailsActions
 import com.example.scrollbooker.ui.appointments.components.AppointmentDetailsHeader
 import com.example.scrollbooker.ui.appointments.components.AppointmentDetailsMessage
@@ -62,12 +36,11 @@ import com.example.scrollbooker.ui.appointments.components.AppointmentProductPri
 import com.example.scrollbooker.ui.appointments.components.ReviewCTA
 import com.example.scrollbooker.ui.appointments.components.VideoReviewCTA
 import com.example.scrollbooker.ui.appointments.sheets.AddReviewSheet
+import com.example.scrollbooker.ui.appointments.sheets.CancelReviewSheet
 import com.example.scrollbooker.ui.shared.location.LocationSection
 import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheet
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
-import com.example.scrollbooker.ui.theme.OnSurfaceBG
-import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.titleMedium
 import kotlinx.coroutines.launch
 
@@ -77,14 +50,17 @@ fun AppointmentDetailsScreen(
     viewModel: AppointmentsViewModel,
     onBack: () -> Unit,
     onNavigateToCancel: () -> Unit,
+    onNavigateToCamera: () -> Unit
 ) {
     val appointment by viewModel.selectedAppointment.collectAsState()
     val isSaving by viewModel.isSaving.collectAsState()
-    var selectedRating by remember { mutableStateOf<Int?>(null) }
+    val appointmentId = appointment?.id
 
     val scope = rememberCoroutineScope()
+
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val reviewSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val cancelReviewSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     if(sheetState.isVisible) {
         Sheet(
@@ -103,19 +79,47 @@ fun AppointmentDetailsScreen(
     }
 
     if(reviewSheetState.isVisible) {
-        AddReviewSheet(
-            sheetState = reviewSheetState,
-            selectedRating = selectedRating,
-            onRatingClick = { selectedRating = it },
-            onClose = { scope.launch { reviewSheetState.hide()} },
-            isSaving = isSaving,
-            onCreateReview = {
-                selectedRating?.let { rating ->
-                    viewModel.createReview(
-                        appointment = appointment,
-                        rating = rating,
-                        review = it
-                    )
+        appointment?.user?.let {
+            AddReviewSheet(
+                viewModel = viewModel,
+                sheetState = reviewSheetState,
+                user = it,
+                onClose = { scope.launch { reviewSheetState.hide()} },
+                isSaving = isSaving,
+                onCreateReview = { viewModel.createReview(appointment) }
+            )
+        }
+    }
+
+    if(cancelReviewSheetState.isVisible) {
+        CancelReviewSheet(
+            viewModel = viewModel,
+            sheetState = cancelReviewSheetState,
+            isLoadingDelete = isSaving,
+            onClose = { scope.launch { cancelReviewSheetState.hide()} },
+            onEdit = {
+                val rating = appointment?.writtenReview?.rating
+                val review = appointment?.writtenReview?.review
+
+                scope.launch {
+                    cancelReviewSheetState.hide()
+
+                    if(!cancelReviewSheetState.isVisible && rating != null) {
+                        viewModel.setSelectedWrittenReview(
+                            RatingReviewUpdate(
+                                rating = rating,
+                                review = review
+                            )
+                        )
+                        reviewSheetState.show()
+                    }
+                }
+            },
+            onDelete = {
+                if(appointmentId == null) return@CancelReviewSheet
+
+                appointment?.writtenReview?.id?.let {
+                    viewModel.deleteReview(appointmentId, it)
                 }
             }
         )
@@ -185,22 +189,31 @@ fun AppointmentDetailsScreen(
                     ReviewCTA(
                         modifier = Modifier.padding(bottom = SpacingXL),
                         onRatingClick = {
+                            viewModel.setSelectedWrittenReview(
+                                RatingReviewUpdate(
+                                    rating = it,
+                                    review = ""
+                                )
+                            )
+
                             scope.launch {
-                                selectedRating = it
                                 reviewSheetState.show()
                             }
                         }
                     )
                 }
 
-                a.writtenReview?.let { rev -> AppointmentDetailsWrittenReview(
-                    customerAvatar = a.customer.avatar ?: "",
-                    review = rev.review,
-                    rating = rev.rating
-                )}
+                a.writtenReview?.let { rev ->
+                    AppointmentDetailsWrittenReview(
+                        customerAvatar = a.customer.avatar ?: "",
+                        review = rev.review,
+                        rating = rev.rating,
+                        onOpenCancelSheet = { scope.launch { cancelReviewSheetState.show() } }
+                    )
+                }
 
                 if(!a.hasVideoReview && a.status == AppointmentStatusEnum.FINISHED) {
-                    VideoReviewCTA(onClick = {})
+                    VideoReviewCTA(onNavigateToCamera = onNavigateToCamera)
                 }
 
                 a.message?.let { AppointmentDetailsMessage(it) }

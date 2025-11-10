@@ -26,6 +26,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.components.customized.RatingsStars
 import com.example.scrollbooker.core.util.Dimens.AvatarSizeXS
+import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
@@ -37,6 +38,7 @@ fun AppointmentDetailsWrittenReview(
     customerAvatar: String,
     review: String?,
     rating: Int,
+    onOpenCancelSheet: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -44,7 +46,7 @@ fun AppointmentDetailsWrittenReview(
             .padding(bottom = SpacingXL)
             .clip(shape = ShapeDefaults.Medium)
             .background(SurfaceBG)
-            .padding(SpacingM)
+            .padding(BasePadding)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -71,7 +73,7 @@ fun AppointmentDetailsWrittenReview(
                 }
             }
 
-            IconButton(onClick = {}) {
+            IconButton(onClick = onOpenCancelSheet) {
                 Icon(
                     painter = painterResource(R.drawable.ic_elipsis_vertical),
                     contentDescription = null

@@ -55,7 +55,7 @@ import com.example.scrollbooker.ui.theme.titleMedium
 @Composable
 fun VideoReviewCTA(
     modifier: Modifier = Modifier,
-    onClick: () -> Unit,
+    onNavigateToCamera: () -> Unit,
     discount: Float = 10f
 ) {
     val infinite = rememberInfiniteTransition(label = "video_cta")
@@ -114,7 +114,7 @@ fun VideoReviewCTA(
             .fillMaxWidth()
             .graphicsLayer { scaleX = pulseScale; scaleY = pulseScale }
             .clickable(
-                onClick = onClick
+                onClick = onNavigateToCamera
             ),
         color = container,
         shape = ShapeDefaults.ExtraLarge,

@@ -55,9 +55,13 @@ fun ReviewCTA(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            repeat(5) { rating ->
+            repeat(5) {
+                val rating = it + 1
+
                 Box(
-                    modifier = Modifier.size(50.dp).clickable { onRatingClick(rating) },
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clickable { onRatingClick(rating) },
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(

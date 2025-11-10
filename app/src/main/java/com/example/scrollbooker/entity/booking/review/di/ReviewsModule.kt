@@ -5,6 +5,7 @@ import com.example.scrollbooker.entity.booking.review.data.remote.ReviewsApiServ
 import com.example.scrollbooker.entity.booking.review.data.repository.ReviewRepositoryImpl
 import com.example.scrollbooker.entity.booking.review.domain.repository.ReviewRepository
 import com.example.scrollbooker.entity.booking.review.domain.useCase.CreateWrittenReviewUseCase
+import com.example.scrollbooker.entity.booking.review.domain.useCase.DeleteWrittenReviewUseCase
 import com.example.scrollbooker.entity.booking.review.domain.useCase.GetReviewsSummaryUseCase
 import com.example.scrollbooker.entity.booking.review.domain.useCase.GetReviewsUseCase
 import dagger.Module
@@ -58,5 +59,13 @@ object ReviewsModule {
         repository: ReviewRepository,
     ): CreateWrittenReviewUseCase {
         return CreateWrittenReviewUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDeleteWrittenReviewUseCase(
+        repository: ReviewRepository,
+    ): DeleteWrittenReviewUseCase {
+        return DeleteWrittenReviewUseCase(repository)
     }
 }

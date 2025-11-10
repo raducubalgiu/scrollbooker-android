@@ -7,7 +7,9 @@ import com.example.scrollbooker.entity.booking.review.data.mappers.toDomain
 import com.example.scrollbooker.entity.booking.review.data.remote.ReviewCreateRequest
 import com.example.scrollbooker.entity.booking.review.data.remote.ReviewPagingSource
 import com.example.scrollbooker.entity.booking.review.data.remote.ReviewsApiService
+import com.example.scrollbooker.entity.booking.review.data.remote.toDomain
 import com.example.scrollbooker.entity.booking.review.domain.model.Review
+import com.example.scrollbooker.entity.booking.review.domain.model.ReviewMini
 import com.example.scrollbooker.entity.booking.review.domain.model.ReviewsSummary
 import com.example.scrollbooker.entity.booking.review.domain.repository.ReviewRepository
 import kotlinx.coroutines.flow.Flow
@@ -27,7 +29,14 @@ class ReviewRepositoryImpl @Inject constructor(
         return apiService.getReviewsSummary(userId).toDomain()
     }
 
-    override suspend fun createWrittenReview(appointmentId: Int, request: ReviewCreateRequest) {
-        return apiService.createWrittenReview(appointmentId, request)
+    override suspend fun createWrittenReview(
+        appointmentId: Int,
+        request: ReviewCreateRequest
+    ): ReviewMini {
+        return apiService.createWrittenReview(appointmentId, request).toDomain()
+    }
+
+    override suspend fun deleteWrittenReview(reviewId: Int) {
+        return apiService.deleteWrittenReview(reviewId)
     }
 }

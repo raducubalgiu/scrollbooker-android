@@ -58,7 +58,7 @@ fun BookingsSheet(
     val createState by bookingsSheetViewModel.createState.collectAsState()
 
     LaunchedEffect(createState) {
-        when(val st = createState) {
+        when(createState) {
             is FeatureState.Success -> {
                 bookingsSheetViewModel.consumeCreateState()
                 onClose()
