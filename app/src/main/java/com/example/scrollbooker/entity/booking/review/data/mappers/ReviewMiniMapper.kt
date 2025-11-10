@@ -1,5 +1,6 @@
-package com.example.scrollbooker.entity.booking.review.data.remote
+package com.example.scrollbooker.entity.booking.review.data.mappers
 
+import com.example.scrollbooker.entity.booking.review.data.remote.ReviewMiniDto
 import com.example.scrollbooker.entity.booking.review.domain.model.ReviewMini
 
 fun ReviewMiniDto.toDomain(): ReviewMini {
@@ -11,6 +12,7 @@ fun ReviewMiniDto.toDomain(): ReviewMini {
         userId = userId,
         serviceId = serviceId,
         productId = productId,
-        parentId = parentId
+        parentId = parentId,
+        appointmentId = appointmentId
     )
 }

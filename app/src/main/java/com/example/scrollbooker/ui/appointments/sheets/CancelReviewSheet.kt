@@ -35,11 +35,11 @@ fun CancelReviewSheet(
     LaunchedEffect(deleteState) {
         when(deleteState) {
             is FeatureState.Success -> {
-                viewModel.consumeCreateReviewState()
+                viewModel.consumeDeleteReviewState()
                 onClose()
             }
             is FeatureState.Error -> {
-                viewModel.consumeCreateReviewState()
+                viewModel.consumeDeleteReviewState()
             }
             else -> Unit
         }

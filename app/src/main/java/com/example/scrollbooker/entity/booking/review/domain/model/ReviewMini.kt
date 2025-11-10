@@ -4,6 +4,7 @@ data class ReviewMini(
     val id: Int,
     val review: String?,
     val rating: Int,
+    val appointmentId: Int,
     val customerId: Int,
     val userId: Int,
     val serviceId: Int,

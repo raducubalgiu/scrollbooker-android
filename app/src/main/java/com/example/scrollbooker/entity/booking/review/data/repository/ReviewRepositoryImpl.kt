@@ -6,8 +6,8 @@ import androidx.paging.PagingData
 import com.example.scrollbooker.entity.booking.review.data.mappers.toDomain
 import com.example.scrollbooker.entity.booking.review.data.remote.ReviewCreateRequest
 import com.example.scrollbooker.entity.booking.review.data.remote.ReviewPagingSource
+import com.example.scrollbooker.entity.booking.review.data.remote.ReviewUpdateRequest
 import com.example.scrollbooker.entity.booking.review.data.remote.ReviewsApiService
-import com.example.scrollbooker.entity.booking.review.data.remote.toDomain
 import com.example.scrollbooker.entity.booking.review.domain.model.Review
 import com.example.scrollbooker.entity.booking.review.domain.model.ReviewMini
 import com.example.scrollbooker.entity.booking.review.domain.model.ReviewsSummary
@@ -34,6 +34,18 @@ class ReviewRepositoryImpl @Inject constructor(
         request: ReviewCreateRequest
     ): ReviewMini {
         return apiService.createWrittenReview(appointmentId, request).toDomain()
+    }
+
+    override suspend fun updateWrittenRequest(
+        reviewId: Int,
+        review: String?,
+        rating: Int
+    ): ReviewMini {
+        val request = ReviewUpdateRequest(
+            review = review,
+            rating = rating
+        )
+        return apiService.updateWrittenReview(reviewId, request).toDomain()
     }
 
     override suspend fun deleteWrittenReview(reviewId: Int) {

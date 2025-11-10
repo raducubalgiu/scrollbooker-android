@@ -16,10 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -29,6 +26,7 @@ import com.example.scrollbooker.components.core.sheet.Sheet
 import com.example.scrollbooker.core.enums.AppointmentStatusEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
+import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentWrittenReview
 import com.example.scrollbooker.ui.appointments.components.AppointmentDetailsActions
 import com.example.scrollbooker.ui.appointments.components.AppointmentDetailsHeader
 import com.example.scrollbooker.ui.appointments.components.AppointmentDetailsMessage
@@ -86,7 +84,21 @@ fun AppointmentDetailsScreen(
                 user = it,
                 onClose = { scope.launch { reviewSheetState.hide()} },
                 isSaving = isSaving,
-                onCreateReview = { viewModel.createReview(appointment) }
+                onCreateReview = { update ->
+                    val reviewId = appointment?.writtenReview?.id
+
+                    if(reviewId != null) {
+                        viewModel.editReview(
+                            AppointmentWrittenReview(
+                                id = reviewId,
+                                rating = update.rating,
+                                review = update.review
+                            )
+                        )
+                    } else {
+                        viewModel.createReview(appointment)
+                    }
+                }
             )
         }
     }

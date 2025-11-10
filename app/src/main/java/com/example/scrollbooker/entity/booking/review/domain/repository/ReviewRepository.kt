@@ -11,5 +11,10 @@ interface ReviewRepository {
     fun getReviews(userId: Int, ratings: Set<Int>?): Flow<PagingData<Review>>
     suspend fun getReviewsSummary(userId: Int): ReviewsSummary
     suspend fun createWrittenReview(appointmentId: Int, request: ReviewCreateRequest): ReviewMini
+    suspend fun updateWrittenRequest(
+        reviewId: Int,
+        review: String?,
+        rating: Int,
+    ): ReviewMini
     suspend fun deleteWrittenReview(reviewId: Int)
 }

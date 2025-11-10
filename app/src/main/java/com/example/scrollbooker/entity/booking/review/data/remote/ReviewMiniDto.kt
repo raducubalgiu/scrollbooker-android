@@ -7,6 +7,9 @@ data class ReviewMiniDto(
     val review: String?,
     val rating: Int,
 
+    @SerializedName("appointment_id")
+    val appointmentId: Int,
+
     @SerializedName("customer_id")
     val customerId: Int,
 

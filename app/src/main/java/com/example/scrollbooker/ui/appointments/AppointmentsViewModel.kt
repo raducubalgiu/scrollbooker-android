@@ -13,6 +13,7 @@ import com.example.scrollbooker.entity.booking.appointment.domain.useCase.GetUse
 import com.example.scrollbooker.entity.booking.review.data.remote.ReviewCreateRequest
 import com.example.scrollbooker.entity.booking.review.domain.useCase.CreateWrittenReviewUseCase
 import com.example.scrollbooker.entity.booking.review.domain.useCase.DeleteWrittenReviewUseCase
+import com.example.scrollbooker.entity.booking.review.domain.useCase.UpdateWrittenReviewUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -37,6 +38,7 @@ class AppointmentsViewModel @Inject constructor(
     private val getUserAppointmentsUseCase: GetUserAppointmentsUseCase,
     private val deleteAppointmentUseCase: DeleteAppointmentUseCase,
     private val createWrittenReviewUseCase: CreateWrittenReviewUseCase,
+    private val updateWrittenReviewUseCase: UpdateWrittenReviewUseCase,
     private val deleteWrittenReviewUseCase: DeleteWrittenReviewUseCase
 ): ViewModel() {
     private val _asCustomer = MutableStateFlow<Boolean?>(null)
@@ -154,6 +156,47 @@ class AppointmentsViewModel @Inject constructor(
                                     id = new.id,
                                     review = _selectedWrittenReview.value?.review,
                                     rating = rating
+                                ),
+                                hasWrittenReview = true
+                            )
+                        } else current
+                    }
+
+                    _isSaving.value = false
+                    _createReviewState.value = FeatureState.Success(Unit)
+                }
+        }
+    }
+
+    fun editReview(review: AppointmentWrittenReview) {
+        viewModelScope.launch {
+            _createReviewState.value = FeatureState.Loading
+            _isSaving.value = true
+
+            val result = withVisibleLoading {
+                updateWrittenReviewUseCase(
+                    reviewId = review.id,
+                    review = review.review,
+                    rating = review.rating
+                )
+            }
+
+            result
+                .onFailure { e ->
+                    _isSaving.value = false
+                    _createReviewState.value = FeatureState.Error()
+                    Timber.tag("Reviews").e("ERROR: on Updating Review $e")
+                }
+                .onSuccess { update ->
+                    _reload.tryEmit(Unit)
+
+                    _selectedAppointment.value = _selectedAppointment.value?.let { current ->
+                        if(current.id == update.appointmentId) {
+                            current.copy(
+                                writtenReview = AppointmentWrittenReview(
+                                    id = update.id,
+                                    review = review.review,
+                                    rating = review.rating
                                 ),
                                 hasWrittenReview = true
                             )

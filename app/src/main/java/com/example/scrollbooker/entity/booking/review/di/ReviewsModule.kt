@@ -8,6 +8,7 @@ import com.example.scrollbooker.entity.booking.review.domain.useCase.CreateWritt
 import com.example.scrollbooker.entity.booking.review.domain.useCase.DeleteWrittenReviewUseCase
 import com.example.scrollbooker.entity.booking.review.domain.useCase.GetReviewsSummaryUseCase
 import com.example.scrollbooker.entity.booking.review.domain.useCase.GetReviewsUseCase
+import com.example.scrollbooker.entity.booking.review.domain.useCase.UpdateWrittenReviewUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -59,6 +60,14 @@ object ReviewsModule {
         repository: ReviewRepository,
     ): CreateWrittenReviewUseCase {
         return CreateWrittenReviewUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUpdateWrittenReviewUseCase(
+        repository: ReviewRepository,
+    ): UpdateWrittenReviewUseCase {
+        return UpdateWrittenReviewUseCase(repository)
     }
 
     @Provides
