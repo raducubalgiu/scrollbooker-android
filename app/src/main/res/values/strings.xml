@@ -333,4 +333,7 @@
     <string name="shareSomeDetailsAboutYourExperience">Împărtășește câteva detalii (atmosferă, rezultate, comunicare…)</string>
     <string name="clickOnRatingToEvaluate">Click pe o stea pentru a evalua</string>
     <string name="from5">din 5</string>
+    <string name="noProductsSelected">Nici un produs selectat</string>
+    <string name="chooseServices">Alege serviciile</string>
+    <string name="verifyAvailability">Verifică disponibilitatea</string>
 </resources>

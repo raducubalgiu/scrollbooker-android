@@ -1,35 +1,30 @@
 package com.example.scrollbooker.ui.shared.calendar.components
-
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
+import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
@@ -54,11 +49,9 @@ fun CalendarHeader(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
-                modifier = Modifier.size(40.dp),
+                modifier = Modifier.size(35.dp),
                 painter = painterResource(R.drawable.ic_calendar_outline_stroke_small),
                 contentDescription = null,
                 tint = Color.Gray
@@ -66,7 +59,6 @@ fun CalendarHeader(
             Spacer(Modifier.width(SpacingM))
             Text(
                 style = titleMedium,
-                fontSize = 17.sp,
                 text = period,
                 fontWeight = FontWeight.SemiBold,
                 overflow = TextOverflow.Ellipsis,
@@ -74,65 +66,33 @@ fun CalendarHeader(
             )
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Column(
-                modifier = Modifier
-                    .size(42.5.dp)
-                    .shadow(
-                        elevation = if(enableBack) 1.dp else 0.dp,
-                        shape = CircleShape,
-                        clip = false
-                    )
-                    .clip(CircleShape)
-                    .background(
-                        color = if(enableBack) SurfaceBG else Color.Transparent,
-                        shape = CircleShape
-                    )
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = if(enableBack) ripple() else null
-                    ) {
-                        if(enableBack) handlePreviousWeek()
-                      },
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+            IconButton(
+                onClick = { if (enableBack) handlePreviousWeek() },
+                colors = IconButtonDefaults.iconButtonColors(
+                    containerColor = if(enableBack) SurfaceBG else Color.Transparent,
+                    contentColor = if(enableBack) OnSurfaceBG.copy(0.8f) else Divider
+                )
             ) {
                 Icon(
-                    modifier = Modifier.size(22.dp),
-                    painter = painterResource(R.drawable.ic_arrow_chevron_left_outline),
+                    modifier = Modifier.size(15.dp),
+                    imageVector = Icons.Default.ArrowBackIosNew,
                     contentDescription = null,
-                    tint = if(enableBack) OnSurfaceBG.copy(0.8f) else Divider
                 )
             }
 
-            Spacer(Modifier.width(SpacingM))
+            Spacer(Modifier.width(SpacingS))
 
-            Column(
-                modifier = Modifier
-                    .size(42.5.dp)
-                    .shadow(
-                        elevation = if(enableNext) 1.dp else 0.dp,
-                        shape = CircleShape,
-                        clip = false
-                    )
-                    .clip(CircleShape)
-                    .background(
-                        color = if(enableNext) SurfaceBG else Color.Transparent,
-                        shape = CircleShape
-                    )
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = if(enableNext) ripple() else null
-                    ) {
-                        if(enableNext) handleNextWeek()
-                      },
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+            IconButton(
+                onClick = { if (enableNext) handleNextWeek() },
+                colors = IconButtonDefaults.iconButtonColors(
+                    containerColor = if(enableNext) SurfaceBG else Color.Transparent,
+                    contentColor = if(enableNext) OnSurfaceBG.copy(0.8f) else Divider
+                )
             ) {
                 Icon(
-                    modifier = Modifier.size(22.dp),
-                    painter = painterResource(R.drawable.ic_arrow_chevron_right_outlines),
+                    modifier = Modifier.size(15.dp),
+                    imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
                     contentDescription = null,
-                    tint = if(enableNext) OnSurfaceBG.copy(0.8f) else Divider
                 )
             }
         }

@@ -54,9 +54,7 @@ fun AppointmentDetailsHeader(
 
         Spacer(Modifier.height(SpacingXL))
 
-        Column(
-            modifier = Modifier.fillMaxWidth()
-        ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
             Text(
                 text = appointment.displayAppointmentDate(),
                 style = headlineMedium,
@@ -99,7 +97,7 @@ fun AppointmentDetailsHeader(
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = "${appointment.user.profession} - ${appointment.user.ratingsCount} ${stringResource(R.string.reviews)}",
+                    text = "${appointment.user.profession} • ${appointment.user.ratingsCount} ${stringResource(R.string.reviews)}",
                     color = Color.Gray,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis

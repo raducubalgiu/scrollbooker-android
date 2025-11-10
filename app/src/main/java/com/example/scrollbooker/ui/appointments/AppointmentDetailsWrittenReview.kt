@@ -81,11 +81,11 @@ fun AppointmentDetailsWrittenReview(
             }
         }
 
-        review?.let {
+        if(review?.isNotEmpty() == true) {
             Spacer(Modifier.height(SpacingM))
 
             Text(
-                text = it,
+                text = review,
                 fontStyle = FontStyle.Italic,
                 color = OnSurfaceBG,
                 maxLines = 2,

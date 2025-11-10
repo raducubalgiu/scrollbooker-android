@@ -57,9 +57,7 @@ class AppointmentsViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     val appointments: Flow<PagingData<Appointment>> =
         combine(_asCustomer, _reload.onStart { emit(Unit) }) { asCustomer, _ -> asCustomer }
-            .flatMapLatest { asCustomer ->
-                getUserAppointmentsUseCase(asCustomer)
-            }
+            .flatMapLatest { asCustomer -> getUserAppointmentsUseCase(asCustomer) }
             .cachedIn(viewModelScope)
 
     private val _selectedAppointment = MutableStateFlow<Appointment?>(null)

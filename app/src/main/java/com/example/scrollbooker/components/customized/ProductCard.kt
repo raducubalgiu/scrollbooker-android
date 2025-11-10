@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
@@ -129,12 +130,11 @@ fun ProductCard(
                 if(!displayActions) {
                     Protected(permission = PermissionEnum.BOOK_BUTTON_VIEW) {
                         MainButtonOutlined(
-                            title = if(isSelected) stringResource(R.string.added)
-                            else stringResource(R.string.add),
+                            title = if(isSelected) stringResource(R.string.added) else stringResource(R.string.add),
                             onClick = { onSelect(product) },
-                            trailingIcon = Icons.Default.Check,
+                            trailingIcon = if(isSelected) Icons.Default.Check else Icons.Default.Add,
                             trailingIconTint = Primary,
-                            showTrailingIcon = isSelected
+                            showTrailingIcon = true
                         )
                     }
                 }

@@ -19,8 +19,13 @@ import com.example.scrollbooker.ui.shared.posts.sheets.bookings.tabs.ProductsTab
 import com.example.scrollbooker.ui.shared.products.UserProductsViewModel
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.res.stringResource
+import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentScrollBookerCreate
+import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
+import java.math.BigDecimal
+import java.math.RoundingMode
 
 @Composable
 fun BookingsSheet(
@@ -31,9 +36,9 @@ fun BookingsSheet(
 ) {
     val scope = rememberCoroutineScope()
     val steps = listOf(
-        "Alege serviciile",
-        "Alege ora",
-        "Confirma programarea"
+        stringResource(R.string.chooseServices),
+        stringResource(R.string.verifyAvailability),
+        stringResource(R.string.confirmReservation)
     )
 
     val bookingsSheetViewModel: BookingsSheetViewModel = hiltViewModel()
@@ -46,8 +51,14 @@ fun BookingsSheet(
     }
 
     val selectedProducts by productsViewModel.selectedProducts.collectAsState()
+
     val totalDuration = selectedProducts.sumOf { it.duration }
-    val totalPrice = selectedProducts.sumOf { it.priceWithDiscount }
+    val totalPrice = selectedProducts.sumOf { it.price }
+    val totalPriceWithDiscount = selectedProducts.sumOf { it.priceWithDiscount }
+    val totalDiscount = if(totalPrice > BigDecimal.ZERO) {
+        ((totalPrice - totalPriceWithDiscount) * BigDecimal(100) / totalPrice)
+            .setScale(0, RoundingMode.HALF_UP)
+    } else BigDecimal.ZERO
 
     val selectedSlot by calendarViewModel.selectedSlot.collectAsState()
 
@@ -72,6 +83,7 @@ fun BookingsSheet(
 
     Column(modifier = modifier.fillMaxSize()) {
         BookingSheetHeader(
+            pagerState = pagerState,
             stepTitle = steps[currentStep],
             onClose = onClose,
             totalSteps = steps.size,
@@ -94,7 +106,7 @@ fun BookingsSheet(
                         onSelect = { productsViewModel.toggleProductId(it) },
                         userId = userId,
                         selectedProducts = selectedProducts,
-                        totalPrice = totalPrice,
+                        totalPrice = totalPriceWithDiscount,
                         totalDuration = totalDuration,
                         onNext = {
                             scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) }
@@ -110,7 +122,11 @@ fun BookingsSheet(
                         }
                     )
                     2 -> ConfirmTab(
+                        totalPrice = totalPrice,
+                        totalPriceWithDiscount = totalPriceWithDiscount,
+                        totalDiscount = totalDiscount,
                         selectedSlot = selectedSlot,
+                        products = selectedProducts,
                         isSaving = isSaving,
                         onSave = {
                             selectedSlot?.let { slot ->
