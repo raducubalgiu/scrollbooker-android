@@ -16,7 +16,6 @@ import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.ui.profile.ProfileViewModel
 import com.example.scrollbooker.ui.profile.UserProfileScreen
-import com.example.scrollbooker.ui.shared.reviews.ReviewDetailScreen
 import com.example.scrollbooker.ui.social.SocialScreen
 import com.example.scrollbooker.ui.social.SocialViewModel
 
@@ -50,19 +49,6 @@ fun NavGraphBuilder.globalGraph(
             )
         }
 
-        composable("${MainRoute.ProfilePostDetail.route}/{postId}",
-            arguments = listOf(navArgument("postId") { type = NavType.IntType })
-        ) { backStackEntry ->
-            val postId = backStackEntry.arguments?.getInt("postId")
-            //val viewModel = hiltViewModel<ProfilePostsTabViewModel>(backStackEntry)
-
-//                ProfilePostDetailScreen(
-//                    postId = postId,
-//                    posts = viewModel.userPosts.collectAsLazyPagingItems(),
-//                    onBack = { navController.popBackStack() }
-//                )
-        }
-
         composable(route = "${MainRoute.Social.route}/{tabIndex}/{userId}/{username}/{isBusinessOrEmployee}",
             arguments = listOf(
                 navArgument("tabIndex") { type = NavType.IntType },
@@ -84,12 +70,6 @@ fun NavGraphBuilder.globalGraph(
                 socialParam = socialParams,
                 onBack = { navController.popBackStack() },
                 onNavigateUserProfile = { navController.navigate("${MainRoute.UserProfile.route}/$it") }
-            )
-        }
-
-        composable(route = MainRoute.ReviewDetail.route) { backStackEntry ->
-            ReviewDetailScreen(
-                onBack = { navController.popBackStack() }
             )
         }
     }

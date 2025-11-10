@@ -54,7 +54,6 @@ fun RootNavHost(
             ) { onBoardingGraph(authViewModel, rootNavController) }
 
             mainGraph(
-                //rootNavController = rootNavController,
                 onLogout = {
                     scope.launch {
                         if(authViewModel.logout().isSuccess) {

@@ -25,7 +25,6 @@ sealed class MainRoute(val route: String) {
 
     object MyProfileNavigator: MainRoute(route = "myProfileNavigator")
     object MyProfile: MainRoute(route = "myProfile")
-    object ProfilePostDetail: MainRoute(route = "profilePostDetail")
     object UserProfile: MainRoute(route = "userProfile")
     object UserProducts: MainRoute(route = "userProducts")
 
@@ -40,7 +39,6 @@ sealed class MainRoute(val route: String) {
     object EditPublicEmail: MainRoute(route = "publicEmail")
 
     object Social: MainRoute(route = "social")
-    object ReviewDetail: MainRoute(route = "reviewDetail")
 
     object CalendarNavigator: MainRoute(route = "calendarNavigator")
     object Calendar: MainRoute(route = "calendar")

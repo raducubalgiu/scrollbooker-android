@@ -46,7 +46,7 @@ fun SocialScreen(
         Column(Modifier.padding(top = innerPadding.calculateTopPadding())) {
             Tabs(
                 tabs = tabs.map { it.route },
-                selectedTabIndex,
+                selectedTabIndex = selectedTabIndex,
                 indicatorPadding = 35.dp,
                 onChangeTab = { scope.launch { pagerState.animateScrollToPage(it) } }
             )

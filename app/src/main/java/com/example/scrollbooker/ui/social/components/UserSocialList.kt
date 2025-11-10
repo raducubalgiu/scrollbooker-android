@@ -45,54 +45,54 @@ fun UserSocialList(
             is LoadState.Loading -> { LoadingScreen() }
             is LoadState.Error -> ErrorScreen()
             is LoadState.NotLoading -> {
-                PullToRefreshBox(
-                    isRefreshing = isRefreshing,
-                    onRefresh = onRefresh
-                ) {
-                    LazyColumn(Modifier.fillMaxSize()) {
-                        items(users.itemCount) { index ->
-                            users[index]?.let { userSocial ->
-                                val isLocked = followRequestLocks.contains(userSocial.id)
+                if(users.itemCount == 0) {
+                    MessageScreen(
+                        message = stringResource(R.string.dontFoundResults),
+                        icon = painterResource(R.drawable.ic_users_outline)
+                    )
+                } else {
+                    PullToRefreshBox(
+                        isRefreshing = isRefreshing,
+                        onRefresh = onRefresh
+                    ) {
+                        LazyColumn(Modifier.fillMaxSize()) {
+                            items(users.itemCount) { index ->
+                                users[index]?.let { userSocial ->
+                                    val isLocked = followRequestLocks.contains(userSocial.id)
 
-                                UserSocialItem(
-                                    userSocial = userSocial,
-                                    enabled = !isLocked,
-                                    isFollowedOverrides = followedOverrides[userSocial.id],
-                                    onFollow = { isFollowed -> onFollow(isFollowed, userSocial.id) },
-                                    onNavigateUserProfile = onNavigateUserProfile
+                                    UserSocialItem(
+                                        userSocial = userSocial,
+                                        enabled = !isLocked,
+                                        isFollowedOverrides = followedOverrides[userSocial.id],
+                                        onFollow = { isFollowed -> onFollow(isFollowed, userSocial.id) },
+                                        onNavigateUserProfile = onNavigateUserProfile
+                                    )
+                                }
+                            }
+
+                            item {
+                                when(appendState) {
+                                    is LoadState.Error -> Text("A aparut o eroare")
+                                    is LoadState.Loading -> LoadMoreSpinner()
+                                    is LoadState.NotLoading -> Unit
+                                }
+                            }
+
+                            item {
+                                Spacer(modifier = Modifier
+                                    .fillMaxSize()
+                                    .height(
+                                        WindowInsets.safeContent
+                                            .only(WindowInsetsSides.Bottom)
+                                            .asPaddingValues()
+                                            .calculateBottomPadding()
+                                    )
                                 )
                             }
-                        }
-
-                        item {
-                            when(appendState) {
-                                is LoadState.Error -> Text("A aparut o eroare")
-                                is LoadState.Loading -> LoadMoreSpinner()
-                                is LoadState.NotLoading -> Unit
-                            }
-                        }
-
-                        item {
-                            Spacer(modifier = Modifier
-                                .fillMaxSize()
-                                .height(
-                                    WindowInsets.safeContent
-                                        .only(WindowInsetsSides.Bottom)
-                                        .asPaddingValues()
-                                        .calculateBottomPadding()
-                                )
-                            )
                         }
                     }
                 }
             }
-        }
-
-        if(refreshState is LoadState.NotLoading && users.itemCount == 0) {
-            MessageScreen(
-                message = stringResource(R.string.dontFoundResults),
-                icon = painterResource(R.drawable.ic_users_outline)
-            )
         }
     }
 }
