@@ -34,6 +34,7 @@ import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.extensions.toDecimals
+import com.example.scrollbooker.core.extensions.toFixedDecimals
 import com.example.scrollbooker.core.extensions.toTwoDecimals
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyMedium
@@ -100,7 +101,7 @@ fun AvatarWithRating(
             )
             Spacer(Modifier.width(2.dp))
             Text(
-                text = rating.toDecimals(1),
+                text = rating.toFixedDecimals(1),
                 color = Color.Black,
                 fontWeight = FontWeight.ExtraBold,
                 style = bodyMedium,

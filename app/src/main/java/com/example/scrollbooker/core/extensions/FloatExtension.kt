@@ -13,3 +13,9 @@ fun Float.toDecimals(decimals: Int = 2): String {
         stripped.toPlainString()
     }
 }
+
+fun Float.toFixedDecimals(decimals: Int = 2): String {
+    if(!this.isFinite()) return this.toString()
+    val scaled = BigDecimal(this.toString()).setScale(decimals, RoundingMode.HALF_UP)
+    return scaled.toPlainString()
+}
