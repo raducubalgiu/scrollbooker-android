@@ -6,6 +6,10 @@ data class ReviewDto(
     val id: Int,
     val rating: Int,
     val review: String,
+
+    @SerializedName("product_business_owner")
+    val productBusinessOwner: ReviewProductBusinessOwnerDto,
+
     val customer: ReviewCustomerDto,
     val service: ReviewServiceDto,
     val product: ReviewProductDto,
@@ -16,11 +20,21 @@ data class ReviewDto(
     @SerializedName("is_liked")
     val isLiked: Boolean,
 
-    @SerializedName("is_liked_by_author")
-    val isLikedByAuthor: Boolean,
+    @SerializedName("is_liked_by_product_owner")
+    val isLikedByProductOwner: Boolean,
 
     @SerializedName("created_at")
     val createdAt: String
+)
+
+data class ReviewProductBusinessOwnerDto(
+    val id: Int,
+    val username: String,
+
+    @SerializedName("fullname")
+    val fullName: String,
+
+    val avatar: String?,
 )
 
 data class ReviewCustomerDto(

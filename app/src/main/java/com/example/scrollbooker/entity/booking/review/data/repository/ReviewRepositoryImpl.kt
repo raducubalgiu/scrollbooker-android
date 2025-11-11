@@ -51,4 +51,12 @@ class ReviewRepositoryImpl @Inject constructor(
     override suspend fun deleteWrittenReview(reviewId: Int) {
         return apiService.deleteWrittenReview(reviewId)
     }
+
+    override suspend fun likeWrittenReview(reviewId: Int) {
+        return apiService.likeWrittenReview(reviewId)
+    }
+
+    override suspend fun unlikeWrittenReview(reviewId: Int) {
+        return apiService.unlikeWrittenReview(reviewId)
+    }
 }

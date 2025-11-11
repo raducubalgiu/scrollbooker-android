@@ -125,6 +125,7 @@ fun ReviewsScreen(
                         when(page) {
                             0 -> {
                                 WrittenReviewsTab(
+                                    viewModel = viewModel,
                                     writtenReviews = writtenReviews,
                                     onNavigateToReviewDetail = onNavigateToReviewDetail
                                 )

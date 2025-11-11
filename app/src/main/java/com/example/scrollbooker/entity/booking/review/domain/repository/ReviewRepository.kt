@@ -17,4 +17,6 @@ interface ReviewRepository {
         rating: Int,
     ): ReviewMini
     suspend fun deleteWrittenReview(reviewId: Int)
+    suspend fun likeWrittenReview(reviewId: Int)
+    suspend fun unlikeWrittenReview(reviewId: Int)
 }

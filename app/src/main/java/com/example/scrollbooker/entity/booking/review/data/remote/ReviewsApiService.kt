@@ -39,4 +39,14 @@ interface ReviewsApiService {
     suspend fun deleteWrittenReview(
         @Path("reviewId") reviewId: Int
     )
+
+    @POST("reviews/{reviewId}/likes")
+    suspend fun likeWrittenReview(
+        @Path("reviewId") reviewId: Int
+    )
+
+    @DELETE("reviews/{reviewId}/likes")
+    suspend fun unlikeWrittenReview(
+        @Path("reviewId") reviewId: Int
+    )
 }

@@ -218,8 +218,6 @@ class CalendarViewModel @Inject constructor(
             endDate = endDate,
             userId = selectedProduct.data.userId,
             currencyId = selectedProduct.data.currencyId,
-            //serviceId = selectedProduct.data.serviceId,
-            //productId = selectedProduct.data.id,
             productIds = emptyList(),
         )
 

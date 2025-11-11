@@ -29,13 +29,22 @@ import javax.inject.Inject
 import kotlin.collections.ifEmpty
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
+import androidx.paging.map
+import com.example.scrollbooker.entity.booking.review.domain.useCase.LikeWrittenReviewUseCase
+import com.example.scrollbooker.entity.booking.review.domain.useCase.UnlikeWrittenReviewUseCase
+import com.example.scrollbooker.store.AuthDataStore
+import kotlinx.coroutines.flow.firstOrNull
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class ReviewsViewModel @Inject constructor(
     private val getReviewsUseCase: GetReviewsUseCase,
     private val getReviewsSummaryUseCase: GetReviewsSummaryUseCase,
-    private val getUserVideoReviewsPostsUseCase: GetUserVideoReviewsPostsUseCase
+    private val getUserVideoReviewsPostsUseCase: GetUserVideoReviewsPostsUseCase,
+    private val likeReviewUseCase: LikeWrittenReviewUseCase,
+    private val unlikeReviewUseCase: UnlikeWrittenReviewUseCase,
+    private val authDataStore: AuthDataStore
 ): ViewModel() {
     enum class ReviewsTab { WRITTEN, VIDEO }
 
@@ -77,8 +86,7 @@ class ReviewsViewModel @Inject constructor(
             _appliedRatingsByTab.value.toMutableMap().apply { put(tab, newSet) }
     }
 
-    private val _userReviewsSummary =
-        MutableStateFlow<FeatureState<ReviewsSummary>>(FeatureState.Loading)
+    private val _userReviewsSummary = MutableStateFlow<FeatureState<ReviewsSummary>>(FeatureState.Loading)
     val userReviewsSummary: StateFlow<FeatureState<ReviewsSummary>> = _userReviewsSummary
 
     val summaryIsLoading: StateFlow<Boolean> =
@@ -99,14 +107,19 @@ class ReviewsViewModel @Inject constructor(
     val writeReviews: Flow<PagingData<Review>> =
         combine(
             userId.filterNotNull(),
-            _appliedRatingsByTab.map { it[ReviewsTab.WRITTEN] ?: emptySet<Int>() }
-                .distinctUntilChanged()
+            _appliedRatingsByTab.map { it[ReviewsTab.WRITTEN] ?: emptySet<Int>() }.distinctUntilChanged()
         ) { uid, ratingsSet -> uid to ratingsSet }
             .flatMapLatest { (uid, ratingsSet) ->
                 getReviewsUseCase(
                     userId = uid,
                     ratings = ratingsSet.ifEmpty { null }
                 )
+            }
+            .map { paging: PagingData<Review> ->
+                paging.map { r: Review ->
+                    seedReviewUiIfAbsent(r)
+                    r
+                }
             }
             .cachedIn(viewModelScope)
 
@@ -123,4 +136,63 @@ class ReviewsViewModel @Inject constructor(
                 )
             }
             .cachedIn(viewModelScope)
+
+    private val _reviewUi = MutableStateFlow<Map<Int, ReviewActionUiState>>(emptyMap())
+
+    fun observeReviewUi(reviewId: Int): StateFlow<ReviewActionUiState> =
+        _reviewUi.map { it[reviewId] ?: ReviewActionUiState.EMPTY }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.Eagerly,
+                initialValue = ReviewActionUiState.EMPTY
+            )
+
+    private fun seedReviewUiIfAbsent(review: Review) {
+        _reviewUi.update { cur ->
+            if (cur.containsKey(review.id)) cur
+            else cur + (review.id to ReviewActionUiState(
+                likeCount = review.likeCount,
+                isLiked = review.isLiked,
+                isLikedByProductOwner = review.isLikedByProductOwner
+            ))
+        }
+    }
+
+    fun toggleLike(reviewId: Int, productOwnerId: Int) = viewModelScope.launch {
+        val uid = authDataStore.getUserId().firstOrNull() ?: return@launch
+
+        val before = _reviewUi.value[reviewId] ?: ReviewActionUiState.EMPTY
+        if (before.isSavingLike) return@launch
+
+        val isOwner = uid == productOwnerId
+        val willLike = !before.isLiked
+
+        val optimistic = if (willLike) {
+            before.copy(
+                isLiked = true,
+                likeCount = before.likeCount + 1,
+                isLikedByProductOwner = if (isOwner) true else before.isLikedByProductOwner,
+                isSavingLike = true
+            )
+        } else {
+            before.copy(
+                isLiked = false,
+                likeCount = (before.likeCount - 1).coerceAtLeast(0),
+                isLikedByProductOwner = if (isOwner) false else before.isLikedByProductOwner,
+                isSavingLike = true
+            )
+        }
+        _reviewUi.update { it + (reviewId to optimistic) }
+
+        val result = if (willLike) likeReviewUseCase(reviewId) else unlikeReviewUseCase(reviewId)
+
+        if (result.isSuccess) {
+            _reviewUi.update { map ->
+                val cur = map[reviewId] ?: return@update map
+                map + (reviewId to cur.copy(isSavingLike = false))
+            }
+        } else {
+            _reviewUi.update { it + (reviewId to before.copy(isSavingLike = false)) }
+        }
+    }
 }
