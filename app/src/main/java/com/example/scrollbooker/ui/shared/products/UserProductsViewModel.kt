@@ -43,14 +43,24 @@ class UserProductsViewModel @Inject constructor(
         }
     }
 
-    fun toggleProductId(product: Product) {
-        val current = _selectedProducts.value.toMutableSet()
+    fun clearProducts() {
+        _selectedProducts.value = emptySet()
+    }
 
-        if(!current.add(product)) {
-            current.remove(product)
+    fun setMultipleProducts(products: List<Product>) {
+        _selectedProducts.value = products.toSet()
+    }
+
+    fun toggleProductId(product: Product) {
+        val productsSet = _selectedProducts.value.toMutableSet()
+
+        if(product in productsSet) {
+            productsSet.remove(product)
         } else {
-            _selectedProducts.value = current
+            productsSet.add(product)
         }
+
+        _selectedProducts.value = productsSet
     }
 
     fun reset() {

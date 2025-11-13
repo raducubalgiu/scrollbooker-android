@@ -168,7 +168,7 @@ private fun handlePostAction(
 ) {
     when(action) {
         PostOverlayActionEnum.OPEN_BOOKINGS -> {
-            handleOpenSheet(BookingsSheet(post.user.id))
+            handleOpenSheet(BookingsSheet(post.user))
         }
         PostOverlayActionEnum.OPEN_REVIEW_DETAILS -> {
             handleOpenSheet(ReviewDetailsSheet(post.user.id))

@@ -35,16 +35,18 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun UserProductsServiceTabs(
-    viewModel: UserProductsViewModel = hiltViewModel(),
+    viewModel: UserProductsViewModel,
+    selectedProducts: Set<Product>,
     paddingTop: Dp = 0.dp,
     userId: Int,
     onSelect: (Product) -> Unit
 ) {
     val servicesState by viewModel.servicesState.collectAsState()
-
     val scope = rememberCoroutineScope()
 
-    LaunchedEffect(userId) { viewModel.setUserId(userId) }
+    LaunchedEffect(userId) {
+        viewModel.setUserId(userId)
+    }
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -111,6 +113,7 @@ fun UserProductsServiceTabs(
 
                         UserProductsServiceTab(
                             viewModel = viewModel,
+                            selectedProducts = selectedProducts,
                             employees = employees,
                             userId = userId,
                             serviceId = serviceId,

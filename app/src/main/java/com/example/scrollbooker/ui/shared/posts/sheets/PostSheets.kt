@@ -8,6 +8,7 @@ import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheet
+import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheetUser
 import com.example.scrollbooker.ui.shared.posts.sheets.comments.CommentsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.moreOptions.MoreOptionsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.location.LocationSheet
@@ -60,9 +61,17 @@ fun PostSheets(
                 )
             }
             is PostSheetsContent.BookingsSheet -> {
+                val user = content.user
                 BookingsSheet(
-                    initialPage = 0,
-                    userId = content.userId,
+                    user = BookingsSheetUser(
+                        id = user.id,
+                        username = user.username,
+                        fullName = user.fullName,
+                        avatar = user.avatar,
+                        profession = user.profession,
+                        ratingsCount = user.ratingsCount,
+                        ratingsAverage = user.ratingsAverage
+                    ),
                     onClose = onClose
                 )
             }

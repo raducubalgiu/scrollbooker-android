@@ -51,6 +51,7 @@ import com.example.scrollbooker.ui.profile.tabs.info.ProfileInfoTab
 import com.example.scrollbooker.ui.profile.tabs.posts.ProfilePostsTab
 import com.example.scrollbooker.ui.profile.tabs.reposts.ProfileRepostsTab
 import com.example.scrollbooker.ui.shared.products.UserProductsServiceTabs
+import com.example.scrollbooker.ui.shared.products.UserProductsViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -152,11 +153,14 @@ fun ProfileLayout(
                             )
 
                             ProfileTab.Products -> {
-                                UserProductsServiceTabs(
-                                    paddingTop = currentHeaderHeightDp,
-                                    userId = user.id,
-                                    onSelect = {}
-                                )
+                                val viewModel: UserProductsViewModel = hiltViewModel()
+
+//                                UserProductsServiceTabs(
+//                                    viewModel = viewModel,
+//                                    paddingTop = currentHeaderHeightDp,
+//                                    userId = user.id,
+//                                    onSelect = {},
+//                                )
                             }
 
                             ProfileTab.Reposts -> ProfileRepostsTab(

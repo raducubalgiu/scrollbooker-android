@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -24,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.AvatarWithRating
 import com.example.scrollbooker.components.core.buttons.MainButton
+import com.example.scrollbooker.core.extensions.formatDuration
 import com.example.scrollbooker.core.extensions.toTwoDecimals
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
@@ -32,6 +35,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.ui.appointments.components.AppointmentProductPrice
+import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheetUser
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodySmall
@@ -41,6 +45,7 @@ import java.math.BigDecimal
 
 @Composable
 fun ConfirmTab(
+    user: BookingsSheetUser,
     totalPriceWithDiscount: BigDecimal,
     totalDuration: Int,
     products: Set<Product>,
@@ -48,7 +53,7 @@ fun ConfirmTab(
     onSave: () -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column(modifier = Modifier.padding(horizontal = BasePadding)) {
@@ -58,9 +63,9 @@ fun ConfirmTab(
                         top = BasePadding,
                         bottom = SpacingXS
                     ),
-                    url = "",
+                    url = user.avatar ?: "",
                     onClick = {},
-                    rating = 4.5f,
+                    rating = user.ratingsAverage,
                     size = 65.dp
                 )
 
@@ -68,7 +73,7 @@ fun ConfirmTab(
 
                 Column {
                     Text(
-                        text = "Radu Ion",
+                        text = user.fullName,
                         style = titleMedium,
                         fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
@@ -76,7 +81,7 @@ fun ConfirmTab(
                         fontSize = 18.sp
                     )
                     Text(
-                        text = "Frizerie",
+                        text = user.profession,
                         style = bodyLarge,
                         color = Color.Gray,
                         maxLines = 1,
@@ -106,7 +111,7 @@ fun ConfirmTab(
                     Spacer(Modifier.width(SpacingS))
 
                     Text(
-                        text = "($totalDuration min)",
+                        text = totalDuration.formatDuration(),
                         style = bodyLarge,
                         color = Color.Gray
                     )

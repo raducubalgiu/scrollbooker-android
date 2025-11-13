@@ -27,6 +27,7 @@ import com.example.scrollbooker.core.enums.AppointmentStatusEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentWrittenReview
+import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.ui.appointments.components.AppointmentDetailsActions
 import com.example.scrollbooker.ui.appointments.components.AppointmentDetailsHeader
 import com.example.scrollbooker.ui.appointments.components.AppointmentDetailsMessage
@@ -37,6 +38,7 @@ import com.example.scrollbooker.ui.appointments.sheets.AddReviewSheet
 import com.example.scrollbooker.ui.appointments.sheets.CancelReviewSheet
 import com.example.scrollbooker.ui.shared.location.LocationSection
 import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheet
+import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheetUser
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.titleMedium
@@ -66,10 +68,26 @@ fun AppointmentDetailsScreen(
             sheetState = sheetState,
             onClose = { scope.launch { sheetState.hide() } }
         ) {
-            appointment?.user?.id?.let { userId ->
+            appointment.let { app ->
+                val user = app?.user ?: return@Sheet
+                val userId = user.id ?: return@Sheet
+                val username = user.username ?: return@Sheet
+                val profession = user.profession ?: return@Sheet
+                val ratingsCount = user.ratingsCount ?: return@Sheet
+                val ratingsAverage = user.ratingsAverage ?: return@Sheet
+
                 BookingsSheet(
-                    userId = 13,
-                    initialPage = 0,
+                    user = BookingsSheetUser(
+                        id = userId,
+                        username = username,
+                        fullName = user.fullName,
+                        avatar = user.avatar,
+                        profession = profession,
+                        ratingsCount = ratingsCount,
+                        ratingsAverage = ratingsAverage
+                    ),
+                    initialIndex = 0,
+                    appointmentId = app.id,
                     onClose = { scope.launch { sheetState.hide() } }
                 )
             }

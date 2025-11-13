@@ -112,7 +112,7 @@ fun ReviewCard(
                 rating = rating.toFloat()
             )
 
-            Text(text = review ?: "")
+            Text(text = review ?: "...")
 
             Row(modifier = Modifier
                 .fillMaxWidth()

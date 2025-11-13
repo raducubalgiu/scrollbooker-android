@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
+import com.example.scrollbooker.core.extensions.formatDuration
 import com.example.scrollbooker.core.extensions.toTwoDecimals
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
@@ -66,7 +67,7 @@ fun BookingsSheetFooter(
                         Spacer(Modifier.height(SpacingXS))
 
                         Text(
-                            text = "${selectedProducts.size} ${stringResource(R.string.services)} \u2022 $totalDuration min",
+                            text = "${selectedProducts.size} ${stringResource(R.string.services)} \u2022 ${totalDuration.formatDuration()}",
                             style = bodyLarge,
                             color = Color.Gray
                         )

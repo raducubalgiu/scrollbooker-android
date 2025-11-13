@@ -18,6 +18,11 @@ interface ProductsApiService {
         @Query("employee_id") employeeId: Int?
     ): PaginatedResponseDto<ProductDto>
 
+    @GET("appointments/{appointmentId}/products")
+    suspend fun getProductsByAppointmentId(
+        @Path("appointmentId") appointmentId: Int
+    ): List<ProductDto>
+
     @GET("products/{productId}")
     suspend fun getProduct(
         @Path("productId") productId: Int

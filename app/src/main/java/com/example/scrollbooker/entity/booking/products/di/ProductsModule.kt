@@ -7,6 +7,7 @@ import com.example.scrollbooker.entity.booking.products.domain.repository.Produc
 import com.example.scrollbooker.entity.booking.products.domain.useCase.CreateProductUseCase
 import com.example.scrollbooker.entity.booking.products.domain.useCase.DeleteProductUseCase
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductByIdUseCase
+import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByAppointmentIdUseCase
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByUserIdAndServiceIdUseCase
 import dagger.Module
 import dagger.Provides
@@ -67,5 +68,13 @@ object ProductsModule {
         repository: ProductRepository,
     ): DeleteProductUseCase {
         return DeleteProductUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetProductsByAppointmentIdUseCase(
+        repository: ProductRepository,
+    ): GetProductsByAppointmentIdUseCase {
+        return GetProductsByAppointmentIdUseCase(repository)
     }
 }

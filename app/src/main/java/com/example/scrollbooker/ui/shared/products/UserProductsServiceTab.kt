@@ -36,6 +36,7 @@ import com.example.scrollbooker.ui.theme.Divider
 @Composable
 fun UserProductsServiceTab(
     viewModel: UserProductsViewModel,
+    selectedProducts: Set<Product>,
     employees: List<ServiceEmployee>,
     serviceId: Int,
     userId: Int,
@@ -43,7 +44,6 @@ fun UserProductsServiceTab(
 ) {
     val firstEmployeesId = employees.firstOrNull()?.id
     val productsState = viewModel.loadProducts(serviceId, userId, firstEmployeesId).collectAsLazyPagingItems()
-    val selectedProducts by viewModel.selectedProducts.collectAsState()
 
     val refresh = productsState.loadState.refresh
     val append = productsState.loadState.append
