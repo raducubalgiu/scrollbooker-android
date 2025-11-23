@@ -1,23 +1,41 @@
 package com.example.scrollbooker.ui.search
 import BottomBar
+import android.Manifest
 import android.annotation.SuppressLint
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.outlined.NearMe
 import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetValue
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -30,10 +48,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.util.UnstableApi
 import com.example.scrollbooker.R
+import com.example.scrollbooker.components.core.iconButton.CustomIconButton
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
+import com.example.scrollbooker.ui.LocalLocationController
+import com.example.scrollbooker.ui.PrecisionMode
 import com.example.scrollbooker.ui.search.components.SearchBusinessCardModel
 import com.example.scrollbooker.ui.search.components.SearchHeader
 import com.example.scrollbooker.ui.search.components.SearchMap
@@ -45,6 +68,7 @@ import com.example.scrollbooker.ui.search.sheets.SearchSheets
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 data class BusinessAnnotation(
     val longitude: Float,
@@ -341,6 +365,30 @@ fun SearchScreen(
     viewModel: SearchViewModel,
     onNavigateToBusinessProfile: () -> Unit
 ) {
+    val locationController = LocalLocationController.current
+    val locationState by locationController.stateFlow.collectAsStateWithLifecycle()
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        locationController.onPermissionResult(granted)
+        if(granted) {
+            locationController.startUpdates(PrecisionMode.BALANCED)
+        }
+    }
+
+    LaunchedEffect(locationState.isPermissionGranted) {
+        if(locationState.isPermissionGranted) {
+            locationController.startUpdates(PrecisionMode.BALANCED)
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            locationController.stopUpdates()
+        }
+    }
+
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var sheetAction by rememberSaveable { mutableStateOf(SearchSheetActionEnum.NONE) }
@@ -389,6 +437,14 @@ fun SearchScreen(
                     }
                 }
             )
+            if(!locationState.isPermissionGranted) {
+                EnableLocationBanner(
+                    modifier = Modifier.statusBarsPadding(),
+                    onEnableClick = {
+                        permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                    }
+                )
+            }
         },
         bottomBar = { BottomBar() }
     ) { padding ->
@@ -441,3 +497,68 @@ fun SearchScreen(
     }
 }
 
+@Composable
+private fun EnableLocationBanner(
+    modifier: Modifier = Modifier,
+    onEnableClick: () -> Unit
+) {
+    Surface(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .zIndex(20f),
+        shape = RoundedCornerShape(12.dp),
+        tonalElevation = 4.dp,
+        color = MaterialTheme.colorScheme.surface
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Default.LocationOn,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(28.dp)
+            )
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "Activează locația",
+                    style = MaterialTheme.typography.titleMedium
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    text = "Permite aplicației să îți detecteze poziția pentru a vedea business-uri din apropiere.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            Button(
+                onClick = onEnableClick,
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Text("Permite")
+            }
+        }
+
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.End
+        ) {
+            CustomIconButton(
+                imageVector = Icons.Default.Close,
+                onClick = {}
+            )
+        }
+    }
+}

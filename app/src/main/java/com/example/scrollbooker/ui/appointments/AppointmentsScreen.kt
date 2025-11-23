@@ -1,5 +1,6 @@
 package com.example.scrollbooker.ui.appointments
 import BottomBar
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,6 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -16,7 +19,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.paging.LoadState
@@ -35,6 +40,8 @@ import com.example.scrollbooker.ui.appointments.components.AppointmentFilter
 import com.example.scrollbooker.ui.appointments.components.AppointmentFilterTitleEnum
 import com.example.scrollbooker.ui.appointments.components.AppointmentsFilterSheet
 import com.example.scrollbooker.ui.appointments.components.AppointmentsList
+import com.example.scrollbooker.ui.theme.Background
+import com.example.scrollbooker.ui.theme.OnBackground
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -104,9 +111,9 @@ fun AppointmentsScreen(
                             viewModel.loadAppointments(selectedFilter?.asCustomer)
                         }
                     )
-                }
 
-                Spacer(Modifier.height(BasePadding))
+                    Spacer(Modifier.height(BasePadding))
+                }
 
                 when(appointments.loadState.refresh) {
                     is LoadState.Loading -> LoadingScreen()
@@ -116,7 +123,7 @@ fun AppointmentsScreen(
                             isRefreshing = isRefreshing,
                             onRefresh = {
                                 viewModel.loadAppointments(selectedOption?.asCustomer)
-                            }
+                            },
                         ) {
                             AppointmentsList(
                                 appointments = appointments,

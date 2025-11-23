@@ -66,6 +66,9 @@ dependencies {
     // App Compat
     implementation(libs.androidx.appcompat)
 
+    // Location
+    implementation(libs.gms.play.services.location)
+
     // Navigation
     implementation(libs.androidx.navigation.compose)
 
