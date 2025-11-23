@@ -10,7 +10,9 @@ import retrofit2.http.Query
 interface UserProfileApiService {
     @GET("users/{userId}/user-profile")
     suspend fun getUserProfile(
-        @Path("userId") userId: Int
+        @Path("userId") userId: Int,
+        @Query("lat") lat: Float?,
+        @Query("lng") lng: Float?
     ): UserProfileDto
 
     @PATCH("users/user-info/fullname")

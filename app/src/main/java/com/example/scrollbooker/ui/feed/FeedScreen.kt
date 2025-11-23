@@ -36,7 +36,6 @@ import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.BookingsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.CommentsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.LocationSheet
-import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.MoreOptionsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.None
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.ReviewDetailsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.ReviewsSheet
@@ -190,7 +189,8 @@ private fun handlePostAction(
             handleOpenSheet(LocationSheet(post.businessId))
         }
         PostOverlayActionEnum.OPEN_MORE_OPTIONS -> {
-            handleOpenSheet(MoreOptionsSheet(post.user.id))
+            //handleOpenSheet(MoreOptionsSheet(post.user.id))
+            handleOpenSheet(BookingsSheet(post.user, post.id))
         }
     }
 }

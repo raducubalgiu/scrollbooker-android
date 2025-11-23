@@ -9,7 +9,7 @@ data class Post(
     val user: PostUser,
     val businessOwner: PostBusinessOwner,
     val employee: PostEmployee?,
-    val product: PostProduct?,
+    //val product: PostProduct?,
     val userActions: UserPostActions,
     val mediaFiles: List<PostMediaFile>,
     val counters: PostCounters,
@@ -107,13 +107,13 @@ data class LastMinute(
 )
 
 fun Post.ctaAction(): PostOverlayActionEnum = when {
-    isVideoReview -> PostOverlayActionEnum.OPEN_REVIEW_DETAILS
-    product != null -> PostOverlayActionEnum.OPEN_BOOKINGS
+    isVideoReview -> PostOverlayActionEnum.OPEN_BOOKINGS
+    //product != null -> PostOverlayActionEnum.OPEN_BOOKINGS
     else -> PostOverlayActionEnum.OPEN_BOOKINGS
 }
 
 fun Post.ctaTitle(): Int = when {
     isVideoReview -> R.string.seeMore
-    product != null -> R.string.bookThisService
+    //product != null -> R.string.bookThisService
     else -> R.string.bookNow
 }

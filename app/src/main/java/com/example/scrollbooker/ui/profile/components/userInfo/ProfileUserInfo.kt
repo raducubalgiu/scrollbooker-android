@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.Avatar
+import com.example.scrollbooker.core.extensions.toFixedDecimals
 import com.example.scrollbooker.core.util.Dimens.AvatarSizeXL
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
@@ -136,7 +137,7 @@ fun ProfileUserInfo(
                         )
                         Spacer(Modifier.width(5.dp))
                         Text(
-                            text = user.counters.ratingsAverage.toString(),
+                            text = user.counters.ratingsAverage.toFixedDecimals(1),
                             style = titleMedium,
                             fontSize = 19.sp,
                             fontWeight = FontWeight.Bold,

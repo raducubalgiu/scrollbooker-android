@@ -32,7 +32,7 @@ fun PostDto.toDomain(): Post {
         user = user.toDomain(),
         businessOwner = businessOwner.toDomain(),
         employee = employee?.toDomain(),
-        product = product?.toDomain(),
+        //product = product?.toDomain(),
         userActions = userActions.toDomain(),
         mediaFiles = mediaFiles.map { it.toDomain() },
         counters = counters.toDomain(),

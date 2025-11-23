@@ -63,6 +63,8 @@ fun PostSheets(
             is PostSheetsContent.BookingsSheet -> {
                 val user = content.user
                 BookingsSheet(
+                    initialIndex = if(content.postId != null) 0 else 1,
+                    postId = content.postId,
                     user = BookingsSheetUser(
                         id = user.id,
                         username = user.username,

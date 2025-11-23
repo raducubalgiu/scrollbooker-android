@@ -23,6 +23,12 @@ interface ProductsApiService {
         @Path("appointmentId") appointmentId: Int
     ): List<ProductDto>
 
+    @GET("posts/{postId}/products")
+    suspend fun getProductsByPostId(
+        @Path("postId") postId: Int
+    ): List<ProductDto>
+
+
     @GET("products/{productId}")
     suspend fun getProduct(
         @Path("productId") productId: Int

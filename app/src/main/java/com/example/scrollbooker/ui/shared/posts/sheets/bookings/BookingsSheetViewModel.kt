@@ -8,6 +8,7 @@ import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointm
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.CreateScrollBookerAppointmentUseCase
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByAppointmentIdUseCase
+import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByPostIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class BookingsSheetViewModel @Inject constructor(
     private val createScrollBookerAppointmentUseCase: CreateScrollBookerAppointmentUseCase,
-    private val getProductsByAppointmentIdUseCase: GetProductsByAppointmentIdUseCase
+    private val getProductsByAppointmentIdUseCase: GetProductsByAppointmentIdUseCase,
+    private val getProductsByPostIdUseCase: GetProductsByPostIdUseCase
 ): ViewModel() {
     private val _isSaving = MutableStateFlow<Boolean>(false)
     val isSaving: StateFlow<Boolean> = _isSaving.asStateFlow()
@@ -29,6 +31,9 @@ class BookingsSheetViewModel @Inject constructor(
 
     private val _appointmentProducts = MutableStateFlow<FeatureState<List<Product>>>(FeatureState.Loading)
     val appointmentProducts: StateFlow<FeatureState<List<Product>>> = _appointmentProducts.asStateFlow()
+
+    private val _postProducts = MutableStateFlow<FeatureState<List<Product>>>(FeatureState.Loading)
+    val postProducts: StateFlow<FeatureState<List<Product>>> = _postProducts.asStateFlow()
 
     fun createAppointment(request: AppointmentScrollBookerCreate) {
         if(_isSaving.value) return
@@ -59,6 +64,15 @@ class BookingsSheetViewModel @Inject constructor(
             _appointmentProducts.value = FeatureState.Loading
             _appointmentProducts.value = withVisibleLoading {
                 getProductsByAppointmentIdUseCase(appointmentId)
+            }
+        }
+    }
+
+    fun loadPostProducts(postId: Int) {
+        viewModelScope.launch {
+            _postProducts.value = FeatureState.Loading
+            _postProducts.value = withVisibleLoading {
+                getProductsByPostIdUseCase(postId)
             }
         }
     }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
@@ -53,10 +54,15 @@ fun ConfirmTab(
     onSave: () -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Column(modifier = Modifier.padding(horizontal = BasePadding)) {
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = BasePadding)
+                .verticalScroll(rememberScrollState()),
+        ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 AvatarWithRating(
                     modifier = Modifier.padding(
@@ -155,7 +161,7 @@ fun ConfirmTab(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "Total de plata",
+                    text = stringResource(R.string.totalPayment),
                     style = titleMedium,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp

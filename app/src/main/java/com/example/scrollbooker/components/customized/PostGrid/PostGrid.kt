@@ -64,12 +64,12 @@ fun PostGrid(
                 .fillMaxSize(),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                PostGridLabel(
-                    lastMinute = post.lastMinute,
-                    product = post.product
-                )
+//                PostGridLabel(
+//                    lastMinute = post.lastMinute,
+//                    product = post.product
+//                )
                 Column {
-                    post.product?.let { PostGridCover(post.product) }
+                    //post.product?.let { PostGridCover(post.product) }
                     PostGridViews(viewsCount)
                 }
             }

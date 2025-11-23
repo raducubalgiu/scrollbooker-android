@@ -39,6 +39,7 @@ fun BookingsSheet(
     modifier: Modifier = Modifier,
     user: BookingsSheetUser,
     initialIndex: Int = 1,
+    postId: Int? = null,
     appointmentId: Int? = null,
     onClose: () -> Unit
 ) {
@@ -55,12 +56,14 @@ fun BookingsSheet(
 
     LaunchedEffect(Unit) {
         appointmentId?.let { bookingsSheetViewModel.loadAppointmentProducts(it) }
+        postId?.let { bookingsSheetViewModel.loadPostProducts(it) }
         productsViewModel.reset()
         calendarViewModel.reset()
     }
 
     val selectedProducts by productsViewModel.selectedProducts.collectAsState()
-    val previousProducts by bookingsSheetViewModel.appointmentProducts.collectAsState()
+    val appointmentProducts by bookingsSheetViewModel.appointmentProducts.collectAsState()
+    val postProducts by bookingsSheetViewModel.postProducts.collectAsState()
 
     val totalDuration = selectedProducts.sumOf { it.duration }
     val totalPrice = selectedProducts.sumOf { it.price }
@@ -105,8 +108,9 @@ fun BookingsSheet(
                 when(page) {
                     0 -> ProductsTab(
                         productsViewModel = productsViewModel,
-                        previousProducts = previousProducts,
                         initialIndex = initialIndex,
+                        appointmentProducts = appointmentId?.let { appointmentProducts },
+                        postProducts = postId?.let { postProducts },
                         selectedProducts = selectedProducts,
                         onSelect = { productsViewModel.toggleProductId(it) },
                         totalPrice = totalPriceWithDiscount,

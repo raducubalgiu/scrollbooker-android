@@ -75,8 +75,11 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             _userProfileState.value = FeatureState.Loading
 
+            val lat = 44.446145f
+            val lng = 25.989074f
+
             val response = withVisibleLoading {
-                getUserProfileUseCase(userId)
+                getUserProfileUseCase(userId, lat, lng)
             }
 
             if(response is FeatureState.Success) {

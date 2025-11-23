@@ -87,7 +87,7 @@ class MyProfileViewModel @Inject constructor(
 
             _userProfileState.value = FeatureState.Loading
 
-            val response = withVisibleLoading { getUserProfileUseCase(userId) }
+            val response = withVisibleLoading { getUserProfileUseCase(userId, lat = null, lng = null) }
 
             _userProfileState.value = response
         }

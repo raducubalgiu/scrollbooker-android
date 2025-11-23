@@ -9,14 +9,14 @@ import javax.inject.Inject
 class GetUserProfileUseCase @Inject constructor(
     private val repository: UserProfileRepository
 ) {
-    suspend operator fun invoke(userId: Int?): FeatureState<UserProfile> {
+    suspend operator fun invoke(userId: Int?, lat: Float?, lng: Float?): FeatureState<UserProfile> {
         if(userId == null) {
             Timber.tag("UserProfile").e("ERROR: on Fetching User Profile. User Id Not Found")
             return FeatureState.Error()
         }
 
         return try {
-            val response = repository.getUserProfile(userId)
+            val response = repository.getUserProfile(userId, lat, lng)
             FeatureState.Success(response)
         } catch (e: Exception) {
             Timber.tag("UserProfile").e("ERROR: on Fetching User Profile: $e")

@@ -31,7 +31,8 @@ import java.math.BigDecimal
 @Composable
 fun ProductsTab(
     productsViewModel: UserProductsViewModel,
-    previousProducts:  FeatureState<List<Product>>,
+    appointmentProducts: FeatureState<List<Product>>?,
+    postProducts:  FeatureState<List<Product>>?,
     initialIndex: Int = 1,
     selectedProducts: Set<Product>,
     onSelect: (Product) -> Unit,
@@ -71,11 +72,14 @@ fun ProductsTab(
             ) { page ->
                 when(page) {
                     0 -> Column(Modifier.fillMaxSize()) {
-                        when(previousProducts) {
+                        if (initialIndex == 1) return@HorizontalPager
+                        val products = appointmentProducts ?: postProducts
+
+                        when(products) {
                             is FeatureState.Error -> ErrorScreen()
                             is FeatureState.Loading -> LoadingScreen()
                             is FeatureState.Success -> {
-                                val products = previousProducts.data
+                                val products = products.data
 
                                 LaunchedEffect(products) {
                                     productsViewModel.setMultipleProducts(products)
@@ -91,14 +95,17 @@ fun ProductsTab(
                                     }
                                 }
                             }
+                            null -> Unit
                         }
                     }
-                    1 -> UserProductsServiceTabs(
-                        viewModel = productsViewModel,
-                        selectedProducts = selectedProducts,
-                        userId = userId,
-                        onSelect = onSelect
-                    )
+                    1 -> {
+                        UserProductsServiceTabs(
+                            viewModel = productsViewModel,
+                            selectedProducts = selectedProducts,
+                            userId = userId,
+                            onSelect = onSelect
+                        )
+                    }
                 }
             }
         }

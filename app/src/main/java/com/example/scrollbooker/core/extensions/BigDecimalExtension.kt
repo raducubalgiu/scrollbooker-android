@@ -11,3 +11,8 @@ fun BigDecimal.toTwoDecimals(): String {
         scaled.toPlainString()
     }
 }
+
+fun BigDecimal.toFixedDecimals(decimals: Int = 2): String {
+    val scaled = BigDecimal(this.toString()).setScale(decimals, RoundingMode.HALF_UP)
+    return scaled.toPlainString()
+}

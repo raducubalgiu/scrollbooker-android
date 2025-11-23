@@ -336,4 +336,5 @@
     <string name="noProductsSelected">Nici un produs selectat</string>
     <string name="chooseServices">Alege serviciile</string>
     <string name="verifyAvailability">Verifică disponibilitatea</string>
+    <string name="totalPayment">Total de plată</string>
 </resources>

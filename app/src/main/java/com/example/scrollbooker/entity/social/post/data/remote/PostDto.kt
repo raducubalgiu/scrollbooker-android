@@ -13,7 +13,7 @@ data class PostDto(
 
     val employee: PostEmployeeDto?,
 
-    val product: PostProductDto?,
+    //val product: PostProductDto?,
     val counters: PostCountersDto,
 
     @SerializedName("user_actions")
