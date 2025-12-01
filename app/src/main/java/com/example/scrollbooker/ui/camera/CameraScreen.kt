@@ -49,7 +49,9 @@ fun CameraScreen(
     ) { /* handle individually if you want */ }
 
     LaunchedEffect(hasPerms) {
-        if (!hasPerms) { permissionLauncher.launch(permissions) }
+        if (!hasPerms) {
+            permissionLauncher.launch(permissions)
+        }
     }
 
     DisposableEffect(lifecycleOwner, hasPerms) {

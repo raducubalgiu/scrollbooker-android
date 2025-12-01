@@ -118,12 +118,8 @@ fun ReviewCard(
                 .fillMaxWidth()
                 .padding(top = SpacingXL),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.End
             ) {
-                Text(
-                    text = "${stringResource(R.string.addComment)}...",
-                    color = Color.Gray
-                )
                 Row(
                     horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically

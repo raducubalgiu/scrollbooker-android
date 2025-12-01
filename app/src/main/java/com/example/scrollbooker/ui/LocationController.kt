@@ -7,7 +7,8 @@ data class LocationController(
     val stateFlow: StateFlow<LocationState>,
     val startUpdates: (PrecisionMode) -> Unit,
     val stopUpdates: () -> Unit,
-    val onPermissionResult: (Boolean) -> Unit
+    val onPermissionResult: (Boolean, Boolean) -> Unit,
+    val syncInitialPermission: (Boolean) -> Unit
 )
 
 val LocalLocationController = staticCompositionLocalOf<LocationController> {

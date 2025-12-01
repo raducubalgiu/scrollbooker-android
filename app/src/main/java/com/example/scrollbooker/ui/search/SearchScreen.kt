@@ -1,41 +1,31 @@
 package com.example.scrollbooker.ui.search
 import BottomBar
 import android.Manifest
-import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.outlined.NearMe
 import androidx.compose.material3.BottomSheetScaffold
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetValue
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -46,319 +36,33 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.media3.common.util.UnstableApi
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.iconButton.CustomIconButton
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
+import com.example.scrollbooker.ui.GeoPoint
 import com.example.scrollbooker.ui.LocalLocationController
+import com.example.scrollbooker.ui.LocationPermissionStatus
 import com.example.scrollbooker.ui.PrecisionMode
-import com.example.scrollbooker.ui.search.components.SearchBusinessCardModel
+import com.example.scrollbooker.ui.search.components.SearchEnableLocationBanner
 import com.example.scrollbooker.ui.search.components.SearchHeader
 import com.example.scrollbooker.ui.search.components.SearchMap
-import com.example.scrollbooker.ui.search.components.SearchResultsList
+import com.example.scrollbooker.ui.search.components.SearchMapLoading
 import com.example.scrollbooker.ui.search.components.SearchSheetHeader
-import com.example.scrollbooker.ui.search.components.markers.BusinessCategory
 import com.example.scrollbooker.ui.search.sheets.SearchSheetActionEnum
 import com.example.scrollbooker.ui.search.sheets.SearchSheets
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
+import com.mapbox.geojson.Point
+import com.mapbox.maps.CameraOptions
+import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
-data class BusinessAnnotation(
-    val longitude: Float,
-    val latitude: Float,
-    val businessCategory: BusinessCategory
-)
-
-val dummyAnnotation = listOf(
-    BusinessAnnotation(
-        longitude = 26.005958f,
-        latitude = 44.450390f,
-        businessCategory = BusinessCategory.MEDICAL
-    ),
-    BusinessAnnotation(
-        longitude = 26.130997f,
-        latitude = 44.437728f,
-        businessCategory = BusinessCategory.BEAUTY
-    ),
-    BusinessAnnotation(
-        longitude = 26.001870f,
-        latitude = 44.419810f,
-        businessCategory = BusinessCategory.AUTO
-    ),
-    BusinessAnnotation(
-        longitude = 26.184851f,
-        latitude = 44.416750f,
-        businessCategory = BusinessCategory.AUTO
-    ),
-    BusinessAnnotation(
-        longitude = 26.068575f,
-        latitude = 44.458698f,
-        businessCategory = BusinessCategory.BEAUTY
-    ),
-    BusinessAnnotation(
-        longitude = 26.062456f,
-        latitude = 44.476167f,
-        businessCategory = BusinessCategory.AUTO
-    ),
-    BusinessAnnotation(
-        longitude = 26.127325f,
-        latitude = 44.372584f,
-        businessCategory = BusinessCategory.MEDICAL
-    ),
-    BusinessAnnotation(
-        longitude = 26.063068f,
-        latitude = 44.494941f,
-        businessCategory = BusinessCategory.MEDICAL
-    ),
-    BusinessAnnotation(
-        longitude = 26.099786f,
-        latitude = 44.444282f,
-        businessCategory = BusinessCategory.BEAUTY
-    ),
-    BusinessAnnotation(
-        longitude = 26.092442f,
-        latitude = 44.456951f,
-        businessCategory = BusinessCategory.AUTO
-    ),
-    BusinessAnnotation(
-        longitude = 26.113862f,
-        latitude = 44.456514f,
-        businessCategory = BusinessCategory.MEDICAL
-    ),
-    BusinessAnnotation(
-        longitude = 26.078979f,
-        latitude = 44.453893f,
-        businessCategory = BusinessCategory.BEAUTY
-    ),
-    BusinessAnnotation(
-        longitude = 26.087547f,
-        latitude = 44.416750f,
-        businessCategory = BusinessCategory.MEDICAL
-    ),
-    BusinessAnnotation(
-        longitude = 26.087547f,
-        latitude = 44.408007f,
-        businessCategory = BusinessCategory.BEAUTY
-    ),
-    BusinessAnnotation(
-        longitude = 26.082024f,
-        latitude = 44.431392f,
-        businessCategory = BusinessCategory.BEAUTY
-    ),
-    BusinessAnnotation(
-        longitude = 26.123331f,
-        latitude = 44.435577f,
-        businessCategory = BusinessCategory.MEDICAL
-    ),
-    BusinessAnnotation(
-        longitude = 26.109896f,
-        latitude = 44.433944f,
-        businessCategory = BusinessCategory.BEAUTY
-    ),
-    BusinessAnnotation(
-        longitude = 26.089314f,
-        latitude = 44.427718f,
-        businessCategory = BusinessCategory.MEDICAL
-    ),
-    BusinessAnnotation(
-        longitude = 26.114041f,
-        latitude = 44.442006f,
-        businessCategory = BusinessCategory.AUTO
-    ),
-    BusinessAnnotation(
-        longitude = 26.085455f,
-        latitude = 44.441496f,
-        businessCategory = BusinessCategory.MEDICAL
-    ),
-    BusinessAnnotation(
-        longitude = 26.117741f,
-        latitude = 44.421818f,
-        businessCategory = BusinessCategory.AUTO
-    ),
-    BusinessAnnotation(
-        longitude = 26.056729f,
-        latitude = 44.445849f,
-        businessCategory = BusinessCategory.BEAUTY
-    ),
-    BusinessAnnotation(
-        longitude = 26.149659f,
-        latitude = 44.404447f,
-        businessCategory = BusinessCategory.MEDICAL
-    ),
-    BusinessAnnotation(
-        longitude = 26.141191f,
-        latitude = 44.426625f,
-        businessCategory = BusinessCategory.BEAUTY
-    ),
-    BusinessAnnotation(
-        longitude = 26.044787f,
-        latitude = 44.421973f,
-        businessCategory = BusinessCategory.BEAUTY
-    ),
-    BusinessAnnotation(
-        longitude = 26.110142f,
-        latitude = 44.448484f,
-        businessCategory = BusinessCategory.MEDICAL
-    ),
-    BusinessAnnotation(
-        longitude = 26.089133f,
-        latitude = 44.443433f,
-        businessCategory = BusinessCategory.AUTO
-    ),
-    BusinessAnnotation(
-        longitude = 26.095167f,
-        latitude = 44.455788f,
-        businessCategory = BusinessCategory.BEAUTY
-    ),
-    BusinessAnnotation(
-        longitude = 26.082904f,
-        latitude = 44.438460f,
-        businessCategory = BusinessCategory.AUTO
-    ),
-    BusinessAnnotation(
-        longitude = 26.126651f,
-        latitude = 44.414235f,
-        businessCategory = BusinessCategory.MEDICAL
-    ),
-    BusinessAnnotation(
-        longitude = 26.115899f,
-        latitude = 44.428136f,
-        businessCategory = BusinessCategory.MEDICAL
-    ),
-    BusinessAnnotation(
-        longitude = 26.046757f,
-        latitude = 44.442299f,
-        businessCategory = BusinessCategory.MEDICAL
-    ),
-    BusinessAnnotation(
-        longitude = 26.073821f,
-        latitude = 44.456458f,
-        businessCategory = BusinessCategory.MEDICAL
-    ),
-    BusinessAnnotation(
-        longitude = 26.079567f,
-        latitude = 44.411189f,
-        businessCategory = BusinessCategory.AUTO
-    ),
-    BusinessAnnotation(
-        longitude = 26.126095f,
-        latitude = 44.444416f,
-        businessCategory = BusinessCategory.AUTO
-    ),
-    BusinessAnnotation(
-        longitude = 26.049352f,
-        latitude = 44.437269f,
-        businessCategory = BusinessCategory.MEDICAL
-    ),
-    BusinessAnnotation(
-        longitude = 26.131285f,
-        latitude = 44.434622f,
-        businessCategory = BusinessCategory.BEAUTY
-    ),
-    BusinessAnnotation(
-        longitude = 26.064923f,
-        latitude = 44.431578f,
-        businessCategory = BusinessCategory.BEAUTY
-    ),
-    BusinessAnnotation(
-        longitude = 26.092358f,
-        latitude = 44.396887f,
-        businessCategory = BusinessCategory.AUTO
-    ),
-    BusinessAnnotation(
-        longitude = 26.037674f,
-        latitude = 44.430122f,
-        businessCategory = BusinessCategory.BEAUTY
-    ),
-    BusinessAnnotation(
-        longitude = 26.072894f,
-        latitude = 44.460559f,
-        businessCategory = BusinessCategory.BEAUTY
-    ),
-    BusinessAnnotation(
-        longitude = 26.095509f,
-        latitude = 44.46175f,
-        businessCategory = BusinessCategory.BEAUTY
-    ),
-    BusinessAnnotation(
-        longitude = 26.071782f,
-        latitude = 44.430519f,
-        businessCategory = BusinessCategory.BEAUTY
-    ),
-)
-
-val dummyBusinesses = listOf(
-    SearchBusinessCardModel(
-        id=1,
-        title="Video 1",
-        url = "https://media.scrollbooker.ro/business-video-1.mp4",
-        coverUrl = "https://media.scrollbooker.ro/business-video-1-cover.jpeg",
-        longitude = 26.005958f,
-        latitude = 44.450390f
-    ),
-    SearchBusinessCardModel(
-        id=2, title="Video 2",
-        url = "https://media.scrollbooker.ro/business-video-2.mp4",
-        coverUrl = "https://media.scrollbooker.ro/business-video-2-cover.jpeg",
-        longitude = 26.130997f,
-        latitude = 44.437728f
-    ),
-    SearchBusinessCardModel(
-        id=3, title="Video 3",
-        url = "https://media.scrollbooker.ro/business-video-3.mp4",
-        coverUrl = "https://media.scrollbooker.ro/business-video-3-cover.jpeg",
-        longitude = 26.001870f,
-        latitude = 44.419810f
-    ),
-    SearchBusinessCardModel(
-        id=4, title="Video 4",
-        url = "https://media.scrollbooker.ro/business-video-4.mp4",
-        coverUrl = "https://media.scrollbooker.ro/business-video-4-cover.jpeg",
-        longitude = 26.184851f,
-        latitude = 44.416750f
-    ),
-    SearchBusinessCardModel(
-        id=5,
-        title="Video 5",
-        url = "https://media.scrollbooker.ro/business-video-5.mp4",
-        coverUrl = "https://media.scrollbooker.ro/business-video-5-cover.jpeg",
-        longitude = 26.068575f,
-        latitude = 44.458698f
-    ),
-    SearchBusinessCardModel(
-        id=6,
-        title="Video 6",
-        url = "https://media.scrollbooker.ro/business-video-6.mp4",
-        coverUrl = "https://media.scrollbooker.ro/business-video-6-cover.jpeg",
-        longitude = 26.062456f,
-        latitude = 44.476167f
-    ),
-    SearchBusinessCardModel(
-        id=7,
-        title="Video 7",
-        url = "https://media.scrollbooker.ro/business-video-7.mp4",
-        coverUrl = "https://media.scrollbooker.ro/business-video-7-cover.jpeg",
-        longitude = 26.127325f,
-        latitude = 44.372584f
-    ),
-    SearchBusinessCardModel(
-        id=8, title="Video 8",
-        url = "https://media.scrollbooker.ro/business-video-8.mp4",
-        coverUrl = "https://media.scrollbooker.ro/business-video-8-cover.jpeg",
-        longitude = 26.063068f,
-        latitude = 44.494941f
-    ),
-)
-
-@androidx.annotation.OptIn(UnstableApi::class)
-@SuppressLint("UnusedBoxWithConstraintsScope")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
@@ -367,26 +71,42 @@ fun SearchScreen(
 ) {
     val locationController = LocalLocationController.current
     val locationState by locationController.stateFlow.collectAsStateWithLifecycle()
+    val markersUiState by viewModel.markersUiState.collectAsState()
+
+    val permissionStatus = locationState.permissionStatus
+
+    val context = LocalContext.current
+    val activity = context as Activity
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { granted ->
-        locationController.onPermissionResult(granted)
-        if(granted) {
-            locationController.startUpdates(PrecisionMode.BALANCED)
-        }
+        val canAskAgain = ActivityCompat.shouldShowRequestPermissionRationale(
+            activity,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
+
+        locationController.onPermissionResult(granted, canAskAgain)
     }
 
-    LaunchedEffect(locationState.isPermissionGranted) {
-        if(locationState.isPermissionGranted) {
-            locationController.startUpdates(PrecisionMode.BALANCED)
+    LaunchedEffect(Unit) {
+        val isGranted = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+        locationController.syncInitialPermission(isGranted)
+    }
+
+    LaunchedEffect(permissionStatus) {
+        when(permissionStatus) {
+            LocationPermissionStatus.GRANTED -> locationController.startUpdates(PrecisionMode.BALANCED)
+            LocationPermissionStatus.DENIED_PERMANENTLY -> locationController.stopUpdates()
+            else -> Unit
         }
     }
 
     DisposableEffect(Unit) {
-        onDispose {
-            locationController.stopUpdates()
-        }
+        onDispose { locationController.stopUpdates() }
     }
 
     val scope = rememberCoroutineScope()
@@ -422,6 +142,38 @@ fun SearchScreen(
     var sheetHeaderDp by remember { mutableStateOf(0.dp) }
     val isExpanded = scaffoldState.bottomSheetState.currentValue == SheetValue.Expanded
 
+    val cameraPosition by viewModel.cameraPosition.collectAsState()
+    val viewportState = rememberMapViewportState {
+        setCameraOptions {
+            center(Point.fromLngLat(cameraPosition.longitude, cameraPosition.latitude))
+            zoom(cameraPosition.zoom)
+            bearing(cameraPosition.bearing)
+            pitch(cameraPosition.pitch)
+        }
+    }
+
+    fun flyToUserLocation() {
+        val loc = GeoPoint(
+            lat = 44.443697,
+            lng = 25.978861
+        )
+        scope.launch {
+            viewportState.flyTo(
+                cameraOptions = CameraOptions.Builder()
+                    .center(
+                        Point.fromLngLat(
+                            loc.lng,
+                            loc.lat
+                        )
+                    )
+                    .zoom(13.5)
+                    .bearing(cameraPosition.bearing)
+                    .pitch(cameraPosition.pitch)
+                    .build()
+            )
+        }
+    }
+
     Scaffold(
         topBar = {
             SearchHeader(
@@ -437,20 +189,29 @@ fun SearchScreen(
                     }
                 }
             )
-            if(!locationState.isPermissionGranted) {
-                EnableLocationBanner(
-                    modifier = Modifier.statusBarsPadding(),
-                    onEnableClick = {
-                        permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-                    }
-                )
+
+            when(permissionStatus) {
+                LocationPermissionStatus.NOT_DETERMINED,
+                LocationPermissionStatus.DENIED_CAN_ASK_AGAIN -> {
+                    SearchEnableLocationBanner(
+                        modifier = Modifier.statusBarsPadding(),
+                        onEnableClick = {
+                            permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                        },
+                        onCancel = {}
+                    )
+                }
+                else -> Unit
             }
         },
         bottomBar = { BottomBar() }
     ) { padding ->
         SearchMap(
             viewModel = viewModel,
-            dummyAnnotations = dummyAnnotation
+            cameraPosition = cameraPosition,
+            viewportState = viewportState,
+            markersUiState = markersUiState,
+            userLocation = locationState.lastAccurateLocation
         )
 
         Box(modifier = Modifier
@@ -459,25 +220,27 @@ fun SearchScreen(
                 bottom = padding.calculateBottomPadding()
             )
         ) {
-            //SearchMapLoading()
+            if(markersUiState.isLoading) {
+                SearchMapLoading()
+            }
 
-//            IconButton(
-//                modifier = Modifier
-//                    .padding(bottom = padding.calculateBottomPadding())
-//                    .padding(SpacingXL)
-//                    .size(52.dp)
-//                    .align(Alignment.BottomEnd),
-//                onClick = {},
-//                colors = IconButtonDefaults.iconButtonColors(
-//                    containerColor = Background,
-//                    contentColor = OnBackground
-//                )
-//            ) {
-//                Icon(
-//                    imageVector = Icons.Outlined.NearMe,
-//                    contentDescription = null
-//                )
-//            }
+            IconButton(
+                modifier = Modifier
+                    .padding(bottom = padding.calculateBottomPadding())
+                    .padding(SpacingXL)
+                    .size(52.dp)
+                    .align(Alignment.BottomEnd),
+                onClick = { flyToUserLocation() },
+                colors = IconButtonDefaults.iconButtonColors(
+                    containerColor = Background,
+                    contentColor = OnBackground
+                )
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.NearMe,
+                    contentDescription = null
+                )
+            }
 
             BottomSheetScaffold(
                 sheetPeekHeight = sheetHeaderDp,
@@ -490,75 +253,10 @@ fun SearchScreen(
                         onMeasured = { sheetHeaderDp = it },
                         onAction = openSheetWith
                     )
-                    SearchResultsList(dummyBusinesses)
+                    Column(Modifier.fillMaxSize()) {  }
+                    //SearchResultsList(dummyBusinesses)
                 }
             ) {}
-        }
-    }
-}
-
-@Composable
-private fun EnableLocationBanner(
-    modifier: Modifier = Modifier,
-    onEnableClick: () -> Unit
-) {
-    Surface(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .zIndex(20f),
-        shape = RoundedCornerShape(12.dp),
-        tonalElevation = 4.dp,
-        color = MaterialTheme.colorScheme.surface
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.Default.LocationOn,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(28.dp)
-            )
-
-            Spacer(modifier = Modifier.width(12.dp))
-
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = "Activează locația",
-                    style = MaterialTheme.typography.titleMedium
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Text(
-                    text = "Permite aplicației să îți detecteze poziția pentru a vedea business-uri din apropiere.",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-
-            Spacer(modifier = Modifier.width(12.dp))
-
-            Button(
-                onClick = onEnableClick,
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Text("Permite")
-            }
-        }
-
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.End
-        ) {
-            CustomIconButton(
-                imageVector = Icons.Default.Close,
-                onClick = {}
-            )
         }
     }
 }

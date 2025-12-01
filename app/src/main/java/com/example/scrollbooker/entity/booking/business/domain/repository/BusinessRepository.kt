@@ -1,10 +1,13 @@
 package com.example.scrollbooker.entity.booking.business.domain.repository
 
+import com.example.scrollbooker.core.util.PaginatedResponseDto
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
+import com.example.scrollbooker.entity.booking.business.data.remote.BusinessMarkersRequest
 import com.example.scrollbooker.entity.booking.business.domain.model.Business
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessAddress
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessCreateResponse
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessLocation
+import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMarker
 import com.example.scrollbooker.entity.booking.business.domain.model.RecommendedBusiness
 import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
 
@@ -22,4 +25,5 @@ interface BusinessRepository {
         businessTypeId: Int,
         ownerFullName: String
     ): BusinessCreateResponse
+    suspend fun getBusinessesMarkers(request: BusinessMarkersRequest): PaginatedResponseDto<BusinessMarker>
 }

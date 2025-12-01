@@ -27,7 +27,7 @@ fun PostGrid(
     onNavigateToPost: (Int) -> Unit
 ) {
     Box(modifier = Modifier
-        .aspectRatio(9f / 16f)
+        .aspectRatio(9f / 12f)
         .background(SurfaceBG)
         .clickable(onClick = {
             onNavigateToPost(post.id)
@@ -64,10 +64,12 @@ fun PostGrid(
                 .fillMaxSize(),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-//                PostGridLabel(
+                Column {
+                    //                PostGridLabel(
 //                    lastMinute = post.lastMinute,
 //                    product = post.product
 //                )
+                }
                 Column {
                     //post.product?.let { PostGridCover(post.product) }
                     PostGridViews(viewsCount)

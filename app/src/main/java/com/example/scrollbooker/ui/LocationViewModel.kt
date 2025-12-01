@@ -26,10 +26,17 @@ enum class PrecisionMode {
     LOW
 }
 
+enum class LocationPermissionStatus {
+    NOT_DETERMINED,
+    GRANTED,
+    DENIED_CAN_ASK_AGAIN,
+    DENIED_PERMANENTLY
+}
+
 data class LocationState(
     val lastAccurateLocation: GeoPoint? = null,
     val lastUpdateTimestamp: Long? = null,
-    val isPermissionGranted: Boolean = false,
+    val permissionStatus: LocationPermissionStatus = LocationPermissionStatus.NOT_DETERMINED,
     val isUpdating: Boolean = false,
     val error: String? = null
 )
@@ -41,11 +48,39 @@ class LocationViewModel @Inject constructor(
     private val _state = MutableStateFlow(LocationState())
     val state: StateFlow<LocationState> = _state.asStateFlow()
 
+    private var hasRequestedPermission: Boolean = false
+
     private var updatesJob: Job? = null
     private var currentMode: PrecisionMode? = null
 
-    fun onPermissionResult(granted: Boolean) {
-        _state.update { it.copy(isPermissionGranted = granted) }
+    private fun resolveStatus(
+        isGranted: Boolean,
+        canAskAgain: Boolean,
+    ): LocationPermissionStatus {
+        return when {
+            isGranted -> LocationPermissionStatus.GRANTED
+            canAskAgain -> LocationPermissionStatus.DENIED_CAN_ASK_AGAIN
+            else -> LocationPermissionStatus.DENIED_PERMANENTLY
+        }
+    }
+
+    fun syncInitialPermission(isGranted: Boolean) {
+        _state.update { it.copy(permissionStatus = if(isGranted) {
+            LocationPermissionStatus.GRANTED
+        } else {
+            LocationPermissionStatus.NOT_DETERMINED
+        }) }
+    }
+
+    fun onPermissionResult(granted: Boolean, canAskAgain: Boolean) {
+        hasRequestedPermission = true
+
+        val status = resolveStatus(
+            isGranted = granted,
+            canAskAgain = canAskAgain
+        )
+
+        _state.update { it.copy(permissionStatus = status) }
 
         if (!granted) {
             Timber.tag("User Location").e("User didn't provide location permission. Granted: $granted")
@@ -54,8 +89,10 @@ class LocationViewModel @Inject constructor(
     }
 
     fun startLocationUpdates(precisionMode: PrecisionMode) {
-        if (!_state.value.isPermissionGranted) {
-            Timber.tag("User Location").e("Start Location Updates. Permission not granted")
+        val currentState = _state.value
+
+        if(currentState.permissionStatus != LocationPermissionStatus.GRANTED) {
+            Timber.tag("User Location").e("Start Location Updates. Permission not granted. Status=${currentState.permissionStatus}")
             return
         }
 
@@ -110,7 +147,7 @@ class LocationViewModel @Inject constructor(
     }
 
     fun fetchSingleLocation(precisionMode: PrecisionMode) {
-        if (!_state.value.isPermissionGranted) return
+        if (_state.value.permissionStatus != LocationPermissionStatus.GRANTED) return
 
         viewModelScope.launch {
             try {

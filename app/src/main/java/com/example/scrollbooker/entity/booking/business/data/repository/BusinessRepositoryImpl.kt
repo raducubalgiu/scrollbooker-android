@@ -1,16 +1,19 @@
 package com.example.scrollbooker.entity.booking.business.data.repository
 
+import com.example.scrollbooker.core.util.PaginatedResponseDto
 import com.example.scrollbooker.entity.auth.data.mappers.toDomain
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.booking.business.data.mappers.toDomain
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessApiService
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessCreateDto
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessHasEmployeesUpdateRequest
+import com.example.scrollbooker.entity.booking.business.data.remote.BusinessMarkersRequest
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessServicesUpdateRequest
 import com.example.scrollbooker.entity.booking.business.domain.model.Business
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessAddress
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessCreateResponse
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessLocation
+import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMarker
 import com.example.scrollbooker.entity.booking.business.domain.model.RecommendedBusiness
 import com.example.scrollbooker.entity.booking.business.domain.repository.BusinessRepository
 import com.example.scrollbooker.entity.nomenclature.service.data.mappers.toDomain
@@ -69,5 +72,14 @@ class BusinessRepositoryImpl @Inject constructor(
             ownerFullName = ownerFullName
         )
         return apiService.createBusiness(request).toDomain()
+    }
+
+    override suspend fun getBusinessesMarkers(request: BusinessMarkersRequest): PaginatedResponseDto<BusinessMarker> {
+        val response = apiService.getBusinessesMarkers(request)
+
+        return PaginatedResponseDto<BusinessMarker>(
+            count = response.count,
+            results = response.results.map { it.toDomain() }
+        )
     }
 }

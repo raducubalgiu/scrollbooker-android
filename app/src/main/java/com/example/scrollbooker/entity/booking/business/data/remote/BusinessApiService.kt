@@ -1,4 +1,5 @@
 package com.example.scrollbooker.entity.booking.business.data.remote
+import com.example.scrollbooker.core.util.PaginatedResponseDto
 import com.example.scrollbooker.entity.auth.data.remote.AuthStateDto
 import com.example.scrollbooker.entity.nomenclature.service.data.remote.ServiceDto
 import retrofit2.http.Body
@@ -53,4 +54,9 @@ interface BusinessApiService {
     suspend fun createBusiness(
         @Body request: BusinessCreateDto
     ): BusinessCreateResponseDto
+
+    @POST("/businesses/markers")
+    suspend fun getBusinessesMarkers(
+        @Body request: BusinessMarkersRequest
+    ): PaginatedResponseDto<BusinessMarkerDto>
 }
