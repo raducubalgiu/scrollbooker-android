@@ -15,6 +15,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
+import com.example.scrollbooker.ui.feed.FeedScreenViewModel
 import com.example.scrollbooker.ui.shared.posts.components.PostPlayerView
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostControls
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlay
@@ -25,7 +26,7 @@ import com.example.scrollbooker.ui.theme.BackgroundDark
 fun PostView(
     postActionState: PostActionUiState,
     post: Post,
-    playerViewModel: PlayerViewModel,
+    viewModel: FeedScreenViewModel,
     onAction: (PostOverlayActionEnum, Post) -> Unit,
     feedNavigate: FeedNavigator,
     isDrawerOpen: Boolean,
@@ -47,9 +48,9 @@ fun PostView(
         )
     }
 
-    val player = remember { playerViewModel.getOrCreatePlayer(post) }
+    val player = remember { viewModel.getOrCreatePlayer(post) }
 
-    val playerState by playerViewModel.getPlayerState(post.id)
+    val playerState by viewModel.getPlayerState(post.id)
         .collectAsStateWithLifecycle()
 
     val isPlaying = playerState.isPlaying
@@ -69,17 +70,17 @@ fun PostView(
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
-                onClick = { playerViewModel.togglePlayer(post.id) }
+                onClick = { viewModel.togglePlayer(post.id) }
             )
     ) {
         PostPlayerView(player)
 
-        PostControls(
-            player = player,
-            post = post,
-            isPlaying = isPlaying,
-            visible = showControls
-        )
+//        PostControls(
+//            player = player,
+//            post = post,
+//            isPlaying = isPlaying,
+//            visible = showControls
+//        )
 
         PostOverlay(
             post = postUi,

@@ -3,7 +3,10 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -12,23 +15,31 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.scrollbooker.core.extensions.getOrNull
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.ui.feed.components.FeedTabs
 import com.example.scrollbooker.ui.feed.drawer.FeedDrawer
 import com.example.scrollbooker.ui.shared.posts.PostScreen
+import com.example.scrollbooker.ui.shared.posts.PostView
 import com.example.scrollbooker.ui.shared.posts.components.PostBottomBar
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlayActionEnum
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheets
@@ -36,10 +47,12 @@ import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.BookingsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.CommentsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.LocationSheet
+import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.MoreOptionsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.None
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.ReviewDetailsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.ReviewsSheet
 import com.example.scrollbooker.ui.theme.BackgroundDark
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,6 +62,7 @@ fun FeedScreen(feedNavigate: FeedNavigator) {
     val feedViewModel: FeedScreenViewModel = hiltViewModel()
 
     val explorePosts = feedViewModel.explorePosts.collectAsLazyPagingItems()
+    val followingPosts = feedViewModel.followingPosts.collectAsLazyPagingItems()
     val businessDomainsState by feedViewModel.businessDomainsWithBusinessTypes.collectAsState()
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -89,6 +103,19 @@ fun FeedScreen(feedNavigate: FeedNavigator) {
             feedViewModel.updateBusinessTypes()
             drawerState.close()
         }
+    }
+
+    LaunchedEffect(drawerState.currentValue) {
+        snapshotFlow { drawerState.currentValue }
+            .collectLatest { drawerValue ->
+                currentPost?.id?.let {
+                    if (drawerValue == DrawerValue.Open) {
+                        feedViewModel.pauseIfPlaying(it)
+                    } else {
+                        feedViewModel.resumeIfPlaying(it)
+                    }
+                }
+            }
     }
 
     ModalNavigationDrawer(
@@ -137,22 +164,72 @@ fun FeedScreen(feedNavigate: FeedNavigator) {
                     beyondViewportPageCount = 0,
                     userScrollEnabled = false
                 ) { tabIndex ->
-                    val posts = if(tabIndex == 0) explorePosts
-                                else feedViewModel.followingPosts.collectAsLazyPagingItems()
+                    val posts = if(tabIndex == 0) explorePosts else followingPosts
 
-                    PostScreen(
-                        tabIndex = tabIndex,
-                        onAction = { action, post -> handlePostAction(
-                            feedViewModel = feedViewModel,
-                            action = action,
-                            handleOpenSheet = { handleOpenSheet(it) },
-                            post = post
-                        ) },
-                        feedViewModel = feedViewModel,
-                        posts = posts,
-                        drawerState = drawerState,
-                        feedNavigate = feedNavigate
-                    )
+                    val pagerState = rememberPagerState { posts.itemCount }
+                    val currentOnReleasePlayer by rememberUpdatedState(feedViewModel::releasePlayer)
+
+                    LifecycleStartEffect(true) {
+                        onStopOrDispose {
+                            currentOnReleasePlayer(posts.getOrNull(pagerState.currentPage)?.id)
+                        }
+                    }
+
+                    VerticalPager(
+                        state = pagerState,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(bottom = 90.dp),
+                        overscrollEffect = null,
+                        pageSize = PageSize.Fill,
+                        pageSpacing = 0.dp,
+                        beyondViewportPageCount = 1
+                    ) { page ->
+                        posts[page]?.let { post ->
+                            LaunchedEffect(pagerState) {
+                                snapshotFlow { pagerState.settledPage }
+                                    .collectLatest { page ->
+                                        val post = posts.getOrNull(page)
+                                        val previousPost = posts.getOrNull(page - 1)
+                                        val nextPost = posts.getOrNull(page + 1)
+                                        val thirdPost = posts.getOrNull(page + 2)
+
+                                        post?.let {
+                                            feedViewModel.initializePlayer(
+                                                post = post,
+                                                previousPost = previousPost,
+                                                nextPost = nextPost
+                                            )
+                                        }
+                                        feedViewModel.updateCurrentPost(page, post)
+                                    }
+                            }
+
+                            key(post.id) {
+                                val postActionState by feedViewModel
+                                    .observePostUi(post.id)
+                                    .collectAsStateWithLifecycle()
+
+                                PostView(
+                                    postActionState = postActionState,
+                                    viewModel = feedViewModel,
+                                    post = post,
+                                    onAction = { action, post ->
+                                        handlePostAction(
+                                            feedViewModel = feedViewModel,
+                                            action = action,
+                                            handleOpenSheet = { handleOpenSheet(it) },
+                                            post = post
+                                        )
+                                    },
+                                    feedNavigate = feedNavigate,
+                                    isDrawerOpen = false,
+                                    showBottomBar = showBottomBar,
+                                    onShowBottomBar = { feedViewModel.toggleBottomBar() }
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -189,8 +266,7 @@ private fun handlePostAction(
             handleOpenSheet(LocationSheet(post.businessId))
         }
         PostOverlayActionEnum.OPEN_MORE_OPTIONS -> {
-            //handleOpenSheet(MoreOptionsSheet(post.user.id))
-            handleOpenSheet(BookingsSheet(post.user, post.id))
+            handleOpenSheet(MoreOptionsSheet(post.user.id))
         }
     }
 }
