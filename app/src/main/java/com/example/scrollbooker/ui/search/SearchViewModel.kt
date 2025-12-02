@@ -1,28 +1,47 @@
 package com.example.scrollbooker.ui.search
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.PaginatedResponseDto
 import com.example.scrollbooker.core.util.withVisibleLoading
+import com.example.scrollbooker.entity.booking.appointment.domain.model.BusinessCoordinates
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessBoundingBox
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessMarkersRequest
 import com.example.scrollbooker.entity.booking.business.domain.model.Business
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMarker
+import com.example.scrollbooker.entity.booking.business.domain.model.BusinessSheet
 import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessesMarkersUseCase
+import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessesSheetUseCase
+import com.example.scrollbooker.ui.GeoPoint
+import com.mapbox.maps.extension.style.expressions.dsl.generated.distance
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.math.exp
 
 data class CameraPositionState(
     val latitude: Double = 44.4268,
@@ -38,17 +57,58 @@ data class MarkersUiState(
     val error: Throwable? = null
 )
 
+data class SheetUiState(
+    val isLoading: Boolean = false,
+    val error: Throwable? = null
+)
+
+data class SearchFiltersState(
+    val businessDomainId: Int? = null,
+    val businessTypeId: Int? = null,
+    val serviceId: Int? = null,
+    val subFilterIds: List<Int> = emptyList(),
+    val maxDistance: Float? = null,
+    val maxPrice: Float? = null
+)
+
+data class SearchRequestState(
+    val bBox: BusinessBoundingBox? = null,
+    val zoom: Float = 12f,
+    val userLocation: BusinessCoordinates? = null,
+    val filters: SearchFiltersState = SearchFiltersState()
+) {
+    fun toRequest(): BusinessMarkersRequest? {
+        val box = bBox ?: return null
+
+        return BusinessMarkersRequest(
+            bbox = box,
+            zoom = zoom,
+            maxMarkers = 400,
+            businessTypeId = filters.businessTypeId,
+            serviceId = filters.serviceId,
+            subFilterIds = filters.subFilterIds,
+            userLocation = userLocation
+        )
+    }
+}
+
+@OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val getBusinessesMarkersUseCase: GetBusinessesMarkersUseCase
+    private val getBusinessesMarkersUseCase: GetBusinessesMarkersUseCase,
+    private val getBusinessesSheetUseCase: GetBusinessesSheetUseCase
 ): ViewModel() {
+    private val _request = MutableStateFlow(SearchRequestState())
+    val request: StateFlow<SearchRequestState> = _request.asStateFlow()
+
     private val _markersUiState = MutableStateFlow(MarkersUiState())
     val markersUiState: StateFlow<MarkersUiState> = _markersUiState.asStateFlow()
 
-    private val _cameraPosition = MutableStateFlow<CameraPositionState>(CameraPositionState())
-    val cameraPosition: StateFlow<CameraPositionState> = _cameraPosition.asStateFlow()
+    private val _sheetUiState = MutableStateFlow(SheetUiState())
+    val sheetUiState: StateFlow<SheetUiState> = _sheetUiState.asStateFlow()
 
-    private val _bBox = MutableStateFlow<BusinessBoundingBox?>(null)
+    private val _isSheetExpanded = MutableStateFlow(false)
+    val isSheetExpanded: StateFlow<Boolean> = _isSheetExpanded.asStateFlow()
 
     private val _isMapReady = MutableStateFlow<Boolean>(false)
     val isMapReady: StateFlow<Boolean> = _isMapReady.asStateFlow()
@@ -56,60 +116,89 @@ class SearchViewModel @Inject constructor(
     private val _isStyleLoaded = MutableStateFlow<Boolean>(false)
     val isStyleLoaded: StateFlow<Boolean> = _isStyleLoaded.asStateFlow()
 
-    private val _maximumDistance = MutableStateFlow<Float>(50f)
-    val maximumDistance: StateFlow<Float> = _maximumDistance.asStateFlow()
+    private val _cameraPosition = MutableStateFlow<CameraPositionState>(CameraPositionState())
+    val cameraPosition: StateFlow<CameraPositionState> = _cameraPosition.asStateFlow()
 
-    private val _maximumPrice = MutableStateFlow<Float>(1400f)
-    val maximumPrice: StateFlow<Float> = _maximumPrice.asStateFlow()
+    private val rawRequestFlow: Flow<BusinessMarkersRequest> =
+        _request
+            .mapNotNull { it.toRequest() }
+            .debounce(100L)
+            .distinctUntilChanged()
 
-    private val _distance = MutableStateFlow<Float>(50f)
-    val distance: StateFlow<Float> = _distance.asStateFlow()
+    private val sharedRequestFlow = rawRequestFlow
+        .shareIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            replay = 1
+        )
 
-    private val _price = MutableStateFlow<Float>(1400f)
-    val price: StateFlow<Float> = _price.asStateFlow()
-
-    private var fetchMarkersJob: Job? = null
-
-    @OptIn(FlowPreview::class)
-    private fun fetchMarkers(BBox: BusinessBoundingBox) {
-        fetchMarkersJob?.cancel()
-
-        fetchMarkersJob = viewModelScope.launch {
-            _markersUiState.update {
-                it.copy(
-                    isLoading = true,
-                    error = null
-                )
-            }
-
-            val zoom = cameraPosition.value.zoom
-            val request = BusinessMarkersRequest(
-                bbox = BBox,
-                zoom = zoom.toFloat(),
-                maxMarkers = 400
-            )
-            val result = withVisibleLoading { getBusinessesMarkersUseCase(request) }
-
-            when(result) {
-                is FeatureState.Success -> {
-                    _markersUiState.update {
-                        it.copy(
-                            data = result.data,
-                            isLoading = false,
-                            error = null
-                        )
+    init {
+        sharedRequestFlow
+            .flatMapLatest { req ->
+                flow {
+                    _markersUiState.update { current ->
+                        current.copy(isLoading=true, error = null)
                     }
+
+                    val result = withVisibleLoading { getBusinessesMarkersUseCase(req) }
+
+                    when(result) {
+                        is FeatureState.Success -> _markersUiState.update { current ->
+                            current.copy(
+                                data = result.data,
+                                isLoading = false,
+                                error = null
+                            )
+                        }
+                        is FeatureState.Error ->  _markersUiState.update { current ->
+                            current.copy(
+                                data = null,
+                                isLoading = false,
+                                error = result.error
+                            )
+                        }
+                        else -> Unit
+                    }
+
+                    emit(Unit)
                 }
-                else -> Unit
+            }
+            .launchIn(viewModelScope)
+
+        sharedRequestFlow
+            .onEach { _sheetUiState.value = SheetUiState(isLoading = true, error = null) }
+            .launchIn(viewModelScope)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val sheetPagingFlow: Flow<PagingData<BusinessSheet>> =
+        sharedRequestFlow
+            .flatMapLatest { req ->
+                getBusinessesSheetUseCase(req)
+            }
+            .cachedIn(viewModelScope)
+
+    fun updateCamera(position: CameraPositionState) {
+        _cameraPosition.value = position
+    }
+
+    fun onMapIdle(bBox: BusinessBoundingBox) {
+        val zoom = _cameraPosition.value.zoom.toFloat()
+
+        _request.update { current ->
+            if(current.bBox == bBox && current.zoom == zoom) {
+                current
+            } else {
+                current.copy(
+                    bBox = bBox,
+                    zoom = zoom
+                )
             }
         }
     }
 
-    fun setBBox(newBBox: BusinessBoundingBox) {
-        val old = _bBox.value
-        if(old == newBBox) return
-        _bBox.value = newBBox
-        fetchMarkers(newBBox)
+    fun setSheetExpanded(expanded: Boolean) {
+        _isSheetExpanded.value = expanded
     }
 
     fun setMapReady(isReady: Boolean) {
@@ -118,17 +207,5 @@ class SearchViewModel @Inject constructor(
 
     fun setStyleLoaded(isLoaded: Boolean) {
         _isStyleLoaded.value = isLoaded
-    }
-
-    fun updateCamera(camera: CameraPositionState) {
-        _cameraPosition.value = camera
-    }
-
-    fun setDistance(distance: Float) {
-        _distance.value = distance
-    }
-
-    fun setPrice(price: Float) {
-        _price.value = price
     }
 }

@@ -9,6 +9,7 @@ import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusine
 import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessByUserUseCase
 import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessLocationUseCase
 import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessesMarkersUseCase
+import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessesSheetUseCase
 import com.example.scrollbooker.entity.booking.business.domain.useCase.SearchBusinessAddressUseCase
 import com.example.scrollbooker.entity.booking.business.domain.useCase.UpdateBusinessHasEmployeesUseCase
 import com.example.scrollbooker.entity.booking.business.domain.useCase.UpdateBusinessServicesUseCase
@@ -105,5 +106,13 @@ object BusinessModule {
         repository: BusinessRepository,
     ): GetBusinessesMarkersUseCase {
         return GetBusinessesMarkersUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetBusinessesSheetUseCase(
+        repository: BusinessRepository,
+    ): GetBusinessesSheetUseCase {
+        return GetBusinessesSheetUseCase(repository)
     }
 }

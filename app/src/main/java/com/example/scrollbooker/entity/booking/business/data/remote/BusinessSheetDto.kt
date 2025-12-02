@@ -3,7 +3,7 @@ package com.example.scrollbooker.entity.booking.business.data.remote
 import com.example.scrollbooker.entity.booking.appointment.domain.model.BusinessCoordinates
 import com.google.gson.annotations.SerializedName
 
-data class BusinessMarkerDto(
+data class BusinessSheetDto(
     val business: BusinessSummaryDto,
 
     @SerializedName("business_short_domain")
@@ -20,14 +20,4 @@ data class BusinessMarkerDto(
 
     @SerializedName("media_preview")
     val mediaPreview: BusinessMediaPreviewDto?,
-)
-
-data class BusinessMediaPreviewDto(
-    val type: String,
-
-    @SerializedName("thumbnail_url")
-    val thumbnailUrl: String?,
-
-    @SerializedName("preview_video_url")
-    val previewVideoUrl: String?
 )

@@ -9,16 +9,13 @@ import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointm
 import com.example.scrollbooker.entity.booking.appointment.domain.model.BusinessCoordinates
 
 data class BusinessMarker(
-    val businessId: Int,
-    val businessName: String,
+    val business: BusinessSummary,
     val businessShortDomain: String,
     val address: String,
     val coordinates: BusinessCoordinates,
-    val ratingsAverage: Float,
-    val ratingsCount: Float,
+    val isPrimary: Boolean,
     val hasVideo: Boolean,
     val mediaPreview: BusinessMediaPreview?,
-    val isPrimary: Boolean
 )
 
 data class BusinessMediaPreview(

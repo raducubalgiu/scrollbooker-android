@@ -18,8 +18,8 @@ fun SearchDistanceSheet(
     viewModel: SearchViewModel,
     onClose: () -> Unit
 ) {
-    val maximumDistance by viewModel.maximumDistance.collectAsState()
-    val distance by viewModel.distance.collectAsState()
+//    val maximumDistance by viewModel.maximumDistance.collectAsState()
+//    val distance by viewModel.distance.collectAsState()
 
     SearchSheetsHeader(
         title = stringResource(R.string.distance),
@@ -30,21 +30,21 @@ fun SearchDistanceSheet(
 
     SearchSheetInfo(
         leftText = stringResource(R.string.maximumDistance),
-        rightText = "${distance.toInt()} km"
+        rightText = "$100 km"
     )
 
     CustomSlider(
         modifier = Modifier.padding(SpacingXL),
-        value = distance,
-        onValueChange = { viewModel.setDistance(it) },
-        valueRange = 0f..maximumDistance
+        value = 0f,
+        onValueChange = { },
+        valueRange = 0f..100f
     )
 
     Spacer(Modifier.height(SpacingXL))
 
     SearchSheetActions(
         onClear = {
-           viewModel.setDistance(maximumDistance)
+           //viewModel.setDistance(maximumDistance)
         },
         onConfirm = {
             //viewModel.setDistance()

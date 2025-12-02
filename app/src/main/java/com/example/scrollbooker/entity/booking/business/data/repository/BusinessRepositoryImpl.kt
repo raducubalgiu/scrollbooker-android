@@ -1,5 +1,8 @@
 package com.example.scrollbooker.entity.booking.business.data.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.example.scrollbooker.core.util.PaginatedResponseDto
 import com.example.scrollbooker.entity.auth.data.mappers.toDomain
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
@@ -9,15 +12,20 @@ import com.example.scrollbooker.entity.booking.business.data.remote.BusinessCrea
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessHasEmployeesUpdateRequest
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessMarkersRequest
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessServicesUpdateRequest
+import com.example.scrollbooker.entity.booking.business.data.remote.BusinessSheetPagingSource
 import com.example.scrollbooker.entity.booking.business.domain.model.Business
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessAddress
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessCreateResponse
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessLocation
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMarker
+import com.example.scrollbooker.entity.booking.business.domain.model.BusinessSheet
 import com.example.scrollbooker.entity.booking.business.domain.model.RecommendedBusiness
 import com.example.scrollbooker.entity.booking.business.domain.repository.BusinessRepository
 import com.example.scrollbooker.entity.nomenclature.service.data.mappers.toDomain
 import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
+import com.example.scrollbooker.entity.social.post.data.remote.PostBookNowPagingSource
+import com.example.scrollbooker.entity.social.post.domain.model.Post
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class BusinessRepositoryImpl @Inject constructor(
@@ -81,5 +89,12 @@ class BusinessRepositoryImpl @Inject constructor(
             count = response.count,
             results = response.results.map { it.toDomain() }
         )
+    }
+
+    override fun getBusinessesSheet(request: BusinessMarkersRequest): Flow<PagingData<BusinessSheet>> {
+        return Pager(
+            config = PagingConfig(pageSize = 10),
+            pagingSourceFactory = { BusinessSheetPagingSource(apiService, request) }
+        ).flow
     }
 }

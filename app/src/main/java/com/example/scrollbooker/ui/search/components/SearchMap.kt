@@ -12,10 +12,8 @@ import com.example.scrollbooker.ui.search.CameraPositionState
 import com.example.scrollbooker.ui.search.SearchViewModel
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.mapbox.geojson.Point
-import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.extension.compose.DisposableMapEffect
 import com.mapbox.maps.extension.compose.MapboxMap
-import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 import com.mapbox.maps.extension.compose.annotation.ViewAnnotation
 import com.mapbox.maps.viewannotation.geometry
 import com.mapbox.maps.viewannotation.viewAnnotationOptions
@@ -28,47 +26,28 @@ import com.example.scrollbooker.ui.search.components.markers.SearchMarkerSeconda
 import com.example.scrollbooker.ui.search.components.markers.SearchMarkerUserLocation
 import com.mapbox.maps.extension.compose.animation.viewport.MapViewportState
 import com.mapbox.maps.toCameraOptions
-import kotlinx.coroutines.launch
 
 @Composable
 fun SearchMap(
     viewModel: SearchViewModel,
-    cameraPosition: CameraPositionState,
     viewportState: MapViewportState,
     markersUiState: MarkersUiState,
     userLocation: GeoPoint?
 ) {
-    val scope = rememberCoroutineScope()
     val isMapReady by viewModel.isMapReady.collectAsState()
     val isStyleLoaded by viewModel.isStyleLoaded.collectAsState()
     val markers = markersUiState.data?.results.orEmpty()
 
-    LaunchedEffect(viewportState) {
-        viewportState.easeTo(
-            cameraOptions = CameraOptions.Builder()
-                .center(Point.fromLngLat(cameraPosition.longitude, cameraPosition.latitude))
-                .zoom(cameraPosition.zoom)
-                .bearing(cameraPosition.bearing)
-                .pitch(cameraPosition.pitch)
-                .build()
-        )
-    }
-
     val isMapLoading = !isMapReady || !isStyleLoaded
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(SurfaceBG)
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
         if(isMapLoading) {
             Box(modifier = Modifier
                 .matchParentSize()
                 .background(SurfaceBG)
                 .zIndex(12f),
                 contentAlignment = Alignment.Center
-            ) {
-                SearchMapLoading()
-            }
+            ) { SearchMapLoading() }
         }
 
         MapboxMap(
@@ -90,9 +69,7 @@ fun SearchMap(
                         )
                         allowOverlap(true)
                     }
-                ) {
-                    SearchMarkerSecondary(color = m.getMarkerColor())
-                }
+                ) { SearchMarkerSecondary(color = m.getMarkerColor()) }
             }
 
             primaryMarkers.forEach { m ->
@@ -108,7 +85,7 @@ fun SearchMap(
                     SearchMarkerPrimary(
                         imageUrl = null,
                         domainColor = m.getMarkerColor(),
-                        ratingsAverage = m.ratingsAverage
+                        ratingsAverage = m.business.ratingsAverage
                     )
                 }
             }
@@ -121,9 +98,7 @@ fun SearchMap(
                     ))
                     allowOverlap(true)
                 }
-            ) {
-                SearchMarkerUserLocation()
-            }
+            ) { SearchMarkerUserLocation() }
 
             DisposableMapEffect(Unit) { mapView ->
                 viewModel.setMapReady(false)
@@ -153,7 +128,7 @@ fun SearchMap(
                         minLat = bounds.south().toFloat(),
                         maxLat = bounds.north().toFloat()
                     )
-                    viewModel.setBBox(bBox)
+                    viewModel.onMapIdle(bBox)
                 }
 
                 val mapLoadedCancellable = mapboxMap.subscribeMapLoaded {
@@ -171,7 +146,6 @@ fun SearchMap(
                     mapIdleCancellable.cancel()
                 }
             }
-
         }
     }
 }

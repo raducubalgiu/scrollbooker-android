@@ -20,8 +20,8 @@ fun SearchPriceSheet(
     viewModel: SearchViewModel,
     onClose: () -> Unit
 ) {
-    val maximumPrice by viewModel.maximumPrice.collectAsState()
-    val price by viewModel.price.collectAsState()
+//    val maximumPrice by viewModel.maximumPrice.collectAsState()
+//    val price by viewModel.price.collectAsState()
 
     SearchSheetsHeader(
         title = stringResource(R.string.price),
@@ -32,20 +32,20 @@ fun SearchPriceSheet(
 
     SearchSheetInfo(
         leftText = stringResource(R.string.maximumPrice),
-        rightText = "${price.toInt()} RON"
+        rightText = "0 RON"
     )
 
     CustomSlider(
         modifier = Modifier.padding(SpacingXL),
-        value = price,
-        onValueChange = { viewModel.setPrice(it) },
-        valueRange = 0f..maximumPrice
+        value = 0f,
+        onValueChange = {  },
+        valueRange = 0f..100f
     )
 
     Spacer(Modifier.height(SpacingXL))
 
     SearchSheetActions(
-        onClear = { viewModel.setPrice(maximumPrice) },
+        onClear = {  },
         onConfirm = {}
     )
 }
