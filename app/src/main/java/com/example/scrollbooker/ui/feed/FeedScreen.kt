@@ -192,7 +192,6 @@ fun FeedScreen(feedNavigate: FeedNavigator) {
                                         val post = posts.getOrNull(page)
                                         val previousPost = posts.getOrNull(page - 1)
                                         val nextPost = posts.getOrNull(page + 1)
-                                        val thirdPost = posts.getOrNull(page + 2)
 
                                         post?.let {
                                             feedViewModel.initializePlayer(

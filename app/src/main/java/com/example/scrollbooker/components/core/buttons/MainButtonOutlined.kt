@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonElevation
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
@@ -26,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
@@ -38,20 +41,23 @@ fun MainButtonOutlined(
     isLoading: Boolean = false,
     isEnabled: Boolean = true,
     icon: Painter? = null,
-    iconColor: Color = Color.Black,
+    iconColor: Color = OnBackground,
     trailingIcon: ImageVector = Icons.Default.KeyboardArrowDown,
     trailingIconTint: Color = OnBackground,
-    showTrailingIcon: Boolean = false
+    showTrailingIcon: Boolean = false,
+    border: BorderStroke = BorderStroke(1.dp, Divider),
+    colors: ButtonColors = ButtonDefaults.outlinedButtonColors(
+        containerColor = Color.Transparent,
+        contentColor = OnBackground
+    ),
 ) {
     OutlinedButton(
         modifier = modifier,
         contentPadding = contentPadding,
         onClick = onClick,
         enabled = isEnabled,
-        colors = ButtonDefaults.outlinedButtonColors(
-            contentColor = OnBackground
-        ),
-        border = BorderStroke(1.dp, Divider),
+        colors = colors,
+        border = border,
         shape = shape,
     ) {
         Row(

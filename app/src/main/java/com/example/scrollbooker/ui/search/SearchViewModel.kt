@@ -84,6 +84,7 @@ data class SearchRequestState(
             bbox = box,
             zoom = zoom,
             maxMarkers = 400,
+            businessDomainId = filters.businessDomainId,
             businessTypeId = filters.businessTypeId,
             serviceId = filters.serviceId,
             subFilterIds = filters.subFilterIds,
@@ -96,7 +97,7 @@ data class SearchRequestState(
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val getBusinessesMarkersUseCase: GetBusinessesMarkersUseCase,
-    private val getBusinessesSheetUseCase: GetBusinessesSheetUseCase
+    private val getBusinessesSheetUseCase: GetBusinessesSheetUseCase,
 ): ViewModel() {
     private val _request = MutableStateFlow(SearchRequestState())
     val request: StateFlow<SearchRequestState> = _request.asStateFlow()
@@ -105,7 +106,6 @@ class SearchViewModel @Inject constructor(
     val markersUiState: StateFlow<MarkersUiState> = _markersUiState.asStateFlow()
 
     private val _sheetUiState = MutableStateFlow(SheetUiState())
-    val sheetUiState: StateFlow<SheetUiState> = _sheetUiState.asStateFlow()
 
     private val _isSheetExpanded = MutableStateFlow(false)
     val isSheetExpanded: StateFlow<Boolean> = _isSheetExpanded.asStateFlow()
@@ -197,15 +197,39 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun setSheetExpanded(expanded: Boolean) {
-        _isSheetExpanded.value = expanded
-    }
-
     fun setMapReady(isReady: Boolean) {
         _isMapReady.value = isReady
     }
 
     fun setStyleLoaded(isLoaded: Boolean) {
         _isStyleLoaded.value = isLoaded
+    }
+
+    fun setSheetExpanded(expanded: Boolean) {
+        _isSheetExpanded.value = expanded
+    }
+
+    fun setBusinessDomain(domainId: Int?) {
+        _request.update { current ->
+            current.copy(
+                filters = current.filters.copy(
+                    businessDomainId = domainId
+                )
+            )
+        }
+    }
+
+    fun setFiltersFromServicesSheet(
+        newBusinessDomain: Int?,
+        newServiceId: Int?
+    ) {
+        _request.update { current ->
+            current.copy(
+                filters = current.filters.copy(
+                    businessDomainId = newBusinessDomain,
+                    serviceId = newServiceId
+                )
+            )
+        }
     }
 }

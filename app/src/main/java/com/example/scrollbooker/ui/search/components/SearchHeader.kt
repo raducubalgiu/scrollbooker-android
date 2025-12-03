@@ -15,9 +15,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -46,11 +47,9 @@ fun SearchHeader(
     modifier: Modifier = Modifier,
     headline: String,
     subHeadline: String,
-    sheetValue: SheetValue,
-    onMapToggle: () -> Unit,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onFilter: () -> Unit
 ) {
-    val isSheetExpanded = sheetValue == SheetValue.Expanded
     val interactionSource = remember { MutableInteractionSource() }
 
     Column(
@@ -114,9 +113,9 @@ fun SearchHeader(
                         shape = CircleShape
                     )
                     .clickable(
-                        onClick = { onMapToggle() },
-                        indication = null,
-                        interactionSource = interactionSource
+                        onClick = { onFilter() },
+                        interactionSource = interactionSource,
+                        indication = null
                     ),
                 contentAlignment = Alignment.Center
             ) {
@@ -124,10 +123,7 @@ fun SearchHeader(
                     modifier = Modifier
                         .padding(SpacingM)
                         .size(22.5.dp),
-                    painter = painterResource(
-                        if(isSheetExpanded) R.drawable.ic_map_outline
-                        else R.drawable.ic_list_bullet_outline
-                    ),
+                    imageVector = Icons.Outlined.Tune,
                     contentDescription = null
                 )
             }

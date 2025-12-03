@@ -11,6 +11,9 @@ data class BusinessMarkersRequest(
     @SerializedName("max_markers")
     val maxMarkers: Int? = null,
 
+    @SerializedName("business_domain_id")
+    val businessDomainId: Int? = null,
+
     @SerializedName("business_type_id")
     val businessTypeId: Int? = null,
 

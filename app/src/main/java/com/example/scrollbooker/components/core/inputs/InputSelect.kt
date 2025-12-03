@@ -67,7 +67,9 @@ fun InputSelect(
     isLoading: Boolean = false,
     isEnabled: Boolean = true,
     isRequired: Boolean = true,
-    shouldDisplayRequiredMessage: Boolean = true
+    shouldDisplayRequiredMessage: Boolean = true,
+    background: Color = SurfaceBG,
+    color: Color = OnSurfaceBG
 ) {
     var expanded by remember { mutableStateOf(false) }
     var parentWidth by remember { mutableIntStateOf(0) }
@@ -93,7 +95,7 @@ fun InputSelect(
         modifier = Modifier
             .fillMaxWidth()
             .clip(shape = ShapeDefaults.Medium)
-            .background(SurfaceBG)
+            .background(background)
             .clickable { expanded = true }
     ) {
         Box(modifier = modifier
@@ -106,7 +108,7 @@ fun InputSelect(
                     .fillMaxWidth()
                     .padding(
                         horizontal = BasePadding,
-                        vertical = 2.dp
+                        vertical = 5.dp
                     ),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -143,7 +145,7 @@ fun InputSelect(
                             text = selected?.name ?: "",
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
-                            color = OnSurfaceBG,
+                            color = color,
                         )
                     }
                 }
@@ -168,7 +170,7 @@ fun InputSelect(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
                 modifier = Modifier
-                    .background(SurfaceBG)
+                    .background(background)
                     .width(with(LocalDensity.current) { parentWidth.toDp() })
             ) {
                 options.forEach { option ->
@@ -177,11 +179,11 @@ fun InputSelect(
                     DropdownMenuItem(
                         enabled = isEnabled,
                         modifier = Modifier.background(
-                            if(isSelected) Primary.copy(alpha = 0.7f) else Color.Transparent),
+                            if(isSelected) Primary.copy(alpha = 0.6f) else Color.Transparent),
                         text = {
                             Text(
                                 text = option.name ?: placeholder,
-                                color = if(isSelected) OnPrimary else OnSurfaceBG
+                                color = if(isSelected) OnPrimary else color
                             )
                         },
                         onClick = {

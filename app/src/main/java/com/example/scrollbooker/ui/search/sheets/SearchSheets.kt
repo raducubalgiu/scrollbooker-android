@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.scrollbooker.components.core.sheet.Sheet
 import com.example.scrollbooker.ui.search.SearchViewModel
+import com.example.scrollbooker.ui.search.sheets.services.SearchServicesSheet
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -22,7 +23,20 @@ fun SearchSheets(
         onClose = onClose,
     ) {
         when(sheetAction) {
-            SearchSheetActionEnum.OPEN_SERVICES -> SearchServicesSheet(viewModel, onClose)
+            SearchSheetActionEnum.OPEN_SERVICES -> {
+                SearchServicesSheet(
+                    viewModel = viewModel,
+                    onClose = onClose,
+                    onClear = {},
+                    onFilter = {
+                        viewModel.setFiltersFromServicesSheet(
+                            newBusinessDomain = it.businessDomainId,
+                            newServiceId = it.serviceId
+                        )
+                        onClose()
+                    }
+                )
+            }
             SearchSheetActionEnum.OPEN_PRICE -> SearchPriceSheet(viewModel, onClose)
             SearchSheetActionEnum.OPEN_SORT -> SearchSortSheet(viewModel, onClose)
             SearchSheetActionEnum.OPEN_DISTANCE -> SearchDistanceSheet(viewModel, onClose)

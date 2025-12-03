@@ -7,6 +7,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.zIndex
 import com.example.scrollbooker.ui.search.CameraPositionState
 import com.example.scrollbooker.ui.search.SearchViewModel
@@ -23,8 +24,12 @@ import com.example.scrollbooker.ui.GeoPoint
 import com.example.scrollbooker.ui.search.MarkersUiState
 import com.example.scrollbooker.ui.search.components.markers.SearchMarkerPrimary
 import com.example.scrollbooker.ui.search.components.markers.SearchMarkerSecondary
-import com.example.scrollbooker.ui.search.components.markers.SearchMarkerUserLocation
+import com.mapbox.maps.ContextMode
+import com.mapbox.maps.MapOptions
+import com.mapbox.maps.applyDefaultParams
+import com.mapbox.maps.extension.compose.ComposeMapInitOptions
 import com.mapbox.maps.extension.compose.animation.viewport.MapViewportState
+import com.mapbox.maps.extension.compose.style.MapStyle
 import com.mapbox.maps.toCameraOptions
 
 @Composable
@@ -34,11 +39,24 @@ fun SearchMap(
     markersUiState: MarkersUiState,
     userLocation: GeoPoint?
 ) {
+    val density = LocalDensity.current
     val isMapReady by viewModel.isMapReady.collectAsState()
     val isStyleLoaded by viewModel.isStyleLoaded.collectAsState()
     val markers = markersUiState.data?.results.orEmpty()
 
     val isMapLoading = !isMapReady || !isStyleLoaded
+
+    val mapInitOptions = remember {
+        ComposeMapInitOptions(
+            mapOptions = MapOptions.Builder()
+                .applyDefaultParams(density.density)
+                .contextMode(ContextMode.SHARED)
+                .build(),
+            textureView = true,
+            antialiasingSampleCount = 4,
+            mapName = "search_map"
+        )
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         if(isMapLoading) {
@@ -55,6 +73,8 @@ fun SearchMap(
                 .matchParentSize()
                 .graphicsLayer { this.alpha = alpha },
             mapViewportState = viewportState,
+            composeMapInitOptions = mapInitOptions,
+            style = { MapStyle(style = "mapbox://styles/radubalgiu/cmip1r7g000pm01sca0vz7dxp") },
             scaleBar = {},
         ) {
             val secondaryMarkers = markers.filter { !it.isPrimary }
@@ -90,15 +110,15 @@ fun SearchMap(
                 }
             }
 
-            ViewAnnotation(
-                options = viewAnnotationOptions {
-                    geometry(Point.fromLngLat(
-                        25.978861.toDouble(),
-                        44.443697.toDouble()
-                    ))
-                    allowOverlap(true)
-                }
-            ) { SearchMarkerUserLocation() }
+//            ViewAnnotation(
+//                options = viewAnnotationOptions {
+//                    geometry(Point.fromLngLat(
+//                        25.978861.toDouble(),
+//                        44.443697.toDouble()
+//                    ))
+//                    allowOverlap(true)
+//                }
+//            ) { SearchMarkerUserLocation() }
 
             DisposableMapEffect(Unit) { mapView ->
                 viewModel.setMapReady(false)
