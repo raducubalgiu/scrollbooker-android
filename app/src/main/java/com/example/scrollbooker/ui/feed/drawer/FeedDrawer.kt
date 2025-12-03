@@ -17,6 +17,9 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.FeatureState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.BusinessDomainsWithBusinessTypes
 import com.example.scrollbooker.ui.feed.FeedScreenViewModel
 import com.example.scrollbooker.ui.theme.BackgroundDark
@@ -26,9 +29,13 @@ import com.example.scrollbooker.ui.theme.BackgroundDark
 fun FeedDrawer(
     viewModel: FeedScreenViewModel,
     businessDomainsState: FeatureState<List<BusinessDomainsWithBusinessTypes>>,
-    onFilter: () -> Unit
+    onClose: () -> Unit
 ) {
-    val selectedBusinessTypes by viewModel.selectedBusinessTypes.collectAsState()
+    val selectedFromVm by viewModel.selectedBusinessTypes.collectAsState()
+
+    var selected by rememberSaveable(selectedFromVm) {
+        mutableStateOf(selectedFromVm)
+    }
 
     BoxWithConstraints {
         val screenWidth = maxWidth
@@ -56,10 +63,14 @@ fun FeedDrawer(
 
                                 itemsIndexed(businessDomains.data) { index, businessDomain ->
                                     BusinessDomainItem(
-                                        selectedBusinessTypes = selectedBusinessTypes,
+                                        selectedBusinessTypes = selected,
                                         businessDomain = businessDomain,
-                                        onSetBusinessType = {
-                                            viewModel.setBusinessType(it)
+                                        onSetBusinessType = { typeId ->
+                                           selected = if(typeId in selected) {
+                                               selected - typeId
+                                           } else {
+                                               selected + typeId
+                                           }
                                         }
                                     )
                                 }
@@ -70,9 +81,17 @@ fun FeedDrawer(
                 }
 
                 FeedDrawerActions(
-                    isResetVisible = selectedBusinessTypes.isNotEmpty(),
-                    onReset = { viewModel.clearBusinessTypes() },
-                    onFilter = onFilter
+                    isResetVisible = selectedFromVm.isNotEmpty() || selected.isNotEmpty(),
+                    onReset = {
+                        selected = emptySet()
+                        viewModel.clearBusinessTypes()
+                        onClose()
+                    },
+                    onFilter = {
+                        viewModel.setSelectedBusinessTypes(selected)
+                        onClose()
+                    },
+                    isEnabled = selectedFromVm != selected
                 )
             }
         }

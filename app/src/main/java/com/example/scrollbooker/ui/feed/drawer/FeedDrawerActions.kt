@@ -32,6 +32,7 @@ import com.example.scrollbooker.ui.theme.bodyMedium
 @Composable
 fun FeedDrawerActions(
     isResetVisible: Boolean,
+    isEnabled: Boolean,
     onReset: () -> Unit,
     onFilter: () -> Unit
 ) {
@@ -67,7 +68,7 @@ fun FeedDrawerActions(
         MainButton(
             onClick = onFilter,
             title = stringResource(R.string.filter),
-            enabled = true,
+            enabled = isEnabled,
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFFFF6F00),
                 contentColor = Color(0xFFE0E0E0),

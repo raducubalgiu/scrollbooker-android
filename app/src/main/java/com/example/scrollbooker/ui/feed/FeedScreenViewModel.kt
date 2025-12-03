@@ -61,9 +61,6 @@ class FeedScreenViewModel @Inject constructor(
     private val _selectedBusinessTypes = MutableStateFlow<Set<Int>>(emptySet())
     val selectedBusinessTypes: StateFlow<Set<Int>> = _selectedBusinessTypes
 
-    private val _filteredBusinessTypes = MutableStateFlow<Set<Int>>(emptySet())
-    val filteredBusinessTypes: StateFlow<Set<Int>> = _filteredBusinessTypes
-
     private val _currentByTab = MutableStateFlow<Map<Int, Post?>>(emptyMap())
     val currentByTab: StateFlow<Map<Int, Post?>> = _currentByTab.asStateFlow()
 
@@ -83,7 +80,7 @@ class FeedScreenViewModel @Inject constructor(
 
     // Explore Posts
     @OptIn(ExperimentalCoroutinesApi::class)
-    val explorePosts: Flow<PagingData<Post>> = filteredBusinessTypes
+    val explorePosts: Flow<PagingData<Post>> = selectedBusinessTypes
         .map { it.toList() }
         .flatMapLatest { selectedTypes -> getExplorePostsUseCase(selectedTypes) }
         .cachedIn(viewModelScope)
@@ -184,14 +181,8 @@ class FeedScreenViewModel @Inject constructor(
         )
     }
 
-    fun updateBusinessTypes() {
-        _filteredBusinessTypes.value = _selectedBusinessTypes.value
-    }
-
-    fun setBusinessType(id: Int) {
-        _selectedBusinessTypes.update { current ->
-            if(current.contains(id)) current - id else current + id
-        }
+    fun setSelectedBusinessTypes(businessTypes: Set<Int>) {
+        _selectedBusinessTypes.value = businessTypes
     }
 
     fun clearBusinessTypes() {

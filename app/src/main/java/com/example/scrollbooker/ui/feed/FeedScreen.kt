@@ -98,13 +98,6 @@ fun FeedScreen(feedNavigate: FeedNavigator) {
         }
     }
 
-    fun handleDrawerFilter() {
-        scope.launch {
-            feedViewModel.updateBusinessTypes()
-            drawerState.close()
-        }
-    }
-
     LaunchedEffect(drawerState.currentValue) {
         snapshotFlow { drawerState.currentValue }
             .collectLatest { drawerValue ->
@@ -123,7 +116,7 @@ fun FeedScreen(feedNavigate: FeedNavigator) {
             FeedDrawer(
                 viewModel = feedViewModel,
                 businessDomainsState = businessDomainsState,
-                onFilter = { handleDrawerFilter() }
+                onClose = { scope.launch { drawerState.close() } }
             )
         },
         scrimColor = BackgroundDark.copy(0.7f),
