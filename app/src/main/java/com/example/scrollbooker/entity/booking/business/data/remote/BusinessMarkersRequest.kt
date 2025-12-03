@@ -24,7 +24,12 @@ data class BusinessMarkersRequest(
     val subFilterIds: List<Int>? = null,
 
     @SerializedName("user_location")
-    val userLocation: BusinessCoordinates? = null
+    val userLocation: BusinessCoordinates? = null,
+
+    @SerializedName("max_price")
+    val maxPrice: Float? = null,
+
+    val sort: String?
 )
 
 data class BusinessBoundingBox(

@@ -239,6 +239,7 @@
     <string name="canceled">Anulat</string>
     <string name="unknown">Necunoscut</string>
     <string name="all">Toate</string>
+    <string name="filters">Filtre</string>
     <string name="filter">Filtrează</string>
     <string name="filterAppointments">Filtrează comenzile</string>
     <string name="cancelAppointment">Anulează programarea</string>
@@ -340,4 +341,8 @@
     <string name="activateLocation">Activează locația</string>
     <string name="activateLocationDescription">Permite aplicației să îți detecteze poziția pentru a vedea business-uri din apropiere.</string>
     <string name="allow">Permite</string>
+    <string name="youCanFilterServicesBasedOnCategoryTypeAndFilter">Poți filtra serviciile în funcție de categoria generală, tipul și filtrele acestora</string>
+    <string name="recommended">Recomandat</string>
+    <string name="rating">Rating</string>
+    <string name="sortBy">Sortează după</string>
 </resources>

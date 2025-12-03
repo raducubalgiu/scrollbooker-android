@@ -38,6 +38,7 @@ fun InputCheckbox(
     headLine: String,
     contentColor: Color = OnBackground,
     height: Dp = 70.dp,
+    paddingStart: Dp = SpacingXXL,
     leadingIcon: (@Composable () -> Unit)? = null
 ) {
     Row(
@@ -53,7 +54,7 @@ fun InputCheckbox(
         Row(
             modifier = Modifier
                 .weight(1f)
-                .padding(start = SpacingXXL),
+                .padding(start = paddingStart),
             verticalAlignment = Alignment.CenterVertically
         ) {
             if(leadingIcon != null) {

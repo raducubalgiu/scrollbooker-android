@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.scrollbooker.components.core.sheet.Sheet
 import com.example.scrollbooker.ui.search.SearchViewModel
+import com.example.scrollbooker.ui.search.sheets.filters.SearchFiltersSheet
 import com.example.scrollbooker.ui.search.sheets.services.SearchServicesSheet
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,10 +38,17 @@ fun SearchSheets(
                     }
                 )
             }
-            SearchSheetActionEnum.OPEN_PRICE -> SearchPriceSheet(viewModel, onClose)
-            SearchSheetActionEnum.OPEN_SORT -> SearchSortSheet(viewModel, onClose)
-            SearchSheetActionEnum.OPEN_DISTANCE -> SearchDistanceSheet(viewModel, onClose)
-            SearchSheetActionEnum.OPEN_RATINGS -> SearchRatingSheet(viewModel, onClose)
+            SearchSheetActionEnum.OPEN_FILTERS -> {
+                SearchFiltersSheet(
+                    viewModel = viewModel,
+                    onClose = onClose,
+                    onFilter = { maxPrice, sort ->
+                        viewModel.setFiltersFromFiltersSheet(maxPrice, sort)
+                        onClose()
+                    },
+                    onClear = {}
+                )
+            }
             SearchSheetActionEnum.NONE -> Unit
         }
     }

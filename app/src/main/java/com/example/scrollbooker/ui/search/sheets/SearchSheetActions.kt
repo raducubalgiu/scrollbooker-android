@@ -1,61 +1,83 @@
 package com.example.scrollbooker.ui.search.sheets
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ShapeDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingM
+import com.example.scrollbooker.core.util.Dimens.SpacingXS
+import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.ui.theme.Divider
-import com.example.scrollbooker.ui.theme.OnSurfaceBG
+import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun SearchSheetActions(
     onClear: () -> Unit,
-    onConfirm: () -> Unit
+    onConfirm: () -> Unit,
+    isConfirmEnabled: Boolean
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = BasePadding),
+        modifier = Modifier.fillMaxWidth().padding(BasePadding),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        MainButton(
-            modifier = Modifier
-                .weight(0.5f)
-                .border(width = 1.dp, Divider, shape = ShapeDefaults.Small),
-            shape = ShapeDefaults.Small,
-            title = stringResource(R.string.delete),
-            onClick = onClear,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Transparent,
-                contentColor = OnSurfaceBG
-            )
-        )
+        Column {
+            TextButton(
+                onClick = onClear,
+                enabled = true,
+            ) {
+                Text(
+                    text = stringResource(R.string.delete),
+                    style = titleMedium,
+                    color = OnBackground
+                )
+            }
+        }
 
-        Spacer(Modifier.width(SpacingM))
+        Button(
+            contentPadding = PaddingValues(
+                vertical = BasePadding,
+                horizontal = SpacingXXL
+            ),
+            onClick = onConfirm,
+            enabled = isConfirmEnabled
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_search),
+                    contentDescription = null
+                )
 
-        MainButton(
-            modifier = Modifier.weight(0.5f),
-            shape = ShapeDefaults.Small,
-            title = stringResource(R.string.confirm),
-            onClick = onConfirm
-        )
+                Spacer(Modifier.width(SpacingXS))
+
+                Text(
+                    text = stringResource(R.string.search),
+                    style = titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                )
+            }
+        }
     }
-
-    Spacer(Modifier.height(BasePadding))
 }

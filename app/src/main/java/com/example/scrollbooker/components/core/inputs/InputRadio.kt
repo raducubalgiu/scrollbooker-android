@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
@@ -34,6 +35,7 @@ fun InputRadio(
     headLine: String,
     containerColor: Color = Background,
     contentColor: Color = OnBackground,
+    paddingHorizontal: Dp = SpacingXXL,
     leadingIcon: (@Composable () -> Unit)? = null
 ) {
     Row(
@@ -53,7 +55,7 @@ fun InputRadio(
         Row(
             modifier = Modifier
                 .weight(1f)
-                .padding(start = SpacingXXL),
+                .padding(start = paddingHorizontal),
             verticalAlignment = Alignment.CenterVertically
         ) {
             if(leadingIcon != null) {
@@ -70,7 +72,7 @@ fun InputRadio(
         RadioButton(
             modifier = Modifier
                 .scale(1.3f)
-                .padding(end = SpacingXXL),
+                .padding(end = paddingHorizontal),
             selected = selected,
             onClick = null,
             colors = RadioButtonColors(

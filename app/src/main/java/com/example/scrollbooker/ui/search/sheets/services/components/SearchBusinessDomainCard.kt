@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.search.sheets
+package com.example.scrollbooker.ui.search.sheets.services.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -29,7 +29,7 @@ import com.example.scrollbooker.ui.theme.Primary
 @Composable
 fun SearchBusinessDomainCard(
     name: String,
-    icon: ImageVector,
+    icon: ImageVector?,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
@@ -48,14 +48,16 @@ fun SearchBusinessDomainCard(
                 .fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = name,
-                tint = Color.Gray,
-                modifier = Modifier.size(28.dp)
-            )
+            icon?.let {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = name,
+                    tint = Color.Gray,
+                    modifier = Modifier.size(28.dp)
+                )
 
-            Spacer(Modifier.width(12.dp))
+                Spacer(Modifier.width(12.dp))
+            }
 
             Text(
                 text = name,

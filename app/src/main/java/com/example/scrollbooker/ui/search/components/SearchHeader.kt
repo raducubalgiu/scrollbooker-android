@@ -52,81 +52,96 @@ fun SearchHeader(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .statusBarsPadding()
-            .padding(horizontal = BasePadding)
-            .shadow(
-                elevation = 2.dp,
-                shape = CircleShape,
-                clip = false
-            )
-            .clip(shape = CircleShape)
-            .background(Background)
-            .clickable { onClick() }
-            .then(modifier)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+    Column {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .statusBarsPadding()
+                .padding(horizontal = BasePadding)
+                .shadow(
+                    elevation = 2.dp,
+                    shape = CircleShape,
+                    clip = false
+                )
+                .clip(shape = CircleShape)
+                .background(Background)
+                .clickable { onClick() }
+                .then(modifier)
         ) {
-            Box(
-                modifier = Modifier.padding(SpacingS),
-                contentAlignment = Alignment.Center
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Icon(
-                    modifier = Modifier
-                        .padding(SpacingM)
-                        .size(35.dp),
-                    painter = painterResource(R.drawable.ic_search_solid),
-                    contentDescription = null
-                )
-            }
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = SpacingS),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.Start
-            ) {
-                Text(
-                    text = headline,
-                    fontWeight = FontWeight.SemiBold,
-                    style = titleMedium,
-                    fontSize = 18.sp
-                )
-                Spacer(Modifier.height(SpacingXS))
-                Text(
-                    text = subHeadline,
-                    color = Color.Gray,
-                    style = bodyLarge
-                )
-            }
-            Box(
-                modifier = Modifier
-                    .padding(SpacingS)
-                    .border(
-                        width = 1.dp,
-                        color = Divider,
-                        shape = CircleShape
+                Box(
+                    modifier = Modifier.padding(SpacingS),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .padding(SpacingM)
+                            .size(35.dp),
+                        painter = painterResource(R.drawable.ic_search_solid),
+                        contentDescription = null
                     )
-                    .clickable(
-                        onClick = { onFilter() },
-                        interactionSource = interactionSource,
-                        indication = null
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
+                }
+                Column(
                     modifier = Modifier
-                        .padding(SpacingM)
-                        .size(22.5.dp),
-                    imageVector = Icons.Outlined.Tune,
-                    contentDescription = null
-                )
+                        .weight(1f)
+                        .padding(horizontal = SpacingS),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    Text(
+                        text = headline,
+                        fontWeight = FontWeight.SemiBold,
+                        style = titleMedium,
+                        fontSize = 18.sp
+                    )
+                    Spacer(Modifier.height(SpacingXS))
+                    Text(
+                        text = subHeadline,
+                        color = Color.Gray,
+                        style = bodyLarge
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .padding(SpacingS)
+                        .border(
+                            width = 1.dp,
+                            color = Divider,
+                            shape = CircleShape
+                        )
+                        .clip(CircleShape)
+                        .clickable(
+                            onClick = { onFilter() }
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .padding(SpacingM)
+                            .size(22.5.dp),
+                        imageVector = Icons.Outlined.Tune,
+                        contentDescription = null
+                    )
+                }
             }
         }
+
+//        when(permissionStatus) {
+//            LocationPermissionStatus.NOT_DETERMINED,
+//            LocationPermissionStatus.DENIED_CAN_ASK_AGAIN -> {
+//                SearchEnableLocationBanner(
+//                    modifier = Modifier.statusBarsPadding(),
+//                    onEnableClick = {
+//                        permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+//                    },
+//                    onCancel = {}
+//                )
+//            }
+//            else -> Unit
+//        }
     }
 }

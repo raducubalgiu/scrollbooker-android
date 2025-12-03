@@ -3,45 +3,43 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.example.scrollbooker.core.enums.SearchSortEnum
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.PaginatedResponseDto
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.appointment.domain.model.BusinessCoordinates
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessBoundingBox
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessMarkersRequest
-import com.example.scrollbooker.entity.booking.business.domain.model.Business
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMarker
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessSheet
 import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessesMarkersUseCase
 import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessesSheetUseCase
-import com.example.scrollbooker.ui.GeoPoint
-import com.mapbox.maps.extension.style.expressions.dsl.generated.distance
+import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.BusinessDomain
+import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.useCase.GetAllBusinessDomainsUseCase
+import com.example.scrollbooker.entity.nomenclature.businessType.domain.model.BusinessType
+import com.example.scrollbooker.entity.nomenclature.businessType.domain.useCase.GetAllBusinessTypesByBusinessDomainUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
-import kotlin.math.exp
 
 data class CameraPositionState(
     val latitude: Double = 44.4268,
@@ -67,8 +65,9 @@ data class SearchFiltersState(
     val businessTypeId: Int? = null,
     val serviceId: Int? = null,
     val subFilterIds: List<Int> = emptyList(),
-    val maxDistance: Float? = null,
-    val maxPrice: Float? = null
+    val maxDistance: Float? = 1500f,
+    val maxPrice: Float? = null,
+    val sort: SearchSortEnum = SearchSortEnum.RECOMMENDED
 )
 
 data class SearchRequestState(
@@ -88,7 +87,9 @@ data class SearchRequestState(
             businessTypeId = filters.businessTypeId,
             serviceId = filters.serviceId,
             subFilterIds = filters.subFilterIds,
-            userLocation = userLocation
+            userLocation = userLocation,
+            maxPrice = filters.maxPrice,
+            sort = filters.sort.raw
         )
     }
 }
@@ -98,17 +99,19 @@ data class SearchRequestState(
 class SearchViewModel @Inject constructor(
     private val getBusinessesMarkersUseCase: GetBusinessesMarkersUseCase,
     private val getBusinessesSheetUseCase: GetBusinessesSheetUseCase,
+    private val getAllBusinessDomainsUseCase: GetAllBusinessDomainsUseCase,
+    private val getAllBusinessTypesByBusinessDomainUseCase: GetAllBusinessTypesByBusinessDomainUseCase
 ): ViewModel() {
     private val _request = MutableStateFlow(SearchRequestState())
     val request: StateFlow<SearchRequestState> = _request.asStateFlow()
+
+    private val _businessDomains = MutableStateFlow<FeatureState<List<BusinessDomain>>>(FeatureState.Loading)
+    val businessDomains: StateFlow<FeatureState<List<BusinessDomain>>> = _businessDomains.asStateFlow()
 
     private val _markersUiState = MutableStateFlow(MarkersUiState())
     val markersUiState: StateFlow<MarkersUiState> = _markersUiState.asStateFlow()
 
     private val _sheetUiState = MutableStateFlow(SheetUiState())
-
-    private val _isSheetExpanded = MutableStateFlow(false)
-    val isSheetExpanded: StateFlow<Boolean> = _isSheetExpanded.asStateFlow()
 
     private val _isMapReady = MutableStateFlow<Boolean>(false)
     val isMapReady: StateFlow<Boolean> = _isMapReady.asStateFlow()
@@ -178,6 +181,39 @@ class SearchViewModel @Inject constructor(
             }
             .cachedIn(viewModelScope)
 
+    val businessTypes: StateFlow<FeatureState<List<BusinessType>>?> =
+        sharedRequestFlow
+            .map { req -> req.businessDomainId }
+            .filterNotNull()
+            .distinctUntilChanged()
+            .flatMapLatest { domainId ->
+                flow {
+                    emit(FeatureState.Loading)
+
+                    val result = withVisibleLoading {
+                        getAllBusinessTypesByBusinessDomainUseCase(domainId)
+                    }
+
+                    emit(result)
+                }
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = FeatureState.Loading
+            )
+
+    fun loadAllBusinessDomains() {
+        viewModelScope.launch {
+            _businessDomains.value = FeatureState.Loading
+            _businessDomains.value = withVisibleLoading { getAllBusinessDomainsUseCase() }
+        }
+    }
+
+    init {
+        loadAllBusinessDomains()
+    }
+
     fun updateCamera(position: CameraPositionState) {
         _cameraPosition.value = position
     }
@@ -205,10 +241,6 @@ class SearchViewModel @Inject constructor(
         _isStyleLoaded.value = isLoaded
     }
 
-    fun setSheetExpanded(expanded: Boolean) {
-        _isSheetExpanded.value = expanded
-    }
-
     fun setBusinessDomain(domainId: Int?) {
         _request.update { current ->
             current.copy(
@@ -228,6 +260,20 @@ class SearchViewModel @Inject constructor(
                 filters = current.filters.copy(
                     businessDomainId = newBusinessDomain,
                     serviceId = newServiceId
+                )
+            )
+        }
+    }
+
+    fun setFiltersFromFiltersSheet(
+        maxPrice: Float?,
+        sort: SearchSortEnum
+    ) {
+        _request.update { current ->
+            current.copy(
+                filters = current.filters.copy(
+                    maxPrice = maxPrice,
+                    sort = sort
                 )
             )
         }

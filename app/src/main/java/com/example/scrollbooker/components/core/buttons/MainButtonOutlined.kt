@@ -25,7 +25,10 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.SurfaceBG
@@ -36,7 +39,10 @@ fun MainButtonOutlined(
     modifier: Modifier = Modifier,
     title: String,
     onClick: () -> Unit,
-    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
+    contentPadding: PaddingValues = PaddingValues(
+        vertical = SpacingM,
+        horizontal = SpacingXL
+    ),
     shape: Shape = ButtonDefaults.outlinedShape,
     isLoading: Boolean = false,
     isEnabled: Boolean = true,

@@ -11,11 +11,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Build
-import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material.icons.outlined.FitnessCenter
-import androidx.compose.material.icons.outlined.MedicalServices
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -33,14 +28,16 @@ import com.example.scrollbooker.components.core.inputs.Option
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
+import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.getIcon
 import com.example.scrollbooker.ui.search.SearchViewModel
-import com.example.scrollbooker.ui.search.sheets.SearchBusinessDomainCard
+import com.example.scrollbooker.ui.search.sheets.services.components.SearchBusinessDomainCard
 import com.example.scrollbooker.ui.search.sheets.SearchSheetsHeader
+import com.example.scrollbooker.ui.search.sheets.services.components.SearchBusinessDomainsSheetList
 import com.example.scrollbooker.ui.search.sheets.services.components.SearchServicesSheetFooter
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.headlineLarge
-import timber.log.Timber
 
 data class SearchServicesSheetFilters(
     val businessDomainId: Int? = null,
@@ -55,6 +52,10 @@ fun SearchServicesSheet(
     onFilter: (SearchServicesSheetFilters) -> Unit
 ) {
     val verticalScroll = rememberScrollState()
+
+    val businessDomains by viewModel.businessDomains.collectAsState()
+    val businessTypes by viewModel.businessTypes.collectAsState()
+
     val requestState by viewModel.request.collectAsState()
 
     var state by remember(requestState.filters) { mutableStateOf<SearchServicesSheetFilters>(
@@ -63,6 +64,16 @@ fun SearchServicesSheet(
             serviceId = requestState.filters.serviceId
         )
     )}
+
+    val businessTypesOptions = when(val state = businessTypes) {
+        is FeatureState.Success -> state.data.map { bt ->
+            Option(
+                value = bt.id.toString(),
+                name = bt.name
+            )
+        }
+        else -> emptyList()
+    }
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -89,7 +100,7 @@ fun SearchServicesSheet(
                     style = bodyLarge,
                     fontWeight = FontWeight.Normal,
                     color = Color.Gray,
-                    text = "Poti filtra serviciile in functie de categorie si filtrele acestora",
+                    text = stringResource(R.string.youCanFilterServicesBasedOnCategoryTypeAndFilter),
                 )
             }
 
@@ -100,35 +111,29 @@ fun SearchServicesSheet(
                     .fillMaxSize()
                     .verticalScroll(verticalScroll),
             ) {
-                val domains = listOf(
-                    Triple(1, "Beauty", Icons.Outlined.FavoriteBorder),
-                    Triple(2, "Medical", Icons.Outlined.MedicalServices),
-                    Triple(3, "Auto", Icons.Outlined.Build),
-                    Triple(4, "Fitness & Wellness", Icons.Outlined.FitnessCenter)
-                )
-
-                LazyRow(contentPadding = PaddingValues(horizontal = BasePadding)) {
-                    itemsIndexed(domains) { index, domain ->
-                        SearchBusinessDomainCard(
-                            name = domain.second,
-                            icon = domain.third,
-                            isSelected = state.businessDomainId == domain.first,
-                            onClick = {
-                                state = state.copy(
-                                    businessDomainId = domain.first
-                                )
-                            }
-                        )
-
-                        if(index <= domains.size) {
-                            Spacer(Modifier.width(BasePadding))
-                        }
+                SearchBusinessDomainsSheetList(
+                    businessDomains = businessDomains,
+                    selectedBusinessDomainId = state.businessDomainId,
+                    onClick = {
+                        state = state.copy(businessDomainId = it)
                     }
-                }
+                )
 
                 Spacer(Modifier.height(SpacingXXL))
 
                 Column(Modifier.padding(horizontal = BasePadding)) {
+                    InputSelect(
+                        options = businessTypesOptions,
+                        selectedOption = state.serviceId.toString(),
+                        placeholder = "Alege Business-ul",
+                        onValueChange = { state = state.copy(serviceId = it?.toInt()) },
+                        isRequired = false,
+                        isLoading = businessTypes is FeatureState.Loading,
+                        isEnabled = businessTypes is FeatureState.Loading || businessTypes is FeatureState.Error
+                    )
+
+                    Spacer(Modifier.height(BasePadding))
+
                     InputSelect(
                         options = listOf(
                             Option(value = "95", name = "Tuns"),
@@ -138,7 +143,6 @@ fun SearchServicesSheet(
                         selectedOption = state.serviceId.toString(),
                         placeholder = stringResource(R.string.chooseServices),
                         onValueChange = {
-                            Timber.tag("STATE").e("TRY TO ON-CHANGE $it")
                             state = state.copy(serviceId = it?.toInt())
                         },
                         isRequired = false,

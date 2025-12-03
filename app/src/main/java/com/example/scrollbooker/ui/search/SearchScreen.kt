@@ -6,10 +6,8 @@ import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,15 +16,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.ShapeDefaults
-import androidx.compose.material3.SheetValue
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -42,7 +35,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -65,11 +57,11 @@ import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.customized.LoadMoreSpinner
 import com.example.scrollbooker.components.customized.RatingsStars
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.ui.GeoPoint
 import com.example.scrollbooker.ui.LocalLocationController
 import com.example.scrollbooker.ui.LocationPermissionStatus
 import com.example.scrollbooker.ui.PrecisionMode
+import com.example.scrollbooker.ui.search.components.SearchBusinessDomainList
 import com.example.scrollbooker.ui.search.components.SearchHeader
 import com.example.scrollbooker.ui.search.components.SearchMap
 import com.example.scrollbooker.ui.search.components.SearchMapActions
@@ -78,9 +70,6 @@ import com.example.scrollbooker.ui.search.components.SearchSheetHeader
 import com.example.scrollbooker.ui.search.sheets.SearchSheetActionEnum
 import com.example.scrollbooker.ui.search.sheets.SearchSheets
 import com.example.scrollbooker.ui.theme.Background
-import com.example.scrollbooker.ui.theme.OnBackground
-import com.example.scrollbooker.ui.theme.OnPrimary
-import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodySmall
 import com.example.scrollbooker.ui.theme.titleMedium
 import com.mapbox.geojson.Point
@@ -94,10 +83,13 @@ fun SearchScreen(
     viewModel: SearchViewModel,
     onNavigateToBusinessProfile: () -> Unit
 ) {
+    val scope = rememberCoroutineScope()
     val locationController = LocalLocationController.current
+
+    val businessDomains by viewModel.businessDomains.collectAsState()
+
     val locationState by locationController.stateFlow.collectAsStateWithLifecycle()
     val markersUiState by viewModel.markersUiState.collectAsState()
-    val isSheetExpanded by viewModel.isSheetExpanded.collectAsState()
     val businessesSheet = viewModel.sheetPagingFlow.collectAsLazyPagingItems()
 
     val state by viewModel.request.collectAsState()
@@ -138,7 +130,6 @@ fun SearchScreen(
         onDispose { locationController.stopUpdates() }
     }
 
-    val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     var sheetAction by rememberSaveable { mutableStateOf(SearchSheetActionEnum.NONE) }
@@ -169,12 +160,6 @@ fun SearchScreen(
 
     val scaffoldState = rememberBottomSheetScaffoldState()
     var sheetHeaderDp by remember { mutableStateOf(0.dp) }
-
-    LaunchedEffect(scaffoldState) {
-        snapshotFlow {
-            scaffoldState.bottomSheetState.currentValue == SheetValue.Expanded
-        }.collect { expanded -> viewModel.setSheetExpanded(expanded) }
-    }
 
     val cameraPosition by viewModel.cameraPosition.collectAsState()
     val viewportState = rememberMapViewportState {
@@ -216,43 +201,15 @@ fun SearchScreen(
     val isRefreshing = refreshState is LoadState.Loading && businessesSheet.itemCount > 0
     val isAppending = appendState is LoadState.Loading
 
-    data class BDomain(
-        val id: Int,
-        val name: String
-    )
-
-    val businessDomains = listOf<BDomain>(
-        BDomain(id = 1, name = "Beauty"),
-        BDomain(id = 2, name = "Medical"),
-        BDomain(id = 3, name = "Auto"),
-        BDomain(id = 4, name = "Fitness & Wellness")
-    )
-
     Scaffold(
         topBar = {
-            Column {
-                SearchHeader(
-                    modifier = Modifier.statusBarsPadding(),
-                    headline = stringResource(R.string.allServices),
-                    subHeadline = stringResource(R.string.anytimeAnyHour),
-                    onClick = { openSheetWith(SearchSheetActionEnum.OPEN_SERVICES) },
-                    onFilter = {}
-                )
-
-//                when(permissionStatus) {
-//                    LocationPermissionStatus.NOT_DETERMINED,
-//                    LocationPermissionStatus.DENIED_CAN_ASK_AGAIN -> {
-//                        SearchEnableLocationBanner(
-//                            modifier = Modifier.statusBarsPadding(),
-//                            onEnableClick = {
-//                                permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-//                            },
-//                            onCancel = {}
-//                        )
-//                    }
-//                    else -> Unit
-//                }
-            }
+            SearchHeader(
+                modifier = Modifier.statusBarsPadding(),
+                headline = stringResource(R.string.allServices),
+                subHeadline = stringResource(R.string.anytimeAnyHour),
+                onClick = { openSheetWith(SearchSheetActionEnum.OPEN_SERVICES) },
+                onFilter = { openSheetWith(SearchSheetActionEnum.OPEN_FILTERS) }
+            )
         },
         bottomBar = { BottomBar() }
     ) { padding ->
@@ -270,51 +227,11 @@ fun SearchScreen(
             )
         ) {
             Column(Modifier.fillMaxSize()) {
-                LazyRow(
-                    modifier = Modifier.padding(bottom = SpacingS),
-                    contentPadding = PaddingValues(horizontal = BasePadding)
-                ) {
-                    item {
-                        Surface(
-                            modifier = Modifier
-                                .padding(end = 8.dp)
-                                .clickable {
-                                    viewModel.setBusinessDomain(null)
-                                },
-                            shape = ShapeDefaults.ExtraLarge,
-                            color = if(state.filters.businessDomainId == null) Primary else Background,
-                            shadowElevation = 6.dp,
-                            tonalElevation = 0.dp
-                        ) {
-                            Text(
-                                modifier = Modifier.padding(horizontal = 22.dp, vertical = 10.dp),
-                                text = "Toate",
-                                color = if(state.filters.businessDomainId == null) OnPrimary else OnBackground,
-                                fontWeight = if(state.filters.businessDomainId == null) FontWeight.SemiBold else FontWeight.Medium
-                            )
-                        }
-                    }
-                    items(businessDomains) { bd ->
-                        Surface(
-                            modifier = Modifier
-                                .padding(end = 8.dp)
-                                .clickable {
-                                    viewModel.setBusinessDomain(bd.id)
-                                },
-                            shape = ShapeDefaults.ExtraLarge,
-                            color = if(state.filters.businessDomainId == bd.id) Primary else Background,
-                            shadowElevation = 2.dp,
-                            tonalElevation = 0.dp
-                        ) {
-                            Text(
-                                modifier = Modifier.padding(horizontal = 18.dp, vertical = 10.dp),
-                                text = bd.name,
-                                color = if(state.filters.businessDomainId == bd.id) OnPrimary else OnBackground,
-                                fontWeight = if(state.filters.businessDomainId == bd.id) FontWeight.SemiBold else FontWeight.Medium
-                            )
-                        }
-                    }
-                }
+                SearchBusinessDomainList(
+                    businessDomains = businessDomains,
+                    selectedBusinessDomain = state.filters.businessDomainId,
+                    onClick = { viewModel.setBusinessDomain(it) }
+                )
 
                 if(markersUiState.isLoading) {
                     SearchMapLoading()

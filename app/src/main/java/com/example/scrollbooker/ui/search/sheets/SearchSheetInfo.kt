@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.theme.bodyLarge
+import com.example.scrollbooker.ui.theme.titleLarge
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
@@ -18,19 +19,20 @@ fun SearchSheetInfo(leftText: String, rightText: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = BasePadding),
+            .padding(BasePadding),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
             text = leftText,
             fontWeight = FontWeight.SemiBold,
-            style = titleMedium
+            style = titleLarge
         )
 
         Text(
             text = rightText,
-            style = bodyLarge
+            style = bodyLarge,
+            fontWeight = FontWeight.SemiBold
         )
     }
 }
