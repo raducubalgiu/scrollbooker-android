@@ -95,6 +95,7 @@ fun SearchScreen(
 
     val state by viewModel.request.collectAsState()
     val filters = state.filters
+
     val activeFiltersCount = listOf(
         filters.hasVideo,
         filters.hasDiscount,
@@ -156,12 +157,7 @@ fun SearchScreen(
                 viewModel = viewModel,
                 sheetState = sheetState,
                 sheetAction = sheetAction,
-                onClose = {
-                    scope.launch {
-                        sheetState.hide()
-                        sheetAction = SearchSheetActionEnum.NONE
-                    }
-                },
+                onClose = { sheetAction = SearchSheetActionEnum.NONE },
             )
         }
     }

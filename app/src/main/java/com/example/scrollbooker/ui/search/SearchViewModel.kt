@@ -18,6 +18,7 @@ import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.
 import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.useCase.GetAllBusinessDomainsUseCase
 import com.example.scrollbooker.entity.nomenclature.businessType.domain.model.BusinessType
 import com.example.scrollbooker.entity.nomenclature.businessType.domain.useCase.GetAllBusinessTypesByBusinessDomainUseCase
+import com.example.scrollbooker.ui.search.sheets.filters.SearchFiltersSheetState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -40,6 +41,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.collections.sort
 
 data class CameraPositionState(
     val latitude: Double = 44.4268,
@@ -72,6 +74,15 @@ data class SearchFiltersState(
     val hasDiscount: Boolean = false,
     val hasVideo: Boolean = false
 )
+
+fun SearchFiltersState.toFiltersSheetState(): SearchFiltersSheetState =
+    SearchFiltersSheetState(
+        maxPrice = maxPrice,
+        sort = sort,
+        hasVideo = hasVideo,
+        hasDiscount = hasDiscount,
+        isLastMinute = isLastMinute
+    )
 
 data class SearchRequestState(
     val bBox: BusinessBoundingBox? = null,
@@ -258,34 +269,30 @@ class SearchViewModel @Inject constructor(
     }
 
     fun setFiltersFromServicesSheet(
-        newBusinessDomain: Int?,
-        newServiceId: Int?
+        businessDomainId: Int?,
+        businessTypeId: Int?,
+        serviceId: Int?
     ) {
         _request.update { current ->
             current.copy(
                 filters = current.filters.copy(
-                    businessDomainId = newBusinessDomain,
-                    serviceId = newServiceId
+                    businessDomainId = businessDomainId,
+                    businessTypeId = businessTypeId,
+                    serviceId = serviceId
                 )
             )
         }
     }
 
-    fun setFiltersFromFiltersSheet(
-        maxPrice: Float?,
-        sort: SearchSortEnum,
-        hasDiscount: Boolean,
-        isLastMinute: Boolean,
-        hasVideo: Boolean
-    ) {
+    fun setFiltersFromFiltersSheet(filtersSheet: SearchFiltersSheetState) {
         _request.update { current ->
             current.copy(
                 filters = current.filters.copy(
-                    maxPrice = maxPrice,
-                    sort = sort,
-                    hasDiscount = hasDiscount,
-                    isLastMinute = isLastMinute,
-                    hasVideo = hasVideo
+                    maxPrice = filtersSheet.maxPrice,
+                    sort = filtersSheet.sort,
+                    hasDiscount = filtersSheet.hasDiscount,
+                    isLastMinute = filtersSheet.isLastMinute,
+                    hasVideo = filtersSheet.hasVideo
                 )
             )
         }

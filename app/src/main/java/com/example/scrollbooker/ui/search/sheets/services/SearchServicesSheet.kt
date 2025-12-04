@@ -17,6 +17,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,6 +42,7 @@ import com.example.scrollbooker.ui.theme.headlineLarge
 
 data class SearchServicesSheetFilters(
     val businessDomainId: Int? = null,
+    val businessTypeId: Int? = null,
     val serviceId: Int? = null
 )
 
@@ -57,13 +59,17 @@ fun SearchServicesSheet(
     val businessTypes by viewModel.businessTypes.collectAsState()
 
     val requestState by viewModel.request.collectAsState()
+    val filters = requestState.filters
 
-    var state by remember(requestState.filters) { mutableStateOf<SearchServicesSheetFilters>(
-        SearchServicesSheetFilters(
-            businessDomainId = requestState.filters.businessDomainId,
-            serviceId = requestState.filters.serviceId
-        )
-    )}
+    var businessDomainId by rememberSaveable(filters.businessDomainId) {
+        mutableStateOf<Int?>(filters.businessDomainId)
+    }
+    var businessTypeId by rememberSaveable(filters.businessTypeId) {
+        mutableStateOf<Int?>(filters.businessTypeId)
+    }
+    var serviceId by rememberSaveable(filters.serviceId) {
+        mutableStateOf<Int?>(filters.serviceId)
+    }
 
     val businessTypesOptions = when(val state = businessTypes) {
         is FeatureState.Success -> state.data.map { bt ->
@@ -113,10 +119,8 @@ fun SearchServicesSheet(
             ) {
                 SearchBusinessDomainsSheetList(
                     businessDomains = businessDomains,
-                    selectedBusinessDomainId = state.businessDomainId,
-                    onClick = {
-                        state = state.copy(businessDomainId = it)
-                    }
+                    selectedBusinessDomainId = businessDomainId,
+                    onClick = { businessDomainId = it }
                 )
 
                 Spacer(Modifier.height(SpacingXXL))
@@ -124,12 +128,11 @@ fun SearchServicesSheet(
                 Column(Modifier.padding(horizontal = BasePadding)) {
                     InputSelect(
                         options = businessTypesOptions,
-                        selectedOption = state.serviceId.toString(),
+                        selectedOption = businessTypeId.toString(),
                         placeholder = "Alege Business-ul",
-                        onValueChange = { state = state.copy(serviceId = it?.toInt()) },
-                        isRequired = false,
+                        onValueChange = { businessTypeId = it?.toInt() },
                         isLoading = businessTypes is FeatureState.Loading,
-                        isEnabled = businessTypes is FeatureState.Loading || businessTypes is FeatureState.Error
+                        //isEnabled = businessTypes is FeatureState.Loading || businessTypes is FeatureState.Error
                     )
 
                     Spacer(Modifier.height(BasePadding))
@@ -140,11 +143,9 @@ fun SearchServicesSheet(
                             Option(value = "96", name = "Coafat"),
                             Option(value = "99", name = "Spalat")
                         ),
-                        selectedOption = state.serviceId.toString(),
+                        selectedOption = serviceId.toString(),
                         placeholder = stringResource(R.string.chooseServices),
-                        onValueChange = {
-                            state = state.copy(serviceId = it?.toInt())
-                        },
+                        onValueChange = { serviceId = it?.toInt() },
                         isRequired = false,
                         isLoading = false,
                        //isEnabled = false
@@ -162,7 +163,13 @@ fun SearchServicesSheet(
         }
 
         SearchServicesSheetFooter(
-            onFilter = { onFilter(state) },
+            onFilter = { onFilter(
+                SearchServicesSheetFilters(
+                    businessDomainId = businessDomainId,
+                    businessTypeId = businessTypeId,
+                    serviceId = serviceId
+                )
+            )},
             onClear = onClear
         )
     }

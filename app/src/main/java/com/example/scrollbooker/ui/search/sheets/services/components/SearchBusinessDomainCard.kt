@@ -40,7 +40,10 @@ fun SearchBusinessDomainCard(
         shape = ShapeDefaults.Medium,
         color = Background,
         contentColor = OnBackground,
-        border = BorderStroke(width = 1.dp, color = if(isSelected) Primary else Divider)
+        border = BorderStroke(
+            width = if(isSelected) 2.dp else 1.dp,
+            color = if(isSelected) Primary else Divider
+        )
     ) {
         Row(
             modifier = Modifier

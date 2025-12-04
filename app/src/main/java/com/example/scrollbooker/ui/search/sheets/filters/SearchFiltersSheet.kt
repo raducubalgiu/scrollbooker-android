@@ -58,31 +58,26 @@ import com.example.scrollbooker.ui.theme.titleLarge
 fun SearchFiltersSheet(
     viewModel: SearchViewModel,
     onClose: () -> Unit,
-    onFilter: (Float?, SearchSortEnum, Boolean, Boolean, Boolean) -> Unit
+    onFilter: (SearchFiltersSheetState) -> Unit
 ) {
     val verticalScroll = rememberScrollState()
 
     val requestState by viewModel.request.collectAsState()
     val filters = requestState.filters
 
-    var price by rememberSaveable(filters.maxPrice) {
-        mutableStateOf<Float?>(filters.maxPrice?.toFloat())
-    }
-    var sort by rememberSaveable(filters.sort) {
-        mutableStateOf<SearchSortEnum>(filters.sort)
-    }
-
-    var hasVideo by rememberSaveable(filters.hasVideo) {
-        mutableStateOf(filters.hasVideo)
-    }
-
-    var hasDiscount by rememberSaveable(filters.hasDiscount) {
-        mutableStateOf(filters.hasDiscount)
+    var sheetState by rememberSaveable(filters) {
+        mutableStateOf(
+            SearchFiltersSheetState(
+                maxPrice = filters.maxPrice?.toFloat(),
+                sort = filters.sort,
+                hasVideo = filters.hasVideo,
+                hasDiscount = filters.hasDiscount,
+                isLastMinute = filters.isLastMinute
+            )
+        )
     }
 
-    var isLastMinute by rememberSaveable(filters.isLastMinute) {
-        mutableStateOf(filters.isLastMinute)
-    }
+    val isConfirmEnabled = sheetState.hasChangesComparedTo(filters)
 
     Column(
         modifier = Modifier
@@ -120,11 +115,11 @@ fun SearchFiltersSheet(
                 item {
                     MainButtonOutlined(
                         icon = painterResource(R.drawable.ic_percent_badge_outline),
-                        onClick = { hasDiscount = !hasDiscount },
+                        onClick = { sheetState = sheetState.copy(hasDiscount = !sheetState.hasDiscount) },
                         title = stringResource(R.string.sale),
                         border = BorderStroke(
-                            width = if(hasDiscount) 2.dp else 1.dp,
-                            color = if(hasDiscount) Primary else Divider
+                            width = if(sheetState.hasDiscount) 2.dp else 1.dp,
+                            color = if(sheetState.hasDiscount) Primary else Divider
                         )
                     )
 
@@ -132,11 +127,11 @@ fun SearchFiltersSheet(
 
                     MainButtonOutlined(
                         icon = painterResource(R.drawable.ic_bolt_outline),
-                        onClick = { isLastMinute = !isLastMinute },
+                        onClick = { sheetState = sheetState.copy(isLastMinute = !sheetState.isLastMinute) },
                         title = stringResource(R.string.lastMinute),
                         border = BorderStroke(
-                            width = if(isLastMinute) 2.dp else 1.dp,
-                            color = if(isLastMinute) Primary else Divider
+                            width = if(sheetState.isLastMinute) 2.dp else 1.dp,
+                            color = if(sheetState.isLastMinute) Primary else Divider
                         )
                     )
                 }
@@ -146,13 +141,13 @@ fun SearchFiltersSheet(
 
             SearchSheetInfo(
                 leftText = stringResource(R.string.maximumPrice),
-                rightText = "${price ?: 1500f} RON"
+                rightText = "${sheetState.maxPrice ?: 1500f} RON"
             )
 
             CustomSlider(
                 modifier = Modifier.padding(SpacingXL),
-                value = price?.toFloat() ?: 1500f,
-                onValueChange = { price = it },
+                value = sheetState.maxPrice ?: 1500f,
+                onValueChange = { sheetState = sheetState.copy(maxPrice = it) },
                 valueRange = 0f..1500f
             )
 
@@ -183,8 +178,8 @@ fun SearchFiltersSheet(
                 Spacer(Modifier.width(SpacingS))
 
                 Switch(
-                    checked = hasVideo,
-                    onCheckedChange = { hasVideo = it },
+                    checked = sheetState.hasVideo,
+                    onCheckedChange = { sheetState = sheetState.copy(hasVideo = it) },
                     colors = SwitchDefaults.colors(
                         uncheckedBorderColor = Divider,
                         uncheckedTrackColor = Divider,
@@ -202,8 +197,8 @@ fun SearchFiltersSheet(
 
             SearchSortEnum.entries.forEach { option ->
                 InputRadio(
-                    selected = sort == option,
-                    onSelect = { sort = option },
+                    selected = sheetState.sort == option,
+                    onSelect = { sheetState = sheetState.copy(sort = option) },
                     headLine = stringResource(option.labelRes),
                     paddingHorizontal = BasePadding
                 )
@@ -214,15 +209,9 @@ fun SearchFiltersSheet(
             HorizontalDivider(color = Divider, thickness = 0.55.dp)
 
             SearchSheetActions(
-                onClear = {
-                    price = 1500f
-                    sort = SearchSortEnum.RECOMMENDED
-                    hasDiscount = false
-                    isLastMinute = false
-                    hasVideo = false
-                },
-                onConfirm = { onFilter(price?.toFloat(), sort, hasDiscount, isLastMinute, hasVideo) },
-                isConfirmEnabled = filters.maxPrice != price || filters.sort != sort
+                onClear = { sheetState = sheetState.clear() },
+                onConfirm = { onFilter(sheetState) },
+                isConfirmEnabled = isConfirmEnabled
             )
         }
     }
