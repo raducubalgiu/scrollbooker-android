@@ -9,7 +9,7 @@ import com.example.scrollbooker.core.util.PaginatedResponseDto
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.appointment.domain.model.BusinessCoordinates
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessBoundingBox
-import com.example.scrollbooker.entity.booking.business.data.remote.BusinessMarkersRequest
+import com.example.scrollbooker.entity.booking.business.data.remote.SearchBusinessRequest
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMarker
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessSheet
 import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessesMarkersUseCase
@@ -40,8 +40,8 @@ import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 import javax.inject.Inject
-import kotlin.collections.sort
 
 data class CameraPositionState(
     val latitude: Double = 44.4268,
@@ -67,22 +67,12 @@ data class SearchFiltersState(
     val businessTypeId: Int? = null,
     val serviceId: Int? = null,
     val subFilterIds: List<Int> = emptyList(),
-    val maxDistance: Float? = 1500f,
-    val maxPrice: Float? = null,
+    val maxPrice: BigDecimal? = BigDecimal(1500),
     val sort: SearchSortEnum = SearchSortEnum.RECOMMENDED,
     val isLastMinute: Boolean = false,
     val hasDiscount: Boolean = false,
     val hasVideo: Boolean = false
 )
-
-fun SearchFiltersState.toFiltersSheetState(): SearchFiltersSheetState =
-    SearchFiltersSheetState(
-        maxPrice = maxPrice,
-        sort = sort,
-        hasVideo = hasVideo,
-        hasDiscount = hasDiscount,
-        isLastMinute = isLastMinute
-    )
 
 data class SearchRequestState(
     val bBox: BusinessBoundingBox? = null,
@@ -90,10 +80,10 @@ data class SearchRequestState(
     val userLocation: BusinessCoordinates? = null,
     val filters: SearchFiltersState = SearchFiltersState()
 ) {
-    fun toRequest(): BusinessMarkersRequest? {
+    fun toRequest(): SearchBusinessRequest? {
         val box = bBox ?: return null
 
-        return BusinessMarkersRequest(
+        return SearchBusinessRequest(
             bbox = box,
             zoom = zoom,
             maxMarkers = 400,
@@ -109,6 +99,16 @@ data class SearchRequestState(
             hasVideo = filters.hasVideo
         )
     }
+}
+
+fun SearchRequestState.activeFiltersCount(): Int {
+    return listOf(
+        filters.hasVideo,
+        filters.hasDiscount,
+        filters.isLastMinute,
+        filters.maxPrice != BigDecimal(1500),
+        filters.sort != SearchSortEnum.RECOMMENDED
+    ).count { it }
 }
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
@@ -139,7 +139,7 @@ class SearchViewModel @Inject constructor(
     private val _cameraPosition = MutableStateFlow<CameraPositionState>(CameraPositionState())
     val cameraPosition: StateFlow<CameraPositionState> = _cameraPosition.asStateFlow()
 
-    private val rawRequestFlow: Flow<BusinessMarkersRequest> =
+    private val rawRequestFlow: Flow<SearchBusinessRequest> =
         _request
             .mapNotNull { it.toRequest() }
             .debounce(100L)
@@ -302,7 +302,7 @@ class SearchViewModel @Inject constructor(
         _request.update { current ->
             current.copy(
                 filters = current.filters.copy(
-                    maxPrice = 1500f,
+                    maxPrice = BigDecimal(1500),
                     sort = SearchSortEnum.RECOMMENDED,
                     hasDiscount = false,
                     isLastMinute = false,

@@ -2,8 +2,9 @@ package com.example.scrollbooker.entity.booking.business.data.remote
 
 import com.example.scrollbooker.entity.booking.appointment.domain.model.BusinessCoordinates
 import com.google.gson.annotations.SerializedName
+import java.math.BigDecimal
 
-data class BusinessMarkersRequest(
+data class SearchBusinessRequest(
     val bbox: BusinessBoundingBox,
 
     val zoom: Float,
@@ -27,7 +28,7 @@ data class BusinessMarkersRequest(
     val userLocation: BusinessCoordinates? = null,
 
     @SerializedName("max_price")
-    val maxPrice: Float? = null,
+    val maxPrice: BigDecimal? = null,
 
     val sort: String?,
 

@@ -53,6 +53,7 @@ import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.headlineLarge
 import com.example.scrollbooker.ui.theme.titleLarge
+import java.math.BigDecimal
 
 @Composable
 fun SearchFiltersSheet(
@@ -68,7 +69,7 @@ fun SearchFiltersSheet(
     var sheetState by rememberSaveable(filters) {
         mutableStateOf(
             SearchFiltersSheetState(
-                maxPrice = filters.maxPrice?.toFloat(),
+                maxPrice = filters.maxPrice,
                 sort = filters.sort,
                 hasVideo = filters.hasVideo,
                 hasDiscount = filters.hasDiscount,
@@ -141,13 +142,15 @@ fun SearchFiltersSheet(
 
             SearchSheetInfo(
                 leftText = stringResource(R.string.maximumPrice),
-                rightText = "${sheetState.maxPrice ?: 1500f} RON"
+                rightText = "${sheetState.maxPrice?.toInt() ?: 1500f} RON"
             )
 
             CustomSlider(
                 modifier = Modifier.padding(SpacingXL),
-                value = sheetState.maxPrice ?: 1500f,
-                onValueChange = { sheetState = sheetState.copy(maxPrice = it) },
+                value = sheetState.maxPrice?.toFloat() ?: 1500f,
+                onValueChange = {
+                    sheetState = sheetState.copy(maxPrice = it.toBigDecimal())
+                },
                 valueRange = 0f..1500f
             )
 
@@ -209,7 +212,7 @@ fun SearchFiltersSheet(
             HorizontalDivider(color = Divider, thickness = 0.55.dp)
 
             SearchSheetActions(
-                onClear = { sheetState = sheetState.clear() },
+                onClear = { sheetState = sheetState.clear(BigDecimal(1500)) },
                 onConfirm = { onFilter(sheetState) },
                 isConfirmEnabled = isConfirmEnabled
             )

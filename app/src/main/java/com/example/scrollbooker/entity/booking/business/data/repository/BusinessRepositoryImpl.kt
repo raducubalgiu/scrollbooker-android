@@ -10,9 +10,9 @@ import com.example.scrollbooker.entity.booking.business.data.mappers.toDomain
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessApiService
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessCreateDto
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessHasEmployeesUpdateRequest
-import com.example.scrollbooker.entity.booking.business.data.remote.BusinessMarkersRequest
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessServicesUpdateRequest
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessSheetPagingSource
+import com.example.scrollbooker.entity.booking.business.data.remote.SearchBusinessRequest
 import com.example.scrollbooker.entity.booking.business.domain.model.Business
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessAddress
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessCreateResponse
@@ -23,8 +23,6 @@ import com.example.scrollbooker.entity.booking.business.domain.model.Recommended
 import com.example.scrollbooker.entity.booking.business.domain.repository.BusinessRepository
 import com.example.scrollbooker.entity.nomenclature.service.data.mappers.toDomain
 import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
-import com.example.scrollbooker.entity.social.post.data.remote.PostBookNowPagingSource
-import com.example.scrollbooker.entity.social.post.domain.model.Post
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -82,7 +80,7 @@ class BusinessRepositoryImpl @Inject constructor(
         return apiService.createBusiness(request).toDomain()
     }
 
-    override suspend fun getBusinessesMarkers(request: BusinessMarkersRequest): PaginatedResponseDto<BusinessMarker> {
+    override suspend fun getBusinessesMarkers(request: SearchBusinessRequest): PaginatedResponseDto<BusinessMarker> {
         val response = apiService.getBusinessesMarkers(request)
 
         return PaginatedResponseDto<BusinessMarker>(
@@ -91,7 +89,7 @@ class BusinessRepositoryImpl @Inject constructor(
         )
     }
 
-    override fun getBusinessesSheet(request: BusinessMarkersRequest): Flow<PagingData<BusinessSheet>> {
+    override fun getBusinessesSheet(request: SearchBusinessRequest): Flow<PagingData<BusinessSheet>> {
         return Pager(
             config = PagingConfig(pageSize = 10),
             pagingSourceFactory = { BusinessSheetPagingSource(apiService, request) }

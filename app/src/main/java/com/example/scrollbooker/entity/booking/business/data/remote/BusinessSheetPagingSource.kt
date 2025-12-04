@@ -10,7 +10,7 @@ import java.lang.Exception
 
 class BusinessSheetPagingSource(
     private val api: BusinessApiService,
-    private val request: BusinessMarkersRequest
+    private val request: SearchBusinessRequest
 ) : PagingSource<Int, BusinessSheet>() {
 
     override fun getRefreshKey(state: PagingState<Int, BusinessSheet>): Int? {

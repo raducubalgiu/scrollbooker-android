@@ -3,7 +3,7 @@ package com.example.scrollbooker.entity.booking.business.domain.repository
 import androidx.paging.PagingData
 import com.example.scrollbooker.core.util.PaginatedResponseDto
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
-import com.example.scrollbooker.entity.booking.business.data.remote.BusinessMarkersRequest
+import com.example.scrollbooker.entity.booking.business.data.remote.SearchBusinessRequest
 import com.example.scrollbooker.entity.booking.business.domain.model.Business
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessAddress
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessCreateResponse
@@ -12,7 +12,6 @@ import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMar
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessSheet
 import com.example.scrollbooker.entity.booking.business.domain.model.RecommendedBusiness
 import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
-import com.example.scrollbooker.entity.social.post.domain.model.Post
 import kotlinx.coroutines.flow.Flow
 
 interface BusinessRepository {
@@ -29,6 +28,6 @@ interface BusinessRepository {
         businessTypeId: Int,
         ownerFullName: String
     ): BusinessCreateResponse
-    suspend fun getBusinessesMarkers(request: BusinessMarkersRequest): PaginatedResponseDto<BusinessMarker>
-    fun getBusinessesSheet(request: BusinessMarkersRequest): Flow<PagingData<BusinessSheet>>
+    suspend fun getBusinessesMarkers(request: SearchBusinessRequest): PaginatedResponseDto<BusinessMarker>
+    fun getBusinessesSheet(request: SearchBusinessRequest): Flow<PagingData<BusinessSheet>>
 }

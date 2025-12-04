@@ -1,6 +1,7 @@
 package com.example.scrollbooker.entity.booking.business.data.remote
 
 import com.example.scrollbooker.entity.booking.appointment.domain.model.BusinessCoordinates
+import com.example.scrollbooker.entity.booking.products.data.remote.ProductDto
 import com.google.gson.annotations.SerializedName
 
 data class BusinessSheetDto(
@@ -20,4 +21,6 @@ data class BusinessSheetDto(
 
     @SerializedName("media_preview")
     val mediaPreview: BusinessMediaPreviewDto?,
+
+    val products: List<ProductDto>
 )

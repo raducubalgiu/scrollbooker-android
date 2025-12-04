@@ -3,10 +3,11 @@ import android.os.Parcelable
 import com.example.scrollbooker.core.enums.SearchSortEnum
 import com.example.scrollbooker.ui.search.SearchFiltersState
 import kotlinx.parcelize.Parcelize
+import java.math.BigDecimal
 
 @Parcelize
 data class SearchFiltersSheetState(
-    val maxPrice: Float? = 1500f,
+    val maxPrice: BigDecimal? = BigDecimal(1500),
     val sort: SearchSortEnum = SearchSortEnum.RECOMMENDED,
     val hasVideo: Boolean = false,
     val hasDiscount: Boolean = false,
@@ -14,7 +15,7 @@ data class SearchFiltersSheetState(
 ) : Parcelable
 
 fun SearchFiltersSheetState.clear(
-    defaultMaxPrice: Float? = maxPrice
+    defaultMaxPrice: BigDecimal? = maxPrice
 ): SearchFiltersSheetState = copy(
     maxPrice = defaultMaxPrice,
     sort = SearchSortEnum.RECOMMENDED,

@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.AddCircleOutline
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
@@ -23,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
@@ -34,7 +34,6 @@ import com.example.scrollbooker.core.extensions.toTwoDecimals
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
-import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
@@ -54,7 +53,7 @@ fun ProductCard(
     onSelect: (Product) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
-        Column(modifier = Modifier.padding(BasePadding)) {
+        Column(modifier = Modifier.padding(vertical = BasePadding)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
@@ -65,7 +64,9 @@ fun ProductCard(
                         text = product.name,
                         style = titleMedium,
                         fontSize = 18.sp,
-                        color = OnBackground
+                        color = OnBackground,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
                     )
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
@@ -81,7 +82,9 @@ fun ProductCard(
                         product.subFilters.mapIndexed { i, subFilter ->
                             Text(
                                 text = subFilter.name,
-                                color = Color.Gray
+                                color = Color.Gray,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
                             if(i < product.subFilters.size - 1) {
                                 Text(
@@ -129,6 +132,8 @@ fun ProductCard(
                         }
                     }
                 }
+
+                Spacer(Modifier.width(SpacingS))
 
                 if(!displayActions) {
                     Protected(permission = PermissionEnum.BOOK_BUTTON_VIEW) {
