@@ -42,11 +42,10 @@ fun SearchSheets(
                 SearchFiltersSheet(
                     viewModel = viewModel,
                     onClose = onClose,
-                    onFilter = { maxPrice, sort ->
-                        viewModel.setFiltersFromFiltersSheet(maxPrice, sort)
+                    onFilter = { maxPrice, sort, hasDiscount, isLastMinute, hasVideo ->
+                        viewModel.setFiltersFromFiltersSheet(maxPrice, sort, hasDiscount, isLastMinute, hasVideo)
                         onClose()
                     },
-                    onClear = {}
                 )
             }
             SearchSheetActionEnum.NONE -> Unit

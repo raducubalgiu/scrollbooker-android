@@ -29,7 +29,16 @@ data class BusinessMarkersRequest(
     @SerializedName("max_price")
     val maxPrice: Float? = null,
 
-    val sort: String?
+    val sort: String?,
+
+    @SerializedName("has_discount")
+    val hasDiscount: Boolean = false,
+
+    @SerializedName("is_last_minute")
+    val isLastMinute: Boolean = false,
+
+    @SerializedName("has_video")
+    val hasVideo: Boolean = false
 )
 
 data class BusinessBoundingBox(

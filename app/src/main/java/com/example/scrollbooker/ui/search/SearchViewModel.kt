@@ -67,7 +67,10 @@ data class SearchFiltersState(
     val subFilterIds: List<Int> = emptyList(),
     val maxDistance: Float? = 1500f,
     val maxPrice: Float? = null,
-    val sort: SearchSortEnum = SearchSortEnum.RECOMMENDED
+    val sort: SearchSortEnum = SearchSortEnum.RECOMMENDED,
+    val isLastMinute: Boolean = false,
+    val hasDiscount: Boolean = false,
+    val hasVideo: Boolean = false
 )
 
 data class SearchRequestState(
@@ -89,7 +92,10 @@ data class SearchRequestState(
             subFilterIds = filters.subFilterIds,
             userLocation = userLocation,
             maxPrice = filters.maxPrice,
-            sort = filters.sort.raw
+            sort = filters.sort.raw,
+            hasDiscount = filters.hasDiscount,
+            isLastMinute = filters.isLastMinute,
+            hasVideo = filters.hasVideo
         )
     }
 }
@@ -267,13 +273,33 @@ class SearchViewModel @Inject constructor(
 
     fun setFiltersFromFiltersSheet(
         maxPrice: Float?,
-        sort: SearchSortEnum
+        sort: SearchSortEnum,
+        hasDiscount: Boolean,
+        isLastMinute: Boolean,
+        hasVideo: Boolean
     ) {
         _request.update { current ->
             current.copy(
                 filters = current.filters.copy(
                     maxPrice = maxPrice,
-                    sort = sort
+                    sort = sort,
+                    hasDiscount = hasDiscount,
+                    isLastMinute = isLastMinute,
+                    hasVideo = hasVideo
+                )
+            )
+        }
+    }
+
+    fun clearFiltersFromFiltersSheet() {
+        _request.update { current ->
+            current.copy(
+                filters = current.filters.copy(
+                    maxPrice = 1500f,
+                    sort = SearchSortEnum.RECOMMENDED,
+                    hasDiscount = false,
+                    isLastMinute = false,
+                    hasVideo = false
                 )
             )
         }

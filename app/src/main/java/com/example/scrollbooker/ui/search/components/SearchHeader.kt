@@ -1,9 +1,7 @@
 package com.example.scrollbooker.ui.search.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,13 +13,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,8 +31,8 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
+import com.example.scrollbooker.ui.search.sheets.filters.SearchFiltersButton
 import com.example.scrollbooker.ui.theme.Background
-import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.titleMedium
 
@@ -45,13 +40,12 @@ import com.example.scrollbooker.ui.theme.titleMedium
 @Composable
 fun SearchHeader(
     modifier: Modifier = Modifier,
+    activeFiltersCount: Int = 0,
     headline: String,
     subHeadline: String,
     onClick: () -> Unit,
     onFilter: () -> Unit
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
-
     Column {
         Column(
             modifier = Modifier
@@ -105,28 +99,11 @@ fun SearchHeader(
                         style = bodyLarge
                     )
                 }
-                Box(
-                    modifier = Modifier
-                        .padding(SpacingS)
-                        .border(
-                            width = 1.dp,
-                            color = Divider,
-                            shape = CircleShape
-                        )
-                        .clip(CircleShape)
-                        .clickable(
-                            onClick = { onFilter() }
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        modifier = Modifier
-                            .padding(SpacingM)
-                            .size(22.5.dp),
-                        imageVector = Icons.Outlined.Tune,
-                        contentDescription = null
-                    )
-                }
+
+                SearchFiltersButton(
+                    activeFiltersCount = activeFiltersCount,
+                    onFilter = onFilter
+                )
             }
         }
 

@@ -56,6 +56,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.customized.LoadMoreSpinner
 import com.example.scrollbooker.components.customized.RatingsStars
+import com.example.scrollbooker.core.enums.SearchSortEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.GeoPoint
 import com.example.scrollbooker.ui.LocalLocationController
@@ -93,6 +94,13 @@ fun SearchScreen(
     val businessesSheet = viewModel.sheetPagingFlow.collectAsLazyPagingItems()
 
     val state by viewModel.request.collectAsState()
+    val filters = state.filters
+    val activeFiltersCount = listOf(
+        filters.hasVideo,
+        filters.hasDiscount,
+        filters.isLastMinute,
+        filters.sort != SearchSortEnum.RECOMMENDED
+    ).count { it }
 
     val permissionStatus = locationState.permissionStatus
 
@@ -205,6 +213,7 @@ fun SearchScreen(
         topBar = {
             SearchHeader(
                 modifier = Modifier.statusBarsPadding(),
+                activeFiltersCount = activeFiltersCount,
                 headline = stringResource(R.string.allServices),
                 subHeadline = stringResource(R.string.anytimeAnyHour),
                 onClick = { openSheetWith(SearchSheetActionEnum.OPEN_SERVICES) },
