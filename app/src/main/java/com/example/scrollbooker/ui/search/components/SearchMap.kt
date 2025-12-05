@@ -37,11 +37,11 @@ fun SearchMap(
     viewModel: SearchViewModel,
     viewportState: MapViewportState,
     markersUiState: MarkersUiState,
-    userLocation: GeoPoint?
+    userLocation: GeoPoint?,
+    isMapReady: Boolean,
+    isStyleLoaded: Boolean
 ) {
     val density = LocalDensity.current
-    val isMapReady by viewModel.isMapReady.collectAsState()
-    val isStyleLoaded by viewModel.isStyleLoaded.collectAsState()
     val markers = markersUiState.data?.results.orEmpty()
 
     val isMapLoading = !isMapReady || !isStyleLoaded

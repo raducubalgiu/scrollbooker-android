@@ -130,6 +130,9 @@ class SearchViewModel @Inject constructor(
 
     private val _sheetUiState = MutableStateFlow(SheetUiState())
 
+    private val _sheetTotalCount = MutableStateFlow(0)
+    val sheetTotalCount: StateFlow<Int> = _sheetTotalCount.asStateFlow()
+
     private val _isMapReady = MutableStateFlow<Boolean>(false)
     val isMapReady: StateFlow<Boolean> = _isMapReady.asStateFlow()
 
@@ -194,7 +197,10 @@ class SearchViewModel @Inject constructor(
     val sheetPagingFlow: Flow<PagingData<BusinessSheet>> =
         sharedRequestFlow
             .flatMapLatest { req ->
-                getBusinessesSheetUseCase(req)
+                getBusinessesSheetUseCase(
+                    request = req,
+                    onTotalCountChanged = { total -> _sheetTotalCount.value = total },
+                )
             }
             .cachedIn(viewModelScope)
 

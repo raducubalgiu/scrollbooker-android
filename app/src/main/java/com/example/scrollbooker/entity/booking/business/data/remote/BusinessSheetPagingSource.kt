@@ -10,7 +10,8 @@ import java.lang.Exception
 
 class BusinessSheetPagingSource(
     private val api: BusinessApiService,
-    private val request: SearchBusinessRequest
+    private val request: SearchBusinessRequest,
+    private val onTotalCountChanged: (Int) -> Unit
 ) : PagingSource<Int, BusinessSheet>() {
 
     override fun getRefreshKey(state: PagingState<Int, BusinessSheet>): Int? {
@@ -27,6 +28,10 @@ class BusinessSheetPagingSource(
         return try {
             val response = withVisibleLoading {
                 api.getBusinessesSheet(request, page, limit)
+            }
+
+            if(page == 1) {
+                onTotalCountChanged(response.count)
             }
 
             val businesses = response.results.map { it.toDomain() }

@@ -29,5 +29,8 @@ interface BusinessRepository {
         ownerFullName: String
     ): BusinessCreateResponse
     suspend fun getBusinessesMarkers(request: SearchBusinessRequest): PaginatedResponseDto<BusinessMarker>
-    fun getBusinessesSheet(request: SearchBusinessRequest): Flow<PagingData<BusinessSheet>>
+    fun getBusinessesSheet(
+        request: SearchBusinessRequest,
+        onTotalCountChanged: (Int) -> Unit
+    ): Flow<PagingData<BusinessSheet>>
 }

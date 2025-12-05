@@ -28,7 +28,8 @@ import com.example.scrollbooker.ui.theme.Divider
 @Composable
 fun SearchSheetHeader(
     onMeasured: (Dp) -> Unit,
-    isLoading: Boolean
+    isLoading: Boolean,
+    businessesCountText: String
 ) {
     val density = LocalDensity.current
     val latestOnMeasured by rememberUpdatedState(onMeasured)
@@ -69,7 +70,7 @@ fun SearchSheetHeader(
             } else {
                 Box(Modifier.height(20.dp)) {
                     Text(
-                        text = "200 de rezultate",
+                        text = businessesCountText,
                         fontWeight = FontWeight.SemiBold
                     )
                 }

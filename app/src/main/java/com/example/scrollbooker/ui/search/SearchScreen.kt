@@ -59,6 +59,7 @@ import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 import kotlinx.coroutines.launch
+import rememberLocationsCountText
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -75,6 +76,9 @@ fun SearchScreen(
     val permissionStatus = locationState.permissionStatus
 
     val businessesSheet = viewModel.sheetPagingFlow.collectAsLazyPagingItems()
+    val businessesCount by viewModel.sheetTotalCount.collectAsState()
+    val businessesCountText = rememberLocationsCountText(businessesCount)
+
     val businessDomains by viewModel.businessDomains.collectAsState()
     val markersUiState by viewModel.markersUiState.collectAsState()
     val state by viewModel.request.collectAsState()
@@ -135,6 +139,8 @@ fun SearchScreen(
     val scaffoldState = rememberBottomSheetScaffoldState()
     var sheetHeaderDp by remember { mutableStateOf(0.dp) }
 
+    val isMapReady by viewModel.isMapReady.collectAsState()
+    val isStyleLoaded by viewModel.isStyleLoaded.collectAsState()
     val cameraPosition by viewModel.cameraPosition.collectAsState()
     val viewportState = rememberMapViewportState {
         setCameraOptions {
@@ -192,7 +198,9 @@ fun SearchScreen(
             viewModel = viewModel,
             viewportState = viewportState,
             markersUiState = markersUiState,
-            userLocation = locationState.lastAccurateLocation
+            userLocation = locationState.lastAccurateLocation,
+            isMapReady = isMapReady,
+            isStyleLoaded = isStyleLoaded
         )
 
         Box(modifier = Modifier
@@ -229,7 +237,8 @@ fun SearchScreen(
                 sheetContent = {
                     SearchSheetHeader(
                         onMeasured = { sheetHeaderDp = it },
-                        isLoading = isRefreshing
+                        isLoading = isInitialLoading || isRefreshing || !isMapReady || !isStyleLoaded,
+                        businessesCountText = businessesCountText
                     )
 
                     Column(Modifier.fillMaxSize()) {

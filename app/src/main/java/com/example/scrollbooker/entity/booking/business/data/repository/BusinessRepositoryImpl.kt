@@ -89,10 +89,19 @@ class BusinessRepositoryImpl @Inject constructor(
         )
     }
 
-    override fun getBusinessesSheet(request: SearchBusinessRequest): Flow<PagingData<BusinessSheet>> {
+    override fun getBusinessesSheet(
+        request: SearchBusinessRequest,
+        onTotalCountChanged: (Int) -> Unit
+    ): Flow<PagingData<BusinessSheet>> {
         return Pager(
             config = PagingConfig(pageSize = 10),
-            pagingSourceFactory = { BusinessSheetPagingSource(apiService, request) }
+            pagingSourceFactory = {
+                BusinessSheetPagingSource(
+                    api = apiService,
+                    request = request,
+                    onTotalCountChanged = onTotalCountChanged
+                )
+            }
         ).flow
     }
 }

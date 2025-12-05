@@ -9,7 +9,10 @@ import kotlinx.coroutines.flow.Flow
 class GetBusinessesSheetUseCase(
     private val repository: BusinessRepository
 ) {
-    operator fun invoke(request: SearchBusinessRequest): Flow<PagingData<BusinessSheet>> {
-        return repository.getBusinessesSheet(request)
+    operator fun invoke(
+        request: SearchBusinessRequest,
+        onTotalCountChanged: (Int) -> Unit
+    ): Flow<PagingData<BusinessSheet>> {
+        return repository.getBusinessesSheet(request, onTotalCountChanged)
     }
 }
