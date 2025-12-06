@@ -7,4 +7,9 @@ interface FilterApiService {
     suspend fun getFiltersByBusinessType(
         @Path("businessTypeId") businessTypeId: Int,
     ): List<FilterDto>
+
+    @GET("services/{serviceId}/filters")
+    suspend fun getFiltersByService(
+        @Path("serviceId") serviceId: Int,
+    ): List<FilterDto>
 }

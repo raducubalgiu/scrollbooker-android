@@ -12,4 +12,8 @@ class FilterRepositoryImpl @Inject constructor(
     override suspend fun getFiltersByBusinessTypeId(businessTypeId: Int): List<Filter> {
         return apiService.getFiltersByBusinessType(businessTypeId).map { it.toDomain() }
     }
+
+    override suspend fun getFiltersByServiceId(serviceId: Int): List<Filter> {
+        return apiService.getFiltersByService(serviceId).map { it.toDomain() }
+    }
 }

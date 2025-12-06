@@ -5,6 +5,7 @@ import com.example.scrollbooker.entity.nomenclature.filter.data.remote.FilterApi
 import com.example.scrollbooker.entity.nomenclature.filter.data.repository.FilterRepositoryImpl
 import com.example.scrollbooker.entity.nomenclature.filter.domain.repository.FilterRepository
 import com.example.scrollbooker.entity.nomenclature.filter.domain.useCase.GetFiltersByBusinessTypeUseCase
+import com.example.scrollbooker.entity.nomenclature.filter.domain.useCase.GetFiltersByServiceUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.Module
 import dagger.Provides
@@ -42,5 +43,13 @@ object FiltersModule {
         repository: FilterRepository,
     ): GetFiltersByBusinessTypeUseCase {
         return GetFiltersByBusinessTypeUseCase(authDataStore, repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetFiltersByServiceTypeUseCase(
+        repository: FilterRepository,
+    ): GetFiltersByServiceUseCase {
+        return GetFiltersByServiceUseCase(repository)
     }
 }

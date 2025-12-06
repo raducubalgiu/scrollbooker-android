@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -114,7 +115,15 @@ fun SearchScreen(
         onDispose { locationController.stopUpdates() }
     }
 
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true,
+//        confirmValueChange = { newState ->
+//            when (newState) {
+//                SheetValue.Hidden -> false
+//                else -> true
+//            }
+//        }
+    )
     var sheetAction by rememberSaveable { mutableStateOf(SearchSheetActionEnum.NONE) }
     val latestSheetState by rememberUpdatedState(sheetState)
 
@@ -242,23 +251,26 @@ fun SearchScreen(
                     )
 
                     Column(Modifier.fillMaxSize()) {
-                        if(isInitialLoading) LoadingScreen()
-                        else Box(Modifier.fillMaxSize()) {
-                            LazyColumn {
-                                items(businessesSheet.itemCount) { index ->
-                                    businessesSheet[index]?.let { b ->
-                                        SearchCard(
-                                            fullName = b.business.fullName,
-                                            ratingsAverage = b.business.ratingsAverage,
-                                            ratingsCount = b.business.ratingsCount,
-                                            address = b.address,
-                                            products = b.products
-                                        )
+                        if(isInitialLoading) {
+                            LoadingScreen()
+                        } else {
+                            Box(Modifier.fillMaxSize()) {
+                                LazyColumn {
+                                    items(businessesSheet.itemCount) { index ->
+                                        businessesSheet[index]?.let { b ->
+                                            SearchCard(
+                                                fullName = b.business.fullName,
+                                                ratingsAverage = b.business.ratingsAverage,
+                                                ratingsCount = b.business.ratingsCount,
+                                                address = b.address,
+                                                products = b.products
+                                            )
+                                        }
                                     }
-                                }
 
-                                if(isAppending) {
-                                    item { LoadMoreSpinner() }
+                                    if (isAppending) {
+                                        item { LoadMoreSpinner() }
+                                    }
                                 }
                             }
                         }

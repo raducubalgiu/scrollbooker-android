@@ -23,7 +23,7 @@ class GetFiltersByBusinessTypeUseCase @Inject constructor(
             FeatureState.Success(response)
 
         } catch (e: Exception) {
-            Timber.tag("Filters").e("ERROR: on Fetching Filters $e")
+            Timber.tag("Filters").e("ERROR: on Fetching Filters By Business Id $e")
             FeatureState.Error()
         }
     }

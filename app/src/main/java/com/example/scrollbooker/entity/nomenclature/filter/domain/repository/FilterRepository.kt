@@ -4,4 +4,5 @@ import com.example.scrollbooker.entity.nomenclature.filter.domain.model.Filter
 
 interface FilterRepository {
     suspend fun getFiltersByBusinessTypeId(businessTypeId: Int): List<Filter>
+    suspend fun getFiltersByServiceId(serviceId: Int): List<Filter>
 }

@@ -18,7 +18,13 @@ import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.
 import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.useCase.GetAllBusinessDomainsUseCase
 import com.example.scrollbooker.entity.nomenclature.businessType.domain.model.BusinessType
 import com.example.scrollbooker.entity.nomenclature.businessType.domain.useCase.GetAllBusinessTypesByBusinessDomainUseCase
+import com.example.scrollbooker.entity.nomenclature.filter.domain.model.Filter
+import com.example.scrollbooker.entity.nomenclature.filter.domain.useCase.GetFiltersByServiceUseCase
+import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
+import com.example.scrollbooker.entity.nomenclature.service.domain.useCase.GetServicesByBusinessTypeUseCase
 import com.example.scrollbooker.ui.search.sheets.filters.SearchFiltersSheetState
+import com.example.scrollbooker.ui.search.sheets.services.SearchServicesFiltersSheetState
+import com.mapbox.geojson.Feature
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -66,7 +72,7 @@ data class SearchFiltersState(
     val businessDomainId: Int? = null,
     val businessTypeId: Int? = null,
     val serviceId: Int? = null,
-    val subFilterIds: List<Int> = emptyList(),
+    val subFilterIds: Set<Int> = emptySet(),
     val maxPrice: BigDecimal? = BigDecimal(1500),
     val sort: SearchSortEnum = SearchSortEnum.RECOMMENDED,
     val isLastMinute: Boolean = false,
@@ -90,7 +96,7 @@ data class SearchRequestState(
             businessDomainId = filters.businessDomainId,
             businessTypeId = filters.businessTypeId,
             serviceId = filters.serviceId,
-            subFilterIds = filters.subFilterIds,
+            subFilterIds = filters.subFilterIds.toList(),
             userLocation = userLocation,
             maxPrice = filters.maxPrice,
             sort = filters.sort.raw,
@@ -117,7 +123,9 @@ class SearchViewModel @Inject constructor(
     private val getBusinessesMarkersUseCase: GetBusinessesMarkersUseCase,
     private val getBusinessesSheetUseCase: GetBusinessesSheetUseCase,
     private val getAllBusinessDomainsUseCase: GetAllBusinessDomainsUseCase,
-    private val getAllBusinessTypesByBusinessDomainUseCase: GetAllBusinessTypesByBusinessDomainUseCase
+    private val getAllBusinessTypesByBusinessDomainUseCase: GetAllBusinessTypesByBusinessDomainUseCase,
+    private val getServicesByBusinessTypeUseCase: GetServicesByBusinessTypeUseCase,
+    private val getFiltersByServiceUseCase: GetFiltersByServiceUseCase
 ): ViewModel() {
     private val _request = MutableStateFlow(SearchRequestState())
     val request: StateFlow<SearchRequestState> = _request.asStateFlow()
@@ -141,6 +149,9 @@ class SearchViewModel @Inject constructor(
 
     private val _cameraPosition = MutableStateFlow<CameraPositionState>(CameraPositionState())
     val cameraPosition: StateFlow<CameraPositionState> = _cameraPosition.asStateFlow()
+
+    private val _servicesSheetFilters = MutableStateFlow(SearchServicesFiltersSheetState())
+    val servicesSheetFilters: StateFlow<SearchServicesFiltersSheetState> = _servicesSheetFilters.asStateFlow()
 
     private val rawRequestFlow: Flow<SearchBusinessRequest> =
         _request
@@ -205,8 +216,8 @@ class SearchViewModel @Inject constructor(
             .cachedIn(viewModelScope)
 
     val businessTypes: StateFlow<FeatureState<List<BusinessType>>?> =
-        sharedRequestFlow
-            .map { req -> req.businessDomainId }
+        _servicesSheetFilters
+            .map { it.businessDomainId }
             .filterNotNull()
             .distinctUntilChanged()
             .flatMapLatest { domainId ->
@@ -223,7 +234,57 @@ class SearchViewModel @Inject constructor(
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5000),
-                initialValue = FeatureState.Loading
+                initialValue = null
+            )
+
+    val services: StateFlow<FeatureState<List<Service>>?> =
+        _servicesSheetFilters
+            .map { it.businessTypeId }
+            .filterNotNull()
+            .distinctUntilChanged()
+            .flatMapLatest { typeId ->
+                flow {
+                    emit(FeatureState.Loading)
+
+                    val result = withVisibleLoading {
+                        getServicesByBusinessTypeUseCase(typeId)
+                    }
+
+                    val featureState: FeatureState<List<Service>> =
+                        result.fold(
+                            onSuccess = { s -> FeatureState.Success(s) },
+                            onFailure = { e -> FeatureState.Error(e) }
+                        )
+
+                    emit(featureState)
+                }
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = null
+            )
+
+    val filters: StateFlow<FeatureState<List<Filter>>?> =
+        _servicesSheetFilters
+            .map { it.serviceId }
+            .filterNotNull()
+            .distinctUntilChanged()
+            .flatMapLatest { serviceId ->
+                flow {
+                    emit(FeatureState.Loading)
+
+                    val result = withVisibleLoading {
+                        getFiltersByServiceUseCase(serviceId)
+                    }
+
+                    emit(result)
+                }
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = null
             )
 
     fun loadAllBusinessDomains() {
@@ -274,22 +335,7 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun setFiltersFromServicesSheet(
-        businessDomainId: Int?,
-        businessTypeId: Int?,
-        serviceId: Int?
-    ) {
-        _request.update { current ->
-            current.copy(
-                filters = current.filters.copy(
-                    businessDomainId = businessDomainId,
-                    businessTypeId = businessTypeId,
-                    serviceId = serviceId
-                )
-            )
-        }
-    }
-
+    // Filters Sheet Filters
     fun setFiltersFromFiltersSheet(filtersSheet: SearchFiltersSheetState) {
         _request.update { current ->
             current.copy(
@@ -315,6 +361,70 @@ class SearchViewModel @Inject constructor(
                     hasVideo = false
                 )
             )
+        }
+    }
+
+    // Services Sheet Filters
+    fun setFiltersFromServicesSheet(
+        businessDomainId: Int?,
+        businessTypeId: Int?,
+        serviceId: Int?,
+        subFilterIds: Set<Int>
+    ) {
+        _request.update { current ->
+            current.copy(
+                filters = current.filters.copy(
+                    businessDomainId = businessDomainId,
+                    businessTypeId = businessTypeId,
+                    serviceId = serviceId,
+                    subFilterIds = subFilterIds
+                )
+            )
+        }
+    }
+
+    fun syncBusinessDomain(domainId: Int) {
+        _servicesSheetFilters.update {
+            it.copy(businessDomainId = domainId)
+        }
+    }
+
+    fun onSheetBusinessDomainSelected(domainId: Int?) {
+        _servicesSheetFilters.update {
+            it.copy(
+                businessDomainId = domainId,
+                businessTypeId = null,
+                serviceId = null,
+                subFilterIds = emptySet()
+            )
+        }
+    }
+
+    fun onSheetBusinessTypeSelected(typeId: Int?) {
+        _servicesSheetFilters.update {
+            it.copy(
+                businessTypeId = typeId,
+                serviceId = null,
+                subFilterIds = emptySet()
+            )
+        }
+    }
+
+    fun onSheetServiceSelected(serviceId: Int?) {
+        _servicesSheetFilters.update {
+            it.copy(
+                serviceId = serviceId,
+                subFilterIds = emptySet()
+            )
+        }
+    }
+
+    fun onSheetSubFilterSelected(subFilterId: Int) {
+        _servicesSheetFilters.update { current ->
+            val currentIds = current.subFilterIds
+            val newIds = currentIds + subFilterId
+
+            current.copy(subFilterIds = newIds)
         }
     }
 }

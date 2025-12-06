@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.ButtonDefaults
@@ -33,10 +32,9 @@ import com.example.scrollbooker.ui.theme.SurfaceBG
 @Composable
 fun SearchServicesSheetFooter(
     onFilter: () -> Unit,
-    onClear: () -> Unit
+    onClear: () -> Unit,
+    onOpenDate: () -> Unit
 ) {
-    val days = listOf("Astăzi", "Mâine", "Dupa 18:00", "În Weekend")
-
     Column {
         HorizontalDivider(
             modifier = Modifier.padding(bottom = BasePadding),
@@ -55,7 +53,7 @@ fun SearchServicesSheetFooter(
                 ) {
                     MainButtonOutlined(
                         title = "Data si ora",
-                        onClick = {},
+                        onClick = onOpenDate,
                         icon = painterResource(R.drawable.ic_clock_outline),
                         iconColor = Color.Gray,
                         trailingIcon = Icons.Default.KeyboardArrowDown,
@@ -71,19 +69,6 @@ fun SearchServicesSheetFooter(
                 }
 
                 Spacer(Modifier.width(BasePadding))
-            }
-
-            itemsIndexed(days) { index, day ->
-                MainButtonOutlined(
-                    title = day,
-                    onClick = {},
-                    shape = ShapeDefaults.Medium,
-                    contentPadding = PaddingValues(vertical = SpacingM, horizontal = SpacingXXL)
-                )
-
-                if(index <= days.size) {
-                    Spacer(Modifier.width(BasePadding))
-                }
             }
         }
 

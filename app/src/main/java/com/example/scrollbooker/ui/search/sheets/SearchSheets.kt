@@ -31,7 +31,12 @@ fun SearchSheets(
             SearchSheetActionEnum.OPEN_SERVICES -> {
                 SearchServicesSheet(
                     viewModel = viewModel,
-                    onClose = onClose,
+                    onClose = {
+                        scope.launch {
+                            sheetState.hide()
+                            onClose()
+                        }
+                    },
                     onClear = {},
                     onFilter = {
                         scope.launch {
@@ -41,7 +46,8 @@ fun SearchSheets(
                                 viewModel.setFiltersFromServicesSheet(
                                     businessDomainId = it.businessDomainId,
                                     businessTypeId = it.businessTypeId,
-                                    serviceId = it.serviceId
+                                    serviceId = it.serviceId,
+                                    subFilterIds = it.subFilterIds
                                 )
                                 onClose()
                             }
@@ -52,7 +58,12 @@ fun SearchSheets(
             SearchSheetActionEnum.OPEN_FILTERS -> {
                 SearchFiltersSheet(
                     viewModel = viewModel,
-                    onClose = onClose,
+                    onClose = {
+                        scope.launch {
+                            sheetState.hide()
+                            onClose()
+                        }
+                    },
                     onFilter = {
                         scope.launch {
                             sheetState.hide()

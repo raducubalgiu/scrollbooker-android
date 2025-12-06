@@ -86,7 +86,7 @@ fun InputSelect(
     val hasValue = selected != null
 
     val placeholderColor = when {
-        isRequired && selectedOption.isBlank() || selectedOption == "null" -> MaterialTheme.colorScheme.error
+        //isRequired && selectedOption.isBlank() || selectedOption == "null" -> MaterialTheme.colorScheme.error
         expanded -> Primary
         else -> Color.Gray
     }
@@ -196,25 +196,25 @@ fun InputSelect(
         }
     }
 
-    AnimatedVisibility(visible = isRequired && required != null && shouldDisplayRequiredMessage) {
-        Column(modifier = Modifier
-            .padding(top = BasePadding)
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = Icons.Outlined.Warning,
-                    contentDescription = null,
-                    tint = Error
-                )
-                Spacer(Modifier.width(SpacingS))
-                Text(
-                    text = stringResource(R.string.requiredValidationMessage),
-                    color = Error,
-                    style = bodyMedium
-                )
-            }
-        }
-    }
+//    AnimatedVisibility(visible = isRequired && required != null && shouldDisplayRequiredMessage) {
+//        Column(modifier = Modifier
+//            .padding(top = BasePadding)
+//        ) {
+//            Row(verticalAlignment = Alignment.CenterVertically) {
+//                Icon(
+//                    imageVector = Icons.Outlined.Warning,
+//                    contentDescription = null,
+//                    tint = Error
+//                )
+//                Spacer(Modifier.width(SpacingS))
+//                Text(
+//                    text = stringResource(R.string.requiredValidationMessage),
+//                    color = Error,
+//                    style = bodyMedium
+//                )
+//            }
+//        }
+//    }
 }
 
 data class Option(
