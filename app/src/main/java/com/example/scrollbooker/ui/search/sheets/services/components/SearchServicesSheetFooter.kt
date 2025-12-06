@@ -31,7 +31,7 @@ import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable
 fun SearchServicesSheetFooter(
-    onFilter: () -> Unit,
+    onConfirm: () -> Unit,
     onClear: () -> Unit,
     onOpenDate: () -> Unit
 ) {
@@ -74,7 +74,7 @@ fun SearchServicesSheetFooter(
 
         SearchSheetActions(
             onClear = onClear,
-            onConfirm = onFilter,
+            onConfirm = onConfirm,
             isConfirmEnabled = true
         )
     }

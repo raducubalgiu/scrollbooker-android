@@ -37,7 +37,6 @@ fun SearchSheets(
                             onClose()
                         }
                     },
-                    onClear = {},
                     onFilter = {
                         scope.launch {
                             sheetState.hide()

@@ -353,4 +353,7 @@
     <string name="search_locations_over_1_20">%d opțiuni în zona căutată</string>
     <string name="search_locations_over_20_999">%d de opțiuni în zona căutată</string>
     <string name="search_locations_over_1000">Peste 1.000 de opțiuni în zona căutată</string>
+    <string name="today">Astăzi</string>
+    <string name="tommorow">Mâine</string>
+    <string name="dateAndHour">Data și ora</string>
 </resources>
