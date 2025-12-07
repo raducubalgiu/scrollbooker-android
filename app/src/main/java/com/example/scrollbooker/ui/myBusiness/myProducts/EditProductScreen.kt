@@ -12,12 +12,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Percent
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ShapeDefaults
@@ -62,6 +62,7 @@ import com.example.scrollbooker.ui.theme.labelLarge
 import java.math.BigDecimal
 import java.math.RoundingMode
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditProductScreen(
     viewModel: MyProductsViewModel,
@@ -85,7 +86,7 @@ fun EditProductScreen(
         viewModel.loadFilters()
     }
 
-    when(val product = productState) {
+    when (val product = productState) {
         is FeatureState.Error -> ErrorScreen()
         is FeatureState.Loading -> LoadingScreen()
         is FeatureState.Success -> {
@@ -106,23 +107,25 @@ fun EditProductScreen(
 
             val scrollState = rememberScrollState()
 
-            val servicesOptionList = when(val state = servicesState) {
+            val servicesOptionList = when (val state = servicesState) {
                 is FeatureState.Success -> state.data.map { service ->
                     Option(
                         value = service.id.toString(),
                         name = service.name
                     )
                 }
+
                 else -> emptyList()
             }
 
-            val currenciesOptionList = when(val state = currenciesState) {
+            val currenciesOptionList = when (val state = currenciesState) {
                 is FeatureState.Success -> state.data.map { service ->
                     Option(
                         value = service.id.toString(),
                         name = service.name
                     )
                 }
+
                 else -> emptyList()
             }
 
@@ -135,12 +138,13 @@ fun EditProductScreen(
             val isLoadingFilters = filtersState is FeatureState.Loading
             val isErrorFilters = filtersState is FeatureState.Error
 
-            val validation by remember (name, description, price, discount, serviceId, currencyId) {
+            val validation by remember(name, description, price, discount, serviceId, currencyId) {
                 derivedStateOf {
                     val checkName = checkLength(context, name, minLength = 3, maxLength = 100)
                     val isNameValid = checkName.isNullOrBlank()
 
-                    val checkDescription = checkLength(context, description, minLength = 3, maxLength = 255)
+                    val checkDescription =
+                        checkLength(context, description, minLength = 3, maxLength = 255)
                     val isDescriptionValid = checkDescription.isNullOrBlank()
 
                     val checkPrice = checkMinMax(context, price, min = 10)
@@ -171,14 +175,10 @@ fun EditProductScreen(
             }
 
             Layout(
-                modifier = Modifier
-                    .statusBarsPadding()
-                    .padding(bottom = BasePadding),
                 onBack = {
                     viewModel.removeSelectedFilters()
                     onBack()
                 },
-                headerTitle = stringResource(R.string.addNewProduct),
                 enablePaddingH = false
             ) {
                 Box(
@@ -187,22 +187,21 @@ fun EditProductScreen(
                         .clickable(
                             indication = null,
                             interactionSource = remember { MutableInteractionSource() }
-                        ) {
-                            focusManager.clearFocus()
-                        }
+                        ) { focusManager.clearFocus() }
                 ) {
-                    Column(modifier = Modifier
-                        .fillMaxSize()
-                        .padding(
-                            top = BasePadding,
-                            bottom = WindowInsets.ime.asPaddingValues().calculateBottomPadding()
-                        ),
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(
+                                bottom = WindowInsets.ime.asPaddingValues().calculateBottomPadding()
+                            ),
                         verticalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Column(modifier = Modifier
-                            .weight(1f)
-                            .verticalScroll(scrollState)
-                            .padding(horizontal = BasePadding)
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .verticalScroll(scrollState)
+                                .padding(horizontal = BasePadding)
                         ) {
                             InputSelect(
                                 label = stringResource(R.string.service),
@@ -228,7 +227,7 @@ fun EditProductScreen(
 
                             Spacer(Modifier.height(BasePadding))
 
-                            when(val filters = filtersState) {
+                            when (val filters = filtersState) {
                                 is FeatureState.Success -> {
                                     filters.data.map { filter ->
                                         InputSelect(
@@ -237,10 +236,14 @@ fun EditProductScreen(
                                             options = filter.subFilters.map {
                                                 Option(value = it.id.toString(), name = it.name)
                                             },
-                                            selectedOption = selectedFilters[filter.id.toString()] ?: "",
+                                            selectedOption = selectedFilters[filter.id.toString()]
+                                                ?: "",
                                             onValueChange = { value ->
                                                 focusManager.clearFocus()
-                                                viewModel.updateSelectedFilter(filter.id.toString(), value=value.toString())
+                                                viewModel.updateSelectedFilter(
+                                                    filter.id.toString(),
+                                                    value = value.toString()
+                                                )
                                             },
                                             isLoading = isLoadingFilters,
                                             isEnabled = !isErrorFilters && !isLoadingFilters
@@ -249,6 +252,7 @@ fun EditProductScreen(
                                         Spacer(Modifier.height(BasePadding))
                                     }
                                 }
+
                                 else -> Unit
                             }
 
@@ -289,7 +293,7 @@ fun EditProductScreen(
                                 value = price.toString(),
                                 onValueChange = { price = it },
                                 keyboardOptions = KeyboardOptions(
-                                    keyboardType =  KeyboardType.Number,
+                                    keyboardType = KeyboardType.Number,
                                     imeAction = ImeAction.Next
                                 ),
                                 label = stringResource(R.string.price),
@@ -302,7 +306,7 @@ fun EditProductScreen(
                                 value = discount.toString(),
                                 onValueChange = { discount = it },
                                 keyboardOptions = KeyboardOptions(
-                                    keyboardType =  KeyboardType.Number,
+                                    keyboardType = KeyboardType.Number,
                                     imeAction = ImeAction.Next
                                 ),
                                 label = stringResource(R.string.discount),
@@ -328,7 +332,7 @@ fun EditProductScreen(
                                 shape = ShapeDefaults.Medium,
                                 readOnly = true,
                                 keyboardOptions = KeyboardOptions(
-                                    keyboardType =  KeyboardType.Number,
+                                    keyboardType = KeyboardType.Number,
                                     imeAction = ImeAction.Next
                                 ),
                                 label = {

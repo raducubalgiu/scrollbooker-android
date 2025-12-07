@@ -1,6 +1,7 @@
 package com.example.scrollbooker.ui.search.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
@@ -39,7 +40,8 @@ fun SearchMap(
     markersUiState: MarkersUiState,
     userLocation: GeoPoint?,
     isMapReady: Boolean,
-    isStyleLoaded: Boolean
+    isStyleLoaded: Boolean,
+    onMarkerClick: () -> Unit
 ) {
     val density = LocalDensity.current
     val markers = markersUiState.data?.results.orEmpty()
@@ -94,6 +96,7 @@ fun SearchMap(
 
             primaryMarkers.forEach { m ->
                 ViewAnnotation(
+                    modifier = Modifier.clickable { onMarkerClick() },
                     options = viewAnnotationOptions {
                         geometry(Point.fromLngLat(
                             m.coordinates.lng.toDouble(),
@@ -124,6 +127,8 @@ fun SearchMap(
                 viewModel.setMapReady(false)
                 val mapboxMap = mapView.mapboxMap
 
+                var lastRequestedCamera: CameraPositionState? = null
+
                 val cameraCancellable = mapboxMap.subscribeCameraChanged {
                     val cameraState = mapboxMap.cameraState
                     val center = cameraState.center
@@ -141,14 +146,28 @@ fun SearchMap(
 
                 val mapIdleCancellable = mapboxMap.subscribeMapIdle {
                     val cameraState = mapboxMap.cameraState
-                    val bounds = mapboxMap.coordinateBoundsForCamera(cameraState.toCameraOptions())
-                    val bBox = BusinessBoundingBox(
-                        minLng = bounds.west().toFloat(),
-                        maxLng = bounds.east().toFloat(),
-                        minLat = bounds.south().toFloat(),
-                        maxLat = bounds.north().toFloat()
+                    val center = cameraState.center
+
+                    val currentCamera = CameraPositionState(
+                        latitude = center.latitude(),
+                        longitude = center.longitude(),
+                        zoom = cameraState.zoom,
+                        bearing = cameraState.bearing,
+                        pitch = cameraState.pitch,
                     )
-                    viewModel.onMapIdle(bBox)
+
+                    if(shouldRequestNewData(lastRequestedCamera, currentCamera)) {
+                        lastRequestedCamera = currentCamera
+
+                        val bounds = mapboxMap.coordinateBoundsForCamera(cameraState.toCameraOptions())
+                        val bBox = BusinessBoundingBox(
+                            minLng = bounds.west().toFloat(),
+                            maxLng = bounds.east().toFloat(),
+                            minLat = bounds.south().toFloat(),
+                            maxLat = bounds.north().toFloat()
+                        )
+                        viewModel.onMapIdle(bBox)
+                    }
                 }
 
                 val mapLoadedCancellable = mapboxMap.subscribeMapLoaded {
@@ -168,4 +187,36 @@ fun SearchMap(
             }
         }
     }
+}
+
+private const val MIN_ZOOM_DELTA = 0.3f
+private const val MIN_MOVE_METERS = 600f
+
+private fun shouldRequestNewData(
+    last: CameraPositionState?,
+    current: CameraPositionState
+): Boolean {
+    if (last == null) return true
+
+    if (kotlin.math.abs(current.zoom - last.zoom) >= MIN_ZOOM_DELTA) return true
+
+    val distance = distanceInMeters(
+        last.latitude,
+        last.longitude,
+        current.latitude,
+        current.longitude
+    )
+
+    return distance >= MIN_MOVE_METERS
+}
+
+private fun distanceInMeters(
+    lat1: Double,
+    lng1: Double,
+    lat2: Double,
+    lng2: Double
+): Float {
+    val result = FloatArray(1)
+    android.location.Location.distanceBetween(lat1, lng1, lat2, lng2, result)
+    return result[0]
 }

@@ -83,8 +83,9 @@ fun AddProductScreen(
     val servicesState by viewModel.servicesState.collectAsState()
     val currenciesState by viewModel.currenciesState.collectAsState()
     val filtersState by viewModel.filtersState.collectAsState()
-    val isSaving by viewModel.isSaving.collectAsState()
+
     val selectedFilters by viewModel.selectedFilterOptions
+    val isSaving by viewModel.isSaving.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.loadCurrencies()

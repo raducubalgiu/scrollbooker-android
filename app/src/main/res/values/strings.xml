@@ -356,4 +356,6 @@
     <string name="today">Astăzi</string>
     <string name="tommorow">Mâine</string>
     <string name="dateAndHour">Data și ora</string>
+    <string name="notFoundLocations">Nu au fost găsite locații</string>
+    <string name="seeAllServices">Vezi toate serviciile</string>
 </resources>

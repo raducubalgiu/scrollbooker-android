@@ -10,5 +10,6 @@ data class BusinessSheet(
     val coordinates: BusinessCoordinates,
     val hasVideo: Boolean,
     val mediaPreview: BusinessMediaPreview?,
-    val products: List<Product>
+    val products: List<Product>,
+    val profession: String
 )

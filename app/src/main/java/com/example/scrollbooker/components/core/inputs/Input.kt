@@ -99,10 +99,13 @@ fun Input(
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
         enabled = isEnabled,
+        readOnly = readOnly,
         modifier = modifier
             .fillMaxWidth()
-            .background(OnSurfaceBG, shape = ShapeDefaults.Medium),
-        readOnly = readOnly
+            .background(
+                color = OnSurfaceBG,
+                shape = ShapeDefaults.Medium
+            ),
     )
 
     AnimatedVisibility(visible = isError && errorMessage?.isNotBlank() == true) {

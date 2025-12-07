@@ -37,6 +37,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -57,6 +58,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.example.scrollbooker.R
+import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.ui.search.businessProfile.tabs.BusinessAboutTab
@@ -71,6 +73,7 @@ import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.titleMedium
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -140,173 +143,187 @@ fun BusinessProfileScreen(onBack: () -> Unit) {
         label = "TabRowAlpha"
     )
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    var isLoading by remember { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        delay(400)
+        isLoading = false
+    }
+
+    if(!isLoading) {
         Box(modifier = Modifier
-            .fillMaxWidth()
-            .height(imageHeight)
-            .graphicsLayer {
-                alpha = imageAlpha
-                translationY = imageTranslationY
-            }
-            .zIndex(2f)
+            .fillMaxSize()
+            .background(Background)
         ) {
-            AsyncImage(
-                model = "https://media.scrollbooker.ro/frizeria-figaro-location-1.avif",
-                contentDescription = "Business gallery",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .height(imageHeight)
-            )
-        }
-
-        Row(
-            modifier = Modifier
+            Box(modifier = Modifier
                 .fillMaxWidth()
-                .statusBarsPadding()
-                .padding(8.dp)
-                .size(36.dp)
-                .zIndex(3f),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            IconButton(
-                onClick = onBack,
+                .height(imageHeight)
+                .graphicsLayer {
+                    alpha = imageAlpha
+                    translationY = imageTranslationY
+                }
+                .zIndex(2f)
+            ) {
+                AsyncImage(
+                    model = "https://media.scrollbooker.ro/frizeria-figaro-location-1.avif",
+                    contentDescription = "Business gallery",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .height(imageHeight)
+                )
+            }
+
+            Row(
                 modifier = Modifier
-                    .clip(CircleShape)
-                    .background(Background)
+                    .fillMaxWidth()
+                    .statusBarsPadding()
+                    .padding(8.dp)
+                    .size(36.dp)
+                    .zIndex(3f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = null
-                )
-            }
-
-            AnimatedVisibility(
-                visible = imageAlpha == 0f,
-                enter = fadeIn(tween(250)),
-                exit = fadeOut(tween(250))
-            ) {
-                Text(
-                    text = "House Of Barbers",
-                    style = titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp
-                )
-            }
-
-            IconButton(
-                onClick = {},
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .background(Background)
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_star_outline),
-                    contentDescription = null
-                )
-            }
-        }
-
-        LazyColumn(
-            state = lazyListState,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            stickyHeader {
-                Spacer(Modifier
-                    .height(headerHeight)
-                    .background(Background)
-                    .fillMaxSize()
-                    .zIndex(3f)
-                )
-                Surface(
-                    tonalElevation = 4.dp,
-                    color = Background
+                IconButton(
+                    onClick = onBack,
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .background(Background)
                 ) {
-                    ScrollableTabRow(
-                        selectedTabIndex = selectedTabIndex,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(tabRowHeight),
-                        containerColor = Color.Transparent,
-                        contentColor = OnSurfaceBG,
-                        edgePadding = SpacingS,
-                        indicator = { tabPositions ->
-                            Box(
-                                Modifier
-                                    .tabIndicatorOffset(tabPositions[selectedTabIndex])
-                                    .height(3.dp)
-                                    .padding(horizontal = 20.dp)
-                                    .background(
-                                        color = OnBackground.copy(alpha = animatedAlpha),
-                                        shape = ShapeDefaults.ExtraLarge
-                                    )
-                            )
-                        },
-                        divider = {
-                            HorizontalDivider(
-                                color = Divider,
-                                thickness = 0.55.dp
-                            )
-                        }
-                    ) {
-                        sections.forEachIndexed { index, section ->
-                            Tab(
-                                selected = selectedTabIndex == index,
-                                onClick = {
-                                    coroutineScope.launch {
-                                        val targetKey = section.key
-                                        val targetIndex = lazyListState.layoutInfo
-                                            .visibleItemsInfo
-                                            .find { it.key == targetKey }
-                                            ?.index
-                                            ?: (itemKeys.indexOf(targetKey) + 1)
-                                        lazyListState.animateScrollToItem(targetIndex)
-
-                                        selectedTabIndex = index
-                                    }
-                                },
-                                text = {
-                                    Text(
-                                        modifier = Modifier.alpha(animatedAlpha),
-                                        text = stringResource(section.label),
-                                        fontWeight = FontWeight.Bold,
-                                        style = bodyLarge,
-                                        fontSize = 17.sp
-                                    )
-                                }
-                            )
-                        }
-                    }
-                }
-            }
-
-            item(key = BusinessProfileSection.Photos.key) {
-                BusinessPhotosTab(
-                    modifier = Modifier.padding(
-                        top = imageHeight - overlayHeight,
-                        bottom = BasePadding
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = null
                     )
-                )
+                }
+
+                AnimatedVisibility(
+                    visible = imageAlpha == 0f,
+                    enter = fadeIn(tween(250)),
+                    exit = fadeOut(tween(250))
+                ) {
+                    Text(
+                        text = "House Of Barbers",
+                        style = titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp
+                    )
+                }
+
+                IconButton(
+                    onClick = {},
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .background(Background)
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_star_outline),
+                        contentDescription = null
+                    )
+                }
             }
-            item(key = BusinessProfileSection.Services.key) { BusinessServicesTab() }
-            item(key = BusinessProfileSection.Social.key) { BusinessSocialTab() }
-            item(key = BusinessProfileSection.Employees.key) { BusinessEmployeesTab() }
-            item(key = BusinessProfileSection.Reviews.key) { BusinessReviewsTab() }
-            item(key = BusinessProfileSection.About.key) { BusinessAboutTab() }
-        }
 
-        LaunchedEffect(lazyListState) {
-            snapshotFlow { lazyListState.layoutInfo.visibleItemsInfo }
-                .collect { visibleItems ->
-                    val visibleSections = visibleItems.filter { it.key in itemKeys }
-                    val topMostSection = visibleSections.minByOrNull { it.offset }
-                    val newIndex = topMostSection?.key?.let { itemKeys.indexOf(it) }
+            LazyColumn(
+                state = lazyListState,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                stickyHeader {
+                    Spacer(Modifier
+                        .height(headerHeight)
+                        .background(Background)
+                        .fillMaxSize()
+                        .zIndex(3f)
+                    )
+                    Surface(
+                        tonalElevation = 4.dp,
+                        color = Background
+                    ) {
+                        ScrollableTabRow(
+                            selectedTabIndex = selectedTabIndex,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(tabRowHeight),
+                            containerColor = Color.Transparent,
+                            contentColor = OnSurfaceBG,
+                            edgePadding = SpacingS,
+                            indicator = { tabPositions ->
+                                Box(
+                                    Modifier
+                                        .tabIndicatorOffset(tabPositions[selectedTabIndex])
+                                        .height(3.dp)
+                                        .padding(horizontal = 20.dp)
+                                        .background(
+                                            color = OnBackground.copy(alpha = animatedAlpha),
+                                            shape = ShapeDefaults.ExtraLarge
+                                        )
+                                )
+                            },
+                            divider = {
+                                HorizontalDivider(
+                                    color = Divider,
+                                    thickness = 0.55.dp
+                                )
+                            }
+                        ) {
+                            sections.forEachIndexed { index, section ->
+                                Tab(
+                                    selected = selectedTabIndex == index,
+                                    onClick = {
+                                        coroutineScope.launch {
+                                            val targetKey = section.key
+                                            val targetIndex = lazyListState.layoutInfo
+                                                .visibleItemsInfo
+                                                .find { it.key == targetKey }
+                                                ?.index
+                                                ?: (itemKeys.indexOf(targetKey) + 1)
+                                            lazyListState.animateScrollToItem(targetIndex)
 
-                    if(newIndex != null && newIndex != selectedTabIndex) {
-                        selectedTabIndex = newIndex
+                                            selectedTabIndex = index
+                                        }
+                                    },
+                                    text = {
+                                        Text(
+                                            modifier = Modifier.alpha(animatedAlpha),
+                                            text = stringResource(section.label),
+                                            fontWeight = FontWeight.Bold,
+                                            style = bodyLarge,
+                                            fontSize = 17.sp
+                                        )
+                                    }
+                                )
+                            }
+                        }
                     }
                 }
+
+                item(key = BusinessProfileSection.Photos.key) {
+                    BusinessPhotosTab(
+                        modifier = Modifier.padding(
+                            top = imageHeight - overlayHeight,
+                            bottom = BasePadding
+                        )
+                    )
+                }
+                item(key = BusinessProfileSection.Services.key) { BusinessServicesTab() }
+                item(key = BusinessProfileSection.Social.key) { BusinessSocialTab() }
+                item(key = BusinessProfileSection.Employees.key) { BusinessEmployeesTab() }
+                item(key = BusinessProfileSection.Reviews.key) { BusinessReviewsTab() }
+                item(key = BusinessProfileSection.About.key) { BusinessAboutTab() }
+            }
+
+            LaunchedEffect(lazyListState) {
+                snapshotFlow { lazyListState.layoutInfo.visibleItemsInfo }
+                    .collect { visibleItems ->
+                        val visibleSections = visibleItems.filter { it.key in itemKeys }
+                        val topMostSection = visibleSections.minByOrNull { it.offset }
+                        val newIndex = topMostSection?.key?.let { itemKeys.indexOf(it) }
+
+                        if(newIndex != null && newIndex != selectedTabIndex) {
+                            selectedTabIndex = newIndex
+                        }
+                    }
+            }
         }
+    } else {
+        LoadingScreen()
     }
 }

@@ -239,9 +239,7 @@ fun NavGraphBuilder.myBusinessGraph(
                 )
             }
 
-            composable(
-                route = MainRoute.AddProduct.route
-            ) { backStackEntry ->
+            composable(route = MainRoute.AddProduct.route) { backStackEntry ->
                 val parentEntry = remember(backStackEntry) {
                     navController.getBackStackEntry(MainRoute.MyProductsNavigator.route)
                 }

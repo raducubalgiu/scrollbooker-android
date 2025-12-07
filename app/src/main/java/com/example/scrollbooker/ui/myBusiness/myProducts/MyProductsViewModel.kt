@@ -191,17 +191,7 @@ class MyProductsViewModel @Inject constructor(
     fun loadProduct(productId: Int) {
         viewModelScope.launch {
             _product.value = FeatureState.Loading
-
-            val result = withVisibleLoading { getProductUseCase(productId) }
-
-//            result
-//                .onSuccess { response ->
-//                    _product.value = FeatureState.Success(response)
-//                }
-//                .onFailure { e ->
-//                    Timber.tag("Products").e("ERROR: on Fetching Product in EditProductScreen $e")
-//                    _product.value = FeatureState.Error()
-//                }
+            _product.value = withVisibleLoading { getProductUseCase(productId) }
         }
     }
 

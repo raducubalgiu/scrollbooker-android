@@ -329,7 +329,10 @@ class SearchViewModel @Inject constructor(
         _request.update { current ->
             current.copy(
                 filters = current.filters.copy(
-                    businessDomainId = domainId
+                    businessDomainId = domainId,
+                    businessTypeId = null,
+                    serviceId = null,
+                    subFilterIds = emptySet()
                 )
             )
         }
@@ -379,6 +382,17 @@ class SearchViewModel @Inject constructor(
                     serviceId = serviceId,
                     subFilterIds = subFilterIds
                 )
+            )
+        }
+    }
+
+    private fun clearServicesFiltersSheet() {
+        _servicesSheetFilters.update {
+            it.copy(
+                businessDomainId = null,
+                businessTypeId = null,
+                serviceId = null,
+                subFilterIds = emptySet()
             )
         }
     }

@@ -22,5 +22,7 @@ data class BusinessSheetDto(
     @SerializedName("media_preview")
     val mediaPreview: BusinessMediaPreviewDto?,
 
-    val products: List<ProductDto>
+    val products: List<ProductDto>,
+
+    val profession: String
 )
