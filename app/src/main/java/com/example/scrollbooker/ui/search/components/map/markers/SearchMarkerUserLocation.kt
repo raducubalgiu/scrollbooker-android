@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.search.components.markers
+package com.example.scrollbooker.ui.search.components.map.markers
 
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable

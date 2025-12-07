@@ -5,23 +5,15 @@ import android.app.Activity
 import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.ShapeDefaults
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -36,15 +28,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -55,23 +43,18 @@ import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.customized.LoadMoreSpinner
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.ui.GeoPoint
 import com.example.scrollbooker.ui.LocalLocationController
 import com.example.scrollbooker.ui.LocationPermissionStatus
 import com.example.scrollbooker.ui.PrecisionMode
 import com.example.scrollbooker.ui.search.components.SearchBusinessDomainList
 import com.example.scrollbooker.ui.search.components.card.SearchCard
 import com.example.scrollbooker.ui.search.components.SearchHeader
-import com.example.scrollbooker.ui.search.components.SearchMap
-import com.example.scrollbooker.ui.search.components.SearchMapActions
+import com.example.scrollbooker.ui.search.components.map.SearchMap
 import com.example.scrollbooker.ui.search.components.SearchMapLoading
 import com.example.scrollbooker.ui.search.components.SearchSheetHeader
 import com.example.scrollbooker.ui.search.sheets.SearchSheetActionEnum
 import com.example.scrollbooker.ui.search.sheets.SearchSheets
 import com.example.scrollbooker.ui.theme.Background
-import com.mapbox.geojson.Point
-import com.mapbox.maps.CameraOptions
-import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 import kotlinx.coroutines.launch
 import rememberLocationsCountText
 
@@ -128,15 +111,7 @@ fun SearchScreen(
         onDispose { locationController.stopUpdates() }
     }
 
-    val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true,
-//        confirmValueChange = { newState ->
-//            when (newState) {
-//                SheetValue.Hidden -> false
-//                else -> true
-//            }
-//        }
-    )
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var sheetAction by rememberSaveable { mutableStateOf(SearchSheetActionEnum.NONE) }
     val latestSheetState by rememberUpdatedState(sheetState)
 
@@ -163,47 +138,14 @@ fun SearchScreen(
 
     val isMapReady by viewModel.isMapReady.collectAsState()
     val isStyleLoaded by viewModel.isStyleLoaded.collectAsState()
-    val cameraPosition by viewModel.cameraPosition.collectAsState()
-    val viewportState = rememberMapViewportState {
-        setCameraOptions {
-            center(Point.fromLngLat(cameraPosition.longitude, cameraPosition.latitude))
-            zoom(cameraPosition.zoom)
-            bearing(cameraPosition.bearing)
-            pitch(cameraPosition.pitch)
-        }
-    }
-
-    fun flyToUserLocation() {
-        val loc = GeoPoint(
-            lat = 44.443697,
-            lng = 25.978861
-        )
-        scope.launch {
-            val newZoom = 13.5
-            val cameraOptions = CameraOptions.Builder()
-                .center(Point.fromLngLat(loc.lng, loc.lat))
-                .zoom(13.5)
-                .bearing(cameraPosition.bearing)
-                .pitch(cameraPosition.pitch)
-                .build()
-            viewportState.flyTo(cameraOptions)
-            viewModel.updateCamera(
-                cameraPosition.copy(
-                    latitude = loc.lat,
-                    longitude = loc.lng,
-                    zoom = newZoom
-                )
-            )
-        }
-    }
+    val isMapLoading = !isMapReady || !isStyleLoaded
 
     val refreshState = businessesSheet.loadState.refresh
     val appendState = businessesSheet.loadState.append
+
     val isInitialLoading = refreshState is LoadState.Loading && businessesSheet.itemCount == 0
     val isRefreshing = refreshState is LoadState.Loading && businessesSheet.itemCount > 0
     val isAppending = appendState is LoadState.Loading
-
-    var showBusinessPreview by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -220,12 +162,11 @@ fun SearchScreen(
     ) { padding ->
         SearchMap(
             viewModel = viewModel,
-            viewportState = viewportState,
             markersUiState = markersUiState,
             userLocation = locationState.lastAccurateLocation,
-            isMapReady = isMapReady,
-            isStyleLoaded = isStyleLoaded,
-            onMarkerClick = { showBusinessPreview = !showBusinessPreview }
+            isMapLoading = isMapLoading,
+            onSheetExpand = { scope.launch { scaffoldState.bottomSheetState.expand() } },
+            paddingBottom = padding.calculateBottomPadding() + sheetHeaderDp + BasePadding,
         )
 
         Box(modifier = Modifier
@@ -245,37 +186,7 @@ fun SearchScreen(
                     SearchMapLoading()
                 }
             }
-
-            SearchMapActions(
-                paddingBottom = padding.calculateBottomPadding(),
-                onFlyToUserLocation = { flyToUserLocation() },
-                onSheetExpand = { scope.launch { scaffoldState.bottomSheetState.expand() } }
-            )
-
-            AnimatedVisibility(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(
-                        bottom = padding.calculateBottomPadding(),
-                        start = BasePadding,
-                        end = BasePadding
-                    )
-                    .zIndex(13f),
-                enter = fadeIn(),
-                exit = fadeOut(),
-                visible = showBusinessPreview
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(shape = ShapeDefaults.Medium)
-                        .height(200.dp)
-                        .background(Color.White)
-                ) {
-                    Text("Hello World")
-                }
-            }
-
+            
             BottomSheetScaffold(
                 sheetPeekHeight = sheetHeaderDp,
                 scaffoldState = scaffoldState,
@@ -304,14 +215,9 @@ fun SearchScreen(
 
                                 LazyColumn {
                                     items(businessesSheet.itemCount) { index ->
-                                        businessesSheet[index]?.let { b ->
+                                        businessesSheet[index]?.let { business ->
                                             SearchCard(
-                                                fullName = b.business.fullName,
-                                                ratingsAverage = b.business.ratingsAverage,
-                                                ratingsCount = b.business.ratingsCount,
-                                                address = b.address,
-                                                products = b.products,
-                                                profession = b.profession,
+                                                business = business,
                                                 onNavigateToBusinessProfile = onNavigateToBusinessProfile
                                             )
                                         }

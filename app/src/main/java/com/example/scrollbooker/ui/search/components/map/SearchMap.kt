@@ -1,14 +1,18 @@
-package com.example.scrollbooker.ui.search.components
+package com.example.scrollbooker.ui.search.components.map
 
+import android.location.Location
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.zIndex
 import com.example.scrollbooker.ui.search.CameraPositionState
 import com.example.scrollbooker.ui.search.SearchViewModel
@@ -16,37 +20,48 @@ import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.mapbox.geojson.Point
 import com.mapbox.maps.extension.compose.DisposableMapEffect
 import com.mapbox.maps.extension.compose.MapboxMap
-import com.mapbox.maps.extension.compose.annotation.ViewAnnotation
-import com.mapbox.maps.viewannotation.geometry
-import com.mapbox.maps.viewannotation.viewAnnotationOptions
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessBoundingBox
+import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMarker
 import com.example.scrollbooker.entity.booking.business.domain.model.getMarkerColor
 import com.example.scrollbooker.ui.GeoPoint
 import com.example.scrollbooker.ui.search.MarkersUiState
-import com.example.scrollbooker.ui.search.components.markers.SearchMarkerPrimary
-import com.example.scrollbooker.ui.search.components.markers.SearchMarkerSecondary
+import com.example.scrollbooker.ui.search.components.SearchMapActions
+import com.example.scrollbooker.ui.search.components.SearchMapLoading
+import com.example.scrollbooker.ui.search.components.map.markers.SearchMarkerPrimary
+import com.example.scrollbooker.ui.search.components.map.markers.SearchMarkerSecondary
+import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.ContextMode
 import com.mapbox.maps.MapOptions
 import com.mapbox.maps.applyDefaultParams
 import com.mapbox.maps.extension.compose.ComposeMapInitOptions
-import com.mapbox.maps.extension.compose.animation.viewport.MapViewportState
+import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 import com.mapbox.maps.extension.compose.style.MapStyle
 import com.mapbox.maps.toCameraOptions
+import kotlinx.coroutines.launch
+import kotlin.math.abs
 
 @Composable
 fun SearchMap(
     viewModel: SearchViewModel,
-    viewportState: MapViewportState,
     markersUiState: MarkersUiState,
     userLocation: GeoPoint?,
-    isMapReady: Boolean,
-    isStyleLoaded: Boolean,
-    onMarkerClick: () -> Unit
+    isMapLoading: Boolean,
+    onSheetExpand: () -> Unit,
+    paddingBottom: Dp
 ) {
     val density = LocalDensity.current
     val markers = markersUiState.data?.results.orEmpty()
+    val scope = rememberCoroutineScope()
 
-    val isMapLoading = !isMapReady || !isStyleLoaded
+    val cameraPosition by viewModel.cameraPosition.collectAsState()
+    val viewportState = rememberMapViewportState {
+        setCameraOptions {
+            center(Point.fromLngLat(cameraPosition.longitude, cameraPosition.latitude))
+            zoom(cameraPosition.zoom)
+            bearing(cameraPosition.bearing)
+            pitch(cameraPosition.pitch)
+        }
+    }
 
     val mapInitOptions = remember {
         ComposeMapInitOptions(
@@ -60,7 +75,47 @@ fun SearchMap(
         )
     }
 
+    fun flyToUserLocation() {
+        val loc = GeoPoint(
+            lat = 44.443697,
+            lng = 25.978861
+        )
+        scope.launch {
+            val newZoom = 13.5
+            val cameraOptions = CameraOptions.Builder()
+                .center(Point.fromLngLat(loc.lng, loc.lat))
+                .zoom(newZoom)
+                .bearing(cameraPosition.bearing)
+                .pitch(cameraPosition.pitch)
+                .build()
+            viewportState.flyTo(cameraOptions)
+            viewModel.updateCamera(
+                cameraPosition.copy(
+                    latitude = loc.lat,
+                    longitude = loc.lng,
+                    zoom = newZoom
+                )
+            )
+        }
+    }
+
+    var selectedMarker by rememberSaveable { mutableStateOf<BusinessMarker?>(null) }
+
     Box(modifier = Modifier.fillMaxSize()) {
+        SearchMapActions(
+            paddingBottom = paddingBottom,
+            onFlyToUserLocation = { flyToUserLocation() },
+            onSheetExpand = onSheetExpand
+        )
+
+        BusinessPreviewCard(
+            selectedMarker = selectedMarker,
+            onCloseClick = { selectedMarker = null },
+            onCardClick = {  },
+            isVisible = selectedMarker != null,
+            paddingBottom = paddingBottom
+        )
+
         if(isMapLoading) {
             Box(modifier = Modifier
                 .matchParentSize()
@@ -83,34 +138,21 @@ fun SearchMap(
             val primaryMarkers = markers.filter { it.isPrimary }
 
             secondaryMarkers.forEach { m ->
-                ViewAnnotation(
-                    options = viewAnnotationOptions {
-                        geometry(Point.fromLngLat(
-                            m.coordinates.lng.toDouble(),
-                            m.coordinates.lat.toDouble())
-                        )
-                        allowOverlap(true)
-                    }
-                ) { SearchMarkerSecondary(color = m.getMarkerColor()) }
+                SearchMarkerSecondary(
+                    color = m.getMarkerColor(),
+                    coordinates = m.coordinates,
+                    onMarkerClick = { selectedMarker = m }
+                )
             }
 
             primaryMarkers.forEach { m ->
-                ViewAnnotation(
-                    modifier = Modifier.clickable { onMarkerClick() },
-                    options = viewAnnotationOptions {
-                        geometry(Point.fromLngLat(
-                            m.coordinates.lng.toDouble(),
-                            m.coordinates.lat.toDouble())
-                        )
-                        allowOverlap(false)
-                    }
-                ) {
-                    SearchMarkerPrimary(
-                        imageUrl = null,
-                        domainColor = m.getMarkerColor(),
-                        ratingsAverage = m.business.ratingsAverage
-                    )
-                }
+                SearchMarkerPrimary(
+                    imageUrl = null,
+                    domainColor = m.getMarkerColor(),
+                    ratingsAverage = m.business.ratingsAverage,
+                    coordinates = m.coordinates,
+                    onMarkerClick = { selectedMarker = m },
+                )
             }
 
 //            ViewAnnotation(
@@ -190,7 +232,7 @@ fun SearchMap(
 }
 
 private const val MIN_ZOOM_DELTA = 0.3f
-private const val MIN_MOVE_METERS = 600f
+private const val MIN_MOVE_METERS = 1000f
 
 private fun shouldRequestNewData(
     last: CameraPositionState?,
@@ -198,7 +240,7 @@ private fun shouldRequestNewData(
 ): Boolean {
     if (last == null) return true
 
-    if (kotlin.math.abs(current.zoom - last.zoom) >= MIN_ZOOM_DELTA) return true
+    if (abs(current.zoom - last.zoom) >= MIN_ZOOM_DELTA) return true
 
     val distance = distanceInMeters(
         last.latitude,
@@ -217,6 +259,6 @@ private fun distanceInMeters(
     lng2: Double
 ): Float {
     val result = FloatArray(1)
-    android.location.Location.distanceBetween(lat1, lng1, lat2, lng2, result)
+    Location.distanceBetween(lat1, lng1, lat2, lng2, result)
     return result[0]
 }
