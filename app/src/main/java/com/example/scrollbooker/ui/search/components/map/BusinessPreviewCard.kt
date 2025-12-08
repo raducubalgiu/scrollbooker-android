@@ -115,7 +115,7 @@ fun BusinessPreviewCard(
                             fullName = marker.business.fullName,
                             ratingsAverage = marker.business.ratingsAverage,
                             ratingsCount = marker.business.ratingsCount,
-                            profession = "Frizerie",
+                            profession = marker.business.profession,
                             address = marker.address,
                             distance = "4.5km"
                         )

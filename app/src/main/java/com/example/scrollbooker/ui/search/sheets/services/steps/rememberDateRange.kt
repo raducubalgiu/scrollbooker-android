@@ -11,17 +11,20 @@ import org.threeten.bp.ZoneOffset
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun rememberDateRange(): DateRangePickerState {
+fun rememberDateRange(
+    startDate: LocalDate?,
+    endDate: LocalDate?
+): DateRangePickerState {
     val utcZone = ZoneOffset.UTC
+    val today = remember { LocalDate.now() }
+
     val todayStartUtc = remember {
-        LocalDate.now()
-            .atStartOfDay(utcZone)
+        today.atStartOfDay(utcZone)
             .toInstant()
             .toEpochMilli()
     }
     val sixMonthsLaterStartUtc = remember {
-        LocalDate.now()
-            .plusMonths(6)
+        today.plusMonths(6)
             .atStartOfDay(utcZone)
             .toInstant()
             .toEpochMilli()
@@ -32,9 +35,29 @@ fun rememberDateRange(): DateRangePickerState {
         startYear..endYear
     }
 
+    val initialMonthMillis = remember(startDate) {
+        val baseDate = startDate ?: today
+        baseDate.atStartOfDay(utcZone)
+            .toInstant()
+            .toEpochMilli()
+    }
+
+    val initialSelectedStartMillis = remember(startDate) {
+        startDate?.atStartOfDay(utcZone)
+            ?.toInstant()
+            ?.toEpochMilli()
+    }
+
+    val initialSelectedEndMillis = remember(endDate) {
+        endDate?.atStartOfDay(utcZone)
+            ?.toInstant()
+            ?.toEpochMilli()
+    }
+
     return rememberDateRangePickerState(
-        initialDisplayedMonthMillis = todayStartUtc,
-        initialSelectedStartDateMillis = todayStartUtc,
+        initialDisplayedMonthMillis = initialMonthMillis,
+        initialSelectedStartDateMillis = initialSelectedStartMillis,
+        initialSelectedEndDateMillis = initialSelectedEndMillis,
         yearRange = yearRange,
         selectableDates = object : SelectableDates {
             override fun isSelectableDate(utcTimeMillis: Long): Boolean {

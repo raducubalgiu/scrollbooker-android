@@ -15,5 +15,7 @@ data class BusinessSummaryDto(
     val ratingsAverage: Float,
 
     @SerializedName("ratings_count")
-    val ratingsCount: Int
+    val ratingsCount: Int,
+
+    val profession: String
 )

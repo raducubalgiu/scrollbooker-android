@@ -46,6 +46,10 @@ import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalTime
+import org.threeten.bp.format.DateTimeFormatter
+import timber.log.Timber
 import java.math.BigDecimal
 import javax.inject.Inject
 
@@ -77,7 +81,11 @@ data class SearchFiltersState(
     val sort: SearchSortEnum = SearchSortEnum.RECOMMENDED,
     val isLastMinute: Boolean = false,
     val hasDiscount: Boolean = false,
-    val hasVideo: Boolean = false
+    val hasVideo: Boolean = false,
+    val startDate: LocalDate? = null,
+    val endDate: LocalDate? = null,
+    val startTime: LocalTime? = null,
+    val endTime: LocalTime? = null
 )
 
 data class SearchRequestState(
@@ -102,7 +110,11 @@ data class SearchRequestState(
             sort = filters.sort.raw,
             hasDiscount = filters.hasDiscount,
             isLastMinute = filters.isLastMinute,
-            hasVideo = filters.hasVideo
+            hasVideo = filters.hasVideo,
+            startDate = filters.startDate?.toApiDateString(),
+            endDate = filters.endDate?.toApiDateString(),
+            startTime = filters.startTime?.toApiTimeString(),
+            endTime = filters.endTime?.toApiTimeString()
         )
     }
 }
@@ -116,6 +128,12 @@ fun SearchRequestState.activeFiltersCount(): Int {
         filters.sort != SearchSortEnum.RECOMMENDED
     ).count { it }
 }
+
+private val apiDateFormatter = DateTimeFormatter.ISO_LOCAL_DATE
+private val apiTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+
+fun LocalDate.toApiDateString(): String = format(apiDateFormatter)
+fun LocalTime.toApiTimeString(): String = format(apiTimeFormatter)
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 @HiltViewModel
@@ -368,19 +386,18 @@ class SearchViewModel @Inject constructor(
     }
 
     // Services Sheet Filters
-    fun setFiltersFromServicesSheet(
-        businessDomainId: Int?,
-        businessTypeId: Int?,
-        serviceId: Int?,
-        subFilterIds: Set<Int>
-    ) {
+    fun setFiltersFromServicesSheet(sheet: SearchServicesFiltersSheetState) {
         _request.update { current ->
             current.copy(
                 filters = current.filters.copy(
-                    businessDomainId = businessDomainId,
-                    businessTypeId = businessTypeId,
-                    serviceId = serviceId,
-                    subFilterIds = subFilterIds
+                    businessDomainId = sheet.businessDomainId,
+                    businessTypeId = sheet.businessTypeId,
+                    serviceId = sheet.serviceId,
+                    subFilterIds = sheet.subFilterIds,
+                    startDate = sheet.startDate,
+                    endDate = sheet.endDate,
+                    startTime = sheet.startTime,
+                    endTime = sheet.endTime
                 )
             )
         }
@@ -414,7 +431,7 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun onSheetBusinessTypeSelected(typeId: Int?) {
+    fun setBusinessTypeId(typeId: Int?) {
         _servicesSheetFilters.update {
             it.copy(
                 businessTypeId = typeId,
@@ -424,7 +441,7 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun onSheetServiceSelected(serviceId: Int?) {
+    fun setServiceId(serviceId: Int?) {
         _servicesSheetFilters.update {
             it.copy(
                 serviceId = serviceId,
@@ -433,12 +450,39 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun onSheetSubFilterSelected(subFilterId: Int) {
+    fun setSubFilterId(subFilterId: Int) {
         _servicesSheetFilters.update { current ->
             val currentIds = current.subFilterIds
             val newIds = currentIds + subFilterId
 
             current.copy(subFilterIds = newIds)
+        }
+    }
+
+    fun setDateTime(
+        startDate: LocalDate?,
+        endDate: LocalDate?,
+        startTime: LocalTime?,
+        endTime: LocalTime?
+    ) {
+        _servicesSheetFilters.update { current ->
+            current.copy(
+                startDate = startDate,
+                endDate = endDate,
+                startTime = startTime,
+                endTime = endTime
+            )
+        }
+    }
+
+    fun clearDateTime() {
+        _servicesSheetFilters.update { current ->
+            current.copy(
+                startDate = null,
+                endDate = null,
+                startTime = null,
+                endTime = null
+            )
         }
     }
 }

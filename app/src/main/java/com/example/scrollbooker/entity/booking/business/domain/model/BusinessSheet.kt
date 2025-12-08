@@ -11,5 +11,4 @@ data class BusinessSheet(
     val hasVideo: Boolean,
     val mediaPreview: BusinessMediaPreview?,
     val products: List<Product>,
-    val profession: String
 )

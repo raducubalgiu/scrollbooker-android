@@ -45,6 +45,7 @@ fun ServicesMainFilters(
     state: SearchServicesFiltersSheetState,
     onOpenDate: () -> Unit,
     onFilter: (SearchServicesFiltersSheetState) -> Unit,
+    onClose: () -> Unit,
     onClear: () -> Unit
 ) {
     val verticalScroll = rememberScrollState()
@@ -74,16 +75,16 @@ fun ServicesMainFilters(
     }
 
     Column(Modifier.fillMaxSize()) {
+        SearchSheetsHeader(
+            title = "",
+            onClose = onClose
+        )
+
         Column(modifier = Modifier
             .weight(1f)
             .padding(top = BasePadding)
             .verticalScroll(verticalScroll)
         ) {
-            SearchSheetsHeader(
-                title = "",
-                onClose = {}
-            )
-
             Column(Modifier.padding(horizontal = BasePadding)) {
                 Text(
                     style = headlineLarge,
@@ -119,7 +120,7 @@ fun ServicesMainFilters(
                         selectedOption = state.businessTypeId.toString(),
                         placeholder = "Alege Business-ul",
                         onValueChange = {
-                            viewModel.onSheetBusinessTypeSelected(it?.toInt())
+                            viewModel.setBusinessTypeId(it?.toInt())
                         },
                         isLoading = businessTypes is FeatureState.Loading,
                     )
@@ -131,7 +132,7 @@ fun ServicesMainFilters(
                         selectedOption = state.serviceId.toString(),
                         placeholder = stringResource(R.string.chooseServices),
                         onValueChange = {
-                            viewModel.onSheetServiceSelected(it?.toInt())
+                            viewModel.setServiceId(it?.toInt())
                         },
                         isLoading = services is FeatureState.Loading,
                     )
@@ -155,7 +156,7 @@ fun ServicesMainFilters(
                             SearchAdvancedFilters(
                                 selectedSubFilterIds = state.subFilterIds,
                                 onSubFilterAppend = {
-                                    viewModel.onSheetSubFilterSelected(it)
+                                    viewModel.setSubFilterId(it)
                                 },
                                 filters = filters.data
                             )
@@ -167,16 +168,7 @@ fun ServicesMainFilters(
         }
 
         SearchServicesSheetFooter(
-            onConfirm = {
-                onFilter(
-                    SearchServicesFiltersSheetState(
-                        businessDomainId = state.businessDomainId,
-                        businessTypeId = state.businessTypeId,
-                        serviceId = state.serviceId,
-                        subFilterIds = state.subFilterIds
-                    )
-                )
-            },
+            onConfirm = { onFilter(state) },
             onClear = onClear,
             onOpenDate = onOpenDate
         )

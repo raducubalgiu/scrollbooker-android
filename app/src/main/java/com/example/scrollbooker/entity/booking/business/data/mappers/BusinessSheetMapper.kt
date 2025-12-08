@@ -12,7 +12,6 @@ fun BusinessSheetDto.toDomain(): BusinessSheet {
         coordinates = coordinates,
         hasVideo = hasVideo,
         mediaPreview = mediaPreview?.toDomain(),
-        products = products.map { it.toDomain() },
-        profession = profession
+        products = products.map { it.toDomain() }
     )
 }

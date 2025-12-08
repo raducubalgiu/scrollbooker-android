@@ -32,7 +32,9 @@ import com.example.scrollbooker.ui.theme.titleMedium
 fun SearchSheetActions(
     onClear: () -> Unit,
     onConfirm: () -> Unit,
-    isConfirmEnabled: Boolean
+    isConfirmEnabled: Boolean,
+    displayIcon: Boolean = true,
+    primaryActionText: Int = R.string.search
 ) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(BasePadding),
@@ -64,15 +66,17 @@ fun SearchSheetActions(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_search),
-                    contentDescription = null
-                )
+                if(displayIcon) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_search),
+                        contentDescription = null
+                    )
 
-                Spacer(Modifier.width(SpacingXS))
+                    Spacer(Modifier.width(SpacingXS))
+                }
 
                 Text(
-                    text = stringResource(R.string.search),
+                    text = stringResource(primaryActionText),
                     style = titleMedium,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp

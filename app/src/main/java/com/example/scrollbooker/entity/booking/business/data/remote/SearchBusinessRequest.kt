@@ -39,7 +39,19 @@ data class SearchBusinessRequest(
     val isLastMinute: Boolean = false,
 
     @SerializedName("has_video")
-    val hasVideo: Boolean = false
+    val hasVideo: Boolean = false,
+
+    @SerializedName("start_date")
+    val startDate: String? = null,
+
+    @SerializedName("end_date")
+    val endDate: String? = null,
+
+    @SerializedName("start_time")
+    val startTime: String? = null,
+
+    @SerializedName("end_time")
+    val endTime: String? = null
 )
 
 data class BusinessBoundingBox(

@@ -1,10 +1,8 @@
-import android.os.Build
-import androidx.annotation.RequiresApi
 import org.threeten.bp.LocalDate
+import org.threeten.bp.ZoneOffset
 import org.threeten.bp.format.TextStyle
 import java.util.Locale
 
-@RequiresApi(Build.VERSION_CODES.O)
 fun LocalDate.toPrettyDate(): String {
     val locale = Locale.getDefault()
 
@@ -20,3 +18,8 @@ fun LocalDate.toPrettyDate(): String {
 
     return "$dayName ${this.dayOfMonth} $monthShort"
 }
+
+fun LocalDate.toUtcEpochMillis(): Long =
+    atStartOfDay(ZoneOffset.UTC)
+        .toInstant()
+        .toEpochMilli()

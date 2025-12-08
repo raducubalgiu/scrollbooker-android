@@ -10,6 +10,7 @@ fun BusinessSummaryDto.toDomain(): BusinessSummary {
         username = username,
         avatar = avatar,
         ratingsAverage = ratingsAverage,
-        ratingsCount = ratingsCount
+        ratingsCount = ratingsCount,
+        profession = profession
     )
 }

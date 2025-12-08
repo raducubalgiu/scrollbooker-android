@@ -42,12 +42,7 @@ fun SearchSheets(
                             sheetState.hide()
 
                             if(!sheetState.isVisible) {
-                                viewModel.setFiltersFromServicesSheet(
-                                    businessDomainId = it.businessDomainId,
-                                    businessTypeId = it.businessTypeId,
-                                    serviceId = it.serviceId,
-                                    subFilterIds = it.subFilterIds
-                                )
+                                viewModel.setFiltersFromServicesSheet(it)
                                 onClose()
                             }
                         }

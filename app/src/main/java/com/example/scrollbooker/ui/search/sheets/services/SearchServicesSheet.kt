@@ -19,7 +19,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.example.scrollbooker.ui.search.SearchViewModel
-import com.example.scrollbooker.ui.search.sheets.services.steps.DateTimeSelection
 import com.example.scrollbooker.ui.search.sheets.services.steps.ServicesDateTimeFilters
 import com.example.scrollbooker.ui.search.sheets.services.steps.ServicesMainFilters
 
@@ -39,7 +38,10 @@ fun SearchServicesSheet(
     }
 
     val state by viewModel.servicesSheetFilters.collectAsState()
+
     var step by remember { mutableStateOf(ServicesSheetFiltersStepEnum.MAIN_FILTERS) }
+    val mainFiltersStep = ServicesSheetFiltersStepEnum.MAIN_FILTERS
+    val dateTimeStep = ServicesSheetFiltersStepEnum.DATE_TIME
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -48,9 +50,7 @@ fun SearchServicesSheet(
         AnimatedContent(
             targetState = step,
             transitionSpec = {
-                if (initialState == ServicesSheetFiltersStepEnum.MAIN_FILTERS &&
-                    targetState == ServicesSheetFiltersStepEnum.DATE_TIME
-                ) {
+                if (initialState == mainFiltersStep && targetState == dateTimeStep) {
                     slideInHorizontally(animationSpec = tween(250)) {
                         fullWidth -> fullWidth
                     } + fadeIn() togetherWith
@@ -76,24 +76,29 @@ fun SearchServicesSheet(
                         viewModel = viewModel,
                         state = state,
                         onOpenDate = {
-                            if(step == ServicesSheetFiltersStepEnum.MAIN_FILTERS) {
-                                step = ServicesSheetFiltersStepEnum.DATE_TIME
-                            } else {
-                                step = ServicesSheetFiltersStepEnum.MAIN_FILTERS
-                            }
+                            if(step == mainFiltersStep) step = dateTimeStep
+                            else step = mainFiltersStep
+
                         },
                         onFilter = onFilter,
+                        onClose = onClose,
                         onClear = {}
                     )
                 }
 
                 ServicesSheetFiltersStepEnum.DATE_TIME -> {
-                    val initialDateTime = DateTimeSelection()
-
                     ServicesDateTimeFilters(
-                        initialSelection = initialDateTime,
-                        onCancel = { step = ServicesSheetFiltersStepEnum.MAIN_FILTERS },
-                        onConfirm = {}
+                        state = state,
+                        onBack = { step = mainFiltersStep },
+                        onConfirm = {
+                            viewModel.setDateTime(
+                                startDate = it.startDate,
+                                endDate = it.endDate,
+                                startTime = it.startTime,
+                                endTime = it.endTime
+                            )
+                            step = mainFiltersStep
+                        },
                     )
                 }
             }

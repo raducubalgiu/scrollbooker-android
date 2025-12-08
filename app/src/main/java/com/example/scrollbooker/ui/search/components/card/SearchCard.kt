@@ -47,7 +47,7 @@ fun SearchCard(
             fullName = business.business.fullName,
             ratingsAverage = business.business.ratingsAverage,
             ratingsCount = business.business.ratingsCount,
-            profession = business.profession,
+            profession = business.business.profession,
             address = business.address,
             distance = "4.5km"
         )

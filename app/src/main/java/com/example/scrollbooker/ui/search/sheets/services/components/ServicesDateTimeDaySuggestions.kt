@@ -1,8 +1,8 @@
 package com.example.scrollbooker.ui.search.sheets.services.components
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,23 +22,30 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.titleMedium
 import org.threeten.bp.LocalDate
 import toPrettyDate
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ServicesDateTimeDaySuggestions() {
-    val today = remember { LocalDate.now() }
-    val tomorrow = remember { today.plusDays(1) }
-
+fun ServicesDateTimeDaySuggestions(
+    today: LocalDate,
+    tomorrow: LocalDate,
+    isTodaySelected: Boolean,
+    isTomorrowSelected: Boolean,
+    onTodayClick: () -> Unit,
+    onTomorrowClick: () -> Unit
+) {
     Row(
         modifier = Modifier
             .padding(
-                horizontal = BasePadding,
-                vertical = SpacingXXL
+                top = SpacingXXL,
+                start = BasePadding,
+                end = BasePadding,
+                bottom = BasePadding,
             ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -46,7 +53,9 @@ fun ServicesDateTimeDaySuggestions() {
         DaySuggestion(
             modifier = Modifier.weight(1f),
             title = stringResource(R.string.today),
-            description = today.toPrettyDate()
+            description = today.toPrettyDate(),
+            isSelected = isTodaySelected,
+            onClick = onTodayClick
         )
 
         Spacer(Modifier.width(BasePadding))
@@ -54,7 +63,9 @@ fun ServicesDateTimeDaySuggestions() {
         DaySuggestion(
             modifier = Modifier.weight(1f),
             title = stringResource(R.string.tommorow),
-            description = tomorrow.toPrettyDate()
+            description = tomorrow.toPrettyDate(),
+            isSelected = isTomorrowSelected,
+            onClick = onTomorrowClick
         )
     }
 }
@@ -63,14 +74,23 @@ fun ServicesDateTimeDaySuggestions() {
 private fun DaySuggestion(
     modifier: Modifier = Modifier,
     title: String,
-    description: String
+    description: String,
+    isSelected: Boolean,
+    onClick: () -> Unit
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+
     Column(
         modifier = modifier
             .border(
-                width = 1.dp,
-                color = Divider,
+                width = if(isSelected) 2.dp else 1.dp,
+                color = if(isSelected) Primary else Divider,
                 shape = ShapeDefaults.Medium
+            )
+            .clickable(
+                onClick = onClick,
+                interactionSource = interactionSource,
+                indication = null
             ),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Center
@@ -82,7 +102,7 @@ private fun DaySuggestion(
                 fontWeight = FontWeight.ExtraBold
             )
 
-            Spacer(Modifier.height(BasePadding))
+            Spacer(Modifier.height(SpacingS))
 
             Text(
                 text = description,

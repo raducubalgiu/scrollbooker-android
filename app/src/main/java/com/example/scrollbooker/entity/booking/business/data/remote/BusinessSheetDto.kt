@@ -23,6 +23,4 @@ data class BusinessSheetDto(
     val mediaPreview: BusinessMediaPreviewDto?,
 
     val products: List<ProductDto>,
-
-    val profession: String
 )
