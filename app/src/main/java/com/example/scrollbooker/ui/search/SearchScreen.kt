@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -30,7 +29,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
@@ -39,16 +37,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.layout.EmptyScreen
-import com.example.scrollbooker.components.core.layout.LoadingScreen
-import com.example.scrollbooker.components.customized.LoadMoreSpinner
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.LocalLocationController
 import com.example.scrollbooker.ui.LocationPermissionStatus
 import com.example.scrollbooker.ui.PrecisionMode
 import com.example.scrollbooker.ui.search.components.SearchBusinessDomainList
-import com.example.scrollbooker.ui.search.components.card.SearchCard
 import com.example.scrollbooker.ui.search.components.SearchHeader
+import com.example.scrollbooker.ui.search.components.SearchList
 import com.example.scrollbooker.ui.search.components.map.SearchMap
 import com.example.scrollbooker.ui.search.components.SearchMapLoading
 import com.example.scrollbooker.ui.search.components.SearchSheetHeader
@@ -145,7 +140,6 @@ fun SearchScreen(
 
     val isInitialLoading = refreshState is LoadState.Loading && businessesSheet.itemCount == 0
     val isRefreshing = refreshState is LoadState.Loading && businessesSheet.itemCount > 0
-    val isAppending = appendState is LoadState.Loading
 
     Scaffold(
         topBar = {
@@ -160,13 +154,16 @@ fun SearchScreen(
         },
         bottomBar = { BottomBar() }
     ) { padding ->
+        val paddingBottom = padding.calculateBottomPadding() + sheetHeaderDp + BasePadding
+
         SearchMap(
             viewModel = viewModel,
             markersUiState = markersUiState,
             userLocation = locationState.lastAccurateLocation,
             isMapLoading = isMapLoading,
             onSheetExpand = { scope.launch { scaffoldState.bottomSheetState.expand() } },
-            paddingBottom = padding.calculateBottomPadding() + sheetHeaderDp + BasePadding,
+            paddingBottom = paddingBottom,
+            onNavigateToBusinessProfile = onNavigateToBusinessProfile
         )
 
         Box(modifier = Modifier
@@ -175,7 +172,7 @@ fun SearchScreen(
                 bottom = padding.calculateBottomPadding()
             )
         ) {
-            Column(Modifier.fillMaxSize()) {
+            Column(modifier = Modifier.fillMaxSize()) {
                 SearchBusinessDomainList(
                     businessDomains = businessDomains,
                     selectedBusinessDomain = state.filters.businessDomainId,
@@ -201,35 +198,12 @@ fun SearchScreen(
                         businessesCountText = businessesCountText
                     )
 
-                    Column(Modifier.fillMaxSize()) {
-                        if(isInitialLoading) {
-                            LoadingScreen()
-                        } else {
-                            Box(Modifier.fillMaxSize()) {
-                                if(businessesSheet.itemCount == 0) {
-                                    EmptyScreen(
-                                        message = stringResource(R.string.notFoundLocations),
-                                        icon = painterResource(R.drawable.ic_store_outline)
-                                    )
-                                }
-
-                                LazyColumn {
-                                    items(businessesSheet.itemCount) { index ->
-                                        businessesSheet[index]?.let { business ->
-                                            SearchCard(
-                                                business = business,
-                                                onNavigateToBusinessProfile = onNavigateToBusinessProfile
-                                            )
-                                        }
-                                    }
-
-                                    if (isAppending) {
-                                        item { LoadMoreSpinner() }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    SearchList(
+                        isInitialLoading = isInitialLoading,
+                        appendState = appendState,
+                        businessesSheet = businessesSheet,
+                        onNavigateToBusinessProfile = onNavigateToBusinessProfile
+                    )
                 }
             ) {}
         }
