@@ -39,7 +39,6 @@ import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.core.util.checkLength
 import com.example.scrollbooker.core.extensions.parseTimeStringFromLocalDateTimeString
-import com.example.scrollbooker.core.extensions.toIsoString
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Error
@@ -48,6 +47,7 @@ import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.titleLarge
 import com.example.scrollbooker.ui.theme.titleMedium
+import toIsoString
 
 enum class BlockReason {
     VACATION,

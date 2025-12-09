@@ -170,7 +170,8 @@ fun ServicesDateTimeFilters(
             },
             displayIcon = false,
             primaryActionText = R.string.confirm,
-            isConfirmEnabled = true
+            isConfirmEnabled = true,
+            isClearEnabled = true
         )
     }
 }

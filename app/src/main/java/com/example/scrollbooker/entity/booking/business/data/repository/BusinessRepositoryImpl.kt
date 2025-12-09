@@ -24,7 +24,6 @@ import com.example.scrollbooker.entity.booking.business.domain.repository.Busine
 import com.example.scrollbooker.entity.nomenclature.service.data.mappers.toDomain
 import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
 import kotlinx.coroutines.flow.Flow
-import timber.log.Timber
 import javax.inject.Inject
 
 class BusinessRepositoryImpl @Inject constructor(

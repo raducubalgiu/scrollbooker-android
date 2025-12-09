@@ -5,6 +5,10 @@ import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.MedicalServices
+import androidx.compose.material.icons.outlined.CarCrash
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.FitnessCenter
+import androidx.compose.material.icons.outlined.MedicalServices
 import androidx.compose.ui.graphics.vector.ImageVector
 
 data class BusinessDomain(
@@ -15,10 +19,10 @@ data class BusinessDomain(
 
 fun BusinessDomain.getIcon(): ImageVector? {
     val icon = when(shortName) {
-        "Beauty" -> Icons.Default.FavoriteBorder
-        "Medical" -> Icons.Default.MedicalServices
-        "Auto" -> Icons.Default.Build
-        "Fitness & Wellness" -> Icons.Default.FitnessCenter
+        "Beauty" -> Icons.Outlined.FavoriteBorder
+        "Medical" -> Icons.Outlined.MedicalServices
+        "Auto" -> Icons.Outlined.CarCrash
+        "Fitness & Wellness" -> Icons.Outlined.FitnessCenter
         else -> null
     }
 

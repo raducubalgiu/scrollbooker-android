@@ -1,10 +1,18 @@
+import com.example.scrollbooker.core.extensions.DateTimeFormatters
+import com.example.scrollbooker.core.util.AppLocaleProvider
 import org.threeten.bp.LocalDate
 import org.threeten.bp.ZoneOffset
 import org.threeten.bp.format.TextStyle
-import java.util.Locale
+
+fun LocalDate.toIsoString(): String {
+    return this.format(DateTimeFormatters.apiDate)
+}
+
+fun LocalDate.toDayMonthShort(): String =
+    this.format(DateTimeFormatters.uiDayMonthShort).replace(".", "")
 
 fun LocalDate.toPrettyDate(): String {
-    val locale = Locale.getDefault()
+    val locale = AppLocaleProvider.current()
 
     val dayName = this.dayOfWeek
         .getDisplayName(TextStyle.FULL, locale)

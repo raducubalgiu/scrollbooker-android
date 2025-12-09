@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.scrollbooker.core.enums.SearchSortEnum
+import com.example.scrollbooker.core.extensions.toPrettyTime
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.PaginatedResponseDto
 import com.example.scrollbooker.core.util.withVisibleLoading
@@ -33,11 +34,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
@@ -50,6 +53,7 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
+import toIsoString
 import java.math.BigDecimal
 import javax.inject.Inject
 
@@ -111,10 +115,10 @@ data class SearchRequestState(
             hasDiscount = filters.hasDiscount,
             isLastMinute = filters.isLastMinute,
             hasVideo = filters.hasVideo,
-            startDate = filters.startDate?.toApiDateString(),
-            endDate = filters.endDate?.toApiDateString(),
-            startTime = filters.startTime?.toApiTimeString(),
-            endTime = filters.endTime?.toApiTimeString()
+            startDate = filters.startDate?.toIsoString(),
+            endDate = filters.endDate?.toIsoString(),
+            startTime = filters.startTime?.toPrettyTime(),
+            endTime = filters.endTime?.toPrettyTime()
         )
     }
 }
@@ -128,12 +132,6 @@ fun SearchRequestState.activeFiltersCount(): Int {
         filters.sort != SearchSortEnum.RECOMMENDED
     ).count { it }
 }
-
-private val apiDateFormatter = DateTimeFormatter.ISO_LOCAL_DATE
-private val apiTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
-
-fun LocalDate.toApiDateString(): String = format(apiDateFormatter)
-fun LocalTime.toApiTimeString(): String = format(apiTimeFormatter)
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 @HiltViewModel
@@ -236,17 +234,20 @@ class SearchViewModel @Inject constructor(
     val businessTypes: StateFlow<FeatureState<List<BusinessType>>?> =
         _servicesSheetFilters
             .map { it.businessDomainId }
-            .filterNotNull()
             .distinctUntilChanged()
             .flatMapLatest { domainId ->
                 flow {
-                    emit(FeatureState.Loading)
+                    if(domainId == null) {
+                        emit(null)
+                    } else {
+                        emit(FeatureState.Loading)
 
-                    val result = withVisibleLoading {
-                        getAllBusinessTypesByBusinessDomainUseCase(domainId)
+                        val result = withVisibleLoading {
+                            getAllBusinessTypesByBusinessDomainUseCase(domainId)
+                        }
+
+                        emit(result)
                     }
-
-                    emit(result)
                 }
             }
             .stateIn(
@@ -258,23 +259,26 @@ class SearchViewModel @Inject constructor(
     val services: StateFlow<FeatureState<List<Service>>?> =
         _servicesSheetFilters
             .map { it.businessTypeId }
-            .filterNotNull()
             .distinctUntilChanged()
             .flatMapLatest { typeId ->
                 flow {
-                    emit(FeatureState.Loading)
+                    if(typeId == null) {
+                        emit(null)
+                    } else {
+                        emit(FeatureState.Loading)
 
-                    val result = withVisibleLoading {
-                        getServicesByBusinessTypeUseCase(typeId)
+                        val result = withVisibleLoading {
+                            getServicesByBusinessTypeUseCase(typeId)
+                        }
+
+                        val featureState: FeatureState<List<Service>> =
+                            result.fold(
+                                onSuccess = { s -> FeatureState.Success(s) },
+                                onFailure = { e -> FeatureState.Error(e) }
+                            )
+
+                        emit(featureState)
                     }
-
-                    val featureState: FeatureState<List<Service>> =
-                        result.fold(
-                            onSuccess = { s -> FeatureState.Success(s) },
-                            onFailure = { e -> FeatureState.Error(e) }
-                        )
-
-                    emit(featureState)
                 }
             }
             .stateIn(
@@ -286,17 +290,20 @@ class SearchViewModel @Inject constructor(
     val filters: StateFlow<FeatureState<List<Filter>>?> =
         _servicesSheetFilters
             .map { it.serviceId }
-            .filterNotNull()
             .distinctUntilChanged()
             .flatMapLatest { serviceId ->
                 flow {
-                    emit(FeatureState.Loading)
+                    if(serviceId == null) {
+                        emit(null)
+                    } else {
+                        emit(FeatureState.Loading)
 
-                    val result = withVisibleLoading {
-                        getFiltersByServiceUseCase(serviceId)
+                        val result = withVisibleLoading {
+                            getFiltersByServiceUseCase(serviceId)
+                        }
+
+                        emit(result)
                     }
-
-                    emit(result)
                 }
             }
             .stateIn(
@@ -354,6 +361,14 @@ class SearchViewModel @Inject constructor(
                 )
             )
         }
+        _servicesSheetFilters.update { current ->
+            current.copy(
+                businessDomainId = domainId,
+                businessTypeId = null,
+                serviceId = null,
+                subFilterIds = emptySet()
+            )
+        }
     }
 
     // Filters Sheet Filters
@@ -403,13 +418,17 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    private fun clearServicesFiltersSheet() {
+    fun clearServicesFiltersSheet() {
         _servicesSheetFilters.update {
             it.copy(
                 businessDomainId = null,
                 businessTypeId = null,
                 serviceId = null,
-                subFilterIds = emptySet()
+                subFilterIds = emptySet(),
+                startDate = null,
+                endDate = null,
+                startTime = null,
+                endTime = null
             )
         }
     }
@@ -471,17 +490,6 @@ class SearchViewModel @Inject constructor(
                 endDate = endDate,
                 startTime = startTime,
                 endTime = endTime
-            )
-        }
-    }
-
-    fun clearDateTime() {
-        _servicesSheetFilters.update { current ->
-            current.copy(
-                startDate = null,
-                endDate = null,
-                startTime = null,
-                endTime = null
             )
         }
     }

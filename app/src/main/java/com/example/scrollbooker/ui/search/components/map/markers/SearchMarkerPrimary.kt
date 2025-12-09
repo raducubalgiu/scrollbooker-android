@@ -29,11 +29,15 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.extensions.toDecimals
 import com.example.scrollbooker.core.extensions.toFixedDecimals
+import com.example.scrollbooker.core.util.rememberScrollBookerImageLoader
 import com.example.scrollbooker.entity.booking.appointment.domain.model.BusinessCoordinates
 import com.example.scrollbooker.entity.booking.business.domain.model.getMarkerColor
 import com.example.scrollbooker.ui.theme.Primary
@@ -42,6 +46,7 @@ import com.mapbox.geojson.Point
 import com.mapbox.maps.extension.compose.annotation.ViewAnnotation
 import com.mapbox.maps.viewannotation.geometry
 import com.mapbox.maps.viewannotation.viewAnnotationOptions
+import timber.log.Timber
 
 @Composable
 fun SearchMarkerPrimary(
@@ -50,7 +55,7 @@ fun SearchMarkerPrimary(
     domainColor: Color,
     ratingsAverage: Float,
     coordinates: BusinessCoordinates,
-    avatarSize: Dp = 55.dp,
+    avatarSize: Dp = 56.dp,
     showPointer: Boolean = true,
     onMarkerClick: () -> Unit
 ) {
@@ -58,6 +63,16 @@ fun SearchMarkerPrimary(
     val whiteRingWidth = 2.dp
     val pointerHeight = if (showPointer) 8.dp else 0.dp
     val interactionSource = remember { MutableInteractionSource() }
+
+    val context = LocalContext.current
+    val imageLoader = rememberScrollBookerImageLoader()
+    val imageRequest = remember(imageUrl) {
+        ImageRequest.Builder(context)
+            .data(imageUrl)
+            .crossfade(true)
+            .size(112)
+            .build()
+    }
 
     ViewAnnotation(
         modifier = Modifier.clickable(
@@ -123,12 +138,16 @@ fun SearchMarkerPrimary(
                     contentAlignment = Alignment.Center
                 ) {
                     AsyncImage(
-                        model = "https://media.scrollbooker.ro/avatar-male-17.jpg\n",
-                        contentDescription = null,
+                        model = imageRequest,
+                        imageLoader = imageLoader,
+                        contentDescription = "Marker Primary",
                         modifier = Modifier
-                            .matchParentSize()
+                            .size(56.dp)
                             .clip(CircleShape),
-                        contentScale = ContentScale.Crop
+                        contentScale = ContentScale.Crop,
+                        placeholder = painterResource(R.drawable.ic_user),
+                        error = painterResource(R.drawable.ic_user),
+                        onError = { Timber.tag("Marker Avatar Error").e("ERROR: ${it.result.throwable.message}") }
                     )
 
 //                Box(

@@ -4,12 +4,9 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 import org.threeten.bp.format.DateTimeFormatter
-import org.threeten.bp.format.DateTimeFormatterBuilder
 import org.threeten.bp.format.TextStyle
 import timber.log.Timber
 import java.util.Locale
-
-private val ISO_LOCAL: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
 
 fun parseDateTimeStringToLocalDateTime(value: String): LocalDateTime? {
     return try {
@@ -21,14 +18,6 @@ fun parseDateTimeStringToLocalDateTime(value: String): LocalDateTime? {
         null
     }
 }
-
-fun LocalDate.toIsoString(): String {
-    return this.format(DateTimeFormatter.ISO_LOCAL_DATE)
-}
-
-// "2025-09-30T15:30:00" -> LocalTime(15:30)
-fun parseLocalTimeFromLocalDateTimeString(value: String): LocalTime =
-    LocalDateTime.parse(value, ISO_LOCAL).toLocalTime()
 
 // "2025-09-30T15:30:00" -> LocalTime(15:30)
 fun parseTimeStringFromLocalDateTimeString(value: LocalDateTime?): String {
@@ -51,32 +40,6 @@ fun parseDateStringFromLocalDateTimeString(value: LocalDateTime?): String {
     } catch (e: Exception) {
         Timber.e("ERROR on Parsing LocalDateString from LocalDateTime: $e")
         ""
-    }
-}
-
-// "09:30:00" or "09:30" -> LocalTime(09:30)
-fun parseLocalTimeFromTimeString(value: String): LocalTime {
-    val formatter = DateTimeFormatterBuilder()
-        .appendPattern("HH:mm")
-        .optionalStart()
-        .appendPattern(":ss")
-        .optionalEnd()
-        .toFormatter()
-    return LocalTime.parse(value, formatter)
-}
-
-// "2025-10-23T10:00:00" -> String("10:00")
-fun parseTimeStringFromDateString(value: String): String {
-    return try {
-        val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
-        val outputFormatter = DateTimeFormatter.ofPattern("HH:mm")
-
-        val parsed = LocalDateTime.parse(value, inputFormatter)
-        parsed.format(outputFormatter)
-
-    } catch (e: Exception) {
-        Timber.e("ERROR on Parsing Time String from LocalDate: $e")
-        return ""
     }
 }
 

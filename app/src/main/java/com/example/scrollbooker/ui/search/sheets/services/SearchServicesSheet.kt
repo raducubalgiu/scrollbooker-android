@@ -75,6 +75,7 @@ fun SearchServicesSheet(
                     ServicesMainFilters(
                         viewModel = viewModel,
                         state = state,
+                        requestBusinessDomainId = requestState.filters.businessDomainId,
                         onOpenDate = {
                             if(step == mainFiltersStep) step = dateTimeStep
                             else step = mainFiltersStep
@@ -82,7 +83,7 @@ fun SearchServicesSheet(
                         },
                         onFilter = onFilter,
                         onClose = onClose,
-                        onClear = {}
+                        onClear = { viewModel.clearServicesFiltersSheet() }
                     )
                 }
 

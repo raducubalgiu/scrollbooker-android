@@ -15,6 +15,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -35,6 +39,7 @@ import com.example.scrollbooker.ui.search.sheets.SearchSheetsHeader
 import com.example.scrollbooker.ui.search.sheets.services.SearchServicesFiltersSheetState
 import com.example.scrollbooker.ui.search.sheets.services.components.SearchBusinessDomainsSheetList
 import com.example.scrollbooker.ui.search.sheets.services.components.SearchServicesSheetFooter
+import com.example.scrollbooker.ui.search.sheets.services.dateTimeSummary
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.headlineLarge
@@ -42,6 +47,7 @@ import com.example.scrollbooker.ui.theme.headlineLarge
 @Composable
 fun ServicesMainFilters(
     viewModel: SearchViewModel,
+    requestBusinessDomainId: Int?,
     state: SearchServicesFiltersSheetState,
     onOpenDate: () -> Unit,
     onFilter: (SearchServicesFiltersSheetState) -> Unit,
@@ -49,6 +55,7 @@ fun ServicesMainFilters(
     onClear: () -> Unit
 ) {
     val verticalScroll = rememberScrollState()
+
     val businessDomains by viewModel.businessDomains.collectAsState()
     val businessTypes by viewModel.businessTypes.collectAsState()
     val services by viewModel.services.collectAsState()
@@ -72,6 +79,13 @@ fun ServicesMainFilters(
             )
         }
         else -> emptyList()
+    }
+
+    val buttonSummary = state.dateTimeSummary()
+    val isActive = buttonSummary != null
+
+    var selectedBusinessDomainId by rememberSaveable(requestBusinessDomainId) {
+        mutableStateOf<Int?>(requestBusinessDomainId)
     }
 
     Column(Modifier.fillMaxSize()) {
@@ -108,8 +122,11 @@ fun ServicesMainFilters(
             ) {
                 SearchBusinessDomainsSheetList(
                     businessDomains = businessDomains,
-                    selectedBusinessDomainId = state.businessDomainId,
-                    onClick = { viewModel.onSheetBusinessDomainSelected(it) }
+                    selectedBusinessDomainId = selectedBusinessDomainId,
+                    onClick = {
+                        selectedBusinessDomainId = it
+                        viewModel.onSheetBusinessDomainSelected(it)
+                    }
                 )
 
                 Spacer(Modifier.height(SpacingXXL))
@@ -119,6 +136,7 @@ fun ServicesMainFilters(
                         options = businessTypesOptions,
                         selectedOption = state.businessTypeId.toString(),
                         placeholder = "Alege Business-ul",
+                        isEnabled = selectedBusinessDomainId != null,
                         onValueChange = {
                             viewModel.setBusinessTypeId(it?.toInt())
                         },
@@ -131,6 +149,7 @@ fun ServicesMainFilters(
                         options = servicesOptions,
                         selectedOption = state.serviceId.toString(),
                         placeholder = stringResource(R.string.chooseServices),
+                        isEnabled = state.businessTypeId != null,
                         onValueChange = {
                             viewModel.setServiceId(it?.toInt())
                         },
@@ -170,7 +189,9 @@ fun ServicesMainFilters(
         SearchServicesSheetFooter(
             onConfirm = { onFilter(state) },
             onClear = onClear,
-            onOpenDate = onOpenDate
+            onOpenDate = onOpenDate,
+            summary = buttonSummary,
+            isActive = isActive
         )
     }
 }

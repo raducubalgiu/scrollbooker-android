@@ -16,6 +16,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -32,6 +33,7 @@ import com.example.scrollbooker.ui.theme.titleMedium
 fun SearchSheetActions(
     onClear: () -> Unit,
     onConfirm: () -> Unit,
+    isClearEnabled: Boolean,
     isConfirmEnabled: Boolean,
     displayIcon: Boolean = true,
     primaryActionText: Int = R.string.search
@@ -44,12 +46,14 @@ fun SearchSheetActions(
         Column {
             TextButton(
                 onClick = onClear,
-                enabled = true,
+                enabled = isClearEnabled,
+                colors = ButtonDefaults.textButtonColors(
+                    contentColor = OnBackground,
+                )
             ) {
                 Text(
                     text = stringResource(R.string.delete),
                     style = titleMedium,
-                    color = OnBackground
                 )
             }
         }

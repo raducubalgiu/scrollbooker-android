@@ -42,6 +42,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
+import com.example.scrollbooker.ui.search.SearchRequestState
 import com.example.scrollbooker.ui.search.SearchViewModel
 import com.example.scrollbooker.ui.search.sheets.SearchSheetActions
 import com.example.scrollbooker.ui.search.sheets.SearchSheetInfo
@@ -79,6 +80,13 @@ fun SearchFiltersSheet(
     }
 
     val isConfirmEnabled = sheetState.hasChangesComparedTo(filters)
+    val isClearEnabled = listOf(
+        sheetState.hasVideo,
+        sheetState.hasDiscount,
+        sheetState.isLastMinute,
+        sheetState.maxPrice != BigDecimal(1500),
+        sheetState.sort != SearchSortEnum.RECOMMENDED
+    ).count { it } > 0
 
     Column(
         modifier = Modifier
@@ -214,7 +222,8 @@ fun SearchFiltersSheet(
             SearchSheetActions(
                 onClear = { sheetState = sheetState.clear(BigDecimal(1500)) },
                 onConfirm = { onFilter(sheetState) },
-                isConfirmEnabled = isConfirmEnabled
+                isConfirmEnabled = isConfirmEnabled,
+                isClearEnabled = isClearEnabled
             )
         }
     }

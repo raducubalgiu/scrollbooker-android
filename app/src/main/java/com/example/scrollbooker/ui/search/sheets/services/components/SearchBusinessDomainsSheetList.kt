@@ -5,6 +5,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBalance
+import androidx.compose.material.icons.outlined.Restore
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -19,13 +22,24 @@ import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.
 fun SearchBusinessDomainsSheetList(
     businessDomains: FeatureState<List<BusinessDomain>>,
     selectedBusinessDomainId: Int?,
-    onClick: (Int) -> Unit
+    onClick: (Int?) -> Unit
 ) {
     when(val bd = businessDomains) {
         is FeatureState.Error -> Text(text = stringResource(R.string.somethingWentWrong))
         is FeatureState.Loading -> Unit
         is FeatureState.Success -> {
             LazyRow(contentPadding = PaddingValues(horizontal = BasePadding)) {
+                item {
+                    SearchBusinessDomainCard(
+                        name = stringResource(R.string.all),
+                        icon = Icons.Outlined.Restore,
+                        isSelected = selectedBusinessDomainId == null,
+                        onClick = { onClick(null) }
+                    )
+
+                    Spacer(Modifier.width(BasePadding))
+                }
+
                 itemsIndexed(bd.data) { index, domain ->
                     SearchBusinessDomainCard(
                         name = domain.shortName,
