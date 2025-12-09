@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,14 +28,6 @@ fun SearchServicesSheet(
     onFilter: (SearchServicesFiltersSheetState) -> Unit
 ) {
     val requestState by viewModel.request.collectAsState()
-    val filters = requestState.filters
-
-    LaunchedEffect(Unit) {
-        if(filters.businessDomainId != null) {
-            viewModel.syncBusinessDomain(filters.businessDomainId)
-        }
-    }
-
     val state by viewModel.servicesSheetFilters.collectAsState()
 
     var step by remember { mutableStateOf(ServicesSheetFiltersStepEnum.MAIN_FILTERS) }
@@ -75,7 +66,7 @@ fun SearchServicesSheet(
                     ServicesMainFilters(
                         viewModel = viewModel,
                         state = state,
-                        requestBusinessDomainId = requestState.filters.businessDomainId,
+                        requestState = requestState,
                         onOpenDate = {
                             if(step == mainFiltersStep) step = dateTimeStep
                             else step = mainFiltersStep

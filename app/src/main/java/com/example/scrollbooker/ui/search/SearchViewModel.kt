@@ -433,12 +433,6 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun syncBusinessDomain(domainId: Int) {
-        _servicesSheetFilters.update {
-            it.copy(businessDomainId = domainId)
-        }
-    }
-
     fun onSheetBusinessDomainSelected(domainId: Int?) {
         _servicesSheetFilters.update {
             it.copy(

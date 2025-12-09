@@ -32,6 +32,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.search.sheets.SearchSheetActions
 import com.example.scrollbooker.ui.search.sheets.services.SearchServicesFiltersSheetState
 import com.example.scrollbooker.ui.search.sheets.services.components.ServicesDateTimeDaySuggestions
+import com.example.scrollbooker.ui.search.sheets.services.hasDateAndTimeFilters
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
@@ -70,6 +71,12 @@ fun ServicesDateTimeFilters(
 
     val isTodaySelected = selectedStart == today && selectedEnd == today
     val isTomorrowSelected = selectedStart == tomorrow && selectedEnd == tomorrow
+
+    val isClearEnabled =
+        selectedStart != null ||
+        selectedEnd != null ||
+        localState.startTime != null ||
+        localState.endTime != null
 
     Column(
         modifier = Modifier
@@ -171,7 +178,7 @@ fun ServicesDateTimeFilters(
             displayIcon = false,
             primaryActionText = R.string.confirm,
             isConfirmEnabled = true,
-            isClearEnabled = true
+            isClearEnabled = isClearEnabled
         )
     }
 }

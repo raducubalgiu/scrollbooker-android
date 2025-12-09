@@ -16,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -33,6 +32,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.ui.search.SearchRequestState
 import com.example.scrollbooker.ui.search.SearchViewModel
 import com.example.scrollbooker.ui.search.components.SearchAdvancedFilters
 import com.example.scrollbooker.ui.search.sheets.SearchSheetsHeader
@@ -40,6 +40,8 @@ import com.example.scrollbooker.ui.search.sheets.services.SearchServicesFiltersS
 import com.example.scrollbooker.ui.search.sheets.services.components.SearchBusinessDomainsSheetList
 import com.example.scrollbooker.ui.search.sheets.services.components.SearchServicesSheetFooter
 import com.example.scrollbooker.ui.search.sheets.services.dateTimeSummary
+import com.example.scrollbooker.ui.search.sheets.services.hasActiveFilters
+import com.example.scrollbooker.ui.search.sheets.services.hasChangesComparedTo
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.headlineLarge
@@ -47,7 +49,7 @@ import com.example.scrollbooker.ui.theme.headlineLarge
 @Composable
 fun ServicesMainFilters(
     viewModel: SearchViewModel,
-    requestBusinessDomainId: Int?,
+    requestState: SearchRequestState,
     state: SearchServicesFiltersSheetState,
     onOpenDate: () -> Unit,
     onFilter: (SearchServicesFiltersSheetState) -> Unit,
@@ -84,9 +86,17 @@ fun ServicesMainFilters(
     val buttonSummary = state.dateTimeSummary()
     val isActive = buttonSummary != null
 
+    val requestBusinessDomainId = requestState.filters.businessDomainId
+
     var selectedBusinessDomainId by rememberSaveable(requestBusinessDomainId) {
         mutableStateOf<Int?>(requestBusinessDomainId)
     }
+
+    val hasDomainChanged = selectedBusinessDomainId != requestBusinessDomainId
+    val hasOtherFiltersChanged = state.hasChangesComparedTo(requestState.filters)
+
+    val isClearEnabled = selectedBusinessDomainId != null || state.hasActiveFilters()
+    val isConfirmEnabled = hasDomainChanged || hasOtherFiltersChanged
 
     Column(Modifier.fillMaxSize()) {
         SearchSheetsHeader(
@@ -187,8 +197,13 @@ fun ServicesMainFilters(
         }
 
         SearchServicesSheetFooter(
+            isClearEnabled = isClearEnabled,
+            isConfirmEnabled = isConfirmEnabled,
             onConfirm = { onFilter(state) },
-            onClear = onClear,
+            onClear = {
+                selectedBusinessDomainId = null
+                onClear()
+            },
             onOpenDate = onOpenDate,
             summary = buttonSummary,
             isActive = isActive
