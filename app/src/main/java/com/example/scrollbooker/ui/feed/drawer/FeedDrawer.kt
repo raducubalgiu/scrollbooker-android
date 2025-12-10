@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -37,63 +38,53 @@ fun FeedDrawer(
         mutableStateOf(selectedFromVm)
     }
 
-    BoxWithConstraints {
-        val screenWidth = maxWidth
-
-        ModalDrawerSheet(
-            modifier = Modifier.width(screenWidth * 0.85f),
-            drawerContainerColor = BackgroundDark
+    ModalDrawerSheet(
+        modifier = Modifier.fillMaxWidth(fraction = 0.85f),
+        drawerContainerColor = BackgroundDark
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(
+                    horizontal = SpacingXL,
+                    vertical = BasePadding
+                ),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(
-                        horizontal = SpacingXL,
-                        vertical = BasePadding
-                    ),
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column(Modifier.weight(1f)) {
-                    when(val businessDomains = businessDomainsState) {
-                        is FeatureState.Success -> {
-                            LazyColumn {
-                                item {
-                                    FeedDrawerHeader()
-                                }
+            Column(Modifier.weight(1f)) {
+                when(val businessDomains = businessDomainsState) {
+                    is FeatureState.Success -> {
+                        LazyColumn {
+                            item { FeedDrawerHeader() }
 
-                                itemsIndexed(businessDomains.data) { index, businessDomain ->
-                                    BusinessDomainItem(
-                                        selectedBusinessTypes = selected,
-                                        businessDomain = businessDomain,
-                                        onSetBusinessType = { typeId ->
-                                           selected = if(typeId in selected) {
-                                               selected - typeId
-                                           } else {
-                                               selected + typeId
-                                           }
+                            itemsIndexed(businessDomains.data) { index, businessDomain ->
+                                BusinessDomainItem(
+                                    selectedBusinessTypes = selected,
+                                    businessDomain = businessDomain,
+                                    onSetBusinessType = { typeId ->
+                                        selected = if(typeId in selected) {
+                                            selected - typeId
+                                        } else {
+                                            selected + typeId
                                         }
-                                    )
-                                }
+                                    }
+                                )
                             }
                         }
-                        else -> Unit
                     }
+                    else -> Unit
                 }
-
-                FeedDrawerActions(
-                    isResetVisible = selectedFromVm.isNotEmpty() || selected.isNotEmpty(),
-                    onReset = {
-                        selected = emptySet()
-                        viewModel.clearBusinessTypes()
-                        onClose()
-                    },
-                    onFilter = {
-                        viewModel.setSelectedBusinessTypes(selected)
-                        onClose()
-                    },
-                    isEnabled = selectedFromVm != selected
-                )
             }
+
+            FeedDrawerActions(
+                isClearEnabled = selectedFromVm.isNotEmpty() || selected.isNotEmpty(),
+                isConfirmEnabled = selectedFromVm != selected,
+                onClear = { selected = emptySet() },
+                onConfirm = {
+                    viewModel.setSelectedBusinessTypes(selected)
+                    onClose()
+                },
+            )
         }
     }
 }

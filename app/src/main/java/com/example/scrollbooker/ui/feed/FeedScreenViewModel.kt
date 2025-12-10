@@ -55,11 +55,29 @@ class FeedScreenViewModel @Inject constructor(
     private val unBookmarkPostUseCase: UnBookmarkPostUseCase,
     @ApplicationContext private val application: Context,
 ) : ViewModel() {
+    // Drawer
     private val _businessDomainsWithBusinessTypes = MutableStateFlow<FeatureState<List<BusinessDomainsWithBusinessTypes>>>(FeatureState.Loading)
     val businessDomainsWithBusinessTypes: StateFlow<FeatureState<List<BusinessDomainsWithBusinessTypes>>> = _businessDomainsWithBusinessTypes.asStateFlow()
 
     private val _selectedBusinessTypes = MutableStateFlow<Set<Int>>(emptySet())
     val selectedBusinessTypes: StateFlow<Set<Int>> = _selectedBusinessTypes
+
+    fun setSelectedBusinessTypes(businessTypes: Set<Int>) {
+        _selectedBusinessTypes.value = businessTypes
+    }
+
+    // Feed
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val explorePosts: Flow<PagingData<Post>> = selectedBusinessTypes
+        .map { it.toList() }
+        .flatMapLatest { selectedTypes -> getExplorePostsUseCase(selectedTypes) }
+        .cachedIn(viewModelScope)
+
+    private val _followingPosts: Flow<PagingData<Post>> by lazy {
+        getFollowingPostsUseCase()
+            .cachedIn(viewModelScope)
+    }
+    val followingPosts: Flow<PagingData<Post>> get() = _followingPosts
 
     private val _currentByTab = MutableStateFlow<Map<Int, Post?>>(emptyMap())
     val currentByTab: StateFlow<Map<Int, Post?>> = _currentByTab.asStateFlow()
@@ -77,20 +95,6 @@ class FeedScreenViewModel @Inject constructor(
     val showBottomBar: StateFlow<Boolean> = _showBottomBar.asStateFlow()
 
     fun toggleBottomBar() { _showBottomBar.value = !_showBottomBar.value }
-
-    // Explore Posts
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val explorePosts: Flow<PagingData<Post>> = selectedBusinessTypes
-        .map { it.toList() }
-        .flatMapLatest { selectedTypes -> getExplorePostsUseCase(selectedTypes) }
-        .cachedIn(viewModelScope)
-
-    // Following Posts
-    private val _followingPosts: Flow<PagingData<Post>> by lazy {
-        getFollowingPostsUseCase()
-            .cachedIn(viewModelScope)
-    }
-    val followingPosts: Flow<PagingData<Post>> get() = _followingPosts
 
     private val _postUi = MutableStateFlow<Map<Int, PostActionUiState>>(emptyMap())
     fun observePostUi(postId: Int): StateFlow<PostActionUiState> =
@@ -179,10 +183,6 @@ class FeedScreenViewModel @Inject constructor(
             doOn = { bookmarkPostUseCase(post.id) },
             doOff = { unBookmarkPostUseCase(post.id) }
         )
-    }
-
-    fun setSelectedBusinessTypes(businessTypes: Set<Int>) {
-        _selectedBusinessTypes.value = businessTypes
     }
 
     fun clearBusinessTypes() {

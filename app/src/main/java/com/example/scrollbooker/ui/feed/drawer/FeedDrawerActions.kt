@@ -31,10 +31,10 @@ import com.example.scrollbooker.ui.theme.bodyMedium
 
 @Composable
 fun FeedDrawerActions(
-    isResetVisible: Boolean,
-    isEnabled: Boolean,
-    onReset: () -> Unit,
-    onFilter: () -> Unit
+    isClearEnabled: Boolean,
+    isConfirmEnabled: Boolean,
+    onClear: () -> Unit,
+    onConfirm: () -> Unit
 ) {
     Column {
         HorizontalDivider(
@@ -44,7 +44,7 @@ fun FeedDrawerActions(
         Spacer(Modifier.height(BasePadding))
 
         AnimatedVisibility(
-            visible = isResetVisible,
+            visible = isClearEnabled,
             enter = slideInVertically(initialOffsetY = { -20 }) + fadeIn(animationSpec = tween(250)),
             exit = slideOutVertically(targetOffsetY = { -20 }) + fadeOut(animationSpec = tween(250))
         ) {
@@ -54,7 +54,7 @@ fun FeedDrawerActions(
                     .padding(bottom = BasePadding),
                 contentAlignment = Alignment.Center
             ) {
-                TextButton(onClick = onReset) {
+                TextButton(onClick = onClear) {
                     Text(
                         text = stringResource(R.string.clearFilters),
                         color = Error,
@@ -66,9 +66,9 @@ fun FeedDrawerActions(
         }
 
         MainButton(
-            onClick = onFilter,
+            onClick = onConfirm,
             title = stringResource(R.string.filter),
-            enabled = isEnabled,
+            enabled = isConfirmEnabled,
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFFFF6F00),
                 contentColor = Color(0xFFE0E0E0),
