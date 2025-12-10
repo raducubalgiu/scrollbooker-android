@@ -1,6 +1,6 @@
 package com.example.scrollbooker.entity.booking.business.domain.model
 
-data class BusinessSummary(
+data class BusinessOwner(
     val id: Int,
     val fullName: String,
     val username: String,

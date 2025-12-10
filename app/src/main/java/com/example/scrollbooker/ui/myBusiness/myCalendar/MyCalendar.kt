@@ -40,7 +40,6 @@ import com.example.scrollbooker.ui.myBusiness.myCalendar.components.sheets.block
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.sheets.settings.MyCalendarSettingsSheet
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
-import java.util.Locale
 import androidx.compose.material3.SheetValue
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.sheets.ownClient.OwnClientSheet
 
@@ -50,7 +49,6 @@ fun MyCalendarScreen(
     viewModel: MyCalendarViewModel,
     onBack: () -> Unit
 ) {
-    val locale = Locale("ro")
     val scope = rememberCoroutineScope()
 
     val headerState by viewModel.calendarHeader.collectAsState()
@@ -184,7 +182,8 @@ fun MyCalendarScreen(
                     }
 
                     val currentWeekDates = calendarDays.drop(currentWeekIndex * 7).take(7)
-                    val period = displayDatePeriod(currentWeekDates.first(), currentWeekDates.last(), locale)
+                    val period = displayDatePeriod(currentWeekDates.first(), currentWeekDates.last())
+
                     val enableBack = currentWeekIndex > 0
                     val enableNext = currentWeekIndex < config.totalWeeks - 1
 

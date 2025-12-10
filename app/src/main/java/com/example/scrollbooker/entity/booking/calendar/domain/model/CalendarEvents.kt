@@ -39,19 +39,14 @@ data class CalendarEventsCustomer(
 )
 
 data class CalendarEventsInfo(
-    val currency: Currency?,
     val channel: AppointmentChannelEnum?,
-    val serviceName: String,
-    val product: CalendarEventsProduct,
     val customer: CalendarEventsCustomer?,
-    val message: String?
-)
-
-data class CalendarEventsProduct(
-    val productName: String,
-    val productFullPrice: BigDecimal,
-    val productPriceWithDiscount: BigDecimal,
-    val productDiscount: BigDecimal
+    val message: String?,
+    val totalPrice: BigDecimal,
+    val totalPriceWithDiscount: BigDecimal,
+    val totalDiscount: BigDecimal,
+    val totalDuration: Int,
+    val paymentCurrency: Currency,
 )
 
 fun CalendarEvents.blockedStartLocale(): Set<LocalDateTime> =

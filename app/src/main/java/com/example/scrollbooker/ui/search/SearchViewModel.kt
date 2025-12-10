@@ -12,6 +12,7 @@ import com.example.scrollbooker.entity.booking.appointment.domain.model.Business
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessBoundingBox
 import com.example.scrollbooker.entity.booking.business.data.remote.SearchBusinessRequest
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMarker
+import com.example.scrollbooker.entity.booking.business.domain.model.BusinessOwner
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessSheet
 import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessesMarkersUseCase
 import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessesSheetUseCase
@@ -151,6 +152,9 @@ class SearchViewModel @Inject constructor(
 
     private val _markersUiState = MutableStateFlow(MarkersUiState())
     val markersUiState: StateFlow<MarkersUiState> = _markersUiState.asStateFlow()
+
+    private val _selectedBusinessOwner = MutableStateFlow<BusinessOwner?>(null)
+    val selectedBusinessOwner: StateFlow<BusinessOwner?> = _selectedBusinessOwner.asStateFlow()
 
     private val _sheetUiState = MutableStateFlow(SheetUiState())
 
@@ -312,15 +316,22 @@ class SearchViewModel @Inject constructor(
                 initialValue = null
             )
 
+    init {
+        loadAllBusinessDomains()
+    }
+
+    fun setBusinessOwner(businessOwner: BusinessOwner) {
+        _selectedBusinessOwner.value = businessOwner
+    }
+    fun clearBusinessOwner() {
+        _selectedBusinessOwner.value = null
+    }
+
     fun loadAllBusinessDomains() {
         viewModelScope.launch {
             _businessDomains.value = FeatureState.Loading
             _businessDomains.value = withVisibleLoading { getAllBusinessDomainsUseCase() }
         }
-    }
-
-    init {
-        loadAllBusinessDomains()
     }
 
     fun updateCamera(position: CameraPositionState) {

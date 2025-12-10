@@ -1,4 +1,5 @@
 package com.example.scrollbooker.core.extensions
+import com.example.scrollbooker.core.util.AppLocaleProvider
 import org.threeten.bp.Duration
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
@@ -70,7 +71,11 @@ fun displayShortDayOfWeek(date: LocalDate, locale: Locale = Locale("en")): Strin
         }
 }
 
-fun displayDatePeriod(start: LocalDate, end: LocalDate, locale: Locale = Locale("en")): String {
+fun displayDatePeriod(
+    start: LocalDate,
+    end: LocalDate,
+    locale: Locale = AppLocaleProvider.current()
+): String {
     val startDay = start.dayOfMonth.toString()
     val endDay = end.dayOfMonth.toString()
 

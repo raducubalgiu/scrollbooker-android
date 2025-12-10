@@ -2,7 +2,7 @@ package com.example.scrollbooker.entity.booking.business.data.remote
 
 import com.google.gson.annotations.SerializedName
 
-data class BusinessSummaryDto(
+data class BusinessOwnerDto(
     val id: Int,
 
     @SerializedName("fullname")

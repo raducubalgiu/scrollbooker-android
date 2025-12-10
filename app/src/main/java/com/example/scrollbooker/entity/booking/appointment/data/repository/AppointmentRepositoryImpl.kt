@@ -28,10 +28,6 @@ class AppointmentRepositoryImpl @Inject constructor(
         ).flow
     }
 
-    override suspend fun getAppointment(appointmentId: Int): Appointment {
-        return apiService.getAppointmentsById(appointmentId).toDomain()
-    }
-
     override suspend fun createScrollBookerAppointment(appointmentCreate: AppointmentScrollBookerCreate) {
         return apiService.createScrollBookerAppointment(request = appointmentCreate.toDto())
     }

@@ -95,7 +95,7 @@ fun ServicesTimeSection(
             )
 
             TimeIntervalCard(
-                hasTime = false,
+                hasTime = true,
                 title = "Dimineata",
                 description = "09:00 - 12:00",
                 isSelected = currentPreset == TimeIntervalPreset.MORNING,
@@ -108,7 +108,7 @@ fun ServicesTimeSection(
             )
 
             TimeIntervalCard(
-                hasTime = false,
+                hasTime = true,
                 title = "La pranz",
                 description = "12:00 - 18:00",
                 isSelected = currentPreset == TimeIntervalPreset.LUNCH,
@@ -121,7 +121,7 @@ fun ServicesTimeSection(
             )
 
             TimeIntervalCard(
-                hasTime = false,
+                hasTime = true,
                 title = "Seara",
                 description = "18:00 - 22:00",
                 isSelected = currentPreset == TimeIntervalPreset.EVENING,

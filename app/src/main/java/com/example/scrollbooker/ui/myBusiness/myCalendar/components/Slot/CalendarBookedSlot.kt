@@ -29,7 +29,7 @@ import com.example.scrollbooker.ui.theme.titleMedium
 @Composable
 fun CalendarBookedSlot(slot: CalendarEventsSlot) {
     val isOwnClient = slot.info?.channel == AppointmentChannelEnum.OWN_CLIENT
-    val product = slot.info?.product
+    //val product = slot.info?.product
     val customer = slot.info?.customer
 
     Column(modifier = Modifier
@@ -81,27 +81,27 @@ fun CalendarBookedSlot(slot: CalendarEventsSlot) {
 
         Spacer(Modifier.height(BasePadding))
 
-        product?.let {
-            Text(
-                text = it.productName,
-                style = titleMedium
-            )
-
-            Spacer(Modifier.height(SpacingS))
-
-            Row {
-                Text(
-                    text = it.productPriceWithDiscount.toString(),
-                    style = titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(Modifier.width(SpacingS))
-                Text(
-                    text = slot.info.currency?.name ?: "",
-                    style = titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-        }
+//        product?.let {
+//            Text(
+//                text = it.productName,
+//                style = titleMedium
+//            )
+//
+//            Spacer(Modifier.height(SpacingS))
+//
+//            Row {
+//                Text(
+//                    text = it.productPriceWithDiscount.toString(),
+//                    style = titleMedium,
+//                    fontWeight = FontWeight.Bold
+//                )
+//                Spacer(Modifier.width(SpacingS))
+//                Text(
+//                    text = slot.info.currency?.name ?: "",
+//                    style = titleMedium,
+//                    fontWeight = FontWeight.Bold
+//                )
+//            }
+//        }
     }
 }

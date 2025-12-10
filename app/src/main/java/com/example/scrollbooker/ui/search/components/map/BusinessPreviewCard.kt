@@ -112,10 +112,10 @@ fun BusinessPreviewCard(
 
                         SearchCardBusinessInfo(
                             modifier = Modifier.padding(BasePadding),
-                            fullName = marker.business.fullName,
-                            ratingsAverage = marker.business.ratingsAverage,
-                            ratingsCount = marker.business.ratingsCount,
-                            profession = marker.business.profession,
+                            fullName = marker.owner.fullName,
+                            ratingsAverage = marker.owner.ratingsAverage,
+                            ratingsCount = marker.owner.ratingsCount,
+                            profession = marker.owner.profession,
                             address = marker.address,
                             distance = "4.5km"
                         )

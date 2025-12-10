@@ -1,6 +1,6 @@
 package com.example.scrollbooker.entity.booking.calendar.data.remote
+import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsCustomer
 import com.example.scrollbooker.entity.nomenclature.currency.domain.model.Currency
-import com.example.scrollbooker.entity.user.userSocial.data.remote.UserSocialDto
 import com.google.gson.annotations.SerializedName
 import java.math.BigDecimal
 
@@ -61,26 +61,22 @@ data class CalendarEventsCustomerDto(
 )
 
 data class CalendarEventsInfoDto(
-    val currency: Currency?,
     val channel: String,
+    val customer: CalendarEventsCustomer?,
+    val message: String?,
 
-    @SerializedName("service_name")
-    val serviceName: String,
-    val product: CalendarEventsProductDto,
-    val customer: CalendarEventsCustomerDto?,
-    val message: String?
-)
+    @SerializedName("total_price")
+    val totalPrice: BigDecimal,
 
-data class CalendarEventsProductDto(
-    @SerializedName("product_name")
-    val productName: String,
+    @SerializedName("total_price_with_discount")
+    val totalPriceWithDiscount: BigDecimal,
 
-    @SerializedName("product_full_price")
-    val productFullPrice: BigDecimal,
+    @SerializedName("total_discount")
+    val totalDiscount: BigDecimal,
 
-    @SerializedName("product_price_with_discount")
-    val productPriceWithDiscount: BigDecimal,
+    @SerializedName("total_duration")
+    val totalDuration: Int,
 
-    @SerializedName("product_discount")
-    val productDiscount: BigDecimal
+    @SerializedName("payment_currency")
+    val paymentCurrency: Currency,
 )

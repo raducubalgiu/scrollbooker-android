@@ -18,13 +18,15 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.entity.booking.business.domain.model.BusinessOwner
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessSheet
 import com.example.scrollbooker.ui.theme.Divider
 
 @Composable
 fun SearchCard(
     business: BusinessSheet,
-    onNavigateToBusinessProfile: () -> Unit
+    onNavigateToBusinessProfile: () -> Unit,
+    onOpenBookingsSheet: (BusinessOwner) -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -44,10 +46,10 @@ fun SearchCard(
         Spacer(Modifier.height(12.dp))
 
         SearchCardBusinessInfo(
-            fullName = business.business.fullName,
-            ratingsAverage = business.business.ratingsAverage,
-            ratingsCount = business.business.ratingsCount,
-            profession = business.business.profession,
+            fullName = business.owner.fullName,
+            ratingsAverage = business.owner.ratingsAverage,
+            ratingsCount = business.owner.ratingsCount,
+            profession = business.owner.profession,
             address = business.address,
             distance = "4.5km"
         )
@@ -72,7 +74,7 @@ fun SearchCard(
                     .fillMaxWidth()
                     .padding(vertical = BasePadding),
                 title = stringResource(R.string.seeAllServices),
-                onClick = {}
+                onClick = { onOpenBookingsSheet(business.owner) }
             )
         }
     }

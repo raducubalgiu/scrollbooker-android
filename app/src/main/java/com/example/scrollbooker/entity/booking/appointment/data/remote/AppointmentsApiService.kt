@@ -16,11 +16,6 @@ interface AppointmentsApiService {
         @Query("as_customer") asCustomer: Boolean?
     ): PaginatedResponseDto<AppointmentDto>
 
-    @GET("appointments/{appointmentId}")
-    suspend fun getAppointmentsById(
-        @Path("appointmentId") appointmentId: Int
-    ): AppointmentDto
-
     @GET("appointments/count")
     suspend fun getUserAppointmentsNumber(): Int
 

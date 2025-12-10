@@ -1,20 +1,14 @@
 package com.example.scrollbooker.ui.search.components.map.markers
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -31,17 +25,10 @@ import coil.compose.AsyncImage
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.example.scrollbooker.R
-import com.example.scrollbooker.core.extensions.toDecimals
-import com.example.scrollbooker.core.extensions.toFixedDecimals
 import com.example.scrollbooker.core.util.rememberScrollBookerImageLoader
 import com.example.scrollbooker.entity.booking.appointment.domain.model.BusinessCoordinates
-import com.example.scrollbooker.entity.booking.business.domain.model.getMarkerColor
-import com.example.scrollbooker.ui.theme.Primary
-import com.example.scrollbooker.ui.theme.labelSmall
 import com.mapbox.geojson.Point
 import com.mapbox.maps.extension.compose.annotation.ViewAnnotation
 import com.mapbox.maps.viewannotation.geometry
@@ -63,7 +50,7 @@ fun SearchMarkerPrimary(
     val whiteRingWidth = 2.dp
     val pointerHeight = if (showPointer) 8.dp else 0.dp
     val interactionSource = remember { MutableInteractionSource() }
-
+    
     val context = LocalContext.current
     val imageLoader = rememberScrollBookerImageLoader()
     val imageRequest = remember(imageUrl) {
@@ -142,7 +129,7 @@ fun SearchMarkerPrimary(
                         imageLoader = imageLoader,
                         contentDescription = "Marker Primary",
                         modifier = Modifier
-                            .size(56.dp)
+                            .matchParentSize()
                             .clip(CircleShape),
                         contentScale = ContentScale.Crop,
                         placeholder = painterResource(R.drawable.ic_user),

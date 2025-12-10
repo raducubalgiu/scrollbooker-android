@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -37,6 +38,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
+import com.example.scrollbooker.components.core.sheet.Sheet
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.LocalLocationController
 import com.example.scrollbooker.ui.LocationPermissionStatus
@@ -49,6 +51,8 @@ import com.example.scrollbooker.ui.search.components.SearchMapLoading
 import com.example.scrollbooker.ui.search.components.SearchSheetHeader
 import com.example.scrollbooker.ui.search.sheets.SearchSheetActionEnum
 import com.example.scrollbooker.ui.search.sheets.SearchSheets
+import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheet
+import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheetUser
 import com.example.scrollbooker.ui.theme.Background
 import kotlinx.coroutines.launch
 import rememberLocationsCountText
@@ -141,6 +145,38 @@ fun SearchScreen(
     val isInitialLoading = refreshState is LoadState.Loading && businessesSheet.itemCount == 0
     val isRefreshing = refreshState is LoadState.Loading && businessesSheet.itemCount > 0
 
+    val bookingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    val selectedBusinessOwner by viewModel.selectedBusinessOwner.collectAsState()
+
+    if(bookingsSheetState.isVisible) {
+        selectedBusinessOwner?.let { owner ->
+            Sheet(
+                modifier = Modifier.statusBarsPadding(),
+                sheetState = bookingsSheetState,
+                onClose = {
+                    scope.launch {
+                        viewModel.clearBusinessOwner()
+                        bookingsSheetState.hide()
+                    }
+                }
+            ) {
+                BookingsSheet(
+                    user = BookingsSheetUser(
+                        id = owner.id,
+                        username = owner.username,
+                        fullName = owner.fullName,
+                        avatar = owner.avatar,
+                        profession = owner.profession,
+                        ratingsCount = owner.ratingsCount,
+                        ratingsAverage = owner.ratingsAverage
+                    ),
+                    onClose = { scope.launch { bookingsSheetState.hide() } }
+                )
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
             SearchHeader(
@@ -202,7 +238,13 @@ fun SearchScreen(
                         isInitialLoading = isInitialLoading,
                         appendState = appendState,
                         businessesSheet = businessesSheet,
-                        onNavigateToBusinessProfile = onNavigateToBusinessProfile
+                        onNavigateToBusinessProfile = onNavigateToBusinessProfile,
+                        onOpenBookingsSheet = {
+                            scope.launch {
+                                viewModel.setBusinessOwner(it)
+                                bookingsSheetState.show()
+                            }
+                        }
                     )
                 }
             ) {}

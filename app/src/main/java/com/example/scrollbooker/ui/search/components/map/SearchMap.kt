@@ -150,7 +150,7 @@ fun SearchMap(
                 SearchMarkerPrimary(
                     imageUrl = null,
                     domainColor = m.getMarkerColor(),
-                    ratingsAverage = m.business.ratingsAverage,
+                    ratingsAverage = m.owner.ratingsAverage,
                     coordinates = m.coordinates,
                     onMarkerClick = { selectedMarker = m },
                 )

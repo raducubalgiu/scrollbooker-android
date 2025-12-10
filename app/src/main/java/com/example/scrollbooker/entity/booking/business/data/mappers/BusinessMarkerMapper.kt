@@ -7,7 +7,7 @@ import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMed
 
 fun BusinessMarkerDto.toDomain(): BusinessMarker {
     return BusinessMarker(
-        business = business.toDomain(),
+        owner = owner.toDomain(),
         businessShortDomain = businessShortDomain,
         address = address,
         coordinates = coordinates,

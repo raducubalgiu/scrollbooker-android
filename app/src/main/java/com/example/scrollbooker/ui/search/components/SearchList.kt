@@ -14,6 +14,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.customized.LoadMoreSpinner
+import com.example.scrollbooker.entity.booking.business.domain.model.BusinessOwner
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessSheet
 import com.example.scrollbooker.ui.search.components.card.SearchCard
 
@@ -22,7 +23,8 @@ fun SearchList(
     isInitialLoading: Boolean,
     appendState: LoadState,
     businessesSheet: LazyPagingItems<BusinessSheet>,
-    onNavigateToBusinessProfile: () -> Unit
+    onNavigateToBusinessProfile: () -> Unit,
+    onOpenBookingsSheet: (BusinessOwner) -> Unit
 ) {
     val isAppending = appendState is LoadState.Loading
 
@@ -43,7 +45,8 @@ fun SearchList(
                         businessesSheet[index]?.let { business ->
                             SearchCard(
                                 business = business,
-                                onNavigateToBusinessProfile = onNavigateToBusinessProfile
+                                onNavigateToBusinessProfile = onNavigateToBusinessProfile,
+                                onOpenBookingsSheet = onOpenBookingsSheet
                             )
                         }
                     }

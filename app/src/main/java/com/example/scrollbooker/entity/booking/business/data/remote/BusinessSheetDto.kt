@@ -5,7 +5,7 @@ import com.example.scrollbooker.entity.booking.products.data.remote.ProductDto
 import com.google.gson.annotations.SerializedName
 
 data class BusinessSheetDto(
-    val business: BusinessSummaryDto,
+    val owner: BusinessOwnerDto,
 
     @SerializedName("business_short_domain")
     val businessShortDomain: String,
