@@ -13,30 +13,14 @@ data class AppointmentOwnClientCreateDto(
     @SerializedName("customer_fullname")
     val customerFullname: String,
 
-    @SerializedName("service_id")
-    val serviceId: Int?,
-
-    @SerializedName("service_name")
-    val serviceName: String,
-
-    @SerializedName("product_id")
-    val productId: Int?,
-
     @SerializedName("product_name")
     val productName: String,
 
-    @SerializedName("product_full_price")
-    val productPrice: BigDecimal,
+    val price: BigDecimal,
 
-    @SerializedName("product_price_with_discount")
-    val productPriceWithDiscount: BigDecimal,
+    @SerializedName("price_with_discount")
+    val priceWithDiscount: BigDecimal,
 
-    @SerializedName("product_discount")
-    val productDiscount: BigDecimal,
-
-    @SerializedName("product_duration")
-    val productDuration: Int,
-
-    @SerializedName("currency_id")
-    val currencyId: Int,
+    val discount: BigDecimal,
+    val duration: Int,
 )

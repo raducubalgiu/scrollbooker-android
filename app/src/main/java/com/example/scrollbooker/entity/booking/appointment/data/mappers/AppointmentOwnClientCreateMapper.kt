@@ -7,15 +7,11 @@ fun AppointmentOwnClientCreate.toDto(): AppointmentOwnClientCreateDto {
     return AppointmentOwnClientCreateDto(
         startDate = startDate,
         endDate = endDate,
-        serviceId = serviceId,
-        productId = productId,
-        currencyId = currencyId,
         customerFullname = customerFullname,
-        serviceName = serviceName,
         productName = productName,
-        productPrice = productPrice,
-        productPriceWithDiscount = productPriceWithDiscount,
-        productDiscount = productDiscount,
-        productDuration = productDuration,
+        price = price,
+        priceWithDiscount = priceWithDiscount,
+        discount = discount,
+        duration = duration,
     )
 }

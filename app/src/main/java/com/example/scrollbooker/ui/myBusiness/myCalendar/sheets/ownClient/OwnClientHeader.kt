@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.myBusiness.myCalendar.components.sheets.ownClient
+package com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.ownClient
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

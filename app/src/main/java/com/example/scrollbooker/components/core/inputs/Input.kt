@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,12 +28,14 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Error
+import com.example.scrollbooker.ui.theme.LastMinute
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.labelLarge
+import com.mapbox.maps.extension.style.expressions.dsl.generated.color
 
 @Composable
 fun Input(
@@ -54,7 +57,22 @@ fun Input(
     errorMessage: String? = "",
     leadingIcon: (@Composable () -> Unit)? = null,
     trailingIcon: (@Composable () -> Unit)? = null,
-    maxLines: Int = 1
+    maxLines: Int = 1,
+    colors: TextFieldColors = TextFieldDefaults.colors(
+        focusedContainerColor = inputColor,
+        unfocusedContainerColor = inputColor,
+        cursorColor = LastMinute,
+        focusedIndicatorColor = Color.Transparent,
+        unfocusedIndicatorColor = Color.Transparent,
+        focusedLabelColor = LastMinute,
+        unfocusedLabelColor = Color.Gray,
+        focusedTextColor = OnSurfaceBG,
+        unfocusedTextColor = OnSurfaceBG,
+        disabledContainerColor = SurfaceBG,
+        disabledTextColor = Divider,
+        disabledIndicatorColor = Color.Transparent,
+        errorContainerColor = SurfaceBG,
+    )
 ) {
     TextField(
         value = value,
@@ -80,21 +98,7 @@ fun Input(
         singleLine = singleLine,
         maxLines = maxLines,
         shape = MaterialTheme.shapes.medium,
-        colors = TextFieldDefaults.colors(
-            focusedContainerColor = inputColor,
-            unfocusedContainerColor = inputColor,
-            cursorColor = Primary,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            focusedLabelColor = Primary,
-            unfocusedLabelColor = Color.Gray,
-            focusedTextColor = OnSurfaceBG,
-            unfocusedTextColor = OnSurfaceBG,
-            disabledContainerColor = SurfaceBG,
-            disabledTextColor = Divider,
-            disabledIndicatorColor = Color.Transparent,
-            errorContainerColor = SurfaceBG,
-        ),
+        colors = colors,
         isError = isError,
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,

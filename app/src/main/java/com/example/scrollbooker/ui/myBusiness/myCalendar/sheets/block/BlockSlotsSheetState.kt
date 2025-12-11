@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.myBusiness.myCalendar.components.sheets.block
+package com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.block
 
 import androidx.compose.runtime.Immutable
 import org.threeten.bp.LocalDate

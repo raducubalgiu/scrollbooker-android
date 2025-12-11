@@ -25,6 +25,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.LastMinute
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge
@@ -75,12 +76,12 @@ fun InputCheckbox(
             colors = CheckboxColors(
                 checkedCheckmarkColor = Color.White,
                 uncheckedCheckmarkColor = Color.Transparent,
-                checkedBoxColor = Primary,
+                checkedBoxColor = LastMinute,
                 uncheckedBoxColor = Color.Transparent,
                 disabledCheckedBoxColor = Divider,
                 disabledUncheckedBoxColor = Divider,
                 disabledIndeterminateBoxColor = Divider,
-                checkedBorderColor = Primary,
+                checkedBorderColor = LastMinute,
                 uncheckedBorderColor = Color.Gray,
                 disabledBorderColor = Divider,
                 disabledUncheckedBorderColor = Divider,

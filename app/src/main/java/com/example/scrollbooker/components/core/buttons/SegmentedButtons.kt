@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.ui.theme.Background
+import com.example.scrollbooker.ui.theme.LastMinute
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
@@ -50,9 +51,9 @@ fun SegmentedButtons(
                     icon = {},
                     shape = RoundedCornerShape(50),
                     colors = SegmentedButtonDefaults.colors(
-                        activeContainerColor = Primary,
+                        activeContainerColor = LastMinute,
                         activeContentColor = OnPrimary,
-                        activeBorderColor = Primary,
+                        activeBorderColor = LastMinute,
                         inactiveContainerColor = SurfaceBG,
                         inactiveContentColor = OnSurfaceBG,
                         inactiveBorderColor = SurfaceBG,

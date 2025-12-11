@@ -14,10 +14,6 @@ import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEve
 import com.example.scrollbooker.entity.booking.calendar.domain.model.blockedStartLocale
 import com.example.scrollbooker.entity.booking.calendar.domain.useCase.GetCalendarAvailableDaysUseCase
 import com.example.scrollbooker.entity.booking.calendar.domain.useCase.GetUserCalendarEventsUseCase
-import com.example.scrollbooker.entity.nomenclature.currency.domain.model.Currency
-import com.example.scrollbooker.entity.nomenclature.currency.domain.useCase.GetUserCurrenciesUseCase
-import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
-import com.example.scrollbooker.entity.nomenclature.service.domain.useCase.GetServicesByBusinessIdUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import com.example.scrollbooker.ui.shared.calendar.CalendarConfig
 import com.example.scrollbooker.ui.shared.calendar.CalendarHeaderState
@@ -53,17 +49,9 @@ class MyCalendarViewModel @Inject constructor(
     private val getCalendarEventsUseCase: GetUserCalendarEventsUseCase,
     private val createBlockAppointmentsUseCase: CreateBlockAppointmentsUseCase,
     private val createOwnClientAppointmentUseCase: CreateOwnClientAppointmentUseCase,
-    private val getUserCurrenciesUseCase: GetUserCurrenciesUseCase,
-    private val getServicesByBusinessId: GetServicesByBusinessIdUseCase
 ): ViewModel() {
     private val _selectedDay = MutableStateFlow<LocalDate?>(LocalDate.now())
     val selectedDay: StateFlow<LocalDate?> = _selectedDay.asStateFlow()
-
-    private val _servicesState = MutableStateFlow<FeatureState<List<Service>>>(FeatureState.Loading)
-    val servicesState: StateFlow<FeatureState<List<Service>>> = _servicesState
-
-    private val _currenciesState = MutableStateFlow<FeatureState<List<Currency>>>(FeatureState.Loading)
-    val currenciesState: StateFlow<FeatureState<List<Currency>>> = _currenciesState
 
     private val _defaultBlockedStartLocale = MutableStateFlow<Set<LocalDateTime>>(emptySet())
     val defaultBlockedStartLocale: StateFlow<Set<LocalDateTime>> = _defaultBlockedStartLocale.asStateFlow()
@@ -283,56 +271,8 @@ class MyCalendarViewModel @Inject constructor(
         }
     }
 
-    fun loadCurrencies() {
-        viewModelScope.launch {
-            _currenciesState.value = FeatureState.Loading
-
-            val result = withVisibleLoading {
-                val userId = authDataStore.getUserId().firstOrNull()
-                    ?: throw IllegalStateException("User Id not found in authDataStore")
-
-                getUserCurrenciesUseCase(userId)
-            }
-
-            result
-                .onSuccess { response ->
-                    _currenciesState.value = FeatureState.Success(response)
-                }
-                .onFailure { e ->
-                    Timber.tag("Currencies").e("ERROR: on Fetching Currencies in MyProducts $e")
-                    _currenciesState.value = FeatureState.Error()
-                }
-        }
-    }
-
-    fun loadServices() {
-        viewModelScope.launch {
-            _servicesState.value = FeatureState.Loading
-
-            val result = withVisibleLoading {
-                val businessId = authDataStore.getBusinessId().firstOrNull()
-                    ?: throw IllegalStateException("Business Id not found in authDataStore")
-
-                getServicesByBusinessId(businessId)
-            }
-
-            result
-                .onSuccess { response ->
-                    _servicesState.value = FeatureState.Success(response)
-                }
-                .onFailure { e ->
-                    Timber.tag("Services").e("ERROR: on Fetching Services in MyProducts $e")
-                    _servicesState.value = FeatureState.Error()
-                }
-        }
-    }
-
     fun setSelectedOwnClient(calendarEvents: CalendarEventsSlot) {
         _selectedOwnClient.value = calendarEvents
-    }
-
-    fun resetOwnClient() {
-        _selectedOwnClient.value = null
     }
 
     fun setBlockDate(startDate: LocalDateTime) {

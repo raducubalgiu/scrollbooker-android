@@ -47,7 +47,6 @@ fun DayTimeline(
         generateTicks(dayStart, dayEnd, slotDuration)
     }
 
-    // cat inseamna 1 min pe axa Y
     val dpPerMinute = slotHeight / slotDuration.toFloat()
     val totalMinutes = minutesBetween(dayStart, dayEnd)
     val totalHeightDp = dpPerMinute * totalMinutes
@@ -73,7 +72,10 @@ fun DayTimeline(
                         text = t.toString(),
                         style = bodyLarge,
                         fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier.padding(top = 2.dp, start = 8.dp)
+                        modifier = Modifier.padding(
+                            top = 2.dp,
+                            start = 8.dp
+                        )
                     )
                 }
             }
