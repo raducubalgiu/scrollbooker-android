@@ -139,7 +139,9 @@ fun OwnClientSheet(
                                 showErrors = showErrors
                             )
                         }
-                        1 -> OwnClientLastMinuteTab(buttonHeightDp)
+                        1 -> OwnClientLastMinuteTab(
+                            slotLabel = "$startLocalDate \u2022 $startLocalTime - $endLocalTime",
+                        )
                     }
                 }
             }

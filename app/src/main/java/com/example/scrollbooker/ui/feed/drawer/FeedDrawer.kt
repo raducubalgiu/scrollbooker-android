@@ -39,7 +39,7 @@ fun FeedDrawer(
     }
 
     ModalDrawerSheet(
-        modifier = Modifier.fillMaxWidth(fraction = 0.85f),
+        modifier = Modifier.fillMaxWidth(fraction = 0.9f),
         drawerContainerColor = BackgroundDark
     ) {
         Column(

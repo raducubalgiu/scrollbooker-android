@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.inputs.Input
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.headlineMedium
 
 @Composable
@@ -44,10 +45,10 @@ fun OwnClientCreateTab(
 
         Text(
             modifier = Modifier.padding(bottom = BasePadding),
-            text = stringResource(R.string.addAppointment),
             style = headlineMedium,
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 26.sp
+            color = OnBackground,
+            fontWeight = FontWeight.ExtraBold,
+            text = stringResource(R.string.addAppointment),
         )
 
         Spacer(Modifier.height(BasePadding))

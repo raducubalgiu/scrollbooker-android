@@ -18,9 +18,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.shimmer.rememberShimmerBrush
+import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.ui.theme.Background
@@ -40,6 +42,8 @@ fun InputCheckbox(
     contentColor: Color = OnBackground,
     height: Dp = 70.dp,
     paddingStart: Dp = SpacingXXL,
+    maxLines: Int = Int.MAX_VALUE,
+    overflow: TextOverflow = TextOverflow.Clip,
     leadingIcon: (@Composable () -> Unit)? = null
 ) {
     Row(
@@ -67,8 +71,13 @@ fun InputCheckbox(
                 text = headLine,
                 style = bodyLarge,
                 color = contentColor,
+                maxLines = maxLines,
+                overflow = overflow
             )
         }
+
+        Spacer(Modifier.width(BasePadding))
+
         Checkbox(
             modifier = Modifier.padding(end = SpacingXXL),
             checked = checked,

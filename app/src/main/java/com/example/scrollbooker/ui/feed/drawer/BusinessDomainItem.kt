@@ -41,6 +41,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.inputs.InputCheckbox
+import com.example.scrollbooker.components.core.inputs.RoundCheckbox
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.BusinessDomainsWithBusinessTypes
 import com.example.scrollbooker.ui.theme.BackgroundDark
@@ -52,7 +53,7 @@ fun BusinessDomainItem(
     onSetBusinessType: (Int) -> Unit
 ) {
     var isExpanded by rememberSaveable { mutableStateOf(false) }
-    val inputHeight = 60.dp
+    val inputHeight = 70.dp
 
     val rotation by animateFloatAsState(
         targetValue = if(isExpanded) 180f else 0f,
@@ -76,8 +77,7 @@ fun BusinessDomainItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
-                    vertical = BasePadding,
-                    horizontal = SpacingXL
+                    BasePadding
                 ),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
@@ -119,7 +119,9 @@ fun BusinessDomainItem(
                     checked = selectedBusinessTypes.contains(businessType.id),
                     onCheckedChange = { onSetBusinessType(businessType.id) },
                     headLine = businessType.plural,
-                    height = inputHeight
+                    height = inputHeight,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }

@@ -359,4 +359,8 @@
     <string name="notFoundLocations">Nu au fost găsite locații</string>
     <string name="seeAllServices">Vezi toate serviciile</string>
     <string name="timeInterval">Interval orar</string>
+    <string name="configureLastMinute">Configurează oferta Last Minute</string>
+    <string name="configureLastMinuteDescription">Reducerea Last Minute se aplică automat tuturor serviciilor rezervate în acest interval, peste eventualele reduceri ale produselor.</string>
+    <string name="selectedSlot">Slotul selectat</string>
+    <string name="discountForThisSlot">Reducere pentru acest slot (%)</string>
 </resources>
