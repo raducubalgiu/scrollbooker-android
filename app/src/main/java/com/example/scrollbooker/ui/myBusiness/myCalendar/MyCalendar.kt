@@ -1,12 +1,19 @@
 package com.example.scrollbooker.ui.myBusiness.myCalendar
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -17,7 +24,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
@@ -39,8 +45,17 @@ import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.settings.MyCalen
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import androidx.compose.material3.SheetValue
+import androidx.compose.material3.Text
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.DayTimeline
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.ownClient.OwnClientSheet
+import com.example.scrollbooker.ui.theme.Beauty
+import com.example.scrollbooker.ui.theme.OnPrimary
+import com.example.scrollbooker.ui.theme.bodyLarge
+import com.example.scrollbooker.ui.theme.titleMedium
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -127,12 +142,6 @@ fun MyCalendarScreen(
     }
 
     Scaffold(
-        topBar = {
-            ScreenHeader(
-                onBack=onBack,
-                onClick = { scope.launch { settingsSheetState.show() }
-            })
-        },
         bottomBar = { if(isBlocking) {
             CalendarBlockAction(
                 isEnabled = defaultBlockedLocalDates != blockedLocalDates,
@@ -142,11 +151,26 @@ fun MyCalendarScreen(
                 },
                 onBlockConfirm = { scope.launch { blockSheetState.show() } }
             )}
+        },
+        floatingActionButton = {
+            IconButton(
+                modifier = Modifier.size(50.dp),
+                onClick = {},
+                colors = IconButtonDefaults.iconButtonColors(
+                    containerColor = Beauty,
+                    contentColor = OnPrimary
+                )
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = null
+                )
+            }
         }
     ) { innerPadding ->
         Box(modifier = Modifier
             .fillMaxSize()
-            .padding(innerPadding)
+            .padding(bottom = innerPadding.calculateBottomPadding())
         ) {
             when(headerState) {
                 is FeatureState.Error -> ErrorScreen()
@@ -203,6 +227,30 @@ fun MyCalendarScreen(
                     )
 
                     Column(modifier = Modifier.fillMaxSize()) {
+                        Header(
+                            customTitle = {
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                    Text(
+                                        text = stringResource(R.string.calendar),
+                                        color = Color.Gray,
+                                        style = bodyLarge
+                                    )
+                                    Text(
+                                        text = myCalendarUIState.period,
+                                        fontWeight = FontWeight.SemiBold,
+                                        style = titleMedium
+                                    )
+                                }
+                            },
+                            onBack = onBack,
+                            actions = {
+                                CustomIconButton(
+                                    painter = R.drawable.ic_settings_outline,
+                                    onClick = {}
+                                )
+                            }
+                        )
+
                         MyCalendarHeader(
                             state = myCalendarUIState,
                             onAction = { action ->
@@ -290,21 +338,4 @@ fun MyCalendarScreen(
             }
         }
     }
-}
-
-@Composable
-private fun ScreenHeader(
-    onBack: () -> Unit,
-    onClick: () -> Unit
-) {
-    Header(
-        title = stringResource(R.string.calendar),
-        onBack = onBack,
-        actions = {
-            CustomIconButton(
-                painter = R.drawable.ic_settings_outline,
-                onClick = onClick
-            )
-        }
-    )
 }

@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
@@ -41,6 +41,13 @@ import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
+
+data class CalendarParams(
+    val userId: Int,
+    val day: LocalDate,
+    val slot: Int,
+    val refresh: Int
+)
 
 @HiltViewModel
 class MyCalendarViewModel @Inject constructor(
@@ -77,89 +84,85 @@ class MyCalendarViewModel @Inject constructor(
     private fun cacheKey(userId: Int, day: LocalDate, slot: Int): String =
         "$userId:${day.format(dateFmt)}:$slot"
 
-    private val paramsFlow: Flow<Triple<Int, LocalDate, Int>> =
+    private val paramsFlow: Flow<CalendarParams> =
         combine(
             userIdFlow.filterNotNull(),
             selectedDay.filterNotNull(),
             slotDuration,
             refreshTick
-        ) { userId, day, slot, _ ->
-            Triple(userId, day, slot)
+        ) { userId, day, slot, refresh ->
+            CalendarParams(userId, day, slot, refresh)
         }.distinctUntilChanged()
-
-    private fun getCalendarHeader(userId: Int): StateFlow<FeatureState<CalendarHeaderState>> = flow {
-        emit(FeatureState.Loading)
-
-        try {
-            val today = LocalDate.now()
-            val currentMonday = today.with(DayOfWeek.MONDAY)
-
-            val startDate = currentMonday.minusWeeks(13)
-            val endDate = currentMonday.plusWeeks(13)
-
-            val totalWeeks = 26
-            val calendarDays = (0 until (totalWeeks * 7)).map {
-                startDate.plusDays(it.toLong())
-            }
-
-            val availableDays = withVisibleLoading {
-                getCalendarAvailableDaysUseCase(
-                    userId, startDate.toString(), endDate.toString())
-            }
-
-            emit(
-                FeatureState.Success(
-                    CalendarHeaderState(
-                        config = CalendarConfig(
-                            userId = userId,
-                            startDate = startDate,
-                            endDate = endDate,
-                            totalWeeks = totalWeeks,
-                            initialWeekPage = totalWeeks / 2,
-                            initialDayPage = today.dayOfWeek.ordinal,
-                            selectedDay = today
-                        ),
-                        calendarDays = calendarDays,
-                        calendarAvailableDays = availableDays.map {LocalDate.parse(it) },
-                    )
-                )
-            )
-        } catch (e: Exception) {
-            Timber.tag("Calendar").e("ERROR: on Fetching Calendar Header: $e")
-            emit(FeatureState.Error(e))
-        }
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.Eagerly,
-        initialValue = FeatureState.Loading
-    )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val calendarHeader: StateFlow<FeatureState<CalendarHeaderState>> = userIdFlow
         .filterNotNull()
-        .flatMapLatest { userId -> getCalendarHeader(userId) }
+        .flatMapLatest { userId ->
+            flow {
+                emit(FeatureState.Loading)
+
+                val today = LocalDate.now()
+                val currentMonday = today.with(DayOfWeek.MONDAY)
+
+                val startDate = currentMonday.minusWeeks(13)
+                val endDate = currentMonday.plusWeeks(13)
+
+                val totalWeeks = 26
+                val calendarDays = (0 until (totalWeeks * 7)).map {
+                    startDate.plusDays(it.toLong())
+                }
+
+                val availableDays = withVisibleLoading {
+                    getCalendarAvailableDaysUseCase(
+                        userId, startDate.toString(), endDate.toString())
+                }
+
+                emit(
+                    FeatureState.Success(
+                        CalendarHeaderState(
+                            config = CalendarConfig(
+                                userId = userId,
+                                startDate = startDate,
+                                endDate = endDate,
+                                totalWeeks = totalWeeks,
+                                initialWeekPage = totalWeeks / 2,
+                                initialDayPage = today.dayOfWeek.ordinal,
+                                selectedDay = today
+                            ),
+                            calendarDays = calendarDays,
+                            calendarAvailableDays = availableDays.map {LocalDate.parse(it) },
+                        )
+                    )
+                )
+            }
+        }
         .stateIn(viewModelScope, SharingStarted.Eagerly, FeatureState.Loading)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val calendarEvents: StateFlow<FeatureState<CalendarEvents>> =
-        paramsFlow
-            .flatMapLatest { (userId, day, slot) ->
+        paramsFlow.flatMapLatest { p ->
                 flow {
-                    val startEnd = day.format(dateFmt)
-                    val key = cacheKey(userId, day, slot)
+                    val startEnd = p.day.format(dateFmt)
+                    val key = cacheKey(p.userId, p.day, p.slot)
 
-                    cache[key]?.let { emit(it) }
+                    val cached = cache[key]
 
-                    if(cache[key] !is FeatureState.Success) {
+                    if(cached is FeatureState.Success) {
+                        emit(cached)
+                    } else {
                         emit(FeatureState.Loading)
+                    }
+
+                    if (cache[key] is FeatureState.Success) {
+                        return@flow
                     }
 
                     val result = withVisibleLoading {
                         getCalendarEventsUseCase(
                             startDate = startEnd,
                             endDate = startEnd,
-                            userId = userId,
-                            slotDuration = slot
+                            userId = p.userId,
+                            slotDuration = p.slot
                         )
                     }
 
@@ -167,7 +170,7 @@ class MyCalendarViewModel @Inject constructor(
                     emit(result)
 
                     if(result is FeatureState.Success) {
-                        syncBlockedSelection(day, result.data)
+                        syncBlockedSelection(p.day, result.data)
                     }
 
                 }.catch { e ->
@@ -211,7 +214,7 @@ class MyCalendarViewModel @Inject constructor(
                     _isSaving.value = false
                 }
                 .onSuccess {
-                    refreshCalendarEvents()
+                    refreshCurrentDay()
                     _isSaving.value = false
                 }
         }
@@ -264,8 +267,8 @@ class MyCalendarViewModel @Inject constructor(
                     Timber.tag("Appointments").e("ERROR: on blocking appointments $e")
                     _isSaving.value = false
                 }
-                .onSuccess {
-                    refreshCalendarEvents()
+                .onSuccess { created ->
+                    refreshCurrentDay()
                     _isSaving.value = false
                 }
         }
@@ -295,13 +298,13 @@ class MyCalendarViewModel @Inject constructor(
         }
     }
 
-    fun refreshCalendarEvents() {
+    private suspend fun refreshCurrentDay() {
+        val userId = userIdFlow.first() ?: return
         val day = selectedDay.value ?: return
-        viewModelScope.launch {
-            val userId = authDataStore.getUserId().firstOrNull() ?: return@launch
-            val key = cacheKey(userId, day, _slotDuration.value)
-            cache.remove(key)
-            refreshTick.update { it + 1 }
-        }
+        val slot = slotDuration.value
+        val key = cacheKey(userId, day, slot)
+
+        cache.remove(key)
+        refreshTick.update { it + 1 }
     }
 }

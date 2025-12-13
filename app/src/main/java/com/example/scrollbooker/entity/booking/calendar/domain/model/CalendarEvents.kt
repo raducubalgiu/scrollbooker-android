@@ -1,8 +1,20 @@
 package com.example.scrollbooker.entity.booking.calendar.domain.model
-
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
 import com.example.scrollbooker.core.enums.AppointmentChannelEnum
 import com.example.scrollbooker.core.extensions.parseTimeStringFromLocalDateTimeString
 import com.example.scrollbooker.entity.nomenclature.currency.domain.model.Currency
+import com.example.scrollbooker.ui.theme.Beauty
+import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.Error
+import com.example.scrollbooker.ui.theme.LastMinute
+import com.example.scrollbooker.ui.theme.Primary
+import com.example.scrollbooker.ui.theme.SurfaceBG
 import org.threeten.bp.LocalDateTime
 import java.math.BigDecimal
 
@@ -68,3 +80,60 @@ fun CalendarEventsSlot.toTime(): SlotTimeBounds =
         start = parseTimeStringFromLocalDateTimeString(startDateLocale),
         end = parseTimeStringFromLocalDateTimeString(endDateLocale)
     )
+
+fun CalendarEventsSlot.isFreeSlot(): Boolean =
+    !isBooked && !isBlocked && !isLastMinute
+
+@Composable
+fun CalendarEventsSlot.getBgColor(): Brush {
+    val base: Color = when {
+        isBooked && info?.channel == AppointmentChannelEnum.SCROLL_BOOKER -> Primary.copy(alpha = 0.18f)
+        isBooked && info?.channel == AppointmentChannelEnum.OWN_CLIENT -> Beauty.copy(alpha = 0.18f)
+        isBlocked -> Error.copy(alpha = 0.14f)
+        isLastMinute -> LastMinute.copy(alpha = 0.20f)
+        else -> SurfaceBG
+    }
+
+    val (light, dark) = if(isFreeSlot()) 0.04f to 0.02f else 0.1f to 0.06f
+
+    return monochromeGradient(
+        base = base,
+        lightFactor = light,
+        darkFactor = dark
+    )
+}
+
+@Composable
+fun CalendarEventsSlot.getLineColor(): Color =
+    when {
+        isBooked && info?.channel == AppointmentChannelEnum.SCROLL_BOOKER -> Primary.copy(alpha = 0.35f)
+        isBooked && info?.channel == AppointmentChannelEnum.OWN_CLIENT -> Beauty.copy(alpha = 0.35f)
+        isBlocked -> Error.copy(alpha = 0.35f)
+        isLastMinute -> LastMinute.copy(alpha = 0.35f)
+        else -> SurfaceBG
+    }
+
+@Composable
+fun CalendarEventsSlot.getBorderColor(): Color =
+    when {
+        isBooked && info?.channel == AppointmentChannelEnum.SCROLL_BOOKER -> Primary.copy(alpha = 0.25f)
+        isBooked && info?.channel == AppointmentChannelEnum.OWN_CLIENT -> Beauty.copy(alpha = 0.45f)
+        isBlocked -> Error.copy(alpha = 0.45f)
+        isLastMinute -> LastMinute.copy(alpha = 0.45f)
+        else -> Divider.copy(alpha = 0.3f)
+    }
+
+fun monochromeGradient(
+    base: Color,
+    lightFactor: Float = 0.12f,
+    darkFactor: Float = 0.06f
+): Brush {
+    val lighter = lerp(base, Color.White, lightFactor)
+    val darker = lerp(base, Color.Black, darkFactor)
+
+    return Brush.linearGradient(
+        colors = listOf(lighter, darker),
+        start = Offset.Zero,
+        end = Offset.Infinite
+    )
+}

@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.extensions.displayShortDayOfWeek
+import com.example.scrollbooker.core.util.AppLocaleProvider
 import com.example.scrollbooker.ui.shared.calendar.components.CalendarDayTab
 import com.example.scrollbooker.ui.shared.calendar.components.CalendarHeader
 import com.example.scrollbooker.ui.theme.OnBackground
@@ -23,8 +24,6 @@ fun MyCalendarHeader(
     state: MyCalendarHeaderState,
     onAction: (MyCalendarHeaderStateAction) -> Unit
 ) {
-    val locale = Locale("ro")
-
     CalendarHeaderActions(
         slotDuration = state.slotDuration.toString(),
         isBlocking = state.isBlocking,
@@ -32,13 +31,13 @@ fun MyCalendarHeader(
         onSlotChange = { onAction(MyCalendarHeaderStateAction.OnSlotChange(it)) }
     )
 
-    CalendarHeader(
-        period = state.period,
-        enableBack = state.enableBack,
-        enableNext = state.enableNext,
-        handlePreviousWeek = { onAction(MyCalendarHeaderStateAction.HandlePreviousWeek) },
-        handleNextWeek = { onAction(MyCalendarHeaderStateAction.HandleNextWeek) }
-    )
+//    CalendarHeader(
+//        period = state.period,
+//        enableBack = state.enableBack,
+//        enableNext = state.enableNext,
+//        handlePreviousWeek = { onAction(MyCalendarHeaderStateAction.HandlePreviousWeek) },
+//        handleNextWeek = { onAction(MyCalendarHeaderStateAction.HandleNextWeek) }
+//    )
 
     HorizontalPager(
         state = state.weekPagerState,
@@ -69,7 +68,7 @@ fun MyCalendarHeader(
                          onAction(MyCalendarHeaderStateAction.OnChangeTab(date, index))
                     },
                     bgColor = if(isCurrentTab) Primary else Color.Transparent,
-                    label = displayShortDayOfWeek(date, locale),
+                    label = displayShortDayOfWeek(date, AppLocaleProvider.current()),
                     isLoading = false,
                     isDayAvailable = isAvailable
                 )
