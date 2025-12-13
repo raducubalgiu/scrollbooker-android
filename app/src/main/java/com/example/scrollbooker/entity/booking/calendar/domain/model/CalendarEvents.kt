@@ -26,8 +26,9 @@ data class CalendarEventsSlot(
     val startDateUtc: String,
     val endDateUtc: String,
     val isBooked: Boolean,
-    val isClosed: Boolean,
     val isBlocked: Boolean,
+    val isLastMinute: Boolean,
+    val lastMinuteDiscount: BigDecimal?,
     val info: CalendarEventsInfo?
 )
 

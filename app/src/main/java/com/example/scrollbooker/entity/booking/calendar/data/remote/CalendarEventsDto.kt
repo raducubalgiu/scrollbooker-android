@@ -44,11 +44,14 @@ data class CalendarEventsSlotDto(
     @SerializedName("is_booked")
     val isBooked: Boolean,
 
-    @SerializedName("is_closed")
-    val isClosed: Boolean,
-
     @SerializedName("is_blocked")
     val isBlocked: Boolean,
+
+    @SerializedName("is_last_minute")
+    val isLastMinute: Boolean,
+
+    @SerializedName("last_minute_discount")
+    val lastMinuteDiscount: BigDecimal?,
 
     val info: CalendarEventsInfoDto?
 )

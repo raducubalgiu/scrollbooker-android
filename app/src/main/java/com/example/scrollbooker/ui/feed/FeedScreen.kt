@@ -180,7 +180,7 @@ fun FeedScreen(feedNavigate: FeedNavigator) {
                     ) { page ->
                         posts[page]?.let { post ->
                             LaunchedEffect(pagerState) {
-                                snapshotFlow { pagerState.settledPage }
+                                snapshotFlow { pagerState.currentPage }
                                     .collectLatest { page ->
                                         val post = posts.getOrNull(page)
                                         val previousPost = posts.getOrNull(page - 1)

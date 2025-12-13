@@ -21,6 +21,7 @@ import com.example.scrollbooker.ui.theme.Primary
 
 @Composable
 fun CalendarSlot(
+    modifier: Modifier = Modifier,
     height: Dp,
     offsetY: Dp,
     slot: CalendarEventsSlot,
@@ -29,7 +30,7 @@ fun CalendarSlot(
     isBlocking: Boolean,
     onSlotClick: (CalendarEventsSlot) -> Unit
 ) {
-    Box(modifier = Modifier
+    Box(modifier = modifier
         .fillMaxWidth()
         .height(height)
         .offset(y = offsetY)

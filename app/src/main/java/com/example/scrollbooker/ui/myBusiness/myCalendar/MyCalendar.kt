@@ -29,7 +29,6 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.extensions.displayDatePeriod
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.CalendarBlockAction
-import com.example.scrollbooker.ui.myBusiness.myCalendar.components.DayTimeline
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.MyCalendarHeader
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.MyCalendarHeaderState
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.MyCalendarHeaderStateAction
@@ -40,6 +39,7 @@ import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.settings.MyCalen
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import androidx.compose.material3.SheetValue
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.DayTimeline
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.ownClient.OwnClientSheet
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -253,7 +253,7 @@ fun MyCalendarScreen(
 
                                         if(dayStart != null && dayEnd != null) {
                                             DayTimeline(
-                                                slotDuration = slotDuration,
+                                                slotDurationMinutes = slotDuration,
                                                 slots = slots,
                                                 dayStart = dayStart,
                                                 dayEnd = dayEnd,

@@ -1,6 +1,7 @@
 package com.example.scrollbooker.entity.booking.calendar.data.remote
 
 import com.google.gson.annotations.SerializedName
+import java.math.BigDecimal
 
 data class AvailableDayDto(
     @SerializedName("is_closed")
@@ -22,4 +23,10 @@ data class SlotDto(
 
     @SerializedName("end_date_locale")
     val endDateLocale: String,
+
+    @SerializedName("is_last_minute")
+    val isLastMinute: Boolean,
+
+    @SerializedName("last_minute_discount")
+    val lastMinuteDiscount: BigDecimal?
 )

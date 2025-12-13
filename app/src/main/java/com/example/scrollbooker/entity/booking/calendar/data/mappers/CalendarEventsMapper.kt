@@ -38,8 +38,9 @@ fun CalendarEventsSlotDto.toDomain(): CalendarEventsSlot {
         startDateUtc = startDateUtc,
         endDateUtc = endDateUtc,
         isBooked = isBooked,
-        isClosed = isClosed,
         isBlocked = isBlocked,
+        isLastMinute = isLastMinute,
+        lastMinuteDiscount = lastMinuteDiscount,
         info = info?.toDomain()
     )
 }

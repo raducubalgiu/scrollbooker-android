@@ -17,7 +17,9 @@ fun SlotDto.toDomain(): Slot {
         startDateUtc = startDateUtc,
         endDateUtc = endDateUtc,
         startDateLocale = startDateLocale,
-        endDateLocale = endDateLocale
+        endDateLocale = endDateLocale,
+        isLastMinute = isLastMinute,
+        lastMinuteDiscount = lastMinuteDiscount
     )
 }
 
