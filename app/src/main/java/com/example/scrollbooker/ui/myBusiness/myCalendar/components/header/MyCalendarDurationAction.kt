@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.myBusiness.myCalendar.components
+package com.example.scrollbooker.ui.myBusiness.myCalendar.components.header
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -40,7 +40,7 @@ import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.labelLarge
 
 @Composable
-fun CalendarDurationAction(
+fun MyCalendarDurationAction(
     label: String,
     options: List<Option>,
     selectedSlot: String,

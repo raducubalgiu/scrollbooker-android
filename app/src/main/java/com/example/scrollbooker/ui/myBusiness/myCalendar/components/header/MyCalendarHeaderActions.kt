@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.myBusiness.myCalendar.components
+package com.example.scrollbooker.ui.myBusiness.myCalendar.components.header
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -36,7 +36,7 @@ import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable
-fun CalendarHeaderActions(
+fun MyCalendarHeaderActions(
     slotDuration: String,
     isBlocking: Boolean,
     enableBack: Boolean,
@@ -56,7 +56,7 @@ fun CalendarHeaderActions(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Column(Modifier.weight(0.5f)) {
-            CalendarDurationAction(
+            MyCalendarDurationAction(
                 label = stringResource(R.string.interval),
                 options = durations,
                 selectedSlot = slotDuration.toString(),

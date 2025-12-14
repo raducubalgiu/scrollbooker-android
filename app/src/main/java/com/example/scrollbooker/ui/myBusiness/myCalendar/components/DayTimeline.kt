@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.extensions.minutesBetween
 import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEvents
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsSlot
 import com.example.scrollbooker.entity.booking.calendar.domain.model.SlotUiStyle
 import com.example.scrollbooker.entity.booking.calendar.domain.model.isFreeSlot
@@ -51,27 +52,26 @@ import org.threeten.bp.LocalTime
 @Composable
 fun DayTimeline(
     slots: List<CalendarEventsSlot>,
-    onStyleResolver: @Composable (CalendarEventsSlot) -> SlotUiStyle,
     dayStart: LocalTime,
     dayEnd: LocalTime,
-    slotDurationMinutes: Int,
-    gutterWidth: Dp = 56.dp,
+    slotDuration: Int,
+    onStyleResolver: @Composable (CalendarEventsSlot) -> SlotUiStyle,
     isBlocking: Boolean,
     defaultBlockedLocalDates: Set<LocalDateTime>,
     blockedLocalDates: Set<LocalDateTime>,
     onSlotClick: (CalendarEventsSlot) -> Unit,
 ) {
-    val hourHeight = rememberHourHeight(slotDurationMinutes)
+    val hourHeight = rememberHourHeight(slotDuration)
 
     val totalMinutes = minutesBetween(dayStart, dayEnd).coerceAtLeast(0)
     val dpPerMinute = hourHeight / 60f
     val contentHeight = dpPerMinute * totalMinutes
 
-    val ticks = remember(dayStart, dayEnd, slotDurationMinutes) {
+    val ticks = remember(dayStart, dayEnd, slotDuration) {
         generateTicks(
             start = dayStart,
             end = dayEnd,
-            stepMinutes = slotDurationMinutes
+            stepMinutes = slotDuration
         )
     }
 
@@ -86,7 +86,6 @@ fun DayTimeline(
         TimeGutter(
             ticks = ticks,
             hourHeight = hourHeight,
-            width = gutterWidth,
             height = contentHeight,
         )
 
@@ -144,14 +143,13 @@ fun DayTimeline(
 private fun TimeGutter(
     ticks: List<LocalTime>,
     hourHeight: Dp,
-    width: Dp,
     height: Dp,
 ) {
     val dpPerMinute = hourHeight / 60f
 
     Box(
         modifier = Modifier
-            .width(width)
+            .width(56.dp)
             .height(height)
     ) {
         ticks.forEach { t ->

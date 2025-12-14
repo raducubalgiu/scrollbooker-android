@@ -1,15 +1,19 @@
 package com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.ownClient
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -19,7 +23,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.inputs.Input
+import com.example.scrollbooker.components.core.inputs.InputSelect
+import com.example.scrollbooker.components.core.inputs.Option
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.headlineMedium
 
@@ -51,6 +58,33 @@ fun OwnClientCreateTab(
             fontWeight = FontWeight.ExtraBold,
             text = stringResource(R.string.addAppointment),
         )
+
+        Spacer(Modifier.height(BasePadding))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(Modifier.weight(0.5f)) {
+                InputSelect(
+                    options = listOf(Option(value = "1", name = "09:00")),
+                    onValueChange = {},
+                    selectedOption = "",
+                    placeholder = "De la"
+                )
+            }
+
+            Spacer(Modifier.width(SpacingS))
+
+            Column(Modifier.weight(0.5f)) {
+                InputSelect(
+                    options = listOf(Option(value = "1", name = "18:00")),
+                    onValueChange = {},
+                    selectedOption = "",
+                    placeholder = "Pana la"
+                )
+            }
+        }
 
         Spacer(Modifier.height(BasePadding))
 

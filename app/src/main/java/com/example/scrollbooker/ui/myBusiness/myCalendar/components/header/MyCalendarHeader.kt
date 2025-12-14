@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.myBusiness.myCalendar.components
+package com.example.scrollbooker.ui.myBusiness.myCalendar.components.header
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,7 +22,7 @@ fun MyCalendarHeader(
     state: MyCalendarHeaderState,
     onAction: (MyCalendarHeaderStateAction) -> Unit
 ) {
-    CalendarHeaderActions(
+    MyCalendarHeaderActions(
         slotDuration = state.slotDuration.toString(),
         isBlocking = state.isBlocking,
         enableBack = state.enableBack,

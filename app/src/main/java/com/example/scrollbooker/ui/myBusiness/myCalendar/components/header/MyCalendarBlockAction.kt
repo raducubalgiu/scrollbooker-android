@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.myBusiness.myCalendar.components
+package com.example.scrollbooker.ui.myBusiness.myCalendar.components.header
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -25,7 +25,7 @@ import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable
-fun CalendarBlockAction(
+fun MyCalendarBlockAction(
     isEnabled: Boolean,
     onCancel: () -> Unit,
     onBlockConfirm: () -> Unit
