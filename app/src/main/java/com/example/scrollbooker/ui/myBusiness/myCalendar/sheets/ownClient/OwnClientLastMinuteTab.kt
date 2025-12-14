@@ -5,7 +5,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -17,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.Dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.inputs.Input
 import com.example.scrollbooker.core.util.Dimens.BasePadding
@@ -33,13 +36,20 @@ import java.math.BigDecimal
 @Composable
 fun OwnClientLastMinuteTab(
     slotLabel: String,
+    buttonHeightDp: Dp,
+    lastMinuteDiscount: String,
+    onValueChange: (String) -> Unit
 ) {
-    var discount by rememberSaveable { mutableStateOf(BigDecimal.ZERO) }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(BasePadding)
+            .verticalScroll(rememberScrollState())
+            .padding(
+                top = BasePadding,
+                bottom = buttonHeightDp + BasePadding,
+                start = BasePadding,
+                end = BasePadding
+            )
     ) {
         Text(
             style = headlineMedium,
@@ -75,8 +85,8 @@ fun OwnClientLastMinuteTab(
 
         Input(
             label = stringResource(R.string.discountForThisSlot),
-            value = discount.toString(),
-            onValueChange = { discount = BigDecimal(it) },
+            value = lastMinuteDiscount,
+            onValueChange = onValueChange,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number
             )

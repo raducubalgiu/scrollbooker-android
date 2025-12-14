@@ -1,5 +1,4 @@
 package com.example.scrollbooker.ui.myBusiness.myCalendar
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -50,10 +49,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.scrollbooker.core.enums.toDomainColor
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.DayTimeline
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.ownClient.OwnClientSheet
-import com.example.scrollbooker.ui.theme.Beauty
 import com.example.scrollbooker.ui.theme.OnPrimary
+import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.titleMedium
 
@@ -129,11 +129,12 @@ fun MyCalendarScreen(
 
     if(showOwnClientSheet) {
         OwnClientSheet(
-            viewModel = viewModel,
             sheetState = ownClientSheetState,
+            isSaving = isSaving,
             selectedOwnClientSlot = selectedOwnClient,
             slotDuration = slotDuration,
             onCreateOwnClient = { viewModel.createOwnClientAppointment(it) },
+            onCreateLastMinute = { viewModel.createLastMinute(it) },
             onClose = {
                 scope.launch { ownClientSheetState.hide() }
                 showOwnClientSheet = false
@@ -153,18 +154,23 @@ fun MyCalendarScreen(
             )}
         },
         floatingActionButton = {
-            IconButton(
-                modifier = Modifier.size(50.dp),
-                onClick = {},
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = Beauty,
-                    contentColor = OnPrimary
-                )
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = null
-                )
+            val calendarEventsData = (calendarEvents as? FeatureState.Success)?.data
+            val containerColor = calendarEventsData?.businessShortDomain?.toDomainColor() ?: Primary
+
+            if(calendarEvents is FeatureState.Success) {
+                IconButton(
+                    modifier = Modifier.size(50.dp),
+                    onClick = {},
+                    colors = IconButtonDefaults.iconButtonColors(
+                        containerColor = containerColor,
+                        contentColor = OnPrimary
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = null
+                    )
+                }
             }
         }
     ) { innerPadding ->
@@ -306,6 +312,7 @@ fun MyCalendarScreen(
                                                 dayStart = dayStart,
                                                 dayEnd = dayEnd,
                                                 isBlocking = isBlocking,
+                                                onStyleResolver = { slot -> with(calendarEvents) { slot.resolveUiStyle() } },
                                                 defaultBlockedLocalDates = defaultBlockedLocalDates,
                                                 blockedLocalDates = blockedLocalDates,
                                                 onSlotClick = { slot ->

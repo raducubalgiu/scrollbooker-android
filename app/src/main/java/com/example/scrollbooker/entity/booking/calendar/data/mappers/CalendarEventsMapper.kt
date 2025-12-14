@@ -1,6 +1,7 @@
 package com.example.scrollbooker.entity.booking.calendar.data.mappers
 
 import com.example.scrollbooker.core.enums.AppointmentChannelEnum
+import com.example.scrollbooker.core.enums.BusinessShortDomainEnum
 import com.example.scrollbooker.core.extensions.parseDateTimeStringToLocalDateTime
 import com.example.scrollbooker.entity.booking.calendar.data.remote.CalendarEventsCustomerDto
 import com.example.scrollbooker.entity.booking.calendar.data.remote.CalendarEventsDayDto
@@ -17,6 +18,7 @@ fun CalendarEventsDto.toDomain(): CalendarEvents {
     return CalendarEvents(
         minSlotTime = parseDateTimeStringToLocalDateTime(minSlotTime),
         maxSlotTime = parseDateTimeStringToLocalDateTime(maxSlotTime),
+        businessShortDomain = BusinessShortDomainEnum.fromKeyOrUnknown(businessShortDomain),
         days = days.map { it.toDomain() }
     )
 }

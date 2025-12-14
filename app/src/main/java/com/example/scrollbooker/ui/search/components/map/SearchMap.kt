@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.zIndex
+import com.example.scrollbooker.core.enums.toDomainColor
 import com.example.scrollbooker.ui.search.CameraPositionState
 import com.example.scrollbooker.ui.search.SearchViewModel
 import com.example.scrollbooker.ui.theme.SurfaceBG
@@ -22,7 +23,6 @@ import com.mapbox.maps.extension.compose.DisposableMapEffect
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessBoundingBox
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMarker
-import com.example.scrollbooker.entity.booking.business.domain.model.getMarkerColor
 import com.example.scrollbooker.ui.GeoPoint
 import com.example.scrollbooker.ui.search.MarkersUiState
 import com.example.scrollbooker.ui.search.components.SearchMapActions
@@ -140,7 +140,7 @@ fun SearchMap(
 
             secondaryMarkers.forEach { m ->
                 SearchMarkerSecondary(
-                    color = m.getMarkerColor(),
+                    color = m.businessShortDomain.toDomainColor(),
                     coordinates = m.coordinates,
                     onMarkerClick = { selectedMarker = m }
                 )
@@ -149,7 +149,7 @@ fun SearchMap(
             primaryMarkers.forEach { m ->
                 SearchMarkerPrimary(
                     imageUrl = null,
-                    domainColor = m.getMarkerColor(),
+                    domainColor = m.businessShortDomain.toDomainColor(),
                     ratingsAverage = m.owner.ratingsAverage,
                     coordinates = m.coordinates,
                     onMarkerClick = { selectedMarker = m },

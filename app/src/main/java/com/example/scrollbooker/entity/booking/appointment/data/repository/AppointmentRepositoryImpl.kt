@@ -6,6 +6,7 @@ import com.example.scrollbooker.entity.booking.appointment.data.mappers.toDomain
 import com.example.scrollbooker.entity.booking.appointment.data.mappers.toDto
 import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentBlockRequest
 import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentCancelRequest
+import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentLastMinuteRequest
 import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentPagingSource
 import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentsApiService
 import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointment
@@ -34,6 +35,10 @@ class AppointmentRepositoryImpl @Inject constructor(
 
     override suspend fun createOwnClientAppointment(appointmentCreate: AppointmentOwnClientCreate) {
         return apiService.createOwnClientAppointment(request = appointmentCreate.toDto())
+    }
+
+    override suspend fun createLastMinuteAppointment(request: AppointmentLastMinuteRequest) {
+        return apiService.createLastMinuteAppointment(request)
     }
 
     override suspend fun getUserAppointmentsNumber(): Int {

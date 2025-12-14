@@ -41,6 +41,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.extensions.parseDateStringFromLocalDateTimeString
 import com.example.scrollbooker.core.extensions.parseTimeStringFromLocalDateTimeString
+import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentLastMinuteRequest
 import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentOwnClientCreate
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsSlot
 import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarViewModel
@@ -52,16 +53,15 @@ import java.math.BigDecimal
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OwnClientSheet(
-    viewModel: MyCalendarViewModel,
     sheetState: SheetState,
+    isSaving: Boolean,
     selectedOwnClientSlot: CalendarEventsSlot?,
     slotDuration: Int,
     onCreateOwnClient: (AppointmentOwnClientCreate) -> Unit,
+    onCreateLastMinute: (AppointmentLastMinuteRequest) -> Unit,
     onClose: () -> Unit
 ) {
     val context = LocalContext.current
-    val isSaving by viewModel.isSaving.collectAsState()
-
     var previousIsSaving by rememberSaveable { mutableStateOf(false) }
 
     val scope = rememberCoroutineScope()
@@ -70,6 +70,8 @@ fun OwnClientSheet(
     val (form, onEvent) = rememberOwnClientFormState()
     val validation = remember(form) { form.validate(context) }
     var showErrors by rememberSaveable { mutableStateOf(false) }
+
+    var lastMinuteDiscount by rememberSaveable { mutableStateOf("0") }
 
     LaunchedEffect(isSaving) {
         if(previousIsSaving && !isSaving) onClose()
@@ -141,6 +143,9 @@ fun OwnClientSheet(
                         }
                         1 -> OwnClientLastMinuteTab(
                             slotLabel = "$startLocalDate \u2022 $startLocalTime - $endLocalTime",
+                            buttonHeightDp = buttonHeightDp,
+                            lastMinuteDiscount = lastMinuteDiscount,
+                            onValueChange = { lastMinuteDiscount = it }
                         )
                     }
                 }
@@ -166,23 +171,35 @@ fun OwnClientSheet(
                     enabled = !isSaving,
                     isLoading = isSaving,
                     onClick = {
-                        showErrors = true
+                        if(pagerState.currentPage == 0) {
+                            showErrors = true
 
-                        if(!validation.isValid) return@MainButton
+                            if(!validation.isValid) return@MainButton
 
-                        selectedOwnClientSlot?.let { slot ->
-                            onCreateOwnClient(
-                                AppointmentOwnClientCreate(
-                                    startDate = slot.startDateUtc,
-                                    endDate = slot.endDateUtc,
-                                    customerFullname = form.customerName,
-                                    productName = form.productName,
-                                    price = BigDecimal(form.price),
-                                    priceWithDiscount = BigDecimal(form.price),
-                                    discount = BigDecimal(0),
-                                    duration = slotDuration,
+                            selectedOwnClientSlot?.let { slot ->
+                                onCreateOwnClient(
+                                    AppointmentOwnClientCreate(
+                                        startDate = slot.startDateUtc,
+                                        endDate = slot.endDateUtc,
+                                        customerFullname = form.customerName,
+                                        productName = form.productName,
+                                        price = BigDecimal(form.price),
+                                        priceWithDiscount = BigDecimal(form.price),
+                                        discount = BigDecimal(0),
+                                        duration = slotDuration,
+                                    )
                                 )
-                            )
+                            }
+                        } else {
+                            selectedOwnClientSlot?.let { slot ->
+                                onCreateLastMinute(
+                                    AppointmentLastMinuteRequest(
+                                        startDate = slot.startDateUtc,
+                                        endDate = slot.endDateUtc,
+                                        lastMinuteDiscount = BigDecimal(lastMinuteDiscount)
+                                    )
+                                )
+                            }
                         }
                     }
                 )

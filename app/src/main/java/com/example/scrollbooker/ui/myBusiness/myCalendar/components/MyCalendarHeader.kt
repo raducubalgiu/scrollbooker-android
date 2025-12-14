@@ -14,10 +14,8 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.extensions.displayShortDayOfWeek
 import com.example.scrollbooker.core.util.AppLocaleProvider
 import com.example.scrollbooker.ui.shared.calendar.components.CalendarDayTab
-import com.example.scrollbooker.ui.shared.calendar.components.CalendarHeader
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
-import java.util.Locale
 
 @Composable
 fun MyCalendarHeader(
@@ -27,17 +25,13 @@ fun MyCalendarHeader(
     CalendarHeaderActions(
         slotDuration = state.slotDuration.toString(),
         isBlocking = state.isBlocking,
+        enableBack = state.enableBack,
+        enableNext = state.enableNext,
+        handlePreviousWeek = { onAction(MyCalendarHeaderStateAction.HandlePreviousWeek) },
+        handleNextWeek = { onAction(MyCalendarHeaderStateAction.HandleNextWeek) },
         onIsBlocking = { onAction(MyCalendarHeaderStateAction.OnIsBlocking) },
         onSlotChange = { onAction(MyCalendarHeaderStateAction.OnSlotChange(it)) }
     )
-
-//    CalendarHeader(
-//        period = state.period,
-//        enableBack = state.enableBack,
-//        enableNext = state.enableNext,
-//        handlePreviousWeek = { onAction(MyCalendarHeaderStateAction.HandlePreviousWeek) },
-//        handleNextWeek = { onAction(MyCalendarHeaderStateAction.HandleNextWeek) }
-//    )
 
     HorizontalPager(
         state = state.weekPagerState,

@@ -40,7 +40,7 @@ import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.labelLarge
 
 @Composable
-fun CalendarDurationSlot(
+fun CalendarDurationAction(
     label: String,
     options: List<Option>,
     selectedSlot: String,

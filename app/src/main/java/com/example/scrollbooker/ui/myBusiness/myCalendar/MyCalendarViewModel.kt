@@ -6,8 +6,10 @@ import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentBlockRequest
 import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentBlockSlots
+import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentLastMinuteRequest
 import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentOwnClientCreate
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.CreateBlockAppointmentsUseCase
+import com.example.scrollbooker.entity.booking.appointment.domain.useCase.CreateLastMinuteAppointmentUseCase
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.CreateOwnClientAppointmentUseCase
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEvents
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsSlot
@@ -56,6 +58,7 @@ class MyCalendarViewModel @Inject constructor(
     private val getCalendarEventsUseCase: GetUserCalendarEventsUseCase,
     private val createBlockAppointmentsUseCase: CreateBlockAppointmentsUseCase,
     private val createOwnClientAppointmentUseCase: CreateOwnClientAppointmentUseCase,
+    private val createLastMinuteAppointmentUseCase: CreateLastMinuteAppointmentUseCase
 ): ViewModel() {
     private val _selectedDay = MutableStateFlow<LocalDate?>(LocalDate.now())
     val selectedDay: StateFlow<LocalDate?> = _selectedDay.asStateFlow()
@@ -69,7 +72,7 @@ class MyCalendarViewModel @Inject constructor(
     private val _isSaving = MutableStateFlow<Boolean>(false)
     val isSaving: StateFlow<Boolean> = _isSaving
 
-    private val _slotDuration = MutableStateFlow<Int>(30)
+    private val _slotDuration = MutableStateFlow<Int>(60)
     val slotDuration: MutableStateFlow<Int> = _slotDuration
 
     private val _selectedOwnClient = MutableStateFlow<CalendarEventsSlot?>(null)
@@ -211,6 +214,26 @@ class MyCalendarViewModel @Inject constructor(
             result
                 .onFailure { e ->
                     Timber.tag("Appointments").e("ERROR: on blocking appointments $e")
+                    _isSaving.value = false
+                }
+                .onSuccess {
+                    refreshCurrentDay()
+                    _isSaving.value = false
+                }
+        }
+    }
+
+    fun createLastMinute(lastMinute: AppointmentLastMinuteRequest) {
+        viewModelScope.launch {
+            _isSaving.value = true
+
+            val result = withVisibleLoading {
+                createLastMinuteAppointmentUseCase(lastMinute)
+            }
+
+            result
+                .onFailure { e ->
+                    Timber.tag("Appointments").e("ERROR: on creating last minute appointments $e")
                     _isSaving.value = false
                 }
                 .onSuccess {

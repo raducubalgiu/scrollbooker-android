@@ -39,6 +39,10 @@ import com.example.scrollbooker.ui.theme.SurfaceBG
 fun CalendarHeaderActions(
     slotDuration: String,
     isBlocking: Boolean,
+    enableBack: Boolean,
+    enableNext: Boolean,
+    handlePreviousWeek: () -> Unit,
+    handleNextWeek: () -> Unit,
     onIsBlocking: () -> Unit,
     onSlotChange: (String?) -> Unit
 ) {
@@ -52,7 +56,7 @@ fun CalendarHeaderActions(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Column(Modifier.weight(0.5f)) {
-            CalendarDurationSlot(
+            CalendarDurationAction(
                 label = stringResource(R.string.interval),
                 options = durations,
                 selectedSlot = slotDuration.toString(),
@@ -76,11 +80,6 @@ fun CalendarHeaderActions(
                 onClick = onIsBlocking
             )
         }
-
-        val enableBack = true
-        val enableNext = true
-        fun handlePreviousWeek() {}
-        fun handleNextWeek() {}
 
         Spacer(Modifier.width(SpacingS))
 
@@ -115,20 +114,5 @@ fun CalendarHeaderActions(
                 )
             }
         }
-
-//        Spacer(Modifier.width(SpacingS))
-//
-//        IconButton(
-//            onClick = {},
-//            colors = IconButtonDefaults.iconButtonColors(
-//                containerColor = Beauty,
-//                contentColor = OnPrimary
-//            )
-//        ) {
-//            Icon(
-//                imageVector = Icons.Default.Add,
-//                contentDescription = null
-//            )
-//        }
     }
 }

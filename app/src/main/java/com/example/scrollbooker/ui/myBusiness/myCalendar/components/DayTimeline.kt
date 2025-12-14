@@ -17,11 +17,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.AddCircleOutline
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ShapeDefaults
@@ -31,12 +29,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -44,24 +39,19 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.core.extensions.minutesBetween
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsSlot
-import com.example.scrollbooker.entity.booking.calendar.domain.model.getBgColor
-import com.example.scrollbooker.entity.booking.calendar.domain.model.getBorderColor
-import com.example.scrollbooker.entity.booking.calendar.domain.model.getLineColor
+import com.example.scrollbooker.entity.booking.calendar.domain.model.SlotUiStyle
 import com.example.scrollbooker.entity.booking.calendar.domain.model.isFreeSlot
-import com.example.scrollbooker.ui.theme.Beauty
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Primary
-import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyMedium
-import com.example.scrollbooker.ui.theme.bodySmall
 import com.example.scrollbooker.ui.theme.labelMedium
-import com.example.scrollbooker.ui.theme.labelSmall
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 
 @Composable
 fun DayTimeline(
     slots: List<CalendarEventsSlot>,
+    onStyleResolver: @Composable (CalendarEventsSlot) -> SlotUiStyle,
     dayStart: LocalTime,
     dayEnd: LocalTime,
     slotDurationMinutes: Int,
@@ -133,59 +123,19 @@ fun DayTimeline(
                 val height = (dpPerMinute * durationMinutes) - gap
                 val offsetY = (dpPerMinute * startMinute) + gap / 2
 
-                CalendarSlott(
+                val style = onStyleResolver(slot)
+
+                CalendarSlot(
                     height = height,
                     offsetY = offsetY,
                     slot = slot,
+                    style = style,
                     isBlocked = blockedLocalDates.contains(slot.startDateLocale),
                     isPermanentlyBlocked = defaultBlockedLocalDates.contains(slot.startDateLocale),
                     isBlocking = isBlocking,
                     onSlotClick = onSlotClick
                 )
             }
-        }
-    }
-}
-
-@Composable
-fun CalendarSlott(
-    height: Dp,
-    offsetY: Dp,
-    slot: CalendarEventsSlot,
-    isBlocked: Boolean,
-    isPermanentlyBlocked: Boolean,
-    isBlocking: Boolean,
-    onSlotClick: (CalendarEventsSlot) -> Unit,
-    minTouchHeight: Dp = 44.dp
-) {
-    val visualHeight = height
-    val touchHeight = androidx.compose.ui.unit.max(height, minTouchHeight)
-
-    Box(
-        modifier = Modifier
-            .offset(y = offsetY)
-            .height(touchHeight)
-            .fillMaxWidth()
-            .padding(horizontal = 4.dp)
-            .clip(shape = ShapeDefaults.Medium)
-            .background(slot.getBgColor())
-            .border(
-                width = 1.dp,
-                color = slot.getBorderColor(),
-                shape = ShapeDefaults.Medium
-            )
-            .clickable(enabled = !slot.isBooked && !isBlocking) {
-                onSlotClick(slot)
-            }
-    ) {
-        Box(
-            modifier = Modifier
-                .height(visualHeight)
-                .fillMaxWidth()
-                .padding(8.dp),
-            contentAlignment = Alignment.TopStart
-        ) {
-            SlotContent(slot = slot, height = visualHeight)
         }
     }
 }
@@ -253,16 +203,65 @@ private fun TimeGrid(
 }
 
 @Composable
+fun CalendarSlot(
+    height: Dp,
+    offsetY: Dp,
+    slot: CalendarEventsSlot,
+    style: SlotUiStyle,
+    isBlocked: Boolean,
+    isPermanentlyBlocked: Boolean,
+    isBlocking: Boolean,
+    onSlotClick: (CalendarEventsSlot) -> Unit,
+    minTouchHeight: Dp = 44.dp
+) {
+    val visualHeight = height
+    val touchHeight = androidx.compose.ui.unit.max(height, minTouchHeight)
+
+    Box(
+        modifier = Modifier
+            .offset(y = offsetY)
+            .height(touchHeight)
+            .fillMaxWidth()
+            .padding(horizontal = 4.dp)
+            .clip(shape = ShapeDefaults.Medium)
+            .background(style.background)
+            .border(
+                width = 1.dp,
+                color = style.borderColor,
+                shape = ShapeDefaults.Medium
+            )
+            .clickable(enabled = !slot.isBooked && !isBlocking) {
+                onSlotClick(slot)
+            }
+    ) {
+        Box(
+            modifier = Modifier
+                .height(visualHeight)
+                .fillMaxWidth()
+                .padding(8.dp),
+            contentAlignment = Alignment.TopStart
+        ) {
+            SlotContent(
+                slot = slot,
+                height = visualHeight,
+                lineColor = style.lineColor
+            )
+        }
+    }
+}
+
+@Composable
 private fun SlotContent(
     slot: CalendarEventsSlot,
+    lineColor: Color,
     height: Dp
 ) {
     val isCompact = height < 40.dp
     val isVeryCompact = height < 28.dp
+    val now = LocalDateTime.now()
+    val isBefore = slot.startDateLocale?.isBefore(now) != false
 
-    Column(
-        verticalArrangement = Arrangement.spacedBy(2.dp)
-    ) {
+    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
         Row(Modifier.fillMaxWidth()) {
             if(!slot.isFreeSlot()) {
                 Box(
@@ -270,7 +269,7 @@ private fun SlotContent(
                         .width(4.dp)
                         .fillMaxHeight()
                         .clip(shape = ShapeDefaults.ExtraLarge)
-                        .background(slot.getLineColor())
+                        .background(lineColor)
                 )
 
                 Spacer(Modifier.width(SpacingS))
@@ -300,6 +299,30 @@ private fun SlotContent(
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.tertiary
                             )
+                        }
+
+                        slot.isBlocked -> {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    color = lineColor,
+                                    text = slot.info?.message ?: "Blocat",
+                                )
+                            }
+                        }
+
+                        isBefore -> {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    color = Divider,
+                                    text = "Slot Vacant"
+                                )
+                            }
                         }
 
                         else -> {
@@ -341,8 +364,8 @@ private fun generateTicks(
 @Composable
 private fun rememberHourHeight(slotDurationMinutes: Int): Dp {
     val minSlotHeight = when (slotDurationMinutes) {
-        15 -> 110.dp
-        30 -> 130.dp
+        15 -> 130.dp
+        30 -> 140.dp
         45 -> 150.dp
         else -> 170.dp
     }
@@ -352,7 +375,35 @@ private fun rememberHourHeight(slotDurationMinutes: Int): Dp {
 }
 
 
-
+@Composable
+fun SlotCheckbox(
+    isBlocked: Boolean,
+    isEnabled: Boolean,
+    onCheckedChange: (() -> Unit)? = null
+) {
+    Box(Modifier.fillMaxSize()) {
+        Checkbox(
+            modifier = Modifier.align(Alignment.TopEnd),
+            checked = isBlocked,
+            enabled = isEnabled,
+            onCheckedChange = { onCheckedChange?.invoke() },
+            colors = CheckboxColors(
+                checkedCheckmarkColor = Color.White,
+                uncheckedCheckmarkColor = Color.Transparent,
+                checkedBoxColor = Primary,
+                uncheckedBoxColor = Color.Transparent,
+                disabledCheckedBoxColor = Divider,
+                disabledUncheckedBoxColor = Divider,
+                disabledIndeterminateBoxColor = Divider,
+                checkedBorderColor = Primary,
+                uncheckedBorderColor = Color.Gray,
+                disabledBorderColor = Divider,
+                disabledUncheckedBorderColor = Divider,
+                disabledIndeterminateBorderColor = Divider
+            )
+        )
+    }
+}
 
 
 

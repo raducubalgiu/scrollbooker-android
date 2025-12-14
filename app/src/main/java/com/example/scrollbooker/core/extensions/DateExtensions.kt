@@ -9,7 +9,7 @@ import org.threeten.bp.format.TextStyle
 import timber.log.Timber
 import java.util.Locale
 
-fun parseDateTimeStringToLocalDateTime(value: String): LocalDateTime? {
+fun parseDateTimeStringToLocalDateTime(value: String?): LocalDateTime? {
     return try {
         val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
         LocalDateTime.parse(value, inputFormatter)

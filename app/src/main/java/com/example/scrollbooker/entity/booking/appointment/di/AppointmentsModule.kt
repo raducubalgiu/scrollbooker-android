@@ -5,6 +5,7 @@ import com.example.scrollbooker.entity.booking.appointment.data.remote.Appointme
 import com.example.scrollbooker.entity.booking.appointment.data.repository.AppointmentRepositoryImpl
 import com.example.scrollbooker.entity.booking.appointment.domain.repository.AppointmentRepository
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.CreateBlockAppointmentsUseCase
+import com.example.scrollbooker.entity.booking.appointment.domain.useCase.CreateLastMinuteAppointmentUseCase
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.CreateOwnClientAppointmentUseCase
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.CreateScrollBookerAppointmentUseCase
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.DeleteAppointmentUseCase
@@ -69,6 +70,14 @@ object AppointmentsModule {
         repository: AppointmentRepository,
     ): CreateOwnClientAppointmentUseCase {
         return CreateOwnClientAppointmentUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCreateLastMinuteAppointmentsUseCase(
+        repository: AppointmentRepository,
+    ): CreateLastMinuteAppointmentUseCase {
+        return CreateLastMinuteAppointmentUseCase(repository)
     }
 
     @Provides

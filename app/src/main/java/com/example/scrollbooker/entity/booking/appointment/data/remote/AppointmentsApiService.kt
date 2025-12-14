@@ -29,6 +29,11 @@ interface AppointmentsApiService {
         @Body request: AppointmentOwnClientCreateDto
     )
 
+    @POST("appointments/create-last-minute-appointments")
+    suspend fun createLastMinuteAppointment(
+        @Body request: AppointmentLastMinuteRequest
+    )
+
     @POST("appointments/create-block-appointments")
     suspend fun blockAppointments(
         @Body request: AppointmentBlockRequest
