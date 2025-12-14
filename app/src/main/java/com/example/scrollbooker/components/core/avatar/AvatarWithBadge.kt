@@ -1,5 +1,6 @@
 package com.example.scrollbooker.components.core.avatar
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -10,6 +11,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,18 +25,19 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
-import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.AvatarSizeXL
+import com.example.scrollbooker.core.util.rememberScrollBookerImageLoader
 import com.example.scrollbooker.ui.theme.Background
+import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.Primary
 import timber.log.Timber
 
 @Composable
 fun AvatarWithBadge(
-    url: String?,
+    url: String,
     modifier: Modifier = Modifier,
     size: Dp = AvatarSizeXL,
     background: Color = Background,
@@ -51,27 +54,48 @@ fun AvatarWithBadge(
     badgeBorder: BorderStroke? = BorderStroke(2.dp, Background),
     badgeElevation: Dp = 3.dp,
 ) {
+    val context = LocalContext.current
+    val imageLoader = rememberScrollBookerImageLoader()
+
+    val imageRequest = remember(url) {
+        url.takeIf { it.isNotBlank() }?.let {
+            ImageRequest.Builder(context)
+                .data(it)
+                .crossfade(true)
+                .build()
+        }
+    }
+
     val badgeSize = size * badgeSizeFraction
 
     Box(modifier = modifier.size(size)) {
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(url)
-                .diskCachePolicy(CachePolicy.ENABLED)
-                .memoryCachePolicy(CachePolicy.ENABLED)
-                .crossfade(true)
-                .build(),
-            contentDescription = null,
-            contentScale = contentScale,
-            modifier = Modifier
-                .matchParentSize()
-                .clip(CircleShape)
-                .background(background)
-                .border(1.dp, Color(0xFFCCCCCC), CircleShape),
-            placeholder = painterResource(R.drawable.ic_user),
-            error = painterResource(R.drawable.ic_user),
-            onError = { Timber.tag("Avatar Error").e("ERROR: ${it.result.throwable.message}") }
-        )
+        if (imageRequest != null) {
+            AsyncImage(
+                model = imageRequest,
+                imageLoader = imageLoader,
+                contentDescription = "User Avatar",
+                contentScale = contentScale,
+                modifier = Modifier
+                    .matchParentSize()
+                    .clip(CircleShape)
+                    .background(background)
+                    .border(1.dp, Divider, CircleShape),
+                placeholder = painterResource(R.drawable.ic_user),
+                error = painterResource(R.drawable.ic_user),
+                onError = { Timber.tag("Avatar Error").e("ERROR: ${it.result.throwable.message}") }
+            )
+        } else {
+            Image(
+                painter = painterResource(R.drawable.ic_user),
+                contentDescription = "User Avatar Placeholder",
+                contentScale = contentScale,
+                modifier = Modifier
+                    .matchParentSize()
+                    .clip(CircleShape)
+                    .background(background)
+                    .border(1.dp, Divider, CircleShape),
+            )
+        }
 
         Surface(
             modifier = Modifier
@@ -86,19 +110,21 @@ fun AvatarWithBadge(
             shadowElevation = badgeElevation
         ) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                badgeIconPainter?.let {
-                    Icon(
-                        painter = painterResource(badgeIconPainter),
-                        contentDescription = null,
-                        tint = badgeTint
-                    )
-                }
-                badgeIconImageVector?.let {
-                    Icon(
-                        imageVector = badgeIconImageVector,
-                        contentDescription = null,
-                        tint = badgeTint
-                    )
+                when {
+                    badgeIconPainter != null -> {
+                        Icon(
+                            painter = painterResource(badgeIconPainter),
+                            contentDescription = null,
+                            tint = badgeTint
+                        )
+                    }
+                    badgeIconImageVector != null -> {
+                        Icon(
+                            imageVector = badgeIconImageVector,
+                            contentDescription = null,
+                            tint = badgeTint
+                        )
+                    }
                 }
             }
         }
