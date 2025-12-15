@@ -148,6 +148,13 @@ data class CalendarEventsInfo(
     val paymentCurrency: Currency,
 )
 
+fun CalendarEvents.hasDayFreeSlots(): Boolean {
+    return days
+        .firstOrNull()
+        ?.slots
+        ?.any { it.isFreeSlot() } == true
+}
+
 fun CalendarEvents.blockedStartLocale(): Set<LocalDateTime> =
     days.asSequence()
         .flatMap { it.slots.asSequence() }
@@ -167,5 +174,9 @@ fun CalendarEventsSlot.toTime(): SlotTimeBounds =
         end = parseTimeStringFromLocalDateTimeString(endDateLocale)
     )
 
-fun CalendarEventsSlot.isFreeSlot(): Boolean =
-    !isBooked && !isBlocked && !isLastMinute
+fun CalendarEventsSlot.isFreeSlot(): Boolean {
+    val now = LocalDateTime.now()
+    val isBefore = startDateLocale?.isBefore(now) != false
+
+    return !isBooked && !isBlocked && !isLastMinute && !isBefore
+}

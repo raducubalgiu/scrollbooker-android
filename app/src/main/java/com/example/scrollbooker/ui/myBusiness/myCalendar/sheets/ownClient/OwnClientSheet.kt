@@ -18,7 +18,6 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -41,13 +40,15 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.extensions.parseDateStringFromLocalDateTimeString
 import com.example.scrollbooker.core.extensions.parseTimeStringFromLocalDateTimeString
+import com.example.scrollbooker.core.util.generateTimeSlots
 import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentLastMinuteRequest
 import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentOwnClientCreate
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsSlot
-import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarViewModel
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import kotlinx.coroutines.launch
+import org.threeten.bp.LocalDate
+import toPrettyDate
 import java.math.BigDecimal
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,6 +56,7 @@ import java.math.BigDecimal
 fun OwnClientSheet(
     sheetState: SheetState,
     isSaving: Boolean,
+    selectedDay: LocalDate?,
     selectedOwnClientSlot: CalendarEventsSlot?,
     slotDuration: Int,
     onCreateOwnClient: (AppointmentOwnClientCreate) -> Unit,
@@ -98,6 +100,9 @@ fun OwnClientSheet(
             selectedOwnClientSlot?.endDateLocale
         )
 
+        val subTitle = if (selectedOwnClientSlot != null) "$startLocalDate \u2022 $startLocalTime - $endLocalTime"
+                       else selectedDay?.toPrettyDate()
+
         val density = LocalDensity.current
         var buttonHeightPx by remember { mutableIntStateOf(0) }
         val buttonHeightDp = with(density) { buttonHeightPx.toDp() }
@@ -110,7 +115,7 @@ fun OwnClientSheet(
             ) {
                 OwnClientHeader(
                     title = stringResource(R.string.manageSlot),
-                    subTitle = "$startLocalDate \u2022 $startLocalTime - $endLocalTime",
+                    subTitle = subTitle ?: "",
                     onClose = onClose
                 )
 
@@ -138,7 +143,8 @@ fun OwnClientSheet(
                                 ownClientState = form,
                                 onEvent = onEvent,
                                 validation = validation,
-                                showErrors = showErrors
+                                showErrors = showErrors,
+                                hasSelectedSlot = selectedOwnClientSlot != null
                             )
                         }
                         1 -> OwnClientLastMinuteTab(

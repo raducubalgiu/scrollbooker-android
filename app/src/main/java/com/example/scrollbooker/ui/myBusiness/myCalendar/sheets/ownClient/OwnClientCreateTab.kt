@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -13,6 +12,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -20,13 +23,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.inputs.Input
 import com.example.scrollbooker.components.core.inputs.InputSelect
-import com.example.scrollbooker.components.core.inputs.Option
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.core.util.generateTimeSlots
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.headlineMedium
 
@@ -36,11 +38,17 @@ fun OwnClientCreateTab(
     ownClientState: OwnClientFormStateState,
     onEvent: (OwnClientFormEvent) -> Unit,
     validation: OwnClientValidationResult,
-    showErrors: Boolean
+    showErrors: Boolean,
+    hasSelectedSlot: Boolean
 ) {
     val isClientNameValid = validation.customerNameError.isNullOrBlank()
     val isProductNameValid = validation.productNameError.isNullOrBlank()
     val isPriceValid = validation.priceError.isNullOrBlank()
+
+    val slots = remember { generateTimeSlots() }
+
+    var startTime by remember { mutableStateOf("") }
+    var endTime by remember { mutableStateOf("") }
 
     Column(
         Modifier
@@ -61,32 +69,35 @@ fun OwnClientCreateTab(
 
         Spacer(Modifier.height(BasePadding))
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(Modifier.weight(0.5f)) {
-                InputSelect(
-                    options = listOf(Option(value = "1", name = "09:00")),
-                    onValueChange = {},
-                    selectedOption = "",
-                    placeholder = "De la"
-                )
+        if(!hasSelectedSlot) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(Modifier.weight(0.5f)) {
+                    InputSelect(
+                        options = slots,
+                        onValueChange = { startTime = it.toString() },
+                        selectedOption = startTime,
+                        placeholder = "De la"
+                    )
+                }
+
+                Spacer(Modifier.width(SpacingS))
+
+                Column(Modifier.weight(0.5f)) {
+                    InputSelect(
+                        options = slots,
+                        onValueChange = { endTime = it.toString() },
+                        selectedOption = endTime,
+                        placeholder = "Pana la"
+                    )
+                }
             }
 
-            Spacer(Modifier.width(SpacingS))
+            Spacer(Modifier.height(BasePadding))
 
-            Column(Modifier.weight(0.5f)) {
-                InputSelect(
-                    options = listOf(Option(value = "1", name = "18:00")),
-                    onValueChange = {},
-                    selectedOption = "",
-                    placeholder = "Pana la"
-                )
-            }
         }
-
-        Spacer(Modifier.height(BasePadding))
 
         Input(
             label = "${stringResource(R.string.clientName)}*",

@@ -8,10 +8,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.enums.toDomainColor
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEvents
+import com.example.scrollbooker.entity.booking.calendar.domain.model.hasDayFreeSlots
+import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.Primary
 
@@ -22,14 +25,18 @@ fun MyCalendarFab(
 ) {
     val data = (calendarEvents as? FeatureState.Success)?.data
     val containerColor = data?.businessShortDomain?.toDomainColor() ?: Primary
+    val isEnabled = data?.hasDayFreeSlots()
 
     if(calendarEvents is FeatureState.Success) {
         IconButton(
             modifier = Modifier.size(50.dp),
             onClick = onClick,
+            enabled = isEnabled == true,
             colors = IconButtonDefaults.iconButtonColors(
                 containerColor = containerColor,
-                contentColor = OnPrimary
+                contentColor = OnPrimary,
+                disabledContainerColor = Divider,
+                disabledContentColor = Color.Gray
             )
         ) {
             Icon(

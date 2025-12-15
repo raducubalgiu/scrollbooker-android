@@ -1,6 +1,5 @@
 package com.example.scrollbooker.ui.myBusiness.myCalendar
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -100,6 +99,7 @@ fun MyCalendarScreen(
         OwnClientSheet(
             sheetState = ownClientSheetState,
             isSaving = isSaving,
+            selectedDay = selectedDay,
             selectedOwnClientSlot = selectedOwnClient,
             slotDuration = slotDuration,
             onCreateOwnClient = { viewModel.createOwnClientAppointment(it) },
@@ -126,7 +126,13 @@ fun MyCalendarScreen(
         floatingActionButton = {
             MyCalendarFab(
                 calendarEvents = calendarEvents,
-                onClick = {}
+                onClick = {
+                    scope.launch {
+                        viewModel.setSelectedOwnClient(null)
+                        ownClientSheetState.show()
+                        showOwnClientSheet = true
+                    }
+                }
             )
         }
     ) { innerPadding ->

@@ -297,7 +297,7 @@ class MyCalendarViewModel @Inject constructor(
         }
     }
 
-    fun setSelectedOwnClient(calendarEvents: CalendarEventsSlot) {
+    fun setSelectedOwnClient(calendarEvents: CalendarEventsSlot?) {
         _selectedOwnClient.value = calendarEvents
     }
 
