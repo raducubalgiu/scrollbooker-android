@@ -1,5 +1,10 @@
 package com.example.scrollbooker.ui.myBusiness.myCalendar.components.header
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -27,43 +32,52 @@ import com.example.scrollbooker.ui.theme.SurfaceBG
 @Composable
 fun MyCalendarBlockAction(
     isEnabled: Boolean,
+    isBlocking: Boolean,
     onCancel: () -> Unit,
     onBlockConfirm: () -> Unit
 ) {
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .padding(bottom = BasePadding)
-        .background(Background)
-    ) {
-        HorizontalDivider(color = Divider, thickness = 0.55.dp)
-        Row(
-            modifier = Modifier
+    AnimatedContent(
+        targetState = isBlocking,
+        transitionSpec = { fadeIn(tween(300)) togetherWith fadeOut(tween(300)) },
+        label = "HeaderTransition"
+    ) { target ->
+        if(target) {
+            Box(modifier = Modifier
                 .fillMaxWidth()
-                .padding(BasePadding),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            MainButton(
-                modifier = Modifier.weight(0.5f),
-                fullWidth = false,
-                onClick = onCancel,
-                title = stringResource(R.string.cancel),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = SurfaceBG,
-                    contentColor = OnSurfaceBG
-                )
-            )
-            Spacer(Modifier.width(SpacingS))
-            MainButton(
-                modifier = Modifier.weight(0.5f),
-                fullWidth = false,
-                onClick = onBlockConfirm,
-                enabled = isEnabled,
-                title = stringResource(R.string.block),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Error.copy(alpha = 0.2f),
-                    contentColor = Error
-                )
-            )
+                .padding(bottom = BasePadding)
+                .background(Background)
+            ) {
+                HorizontalDivider(color = Divider, thickness = 0.55.dp)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(BasePadding),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    MainButton(
+                        modifier = Modifier.weight(0.5f),
+                        fullWidth = false,
+                        onClick = onCancel,
+                        title = stringResource(R.string.cancel),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = SurfaceBG,
+                            contentColor = OnSurfaceBG
+                        )
+                    )
+                    Spacer(Modifier.width(SpacingS))
+                    MainButton(
+                        modifier = Modifier.weight(0.5f),
+                        fullWidth = false,
+                        onClick = onBlockConfirm,
+                        enabled = isEnabled,
+                        title = stringResource(R.string.block),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Error.copy(alpha = 0.2f),
+                            contentColor = Error
+                        )
+                    )
+                }
+            }
         }
     }
 }
