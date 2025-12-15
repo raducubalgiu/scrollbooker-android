@@ -31,6 +31,7 @@ fun MyCalendarPagerSection(
     isBlocking: Boolean,
     defaultBlockedLocalDates: Set<LocalDateTime>,
     blockedLocalDates: Set<LocalDateTime>,
+    onIsBlocking: (Boolean) -> Unit,
     onSlotClick: (CalendarEventsSlot) -> Unit
 ) {
     HorizontalPager(
@@ -65,6 +66,7 @@ fun MyCalendarPagerSection(
                             onStyleResolver = { slot -> with(calendarEvents) { slot.resolveUiStyle() } },
                             defaultBlockedLocalDates = defaultBlockedLocalDates,
                             blockedLocalDates = blockedLocalDates,
+                            onIsBlocking = onIsBlocking,
                             onSlotClick = onSlotClick
                         )
                     } else {

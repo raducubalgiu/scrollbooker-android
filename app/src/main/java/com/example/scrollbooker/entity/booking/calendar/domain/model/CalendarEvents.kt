@@ -19,7 +19,9 @@ import java.math.BigDecimal
 data class SlotUiStyle(
     val background: Brush,
     val lineColor: Color,
-    val borderColor: Color
+    val borderColor: Color,
+    val isEnabled: Boolean,
+    val isBefore: Boolean
 )
 
 data class CalendarEvents(
@@ -31,6 +33,9 @@ data class CalendarEvents(
     @Composable
     fun CalendarEventsSlot.resolveUiStyle(): SlotUiStyle {
         val domainColor = businessShortDomain.toDomainColor()
+
+        val now = LocalDateTime.now()
+        val isBefore = startDateLocale?.isBefore(now) != false
 
         val baseBg: Color = when {
             isBooked && info?.channel == AppointmentChannelEnum.SCROLL_BOOKER -> Primary
@@ -87,10 +92,20 @@ data class CalendarEvents(
             else -> Divider.copy(alpha = borderAlpha)
         }
 
+        val isEnabled = when {
+            isBooked -> true
+            isBefore -> false
+            isBlocked -> false
+            isLastMinute -> false
+            else -> true
+        }
+
         return SlotUiStyle(
             background = bgBrush,
             lineColor = line,
-            borderColor = border
+            borderColor = border,
+            isEnabled = isEnabled,
+            isBefore = isBefore
         )
     }
 }

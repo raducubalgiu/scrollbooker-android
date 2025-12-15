@@ -10,6 +10,5 @@ data class AppointmentLastMinuteRequest(
     @SerializedName("end_date")
     val endDate: String,
 
-    @SerializedName("last_minute_discount")
-    val lastMinuteDiscount: BigDecimal
+    val discount: BigDecimal
 )

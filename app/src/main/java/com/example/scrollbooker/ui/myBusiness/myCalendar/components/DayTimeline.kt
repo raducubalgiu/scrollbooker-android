@@ -9,19 +9,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxColors
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,17 +27,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.scrollbooker.R
 import com.example.scrollbooker.core.extensions.minutesBetween
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEvents
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsSlot
 import com.example.scrollbooker.entity.booking.calendar.domain.model.SlotUiStyle
 import com.example.scrollbooker.entity.booking.calendar.domain.model.isFreeSlot
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.slot.SlotFree
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.slot.SlotIsBefore
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.slot.SlotIsBlocked
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.slot.SlotIsBooked
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.slot.SlotIsLastMinute
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyMedium
@@ -59,6 +56,7 @@ fun DayTimeline(
     isBlocking: Boolean,
     defaultBlockedLocalDates: Set<LocalDateTime>,
     blockedLocalDates: Set<LocalDateTime>,
+    onIsBlocking: (Boolean) -> Unit,
     onSlotClick: (CalendarEventsSlot) -> Unit,
 ) {
     val hourHeight = rememberHourHeight(slotDuration)
@@ -132,6 +130,7 @@ fun DayTimeline(
                     isBlocked = blockedLocalDates.contains(slot.startDateLocale),
                     isPermanentlyBlocked = defaultBlockedLocalDates.contains(slot.startDateLocale),
                     isBlocking = isBlocking,
+                    onIsBlocking = onIsBlocking,
                     onSlotClick = onSlotClick
                 )
             }
@@ -209,11 +208,14 @@ fun CalendarSlot(
     isBlocked: Boolean,
     isPermanentlyBlocked: Boolean,
     isBlocking: Boolean,
+    onIsBlocking: (Boolean) -> Unit,
     onSlotClick: (CalendarEventsSlot) -> Unit,
     minTouchHeight: Dp = 44.dp
 ) {
     val visualHeight = height
     val touchHeight = androidx.compose.ui.unit.max(height, minTouchHeight)
+    val isEnabled = style.isEnabled
+    val isBefore = style.isBefore
 
     Box(
         modifier = Modifier
@@ -228,7 +230,9 @@ fun CalendarSlot(
                 color = style.borderColor,
                 shape = ShapeDefaults.Medium
             )
-            .clickable(enabled = !slot.isBooked && !isBlocking) {
+            .clickable(
+                enabled = isEnabled && !isBlocking
+            ) {
                 onSlotClick(slot)
             }
     ) {
@@ -242,6 +246,11 @@ fun CalendarSlot(
             SlotContent(
                 slot = slot,
                 height = visualHeight,
+                isBlocking = isBlocking,
+                isBlocked = isBlocked,
+                onIsBlocking = onIsBlocking,
+                isBefore = isBefore,
+                isPermanentlyBlocked = isPermanentlyBlocked,
                 lineColor = style.lineColor
             )
         }
@@ -252,12 +261,15 @@ fun CalendarSlot(
 private fun SlotContent(
     slot: CalendarEventsSlot,
     lineColor: Color,
-    height: Dp
+    height: Dp,
+    isBlocking: Boolean,
+    isBlocked: Boolean,
+    isBefore: Boolean,
+    onIsBlocking: (Boolean) -> Unit,
+    isPermanentlyBlocked: Boolean,
 ) {
     val isCompact = height < 40.dp
     val isVeryCompact = height < 28.dp
-    val now = LocalDateTime.now()
-    val isBefore = slot.startDateLocale?.isBefore(now) != false
 
     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
         Row(Modifier.fillMaxWidth()) {
@@ -274,68 +286,50 @@ private fun SlotContent(
             }
 
             Column {
-                Text(
-                    text = "${slot.startDateLocale!!.toLocalTime()} - ${slot.endDateLocale!!.toLocalTime()}",
-                    style = labelMedium,
-                    maxLines = 1
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "${slot.startDateLocale!!.toLocalTime()} - ${slot.endDateLocale!!.toLocalTime()}",
+                        style = labelMedium,
+                        maxLines = 1
+                    )
+
+                    if(slot.isFreeSlot() && isBlocking) {
+                        Checkbox(
+                            checked = isBlocked,
+                            //enabled = isEnabled,
+                            onCheckedChange = onIsBlocking,
+                            colors = CheckboxColors(
+                                checkedCheckmarkColor = Color.White,
+                                uncheckedCheckmarkColor = Color.Transparent,
+                                checkedBoxColor = Primary,
+                                uncheckedBoxColor = Color.Transparent,
+                                disabledCheckedBoxColor = Divider,
+                                disabledUncheckedBoxColor = Divider,
+                                disabledIndeterminateBoxColor = Divider,
+                                checkedBorderColor = Primary,
+                                uncheckedBorderColor = Color.Gray,
+                                disabledBorderColor = Divider,
+                                disabledUncheckedBorderColor = Divider,
+                                disabledIndeterminateBorderColor = Divider
+                            )
+                        )
+                    }
+                }
 
                 if (!isVeryCompact) {
+                    val title = slot.info?.customer?.fullname ?: "Rezervat"
+                    val maxLines = if (isCompact) 1 else 2
+
                     when {
-                        slot.isBooked -> {
-                            Text(
-                                text = slot.info?.customer?.fullname ?: "Rezervat",
-                                style = MaterialTheme.typography.bodySmall,
-                                maxLines = if (isCompact) 1 else 2,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        }
-
-                        slot.isLastMinute -> {
-                            Text(
-                                text = "Last minute • ${slot.lastMinuteDiscount}%",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.tertiary
-                            )
-                        }
-
-                        slot.isBlocked -> {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    color = lineColor,
-                                    text = slot.info?.message ?: "Blocat",
-                                )
-                            }
-                        }
-
-                        isBefore -> {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    color = Divider,
-                                    text = "Slot Vacant"
-                                )
-                            }
-                        }
-
-                        else -> {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    modifier = Modifier.size(40.dp),
-                                    painter = painterResource(R.drawable.ic_circle_plus_outline),
-                                    contentDescription = null,
-                                    tint = Divider
-                                )
-                            }
-                        }
+                        slot.isBooked -> SlotIsBooked(title, maxLines)
+                        slot.isLastMinute -> SlotIsLastMinute(title = "Last minute • ${slot.lastMinuteDiscount}%")
+                        slot.isBlocked -> SlotIsBlocked(lineColor, message = "")
+                        isBefore -> SlotIsBefore()
+                        else -> SlotFree()
                     }
                 }
             }
@@ -370,37 +364,6 @@ private fun rememberHourHeight(slotDurationMinutes: Int): Dp {
 
     val computed = (60f / slotDurationMinutes.toFloat()) * minSlotHeight.value
     return computed.dp.coerceIn(120.dp, 260.dp)
-}
-
-
-@Composable
-fun SlotCheckbox(
-    isBlocked: Boolean,
-    isEnabled: Boolean,
-    onCheckedChange: (() -> Unit)? = null
-) {
-    Box(Modifier.fillMaxSize()) {
-        Checkbox(
-            modifier = Modifier.align(Alignment.TopEnd),
-            checked = isBlocked,
-            enabled = isEnabled,
-            onCheckedChange = { onCheckedChange?.invoke() },
-            colors = CheckboxColors(
-                checkedCheckmarkColor = Color.White,
-                uncheckedCheckmarkColor = Color.Transparent,
-                checkedBoxColor = Primary,
-                uncheckedBoxColor = Color.Transparent,
-                disabledCheckedBoxColor = Divider,
-                disabledUncheckedBoxColor = Divider,
-                disabledIndeterminateBoxColor = Divider,
-                checkedBorderColor = Primary,
-                uncheckedBorderColor = Color.Gray,
-                disabledBorderColor = Divider,
-                disabledUncheckedBorderColor = Divider,
-                disabledIndeterminateBorderColor = Divider
-            )
-        )
-    }
 }
 
 

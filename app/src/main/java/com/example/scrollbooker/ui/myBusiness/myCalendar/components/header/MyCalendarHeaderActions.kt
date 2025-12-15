@@ -43,7 +43,7 @@ fun MyCalendarHeaderActions(
     enableNext: Boolean,
     handlePreviousWeek: () -> Unit,
     handleNextWeek: () -> Unit,
-    onIsBlocking: () -> Unit,
+    onIsBlocking: (Boolean) -> Unit,
     onSlotChange: (String?) -> Unit
 ) {
     Row(modifier = Modifier
@@ -77,7 +77,7 @@ fun MyCalendarHeaderActions(
                 contentPadding = PaddingValues(BasePadding),
                 shape = ShapeDefaults.Medium,
                 title = stringResource(R.string.blockSlots),
-                onClick = onIsBlocking
+                onClick = { onIsBlocking(!isBlocking) }
             )
         }
 

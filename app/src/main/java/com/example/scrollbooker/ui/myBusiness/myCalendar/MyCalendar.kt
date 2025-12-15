@@ -147,6 +147,13 @@ fun MyCalendarScreen(
                         showOwnClientSheet = true
                     }
                 },
+                onIsBlocking = { blocked ->
+                    if(!isBlocking) isBlocking = true
+                    else {
+                        viewModel.resetSelectedLocalDates()
+                        isBlocking = false
+                    }
+                },
                 defaultBlockedLocalDates = defaultBlockedLocalDates,
                 blockedLocalDates = blockedLocalDates,
                 onBack = onBack

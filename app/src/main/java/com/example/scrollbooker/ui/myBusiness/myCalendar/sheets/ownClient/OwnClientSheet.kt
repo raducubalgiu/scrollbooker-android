@@ -196,7 +196,7 @@ fun OwnClientSheet(
                                     AppointmentLastMinuteRequest(
                                         startDate = slot.startDateUtc,
                                         endDate = slot.endDateUtc,
-                                        lastMinuteDiscount = BigDecimal(lastMinuteDiscount)
+                                        discount = BigDecimal(lastMinuteDiscount)
                                     )
                                 )
                             }

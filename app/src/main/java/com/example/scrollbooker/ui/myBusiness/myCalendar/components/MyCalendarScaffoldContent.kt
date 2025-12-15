@@ -30,7 +30,8 @@ fun MyCalendarScaffoldContent(
     onOpenOwnClientSheet: (CalendarEventsSlot) -> Unit,
     defaultBlockedLocalDates: Set<LocalDateTime>,
     blockedLocalDates: Set<LocalDateTime>,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onIsBlocking: (Boolean) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
 
@@ -104,11 +105,7 @@ fun MyCalendarScaffoldContent(
                                 }
                             }
                             is MyCalendarHeaderStateAction.OnIsBlocking -> {
-//                                if(!isBlocking) isBlocking = true
-//                                else {
-//                                    viewModel.resetSelectedLocalDates()
-//                                    isBlocking = false
-//                                }
+                                onIsBlocking(action.blocked)
                             }
                             is MyCalendarHeaderStateAction.OnSlotChange -> {
                                 onSlotDurationChange(action.slotDuration)
@@ -124,6 +121,7 @@ fun MyCalendarScaffoldContent(
                     isBlocking = isBlocking,
                     defaultBlockedLocalDates = defaultBlockedLocalDates,
                     blockedLocalDates = blockedLocalDates,
+                    onIsBlocking = onIsBlocking,
                     onSlotClick = { slot ->
                         when {
                             slot.isBooked -> {

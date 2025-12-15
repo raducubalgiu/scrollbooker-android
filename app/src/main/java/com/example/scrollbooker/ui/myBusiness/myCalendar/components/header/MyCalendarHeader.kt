@@ -29,7 +29,7 @@ fun MyCalendarHeader(
         enableNext = state.enableNext,
         handlePreviousWeek = { onAction(MyCalendarHeaderStateAction.HandlePreviousWeek) },
         handleNextWeek = { onAction(MyCalendarHeaderStateAction.HandleNextWeek) },
-        onIsBlocking = { onAction(MyCalendarHeaderStateAction.OnIsBlocking) },
+        onIsBlocking = { onAction(MyCalendarHeaderStateAction.OnIsBlocking(it)) },
         onSlotChange = { onAction(MyCalendarHeaderStateAction.OnSlotChange(it)) }
     )
 
