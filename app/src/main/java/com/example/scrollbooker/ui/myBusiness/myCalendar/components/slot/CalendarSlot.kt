@@ -24,10 +24,6 @@ fun CalendarSlot(
     offsetY: Dp,
     slot: CalendarEventsSlot,
     style: SlotUiStyle,
-    isBlocked: Boolean,
-    isPermanentlyBlocked: Boolean,
-    isBlocking: Boolean,
-    onIsBlocking: (Boolean) -> Unit,
     onSlotClick: (CalendarEventsSlot) -> Unit,
     minTouchHeight: Dp = 44.dp
 ) {
@@ -49,9 +45,7 @@ fun CalendarSlot(
                 color = style.borderColor,
                 shape = ShapeDefaults.Medium
             )
-            .clickable(
-                enabled = isEnabled && !isBlocking
-            ) {
+            .clickable(enabled = isEnabled) {
                 onSlotClick(slot)
             }
     ) {
@@ -65,11 +59,7 @@ fun CalendarSlot(
             SlotContent(
                 slot = slot,
                 height = visualHeight,
-                isBlocking = isBlocking,
-                isBlocked = isBlocked,
-                onIsBlocking = onIsBlocking,
                 isBefore = isBefore,
-                isPermanentlyBlocked = isPermanentlyBlocked,
                 lineColor = style.lineColor
             )
         }

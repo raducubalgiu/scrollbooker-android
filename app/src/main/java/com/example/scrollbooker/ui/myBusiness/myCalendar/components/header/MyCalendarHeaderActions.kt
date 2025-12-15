@@ -31,19 +31,16 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.ui.myBusiness.myCalendar.durations
 import com.example.scrollbooker.ui.theme.Divider
-import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable
 fun MyCalendarHeaderActions(
     slotDuration: String,
-    isBlocking: Boolean,
     enableBack: Boolean,
     enableNext: Boolean,
     handlePreviousWeek: () -> Unit,
     handleNextWeek: () -> Unit,
-    onIsBlocking: (Boolean) -> Unit,
     onSlotChange: (String?) -> Unit
 ) {
     Row(modifier = Modifier
@@ -69,15 +66,17 @@ fun MyCalendarHeaderActions(
         Column(Modifier.weight(0.5f)) {
             MainButton(
                 colors = ButtonColors(
-                    containerColor = if(isBlocking) Error.copy(alpha = 0.2f) else SurfaceBG,
-                    contentColor = if(isBlocking) Error else OnSurfaceBG,
+                    //containerColor = if(isBlocking) Error.copy(alpha = 0.2f) else SurfaceBG,
+                    //contentColor = if(isBlocking) Error else OnSurfaceBG,
+                    containerColor = SurfaceBG,
+                    contentColor = OnSurfaceBG,
                     disabledContainerColor = Divider,
                     disabledContentColor = OnSurfaceBG
                 ),
                 contentPadding = PaddingValues(BasePadding),
                 shape = ShapeDefaults.Medium,
                 title = stringResource(R.string.blockSlots),
-                onClick = { onIsBlocking(!isBlocking) }
+                onClick = {  }
             )
         }
 

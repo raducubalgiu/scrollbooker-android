@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,18 +23,15 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEvents
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsSlot
-import org.threeten.bp.LocalDateTime
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyCalendarPagerSection(
     dayPagerState: PagerState,
     calendarEvents: FeatureState<CalendarEvents>,
     slotDuration: Int,
-    isBlocking: Boolean,
-    defaultBlockedLocalDates: Set<LocalDateTime>,
-    blockedLocalDates: Set<LocalDateTime>,
-    onIsBlocking: (Boolean) -> Unit,
-    onSlotClick: (CalendarEventsSlot) -> Unit
+    onSlotClick: (CalendarEventsSlot) -> Unit,
+    onDayRefresh: () -> Unit
 ) {
     HorizontalPager(
         state = dayPagerState,
@@ -57,18 +56,19 @@ fun MyCalendarPagerSection(
                     val slots = events.data.days.first().slots
 
                     if(dayStart != null && dayEnd != null) {
-                        DayTimeline(
-                            dayStart = dayStart,
-                            dayEnd = dayEnd,
-                            slots = slots,
-                            slotDuration = slotDuration,
-                            isBlocking = isBlocking,
-                            onStyleResolver = { slot -> with(calendarEvents) { slot.resolveUiStyle() } },
-                            defaultBlockedLocalDates = defaultBlockedLocalDates,
-                            blockedLocalDates = blockedLocalDates,
-                            onIsBlocking = onIsBlocking,
-                            onSlotClick = onSlotClick
-                        )
+                        PullToRefreshBox(
+                            isRefreshing = false,
+                            onRefresh = onDayRefresh,
+                        ) {
+                            DayTimeline(
+                                dayStart = dayStart,
+                                dayEnd = dayEnd,
+                                slots = slots,
+                                slotDuration = slotDuration,
+                                onStyleResolver = { slot -> with(calendarEvents) { slot.resolveUiStyle() } },
+                                onSlotClick = onSlotClick
+                            )
+                        }
                     } else {
                         MessageScreen(
                             modifier = Modifier.padding(top = 100.dp),

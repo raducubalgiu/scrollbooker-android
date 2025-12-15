@@ -18,9 +18,10 @@ data class MyCalendarHeaderState(
 )
 
 sealed interface MyCalendarHeaderStateAction {
+    data object Back: MyCalendarHeaderStateAction
+    data object Settings: MyCalendarHeaderStateAction
     data object HandlePreviousWeek: MyCalendarHeaderStateAction
     data object HandleNextWeek: MyCalendarHeaderStateAction
-    data class OnIsBlocking(val blocked: Boolean): MyCalendarHeaderStateAction
     data class OnChangeTab(val date: LocalDate, val index: Int): MyCalendarHeaderStateAction
     data class OnSlotChange(val slotDuration: String?): MyCalendarHeaderStateAction
 }

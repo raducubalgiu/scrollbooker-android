@@ -11,35 +11,27 @@ import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.extensions.displayDatePeriod
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEvents
-import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsSlot
+import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarAction
+import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarAction.*
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderState
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderStateAction
 import com.example.scrollbooker.ui.shared.calendar.CalendarHeaderState
 import kotlinx.coroutines.launch
-import org.threeten.bp.LocalDate
-import org.threeten.bp.LocalDateTime
 
 @Composable
 fun MyCalendarScaffoldContent(
     headerState: FeatureState<CalendarHeaderState>,
     calendarEvents: FeatureState<CalendarEvents>,
     slotDuration: Int,
-    isBlocking: Boolean,
-    onDayChange: (LocalDate) -> Unit,
-    onSlotDurationChange: (String?) -> Unit,
-    onOpenOwnClientSheet: (CalendarEventsSlot) -> Unit,
-    defaultBlockedLocalDates: Set<LocalDateTime>,
-    blockedLocalDates: Set<LocalDateTime>,
-    onBack: () -> Unit,
-    onIsBlocking: (Boolean) -> Unit,
+    onAction: (MyCalendarAction) -> Unit
 ) {
     val scope = rememberCoroutineScope()
 
-    when(headerState) {
+    when(val header = headerState) {
         is FeatureState.Error -> ErrorScreen()
         is FeatureState.Loading -> LoadingScreen()
         is FeatureState.Success -> {
-            val calendar = headerState.data
+            val calendar = header.data
             val config = calendar.config
             val calendarDays = calendar.calendarDays
             val availableDays = calendar.calendarAvailableDays
@@ -58,9 +50,7 @@ fun MyCalendarScaffoldContent(
             LaunchedEffect(currentWeekIndex, currentDayIndex) {
                 val dayIndex = currentWeekIndex * 7 + currentDayIndex
                 val day = calendarDays.getOrNull(dayIndex)
-                if(day != null) {
-                    onDayChange(day)
-                }
+                if(day != null) { onAction(DayChanged(day)) }
             }
 
             val currentWeekDates = calendarDays.drop(currentWeekIndex * 7).take(7)
@@ -77,38 +67,33 @@ fun MyCalendarScaffoldContent(
                 scope.launch { weekPagerState.animateScrollToPage(currentWeekIndex + 1) }
             }
 
-            val myCalendarUIState = MyCalendarHeaderState(
-                weekPagerState = weekPagerState,
-                selectedTabIndex = dayPagerState.currentPage,
-                period = period,
-                slotDuration = slotDuration,
-                isBlocking = isBlocking,
-                enableBack = enableBack,
-                enableNext = enableNext,
-                availableDays = availableDays,
-                calendarDays = calendarDays
-            )
-
             Column(modifier = Modifier.fillMaxSize()) {
                 MyCalendarHeaderSection(
-                    state = myCalendarUIState,
-                    period = period,
-                    onBack = onBack,
+                    state = MyCalendarHeaderState(
+                        weekPagerState = weekPagerState,
+                        selectedTabIndex = dayPagerState.currentPage,
+                        period = period,
+                        slotDuration = slotDuration,
+                        enableBack = enableBack,
+                        enableNext = enableNext,
+                        availableDays = availableDays,
+                        calendarDays = calendarDays,
+                        isBlocking = false
+                    ),
                     onAction = { action ->
                         when(action) {
+                            is MyCalendarHeaderStateAction.Back -> onAction(Back)
+                            is MyCalendarHeaderStateAction.Settings -> {}
                             is MyCalendarHeaderStateAction.HandleNextWeek -> handleNextWeek()
                             is MyCalendarHeaderStateAction.HandlePreviousWeek -> handlePreviousWeek()
+                            is MyCalendarHeaderStateAction.OnSlotChange -> {
+                                onAction(SlotDurationChanged(action.slotDuration))
+                            }
                             is MyCalendarHeaderStateAction.OnChangeTab -> {
                                 scope.launch {
-                                    onDayChange(action.date)
+                                    onAction(DayChanged(action.date))
                                     dayPagerState.animateScrollToPage(action.index)
                                 }
-                            }
-                            is MyCalendarHeaderStateAction.OnIsBlocking -> {
-                                onIsBlocking(action.blocked)
-                            }
-                            is MyCalendarHeaderStateAction.OnSlotChange -> {
-                                onSlotDurationChange(action.slotDuration)
                             }
                         }
                     }
@@ -118,25 +103,8 @@ fun MyCalendarScaffoldContent(
                     dayPagerState = dayPagerState,
                     calendarEvents = calendarEvents,
                     slotDuration = slotDuration,
-                    isBlocking = isBlocking,
-                    defaultBlockedLocalDates = defaultBlockedLocalDates,
-                    blockedLocalDates = blockedLocalDates,
-                    onIsBlocking = onIsBlocking,
-                    onSlotClick = { slot ->
-                        when {
-                            slot.isBooked -> {
-                                // Should Redirect to DetailScreen
-                            }
-                            isBlocking -> {
-                                slot.startDateLocale?.let {
-                                    //viewModel.setBlockDate(slot.startDateLocale)
-                                }
-                            }
-                            else -> {
-                                onOpenOwnClientSheet(slot)
-                            }
-                        }
-                    }
+                    onSlotClick = { onAction(SlotClick(it)) },
+                    onDayRefresh = { onAction(DayRefresh) }
                 )
             }
         }

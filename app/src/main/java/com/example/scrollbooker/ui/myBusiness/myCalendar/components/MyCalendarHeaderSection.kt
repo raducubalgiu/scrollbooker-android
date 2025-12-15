@@ -19,8 +19,6 @@ import com.example.scrollbooker.ui.theme.titleMedium
 @Composable
 fun MyCalendarHeaderSection(
     state: MyCalendarHeaderState,
-    period: String,
-    onBack: () -> Unit,
     onAction: (MyCalendarHeaderStateAction) -> Unit
 ) {
     Header(
@@ -32,17 +30,17 @@ fun MyCalendarHeaderSection(
                     style = bodyLarge
                 )
                 Text(
-                    text = period,
+                    text = state.period,
                     fontWeight = FontWeight.SemiBold,
                     style = titleMedium
                 )
             }
         },
-        onBack = onBack,
+        onBack = { onAction(MyCalendarHeaderStateAction.Back) },
         actions = {
             CustomIconButton(
                 painter = R.drawable.ic_settings_outline,
-                onClick = {}
+                onClick = { onAction(MyCalendarHeaderStateAction.Settings) }
             )
         }
     )

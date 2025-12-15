@@ -12,6 +12,23 @@ import androidx.compose.runtime.setValue
 import com.example.scrollbooker.core.util.checkLength
 import com.example.scrollbooker.core.util.checkMinMax
 import com.example.scrollbooker.core.util.checkRequired
+import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentLastMinuteRequest
+import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentOwnClientCreate
+import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsSlot
+import org.threeten.bp.LocalDate
+
+data class OwnClientSheetState(
+    val isSaving: Boolean,
+    val selectedDay: LocalDate?,
+    val selectedOwnClientSlot: CalendarEventsSlot?,
+    val slotDuration: Int
+)
+
+sealed interface OwnClientAction {
+    data object Close: OwnClientAction
+    data class CreateOwnClient(val request: AppointmentOwnClientCreate): OwnClientAction
+    data class CreateLastMinute(val request: AppointmentLastMinuteRequest): OwnClientAction
+}
 
 @Immutable
 data class OwnClientFormStateState(

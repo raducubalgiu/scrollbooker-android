@@ -66,6 +66,8 @@ fun ProfileLayout(
     posts: LazyPagingItems<Post>,
     profileNavigate: ProfileNavigator
 ) {
+    val viewModel: ProfileTabViewModel = hiltViewModel()
+
     val scope = rememberCoroutineScope()
     val scheduleSheetState = rememberModalBottomSheetState()
     val userId = (profileData as? FeatureState.Success<UserProfile>)?.data?.id
@@ -139,8 +141,6 @@ fun ProfileLayout(
                         modifier = Modifier.fillMaxWidth(),
                         overscrollEffect = null
                     ) { page ->
-                        val viewModel: ProfileTabViewModel = hiltViewModel()
-
                         LaunchedEffect(user.id) {
                             viewModel.setUserId(userId = user.id)
                         }
@@ -153,7 +153,7 @@ fun ProfileLayout(
                             )
 
                             ProfileTab.Products -> {
-                                val viewModel: UserProductsViewModel = hiltViewModel()
+                                //val viewModel: UserProductsViewModel = hiltViewModel()
 
 //                                UserProductsServiceTabs(
 //                                    viewModel = viewModel,

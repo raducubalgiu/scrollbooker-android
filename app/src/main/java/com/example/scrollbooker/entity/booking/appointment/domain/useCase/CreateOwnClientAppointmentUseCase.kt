@@ -7,7 +7,7 @@ import javax.inject.Inject
 class CreateOwnClientAppointmentUseCase @Inject constructor(
     private val repository: AppointmentRepository
 ) {
-    suspend operator fun invoke(appointmentCreate: AppointmentOwnClientCreate): Result<Unit> = runCatching {
-        repository.createOwnClientAppointment(appointmentCreate)
+    suspend operator fun invoke(request: AppointmentOwnClientCreate): Result<Unit> = runCatching {
+        repository.createOwnClientAppointment(request)
     }
 }

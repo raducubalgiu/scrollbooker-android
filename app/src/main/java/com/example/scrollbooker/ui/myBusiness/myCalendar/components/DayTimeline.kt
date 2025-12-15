@@ -16,20 +16,15 @@ import com.example.scrollbooker.entity.booking.calendar.domain.model.SlotUiStyle
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.slot.CalendarSlot
 import com.example.scrollbooker.ui.myBusiness.myCalendar.util.generateTicks
 import com.example.scrollbooker.ui.myBusiness.myCalendar.util.rememberHourHeight
-import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 
 @Composable
 fun DayTimeline(
-    slots: List<CalendarEventsSlot>,
     dayStart: LocalTime,
     dayEnd: LocalTime,
+    slots: List<CalendarEventsSlot>,
     slotDuration: Int,
     onStyleResolver: @Composable (CalendarEventsSlot) -> SlotUiStyle,
-    isBlocking: Boolean,
-    defaultBlockedLocalDates: Set<LocalDateTime>,
-    blockedLocalDates: Set<LocalDateTime>,
-    onIsBlocking: (Boolean) -> Unit,
     onSlotClick: (CalendarEventsSlot) -> Unit,
 ) {
     val hourHeight = rememberHourHeight(slotDuration)
@@ -100,10 +95,6 @@ fun DayTimeline(
                     offsetY = offsetY,
                     slot = slot,
                     style = style,
-                    isBlocked = blockedLocalDates.contains(slot.startDateLocale),
-                    isPermanentlyBlocked = defaultBlockedLocalDates.contains(slot.startDateLocale),
-                    isBlocking = isBlocking,
-                    onIsBlocking = onIsBlocking,
                     onSlotClick = onSlotClick
                 )
             }

@@ -24,12 +24,10 @@ fun MyCalendarHeader(
 ) {
     MyCalendarHeaderActions(
         slotDuration = state.slotDuration.toString(),
-        isBlocking = state.isBlocking,
         enableBack = state.enableBack,
         enableNext = state.enableNext,
         handlePreviousWeek = { onAction(MyCalendarHeaderStateAction.HandlePreviousWeek) },
         handleNextWeek = { onAction(MyCalendarHeaderStateAction.HandleNextWeek) },
-        onIsBlocking = { onAction(MyCalendarHeaderStateAction.OnIsBlocking(it)) },
         onSlotChange = { onAction(MyCalendarHeaderStateAction.OnSlotChange(it)) }
     )
 
@@ -58,9 +56,7 @@ fun MyCalendarHeader(
                 CalendarDayTab(
                     date = date,
                     isCurrentTab = isCurrentTab,
-                    onChangeTab = {
-                         onAction(MyCalendarHeaderStateAction.OnChangeTab(date, index))
-                    },
+                    onChangeTab = { onAction(MyCalendarHeaderStateAction.OnChangeTab(date, index)) },
                     bgColor = if(isCurrentTab) Primary else Color.Transparent,
                     label = displayShortDayOfWeek(date, AppLocaleProvider.current()),
                     isLoading = false,

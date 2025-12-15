@@ -18,12 +18,14 @@ import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.block.BlockSlots
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.block.BlockSlotsSheetState
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.settings.MyCalendarSettingsSheet
 import kotlinx.coroutines.launch
-import org.threeten.bp.LocalDate
 import androidx.compose.material3.SheetValue
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarBlockAction
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.MyCalendarFab
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.MyCalendarScaffoldContent
+import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.detail.MyCalendarAppointmentDetailSheet
+import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.ownClient.OwnClientAction
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.ownClient.OwnClientSheet
+import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.ownClient.OwnClientSheetState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,23 +36,23 @@ fun MyCalendarScreen(
     val scope = rememberCoroutineScope()
 
     val headerState by viewModel.calendarHeader.collectAsState()
+    val calendarEvents by viewModel.calendarEvents.collectAsState()
+    val selectedDay by viewModel.selectedDay.collectAsState()
     val slotDuration by viewModel.slotDuration.collectAsState()
 
     val defaultBlockedLocalDates by viewModel.defaultBlockedStartLocale.collectAsState()
     val blockedLocalDates by viewModel.selectedStartLocale.collectAsState()
 
-    val calendarEvents by viewModel.calendarEvents.collectAsState()
-    val selectedDay by viewModel.selectedDay.collectAsState()
     val selectedOwnClient by viewModel.selectedOwnClient.collectAsState()
+
+    val isBlocking by viewModel.isBlocking.collectAsState()
     val isSaving by viewModel.isSaving.collectAsState()
 
-    var message by rememberSaveable { mutableStateOf("") }
-    var isBlocking by rememberSaveable { mutableStateOf(false) }
+    val blockMessage by viewModel.blockMessage.collectAsState()
 
-    fun handleDayChange(day: LocalDate) { viewModel.setDay(day) }
-
-    val blockSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val settingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val detailSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val blockSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showOwnClientSheet by rememberSaveable { mutableStateOf(false) }
 
     val ownClientSheetState = rememberModalBottomSheetState(
@@ -63,66 +65,65 @@ fun MyCalendarScreen(
         }
     )
 
-    val blockSheetUIState = BlockSlotsSheetState(
-        message = message,
-        slotCount = blockedLocalDates.size - defaultBlockedLocalDates.size,
-        selectedSlots = blockedLocalDates - defaultBlockedLocalDates,
-        selectedDay = selectedDay,
-        isSaving = isSaving
-    )
+    if(settingsSheetState.isVisible) {
+        MyCalendarSettingsSheet(
+            sheetState = settingsSheetState,
+            onClose = { scope.launch { settingsSheetState.hide() } }
+        )
+    }
+
+    if(detailSheetState.isVisible) {
+        MyCalendarAppointmentDetailSheet(
+            sheetState = detailSheetState,
+            onClose = { scope.launch { detailSheetState.hide() } }
+        )
+    }
 
     if (blockSheetState.isVisible) {
         BlockSlotsSheet(
             sheetState = blockSheetState,
-            state = blockSheetUIState,
+            state = BlockSlotsSheetState(
+                message = blockMessage,
+                slotCount = blockedLocalDates.size - defaultBlockedLocalDates.size,
+                selectedSlots = blockedLocalDates - defaultBlockedLocalDates,
+                selectedDay = selectedDay,
+                isSaving = isSaving
+            ),
             onAction = { action ->
                 when(action) {
-                    is BlockSlotsAction.Confirm -> {
-                        viewModel.blockAppointments(message)
-                        isBlocking = false
-                    }
+                    is BlockSlotsAction.Confirm -> viewModel.blockAppointments()
                     is BlockSlotsAction.Dismiss -> scope.launch { blockSheetState.hide() }
-                    is BlockSlotsAction.MessageChanged -> { message = action.value }
+                    is BlockSlotsAction.MessageChanged -> { viewModel.setBlockMessage(action.value) }
                 }
             }
-        )
-    }
-
-    if(settingsSheetState.isVisible) {
-        MyCalendarSettingsSheet(
-            sheetState = settingsSheetState,
-            onDismiss = { scope.launch { settingsSheetState.hide() } }
         )
     }
 
     if(showOwnClientSheet) {
         OwnClientSheet(
             sheetState = ownClientSheetState,
-            isSaving = isSaving,
-            selectedDay = selectedDay,
-            selectedOwnClientSlot = selectedOwnClient,
-            slotDuration = slotDuration,
-            onCreateOwnClient = { viewModel.createOwnClientAppointment(it) },
-            onCreateLastMinute = { viewModel.createLastMinute(it) },
-            onClose = {
-                scope.launch { ownClientSheetState.hide() }
-                showOwnClientSheet = false
+            state = OwnClientSheetState(
+                isSaving = isSaving,
+                selectedDay = selectedDay,
+                selectedOwnClientSlot = selectedOwnClient,
+                slotDuration = slotDuration
+            ),
+            onAction = { action ->
+                when(action) {
+                    is OwnClientAction.CreateOwnClient -> { viewModel.createOwnClientAppointment(action.request) }
+                    is OwnClientAction.CreateLastMinute -> { viewModel.createLastMinute(action.request) }
+                    is OwnClientAction.Close -> {
+                        scope.launch {
+                            ownClientSheetState.hide()
+                            showOwnClientSheet = false
+                        }
+                    }
+                }
             },
         )
     }
 
     Scaffold(
-        bottomBar = {
-            MyCalendarBlockAction(
-                isEnabled = defaultBlockedLocalDates != blockedLocalDates,
-                isBlocking = isBlocking,
-                onCancel = {
-                    viewModel.resetSelectedLocalDates()
-                    isBlocking = false
-                },
-                onBlockConfirm = { scope.launch { blockSheetState.show() } }
-            )
-        },
         floatingActionButton = {
             MyCalendarFab(
                 calendarEvents = calendarEvents,
@@ -134,7 +135,18 @@ fun MyCalendarScreen(
                     }
                 }
             )
-        }
+        },
+        bottomBar = {
+            MyCalendarBlockAction(
+                isEnabled = defaultBlockedLocalDates != blockedLocalDates,
+                isBlocking = isBlocking,
+                onCancel = {
+                    viewModel.resetSelectedLocalDates()
+                    viewModel.clearBlockMessage()
+                },
+                onBlockConfirm = { scope.launch { blockSheetState.show() } }
+            )
+        },
     ) { innerPadding ->
         Box(modifier = Modifier
             .fillMaxSize()
@@ -144,26 +156,25 @@ fun MyCalendarScreen(
                 headerState = headerState,
                 calendarEvents = calendarEvents,
                 slotDuration = slotDuration,
-                isBlocking = isBlocking,
-                onDayChange = { handleDayChange(it) },
-                onSlotDurationChange = { viewModel.setSlotDuration(it) },
-                onOpenOwnClientSheet = {
-                    viewModel.setSelectedOwnClient(it)
-                    scope.launch {
-                        ownClientSheetState.show()
-                        showOwnClientSheet = true
+                onAction = { action ->
+                    when(action) {
+                        is MyCalendarAction.Back -> { onBack() }
+                        is MyCalendarAction.DayChanged -> { viewModel.setDay(action.day) }
+                        is MyCalendarAction.DayRefresh -> scope.launch { viewModel.refreshCurrentDay() }
+                        is MyCalendarAction.SlotDurationChanged -> { viewModel.setSlotDuration(action.value) }
+                        is MyCalendarAction.SlotClick -> {
+                            when {
+                                !action.slot.isBooked -> {
+                                    viewModel.setSelectedOwnClient(action.slot)
+                                    scope.launch {
+                                        ownClientSheetState.show()
+                                        showOwnClientSheet = true
+                                    }
+                                }
+                            }
+                        }
                     }
                 },
-                onIsBlocking = { blocked ->
-                    if(!isBlocking) isBlocking = true
-                    else {
-                        viewModel.resetSelectedLocalDates()
-                        isBlocking = false
-                    }
-                },
-                defaultBlockedLocalDates = defaultBlockedLocalDates,
-                blockedLocalDates = blockedLocalDates,
-                onBack = onBack
             )
         }
     }

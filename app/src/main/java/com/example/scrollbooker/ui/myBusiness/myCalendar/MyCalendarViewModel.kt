@@ -63,6 +63,12 @@ class MyCalendarViewModel @Inject constructor(
     private val _selectedDay = MutableStateFlow<LocalDate?>(LocalDate.now())
     val selectedDay: StateFlow<LocalDate?> = _selectedDay.asStateFlow()
 
+    private val _isBlocking = MutableStateFlow<Boolean>(false)
+    val isBlocking: StateFlow<Boolean> = _isBlocking
+
+    private val _blockMessage = MutableStateFlow<String>("")
+    val blockMessage: StateFlow<String> = _blockMessage.asStateFlow()
+
     private val _defaultBlockedStartLocale = MutableStateFlow<Set<LocalDateTime>>(emptySet())
     val defaultBlockedStartLocale: StateFlow<Set<LocalDateTime>> = _defaultBlockedStartLocale.asStateFlow()
 
@@ -203,12 +209,12 @@ class MyCalendarViewModel @Inject constructor(
         }
     }
 
-    fun createOwnClientAppointment(ownClient: AppointmentOwnClientCreate) {
+    fun createOwnClientAppointment(request: AppointmentOwnClientCreate) {
         viewModelScope.launch {
             _isSaving.value = true
 
             val result = withVisibleLoading {
-                createOwnClientAppointmentUseCase(ownClient)
+                createOwnClientAppointmentUseCase(request)
             }
 
             result
@@ -223,12 +229,12 @@ class MyCalendarViewModel @Inject constructor(
         }
     }
 
-    fun createLastMinute(lastMinute: AppointmentLastMinuteRequest) {
+    fun createLastMinute(request: AppointmentLastMinuteRequest) {
         viewModelScope.launch {
             _isSaving.value = true
 
             val result = withVisibleLoading {
-                createLastMinuteAppointmentUseCase(lastMinute)
+                createLastMinuteAppointmentUseCase(request)
             }
 
             result
@@ -243,7 +249,7 @@ class MyCalendarViewModel @Inject constructor(
         }
     }
 
-    fun blockAppointments(message: String) {
+    fun blockAppointments() {
         viewModelScope.launch {
             _isSaving.value = true
 
@@ -279,7 +285,7 @@ class MyCalendarViewModel @Inject constructor(
             val result = withVisibleLoading {
                 createBlockAppointmentsUseCase(
                     request = AppointmentBlockRequest(
-                        message = message,
+                        message = _blockMessage.value,
                         slots = slotsToBlock
                     )
                 )
@@ -299,6 +305,18 @@ class MyCalendarViewModel @Inject constructor(
 
     fun setSelectedOwnClient(calendarEvents: CalendarEventsSlot?) {
         _selectedOwnClient.value = calendarEvents
+    }
+
+    fun toggleBlocking() {
+        _isBlocking.value = !_isBlocking.value
+    }
+
+    fun setBlockMessage(message: String) {
+        _blockMessage.value = message
+    }
+
+    fun clearBlockMessage() {
+        _blockMessage.value = ""
     }
 
     fun setBlockDate(startDate: LocalDateTime) {
@@ -321,7 +339,7 @@ class MyCalendarViewModel @Inject constructor(
         }
     }
 
-    private suspend fun refreshCurrentDay() {
+    suspend fun refreshCurrentDay() {
         val userId = userIdFlow.first() ?: return
         val day = selectedDay.value ?: return
         val slot = slotDuration.value

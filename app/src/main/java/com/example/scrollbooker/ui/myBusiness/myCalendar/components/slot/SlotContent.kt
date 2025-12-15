@@ -32,11 +32,7 @@ fun SlotContent(
     slot: CalendarEventsSlot,
     lineColor: Color,
     height: Dp,
-    isBlocking: Boolean,
-    isBlocked: Boolean,
     isBefore: Boolean,
-    onIsBlocking: (Boolean) -> Unit,
-    isPermanentlyBlocked: Boolean,
 ) {
     val isCompact = height < 40.dp
     val isVeryCompact = height < 28.dp
@@ -66,27 +62,27 @@ fun SlotContent(
                         maxLines = 1
                     )
 
-                    if(slot.isFreeSlot() && isBlocking) {
-                        Checkbox(
-                            checked = isBlocked,
-                            //enabled = isEnabled,
-                            onCheckedChange = onIsBlocking,
-                            colors = CheckboxColors(
-                                checkedCheckmarkColor = Color.White,
-                                uncheckedCheckmarkColor = Color.Transparent,
-                                checkedBoxColor = Primary,
-                                uncheckedBoxColor = Color.Transparent,
-                                disabledCheckedBoxColor = Divider,
-                                disabledUncheckedBoxColor = Divider,
-                                disabledIndeterminateBoxColor = Divider,
-                                checkedBorderColor = Primary,
-                                uncheckedBorderColor = Color.Gray,
-                                disabledBorderColor = Divider,
-                                disabledUncheckedBorderColor = Divider,
-                                disabledIndeterminateBorderColor = Divider
-                            )
-                        )
-                    }
+//                    if(slot.isFreeSlot() && isBlocking) {
+//                        Checkbox(
+//                            checked = isBlocked,
+//                            //enabled = isEnabled,
+//                            onCheckedChange = {},
+//                            colors = CheckboxColors(
+//                                checkedCheckmarkColor = Color.White,
+//                                uncheckedCheckmarkColor = Color.Transparent,
+//                                checkedBoxColor = Primary,
+//                                uncheckedBoxColor = Color.Transparent,
+//                                disabledCheckedBoxColor = Divider,
+//                                disabledUncheckedBoxColor = Divider,
+//                                disabledIndeterminateBoxColor = Divider,
+//                                checkedBorderColor = Primary,
+//                                uncheckedBorderColor = Color.Gray,
+//                                disabledBorderColor = Divider,
+//                                disabledUncheckedBorderColor = Divider,
+//                                disabledIndeterminateBorderColor = Divider
+//                            )
+//                        )
+//                    }
                 }
 
                 if (!isVeryCompact) {
