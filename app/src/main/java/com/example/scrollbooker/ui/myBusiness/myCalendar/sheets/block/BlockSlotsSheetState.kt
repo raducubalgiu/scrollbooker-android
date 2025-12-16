@@ -14,5 +14,5 @@ data class BlockSlotsSheetState(
 
 sealed interface BlockSlotsAction {
     data object Dismiss: BlockSlotsAction
-    data object Confirm: BlockSlotsAction
+    data class Confirm(val message: String): BlockSlotsAction
 }

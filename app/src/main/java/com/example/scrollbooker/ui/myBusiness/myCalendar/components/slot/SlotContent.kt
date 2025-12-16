@@ -35,6 +35,7 @@ import com.example.scrollbooker.entity.booking.calendar.domain.model.blockStatus
 import com.example.scrollbooker.entity.booking.calendar.domain.model.isFreeSlot
 import com.example.scrollbooker.ui.myBusiness.myCalendar.BlockUiState
 import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.labelMedium
 
 @Composable
@@ -59,11 +60,12 @@ fun SlotContent(
     val isCheckboxEnabled = blockStatus != BlockStatus.Permanent
     val isCheckboxChecked = isBlockedLocally || isPermanentlyBlocked
 
+    val showBookLine = !slot.isFreeSlot() && !isBefore && !slot.isBlocked
     val blockedMessage = slot.info?.message ?: stringResource(R.string.blocked)
 
     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
         Row(modifier = Modifier.fillMaxWidth()) {
-            if(!slot.isFreeSlot() && !isBefore) {
+            if(showBookLine) {
                 Box(
                     modifier = Modifier
                         .width(4.dp)
@@ -107,38 +109,41 @@ fun SlotContent(
 
                 Box(modifier = Modifier.fillMaxSize()) {
                     if (!isVeryCompact) {
-                        val title = slot.info?.customer?.fullname ?: "Rezervat"
+                        val title = slot.info?.customer?.fullname ?: stringResource(R.string.booked)
                         val maxLines = if (isCompact) 1 else 2
 
                         when {
-                            slot.isBooked -> SlotIsBooked(title, maxLines)
-                            slot.isLastMinute -> SlotIsLastMinute(
-                                title = "Last minute • ${slot.lastMinuteDiscount}%"
-                            )
                             slot.isBlocked -> {
-                                Box(
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        modifier = Modifier.align(Alignment.Center),
-                                        color = lineColor,
-                                        text = blockedMessage
-                                    )
-                                }
+                                SlotContainer(
+                                    text = blockedMessage,
+                                    color = lineColor
+                                )
                             }
+
+                            isCheckboxChecked -> {
+                                SlotContainer(
+                                    text = stringResource(R.string.blockInProgress),
+                                    color = Error
+                                )
+                            }
+
+                            blockUiState.isBlocking -> null
+
+                            slot.isBooked -> SlotIsBooked(title, maxLines)
+
+                            slot.isLastMinute -> {
+                                SlotIsLastMinute(
+                                    title = "Last minute • ${slot.lastMinuteDiscount}%"
+                                )
+                            }
+
                             isBefore -> {
-                                Box(
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        modifier = Modifier.align(Alignment.Center),
-                                        color = Divider,
-                                        text = "Slot Vacant"
-                                    )
-                                }
+                                SlotContainer(
+                                    text = stringResource(R.string.unbookedSlot),
+                                    color = Divider
+                                )
                             }
+
                             else -> {
                                 Box(
                                     modifier = Modifier.fillMaxSize(),
@@ -157,5 +162,19 @@ fun SlotContent(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun SlotContainer(text: String, color: Color) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            modifier = Modifier.align(Alignment.Center),
+            color = color,
+            text = text
+        )
     }
 }

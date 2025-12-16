@@ -68,7 +68,6 @@ import toIsoString
 fun BlockSlotsSheet(
     sheetState: SheetState,
     state: BlockSlotsSheetState,
-    blockUiState: BlockUiState,
     onAction: (BlockSlotsAction) -> Unit
 ) {
     val context = LocalContext.current
@@ -80,24 +79,19 @@ fun BlockSlotsSheet(
         BlockReasonEnum.LEGAL_DAY_OFF,
         BlockReasonEnum.OTHER
     )
+    var message by rememberSaveable { mutableStateOf("") }
     var selectedReason by rememberSaveable { mutableStateOf(BlockReasonEnum.OTHER) }
     val isOtherReason = selectedReason == BlockReasonEnum.OTHER
 
     val minLength = 3
     val maxLength = 50
 
-    //val checkNote = checkLength(LocalContext.current, state.message, minLength, maxLength)
-    //val isInputValid = checkNote.isNullOrBlank()
+    val checkNote = checkLength(LocalContext.current, message, minLength, maxLength)
+    val isInputValid = checkNote.isNullOrBlank()
 
     val dayLabel = state.selectedDay?.toIsoString()
 
     val hasMultipleSlots = state.slotCount > 1
-
-    val timeLabel = if(hasMultipleSlots) {
-        state.selectedSlots.joinToString(" • ") { parseTimeStringFromLocalDateTimeString(it) }
-    } else {
-        state.selectedSlots.firstOrNull()?.let { parseTimeStringFromLocalDateTimeString(it) }
-    }
 
     val title = if(hasMultipleSlots) stringResource(R.string.blockSelectedSlots)
                 else stringResource(R.string.blockSlot)
@@ -196,12 +190,7 @@ fun BlockSlotsSheet(
                                     enabled = true
                                 ),
                                 selected = selectedReason == reason,
-                                onClick = {
-                                    selectedReason = reason
-//                                    onAction(
-//                                        BlockSlotsAction.MessageChanged(context.getString(reason.toLabel()))
-//                                    )
-                                },
+                                onClick = { selectedReason = reason },
                                 label = {
                                     Text(text = stringResource(reason.toLabel()))
                                 }
@@ -213,17 +202,14 @@ fun BlockSlotsSheet(
 
                     AnimatedVisibility(visible = isOtherReason) {
                         EditInput(
-                            value = "",
-                            //value = state.message,
+                            value = message,
                             placeholder = stringResource(R.string.addMessage),
-                            onValueChange = {
-                                //onAction(BlockSlotsAction.MessageChanged(it))
-                            },
+                            onValueChange = { message = it },
                             singleLine = false,
                             minLines = 3,
                             maxLines = 3,
-                            //isError = !isInputValid,
-                            //errorMessage = checkNote,
+                            isError = !isInputValid,
+                            errorMessage = checkNote,
                             maxLength = maxLength
                         )
                     }
@@ -242,11 +228,17 @@ fun BlockSlotsSheet(
                     .navigationBarsPadding()
             ) {
                 HorizontalDivider(color=Divider, thickness = 0.55.dp)
+
                 MainButton(
                     modifier = Modifier.padding(vertical = BasePadding),
-                    onClick = { onAction(BlockSlotsAction.Confirm) },
+                    onClick = {
+                        val blockedMessage = if(selectedReason == BlockReasonEnum.OTHER) message
+                                             else context.getString(selectedReason.toLabel())
+
+                        onAction(BlockSlotsAction.Confirm(blockedMessage))
+                    },
                     title = stringResource(R.string.block),
-                    //enabled = if(state.isSaving) false else if(isOtherReason) isInputValid else true,
+                    enabled = if(state.isSaving) false else if(isOtherReason) isInputValid else true,
                     isLoading = state.isSaving,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Error.copy(alpha = 0.2f),

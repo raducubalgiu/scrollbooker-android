@@ -19,6 +19,7 @@ import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.block.BlockSlots
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.settings.MyCalendarSettingsSheet
 import kotlinx.coroutines.launch
 import androidx.compose.material3.SheetValue
+import com.example.scrollbooker.entity.booking.calendar.domain.model.isFreeSlot
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarBlockAction
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.MyCalendarFab
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.MyCalendarScaffoldContent
@@ -86,7 +87,6 @@ fun MyCalendarScreen(
     if (blockSheetState.isVisible) {
         BlockSlotsSheet(
             sheetState = blockSheetState,
-            blockUiState = blockUiState,
             state = BlockSlotsSheetState(
                 slotCount = blockedLocalDates.size - defaultBlockedLocalDates.size,
                 selectedSlots = blockedLocalDates - defaultBlockedLocalDates,
@@ -96,7 +96,7 @@ fun MyCalendarScreen(
             onAction = { action ->
                 when(action) {
                     is BlockSlotsAction.Confirm -> {
-                        //viewModel.blockAppointments()
+                        viewModel.blockAppointments(action.message)
                     }
                     is BlockSlotsAction.Dismiss -> scope.launch { blockSheetState.hide() }
                 }
@@ -171,11 +171,24 @@ fun MyCalendarScreen(
                         is MyCalendarAction.DayRefresh -> scope.launch { viewModel.refreshCurrentDay() }
                         is MyCalendarAction.SlotDurationChanged -> { viewModel.setSlotDuration(action.value) }
                         is MyCalendarAction.SlotClick -> {
-                            if(!action.slot.isBooked) {
-                                viewModel.setSelectedOwnClient(action.slot)
-                                scope.launch {
-                                    ownClientSheetState.show()
-                                    showOwnClientSheet = true
+                            val slot = action.slot
+
+                            when {
+                                slot.isBooked -> {
+                                    scope.launch { detailSheetState.show() }
+                                }
+
+                                isBlocking && slot.isFreeSlot() -> {
+                                    viewModel.setBlockDate(slot.startDateLocale!!)
+                                }
+
+                                slot.isFreeSlot() -> {
+                                    viewModel.setSelectedOwnClient(action.slot)
+
+                                    scope.launch {
+                                        ownClientSheetState.show()
+                                        showOwnClientSheet = true
+                                    }
                                 }
                             }
                         }

@@ -364,4 +364,7 @@
     <string name="configureLastMinuteDescription">Reducerea Last Minute se aplică automat tuturor serviciilor rezervate în acest interval, peste eventualele reduceri ale produselor.</string>
     <string name="selectedSlot">Slotul selectat</string>
     <string name="discountForThisSlot">Reducere pentru acest slot (%)</string>
+    <string name="booked">Rezervat</string>
+    <string name="blockInProgress">În curs de blocare</string>
+    <string name="unbookedSlot">Slot neocupat</string>
 </resources>
