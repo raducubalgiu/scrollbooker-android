@@ -16,6 +16,12 @@ import com.example.scrollbooker.ui.theme.SurfaceBG
 import org.threeten.bp.LocalDateTime
 import java.math.BigDecimal
 
+enum class BlockStatus {
+    None,
+    Local,
+    Permanent
+}
+
 data class SlotUiStyle(
     val background: Brush,
     val lineColor: Color,
@@ -179,4 +185,17 @@ fun CalendarEventsSlot.isFreeSlot(): Boolean {
     val isBefore = startDateLocale?.isBefore(now) != false
 
     return !isBooked && !isBlocked && !isLastMinute && !isBefore
+}
+
+fun CalendarEventsSlot.blockStatus(
+    defaultBlocked: Set<LocalDateTime>,
+    localBlocked: Set<LocalDateTime>
+): BlockStatus {
+    val start = startDateLocale ?: return BlockStatus.None
+
+    return when (start) {
+        in defaultBlocked -> BlockStatus.Permanent
+        in localBlocked -> BlockStatus.Local
+        else -> BlockStatus.None
+    }
 }

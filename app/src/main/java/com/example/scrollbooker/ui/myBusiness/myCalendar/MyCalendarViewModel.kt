@@ -66,9 +66,6 @@ class MyCalendarViewModel @Inject constructor(
     private val _isBlocking = MutableStateFlow<Boolean>(false)
     val isBlocking: StateFlow<Boolean> = _isBlocking
 
-    private val _blockMessage = MutableStateFlow<String>("")
-    val blockMessage: StateFlow<String> = _blockMessage.asStateFlow()
-
     private val _defaultBlockedStartLocale = MutableStateFlow<Set<LocalDateTime>>(emptySet())
     val defaultBlockedStartLocale: StateFlow<Set<LocalDateTime>> = _defaultBlockedStartLocale.asStateFlow()
 
@@ -249,7 +246,7 @@ class MyCalendarViewModel @Inject constructor(
         }
     }
 
-    fun blockAppointments() {
+    fun blockAppointments(message: String) {
         viewModelScope.launch {
             _isSaving.value = true
 
@@ -285,7 +282,7 @@ class MyCalendarViewModel @Inject constructor(
             val result = withVisibleLoading {
                 createBlockAppointmentsUseCase(
                     request = AppointmentBlockRequest(
-                        message = _blockMessage.value,
+                        message = message,
                         slots = slotsToBlock
                     )
                 )
@@ -308,15 +305,7 @@ class MyCalendarViewModel @Inject constructor(
     }
 
     fun toggleBlocking() {
-        _isBlocking.value = !_isBlocking.value
-    }
-
-    fun setBlockMessage(message: String) {
-        _blockMessage.value = message
-    }
-
-    fun clearBlockMessage() {
-        _blockMessage.value = ""
+        _isBlocking.update { !it }
     }
 
     fun setBlockDate(startDate: LocalDateTime) {
@@ -327,6 +316,7 @@ class MyCalendarViewModel @Inject constructor(
 
     fun resetSelectedLocalDates() {
         _selectedStartLocale.value = _defaultBlockedStartLocale.value
+        _isBlocking.value = false
     }
 
     fun setDay(day: LocalDate) {

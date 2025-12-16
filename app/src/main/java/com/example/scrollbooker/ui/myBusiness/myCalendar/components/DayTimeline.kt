@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.extensions.minutesBetween
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsSlot
 import com.example.scrollbooker.entity.booking.calendar.domain.model.SlotUiStyle
+import com.example.scrollbooker.ui.myBusiness.myCalendar.BlockUiState
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.slot.CalendarSlot
 import com.example.scrollbooker.ui.myBusiness.myCalendar.util.generateTicks
 import com.example.scrollbooker.ui.myBusiness.myCalendar.util.rememberHourHeight
@@ -24,6 +25,7 @@ fun DayTimeline(
     dayEnd: LocalTime,
     slots: List<CalendarEventsSlot>,
     slotDuration: Int,
+    blockUiState: BlockUiState,
     onStyleResolver: @Composable (CalendarEventsSlot) -> SlotUiStyle,
     onSlotClick: (CalendarEventsSlot) -> Unit,
 ) {
@@ -91,6 +93,7 @@ fun DayTimeline(
                 val style = onStyleResolver(slot)
 
                 CalendarSlot(
+                    blockUiState = blockUiState,
                     height = height,
                     offsetY = offsetY,
                     slot = slot,

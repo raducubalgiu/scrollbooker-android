@@ -1,5 +1,9 @@
 package com.example.scrollbooker.ui.myBusiness.myCalendar.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -11,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.enums.toDomainColor
+import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEvents
 import com.example.scrollbooker.entity.booking.calendar.domain.model.hasDayFreeSlots
@@ -21,13 +26,20 @@ import com.example.scrollbooker.ui.theme.Primary
 @Composable
 fun MyCalendarFab(
     calendarEvents: FeatureState<CalendarEvents>,
+    isBlocking: Boolean,
     onClick: () -> Unit
 ) {
     val data = (calendarEvents as? FeatureState.Success)?.data
     val containerColor = data?.businessShortDomain?.toDomainColor() ?: Primary
     val isEnabled = data?.hasDayFreeSlots()
+    val isVisible = calendarEvents is FeatureState.Success && !isBlocking
 
-    if(calendarEvents is FeatureState.Success) {
+    AnimatedVisibility(
+        modifier = Modifier.padding(bottom = BasePadding),
+        visible = isVisible,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
         IconButton(
             modifier = Modifier.size(50.dp),
             onClick = onClick,

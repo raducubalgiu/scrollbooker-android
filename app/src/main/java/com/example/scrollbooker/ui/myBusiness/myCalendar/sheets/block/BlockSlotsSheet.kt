@@ -51,6 +51,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.checkLength
 import com.example.scrollbooker.core.extensions.parseTimeStringFromLocalDateTimeString
 import com.example.scrollbooker.core.util.Dimens.SpacingM
+import com.example.scrollbooker.ui.myBusiness.myCalendar.BlockUiState
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Error
@@ -67,6 +68,7 @@ import toIsoString
 fun BlockSlotsSheet(
     sheetState: SheetState,
     state: BlockSlotsSheetState,
+    blockUiState: BlockUiState,
     onAction: (BlockSlotsAction) -> Unit
 ) {
     val context = LocalContext.current
@@ -84,8 +86,8 @@ fun BlockSlotsSheet(
     val minLength = 3
     val maxLength = 50
 
-    val checkNote = checkLength(LocalContext.current, state.message, minLength, maxLength)
-    val isInputValid = checkNote.isNullOrBlank()
+    //val checkNote = checkLength(LocalContext.current, state.message, minLength, maxLength)
+    //val isInputValid = checkNote.isNullOrBlank()
 
     val dayLabel = state.selectedDay?.toIsoString()
 
@@ -196,9 +198,9 @@ fun BlockSlotsSheet(
                                 selected = selectedReason == reason,
                                 onClick = {
                                     selectedReason = reason
-                                    onAction(
-                                        BlockSlotsAction.MessageChanged(context.getString(reason.toLabel()))
-                                    )
+//                                    onAction(
+//                                        BlockSlotsAction.MessageChanged(context.getString(reason.toLabel()))
+//                                    )
                                 },
                                 label = {
                                     Text(text = stringResource(reason.toLabel()))
@@ -211,14 +213,17 @@ fun BlockSlotsSheet(
 
                     AnimatedVisibility(visible = isOtherReason) {
                         EditInput(
-                            value = state.message,
+                            value = "",
+                            //value = state.message,
                             placeholder = stringResource(R.string.addMessage),
-                            onValueChange = { onAction(BlockSlotsAction.MessageChanged(it)) },
+                            onValueChange = {
+                                //onAction(BlockSlotsAction.MessageChanged(it))
+                            },
                             singleLine = false,
                             minLines = 3,
                             maxLines = 3,
-                            isError = !isInputValid,
-                            errorMessage = checkNote,
+                            //isError = !isInputValid,
+                            //errorMessage = checkNote,
                             maxLength = maxLength
                         )
                     }
@@ -241,7 +246,7 @@ fun BlockSlotsSheet(
                     modifier = Modifier.padding(vertical = BasePadding),
                     onClick = { onAction(BlockSlotsAction.Confirm) },
                     title = stringResource(R.string.block),
-                    enabled = if(state.isSaving) false else if(isOtherReason) isInputValid else true,
+                    //enabled = if(state.isSaving) false else if(isOtherReason) isInputValid else true,
                     isLoading = state.isSaving,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Error.copy(alpha = 0.2f),

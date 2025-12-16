@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -31,17 +32,21 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.ui.myBusiness.myCalendar.durations
 import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable
 fun MyCalendarHeaderActions(
+    isBlocking: Boolean,
+    hasFreeSlots: Boolean,
     slotDuration: String,
     enableBack: Boolean,
     enableNext: Boolean,
     handlePreviousWeek: () -> Unit,
     handleNextWeek: () -> Unit,
-    onSlotChange: (String?) -> Unit
+    onSlotChange: (String?) -> Unit,
+    onBlockToggle: () -> Unit
 ) {
     Row(modifier = Modifier
         .fillMaxWidth()
@@ -65,18 +70,15 @@ fun MyCalendarHeaderActions(
 
         Column(Modifier.weight(0.5f)) {
             MainButton(
-                colors = ButtonColors(
-                    //containerColor = if(isBlocking) Error.copy(alpha = 0.2f) else SurfaceBG,
-                    //contentColor = if(isBlocking) Error else OnSurfaceBG,
-                    containerColor = SurfaceBG,
-                    contentColor = OnSurfaceBG,
-                    disabledContainerColor = Divider,
-                    disabledContentColor = OnSurfaceBG
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if(isBlocking) Error.copy(alpha = 0.2f) else SurfaceBG,
+                    contentColor = if(isBlocking) Error else OnSurfaceBG,
                 ),
                 contentPadding = PaddingValues(BasePadding),
                 shape = ShapeDefaults.Medium,
                 title = stringResource(R.string.blockSlots),
-                onClick = {  }
+                onClick = onBlockToggle,
+                enabled = hasFreeSlots
             )
         }
 

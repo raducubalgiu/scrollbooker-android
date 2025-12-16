@@ -15,11 +15,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsSlot
 import com.example.scrollbooker.entity.booking.calendar.domain.model.SlotUiStyle
+import com.example.scrollbooker.ui.myBusiness.myCalendar.BlockUiState
 
 @Composable
 fun CalendarSlot(
+    blockUiState: BlockUiState,
     height: Dp,
     offsetY: Dp,
     slot: CalendarEventsSlot,
@@ -28,7 +31,7 @@ fun CalendarSlot(
     minTouchHeight: Dp = 44.dp
 ) {
     val visualHeight = height
-    val touchHeight = androidx.compose.ui.unit.max(height, minTouchHeight)
+    val touchHeight = max(height, minTouchHeight)
     val isEnabled = style.isEnabled
     val isBefore = style.isBefore
 
@@ -57,6 +60,7 @@ fun CalendarSlot(
             contentAlignment = Alignment.TopStart
         ) {
             SlotContent(
+                blockUiState = blockUiState,
                 slot = slot,
                 height = visualHeight,
                 isBefore = isBefore,

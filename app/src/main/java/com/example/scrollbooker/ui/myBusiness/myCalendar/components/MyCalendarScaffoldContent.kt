@@ -11,6 +11,8 @@ import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.extensions.displayDatePeriod
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEvents
+import com.example.scrollbooker.entity.booking.calendar.domain.model.hasDayFreeSlots
+import com.example.scrollbooker.ui.myBusiness.myCalendar.BlockUiState
 import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarAction
 import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarAction.*
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderState
@@ -23,9 +25,11 @@ fun MyCalendarScaffoldContent(
     headerState: FeatureState<CalendarHeaderState>,
     calendarEvents: FeatureState<CalendarEvents>,
     slotDuration: Int,
+    blockUiState: BlockUiState,
     onAction: (MyCalendarAction) -> Unit
 ) {
     val scope = rememberCoroutineScope()
+    val hasFreeSlots = (calendarEvents as? FeatureState.Success)?.data?.hasDayFreeSlots() == true
 
     when(val header = headerState) {
         is FeatureState.Error -> ErrorScreen()
@@ -68,7 +72,7 @@ fun MyCalendarScaffoldContent(
             }
 
             Column(modifier = Modifier.fillMaxSize()) {
-                MyCalendarHeaderSection(
+                MyCalendarHeader(
                     state = MyCalendarHeaderState(
                         weekPagerState = weekPagerState,
                         selectedTabIndex = dayPagerState.currentPage,
@@ -78,17 +82,17 @@ fun MyCalendarScaffoldContent(
                         enableNext = enableNext,
                         availableDays = availableDays,
                         calendarDays = calendarDays,
-                        isBlocking = false
+                        isBlocking = blockUiState.isBlocking,
+                        hasFreeSlots = hasFreeSlots
                     ),
                     onAction = { action ->
                         when(action) {
                             is MyCalendarHeaderStateAction.Back -> onAction(Back)
                             is MyCalendarHeaderStateAction.Settings -> {}
+                            is MyCalendarHeaderStateAction.OnBlockToggle -> onAction(OnBlockToggle)
                             is MyCalendarHeaderStateAction.HandleNextWeek -> handleNextWeek()
                             is MyCalendarHeaderStateAction.HandlePreviousWeek -> handlePreviousWeek()
-                            is MyCalendarHeaderStateAction.OnSlotChange -> {
-                                onAction(SlotDurationChanged(action.slotDuration))
-                            }
+                            is MyCalendarHeaderStateAction.OnSlotChange -> onAction(SlotDurationChanged(action.slotDuration))
                             is MyCalendarHeaderStateAction.OnChangeTab -> {
                                 scope.launch {
                                     onAction(DayChanged(action.date))
@@ -103,6 +107,7 @@ fun MyCalendarScaffoldContent(
                     dayPagerState = dayPagerState,
                     calendarEvents = calendarEvents,
                     slotDuration = slotDuration,
+                    blockUiState = blockUiState,
                     onSlotClick = { onAction(SlotClick(it)) },
                     onDayRefresh = { onAction(DayRefresh) }
                 )

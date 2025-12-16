@@ -15,6 +15,7 @@ data class MyCalendarHeaderState(
     val enableNext: Boolean,
     val availableDays: List<LocalDate>,
     val calendarDays:  List<LocalDate>,
+    val hasFreeSlots: Boolean
 )
 
 sealed interface MyCalendarHeaderStateAction {
@@ -22,6 +23,7 @@ sealed interface MyCalendarHeaderStateAction {
     data object Settings: MyCalendarHeaderStateAction
     data object HandlePreviousWeek: MyCalendarHeaderStateAction
     data object HandleNextWeek: MyCalendarHeaderStateAction
+    data object OnBlockToggle: MyCalendarHeaderStateAction
     data class OnChangeTab(val date: LocalDate, val index: Int): MyCalendarHeaderStateAction
     data class OnSlotChange(val slotDuration: String?): MyCalendarHeaderStateAction
 }

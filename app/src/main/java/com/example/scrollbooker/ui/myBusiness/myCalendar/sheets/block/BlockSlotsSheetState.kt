@@ -6,7 +6,6 @@ import org.threeten.bp.LocalDateTime
 
 @Immutable
 data class BlockSlotsSheetState(
-    val message: String,
     val slotCount: Int,
     val selectedSlots: Set<LocalDateTime>,
     val selectedDay: LocalDate?,
@@ -15,6 +14,5 @@ data class BlockSlotsSheetState(
 
 sealed interface BlockSlotsAction {
     data object Dismiss: BlockSlotsAction
-    data class MessageChanged(val value: String): BlockSlotsAction
     data object Confirm: BlockSlotsAction
 }
