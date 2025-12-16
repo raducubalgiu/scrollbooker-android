@@ -14,6 +14,7 @@ import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointm
 import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentScrollBookerCreate
 import com.example.scrollbooker.entity.booking.appointment.domain.repository.AppointmentRepository
 import kotlinx.coroutines.flow.Flow
+import timber.log.Timber
 import javax.inject.Inject
 
 class AppointmentRepositoryImpl @Inject constructor(

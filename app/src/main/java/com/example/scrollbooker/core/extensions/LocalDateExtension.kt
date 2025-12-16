@@ -27,6 +27,24 @@ fun LocalDate.toPrettyDate(): String {
     return "$dayName ${this.dayOfMonth} $monthShort"
 }
 
+fun LocalDate.toPrettyFullDate(): String {
+    val locale = AppLocaleProvider.current()
+
+    val dayName = this.dayOfWeek
+        .getDisplayName(TextStyle.FULL, locale)
+        .replaceFirstChar { if (it.isLowerCase()) it.titlecase(locale) else it.toString() }
+
+    val monthShort = this.month
+        .getDisplayName(TextStyle.SHORT, locale)
+        .lowercase(locale)
+        .replace(".", "")
+        .replaceFirstChar { it.lowercase(locale) }
+
+    val year = this.year
+
+    return "$dayName, ${this.dayOfMonth} $monthShort $year"
+}
+
 fun LocalDate.toUtcEpochMillis(): Long =
     atStartOfDay(ZoneOffset.UTC)
         .toInstant()

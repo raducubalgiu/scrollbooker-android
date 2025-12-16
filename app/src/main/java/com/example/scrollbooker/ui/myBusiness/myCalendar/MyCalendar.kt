@@ -97,6 +97,11 @@ fun MyCalendarScreen(
                 when(action) {
                     is BlockSlotsAction.Confirm -> {
                         viewModel.blockAppointments(action.message)
+                        viewModel.resetSelectedLocalDates()
+
+                        scope.launch {
+                            blockSheetState.hide()
+                        }
                     }
                     is BlockSlotsAction.Dismiss -> scope.launch { blockSheetState.hide() }
                 }
