@@ -14,8 +14,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -54,7 +52,6 @@ import java.math.BigDecimal
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OwnClientSheet(
-    sheetState: SheetState,
     state: OwnClientSheetState,
     onAction: (OwnClientAction) -> Unit,
 ) {
@@ -78,13 +75,7 @@ fun OwnClientSheet(
         previousIsSaving = isSaving
     }
 
-    ModalBottomSheet(
-        modifier = Modifier.statusBarsPadding(),
-        sheetState = sheetState,
-        onDismissRequest = {},
-        containerColor = Background,
-        dragHandle = {}
-    ) {
+    Column(modifier = Modifier.statusBarsPadding()) {
         val tabs = remember { OwnClientTab.getTabs }
 
         val startLocalDate = parseDateStringFromLocalDateTimeString(

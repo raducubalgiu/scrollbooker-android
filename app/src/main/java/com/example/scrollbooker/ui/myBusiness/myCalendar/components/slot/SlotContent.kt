@@ -92,7 +92,7 @@ fun SlotContent(
                     )
 
                     AnimatedVisibility(
-                        visible = showCheckbox,
+                        visible = showCheckbox && isCheckboxEnabled,
                         enter = fadeIn(),
                         exit = fadeOut()
                     ) {

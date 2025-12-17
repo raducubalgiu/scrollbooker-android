@@ -7,19 +7,11 @@ import androidx.compose.runtime.Composable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyCalendarSettingsSheet(
-    sheetState: SheetState,
-    onClose: () -> Unit
-) {
-    ModalBottomSheet(
-        sheetState = sheetState,
-        onDismissRequest = onClose
-    ) {
-        Text("Settings Sheet")
-        Text("Settings Sheet")
-        Text("Settings Sheet")
-        Text("Settings Sheet")
-        Text("Settings Sheet")
-        Text("Settings Sheet")
-    }
+fun MyCalendarSettingsSheet() {
+    Text("Settings Sheet")
+    Text("Settings Sheet")
+    Text("Settings Sheet")
+    Text("Settings Sheet")
+    Text("Settings Sheet")
+    Text("Settings Sheet")
 }

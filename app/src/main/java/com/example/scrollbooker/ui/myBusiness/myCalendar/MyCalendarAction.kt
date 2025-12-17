@@ -4,6 +4,7 @@ import org.threeten.bp.LocalDate
 
 sealed interface MyCalendarAction {
     data object Back: MyCalendarAction
+    data object Settings: MyCalendarAction
     data object DayRefresh: MyCalendarAction
     data object OnBlockToggle: MyCalendarAction
     data class DayChanged(val day: LocalDate): MyCalendarAction

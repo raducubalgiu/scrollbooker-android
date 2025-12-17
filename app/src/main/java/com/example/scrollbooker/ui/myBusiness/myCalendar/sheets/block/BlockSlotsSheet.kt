@@ -9,15 +9,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -41,15 +39,22 @@ import toPrettyFullDate
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BlockSlotsSheet(
-    sheetState: SheetState,
     state: BlockSlotsSheetState,
     onAction: (BlockSlotsAction) -> Unit
 ) {
     val context = LocalContext.current
+    var previousIsSaving by rememberSaveable { mutableStateOf(false) }
 
     var message by rememberSaveable { mutableStateOf("") }
     var selectedReason by rememberSaveable { mutableStateOf(BlockReasonEnum.OTHER) }
     val isOtherReason = selectedReason == BlockReasonEnum.OTHER
+
+    val isSaving = state.isSaving
+
+    LaunchedEffect(isSaving) {
+        if(previousIsSaving && !isSaving) onAction(BlockSlotsAction.Dismiss)
+        previousIsSaving = isSaving
+    }
 
     val minLength = 3
     val maxLength = 50
@@ -63,76 +68,68 @@ fun BlockSlotsSheet(
     val title = if(hasMultipleSlots) stringResource(R.string.blockSelectedSlots)
                 else stringResource(R.string.blockSlot)
 
-    ModalBottomSheet(
-        modifier = Modifier.fillMaxSize().statusBarsPadding(),
-        onDismissRequest = { onAction(BlockSlotsAction.Dismiss) },
-        sheetState = sheetState,
-        containerColor = Background,
-        dragHandle = {}
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .padding(horizontal = BasePadding)
     ) {
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = BasePadding)
-        ) {
-            Column(modifier = Modifier.fillMaxSize()) {
-                SheetHeader(
-                    title = "",
-                    onClose = { onAction(BlockSlotsAction.Dismiss) },
-                )
+        Column(modifier = Modifier.fillMaxSize()) {
+            SheetHeader(
+                title = "",
+                onClose = { onAction(BlockSlotsAction.Dismiss) },
+            )
 
-                Spacer(Modifier.height(BasePadding))
+            Spacer(Modifier.height(BasePadding))
 
-                Column(modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                ) {
-                    BlockHeader(
-                        title = title,
-                        dayLabel = dayLabel ?: "",
-                        selectedSlots = state.selectedSlots
-                    )
-
-                    BlockContent(
-                        selectedReason = selectedReason,
-                        message = message,
-                        isMessageVisible = isOtherReason,
-                        isError = !isInputValid,
-                        errorMessage = checkNote,
-                        maxLength = maxLength,
-                        onReasonClick = { selectedReason = it },
-                        onMessageChanged = { message = it }
-                    )
-                }
-            }
-
-            Box(
-                Modifier
-                    .background(Background)
-                    .zIndex(5f)
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .imePadding()
-                    .navigationBarsPadding()
+            Column(modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
             ) {
-                HorizontalDivider(color=Divider, thickness = 0.55.dp)
+                BlockHeader(
+                    title = title,
+                    dayLabel = dayLabel ?: "",
+                    selectedSlots = state.selectedSlots
+                )
 
-                MainButton(
-                    modifier = Modifier.padding(vertical = BasePadding),
-                    onClick = {
-                        val blockedMessage = if(selectedReason == BlockReasonEnum.OTHER) message
-                                             else context.getString(selectedReason.toLabel())
-
-                        onAction(BlockSlotsAction.Confirm(blockedMessage))
-                    },
-                    title = stringResource(R.string.block),
-                    enabled = if(state.isSaving) false else if(isOtherReason) isInputValid else true,
-                    isLoading = state.isSaving,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Error.copy(alpha = 0.2f),
-                        contentColor = Error
-                    )
+                BlockContent(
+                    selectedReason = selectedReason,
+                    message = message,
+                    isMessageVisible = isOtherReason,
+                    isError = !isInputValid,
+                    errorMessage = checkNote,
+                    maxLength = maxLength,
+                    onReasonClick = { selectedReason = it },
+                    onMessageChanged = { message = it }
                 )
             }
+        }
+
+        Box(
+            Modifier
+                .background(Background)
+                .zIndex(5f)
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .imePadding()
+                .navigationBarsPadding()
+        ) {
+            HorizontalDivider(color=Divider, thickness = 0.55.dp)
+
+            MainButton(
+                modifier = Modifier.padding(vertical = BasePadding),
+                onClick = {
+                    val blockedMessage = if(selectedReason == BlockReasonEnum.OTHER) message
+                    else context.getString(selectedReason.toLabel())
+
+                    onAction(BlockSlotsAction.Confirm(blockedMessage))
+                },
+                title = stringResource(R.string.block),
+                enabled = if(state.isSaving) false else if(isOtherReason) isInputValid else true,
+                isLoading = state.isSaving,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Error.copy(alpha = 0.2f),
+                    contentColor = Error
+                )
+            )
         }
     }
 }

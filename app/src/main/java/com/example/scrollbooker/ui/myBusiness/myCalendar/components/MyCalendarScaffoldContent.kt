@@ -88,7 +88,7 @@ fun MyCalendarScaffoldContent(
                     onAction = { action ->
                         when(action) {
                             is MyCalendarHeaderStateAction.Back -> onAction(Back)
-                            is MyCalendarHeaderStateAction.Settings -> {}
+                            is MyCalendarHeaderStateAction.Settings -> onAction(Settings)
                             is MyCalendarHeaderStateAction.OnBlockToggle -> onAction(OnBlockToggle)
                             is MyCalendarHeaderStateAction.HandleNextWeek -> handleNextWeek()
                             is MyCalendarHeaderStateAction.HandlePreviousWeek -> handlePreviousWeek()
