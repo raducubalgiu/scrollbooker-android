@@ -10,11 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.profile.components.ProfileLayout
+import com.example.scrollbooker.ui.profile.tabs.ProfileTabViewModel
 import com.example.scrollbooker.ui.theme.Background
 
 @SuppressLint("ConfigurationScreenWidthHeight")
@@ -25,6 +27,8 @@ fun UserProfileScreen(
     onBack: () -> Unit,
     profileNavigate: ProfileNavigator
 ) {
+    val profileTabViewModel: ProfileTabViewModel = hiltViewModel()
+
     val profileData by viewModel.userProfileState.collectAsState()
     val posts = viewModel.userPosts.collectAsLazyPagingItems()
     val isInitLoading by viewModel.isInitLoading.collectAsState()
@@ -48,6 +52,7 @@ fun UserProfileScreen(
                 .padding(top = innerPadding.calculateTopPadding())
         ) {
             ProfileLayout(
+                profileTabViewModel = profileTabViewModel,
                 isInitLoading = isInitLoading,
                 profileData = profileData,
                 isFollow = isFollow,

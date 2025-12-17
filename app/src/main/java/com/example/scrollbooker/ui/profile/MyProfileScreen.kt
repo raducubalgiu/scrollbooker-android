@@ -15,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.headers.Header
@@ -29,6 +30,7 @@ import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.UserPermissionsController
 import com.example.scrollbooker.ui.profile.components.ProfileLayout
 import com.example.scrollbooker.ui.profile.components.sheets.ProfileMenuSheet
+import com.example.scrollbooker.ui.profile.tabs.ProfileTabViewModel
 import com.example.scrollbooker.ui.theme.Background
 import kotlinx.coroutines.launch
 
@@ -42,6 +44,7 @@ fun MyProfileScreen(
     myPosts: LazyPagingItems<Post>,
     profileNavigate: ProfileNavigator
 ) {
+    val profileTabViewModel: ProfileTabViewModel = hiltViewModel()
     val menuSheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
 
@@ -88,6 +91,7 @@ fun MyProfileScreen(
             .padding(innerPadding)
         ) {
             ProfileLayout(
+                profileTabViewModel = profileTabViewModel,
                 isInitLoading = isInitLoading,
                 profileData = myProfileData,
                 isFollowEnabled = false,

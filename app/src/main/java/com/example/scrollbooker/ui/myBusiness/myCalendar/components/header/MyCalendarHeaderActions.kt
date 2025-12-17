@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.ArrowBackIosNew
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,6 +29,10 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderActionsStateAction.HandleNextWeek
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderActionsStateAction.HandlePreviousWeek
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderActionsStateAction.OnBlockToggle
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderActionsStateAction.OnSlotChange
 import com.example.scrollbooker.ui.myBusiness.myCalendar.durations
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Error
@@ -38,15 +41,8 @@ import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable
 fun MyCalendarHeaderActions(
-    isBlocking: Boolean,
-    hasFreeSlots: Boolean,
-    slotDuration: String,
-    enableBack: Boolean,
-    enableNext: Boolean,
-    handlePreviousWeek: () -> Unit,
-    handleNextWeek: () -> Unit,
-    onSlotChange: (String?) -> Unit,
-    onBlockToggle: () -> Unit
+    state: MyCalendarHeaderActionsState,
+    onAction: (MyCalendarHeaderActionsStateAction) -> Unit
 ) {
     Row(modifier = Modifier
         .fillMaxWidth()
@@ -61,8 +57,8 @@ fun MyCalendarHeaderActions(
             MyCalendarDurationAction(
                 label = stringResource(R.string.interval),
                 options = durations,
-                selectedSlot = slotDuration.toString(),
-                onSlotChange = onSlotChange
+                selectedSlot = state.slotDuration.toString(),
+                onSlotChange = { onAction(OnSlotChange(it)) }
             )
         }
 
@@ -71,14 +67,14 @@ fun MyCalendarHeaderActions(
         Column(Modifier.weight(0.5f)) {
             MainButton(
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if(isBlocking) Error.copy(alpha = 0.2f) else SurfaceBG,
-                    contentColor = if(isBlocking) Error else OnSurfaceBG,
+                    containerColor = if(state.isBlocking) Error.copy(alpha = 0.2f) else SurfaceBG,
+                    contentColor = if(state.isBlocking) Error else OnSurfaceBG,
                 ),
                 contentPadding = PaddingValues(BasePadding),
                 shape = ShapeDefaults.Medium,
                 title = stringResource(R.string.blockSlots),
-                onClick = onBlockToggle,
-                enabled = hasFreeSlots
+                onClick = { onAction(OnBlockToggle) },
+                enabled = state.hasFreeSlots
             )
         }
 
@@ -86,10 +82,10 @@ fun MyCalendarHeaderActions(
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(
-                onClick = { if (enableBack) handlePreviousWeek() },
+                onClick = { if (state.enableBack) onAction(HandlePreviousWeek) },
                 colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = if(enableBack) SurfaceBG else Color.Transparent,
-                    contentColor = if(enableBack) OnSurfaceBG.copy(0.8f) else Divider
+                    containerColor = if(state.enableBack) SurfaceBG else Color.Transparent,
+                    contentColor = if(state.enableBack) OnSurfaceBG.copy(0.8f) else Divider
                 )
             ) {
                 Icon(
@@ -102,10 +98,10 @@ fun MyCalendarHeaderActions(
             Spacer(Modifier.width(SpacingXS))
 
             IconButton(
-                onClick = { if (enableNext) handleNextWeek() },
+                onClick = { if (state.enableNext) onAction(HandleNextWeek) },
                 colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = if(enableNext) SurfaceBG else Color.Transparent,
-                    contentColor = if(enableNext) OnSurfaceBG.copy(0.8f) else Divider
+                    containerColor = if(state.enableNext) SurfaceBG else Color.Transparent,
+                    contentColor = if(state.enableNext) OnSurfaceBG.copy(0.8f) else Divider
                 )
             ) {
                 Icon(

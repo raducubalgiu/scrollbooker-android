@@ -58,6 +58,7 @@ import kotlinx.coroutines.launch
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun ProfileLayout(
+    profileTabViewModel: ProfileTabViewModel,
     isInitLoading: Boolean,
     profileData: FeatureState<UserProfile>,
     isFollow: Boolean? = null,
@@ -66,8 +67,6 @@ fun ProfileLayout(
     posts: LazyPagingItems<Post>,
     profileNavigate: ProfileNavigator
 ) {
-    val viewModel: ProfileTabViewModel = hiltViewModel()
-
     val scope = rememberCoroutineScope()
     val scheduleSheetState = rememberModalBottomSheetState()
     val userId = (profileData as? FeatureState.Success<UserProfile>)?.data?.id
@@ -134,15 +133,15 @@ fun ProfileLayout(
                     .fillMaxSize()
                     .nestedScroll(nestedScrollConnection)
                 ) {
-                    // Tab Content
                     HorizontalPager(
                         state = pagerState,
                         beyondViewportPageCount = 0,
                         modifier = Modifier.fillMaxWidth(),
                         overscrollEffect = null
                     ) { page ->
+
                         LaunchedEffect(user.id) {
-                            viewModel.setUserId(userId = user.id)
+                            profileTabViewModel.setUserId(userId = user.id)
                         }
 
                         when (tabs[page]) {
@@ -165,13 +164,13 @@ fun ProfileLayout(
 
                             ProfileTab.Reposts -> ProfileRepostsTab(
                                 paddingTop = currentHeaderHeightDp,
-                                viewModel = viewModel,
+                                viewModel = profileTabViewModel,
                                 onNavigateToPost = { profileNavigate.toPostDetail() }
                             )
 
                             ProfileTab.Bookmarks -> ProfileBookmarksTab(
                                 paddingTop = currentHeaderHeightDp,
-                                viewModel = viewModel,
+                                viewModel = profileTabViewModel,
                                 onNavigateToPost = { profileNavigate.toPostDetail() }
                             )
 

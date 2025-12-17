@@ -17,8 +17,13 @@ import com.example.scrollbooker.entity.booking.calendar.domain.model.hasDayFreeS
 import com.example.scrollbooker.ui.myBusiness.myCalendar.BlockUiState
 import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarAction
 import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarAction.*
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeader
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderState
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderStateAction
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderStateAction.HandleNextWeek
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderStateAction.HandlePreviousWeek
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderStateAction.OnChangeTab
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderStateAction.OnSlotChange
 import com.example.scrollbooker.ui.shared.calendar.CalendarHeaderState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -92,14 +97,16 @@ fun MyCalendarScaffoldContent(
                         isBlocking = blockUiState.isBlocking,
                         hasFreeSlots = hasFreeSlots
                     ),
-                    onAction = { action -> handleHeaderAction(
-                        action = action,
-                        onAction = onAction,
-                        handleNextWeek = { handleNextWeek() },
-                        handlePreviousWeek = { handlePreviousWeek() },
-                        dayPagerState = dayPagerState,
-                        scope = scope
-                    )}
+                    onAction = { action ->
+                        handleHeaderAction(
+                            action = action,
+                            onAction = onAction,
+                            handleNextWeek = { handleNextWeek() },
+                            handlePreviousWeek = { handlePreviousWeek() },
+                            dayPagerState = dayPagerState,
+                            scope = scope
+                        )
+                    }
                 )
 
                 MyCalendarPagerSection(
@@ -127,10 +134,10 @@ private fun handleHeaderAction(
         is MyCalendarHeaderStateAction.Back -> onAction(Back)
         is MyCalendarHeaderStateAction.Settings -> onAction(Settings)
         is MyCalendarHeaderStateAction.OnBlockToggle -> onAction(OnBlockToggle)
-        is MyCalendarHeaderStateAction.HandleNextWeek -> handleNextWeek()
-        is MyCalendarHeaderStateAction.HandlePreviousWeek -> handlePreviousWeek()
-        is MyCalendarHeaderStateAction.OnSlotChange -> onAction(SlotDurationChanged(action.slotDuration))
-        is MyCalendarHeaderStateAction.OnChangeTab -> {
+        is HandleNextWeek -> handleNextWeek()
+        is HandlePreviousWeek -> handlePreviousWeek()
+        is OnSlotChange -> onAction(SlotDurationChanged(action.slotDuration))
+        is OnChangeTab -> {
             onAction(DayChanged(action.date))
 
             scope.launch {

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.myBusiness.myCalendar.components
+package com.example.scrollbooker.ui.myBusiness.myCalendar.components.header
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,9 +21,10 @@ import com.example.scrollbooker.components.core.iconButton.CustomIconButton
 import com.example.scrollbooker.core.extensions.displayShortDayOfWeek
 import com.example.scrollbooker.core.util.AppLocaleProvider
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderActions
-import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderState
-import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderStateAction
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderActionsStateAction.HandleNextWeek
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderActionsStateAction.HandlePreviousWeek
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderActionsStateAction.OnBlockToggle
+import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderActionsStateAction.OnSlotChange
 import com.example.scrollbooker.ui.shared.calendar.components.CalendarDayTab
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
@@ -35,21 +36,16 @@ fun MyCalendarHeader(
     state: MyCalendarHeaderState,
     onAction: (MyCalendarHeaderStateAction) -> Unit
 ) {
+    val actionsState = MyCalendarHeaderActionsState(
+        isBlocking = state.isBlocking,
+        slotDuration = state.slotDuration.toString(),
+        enableBack = state.enableBack,
+        enableNext = state.enableNext,
+        hasFreeSlots = state.hasFreeSlots,
+    )
+
     Header(
-        customTitle = {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = stringResource(R.string.calendar),
-                    color = Color.Gray,
-                    style = bodyLarge
-                )
-                Text(
-                    text = state.period,
-                    fontWeight = FontWeight.SemiBold,
-                    style = titleMedium
-                )
-            }
-        },
+        customTitle = { CustomTitle(state.period) },
         onBack = { onAction(MyCalendarHeaderStateAction.Back) },
         actions = {
             CustomIconButton(
@@ -60,15 +56,15 @@ fun MyCalendarHeader(
     )
 
     MyCalendarHeaderActions(
-        isBlocking = state.isBlocking,
-        slotDuration = state.slotDuration.toString(),
-        enableBack = state.enableBack,
-        enableNext = state.enableNext,
-        hasFreeSlots = state.hasFreeSlots,
-        handlePreviousWeek = { onAction(MyCalendarHeaderStateAction.HandlePreviousWeek) },
-        handleNextWeek = { onAction(MyCalendarHeaderStateAction.HandleNextWeek) },
-        onSlotChange = { onAction(MyCalendarHeaderStateAction.OnSlotChange(it)) },
-        onBlockToggle = { onAction(MyCalendarHeaderStateAction.OnBlockToggle) }
+        state = actionsState,
+        onAction = { action ->
+            when(action) {
+                HandlePreviousWeek -> { onAction(MyCalendarHeaderStateAction.HandlePreviousWeek) }
+                HandleNextWeek -> { onAction(MyCalendarHeaderStateAction.HandleNextWeek) }
+                OnBlockToggle -> { onAction(MyCalendarHeaderStateAction.OnBlockToggle) }
+                is OnSlotChange -> { onAction(MyCalendarHeaderStateAction.OnSlotChange(action.slotDuration)) }
+            }
+        }
     )
 
     HorizontalPager(
@@ -104,5 +100,21 @@ fun MyCalendarHeader(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun CustomTitle(period: String) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(
+            text = stringResource(R.string.calendar),
+            color = Color.Gray,
+            style = bodyLarge
+        )
+        Text(
+            text = period,
+            fontWeight = FontWeight.SemiBold,
+            style = titleMedium
+        )
     }
 }

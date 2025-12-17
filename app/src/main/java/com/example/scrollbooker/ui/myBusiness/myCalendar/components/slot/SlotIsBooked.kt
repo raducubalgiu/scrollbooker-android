@@ -10,7 +10,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsSlot
-import com.example.scrollbooker.ui.theme.bodySmall
+import com.example.scrollbooker.ui.theme.bodyMedium
 
 @Composable
 fun SlotIsBooked(
@@ -22,7 +22,7 @@ fun SlotIsBooked(
     Column {
         Text(
             text = title,
-            style = bodySmall,
+            style = bodyMedium,
             maxLines = maxLines,
             overflow = TextOverflow.Ellipsis
         )
@@ -31,7 +31,7 @@ fun SlotIsBooked(
 
         Text(
             text = "Tuns Special • ${slot.info?.totalPriceWithDiscount}",
-            style = bodySmall,
+            style = bodyMedium,
             maxLines = maxLines,
             overflow = TextOverflow.Ellipsis
         )
