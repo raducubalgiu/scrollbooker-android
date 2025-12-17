@@ -1,10 +1,12 @@
 package com.example.scrollbooker.ui.myBusiness.myCalendar.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
@@ -18,6 +20,7 @@ import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarAction.*
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderState
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderStateAction
 import com.example.scrollbooker.ui.shared.calendar.CalendarHeaderState
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
@@ -51,10 +54,14 @@ fun MyCalendarScaffoldContent(
             val currentDayIndex = dayPagerState.currentPage
             val currentWeekIndex = weekPagerState.currentPage
 
+            val latestOnAction = rememberUpdatedState(onAction)
+
             LaunchedEffect(currentWeekIndex, currentDayIndex) {
                 val dayIndex = currentWeekIndex * 7 + currentDayIndex
                 val day = calendarDays.getOrNull(dayIndex)
-                if(day != null) { onAction(DayChanged(day)) }
+                if(day != null) {
+                    latestOnAction.value(DayChanged(day))
+                }
             }
 
             val currentWeekDates = calendarDays.drop(currentWeekIndex * 7).take(7)
@@ -85,22 +92,14 @@ fun MyCalendarScaffoldContent(
                         isBlocking = blockUiState.isBlocking,
                         hasFreeSlots = hasFreeSlots
                     ),
-                    onAction = { action ->
-                        when(action) {
-                            is MyCalendarHeaderStateAction.Back -> onAction(Back)
-                            is MyCalendarHeaderStateAction.Settings -> onAction(Settings)
-                            is MyCalendarHeaderStateAction.OnBlockToggle -> onAction(OnBlockToggle)
-                            is MyCalendarHeaderStateAction.HandleNextWeek -> handleNextWeek()
-                            is MyCalendarHeaderStateAction.HandlePreviousWeek -> handlePreviousWeek()
-                            is MyCalendarHeaderStateAction.OnSlotChange -> onAction(SlotDurationChanged(action.slotDuration))
-                            is MyCalendarHeaderStateAction.OnChangeTab -> {
-                                scope.launch {
-                                    onAction(DayChanged(action.date))
-                                    dayPagerState.animateScrollToPage(action.index)
-                                }
-                            }
-                        }
-                    }
+                    onAction = { action -> handleHeaderAction(
+                        action = action,
+                        onAction = onAction,
+                        handleNextWeek = { handleNextWeek() },
+                        handlePreviousWeek = { handlePreviousWeek() },
+                        dayPagerState = dayPagerState,
+                        scope = scope
+                    )}
                 )
 
                 MyCalendarPagerSection(
@@ -111,6 +110,31 @@ fun MyCalendarScaffoldContent(
                     onSlotClick = { onAction(SlotClick(it)) },
                     onDayRefresh = { onAction(DayRefresh) }
                 )
+            }
+        }
+    }
+}
+
+private fun handleHeaderAction(
+    action: MyCalendarHeaderStateAction,
+    onAction: (MyCalendarAction) -> Unit,
+    handleNextWeek: () -> Unit,
+    handlePreviousWeek: () -> Unit,
+    dayPagerState: PagerState,
+    scope: CoroutineScope
+) {
+    when(action) {
+        is MyCalendarHeaderStateAction.Back -> onAction(Back)
+        is MyCalendarHeaderStateAction.Settings -> onAction(Settings)
+        is MyCalendarHeaderStateAction.OnBlockToggle -> onAction(OnBlockToggle)
+        is MyCalendarHeaderStateAction.HandleNextWeek -> handleNextWeek()
+        is MyCalendarHeaderStateAction.HandlePreviousWeek -> handlePreviousWeek()
+        is MyCalendarHeaderStateAction.OnSlotChange -> onAction(SlotDurationChanged(action.slotDuration))
+        is MyCalendarHeaderStateAction.OnChangeTab -> {
+            onAction(DayChanged(action.date))
+
+            scope.launch {
+                dayPagerState.animateScrollToPage(action.index)
             }
         }
     }

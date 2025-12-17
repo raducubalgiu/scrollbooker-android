@@ -39,6 +39,7 @@ fun BlockContent(
         BlockReasonEnum.MEDICAL_LEAVE,
         BlockReasonEnum.DOCTOR_APPOINTMENT,
         BlockReasonEnum.LEGAL_DAY_OFF,
+        BlockReasonEnum.DO_NOT_WANT_TO_SAY,
         BlockReasonEnum.OTHER
     )
 

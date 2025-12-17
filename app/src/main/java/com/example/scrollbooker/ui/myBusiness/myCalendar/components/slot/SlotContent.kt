@@ -108,10 +108,9 @@ fun SlotContent(
                 }
 
                 Box(modifier = Modifier.fillMaxSize()) {
-                    if (!isVeryCompact) {
-                        val title = slot.info?.customer?.fullname ?: stringResource(R.string.booked)
-                        val maxLines = if (isCompact) 1 else 2
+                    val maxLines = if (isCompact) 1 else 2
 
+                    if (!isVeryCompact) {
                         when {
                             slot.isBlocked -> {
                                 SlotContainer(
@@ -129,7 +128,7 @@ fun SlotContent(
 
                             blockUiState.isBlocking -> null
 
-                            slot.isBooked -> SlotIsBooked(title, maxLines)
+                            slot.isBooked -> SlotIsBooked(slot, maxLines)
 
                             slot.isLastMinute -> {
                                 SlotIsLastMinute(
