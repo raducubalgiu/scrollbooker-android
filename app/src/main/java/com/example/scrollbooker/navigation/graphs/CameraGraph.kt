@@ -26,9 +26,7 @@ import com.example.scrollbooker.ui.camera.CameraScreen
 import com.example.scrollbooker.ui.camera.CameraViewModel
 import com.example.scrollbooker.ui.camera.CreatePostScreen
 
-fun NavGraphBuilder.cameraGraph(
-    mainNavController: NavHostController
-) {
+fun NavGraphBuilder.cameraGraph(mainNavController: NavHostController) {
     val pushSpec: FiniteAnimationSpec<IntOffset> = tween(320, easing = LinearOutSlowInEasing)
     val popSpec: FiniteAnimationSpec<IntOffset> = tween(280, easing = LinearOutSlowInEasing)
     val fadeInSpec: FiniteAnimationSpec<Float> = tween(220, easing = LinearOutSlowInEasing)

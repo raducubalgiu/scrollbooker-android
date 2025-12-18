@@ -4,7 +4,6 @@ import android.view.ViewGroup
 import androidx.annotation.OptIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,13 +17,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -50,29 +45,20 @@ fun CameraPreviewScreen(
     onBack: () -> Unit,
     onNavigateToCreatePostScreen: () -> Unit
 ) {
-    val player = viewModel.player
-    val isPrepared by viewModel.isPrepared.collectAsState()
-
-    LifecycleStartEffect(true) {
-        onStopOrDispose {
-            viewModel.releasePlayer()
-        }
-    }
+    val player by viewModel.player.collectAsState()
+    val state by viewModel.uiState.collectAsState()
 
     val context = LocalContext.current
-    val configuration = LocalConfiguration.current
-    val density = LocalDensity.current
 
-    val screenWidthPx = with(density) { configuration.screenWidthDp.dp.toPx() }
-    val screenHeightPx = with(density) { configuration.screenHeightDp.dp.toPx() }
-    val screenRatio = screenWidthPx / screenHeightPx
+    LaunchedEffect(state.selectedUri) {
+        viewModel.generateCoverIfNeeded()
+    }
 
     val playerView = remember {
         PlayerView(context).apply {
             useController = false
             controllerAutoShow = false
             controllerShowTimeoutMs = 0
-
             setShowBuffering(SHOW_BUFFERING_NEVER)
 
             layoutParams = ViewGroup.LayoutParams(
@@ -88,26 +74,32 @@ fun CameraPreviewScreen(
     }
 
     DisposableEffect(player) {
+        val p = player ?: return@DisposableEffect onDispose {  }
+
         val listener = object : Player.Listener {
             override fun onVideoSizeChanged(videoSize: VideoSize) {
-                // raport real al clipului (ține cont de pixel ratio)
                 val videoRatio =
                     (videoSize.width * videoSize.pixelWidthHeightRatio) /
                             max(1, videoSize.height).toFloat()
 
-                // Regula: landscape -> FIT, portrait/square -> ZOOM
                 playerView.resizeMode =
                     if (videoRatio >= 1f) {
                         AspectRatioFrameLayout.RESIZE_MODE_FIT
                     } else {
-                    // opțional: dacă vrei să compari cu ecranul:
-                    // if (videoRatio < screenRatio) ZOOM else FIT
                         AspectRatioFrameLayout.RESIZE_MODE_ZOOM
                     }
             }
         }
-        player.addListener(listener)
-        onDispose { player.removeListener(listener) }
+        p.addListener(listener)
+        onDispose { p.removeListener(listener) }
+    }
+
+    LifecycleStartEffect(Unit) {
+        viewModel.play()
+
+        onStopOrDispose {
+            viewModel.pause()
+        }
     }
 
     Scaffold(
@@ -131,10 +123,13 @@ fun CameraPreviewScreen(
                 boxSize = 60.dp,
                 iconSize = 30.dp,
                 tint = Color.White,
-                onClick = onBack
+                onClick = {
+                    viewModel.onBackToGallery()
+                    onBack()
+                }
             )
 
-            if(isPrepared) {
+            if(state.isReady && player != null) {
                 AndroidView(
                     modifier = Modifier
                         .fillMaxSize()
