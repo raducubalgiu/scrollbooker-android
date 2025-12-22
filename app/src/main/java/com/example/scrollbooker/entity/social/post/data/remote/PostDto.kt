@@ -13,16 +13,15 @@ data class PostDto(
 
     val employee: PostEmployeeDto?,
 
-    //val product: PostProductDto?,
     val counters: PostCountersDto,
 
     @SerializedName("user_actions")
     val userActions: UserPostActionsDto,
 
     @SerializedName("media_files")
-    val mediaFiles: List<PostMediaFileDto>,
+    val mediaFiles: List<PostMediaFileDto> = emptyList(),
 
-    val hashtags: List<HashtagDto>,
+    val hashtags: List<HashtagDto> = emptyList(),
 
     @SerializedName("is_video_review")
     val isVideoReview: Boolean,
@@ -122,7 +121,7 @@ data class PostMediaFileDto(
     @SerializedName("thumbnail_url")
     val thumbnailUrl: String,
 
-    val duration: Float,
+    val duration: Float?,
 
     @SerializedName("post_id")
     val postId: Int,

@@ -11,12 +11,12 @@ import androidx.core.net.toUri
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.media3.common.AudioAttributes
-import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+import com.example.scrollbooker.core.extensions.uriToCacheFile
+import com.example.scrollbooker.entity.social.cloudflare.domain.useCase.CreatePostWithCloudflareUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -26,14 +26,19 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
 
 @HiltViewModel
 class CameraViewModel @Inject constructor(
+    private val createPostWithCloudflareUseCase: CreatePostWithCloudflareUseCase,
     @ApplicationContext private val context: Context
 ): ViewModel() {
+    private val _isSaving = MutableStateFlow<Boolean>(false)
+    val isSaving: StateFlow<Boolean> = _isSaving.asStateFlow()
+
     // Camera
     val cameraController: LifecycleCameraController by lazy {
         LifecycleCameraController(context).apply {
@@ -247,4 +252,28 @@ class CameraViewModel @Inject constructor(
         }
     }
 
+    fun createPost(
+        description: String?,
+        videoUri: Uri
+    ) {
+        viewModelScope.launch {
+            _isSaving.value = true
+
+            runCatching {
+                val file = uriToCacheFile(context, videoUri)
+
+                createPostWithCloudflareUseCase(
+                    videoFile = file,
+                    description = description
+                )
+            }
+                .onSuccess {
+                    _isSaving.value = false
+                }
+                .onFailure { e ->
+                    _isSaving.value = false
+                    Timber.tag("Create Post").e("Error: on creating post: $e")
+                }
+        }
+    }
 }

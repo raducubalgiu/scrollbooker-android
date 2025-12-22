@@ -19,7 +19,7 @@ class GetUserProfileUseCase @Inject constructor(
             val response = repository.getUserProfile(userId, lat, lng)
             FeatureState.Success(response)
         } catch (e: Exception) {
-            Timber.tag("UserProfile").e("ERROR: on Fetching User Profile: $e")
+            Timber.tag("UserProfile").e(e, "ERROR: on Fetching User Profile")
             FeatureState.Error(e)
         }
     }

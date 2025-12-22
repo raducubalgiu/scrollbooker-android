@@ -1,6 +1,7 @@
 package com.example.scrollbooker.entity.social.post.data.remote
 
 import com.example.scrollbooker.core.util.PaginatedResponseDto
+import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -8,6 +9,11 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface PostApiService {
+    @POST("posts")
+    suspend fun createPost(
+        @Body request: CreatePostRequest
+    )
+
     @GET("posts/explore")
     suspend fun getExplorePosts(
         @Query("business_types") selectedBusinessTypes: List<Int?>,

@@ -44,7 +44,7 @@ class PostPagingSource(
                 nextKey = if(isLastPage) null else page + 1,
             )
         } catch (e: Exception) {
-            Timber.tag("Paging Posts").e("ERROR: on Loading Posts $e")
+            Timber.tag("Paging Posts").e(e, "ERROR: on Loading Posts")
             e.printStackTrace()
             LoadResult.Error(throwable = e)
         }

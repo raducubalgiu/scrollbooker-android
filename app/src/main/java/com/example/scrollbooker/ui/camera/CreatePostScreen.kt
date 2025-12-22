@@ -31,6 +31,7 @@ fun CreatePostScreen(
     onBack: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
+    val isSaving by viewModel.isSaving.collectAsState()
 
     val focusManager = LocalFocusManager.current
     val verticalScroll = rememberScrollState()
@@ -40,7 +41,16 @@ fun CreatePostScreen(
 
     Scaffold(
         topBar = { Header(onBack=onBack) },
-        bottomBar = { CreatePostBottomBar(onCreate = {}) }
+        bottomBar = {
+            CreatePostBottomBar(
+                onCreate = {
+                    state.selectedUri?.let { uri ->
+                        viewModel.createPost(description, uri)
+                    }
+                },
+                isLoading = isSaving
+            )
+        }
     ) { innerPadding ->
         Box(modifier = Modifier
             .fillMaxSize()

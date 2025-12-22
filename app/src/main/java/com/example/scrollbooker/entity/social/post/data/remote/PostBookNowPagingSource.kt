@@ -29,6 +29,8 @@ class PostBookNowPagingSource(
                 api.getExplorePosts(selectedBusinessTypes, page, limit)
             }
 
+            Timber.tag("Paging Posts").e("RESPONSE $response")
+
             val posts = response.results.map { it.toDomain() }
 
             val totalLoaded = (page - 1) * limit + response.results.size
@@ -40,7 +42,7 @@ class PostBookNowPagingSource(
                 nextKey = if(isLastPage) null else page + 1,
             )
         } catch (e: Exception) {
-            Timber.tag("Paging Posts").e("ERROR: on Loading Posts $e")
+            Timber.tag("Paging Posts").e(e, "ERROR: on Loading Posts")
             e.printStackTrace()
             LoadResult.Error(throwable = e)
         }

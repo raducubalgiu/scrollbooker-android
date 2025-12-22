@@ -275,7 +275,7 @@ class FeedScreenViewModel @Inject constructor(
 
         val player = getOrCreatePlayer(post)
 
-        val newMediaItem = MediaItem.fromUri(post.mediaFiles.first().url)
+        val newMediaItem = MediaItem.fromUri(post.mediaFiles.first().url ?: "")
         val sameItem = player.currentMediaItem?.localConfiguration?.uri == newMediaItem.localConfiguration?.uri
 
         if(!sameItem) {
@@ -302,7 +302,7 @@ class FeedScreenViewModel @Inject constructor(
         if(post == null) return
 
         val player = getOrCreatePlayer(post)
-        val mediaItem = MediaItem.fromUri(post.mediaFiles.first().url)
+        val mediaItem = MediaItem.fromUri(post.mediaFiles.first().url ?: "")
 
         if(player.currentMediaItem?.localConfiguration?.uri == mediaItem.localConfiguration?.uri) return
 

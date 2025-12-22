@@ -25,7 +25,8 @@ import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable
 fun CreatePostBottomBar(
-    onCreate: () -> Unit
+    onCreate: () -> Unit,
+    isLoading: Boolean
 ) {
     val bottomInset = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
@@ -52,7 +53,8 @@ fun CreatePostBottomBar(
             MainButton(
                 modifier = Modifier.weight(1f),
                 title = stringResource(R.string.postNow),
-                onClick = onCreate
+                onClick = onCreate,
+                isLoading = isLoading
             )
         }
     }

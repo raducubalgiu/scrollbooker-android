@@ -9,7 +9,6 @@ data class Post(
     val user: PostUser,
     val businessOwner: PostBusinessOwner,
     val employee: PostEmployee?,
-    //val product: PostProduct?,
     val userActions: UserPostActions,
     val mediaFiles: List<PostMediaFile>,
     val counters: PostCounters,
@@ -73,7 +72,7 @@ data class PostMediaFile(
     val url: String,
     val type: String,
     val thumbnailUrl: String,
-    val duration: Float,
+    val duration: Float?,
     val postId: Int,
     val orderIndex: Int
 )

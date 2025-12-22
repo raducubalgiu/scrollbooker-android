@@ -41,7 +41,7 @@ class PostVideoReviewsPagingSource(
                 nextKey = if(isLastPage) null else page + 1,
             )
         } catch (e: Exception) {
-            Timber.tag("Paging Posts").e("ERROR: on Loading User Video Reviews Posts $e")
+            Timber.tag("Paging Posts").e(e, "ERROR: on Loading User Video Reviews Posts")
             e.printStackTrace()
             LoadResult.Error(throwable = e)
         }

@@ -1,5 +1,4 @@
 package com.example.scrollbooker.entity.social.post.di
-
 import com.example.scrollbooker.core.util.Constants
 import com.example.scrollbooker.entity.social.post.data.remote.PostApiService
 import com.example.scrollbooker.entity.social.post.data.repository.PostRepositoryImpl
@@ -37,7 +36,9 @@ object PostsModule {
 
     @Provides
     @Singleton
-    fun providePostsRepository(apiService: PostApiService): PostRepository {
+    fun providePostsRepository(
+        apiService: PostApiService,
+    ): PostRepository {
         return PostRepositoryImpl(apiService)
     }
 
