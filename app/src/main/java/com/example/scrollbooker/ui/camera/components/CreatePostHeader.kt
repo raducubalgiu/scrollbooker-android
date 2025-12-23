@@ -50,7 +50,8 @@ fun CreatePostHeader(
     coverUri: String?,
     coverKey: String?,
     description: String,
-    onDescriptionChange: (String) -> Unit
+    onDescriptionChange: (String) -> Unit,
+    onNavigateToPostPreview: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -64,7 +65,7 @@ fun CreatePostHeader(
                 .aspectRatio(9f / 12f)
                 .clip(shape = ShapeDefaults.Medium)
                 .background(SurfaceBG)
-                .clickable(onClick = {})
+                .clickable(onClick = onNavigateToPostPreview)
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)

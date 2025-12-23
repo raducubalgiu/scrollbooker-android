@@ -36,6 +36,7 @@ fun PostOverlay(
     postActionState: PostActionUiState,
     onAction: (PostOverlayActionEnum) -> Unit,
 
+    enableOpacity: Boolean = false,
     showBottomBar: Boolean,
     onShowBottomBar: (() -> Unit)? = null,
     onNavigateToUserProfile: (Int) -> Unit,
@@ -87,6 +88,7 @@ fun PostOverlay(
                 Spacer(Modifier.height(SpacingXS))
 
                 PostOverlayUser(
+                    enableOpacity = enableOpacity,
                     user = post.user,
                     businessOwner = post.businessOwner,
                     isVideoReview = isVideoReview,
@@ -116,6 +118,7 @@ fun PostOverlay(
                 user = post.user,
                 postActionState = postActionState,
                 isVideoReview = post.isVideoReview,
+                enableOpacity = enableOpacity,
                 counters = post.counters,
                 userActions = post.userActions,
                 onAction = onAction,

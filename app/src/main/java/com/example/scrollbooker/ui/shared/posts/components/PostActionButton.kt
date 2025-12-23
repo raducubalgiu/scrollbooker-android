@@ -25,17 +25,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.scrollbooker.core.extensions.withAlpha
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.ui.shared.posts.util.formatCounters
 
 @Composable
 fun PostActionButton(
+    modifier: Modifier = Modifier,
     isEnabled: Boolean = true,
+    enableOpacity: Boolean = false,
     tint: Color = Color.White,
     counter: Int? = null,
     icon: Int,
-    modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -66,7 +68,7 @@ fun PostActionButton(
             counter?.let {
                 Spacer(Modifier.height(SpacingXXS))
                 Text(
-                    color = Color.White,
+                    color = Color.White.withAlpha(enableOpacity),
                     text = formatCounters(it),
                     style = TextStyle(
                         fontWeight = FontWeight.SemiBold,

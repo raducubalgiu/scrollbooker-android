@@ -28,14 +28,15 @@ import com.example.scrollbooker.ui.camera.components.CreatePostHeader
 @Composable
 fun CreatePostScreen(
     viewModel: CameraViewModel,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onNavigateToPostPreview: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
+    val description by viewModel.description.collectAsState()
     val isSaving by viewModel.isSaving.collectAsState()
 
     val focusManager = LocalFocusManager.current
     val verticalScroll = rememberScrollState()
-    var description by rememberSaveable { mutableStateOf("") }
 
     val previewHeight = 160.dp
 
@@ -67,7 +68,8 @@ fun CreatePostScreen(
                 coverUri = state.coverUri.toString(),
                 coverKey = state.coverKey,
                 description = description,
-                onDescriptionChange = { description = it }
+                onDescriptionChange = { viewModel.setDescription(it) },
+                onNavigateToPostPreview = onNavigateToPostPreview
             )
         }
     }

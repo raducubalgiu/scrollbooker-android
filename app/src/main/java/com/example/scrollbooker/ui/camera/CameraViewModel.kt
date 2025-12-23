@@ -48,7 +48,13 @@ class CameraViewModel @Inject constructor(
     }
 
     private val _isBound = MutableStateFlow(false)
-    val isBound: StateFlow<Boolean> = _isBound.asStateFlow()
+
+    private val _description = MutableStateFlow<String>("")
+    val description: StateFlow<String> = _description.asStateFlow()
+
+    fun setDescription(desc: String) {
+        _description.value = desc
+    }
 
     fun bindIfNeeded(owner: LifecycleOwner) {
         if(_isBound.value) return

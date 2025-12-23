@@ -24,6 +24,7 @@ import com.example.scrollbooker.ui.camera.CameraGalleryScreen
 import com.example.scrollbooker.ui.camera.CameraPreviewScreen
 import com.example.scrollbooker.ui.camera.CameraScreen
 import com.example.scrollbooker.ui.camera.CameraViewModel
+import com.example.scrollbooker.ui.camera.CreatePostPreviewScreen
 import com.example.scrollbooker.ui.camera.CreatePostScreen
 
 fun NavGraphBuilder.cameraGraph(mainNavController: NavHostController) {
@@ -96,8 +97,8 @@ fun NavGraphBuilder.cameraGraph(mainNavController: NavHostController) {
             route = MainRoute.CreatePost.route,
             enterTransition = { slideInFromRight() },
             exitTransition = { slideOutToLeft() },
-            popEnterTransition = { slideInFromLeft() },
-            popExitTransition = { slideOutToRight() }
+            popEnterTransition = { EnterTransition.None },
+            popExitTransition = { ExitTransition.None }
         ) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 mainNavController.getBackStackEntry(MainRoute.CameraNavigator.route)
@@ -105,6 +106,27 @@ fun NavGraphBuilder.cameraGraph(mainNavController: NavHostController) {
             val viewModel = hiltViewModel<CameraViewModel>(parentEntry)
 
             CreatePostScreen(
+                viewModel = viewModel,
+                onBack = { mainNavController.popBackStack() },
+                onNavigateToPostPreview = {
+                    mainNavController.navigate(MainRoute.CreatePostPreview.route)
+                }
+            )
+        }
+
+        composable(
+            route = MainRoute.CreatePostPreview.route,
+            enterTransition = { slideInVertically(pushSpec) { it } + fadeIn(fadeInSpec) },
+            exitTransition = { ExitTransition.None },
+            popEnterTransition = { EnterTransition.None },
+            popExitTransition = { slideOutVertically(popSpec) { it } + fadeOut(fadeOutSpec) }
+        ) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                mainNavController.getBackStackEntry(MainRoute.CameraNavigator.route)
+            }
+            val viewModel = hiltViewModel<CameraViewModel>(parentEntry)
+
+            CreatePostPreviewScreen(
                 viewModel = viewModel,
                 onBack = { mainNavController.popBackStack() }
             )

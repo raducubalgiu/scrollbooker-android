@@ -14,12 +14,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.components.core.avatar.AvatarWithRating
+import com.example.scrollbooker.core.extensions.withAlpha
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.social.post.domain.model.PostCounters
@@ -34,6 +36,7 @@ fun PostOverlayActions(
     user: PostUser,
     postActionState: PostActionUiState,
     isVideoReview: Boolean,
+    enableOpacity: Boolean,
     counters: PostCounters,
     userActions: UserPostActions,
     onAction: (PostOverlayActionEnum) -> Unit,
@@ -58,6 +61,7 @@ fun PostOverlayActions(
             )
         } else {
             AvatarWithRating(
+                modifier = Modifier.alpha(if(enableOpacity) 0.5f else 1f),
                 url = user.avatar ?: "",
                 rating = user.ratingsAverage,
                 size = 55.dp,
@@ -69,45 +73,46 @@ fun PostOverlayActions(
 
         PostActionButton(
             isEnabled = !postActionState.isSavingLike,
+            enableOpacity = enableOpacity,
             counter = counters.likeCount,
             icon = R.drawable.ic_heart_solid,
-            tint = if (userActions.isLiked) Error else Color.White,
-            onClick = {
-                onAction(PostOverlayActionEnum.LIKE)
-            }
+            tint = if (userActions.isLiked) Error.withAlpha(enableOpacity)
+                   else Color.White.withAlpha(enableOpacity),
+            onClick = { onAction(PostOverlayActionEnum.LIKE) }
         )
 
         if(!isVideoReview) {
             PostActionButton(
+                enableOpacity = enableOpacity,
                 counter = user.ratingsCount,
                 icon = R.drawable.ic_clipboard_check_solid,
-                tint = Color.White,
-                onClick = {
-                    onAction(PostOverlayActionEnum.OPEN_REVIEWS)
-                }
+                tint = Color.White.withAlpha(enableOpacity),
+                onClick = { onAction(PostOverlayActionEnum.OPEN_REVIEWS) }
             )
         }
 
         PostActionButton(
             counter = counters.commentCount,
+            enableOpacity = enableOpacity,
             icon = R.drawable.ic_comment_solid,
-            tint = Color.White,
-            onClick = {
-                onAction(PostOverlayActionEnum.OPEN_COMMENTS)
-            }
+            tint = Color.White.withAlpha(enableOpacity),
+            onClick = { onAction(PostOverlayActionEnum.OPEN_COMMENTS) }
         )
 
         PostActionButton(
             isEnabled = !postActionState.isSavingBookmark,
+            enableOpacity = enableOpacity,
             counter = counters.bookmarkCount,
             icon = R.drawable.ic_bookmark_solid,
-            tint = if (userActions.isBookmarked) Color(0xFFF3BA2F) else Color.White,
+            tint = if (userActions.isBookmarked) Color(0xFFF3BA2F).withAlpha(enableOpacity)
+                   else Color.White.withAlpha(enableOpacity),
             onClick = { onAction(PostOverlayActionEnum.BOOKMARK) }
         )
 
         PostActionButton(
+            enableOpacity = enableOpacity,
             icon = R.drawable.ic_elipsis_horizontal,
-            tint = Color.White,
+            tint = Color.White.withAlpha(enableOpacity),
             onClick = { onAction(PostOverlayActionEnum.OPEN_MORE_OPTIONS) }
         )
 
@@ -116,8 +121,8 @@ fun PostOverlayActions(
                 modifier = Modifier.padding(vertical = BasePadding),
                 onClick = onShowBottomBar,
                 colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = Color.Black.copy(alpha = 0.5f),
-                    contentColor = Color.White
+                    containerColor = Color.Black.copy(alpha = if(enableOpacity) 0.2f else 0.5f),
+                    contentColor = Color.White.withAlpha(enableOpacity)
                 )
             ) {
                 Icon(

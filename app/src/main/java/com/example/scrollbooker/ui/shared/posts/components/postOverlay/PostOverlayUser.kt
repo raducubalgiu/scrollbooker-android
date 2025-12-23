@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.Avatar
+import com.example.scrollbooker.core.extensions.withAlpha
 import com.example.scrollbooker.core.util.Dimens.AvatarSizeXXS
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
@@ -43,6 +44,7 @@ import com.example.scrollbooker.ui.theme.bodyMedium
 
 @Composable
 fun PostOverlayUser(
+    enableOpacity: Boolean = false,
     user: PostUser,
     businessOwner: PostBusinessOwner,
     isVideoReview: Boolean,
@@ -66,7 +68,7 @@ fun PostOverlayUser(
             text = user.fullName,
             style = bodyLarge,
             fontWeight = FontWeight.SemiBold,
-            color = Color.White,
+            color = Color.White.withAlpha(enableOpacity),
             fontSize = 18.sp
         )
 
@@ -76,12 +78,12 @@ fun PostOverlayUser(
             isVideoReview -> {
                 SecondaryText(
                     text = "${stringResource(R.string.hasTestedTheService)} Tuns",
-                    color = Color.White,
+                    color = Color.White.withAlpha(enableOpacity),
                     fontWeight = FontWeight.Normal,
                     fontStyle = FontStyle.Italic
                 )
             }
-            else -> SecondaryText(user.profession)
+            else -> SecondaryText(user.profession, enableOpacity)
         }
 
         Spacer(Modifier.height(SpacingM))
@@ -89,6 +91,7 @@ fun PostOverlayUser(
 
     if(!isBusiness) {
         PostBusiness(
+            enableOpacity = enableOpacity,
             fullName = businessOwner.fullName,
             avatar = businessOwner.avatar,
             rating = businessOwner.ratingsAverage,
@@ -103,7 +106,8 @@ fun PostOverlayUser(
 @Composable
 private fun SecondaryText(
     text: String,
-    color: Color = Primary.copy(alpha = 0.85f),
+    enableOpacity: Boolean = false,
+    color: Color = Primary.copy(alpha = if(enableOpacity) 0.5f else 0.85f),
     fontWeight: FontWeight = FontWeight.SemiBold,
     fontStyle: FontStyle = FontStyle.Normal
 ) {
@@ -127,6 +131,7 @@ private fun SecondaryText(
 
 @Composable
 fun PostBusiness(
+    enableOpacity: Boolean = false,
     fullName: String,
     avatar: String?,
     rating: Float,
@@ -148,7 +153,7 @@ fun PostBusiness(
         Icon(
             imageVector = Icons.Default.Repeat,
             contentDescription = "Repeat Icon",
-            tint = Primary
+            tint = Primary.withAlpha(enableOpacity)
         )
 
         Spacer(Modifier.width(SpacingM))
@@ -164,7 +169,7 @@ fun PostBusiness(
             text = fullName,
             style = bodyMedium,
             fontWeight = FontWeight.SemiBold,
-            color = Color.White,
+            color = Color.White.withAlpha(enableOpacity),
             fontSize = 16.sp
         )
 
@@ -179,7 +184,7 @@ fun PostBusiness(
                     clip = false
                 )
                 .background(
-                    color = Color.White,
+                    color = Color.White.withAlpha(enableOpacity),
                     shape = RoundedCornerShape(15.dp)
                 )
                 .padding(horizontal = 8.dp, vertical = 6.dp)
@@ -193,13 +198,13 @@ fun PostBusiness(
                 painter = if(showRating) painterResource(R.drawable.ic_star_solid)
                           else painterResource(R.drawable.ic_location_outline),
                 contentDescription = "Rating",
-                tint = Primary,
+                tint = Primary.withAlpha(enableOpacity),
                 modifier = Modifier.size(16.dp)
             )
             Spacer(Modifier.width(2.dp))
             Text(
                 text = if(showRating) rating.toString() else stringResource(R.string.location),
-                color = Color.Black,
+                color = Color.Black.withAlpha(enableOpacity),
                 fontWeight = FontWeight.ExtraBold,
                 style = bodyMedium,
             )
