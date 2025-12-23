@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -33,6 +34,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -117,7 +119,8 @@ fun EmploymentSelectEmployeeScreen(
                     onValueChange = {
                         viewModel.searchEmployees(it)
                     },
-                    placeholder = stringResource(R.string.search)
+                    placeholder = stringResource(R.string.search),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
                 )
             }
 

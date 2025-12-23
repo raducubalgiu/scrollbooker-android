@@ -3,6 +3,7 @@ package com.example.scrollbooker.ui.camera.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -24,6 +26,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -38,6 +41,8 @@ import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyMedium
 import timber.log.Timber
+
+const val MAX_LENGTH = 500
 
 @Composable
 fun CreatePostHeader(
@@ -111,34 +116,55 @@ fun CreatePostHeader(
 
         Spacer(Modifier.width(SpacingS))
 
-        TextField(
-            modifier = Modifier
-                .weight(1f)
-                .height(previewHeight),
-            value = description,
-            onValueChange = onDescriptionChange,
-            placeholder = {
-                Text(
-                    text = stringResource(R.string.addDescription),
-                    color = Divider,
-                    style = bodyMedium
+        Column(
+            modifier = Modifier.height(previewHeight)
+        ) {
+            TextField(
+                modifier = Modifier.weight(1f),
+                value = description,
+                onValueChange = {
+                    if(it.length <= MAX_LENGTH) {
+                        onDescriptionChange(it)
+                    }
+                },
+                placeholder = {
+                    Text(
+                        text = stringResource(R.string.addDescription),
+                        color = Divider,
+                        style = bodyMedium
+                    )
+                },
+                singleLine = false,
+                minLines = 5,
+                maxLines = 5,
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    cursorColor = Primary,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedLabelColor = Divider,
+                    unfocusedLabelColor = Color.Transparent,
+                    focusedTextColor = OnBackground,
+                    unfocusedTextColor = OnBackground,
+                    disabledContainerColor = Color.Transparent
+                ),
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Done
                 )
-            },
-            singleLine = false,
-            minLines = 4,
-            maxLines = 6,
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                cursorColor = Primary,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                focusedLabelColor = Divider,
-                unfocusedLabelColor = Color.Transparent,
-                focusedTextColor = OnBackground,
-                unfocusedTextColor = OnBackground,
-                disabledContainerColor = Color.Transparent
             )
-        )
+
+            Spacer(Modifier.height(SpacingS))
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.End
+            ) {
+                Text(
+                    style = bodyMedium,
+                    text = "${description.length} / $MAX_LENGTH"
+                )
+            }
+        }
     }
 }

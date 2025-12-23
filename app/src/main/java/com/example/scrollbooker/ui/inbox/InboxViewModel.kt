@@ -127,8 +127,8 @@ class InboxViewModel @Inject constructor(
         _employmentRequestId.value = employmentId
     }
 
-    fun setAgreed(agreed: Boolean) {
-        _agreedTerms.value = agreed
+    fun setAgreed() {
+        _agreedTerms.value = !_agreedTerms.value
     }
 
     suspend fun respondToRequest(status: EmploymentRequestStatusEnum): Result<Unit> {

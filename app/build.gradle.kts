@@ -106,6 +106,7 @@ dependencies {
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.ui)
     implementation(libs.androidx.media3.common)
+    implementation(libs.androidx.media3.exoplayer.hls)
 
     // Logging Http
     implementation(libs.logging.interceptor)
@@ -122,6 +123,13 @@ dependencies {
     // Mapbox
     implementation(libs.android)
     implementation(libs.maps.compose.v1190)
+
+    // Tests
+    testImplementation(libs.junit)
+    testImplementation(libs.turbine)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
+    testImplementation(libs.androidx.paging.testing)
 
     // The following line is optional, as the core library is included indirectly by camera-camera2
     implementation(libs.androidx.camera.core)
@@ -141,4 +149,5 @@ dependencies {
 
     // If you want to additionally use the CameraX Extensions library
     implementation(libs.androidx.camera.extensions)
+    testImplementation(kotlin("test"))
 }

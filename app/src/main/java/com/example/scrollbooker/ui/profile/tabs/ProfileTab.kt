@@ -15,10 +15,10 @@ sealed class ProfileTab(
     companion object {
         fun getTabs(isBusinessOrEmployee: Boolean): List<ProfileTab> {
             return buildList {
-                add(Posts)
+                if(isBusinessOrEmployee) add(Posts)
                 if(isBusinessOrEmployee) add(Products)
-                add(Reposts)
                 add(Bookmarks)
+                add(Reposts)
                 if(isBusinessOrEmployee) add(Info)
             }
         }

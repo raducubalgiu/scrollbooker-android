@@ -79,6 +79,7 @@ fun EmployeeTab(
             )
             Spacer(Modifier.height(SpacingM))
             Text(
+                modifier = Modifier.padding(horizontal = BasePadding),
                 text = fullName,
                 fontWeight = FontWeight.SemiBold,
                 maxLines = 1,

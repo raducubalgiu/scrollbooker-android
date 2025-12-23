@@ -35,6 +35,7 @@ fun SearchBar(
     contentColor: Color = OnSurfaceBG,
     onSearch: (() -> Unit)? = null,
     onClick: (() -> Unit)? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isClicked = interactionSource.collectIsPressedAsState().value
@@ -79,7 +80,7 @@ fun SearchBar(
             focusedTextColor = contentColor,
             unfocusedTextColor = contentColor
         ),
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+        keyboardOptions = keyboardOptions,
         keyboardActions = KeyboardActions(
             onSearch = { onSearch }
         ),

@@ -53,7 +53,7 @@ fun ProductCard(
     onSelect: (Product) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
-        Column(modifier = Modifier.padding(vertical = BasePadding)) {
+        Column(modifier = Modifier.padding(BasePadding)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,

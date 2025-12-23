@@ -35,7 +35,7 @@ fun PostDto.toDomain(): Post {
         userActions = userActions.toDomain(),
         mediaFiles = mediaFiles.map { it.toDomain() },
         counters = counters.toDomain(),
-        hashtags = hashtags.map { it.toDomain() },
+        hashtags = hashtags.orEmpty().map { it.toDomain() },
         isVideoReview = isVideoReview,
         bookable = bookable,
         rating = rating,
@@ -147,7 +147,7 @@ fun LastMinuteDto.toDomain(): LastMinute {
         isLastMinute = isLastMinute,
         lastMinuteEnd = lastMinuteEnd,
         hasFixedSlots = hasFixedSlots,
-        fixedSlots = fixedSlots.map { it.toDomain() }
+        fixedSlots = fixedSlots.orEmpty().map { it.toDomain() }
     )
 }
 

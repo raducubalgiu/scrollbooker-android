@@ -21,7 +21,7 @@ data class PostDto(
     @SerializedName("media_files")
     val mediaFiles: List<PostMediaFileDto> = emptyList(),
 
-    val hashtags: List<HashtagDto> = emptyList(),
+    val hashtags: List<HashtagDto>? = emptyList(),
 
     @SerializedName("is_video_review")
     val isVideoReview: Boolean,
@@ -180,5 +180,5 @@ data class LastMinuteDto(
     val hasFixedSlots: Boolean,
 
     @SerializedName("fixed_slots")
-    val fixedSlots: List<FixedSlotsDto>
+    val fixedSlots: List<FixedSlotsDto>? = emptyList()
 )
