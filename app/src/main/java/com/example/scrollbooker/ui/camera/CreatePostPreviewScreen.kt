@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
@@ -21,6 +23,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
@@ -32,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
@@ -45,6 +49,7 @@ import androidx.media3.ui.PlayerView.SHOW_BUFFERING_NEVER
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.scrollbooker.components.core.buttons.MainButton
+import com.example.scrollbooker.components.core.iconButton.CustomIconButton
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.entity.social.post.domain.model.LastMinute
@@ -56,6 +61,7 @@ import com.example.scrollbooker.entity.social.post.domain.model.UserPostActions
 import com.example.scrollbooker.ui.shared.posts.PostActionUiState
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlay
 import com.example.scrollbooker.ui.theme.BackgroundDark
+import com.example.scrollbooker.ui.theme.titleMedium
 import timber.log.Timber
 import kotlin.math.max
 
@@ -138,15 +144,35 @@ fun CreatePostPreviewScreen(
             userScrollEnabled = false
         ) {
             Box {
-                IconButton(
-                    modifier = Modifier.zIndex(12f).statusBarsPadding(),
-                    onClick = onBack
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .statusBarsPadding()
+                        .zIndex(12f),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Icon(
-                        modifier = Modifier.size(30.dp),
+                    CustomIconButton(
                         imageVector = Icons.Default.Close,
+                        boxSize = 60.dp,
+                        iconSize = 30.dp,
                         tint = Color.White,
-                        contentDescription = null
+                        onClick = onBack
+                    )
+
+                    Text(
+                        text = "Previzualizare",
+                        color = Color.White,
+                        style = titleMedium,
+                        fontWeight = FontWeight.SemiBold
+                    )
+
+                    CustomIconButton(
+                        imageVector = Icons.Default.Close,
+                        boxSize = 60.dp,
+                        iconSize = 30.dp,
+                        tint = Color.Transparent,
+                        onClick = {},
                     )
                 }
 
