@@ -36,11 +36,7 @@ fun PostOverlay(
     onShowBottomBar: (() -> Unit)? = null,
     onNavigateToUserProfile: (Int) -> Unit,
 ) {
-    //val discount = post.product?.discount
     val isVideoReview = post.isVideoReview
-    //val hasProduct = post.product != null
-    //val hasDiscount = discount?.let { it > BigDecimal.ZERO } == true
-    val isLastMinute = post.lastMinute.isLastMinute
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -61,25 +57,6 @@ fun PostOverlay(
                 .weight(1f)
                 .padding(end = SpacingXL)
             ) {
-//                when {
-//                    isVideoReview -> VideoReviewLabel()
-//                    isLastMinute -> {
-//                        PostOverlayLabel(
-//                            icon = R.drawable.ic_bolt_solid,
-//                            title = stringResource(R.string.lastMinute),
-//                            containerColor = Error
-//                        )
-//                    }
-//
-//                    hasDiscount -> {
-//                        PostOverlayLabel(
-//                            icon = R.drawable.ic_percent_badge_solid,
-//                            title = stringResource(R.string.sale),
-//                            containerColor = Error
-//                        )
-//                    }
-//                }
-
                 Spacer(Modifier.height(SpacingXS))
 
                 PostOverlayUser(
