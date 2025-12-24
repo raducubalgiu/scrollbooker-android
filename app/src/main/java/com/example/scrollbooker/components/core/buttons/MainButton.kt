@@ -60,6 +60,7 @@ fun MainButton(
             ) {
                 if(leadingIcon != null) {
                     Icon(
+                        modifier = Modifier.size(20.dp),
                         painter = painterResource(leadingIcon),
                         contentDescription = null
                     )

@@ -14,15 +14,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -35,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -48,6 +46,7 @@ import androidx.media3.ui.PlayerView
 import androidx.media3.ui.PlayerView.SHOW_BUFFERING_NEVER
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.iconButton.CustomIconButton
 import com.example.scrollbooker.core.util.Dimens.BasePadding
@@ -161,7 +160,7 @@ fun CreatePostPreviewScreen(
                     )
 
                     Text(
-                        text = "Previzualizare",
+                        text = stringResource(R.string.preview),
                         color = Color.White,
                         style = titleMedium,
                         fontWeight = FontWeight.SemiBold
@@ -272,7 +271,7 @@ fun CreatePostPreviewScreen(
                 fullWidth = false,
                 contentPadding = PaddingValues(SpacingM),
                 onClick = {  },
-                title = "Posteaza",
+                title = stringResource(R.string.postNow),
             )
         }
     }

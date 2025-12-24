@@ -15,7 +15,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.zIndex
-import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
@@ -25,10 +24,6 @@ import com.example.scrollbooker.entity.social.post.domain.model.ctaAction
 import com.example.scrollbooker.entity.social.post.domain.model.ctaTitle
 import com.example.scrollbooker.ui.shared.posts.PostActionUiState
 import com.example.scrollbooker.ui.shared.posts.components.PostActionButtonSmall
-import com.example.scrollbooker.ui.shared.posts.components.postOverlay.labels.PostOverlayLabel
-import com.example.scrollbooker.ui.shared.posts.components.postOverlay.labels.VideoReviewLabel
-import com.example.scrollbooker.ui.theme.Error
-import java.math.BigDecimal
 
 @Composable
 fun PostOverlay(
@@ -92,9 +87,7 @@ fun PostOverlay(
                     user = post.user,
                     businessOwner = post.businessOwner,
                     isVideoReview = isVideoReview,
-                    onNavigateToUser = onNavigateToUserProfile,
-                    onOpenReviews = { onAction(PostOverlayActionEnum.OPEN_REVIEWS) },
-                    onOpenLocation = { onAction(PostOverlayActionEnum.OPEN_LOCATION) }
+                    onNavigateToUser = onNavigateToUserProfile
                 )
 
                 Spacer(Modifier.height(SpacingS))

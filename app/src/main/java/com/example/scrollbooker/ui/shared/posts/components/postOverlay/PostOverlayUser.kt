@@ -1,5 +1,4 @@
 package com.example.scrollbooker.ui.shared.posts.components.postOverlay
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
@@ -7,10 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material3.Icon
@@ -19,16 +15,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.Avatar
@@ -49,8 +42,6 @@ fun PostOverlayUser(
     businessOwner: PostBusinessOwner,
     isVideoReview: Boolean,
     onNavigateToUser: (Int) -> Unit,
-    onOpenReviews: () -> Unit,
-    onOpenLocation: () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isBusiness = user.id == businessOwner.id
@@ -94,11 +85,7 @@ fun PostOverlayUser(
             enableOpacity = enableOpacity,
             fullName = businessOwner.fullName,
             avatar = businessOwner.avatar,
-            rating = businessOwner.ratingsAverage,
-            showRating = isVideoReview,
-            onNavigateToUser = { onNavigateToUser(businessOwner.id) },
-            onOpenReviews = onOpenReviews,
-            onOpenLocation = onOpenLocation
+            onNavigateToUser = { onNavigateToUser(businessOwner.id) }
         )
     }
 }
@@ -134,11 +121,7 @@ fun PostBusiness(
     enableOpacity: Boolean = false,
     fullName: String,
     avatar: String?,
-    rating: Float,
-    showRating: Boolean = false,
-    onNavigateToUser: () -> Unit,
-    onOpenReviews: () -> Unit,
-    onOpenLocation: () -> Unit
+    onNavigateToUser: () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -172,43 +155,6 @@ fun PostBusiness(
             color = Color.White.withAlpha(enableOpacity),
             fontSize = 16.sp
         )
-
-        Spacer(Modifier.width(SpacingM))
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .shadow(
-                    elevation = 1.dp,
-                    shape = CircleShape,
-                    clip = false
-                )
-                .background(
-                    color = Color.White.withAlpha(enableOpacity),
-                    shape = RoundedCornerShape(15.dp)
-                )
-                .padding(horizontal = 8.dp, vertical = 6.dp)
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                    onClick = { if(showRating) onOpenReviews() else onOpenLocation() }
-                )
-        ) {
-            Icon(
-                painter = if(showRating) painterResource(R.drawable.ic_star_solid)
-                          else painterResource(R.drawable.ic_location_outline),
-                contentDescription = "Rating",
-                tint = Primary.withAlpha(enableOpacity),
-                modifier = Modifier.size(16.dp)
-            )
-            Spacer(Modifier.width(2.dp))
-            Text(
-                text = if(showRating) rating.toString() else stringResource(R.string.location),
-                color = Color.Black.withAlpha(enableOpacity),
-                fontWeight = FontWeight.ExtraBold,
-                style = bodyMedium,
-            )
-        }
     }
 
     Spacer(Modifier.height(SpacingS))
