@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.scale
@@ -36,7 +37,6 @@ fun RecordButton(
     onTap: () -> Unit,
     onLongPress: (() -> Unit)? = null
 ) {
-    // press feedback
     var pressed by remember { mutableStateOf(false) }
     val pressScale by animateFloatAsState(
         targetValue = if (pressed) 0.94f else 1f,
@@ -44,7 +44,6 @@ fun RecordButton(
         label = "pressScale"
     )
 
-    // pulsing (mereu rulează; când nu înregistrezi, factorul devine 0)
     val infinite = rememberInfiniteTransition(label = "pulse")
     val pulseRaw by infinite.animateFloat(
         initialValue = 0f,
@@ -62,6 +61,7 @@ fun RecordButton(
 
     Box(
         modifier = modifier
+            .alpha(0.2f)
             .size(diameter)
             .scale(pressScale)
             .semantics {
@@ -70,18 +70,15 @@ fun RecordButton(
             }
             .clip(CircleShape)
             .drawBehind {
-                // Folosim mărimea canvasului, nu parametrul Dp
                 val canvasSize = this.size
                 val center = Offset(canvasSize.width / 2f, canvasSize.height / 2f)
 
-                // umbră discretă
                 drawCircle(
                     color = Color(0x33000000),
                     radius = canvasSize.minDimension / 2f,
                     center = center + Offset(0f, canvasSize.minDimension * 0.04f)
                 )
 
-                // halo pulsat când înregistrezi
                 if (pulse > 0f) {
                     val haloRadius = canvasSize.minDimension / 2f * (1.0f + 0.08f * pulse)
                     drawCircle(
@@ -91,7 +88,6 @@ fun RecordButton(
                     )
                 }
 
-                // inel alb
                 drawCircle(
                     color = colorRing,
                     radius = canvasSize.minDimension / 2f - ringWidthPx / 2f,
@@ -99,7 +95,6 @@ fun RecordButton(
                     style = Stroke(width = ringWidthPx)
                 )
 
-                // disc roșu interior
                 val innerRadius = canvasSize.minDimension / 2f - ringWidthPx - paddingPx
                 drawCircle(
                     color = colorRed,
@@ -123,8 +118,6 @@ fun RecordButton(
             }
     )
 }
-
-/* --- previews --- */
 
 @Preview
 @Composable

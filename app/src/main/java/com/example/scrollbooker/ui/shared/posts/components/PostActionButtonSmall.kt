@@ -18,9 +18,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
@@ -30,7 +30,6 @@ import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.Primary
-import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
 
 @Composable
@@ -50,7 +49,7 @@ fun PostActionButtonSmall(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Button(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(0.55f),
                     onClick = onClick,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Primary,
@@ -58,16 +57,19 @@ fun PostActionButtonSmall(
                     )
                 ) {
                     Text(
-                        text = title,
+                        text = "Rezerva instant",
                         style = bodyLarge,
                         fontWeight = FontWeight.SemiBold,
-                        color = OnPrimary
+                        color = OnPrimary,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
 
                 Spacer(Modifier.width(SpacingM))
 
                 Button(
+                    modifier = Modifier.weight(0.45f),
                     onClick = onClick,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Background,

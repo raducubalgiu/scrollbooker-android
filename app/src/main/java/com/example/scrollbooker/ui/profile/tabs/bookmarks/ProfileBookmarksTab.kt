@@ -21,12 +21,13 @@ import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.customized.LoadMoreSpinner
+import com.example.scrollbooker.ui.profile.MyProfileViewModel
 import com.example.scrollbooker.ui.profile.tabs.ProfileTabViewModel
 
 @Composable
 fun ProfileBookmarksTab(
     paddingTop: Dp,
-    viewModel: ProfileTabViewModel,
+    viewModel: MyProfileViewModel,
     onNavigateToPost: (Int) -> Unit
 ) {
     val posts = viewModel.userBookmarkedPosts.collectAsLazyPagingItems()

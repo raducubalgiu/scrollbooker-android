@@ -17,6 +17,7 @@ fun ProductDto.toDomain(): Product {
         serviceId = serviceId,
         businessId = businessId,
         currencyId = currencyId,
-        subFilters = subFilters.map { it.toDomain() }
+        subFilters = subFilters.map { it.toDomain() },
+        canBeBooked = canBeBooked
     )
 }

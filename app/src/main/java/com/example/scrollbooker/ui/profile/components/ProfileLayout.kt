@@ -37,6 +37,7 @@ import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
+import com.example.scrollbooker.ui.profile.MyProfileViewModel
 import com.example.scrollbooker.ui.profile.components.userInfo.components.MyProfileActions
 import com.example.scrollbooker.ui.profile.components.userInfo.ProfileShimmer
 import com.example.scrollbooker.ui.profile.components.userInfo.ProfileUserInfo
@@ -58,7 +59,8 @@ import kotlinx.coroutines.launch
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun ProfileLayout(
-    profileTabViewModel: ProfileTabViewModel,
+    viewModel: MyProfileViewModel,
+    //profileTabViewModel: ProfileTabViewModel,
     isInitLoading: Boolean,
     profileData: FeatureState<UserProfile>,
     isFollow: Boolean? = null,
@@ -82,7 +84,6 @@ fun ProfileLayout(
     var headerOffsetPx by remember { mutableIntStateOf(0) }
 
     val currentHeaderHeightDp = with(density) { (collapsibleHeightPx + tabRowHeightPx + headerOffsetPx).toDp() }
-
     val nestedScrollConnection = remember {
         object : NestedScrollConnection {
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
@@ -139,10 +140,9 @@ fun ProfileLayout(
                         modifier = Modifier.fillMaxWidth(),
                         overscrollEffect = null
                     ) { page ->
-
-                        LaunchedEffect(user.id) {
-                            profileTabViewModel.setUserId(userId = user.id)
-                        }
+//                        LaunchedEffect(user.id) {
+//                            profileTabViewModel.setUserId(userId = user.id)
+//                        }
 
                         when (tabs[page]) {
                             ProfileTab.Posts -> ProfilePostsTab(
@@ -162,17 +162,21 @@ fun ProfileLayout(
 //                                )
                             }
 
-                            ProfileTab.Reposts -> ProfileRepostsTab(
-                                paddingTop = currentHeaderHeightDp,
-                                viewModel = profileTabViewModel,
-                                onNavigateToPost = { profileNavigate.toPostDetail() }
-                            )
+                            ProfileTab.Reposts -> {
+                                ProfileRepostsTab(
+                                    paddingTop = currentHeaderHeightDp,
+                                    viewModel = viewModel,
+                                    onNavigateToPost = { profileNavigate.toPostDetail() }
+                                )
+                            }
 
-                            ProfileTab.Bookmarks -> ProfileBookmarksTab(
-                                paddingTop = currentHeaderHeightDp,
-                                viewModel = profileTabViewModel,
-                                onNavigateToPost = { profileNavigate.toPostDetail() }
-                            )
+                            ProfileTab.Bookmarks -> {
+                                ProfileBookmarksTab(
+                                    paddingTop = currentHeaderHeightDp,
+                                    viewModel = viewModel,
+                                    onNavigateToPost = { profileNavigate.toPostDetail() }
+                                )
+                            }
 
                             ProfileTab.Info -> ProfileInfoTab(paddingTop = currentHeaderHeightDp)
                         }

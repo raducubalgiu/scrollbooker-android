@@ -29,5 +29,8 @@ data class ProductDto(
     val currencyId: Int,
 
     @SerializedName("sub_filters")
-    val subFilters: List<SubFilterDto>
+    val subFilters: List<SubFilterDto>,
+
+    @SerializedName("can_be_booked")
+    val canBeBooked: Boolean
 )

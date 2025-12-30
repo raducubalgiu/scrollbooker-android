@@ -121,6 +121,7 @@ class MyProductsViewModel @Inject constructor(
         duration: String,
         serviceId: String,
         currencyId: String,
+        canBeBooked: Boolean
     ) {
         viewModelScope.launch {
             _isSaving.value = true
@@ -143,7 +144,8 @@ class MyProductsViewModel @Inject constructor(
                         duration = duration.toInt(),
                         serviceId = serviceId.toInt(),
                         businessId = businessId,
-                        currencyId = currencyId.toInt()
+                        currencyId = currencyId.toInt(),
+                        canBeBooked = canBeBooked
                     ),
                     subFilters = subFilters
                 )

@@ -53,6 +53,7 @@ import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.ReviewD
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.ReviewsSheet
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -96,19 +97,6 @@ fun FeedScreen(feedNavigate: FeedNavigator) {
             sheetState.show()
             sheetContent = targetSheet
         }
-    }
-
-    LaunchedEffect(drawerState.currentValue) {
-        snapshotFlow { drawerState.currentValue }
-            .collectLatest { drawerValue ->
-                currentPost?.id?.let {
-                    if (drawerValue == DrawerValue.Open) {
-                        feedViewModel.pauseIfPlaying(it)
-                    } else {
-                        feedViewModel.resumeIfPlaying(it)
-                    }
-                }
-            }
     }
 
     ModalNavigationDrawer(
@@ -179,21 +167,40 @@ fun FeedScreen(feedNavigate: FeedNavigator) {
                         beyondViewportPageCount = 1
                     ) { page ->
                         posts[page]?.let { post ->
-                            LaunchedEffect(pagerState) {
+//                            LaunchedEffect(drawerState.currentValue) {
+//                                snapshotFlow { drawerState.currentValue }
+//                                    .collectLatest { drawerValue ->
+//                                        if (drawerValue == DrawerValue.Open) {
+//                                            feedViewModel.pauseIfPlaying(post.id)
+//                                        } else {
+//                                            feedViewModel.resumeIfPlaying(post.id)
+//                                        }
+//                                    }
+//                            }
+
+                            LaunchedEffect(pagerState.currentPage) {
                                 snapshotFlow { pagerState.currentPage }
+                                    .distinctUntilChanged()
                                     .collectLatest { page ->
                                         val post = posts.getOrNull(page)
                                         val previousPost = posts.getOrNull(page - 1)
                                         val nextPost = posts.getOrNull(page + 1)
 
-                                        post?.let {
-                                            feedViewModel.initializePlayer(
-                                                post = post,
-                                                previousPost = previousPost,
-                                                nextPost = nextPost
-                                            )
-                                        }
+                                        feedViewModel.initializePlayer(
+                                            post = post,
+                                            previousPost = previousPost,
+                                            nextPost = nextPost
+                                        )
+
                                         feedViewModel.updateCurrentPost(page, post)
+
+                                        post?.id?.let {
+                                            if(sheetState.isVisible) {
+                                                feedViewModel.pauseIfPlaying(it)
+                                            } else {
+                                                feedViewModel.resumeIfPlaying(it)
+                                            }
+                                        }
                                     }
                             }
 

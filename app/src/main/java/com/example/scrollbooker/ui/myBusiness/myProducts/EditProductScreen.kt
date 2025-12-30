@@ -372,7 +372,8 @@ fun EditProductScreen(
                                         discount = discount,
                                         duration = duration,
                                         serviceId = serviceId,
-                                        currencyId = currencyId
+                                        currencyId = currencyId,
+                                        canBeBooked = true
                                     )
                                 },
                             )

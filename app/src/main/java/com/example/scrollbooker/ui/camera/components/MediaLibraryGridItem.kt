@@ -24,6 +24,7 @@ import coil.compose.AsyncImage
 import coil.decode.VideoFrameDecoder
 import coil.request.ImageRequest
 import coil.request.videoFrameMillis
+import com.example.scrollbooker.entity.permission.domain.model.MediaVideo
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.labelSmall
@@ -31,9 +32,9 @@ import timber.log.Timber
 
 @Composable
 fun MediaLibraryGridItem(
-    item: MediaFile,
+    item: MediaVideo,
     isPreparing: Boolean,
-    onSelect: (MediaFile) -> Unit
+    onSelect: (MediaVideo) -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -47,25 +48,21 @@ fun MediaLibraryGridItem(
         )
     ) {
         AsyncImage(
-            model = if(item.type == MediaType.VIDEO) {
-                ImageRequest.Builder(LocalContext.current)
-                    .data(item.uri)
-                    .videoFrameMillis(500)
-                    .decoderFactory { result, options, _ ->
-                        VideoFrameDecoder(
-                            result.source,
-                            options
-                        )
-                    }
-                    .crossfade(true)
-                    .build()
-            } else item.uri,
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(item.uri)
+                .videoFrameMillis(500)
+                .decoderFactory { result, options, _ ->
+                    VideoFrameDecoder(
+                        result.source,
+                        options
+                    )
+                }
+                .crossfade(true)
+                .build(),
             contentDescription = "Post Grid",
             contentScale = ContentScale.Crop,
             onError = { Timber.tag("Post Grid Error").e("ERROR: ${it.result.throwable.message}") },
-            modifier = Modifier
-                .matchParentSize()
-
+            modifier = Modifier.matchParentSize()
         )
 
         if(isPreparing) {
@@ -95,23 +92,21 @@ fun MediaLibraryGridItem(
             )
         )
 
-        if(item.type == MediaType.VIDEO && item.durationMs != null) {
-            Text(
-                text = formatDuration(item.durationMs),
-                style = labelSmall,
-                color = Color.White,
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(6.dp)
-                    .background(
-                        color = BackgroundDark.copy(alpha = 0.3f),
-                        shape = ShapeDefaults.Small
-                    )
-                    .padding(horizontal = 6.dp, vertical = 2.dp),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
+        Text(
+            text = formatDuration(item.durationMs),
+            style = labelSmall,
+            color = Color.White,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(6.dp)
+                .background(
+                    color = BackgroundDark.copy(alpha = 0.3f),
+                    shape = ShapeDefaults.Small
+                )
+                .padding(horizontal = 6.dp, vertical = 2.dp),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
 

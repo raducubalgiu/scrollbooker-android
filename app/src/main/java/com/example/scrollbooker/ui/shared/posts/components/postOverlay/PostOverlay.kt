@@ -55,7 +55,7 @@ fun PostOverlay(
         ) {
             Column(modifier = Modifier
                 .weight(1f)
-                .padding(end = SpacingXL)
+                //.padding(end = SpacingXL)
             ) {
                 Spacer(Modifier.height(SpacingXS))
 

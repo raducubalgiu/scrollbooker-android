@@ -51,16 +51,16 @@ fun UserProfileScreen(
                 .background(Background)
                 .padding(top = innerPadding.calculateTopPadding())
         ) {
-            ProfileLayout(
-                profileTabViewModel = profileTabViewModel,
-                isInitLoading = isInitLoading,
-                profileData = profileData,
-                isFollow = isFollow,
-                onFollow = { viewModel.onFollow() },
-                isFollowEnabled = !isSaving,
-                posts = posts,
-                profileNavigate = profileNavigate
-            )
+//            ProfileLayout(
+//                profileTabViewModel = profileTabViewModel,
+//                isInitLoading = isInitLoading,
+//                profileData = profileData,
+//                isFollow = isFollow,
+//                onFollow = { viewModel.onFollow() },
+//                isFollowEnabled = !isSaving,
+//                posts = posts,
+//                profileNavigate = profileNavigate
+//            )
         }
     }
 }

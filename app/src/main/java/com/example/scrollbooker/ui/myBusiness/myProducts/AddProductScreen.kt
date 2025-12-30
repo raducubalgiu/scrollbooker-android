@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.inputs.Input
+import com.example.scrollbooker.components.core.inputs.InputCheckbox
 import com.example.scrollbooker.components.core.inputs.InputSelect
 import com.example.scrollbooker.components.core.inputs.Option
 import com.example.scrollbooker.components.core.layout.Layout
@@ -372,7 +373,8 @@ fun AddProductScreen(
                                 discount = discount,
                                 duration = duration,
                                 serviceId = serviceId,
-                                currencyId = currencyId
+                                currencyId = currencyId,
+                                canBeBooked = false
                             )
                         },
                     )

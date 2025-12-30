@@ -8,11 +8,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.example.scrollbooker.core.enums.PermissionEnum
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
+import com.example.scrollbooker.entity.social.bookmark.domain.useCase.GetUserBookmarkedPostsUseCase
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetUserPostsUseCase
+import com.example.scrollbooker.entity.social.repost.domain.useCase.GetUserRepostsUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserProfileUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateBioUseCase
@@ -30,12 +31,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -50,6 +49,8 @@ class MyProfileViewModel @Inject constructor(
     private val updatePublicEmailUseCase: UpdatePublicEmailUseCase,
     private val getUserPostsUseCase: GetUserPostsUseCase,
     private val getUserProfileUseCase: GetUserProfileUseCase,
+    private val getUserRepostsUseCase: GetUserRepostsUseCase,
+    private val getUserBookmarkedPostsUseCase: GetUserBookmarkedPostsUseCase,
     private val authDataStore: AuthDataStore
 ): ViewModel() {
     private val _userProfileState =
@@ -67,14 +68,6 @@ class MyProfileViewModel @Inject constructor(
     fun setPhoto(uri: Uri) {
         _photoUri.value = uri
     }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val userPosts: StateFlow<PagingData<Post>> = authDataStore.getUserId()
-        .filterNotNull()
-        .flatMapLatest { userId -> getUserPostsUseCase(userId) }
-        .onEach { _initCompleted.value = true }
-        .cachedIn(viewModelScope)
-        .stateIn(viewModelScope, SharingStarted.Companion.Lazily, PagingData.Companion.empty())
 
     private fun loadUserProfile() {
         viewModelScope.launch {
@@ -97,6 +90,38 @@ class MyProfileViewModel @Inject constructor(
         loadUserProfile()
     }
 
+    // Tabs
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val userPosts: StateFlow<PagingData<Post>> = authDataStore.getUserId()
+        .filterNotNull()
+        .flatMapLatest { userId -> getUserPostsUseCase(userId) }
+        .onEach { _initCompleted.value = true }
+        .cachedIn(viewModelScope)
+        .stateIn(viewModelScope, SharingStarted.Companion.Lazily, PagingData.Companion.empty())
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val userReposts: StateFlow<PagingData<Post>> = authDataStore.getUserId()
+        .filterNotNull()
+        .flatMapLatest { userId ->
+            getUserRepostsUseCase(userId)
+        }
+        .cachedIn(viewModelScope)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = PagingData.empty()
+        )
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val userBookmarkedPosts: StateFlow<PagingData<Post>> = authDataStore.getUserId()
+        .filterNotNull()
+        .flatMapLatest { userId ->
+            getUserBookmarkedPostsUseCase(userId)
+        }
+        .cachedIn(viewModelScope)
+        .stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
+
+    // Edit
     private val _editState = MutableStateFlow<FeatureState<Unit>?>(null)
     val editState: StateFlow<FeatureState<Unit>?> = _editState
 

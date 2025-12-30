@@ -10,5 +10,6 @@ data class ProductCreate(
     val duration: Int,
     val serviceId: Int,
     val businessId: Int,
-    val currencyId: Int
+    val currencyId: Int,
+    val canBeBooked: Boolean
 )

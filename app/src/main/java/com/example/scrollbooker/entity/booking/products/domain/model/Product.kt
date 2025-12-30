@@ -15,5 +15,6 @@ data class Product(
     val serviceId: Int,
     val businessId: Int,
     val currencyId: Int,
-    val subFilters: List<SubFilter>
+    val subFilters: List<SubFilter>,
+    val canBeBooked: Boolean
 )

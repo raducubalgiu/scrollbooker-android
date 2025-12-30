@@ -39,6 +39,7 @@ import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
+import com.example.scrollbooker.ui.theme.bodySmall
 import com.example.scrollbooker.ui.theme.titleMedium
 import java.math.BigDecimal
 
@@ -135,7 +136,7 @@ fun ProductCard(
 
                 Spacer(Modifier.width(SpacingS))
 
-                if(!displayActions) {
+                if(!displayActions && product.canBeBooked) {
                     Protected(permission = PermissionEnum.BOOK_BUTTON_VIEW) {
                         MainButtonOutlined(
                             title = if(isSelected) stringResource(R.string.added) else stringResource(R.string.add),
@@ -149,6 +150,16 @@ fun ProductCard(
             }
 
             Spacer(Modifier.height(BasePadding))
+
+            if(!product.canBeBooked) {
+                Text(
+                    text = "Acest serviciu poate fi rezervat doar in urma unei discutii telefonice",
+                    color = Error,
+                    style = bodySmall
+                )
+
+                Spacer(Modifier.height(BasePadding))
+            }
 
             if(displayActions) {
                 Row(

@@ -44,11 +44,13 @@ fun MyProfileScreen(
     myPosts: LazyPagingItems<Post>,
     profileNavigate: ProfileNavigator
 ) {
-    val profileTabViewModel: ProfileTabViewModel = hiltViewModel()
     val menuSheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
 
     val isInitLoading by viewModel.isInitLoading.collectAsState()
+
+    val reposts by viewModel.userReposts.collectAsState()
+    val bookmarks by viewModel.userBookmarkedPosts.collectAsState()
 
     if(menuSheetState.isVisible) {
         ProfileMenuSheet(
@@ -91,7 +93,8 @@ fun MyProfileScreen(
             .padding(innerPadding)
         ) {
             ProfileLayout(
-                profileTabViewModel = profileTabViewModel,
+                viewModel = viewModel,
+                //profileTabViewModel = profileTabViewModel,
                 isInitLoading = isInitLoading,
                 profileData = myProfileData,
                 isFollowEnabled = false,

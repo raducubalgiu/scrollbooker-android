@@ -13,6 +13,7 @@ fun ProductCreate.toDto(): ProductCreateDto {
         discount = discount,
         serviceId = serviceId,
         businessId = businessId,
-        currencyId = currencyId
+        currencyId = currencyId,
+        canBeBooked = canBeBooked
     )
 }

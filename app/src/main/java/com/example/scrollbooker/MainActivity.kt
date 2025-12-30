@@ -20,18 +20,21 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.compose.runtime.getValue
 import com.example.scrollbooker.navigation.host.RootNavHost
+import com.example.scrollbooker.ui.AppPermissionsProvider
+import com.example.scrollbooker.ui.PermissionViewModel
 import com.example.scrollbooker.ui.auth.AuthViewModel
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val themeViewModel: ThemeViewModel by viewModels()
+    private val authViewModel: AuthViewModel by viewModels()
+    private val permissionsViewModel: PermissionViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
-        val viewModel by viewModels<AuthViewModel>()
 
         splashScreen.setKeepOnScreenCondition {
-            viewModel.authState.value is FeatureState.Loading
+            authViewModel.authState.value is FeatureState.Loading
         }
 
         super.onCreate(savedInstanceState)
@@ -44,10 +47,12 @@ class MainActivity : ComponentActivity() {
 
             ScrollBookerTheme(themePreferenceEnum) {
                 Surface(Modifier.fillMaxSize().background(Background)) {
-                    RootNavHost(
-                        rootNavController = rootNavController,
-                        authViewModel = viewModel
-                    )
+                    AppPermissionsProvider(permissionsViewModel) {
+                        RootNavHost(
+                            rootNavController = rootNavController,
+                            authViewModel = authViewModel
+                        )
+                    }
                 }
             }
         }

@@ -35,10 +35,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
 import coil.Coil
 import coil.request.ImageRequest
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.iconButton.CustomIconButton
+import com.example.scrollbooker.components.core.layout.LoadingScreen
+import com.example.scrollbooker.entity.permission.domain.model.MediaLibraryAccess
+import com.example.scrollbooker.ui.LocalAppPermissions
 import com.example.scrollbooker.ui.camera.components.MediaFile
 import com.example.scrollbooker.ui.camera.components.MediaFilter
 import com.example.scrollbooker.ui.camera.components.MediaLibraryGridItem
@@ -62,43 +67,54 @@ fun CameraGalleryScreen(
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    val media by produceState<List<MediaFile>>(initialValue = emptyList(), filter) {
-        value = withContext(Dispatchers.IO) { queryMedia(context, filter) }
-    }
-    val screenFull = 23
-    val firstN = remember(media) { media.take(screenFull) }
-    var thumbsReady by remember { mutableStateOf(false) }
 
-    val state by viewModel.uiState.collectAsState()
-    val navigate by rememberUpdatedState(onNavigateToCameraPreview)
+    val perms = LocalAppPermissions.current
+    val state by perms.state.collectAsState()
+    val videos = perms.videos.collectAsLazyPagingItems()
 
-    LaunchedEffect(state.isReady, state.selectedUri) {
-        if(state.isReady && state.selectedUri != null) {
-            navigate()
-        }
-    }
+//    val media by produceState<List<MediaFile>>(initialValue = emptyList(), filter) {
+//        value = withContext(Dispatchers.IO) { queryMedia(context, filter) }
+//    }
+//
+//    val screenFull = 23
+//    val firstN = remember(media) { media.take(screenFull) }
+//    var thumbsReady by remember { mutableStateOf(false) }
+//
+//    val state by viewModel.uiState.collectAsState()
+//    val navigate by rememberUpdatedState(onNavigateToCameraPreview)
+//
+//    LaunchedEffect(state.isReady, state.selectedUri) {
+//        if(state.isReady && state.selectedUri != null) {
+//            navigate()
+//        }
+//    }
+//
+//    LaunchedEffect(firstN) {
+//        thumbsReady = false
+//        if(firstN.isEmpty()) {
+//            thumbsReady = true
+//            return@LaunchedEffect
+//        }
+//        val imageLoader = Coil.imageLoader(context)
+//
+//        scope.launch {
+//            firstN.map { item ->
+//                async(Dispatchers.IO) {
+//                    val req = ImageRequest.Builder(context)
+//                        .data(item.uri)
+//                        .size(256)
+//                        .allowHardware(false)
+//                        .build()
+//                    imageLoader.execute(req)
+//                }
+//            }.awaitAll()
+//        }
+//        thumbsReady = true
+//    }
 
-    LaunchedEffect(firstN) {
-        thumbsReady = false
-        if(firstN.isEmpty()) {
-            thumbsReady = true
-            return@LaunchedEffect
-        }
-        val imageLoader = Coil.imageLoader(context)
-
-        scope.launch {
-            firstN.map { item ->
-                async(Dispatchers.IO) {
-                    val req = ImageRequest.Builder(context)
-                        .data(item.uri)
-                        .size(256)
-                        .allowHardware(false)
-                        .build()
-                    imageLoader.execute(req)
-                }
-            }.awaitAll()
-        }
-        thumbsReady = true
+    if(state.mediaAccess == MediaLibraryAccess.NONE) {
+        // aratam CTA
+        return
     }
 
     Scaffold(
@@ -119,25 +135,26 @@ fun CameraGalleryScreen(
             GalleryHeader(onBack)
 
             when {
-                media.isEmpty() -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
+                videos.loadState.refresh is LoadState.Loading -> {
+                    LoadingScreen()
+                }
+                videos.itemCount == 0 -> {
+                    Box(Modifier.fillMaxSize()) {
+                        Text("Nu exista videoclipuri disponibile")
                     }
                 }
-                else ->  {
+                else -> {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(3),
                         verticalArrangement = Arrangement.spacedBy(1.dp),
-                        horizontalArrangement = Arrangement.spacedBy(1.dp),
-                        reverseLayout = true
+                        horizontalArrangement = Arrangement.spacedBy(1.dp)
                     ) {
-                        items(media, key = { it.id }) { item ->
+                        items(videos.itemCount) { index ->
+                            val item = videos[index] ?: return@items
                             MediaLibraryGridItem(
                                 item = item,
-                                isPreparing = item.uri == state.preparingUri,
+                                //isPreparing = item.uri == state.preparingUri,
+                                isPreparing = false,
                                 onSelect = {
                                     viewModel.selectVideo(item.uri)
                                 }
@@ -145,6 +162,32 @@ fun CameraGalleryScreen(
                         }
                     }
                 }
+
+//                media.isEmpty() -> {
+//                    Box(
+//                        modifier = Modifier.fillMaxSize(),
+//                        contentAlignment = Alignment.Center
+//                    ) {
+//                        CircularProgressIndicator()
+//                    }
+//                }
+//                else ->  {
+//                    LazyVerticalGrid(
+//                        columns = GridCells.Fixed(3),
+//                        verticalArrangement = Arrangement.spacedBy(1.dp),
+//                        horizontalArrangement = Arrangement.spacedBy(1.dp)
+//                    ) {
+//                        items(media, key = { it.id }) { item ->
+//                            MediaLibraryGridItem(
+//                                item = item,
+//                                isPreparing = item.uri == state.preparingUri,
+//                                onSelect = {
+//                                    viewModel.selectVideo(item.uri)
+//                                }
+//                            )
+//                        }
+//                    }
+//                }
             }
         }
     }
