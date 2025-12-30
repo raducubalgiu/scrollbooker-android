@@ -192,11 +192,8 @@ fun CameraScreen(
             CameraActions(
                 mediaThumbUri = state.mediaThumbUri,
                 onMediaThumbClick = {
-                    if(canOpenLibrary) {
-                        onNavigateToCameraGallery()
-                    } else {
-                        requestMediaPermissions()
-                    }
+                    if(canOpenLibrary) onNavigateToCameraGallery()
+                    else requestMediaPermissions()
                 },
                 onSwitchCamera = { viewModel.switchCamera() },
                 isRecording = false,

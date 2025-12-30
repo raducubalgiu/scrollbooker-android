@@ -20,11 +20,8 @@ import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
-import androidx.paging.PagingSource
 import com.example.scrollbooker.entity.permission.data.remote.VideosPagingSource
-import com.example.scrollbooker.entity.permission.domain.model.GalleryItem
 import com.example.scrollbooker.entity.permission.domain.model.MediaVideo
-import com.example.scrollbooker.ui.camera.components.MediaFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

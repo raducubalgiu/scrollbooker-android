@@ -1,5 +1,6 @@
 package com.example.scrollbooker.ui.camera.components
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -34,7 +35,7 @@ import timber.log.Timber
 fun MediaLibraryGridItem(
     item: MediaVideo,
     isPreparing: Boolean,
-    onSelect: (MediaVideo) -> Unit
+    onSelect: (Uri) -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -42,7 +43,7 @@ fun MediaLibraryGridItem(
         .aspectRatio(9f / 12f)
         .background(SurfaceBG)
         .clickable(
-            onClick = { onSelect(item) },
+            onClick = { onSelect(item.uri) },
             interactionSource = interactionSource,
             indication = null
         )
