@@ -53,14 +53,12 @@ fun PostOverlay(
             .padding(top = SpacingS, start = SpacingM),
             verticalAlignment = Alignment.Bottom
         ) {
-            Column(modifier = Modifier
-                .weight(1f)
-                //.padding(end = SpacingXL)
-            ) {
+            Column(modifier = Modifier.weight(1f)) {
                 Spacer(Modifier.height(SpacingXS))
 
                 PostOverlayUser(
                     enableOpacity = enableOpacity,
+                    showPhone = post.showPhone(),
                     user = post.user,
                     businessOwner = post.businessOwner,
                     isVideoReview = isVideoReview,
@@ -79,7 +77,6 @@ fun PostOverlay(
 
                 PostActionButtonSmall(
                     show = showBottomBar,
-                    showPhone = post.showPhone(),
                     title = stringResource(post.ctaTitle()),
                     onClick = { onAction(post.ctaAction()) }
                 )

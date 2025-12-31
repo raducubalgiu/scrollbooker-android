@@ -1,24 +1,15 @@
 package com.example.scrollbooker.ui.profile
 import androidx.annotation.OptIn
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.core.spring
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.rememberSplineBasedDecay
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.PagerDefaults
 import androidx.compose.foundation.pager.PagerSnapDistance
@@ -26,7 +17,6 @@ import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -42,22 +32,16 @@ import coil.compose.AsyncImage
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.headers.Header
-import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.ui.shared.posts.PostActionUiState
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlay
-import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.BackgroundDark
-import com.example.scrollbooker.ui.theme.OnBackground
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.media3.common.MediaItem
@@ -65,8 +49,8 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.example.scrollbooker.core.extensions.getOrNull
+import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.entity.social.post.domain.model.showPhone
 import com.example.scrollbooker.ui.shared.posts.components.PostPlayerView
 import com.example.scrollbooker.ui.shared.posts.components.PostShimmer
 import kotlinx.coroutines.delay
@@ -197,10 +181,15 @@ fun MyProfilePostDetailScreen(
                 }
             }
 
-            PostBottomBar(
-                showPhone = currentPost?.showPhone() == true,
-                onBookNow = {},
-                onCall = {}
+            MainButton(
+                modifier = Modifier
+                    .padding(
+                        vertical = SpacingS,
+                        horizontal = BasePadding
+                    ),
+                contentPadding = PaddingValues(14.dp),
+                onClick = {},
+                title = "Rezervă instant",
             )
         }
     }
@@ -254,55 +243,6 @@ fun PostPlayerWithThumbnail(
 
         if(isBuffering && !showThumb) {
             PostShimmer()
-        }
-    }
-}
-
-@Composable
-fun PostBottomBar(
-    showPhone: Boolean,
-    onBookNow: () -> Unit,
-    onCall: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    AnimatedContent(
-        targetState = showPhone,
-        label = "BottomBarContent",
-        transitionSpec = {
-            fadeIn() togetherWith fadeOut()
-        },
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = SpacingS, horizontal = BasePadding)
-    ) { hasPhone ->
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            MainButton(
-                modifier = Modifier.weight(if (hasPhone) 0.5f else 1f),
-                fullWidth = false,
-                contentPadding = PaddingValues(14.dp),
-                onClick = onBookNow,
-                title = "Rezervă instant",
-            )
-
-            if (hasPhone) {
-                Spacer(Modifier.width(SpacingM))
-
-                MainButton(
-                    modifier = Modifier.weight(0.5f),
-                    fullWidth = false,
-                    contentPadding = PaddingValues(14.dp),
-                    onClick = onCall,
-                    leadingIcon = R.drawable.ic_call_outline,
-                    title = "Sună",
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Background,
-                        contentColor = OnBackground
-                    )
-                )
-            }
         }
     }
 }

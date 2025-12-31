@@ -311,12 +311,12 @@ class MyProfileViewModel @Inject constructor(
         indexToPlayer.values.forEach { player ->
             player.playWhenReady = false
             player.pause()
-            //player.stop()
-            //player.clearMediaItems()
+            player.stop()
+            player.clearMediaItems()
             player.volume = 0f
         }
-        //indexToPlayer.clear()
-        //indexToPostId.clear()
+        indexToPlayer.clear()
+        indexToPostId.clear()
 
         // IMPORTANT: NU clear pool, NU release players
         focusedIndex = null

@@ -2,13 +2,17 @@ package com.example.scrollbooker.ui.shared.posts.components.postOverlay
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Repeat
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,19 +22,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.core.extensions.withAlpha
 import com.example.scrollbooker.core.util.Dimens.AvatarSizeXXS
+import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.social.post.domain.model.PostBusinessOwner
 import com.example.scrollbooker.entity.social.post.domain.model.PostUser
+import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
@@ -38,6 +46,7 @@ import com.example.scrollbooker.ui.theme.bodyMedium
 @Composable
 fun PostOverlayUser(
     enableOpacity: Boolean = false,
+    showPhone: Boolean,
     user: PostUser,
     businessOwner: PostBusinessOwner,
     isVideoReview: Boolean,
@@ -45,6 +54,40 @@ fun PostOverlayUser(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isBusiness = user.id == businessOwner.id
+
+    if(showPhone) {
+        Button(
+            onClick = {},
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.White.copy(alpha = 0.1f),
+                contentColor = OnBackground
+            ),
+            contentPadding = PaddingValues(
+                vertical = 10.dp,
+                horizontal = BasePadding
+            )
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    modifier = Modifier.size(17.dp),
+                    painter = painterResource(R.drawable.ic_call_outline),
+                    contentDescription = null,
+                    tint = Color.White
+                )
+
+                Spacer(Modifier.width(SpacingS))
+
+                Text(
+                    text = "Sună",
+                    style = bodyLarge,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.White
+                )
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -55,13 +98,17 @@ fun PostOverlayUser(
                 indication = null
             ),
     ) {
-        Text(
-            text = user.fullName,
-            style = bodyLarge,
-            fontWeight = FontWeight.SemiBold,
-            color = Color.White.withAlpha(enableOpacity),
-            fontSize = 18.sp
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = user.fullName,
+                style = bodyLarge,
+                fontWeight = FontWeight.SemiBold,
+                color = Color.White.withAlpha(enableOpacity),
+                fontSize = 18.sp
+            )
+        }
 
         Spacer(Modifier.height(SpacingS))
 
