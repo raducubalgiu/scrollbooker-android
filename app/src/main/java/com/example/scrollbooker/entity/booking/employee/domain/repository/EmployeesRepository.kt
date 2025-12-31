@@ -6,4 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface EmployeesRepository {
     fun getEmployees(businessId: Int): Flow<PagingData<Employee>>
+    fun getEmployeesByOwnerId(ownerId: Int): Flow<PagingData<Employee>>
 }

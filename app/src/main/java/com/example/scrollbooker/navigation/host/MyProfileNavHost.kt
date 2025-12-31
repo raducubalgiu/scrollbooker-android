@@ -9,7 +9,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -24,16 +23,14 @@ import com.example.scrollbooker.navigation.graphs.myBusinessGraph
 import com.example.scrollbooker.navigation.graphs.settingsGraph
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromRight
-import com.example.scrollbooker.navigation.transition.slideOutToLeft
-import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.LocalMainNavController
 import com.example.scrollbooker.ui.LocalUserPermissions
 import com.example.scrollbooker.ui.profile.MyProfilePostDetailScreen
 import com.example.scrollbooker.ui.profile.MyProfileScreen
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.IntOffset
+import androidx.paging.compose.collectAsLazyPagingItems
 
 @Composable
 fun MyProfileNavHost(
@@ -87,15 +84,11 @@ fun MyProfileNavHost(
                 popEnterTransition = { EnterTransition.None },
                 popExitTransition = { slideOutVertically(popSpec) { it } }
             ) {
-                val mainNavController = LocalMainNavController.current
-                val postId by viewModel.selectedPostId.collectAsState()
-
-                val reposts by viewModel.userReposts.collectAsState()
-                val bookmarks by viewModel.userBookmarkedPosts.collectAsState()
+                val posts = viewModel.detailPostsFlow.collectAsLazyPagingItems()
 
                 MyProfilePostDetailScreen(
                     viewModel = viewModel,
-                    posts = myPosts,
+                    posts = posts,
                     onBack = { navController.popBackStack() }
                 )
             }

@@ -12,7 +12,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -28,7 +27,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
@@ -38,6 +36,8 @@ import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
+import com.example.scrollbooker.ui.profile.PostTabEnum
+import com.example.scrollbooker.ui.profile.SelectedPostUi
 import com.example.scrollbooker.ui.profile.components.userInfo.components.MyProfileActions
 import com.example.scrollbooker.ui.profile.components.userInfo.ProfileShimmer
 import com.example.scrollbooker.ui.profile.components.userInfo.ProfileUserInfo
@@ -46,13 +46,11 @@ import com.example.scrollbooker.ui.profile.components.sheets.UserScheduleSheet
 import com.example.scrollbooker.ui.profile.components.userInfo.components.UserProfileActions
 import com.example.scrollbooker.ui.profile.tabs.ProfileTab
 import com.example.scrollbooker.ui.profile.tabs.ProfileTabRow
-import com.example.scrollbooker.ui.profile.tabs.ProfileTabViewModel
 import com.example.scrollbooker.ui.profile.tabs.bookmarks.ProfileBookmarksTab
+import com.example.scrollbooker.ui.profile.tabs.employees.ProfileEmployeesTab
 import com.example.scrollbooker.ui.profile.tabs.info.ProfileInfoTab
 import com.example.scrollbooker.ui.profile.tabs.posts.ProfilePostsTab
 import com.example.scrollbooker.ui.profile.tabs.reposts.ProfileRepostsTab
-import com.example.scrollbooker.ui.shared.products.UserProductsServiceTabs
-import com.example.scrollbooker.ui.shared.products.UserProductsViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -141,16 +139,17 @@ fun ProfileLayout(
                         modifier = Modifier.fillMaxWidth(),
                         overscrollEffect = null
                     ) { page ->
-//                        LaunchedEffect(user.id) {
-//                            profileTabViewModel.setUserId(userId = user.id)
-//                        }
-
                         when (tabs[page]) {
                             ProfileTab.Posts -> ProfilePostsTab(
                                 paddingTop = currentHeaderHeightDp,
                                 posts = posts,
                                 onNavigateToPost = {
-                                    viewModel.setPostId(it)
+                                    viewModel.setSelectedPost(
+                                        SelectedPostUi(
+                                            postId = it,
+                                            tab = PostTabEnum.MY_POSTS
+                                        )
+                                    )
                                     profileNavigate.toPostDetail()
                                 }
                             )
@@ -166,13 +165,29 @@ fun ProfileLayout(
 //                                )
                             }
 
-                            ProfileTab.Employees -> {}
+                            ProfileTab.Employees -> {
+                                ProfileEmployeesTab(
+                                    paddingTop = currentHeaderHeightDp,
+                                    viewModel = viewModel,
+                                    onNavigateToEmployeeProfile = {
+                                        profileNavigate.toBusinessOwner(it)
+                                    }
+                                )
+                            }
 
                             ProfileTab.Reposts -> {
                                 ProfileRepostsTab(
                                     paddingTop = currentHeaderHeightDp,
                                     viewModel = viewModel,
-                                    onNavigateToPost = { profileNavigate.toPostDetail() }
+                                    onNavigateToPost = {
+                                        viewModel.setSelectedPost(
+                                            SelectedPostUi(
+                                                postId = it,
+                                                tab = PostTabEnum.REPOSTS
+                                            )
+                                        )
+                                        profileNavigate.toPostDetail()
+                                    }
                                 )
                             }
 
@@ -180,11 +195,21 @@ fun ProfileLayout(
                                 ProfileBookmarksTab(
                                     paddingTop = currentHeaderHeightDp,
                                     viewModel = viewModel,
-                                    onNavigateToPost = { profileNavigate.toPostDetail() }
+                                    onNavigateToPost = {
+                                        viewModel.setSelectedPost(
+                                            SelectedPostUi(
+                                                postId = it,
+                                                tab = PostTabEnum.BOOKMARKS
+                                            )
+                                        )
+                                        profileNavigate.toPostDetail()
+                                    }
                                 )
                             }
 
-                            ProfileTab.Info -> ProfileInfoTab(paddingTop = currentHeaderHeightDp)
+                            ProfileTab.Info -> {
+                                ProfileInfoTab(paddingTop = currentHeaderHeightDp)
+                            }
                         }
                     }
 

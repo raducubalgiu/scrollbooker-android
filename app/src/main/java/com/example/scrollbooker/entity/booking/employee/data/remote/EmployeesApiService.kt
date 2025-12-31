@@ -12,4 +12,11 @@ interface EmployeesApiService {
         @Query("page") page: Int,
         @Query("limit") limit: Int
     ): PaginatedResponseDto<EmployeeDto>
+
+    @GET("businesses/owner/{ownerId}/employees")
+    suspend fun getEmployeesByOwner(
+        @Path("ownerId") ownerId: Int,
+        @Query("page") page: Int,
+        @Query("limit") limit: Int
+    ): PaginatedResponseDto<EmployeeDto>
 }

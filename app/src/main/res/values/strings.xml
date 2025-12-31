@@ -306,6 +306,9 @@
     <string name="freeSeats">Locuri libere</string>
     <string name="share">Distribuie</string>
     <string name="repost">Repostează</string>
+    <string name="posts">Postări</string>
+    <string name="reposts">Repostări</string>
+    <string name="bookmarks">Salvate</string>
     <string name="copyLink">Copiază linkul</string>
     <string name="hasTestedTheService">a testat serviciul</string>
     <string name="written">Scrise</string>

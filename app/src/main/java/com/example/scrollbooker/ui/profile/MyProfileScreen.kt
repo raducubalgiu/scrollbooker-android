@@ -49,9 +49,6 @@ fun MyProfileScreen(
 
     val isInitLoading by viewModel.isInitLoading.collectAsState()
 
-    val reposts by viewModel.userReposts.collectAsState()
-    val bookmarks by viewModel.userBookmarkedPosts.collectAsState()
-
     if(menuSheetState.isVisible) {
         ProfileMenuSheet(
             sheetState = menuSheetState,

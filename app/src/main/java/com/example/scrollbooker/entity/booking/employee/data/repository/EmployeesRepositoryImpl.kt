@@ -2,7 +2,9 @@ package com.example.scrollbooker.entity.booking.employee.data.repository
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.example.scrollbooker.entity.booking.employee.data.mappers.toDomain
 import com.example.scrollbooker.entity.booking.employee.data.remote.EmployeesApiService
+import com.example.scrollbooker.entity.booking.employee.data.remote.EmployeesByOwnerPagingSource
 import com.example.scrollbooker.entity.booking.employee.data.remote.EmployeesPagingSource
 import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
 import com.example.scrollbooker.entity.booking.employee.domain.repository.EmployeesRepository
@@ -19,6 +21,16 @@ class EmployeesRepositoryImpl @Inject constructor(
                 prefetchDistance = 2
             ),
             pagingSourceFactory = { EmployeesPagingSource(api, businessId) }
+        ).flow
+    }
+
+    override fun getEmployeesByOwnerId(ownerId: Int): Flow<PagingData<Employee>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                prefetchDistance = 2
+            ),
+            pagingSourceFactory = { EmployeesByOwnerPagingSource(api, ownerId) }
         ).flow
     }
 }

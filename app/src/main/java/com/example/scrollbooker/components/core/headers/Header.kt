@@ -10,7 +10,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.iconButton.CustomIconButton
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
@@ -24,6 +27,8 @@ fun Header(
     title: String = "",
     withBackground: Boolean = true,
     customTitle: (@Composable () -> Unit)? = null,
+    icon: ImageVector = Icons.Default.ArrowBackIosNew,
+    iconSize: Dp = 24.dp,
     actions:  @Composable (RowScope.() -> Unit) = {},
 ) {
     val containerColor = if(withBackground) Background else Color.Transparent
@@ -48,9 +53,10 @@ fun Header(
         navigationIcon = {
             onBack?.let {
                 CustomIconButton(
-                    imageVector = Icons.Default.ArrowBackIosNew,
+                    imageVector = icon,
                     onClick = onBack,
-                    tint = contentColor
+                    tint = contentColor,
+                    iconSize = iconSize
                 )
             }
         },

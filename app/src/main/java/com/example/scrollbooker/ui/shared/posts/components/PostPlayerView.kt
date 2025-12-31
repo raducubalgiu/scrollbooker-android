@@ -8,11 +8,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.zIndex
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import androidx.media3.ui.PlayerView.SHOW_BUFFERING_NEVER
+import com.example.scrollbooker.ui.theme.BackgroundDark
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -40,7 +42,7 @@ fun PostPlayerView(player: ExoPlayer) {
         update = { playerView ->
             playerView.player = player
             playerView.resizeMode =
-                AspectRatioFrameLayout.RESIZE_MODE_FILL
+                AspectRatioFrameLayout.RESIZE_MODE_ZOOM
         },
         modifier = Modifier.fillMaxSize(),
     )

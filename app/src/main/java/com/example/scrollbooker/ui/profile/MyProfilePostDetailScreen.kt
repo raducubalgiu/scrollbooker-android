@@ -1,26 +1,37 @@
 package com.example.scrollbooker.ui.profile
-import android.annotation.SuppressLint
 import androidx.annotation.OptIn
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.SpringSpec
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.rememberSplineBasedDecay
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.PagerDefaults
+import androidx.compose.foundation.pager.PagerSnapDistance
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBarColors
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
@@ -40,8 +51,27 @@ import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import com.example.scrollbooker.ui.theme.OnBackground
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.stringResource
-
+import androidx.lifecycle.compose.LifecycleStartEffect
+import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackException
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.ExoPlayer
+import com.example.scrollbooker.core.extensions.getOrNull
+import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.entity.social.post.domain.model.showPhone
+import com.example.scrollbooker.ui.shared.posts.components.PostPlayerView
+import com.example.scrollbooker.ui.shared.posts.components.PostShimmer
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -50,15 +80,65 @@ fun MyProfilePostDetailScreen(
     posts: LazyPagingItems<Post>,
     onBack: () -> Unit
 ) {
-    val postId by viewModel.selectedPostId.collectAsState()
+    val selectedPost by viewModel.selectedPost.collectAsState()
+    val currentPost by viewModel.currentPost.collectAsState()
     val pagerState = rememberPagerState(initialPage = 0) { posts.itemCount }
 
-    LaunchedEffect(posts.itemSnapshotList.items, postId) {
-        val index = posts.itemSnapshotList.items.indexOfFirst { it.id == postId }
-        if (index >= 0) {
-            pagerState.scrollToPage(index)
+    LaunchedEffect(selectedPost?.postId) {
+        val targetId = selectedPost?.postId ?: return@LaunchedEffect
+
+        repeat(20) {
+            val idx = posts.itemSnapshotList.items.indexOfFirst { it.id == targetId }
+            if (idx >= 0) {
+                pagerState.scrollToPage(idx)
+                return@LaunchedEffect
+            }
+            delay(100)
         }
     }
+
+    val title: String = when(selectedPost?.tab) {
+        PostTabEnum.MY_POSTS -> stringResource(R.string.posts)
+        PostTabEnum.REPOSTS -> stringResource(R.string.repost)
+        PostTabEnum.BOOKMARKS -> stringResource(R.string.bookmarks)
+        null -> ""
+    }
+
+    val currentOnReleasePlayer by rememberUpdatedState(viewModel::stopDetailSession)
+
+    LifecycleStartEffect(true) {
+        onStopOrDispose {
+            currentOnReleasePlayer()
+        }
+    }
+
+    LaunchedEffect(pagerState.settledPage) {
+        snapshotFlow { pagerState.settledPage }
+            .distinctUntilChanged()
+            .collectLatest { page ->
+                val post = posts.getOrNull(page)
+
+                viewModel.onPageSettled(page, post)
+                viewModel.ensureWindow(
+                    centerIndex = page,
+                    getPost = { idx -> posts.getOrNull(idx) }
+                )
+            }
+    }
+
+    val decay = rememberSplineBasedDecay<Float>()
+
+    val snapSpec: SpringSpec<Float> = spring(
+        dampingRatio = Spring.DampingRatioNoBouncy,
+        stiffness = Spring.StiffnessHigh,
+    )
+
+    val fling = PagerDefaults.flingBehavior(
+        state = pagerState,
+        pagerSnapDistance = PagerSnapDistance.atMost(1),
+        decayAnimationSpec = decay,
+        snapAnimationSpec = snapSpec
+    )
 
     Scaffold(
         containerColor = BackgroundDark,
@@ -66,27 +146,44 @@ fun MyProfilePostDetailScreen(
             Header(
                 modifier = Modifier.zIndex(14f),
                 onBack = onBack,
-                title = "Postari",
+                title = title,
+                icon = Icons.Default.Close,
+                iconSize = 30.dp,
                 withBackground = false
             )
         }
     ) { innerPadding ->
-        Column(Modifier.fillMaxSize()) {
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .background(BackgroundDark)
+            .padding(bottom = innerPadding.calculateBottomPadding())
+        ) {
             VerticalPager(
                 state = pagerState,
-                modifier = Modifier.weight(1f),
                 overscrollEffect = null,
+                flingBehavior = fling,
                 pageSize = PageSize.Fill,
                 pageSpacing = 0.dp,
-                beyondViewportPageCount = 1
+                beyondViewportPageCount = 1,
+                modifier = Modifier.weight(1f),
             ) { page ->
-                posts[page]?.let { post ->
-                    AsyncImage(
-                        modifier = Modifier.fillMaxSize(),
-                        model = post.mediaFiles.first().thumbnailUrl,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop
-                    )
+                val post = posts.getOrNull(page) ?: return@VerticalPager
+                val player = viewModel.getPlayerForIndex(page)
+
+                Box(modifier = Modifier.fillMaxSize()) {
+                    if(player != null) {
+                        PostPlayerWithThumbnail(
+                            player = player,
+                            thumbnailUrl = post.mediaFiles.first().thumbnailUrl
+                        )
+                    } else {
+                        AsyncImage(
+                            modifier = Modifier.fillMaxSize(),
+                            model = post.mediaFiles.first().thumbnailUrl,
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop
+                        )
+                    }
 
                     PostOverlay(
                         post = post,
@@ -100,29 +197,104 @@ fun MyProfilePostDetailScreen(
                 }
             }
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(90.dp)
-                    .padding(horizontal = BasePadding)
-                    .padding(bottom = innerPadding.calculateBottomPadding()),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                MainButton(
-                    modifier = Modifier.weight(0.5f),
-                    fullWidth = false,
-                    contentPadding = PaddingValues(14.dp),
-                    onClick = {  },
-                    title = "Rezervă instant"
-                )
+            PostBottomBar(
+                showPhone = currentPost?.showPhone() == true,
+                onBookNow = {},
+                onCall = {}
+            )
+        }
+    }
+}
 
+@Composable
+fun PostPlayerWithThumbnail(
+    player: ExoPlayer,
+    thumbnailUrl: String
+) {
+    var showThumb by remember(thumbnailUrl) { mutableStateOf(true) }
+    var isBuffering by remember { mutableStateOf(false) }
+
+    DisposableEffect(player) {
+        val listener = object : Player.Listener {
+            override fun onPlaybackStateChanged(playbackState: Int) {
+                isBuffering = playbackState == Player.STATE_BUFFERING
+            }
+
+            override fun onRenderedFirstFrame() {
+                showThumb = false
+                isBuffering = false
+            }
+            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+                showThumb = true
+                isBuffering = true
+            }
+
+            override fun onPlayerError(error: PlaybackException) {
+                showThumb = true
+                isBuffering = true
+            }
+
+
+        }
+        player.addListener(listener)
+        onDispose { player.removeListener(listener) }
+    }
+
+    Box(Modifier.fillMaxSize()) {
+        PostPlayerView(player)
+
+        if(showThumb) {
+            AsyncImage(
+                modifier = Modifier.fillMaxSize(),
+                model = thumbnailUrl,
+                contentDescription = null,
+                contentScale = ContentScale.Crop
+            )
+        }
+
+        if(isBuffering && !showThumb) {
+            PostShimmer()
+        }
+    }
+}
+
+@Composable
+fun PostBottomBar(
+    showPhone: Boolean,
+    onBookNow: () -> Unit,
+    onCall: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    AnimatedContent(
+        targetState = showPhone,
+        label = "BottomBarContent",
+        transitionSpec = {
+            fadeIn() togetherWith fadeOut()
+        },
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = SpacingS, horizontal = BasePadding)
+    ) { hasPhone ->
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            MainButton(
+                modifier = Modifier.weight(if (hasPhone) 0.5f else 1f),
+                fullWidth = false,
+                contentPadding = PaddingValues(14.dp),
+                onClick = onBookNow,
+                title = "Rezervă instant",
+            )
+
+            if (hasPhone) {
                 Spacer(Modifier.width(SpacingM))
 
                 MainButton(
                     modifier = Modifier.weight(0.5f),
                     fullWidth = false,
                     contentPadding = PaddingValues(14.dp),
-                    onClick = {  },
+                    onClick = onCall,
                     leadingIcon = R.drawable.ic_call_outline,
                     title = "Sună",
                     colors = ButtonDefaults.buttonColors(
