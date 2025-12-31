@@ -95,6 +95,7 @@ fun MyProfileScreen(
             ProfileLayout(
                 viewModel = viewModel,
                 //profileTabViewModel = profileTabViewModel,
+                isMyProfile = true,
                 isInitLoading = isInitLoading,
                 profileData = myProfileData,
                 isFollowEnabled = false,

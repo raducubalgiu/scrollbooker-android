@@ -61,6 +61,7 @@ import kotlinx.coroutines.launch
 fun ProfileLayout(
     viewModel: MyProfileViewModel,
     //profileTabViewModel: ProfileTabViewModel,
+    isMyProfile: Boolean,
     isInitLoading: Boolean,
     profileData: FeatureState<UserProfile>,
     isFollow: Boolean? = null,
@@ -124,8 +125,8 @@ fun ProfileLayout(
             is FeatureState.Success -> {
                 val user = profileData.data
 
-                val tabs = remember(user.isBusinessOrEmployee) {
-                    ProfileTab.getTabs(user.isBusinessOrEmployee)
+                val tabs = remember(user.isBusinessOrEmployee, isMyProfile) {
+                    ProfileTab.getTabs(user.isBusinessOrEmployee, isMyProfile)
                 }
 
                 val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
@@ -148,7 +149,10 @@ fun ProfileLayout(
                             ProfileTab.Posts -> ProfilePostsTab(
                                 paddingTop = currentHeaderHeightDp,
                                 posts = posts,
-                                onNavigateToPost = { profileNavigate.toPostDetail() }
+                                onNavigateToPost = {
+                                    viewModel.setPostId(it)
+                                    profileNavigate.toPostDetail()
+                                }
                             )
 
                             ProfileTab.Products -> {
@@ -161,6 +165,8 @@ fun ProfileLayout(
 //                                    onSelect = {},
 //                                )
                             }
+
+                            ProfileTab.Employees -> {}
 
                             ProfileTab.Reposts -> {
                                 ProfileRepostsTab(

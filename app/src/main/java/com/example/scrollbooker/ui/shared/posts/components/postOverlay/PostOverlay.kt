@@ -17,11 +17,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.zIndex
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.social.post.domain.model.ctaAction
 import com.example.scrollbooker.entity.social.post.domain.model.ctaTitle
+import com.example.scrollbooker.entity.social.post.domain.model.showPhone
 import com.example.scrollbooker.ui.shared.posts.PostActionUiState
 import com.example.scrollbooker.ui.shared.posts.components.PostActionButtonSmall
 
@@ -79,6 +79,7 @@ fun PostOverlay(
 
                 PostActionButtonSmall(
                     show = showBottomBar,
+                    showPhone = post.showPhone(),
                     title = stringResource(post.ctaTitle()),
                     onClick = { onAction(post.ctaAction()) }
                 )

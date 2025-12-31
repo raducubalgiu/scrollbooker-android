@@ -35,6 +35,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.core.extensions.getOrNull
 import com.example.scrollbooker.entity.social.post.domain.model.Post
+import com.example.scrollbooker.entity.social.post.domain.model.showPhone
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.ui.feed.components.FeedTabs
 import com.example.scrollbooker.ui.feed.drawer.FeedDrawer
@@ -124,6 +125,7 @@ fun FeedScreen(feedNavigate: FeedNavigator) {
                         )
                     } },
                     showBottomBar = showBottomBar,
+                    showPhone = currentPost?.showPhone() == true,
                     currentPost = currentPost
                 )
             }

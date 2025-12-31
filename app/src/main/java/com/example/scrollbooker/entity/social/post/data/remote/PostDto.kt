@@ -18,6 +18,8 @@ data class PostDto(
     @SerializedName("user_actions")
     val userActions: UserPostActionsDto,
 
+    val plan: BusinessPlanDto,
+
     @SerializedName("media_files")
     val mediaFiles: List<PostMediaFileDto> = emptyList(),
 
@@ -38,6 +40,11 @@ data class PostDto(
 
     @SerializedName("created_at")
     val createdAt: String
+)
+
+data class BusinessPlanDto(
+    val id: Int,
+    val name: String
 )
 
 data class PostUserDto(

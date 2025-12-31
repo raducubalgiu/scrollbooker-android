@@ -8,17 +8,19 @@ sealed class ProfileTab(
 ) {
     object Posts: ProfileTab(route = "Posts", icon = R.drawable.ic_video_outline)
     object Products: ProfileTab(route = "Products", icon = R.drawable.ic_shopping_outline)
+    object Employees: ProfileTab(route = "Employees", icon = R.drawable.ic_users_outline)
     object Reposts: ProfileTab(route = "Reposts", icon = R.drawable.ic_arrow_repeat_outline)
     object Bookmarks: ProfileTab(route = "Bookmarks", icon = R.drawable.ic_bookmark_outline)
     object Info: ProfileTab(route = "Info", icon = R.drawable.ic_location_outline)
 
     companion object {
-        fun getTabs(isBusinessOrEmployee: Boolean): List<ProfileTab> {
+        fun getTabs(isBusinessOrEmployee: Boolean, isMyProfile: Boolean): List<ProfileTab> {
             return buildList {
                 if(isBusinessOrEmployee) add(Posts)
                 if(isBusinessOrEmployee) add(Products)
-                add(Bookmarks)
-                add(Reposts)
+                if(isBusinessOrEmployee) add(Employees)
+                if(isMyProfile) add(Bookmarks)
+                if(isMyProfile) add(Reposts)
                 if(isBusinessOrEmployee) add(Info)
             }
         }

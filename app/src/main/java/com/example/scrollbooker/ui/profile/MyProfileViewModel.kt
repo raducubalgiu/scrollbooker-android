@@ -90,6 +90,13 @@ class MyProfileViewModel @Inject constructor(
         loadUserProfile()
     }
 
+    private val _selectedPostId = MutableStateFlow<Int?>(null)
+    val selectedPostId: StateFlow<Int?> = _selectedPostId.asStateFlow()
+
+    fun setPostId(postId: Int?) {
+        _selectedPostId.value = postId
+    }
+
     // Tabs
     @OptIn(ExperimentalCoroutinesApi::class)
     val userPosts: StateFlow<PagingData<Post>> = authDataStore.getUserId()

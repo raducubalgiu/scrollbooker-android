@@ -23,18 +23,20 @@ class ProfileNavigator (
         rootNavController.navigate("${MainRoute.UserProfile.route}/${ownerId}")
     }
 
-    fun toPostDetail() {}
-
-    fun toMyCalendar() {
-        navController.navigate(MainRoute.MyCalendar.route)
-    }
-
     fun toCalendar (calendarParams: NavigateCalendarParam) {
         val (userId, slotDuration, productId, productName) = calendarParams
 
         rootNavController.navigate(
             "${MainRoute.Calendar.route}/${userId}/${slotDuration}/${productId}/${productName}"
         )
+    }
+
+    fun toPostDetail() {
+        navController.navigate(MainRoute.MyProfilePostDetail.route)
+    }
+
+    fun toMyCalendar() {
+        navController.navigate(MainRoute.MyCalendar.route)
     }
 
     fun toMyBusiness() {

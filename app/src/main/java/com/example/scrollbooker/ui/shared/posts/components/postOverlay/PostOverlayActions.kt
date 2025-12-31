@@ -118,7 +118,7 @@ fun PostOverlayActions(
 
         onShowBottomBar?.let {
             IconButton(
-                modifier = Modifier.padding(vertical = BasePadding),
+                modifier = Modifier.padding(top = 8.dp),
                 onClick = onShowBottomBar,
                 colors = IconButtonDefaults.iconButtonColors(
                     containerColor = Color.Black.copy(alpha = if(enableOpacity) 0.2f else 0.5f),
@@ -132,5 +132,7 @@ fun PostOverlayActions(
                 )
             }
         }
+
+        Spacer(Modifier.height(BasePadding))
     }
 }

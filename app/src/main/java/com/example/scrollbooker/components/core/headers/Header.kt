@@ -6,8 +6,10 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import com.example.scrollbooker.components.core.iconButton.CustomIconButton
 import com.example.scrollbooker.ui.theme.Background
@@ -20,9 +22,13 @@ fun Header(
     modifier: Modifier = Modifier,
     onBack: (() -> Unit)? = null,
     title: String = "",
+    withBackground: Boolean = true,
     customTitle: (@Composable () -> Unit)? = null,
-    actions:  @Composable (RowScope.() -> Unit) = {}
+    actions:  @Composable (RowScope.() -> Unit) = {},
 ) {
+    val containerColor = if(withBackground) Background else Color.Transparent
+    val contentColor = if(withBackground) OnBackground else Color.White
+
     CenterAlignedTopAppBar(
         modifier = modifier,
         title = {
@@ -32,7 +38,7 @@ fun Header(
                 title.isNotEmpty().let {
                     Text(
                         style = titleMedium,
-                        color = OnBackground,
+                        color = contentColor,
                         fontWeight = FontWeight.Bold,
                         text = title
                     )
@@ -43,17 +49,18 @@ fun Header(
             onBack?.let {
                 CustomIconButton(
                     imageVector = Icons.Default.ArrowBackIosNew,
-                    onClick = onBack
+                    onClick = onBack,
+                    tint = contentColor
                 )
             }
         },
         actions = actions,
-        colors = TopAppBarColors(
-            containerColor = Background,
-            scrolledContainerColor = Background,
-            navigationIconContentColor = OnBackground,
-            titleContentColor = OnBackground,
-            actionIconContentColor = OnBackground
+        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+            containerColor = containerColor,
+            scrolledContainerColor = containerColor,
+            navigationIconContentColor = contentColor,
+            titleContentColor = contentColor,
+            actionIconContentColor = contentColor
         )
     )
 }

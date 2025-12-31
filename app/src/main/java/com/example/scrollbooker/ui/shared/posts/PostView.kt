@@ -11,7 +11,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
@@ -73,6 +75,13 @@ fun PostView(
                 onClick = { viewModel.togglePlayer(post.id) }
             )
     ) {
+        AsyncImage(
+            modifier = Modifier.fillMaxSize(),
+            model = post.mediaFiles.first().thumbnailUrl,
+            contentDescription = null,
+            contentScale = ContentScale.Crop
+        )
+
         PostPlayerView(player)
 
 //        PostControls(
