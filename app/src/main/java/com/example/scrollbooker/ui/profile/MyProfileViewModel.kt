@@ -23,6 +23,8 @@ import com.example.scrollbooker.core.util.VideoPlayerCache
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
 import com.example.scrollbooker.entity.booking.employee.domain.useCase.GetEmployeesByOwnerUseCase
+import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
+import com.example.scrollbooker.entity.booking.schedule.domain.useCase.GetSchedulesByUserIdUseCase
 import com.example.scrollbooker.entity.social.bookmark.domain.useCase.GetUserBookmarkedPostsUseCase
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetUserPostsUseCase
@@ -87,6 +89,7 @@ class MyProfileViewModel @Inject constructor(
     private val getUserRepostsUseCase: GetUserRepostsUseCase,
     private val getUserBookmarkedPostsUseCase: GetUserBookmarkedPostsUseCase,
     private val getUserProfileAboutUseCase: GetUserProfileAboutUseCase,
+    private val getSchedulesByUserIdUseCase: GetSchedulesByUserIdUseCase,
     private val authDataStore: AuthDataStore,
     @ApplicationContext private val app: Context,
 ): ViewModel() {
@@ -155,6 +158,27 @@ class MyProfileViewModel @Inject constructor(
             emit(FeatureState.Loading)
             emit(withVisibleLoading { getUserProfileAboutUseCase() })
         }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = FeatureState.Loading
+        )
+
+    @kotlin.OptIn(ExperimentalCoroutinesApi::class)
+    val schedules: StateFlow<FeatureState<List<Schedule>>> = authDataStore.getUserId()
+        .filterNotNull()
+        .distinctUntilChanged()
+        .flatMapLatest { userId ->
+            flow {
+                emit(FeatureState.Loading)
+
+                val result = withVisibleLoading {
+                    getSchedulesByUserIdUseCase(userId)
+                }
+
+                emit(result)
+            }
+        }
+        .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
             initialValue = FeatureState.Loading

@@ -39,7 +39,8 @@ import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
-import com.example.scrollbooker.core.util.Dimens.SpacingXL
+import com.example.scrollbooker.components.customized.SchedulesSection
+import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.FeatureState
 import timber.log.Timber
 
@@ -122,7 +123,10 @@ fun ProfileInfoTab(
                 }
 
                 Text(
-                    modifier = Modifier.padding(vertical = BasePadding),
+                    modifier = Modifier.padding(
+                        top = SpacingXXL,
+                        bottom = BasePadding
+                    ),
                     text = stringResource(R.string.description),
                     fontWeight = FontWeight.SemiBold,
                     style = titleLarge
@@ -134,13 +138,15 @@ fun ProfileInfoTab(
 
                 Text(
                     modifier = Modifier.padding(
-                        top = SpacingXL,
+                        top = SpacingXXL,
                         bottom = BasePadding
                     ),
                     text = stringResource(R.string.schedule),
                     fontWeight = FontWeight.SemiBold,
                     style = titleLarge
                 )
+
+                SchedulesSection(data.schedules)
             }
         }
     }

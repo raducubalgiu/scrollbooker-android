@@ -12,6 +12,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -69,11 +70,15 @@ fun ProfileLayout(
     profileNavigate: ProfileNavigator
 ) {
     val scope = rememberCoroutineScope()
+
     val scheduleSheetState = rememberModalBottomSheetState()
-    val userId = (profileData as? FeatureState.Success<UserProfile>)?.data?.id
+    val schedules by viewModel.schedules.collectAsState()
 
     if(scheduleSheetState.isVisible) {
-        userId?.let { UserScheduleSheet(userId = it, sheetState = scheduleSheetState) }
+        UserScheduleSheet(
+            sheetState = scheduleSheetState,
+            schedules = schedules
+        )
     }
 
     val density = LocalDensity.current

@@ -1,52 +1,25 @@
 package com.example.scrollbooker.ui.profile.components.sheets
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.ui.theme.titleMedium
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.sheet.SheetHeader
+import com.example.scrollbooker.components.customized.SchedulesSection
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.core.extensions.formatTime
-import com.example.scrollbooker.core.util.translateDayOfWeek
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
 import com.example.scrollbooker.ui.theme.Background
-import com.example.scrollbooker.ui.theme.OnBackground
-import com.example.scrollbooker.ui.theme.bodyLarge
 import kotlinx.coroutines.launch
-import org.threeten.bp.Duration
-import org.threeten.bp.LocalDate
-import org.threeten.bp.LocalTime
-import org.threeten.bp.format.TextStyle
-import java.util.Locale
 
 enum class WorkScheduleStatus {
     CLOSED, SHORT, FULL
@@ -55,34 +28,10 @@ enum class WorkScheduleStatus {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserScheduleSheet(
-    userId: Int,
-    sheetState: SheetState
+    sheetState: SheetState,
+    schedules: FeatureState<List<Schedule>>
 ) {
-    val viewModel: UserScheduleSheetViewModel = hiltViewModel()
-    val state by viewModel.schedulesState.collectAsState()
     val scope = rememberCoroutineScope()
-
-    val today = LocalDate.now().dayOfWeek
-    val todayName = today.getDisplayName(TextStyle.FULL, Locale.ENGLISH)
-
-    fun getWorkScheduleStatus(startTime: String?, endTime: String?): WorkScheduleStatus {
-        if(startTime == null || endTime == null) return WorkScheduleStatus.CLOSED
-
-        val start = LocalTime.parse(startTime)
-        val end = LocalTime.parse(endTime)
-
-        val duration = Duration.between(start, end).toHours()
-
-        return when {
-            duration >= 8 -> WorkScheduleStatus.FULL
-            duration in 1..7 -> WorkScheduleStatus.SHORT
-            else -> WorkScheduleStatus.CLOSED
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        viewModel.setUserId(userId)
-    }
 
     ModalBottomSheet(
         sheetState = sheetState,
@@ -99,57 +48,11 @@ fun UserScheduleSheet(
             .fillMaxWidth()
             .padding(SpacingXL)
         ) {
-            when(state) {
+            when(val state = schedules) {
                 is FeatureState.Loading -> ScheduleShimmer()
                 is FeatureState.Error -> ErrorScreen()
                 is FeatureState.Success -> {
-                    val schedules = (state as FeatureState.Success<List<Schedule>>).data
-
-                    schedules.forEach { (_, dayOfWeek, startTime, endTime) ->
-                        val text = if (startTime.isNullOrBlank()) stringResource(R.string.closed)
-                        else "${formatTime(startTime)} - ${formatTime(endTime)}"
-
-                        val isToday = dayOfWeek == todayName
-                        val schedulesStatus = getWorkScheduleStatus(startTime, endTime)
-
-                        val statusBg = when(schedulesStatus) {
-                            WorkScheduleStatus.CLOSED -> Color(0xFFCCCCCC)
-                            WorkScheduleStatus.SHORT -> Color(0xFFFBBF24)
-                            WorkScheduleStatus.FULL -> Color.Green
-                        }
-
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = SpacingXL),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Row( verticalAlignment = Alignment.CenterVertically) {
-                                Box(
-                                    modifier = Modifier
-                                        .clip(CircleShape)
-                                        .width(10.dp)
-                                        .height(10.dp)
-                                        .background(statusBg)
-                                )
-                                Spacer(Modifier.width(BasePadding))
-                                Text(
-                                    style = titleMedium,
-                                    fontWeight = if(isToday) FontWeight.ExtraBold else FontWeight.Normal,
-                                    fontSize = 18.sp,
-                                    text = translateDayOfWeek(dayOfWeek) ?: dayOfWeek,
-                                    color = OnBackground,
-                                )
-                            }
-                            Text(
-                                text = text,
-                                style = bodyLarge,
-                                color = OnBackground,
-                                fontWeight = if(isToday) FontWeight.ExtraBold else FontWeight.Normal,
-                            )
-                        }
-                    }
+                    SchedulesSection(state.data)
 
                     Spacer(Modifier.padding(bottom = BasePadding))
                 }
