@@ -37,8 +37,6 @@ import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
-import com.example.scrollbooker.ui.profile.PostTabEnum
-import com.example.scrollbooker.ui.profile.SelectedPostUi
 import com.example.scrollbooker.ui.profile.components.userInfo.components.MyProfileActions
 import com.example.scrollbooker.ui.profile.components.userInfo.ProfileShimmer
 import com.example.scrollbooker.ui.profile.components.userInfo.ProfileUserInfo
@@ -149,34 +147,18 @@ fun ProfileLayout(
                                 paddingTop = currentHeaderHeightDp,
                                 posts = posts,
                                 onNavigateToPost = {
-                                    viewModel.setSelectedPost(
-                                        SelectedPostUi(
-                                            postId = it,
-                                            tab = PostTabEnum.MY_POSTS
-                                        )
-                                    )
+                                    viewModel.setSelectedPost(it)
                                     profileNavigate.toPostDetail()
                                 }
                             )
 
-                            ProfileTab.Products -> {
-                                //val viewModel: UserProductsViewModel = hiltViewModel()
-
-//                                UserProductsServiceTabs(
-//                                    viewModel = viewModel,
-//                                    paddingTop = currentHeaderHeightDp,
-//                                    userId = user.id,
-//                                    onSelect = {},
-//                                )
-                            }
+                            ProfileTab.Products -> {}
 
                             ProfileTab.Employees -> {
                                 ProfileEmployeesTab(
                                     paddingTop = currentHeaderHeightDp,
                                     viewModel = viewModel,
-                                    onNavigateToEmployeeProfile = {
-                                        profileNavigate.toBusinessOwner(it)
-                                    }
+                                    onNavigateToEmployeeProfile = { profileNavigate.toUserProfile(it) }
                                 )
                             }
 
@@ -185,12 +167,7 @@ fun ProfileLayout(
                                     paddingTop = currentHeaderHeightDp,
                                     viewModel = viewModel,
                                     onNavigateToPost = {
-                                        viewModel.setSelectedPost(
-                                            SelectedPostUi(
-                                                postId = it,
-                                                tab = PostTabEnum.REPOSTS
-                                            )
-                                        )
+                                        viewModel.setSelectedPost(it)
                                         profileNavigate.toPostDetail()
                                     }
                                 )
@@ -201,12 +178,7 @@ fun ProfileLayout(
                                     paddingTop = currentHeaderHeightDp,
                                     viewModel = viewModel,
                                     onNavigateToPost = {
-                                        viewModel.setSelectedPost(
-                                            SelectedPostUi(
-                                                postId = it,
-                                                tab = PostTabEnum.BOOKMARKS
-                                            )
-                                        )
+                                        viewModel.setSelectedPost(it)
                                         profileNavigate.toPostDetail()
                                     }
                                 )
@@ -267,24 +239,20 @@ fun ProfileLayout(
                                 actions = {
                                     if (user.isOwnProfile) {
                                         MyProfileActions(
-                                            onEditProfile = { profileNavigate.toEditProfile() },
                                             isBusinessOrEmployee = user.isBusinessOrEmployee,
+                                            onEditProfile = { profileNavigate.toEditProfile() },
                                             onNavigateToMyCalendar = { profileNavigate.toMyCalendar() }
                                         )
                                     } else {
                                         UserProfileActions(
                                             isFollow = isFollow,
                                             isFollowEnabled = isFollowEnabled,
-                                            onFollow = onFollow,
-                                            onNavigateToCalendar = {}
+                                            onFollow = onFollow
                                         )
                                     }
                                 },
                                 onOpenScheduleSheet = { scope.launch { scheduleSheetState.show() } },
-                                onNavigateToBusinessOwner = { ownerId -> ownerId?.let {
-                                        profileNavigate.toBusinessOwner(ownerId)
-                                    }
-                                }
+                                onNavigateToBusinessOwner = { it?.let { profileNavigate.toUserProfile(it) } }
                             )
                         }
 

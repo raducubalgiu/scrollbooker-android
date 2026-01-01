@@ -4,8 +4,10 @@ import android.content.Context
 import android.net.Uri
 import androidx.annotation.OptIn
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.AudioAttributes
@@ -72,7 +74,8 @@ enum class PostTabEnum {
 
 data class SelectedPostUi(
     val postId: Int,
-    val tab: PostTabEnum
+    val tab: PostTabEnum,
+    val index: Int
 )
 
 @HiltViewModel
@@ -188,9 +191,6 @@ class MyProfileViewModel @Inject constructor(
     private val _selectedPost = MutableStateFlow<SelectedPostUi?>(null)
     val selectedPost: StateFlow<SelectedPostUi?> = _selectedPost.asStateFlow()
 
-    private val _currentPost = MutableStateFlow<Post?>(null)
-    val currentPost: StateFlow<Post?> = _currentPost.asStateFlow()
-
     fun setSelectedPost(selectedPost: SelectedPostUi) {
         _selectedPost.value = selectedPost
     }
@@ -212,8 +212,8 @@ class MyProfileViewModel @Inject constructor(
     // Player
     private val maxPlayers = 3
     private val pool = ArrayDeque<ExoPlayer>(maxPlayers)
-    private val indexToPlayer = mutableMapOf<Int, ExoPlayer>()
-    private val indexToPostId = mutableMapOf<Int, Int>()
+    private val indexToPlayer: SnapshotStateMap<Int, ExoPlayer> = mutableStateMapOf()
+    private val indexToPostId: SnapshotStateMap<Int, Int> = mutableStateMapOf()
 
     private var focusedIndex: Int? = null
     private val windowMutex = Mutex()
@@ -313,9 +313,20 @@ class MyProfileViewModel @Inject constructor(
         applyFocus(centerIndex)
     }
 
-    fun onPageSettled(index: Int, post: Post?) {
+    fun primeDetail(startIndex: Int, post: Post) {
+        focusedIndex = startIndex
+        viewModelScope.launch {
+            windowMutex.withLock {
+                ensureWindowInternal(
+                    centerIndex = startIndex,
+                    getPost = { idx -> if(idx == startIndex) post else null }
+                )
+            }
+        }
+    }
+
+    fun onPageSettled(index: Int) {
         focusedIndex = index
-        _currentPost.value = post
         applyFocus(index)
     }
 

@@ -27,8 +27,7 @@ import com.example.scrollbooker.ui.theme.titleMedium
 fun UserProfileActions(
     isFollow: Boolean?,
     isFollowEnabled: Boolean,
-    onFollow: (() -> Unit)? = null,
-    onNavigateToCalendar: () -> Unit
+    onFollow: (() -> Unit)? = null
 ) {
     Row(modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
@@ -49,10 +48,12 @@ fun UserProfileActions(
                 )
             }
         }
+
         Spacer(Modifier.width(SpacingS))
+
         ProfileActionButton(
             modifier = Modifier.weight(5f),
-            onClick = onNavigateToCalendar
+            onClick = {}
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
@@ -68,7 +69,9 @@ fun UserProfileActions(
                 )
             }
         }
+
         Spacer(Modifier.width(SpacingS))
+
         ProfileActionButton(
             modifier = Modifier.weight(1.5f),
             onClick = {}

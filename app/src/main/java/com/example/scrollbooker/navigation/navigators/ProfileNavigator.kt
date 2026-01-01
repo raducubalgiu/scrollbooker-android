@@ -19,7 +19,7 @@ class ProfileNavigator (
         )
     }
 
-    fun toBusinessOwner(ownerId: Int) {
+    fun toUserProfile(ownerId: Int) {
         rootNavController.navigate("${MainRoute.UserProfile.route}/${ownerId}")
     }
 

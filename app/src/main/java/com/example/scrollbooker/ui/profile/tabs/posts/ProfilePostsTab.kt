@@ -21,12 +21,14 @@ import com.example.scrollbooker.components.customized.PostGrid.PostGrid
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.customized.LoadMoreSpinner
 import com.example.scrollbooker.entity.social.post.domain.model.Post
+import com.example.scrollbooker.ui.profile.PostTabEnum
+import com.example.scrollbooker.ui.profile.SelectedPostUi
 
 @Composable
 fun ProfilePostsTab(
     paddingTop: Dp,
     posts: LazyPagingItems<Post>,
-    onNavigateToPost: (Int) -> Unit
+    onNavigateToPost: (SelectedPostUi) -> Unit
 ) {
     val refreshState = posts.loadState.refresh
     val appendState = posts.loadState.refresh
@@ -57,7 +59,18 @@ fun ProfilePostsTab(
                     ) {
                         items(posts.itemCount) { index ->
                             posts[index]?.let {
-                                PostGrid(it, onNavigateToPost = onNavigateToPost)
+                                PostGrid(
+                                    post = it,
+                                    onNavigateToPost = { id ->
+                                        onNavigateToPost(
+                                            SelectedPostUi(
+                                                postId = id,
+                                                tab = PostTabEnum.MY_POSTS,
+                                                index = index
+                                            )
+                                        )
+                                    }
+                                )
                             }
                         }
 
