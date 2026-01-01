@@ -32,6 +32,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.headlineSmall
+import com.example.scrollbooker.ui.theme.titleLarge
 
 @Composable
 fun ProfileEmployeesTab(
@@ -65,7 +66,7 @@ fun ProfileEmployeesTab(
                                 modifier = Modifier.padding(BasePadding),
                                 text = stringResource(R.string.employees),
                                 fontWeight = FontWeight.SemiBold,
-                                style = headlineSmall
+                                style = titleLarge
                             )
                         }
 

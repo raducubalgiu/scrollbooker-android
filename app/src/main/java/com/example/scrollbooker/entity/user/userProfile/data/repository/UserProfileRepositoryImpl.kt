@@ -12,6 +12,7 @@ import com.example.scrollbooker.entity.user.userProfile.data.remote.UpdatePublic
 import com.example.scrollbooker.entity.user.userProfile.data.remote.UpdateUsernameRequest
 import com.example.scrollbooker.entity.user.userProfile.data.remote.UpdateWebsiteRequest
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
+import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfileAbout
 import com.example.scrollbooker.entity.user.userProfile.domain.repository.UserProfileRepository
 import javax.inject.Inject
 
@@ -52,5 +53,9 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     override suspend fun searchUsername(username: String): SearchUsernameResponse {
         return apiService.searchUsername(username)
+    }
+
+    override suspend fun getUserProfileAbout(userId: Int): UserProfileAbout {
+        return apiService.getUserProfileAbout(userId).toDomain()
     }
 }

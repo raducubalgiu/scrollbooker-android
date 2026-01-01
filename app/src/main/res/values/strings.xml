@@ -374,4 +374,6 @@
     <string name="iDoNotWantToSay">Nu vreau să spun</string>
     <string name="selectVideo">Selectează video</string>
     <string name="preview">Previzualizare</string>
+    <string name="call">Sună</string>
+    <string name="phone">Telefon</string>
 </resources>

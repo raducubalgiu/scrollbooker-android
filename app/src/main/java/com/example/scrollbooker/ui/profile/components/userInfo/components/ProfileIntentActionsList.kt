@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
+import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 
@@ -27,6 +28,19 @@ fun ProfileIntentActionsList(intentList: List<IntentAction>) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
+            ProfileIntentActionButton(
+                icon = R.drawable.ic_call_outline,
+                title = R.string.phone
+            )
+
+            Box(
+                modifier = Modifier
+                    .padding(horizontal = BasePadding)
+                    .width(1.dp)
+                    .height(10.dp)
+                    .background(Color.Gray, shape = RectangleShape)
+            )
+
             intentList.forEachIndexed { index, intent ->
                 ProfileIntentActionButton(
                     icon = intent.icon,

@@ -208,7 +208,10 @@ fun ProfileLayout(
                             }
 
                             ProfileTab.Info -> {
-                                ProfileInfoTab(paddingTop = currentHeaderHeightDp)
+                                ProfileInfoTab(
+                                    paddingTop = currentHeaderHeightDp,
+                                    viewModel = viewModel
+                                )
                             }
                         }
                     }

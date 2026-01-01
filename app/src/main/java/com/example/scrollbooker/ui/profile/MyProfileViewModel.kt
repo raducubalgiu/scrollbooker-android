@@ -28,6 +28,8 @@ import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetUserPostsUseCase
 import com.example.scrollbooker.entity.social.repost.domain.useCase.GetUserRepostsUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
+import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfileAbout
+import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserProfileAboutUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserProfileUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateBioUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateFullNameUseCase
@@ -43,12 +45,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
@@ -82,6 +86,7 @@ class MyProfileViewModel @Inject constructor(
     private val getEmployeesByOwnerUseCase: GetEmployeesByOwnerUseCase,
     private val getUserRepostsUseCase: GetUserRepostsUseCase,
     private val getUserBookmarkedPostsUseCase: GetUserBookmarkedPostsUseCase,
+    private val getUserProfileAboutUseCase: GetUserProfileAboutUseCase,
     private val authDataStore: AuthDataStore,
     @ApplicationContext private val app: Context,
 ): ViewModel() {
@@ -144,6 +149,16 @@ class MyProfileViewModel @Inject constructor(
             getUserBookmarkedPostsUseCase(userId)
         }
         .cachedIn(viewModelScope)
+
+    val about: StateFlow<FeatureState<UserProfileAbout>> =
+        flow<FeatureState<UserProfileAbout>> {
+            emit(FeatureState.Loading)
+            emit(withVisibleLoading { getUserProfileAboutUseCase() })
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = FeatureState.Loading
+        )
 
     // Selected Post
     private val _selectedPost = MutableStateFlow<SelectedPostUi?>(null)

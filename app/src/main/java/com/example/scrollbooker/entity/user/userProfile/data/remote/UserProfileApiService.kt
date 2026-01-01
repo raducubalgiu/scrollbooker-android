@@ -54,4 +54,9 @@ interface UserProfileApiService {
     suspend fun searchUsername(
         @Query("username") username: String
     ): SearchUsernameResponse
+
+    @GET("users/{userId}/about")
+    suspend fun getUserProfileAbout(
+        @Path("userId") userId: Int,
+    ): UserProfileAboutDto
 }

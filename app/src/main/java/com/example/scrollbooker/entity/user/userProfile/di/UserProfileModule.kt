@@ -4,6 +4,7 @@ import com.example.scrollbooker.core.util.Constants.BASE_URL
 import com.example.scrollbooker.entity.user.userProfile.data.remote.UserProfileApiService
 import com.example.scrollbooker.entity.user.userProfile.data.repository.UserProfileRepositoryImpl
 import com.example.scrollbooker.entity.user.userProfile.domain.repository.UserProfileRepository
+import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserProfileAboutUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserProfileUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.SearchUsernameUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateBioUseCase
@@ -13,6 +14,7 @@ import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateGen
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdatePublicEmailUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateUsernameUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateWebsiteUseCase
+import com.example.scrollbooker.store.AuthDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -48,6 +50,15 @@ object UserProfileModule {
         repository: UserProfileRepository
     ): GetUserProfileUseCase {
         return GetUserProfileUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetUserProfileAboutUseCase(
+        repository: UserProfileRepository,
+        authDataStore: AuthDataStore
+    ): GetUserProfileAboutUseCase {
+        return GetUserProfileAboutUseCase(repository, authDataStore)
     }
 
     @Provides
