@@ -313,15 +313,15 @@ class MyProfileViewModel @Inject constructor(
         applyFocus(centerIndex)
     }
 
-    fun primeDetail(startIndex: Int, post: Post) {
-        focusedIndex = startIndex
-        viewModelScope.launch {
-            windowMutex.withLock {
-                ensureWindowInternal(
-                    centerIndex = startIndex,
-                    getPost = { idx -> if(idx == startIndex) post else null }
-                )
-            }
+    fun ensureImmediate(
+        centerIndex: Int,
+        getPost: (Int) -> Post?
+    ) {
+        if(!windowMutex.tryLock()) return
+        try {
+            ensureWindowInternal(centerIndex, getPost)
+        } finally {
+            windowMutex.unlock()
         }
     }
 
@@ -340,7 +340,6 @@ class MyProfileViewModel @Inject constructor(
     }
 
     private fun prepareForPost(player: ExoPlayer, post: Post) {
-        // aici pui url-ul tău (hls/mp4)
         val mediaItem = MediaItem.fromUri(post.mediaFiles.first().url)
         player.setMediaItem(mediaItem)
         player.prepare()
@@ -352,6 +351,7 @@ class MyProfileViewModel @Inject constructor(
         player.pause()
         player.stop()
         player.clearMediaItems()
+        player.seekTo(0)
         player.volume = 0f
     }
 
@@ -359,16 +359,16 @@ class MyProfileViewModel @Inject constructor(
 
     fun stopDetailSession() {
         indexToPlayer.values.forEach { player ->
-            player.playWhenReady = false
-            player.pause()
-            player.stop()
-            player.clearMediaItems()
-            player.volume = 0f
+            resetPlayer(player)
+
+            if(!pool.contains(player)) {
+                pool.addLast(player)
+            }
         }
+
         indexToPlayer.clear()
         indexToPostId.clear()
 
-        // IMPORTANT: NU clear pool, NU release players
         focusedIndex = null
     }
 

@@ -41,18 +41,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.LifecycleStartEffect
-import androidx.media3.common.MediaItem
-import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+import coil.compose.AsyncImage
 import com.example.scrollbooker.core.extensions.getOrNull
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.ui.shared.posts.components.PostPlayerView
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.take
 import timber.log.Timber
 
 @OptIn(UnstableApi::class)
@@ -78,12 +81,10 @@ fun MyProfilePostDetailScreen(
         ) { posts.itemCount }
 
         LaunchedEffect(pagerState) {
-            snapshotFlow {
-                val page = pagerState.settledPage
-                page to posts.getOrNull(page)?.id
-            }
+            snapshotFlow { pagerState.settledPage }
                 .distinctUntilChanged()
-                .collectLatest { (page, _) ->
+                .drop(1)
+                .collectLatest { page ->
                     viewModel.onPageSettled(page)
                     viewModel.ensureWindow(
                         centerIndex = page,
@@ -91,6 +92,7 @@ fun MyProfilePostDetailScreen(
                     )
                 }
         }
+
 
         val decay = rememberSplineBasedDecay<Float>()
 
@@ -144,16 +146,19 @@ fun MyProfilePostDetailScreen(
                     val post = posts.getOrNull(page) ?: return@VerticalPager
                     val player = viewModel.getPlayerForIndex(page)
 
-                    Timber.tag("PAGER_ITEM").d(
-                        "page=%d postId=%s player=%s",
-                        page,
-                        post.id,
-                        player?.hashCode()?.toString() ?: "null"
-                    )
-
                     Box(modifier = Modifier.fillMaxSize()) {
                         if(player != null) {
-                            PostPlayerView(player)
+                            PostPlayerWithThumbnail(
+                                player = player,
+                                thumbnailUrl = post.mediaFiles.first().thumbnailUrl
+                            )
+                        } else {
+                            AsyncImage(
+                                modifier = Modifier.fillMaxSize(),
+                                model = post.mediaFiles.first().thumbnailUrl,
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop
+                            )
                         }
 
                         PostOverlay(
@@ -201,17 +206,6 @@ fun PostPlayerWithThumbnail(
                 showThumb = false
                 isBuffering = false
             }
-            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-                showThumb = true
-                isBuffering = true
-            }
-
-            override fun onPlayerError(error: PlaybackException) {
-                showThumb = true
-                isBuffering = true
-            }
-
-
         }
         player.addListener(listener)
         onDispose { player.removeListener(listener) }
@@ -220,13 +214,13 @@ fun PostPlayerWithThumbnail(
     Box(Modifier.fillMaxSize()) {
         PostPlayerView(player)
 
-//        if(showThumb) {
-//            AsyncImage(
-//                modifier = Modifier.fillMaxSize(),
-//                model = thumbnailUrl,
-//                contentDescription = null,
-//                contentScale = ContentScale.Crop
-//            )
-//        }
+        if(showThumb) {
+            AsyncImage(
+                modifier = Modifier.fillMaxSize(),
+                model = thumbnailUrl,
+                contentDescription = null,
+                contentScale = ContentScale.Crop
+            )
+        }
     }
 }

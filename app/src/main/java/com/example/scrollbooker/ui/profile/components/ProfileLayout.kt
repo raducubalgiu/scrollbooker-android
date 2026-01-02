@@ -37,6 +37,7 @@ import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
+import com.example.scrollbooker.ui.profile.SelectedPostUi
 import com.example.scrollbooker.ui.profile.components.userInfo.components.MyProfileActions
 import com.example.scrollbooker.ui.profile.components.userInfo.ProfileShimmer
 import com.example.scrollbooker.ui.profile.components.userInfo.ProfileUserInfo
@@ -146,10 +147,9 @@ fun ProfileLayout(
                             ProfileTab.Posts -> ProfilePostsTab(
                                 paddingTop = currentHeaderHeightDp,
                                 posts = posts,
-                                onNavigateToPost = {
-                                    viewModel.setSelectedPost(it)
-                                    profileNavigate.toPostDetail()
-                                }
+                                onNavigateToPost = { postUi, post -> navigateToPost(
+                                    viewModel, profileNavigate, postUi, post
+                                )}
                             )
 
                             ProfileTab.Products -> {}
@@ -166,10 +166,9 @@ fun ProfileLayout(
                                 ProfileRepostsTab(
                                     paddingTop = currentHeaderHeightDp,
                                     viewModel = viewModel,
-                                    onNavigateToPost = {
-                                        viewModel.setSelectedPost(it)
-                                        profileNavigate.toPostDetail()
-                                    }
+                                    onNavigateToPost = { postUi, post -> navigateToPost(
+                                        viewModel, profileNavigate, postUi, post
+                                    )}
                                 )
                             }
 
@@ -177,10 +176,9 @@ fun ProfileLayout(
                                 ProfileBookmarksTab(
                                     paddingTop = currentHeaderHeightDp,
                                     viewModel = viewModel,
-                                    onNavigateToPost = {
-                                        viewModel.setSelectedPost(it)
-                                        profileNavigate.toPostDetail()
-                                    }
+                                    onNavigateToPost = { postUi, post -> navigateToPost(
+                                        viewModel, profileNavigate, postUi, post
+                                    )}
                                 )
                             }
 
@@ -266,4 +264,21 @@ fun ProfileLayout(
             }
         }
     }
+}
+
+private fun navigateToPost(
+    viewModel: MyProfileViewModel,
+    profileNavigate: ProfileNavigator,
+    postUi: SelectedPostUi,
+    post: Post
+) {
+    viewModel.onPageSettled(postUi.index)
+
+    viewModel.ensureImmediate(
+        centerIndex = postUi.index,
+        getPost = { i -> if(i == postUi.index) post else null }
+    )
+
+    viewModel.setSelectedPost(postUi)
+    profileNavigate.toPostDetail()
 }
