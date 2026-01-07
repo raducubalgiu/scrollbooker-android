@@ -4,7 +4,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.example.scrollbooker.entity.social.post.data.remote.CreatePostRequest
 import com.example.scrollbooker.entity.social.post.data.remote.PostApiService
-import com.example.scrollbooker.entity.social.post.data.remote.PostBookNowPagingSource
+import com.example.scrollbooker.entity.social.post.data.remote.PostExplorePagingSource
 import com.example.scrollbooker.entity.social.post.data.remote.PostFollowingPagingSource
 import com.example.scrollbooker.entity.social.post.data.remote.PostPagingSource
 import com.example.scrollbooker.entity.social.post.data.remote.PostVideoReviewsPagingSource
@@ -19,7 +19,7 @@ class PostRepositoryImpl @Inject constructor(
     override fun getExplorePosts(selectedBusinessTypes: List<Int?>): Flow<PagingData<Post>> {
         return Pager(
             config = PagingConfig(pageSize = 10),
-            pagingSourceFactory = { PostBookNowPagingSource(apiService, selectedBusinessTypes) }
+            pagingSourceFactory = { PostExplorePagingSource(apiService, selectedBusinessTypes) }
         ).flow
     }
 

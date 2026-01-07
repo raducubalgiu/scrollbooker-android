@@ -1,4 +1,6 @@
 package com.example.scrollbooker.ui.feed.components
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -6,26 +8,34 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.icon.ShadowedIcon
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.feed.components.search.FeedTab
+import com.example.scrollbooker.ui.theme.Background
+import com.example.scrollbooker.ui.theme.Primary
 
 @Composable
 fun FeedTabs(
+    modifier: Modifier = Modifier,
     selectedTabIndex: Int,
+    activeFiltersCount: Int = 0,
     onOpenDrawer: () -> Unit,
     onNavigateSearch: () -> Unit,
     onChangeTab: (Int) -> Unit,
@@ -36,9 +46,8 @@ fun FeedTabs(
     )
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .statusBarsPadding()
             .zIndex(2f),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -55,6 +64,31 @@ fun FeedTabs(
                     contentDescription = "Menu",
                     iconTintColor = Color(0xFFE0E0E0)
                 )
+
+                if (activeFiltersCount > 0) {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .size(25.dp)
+                            .border(
+                                width = 2.dp,
+                                shape = ShapeDefaults.ExtraLarge,
+                                color = Background
+                            )
+                            .background(
+                                color = Primary.copy(alpha = 0.6f),
+                                shape = CircleShape
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = if(activeFiltersCount > 9) "9+" else activeFiltersCount.toString(),
+                            color = Color.White,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
             }
 
             TabRow(

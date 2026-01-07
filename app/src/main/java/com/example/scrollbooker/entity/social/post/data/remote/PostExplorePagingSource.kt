@@ -8,7 +8,7 @@ import com.example.scrollbooker.entity.social.post.domain.model.Post
 import timber.log.Timber
 import java.lang.Exception
 
-class PostBookNowPagingSource(
+class PostExplorePagingSource(
     private val api: PostApiService,
     private val selectedBusinessTypes: List<Int?>
 ) : PagingSource<Int, Post>() {
@@ -25,12 +25,7 @@ class PostBookNowPagingSource(
         val limit = 10
 
         return try {
-            val response = withVisibleLoading {
-                api.getExplorePosts(selectedBusinessTypes, page, limit)
-            }
-
-            Timber.tag("Paging Posts").e("RESPONSE $response")
-
+            val response = api.getExplorePosts(selectedBusinessTypes, page, limit)
             val posts = response.results.map { it.toDomain() }
 
             val totalLoaded = (page - 1) * limit + response.results.size

@@ -13,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.navigation.LocalTabsController
 import com.example.scrollbooker.navigation.bottomBar.MainTab
+import com.example.scrollbooker.ui.feed.FeedScreenViewModel
 import com.example.scrollbooker.ui.feed.search.FeedSearchViewModel
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
 
@@ -27,6 +28,9 @@ fun MainApplication(onLogout: () -> Unit) {
     val myPosts = myProfileViewModel.userPosts.collectAsLazyPagingItems()
 
     // Feed Search View Model
+    val feedViewModel: FeedScreenViewModel = hiltViewModel()
+    val explorePosts = feedViewModel.explorePosts.collectAsLazyPagingItems()
+
     val feedSearchViewModel: FeedSearchViewModel = hiltViewModel()
     val userSearch by feedSearchViewModel.userSearch.collectAsState()
 
@@ -45,6 +49,8 @@ fun MainApplication(onLogout: () -> Unit) {
                 is MainTab.Feed -> {
                     FeedNavHost(
                         navController = navControllers[MainTab.Feed]!!,
+                        feedViewModel = feedViewModel,
+                        explorePosts = explorePosts,
                         feedSearchViewModel = feedSearchViewModel,
                         userSearch = userSearch
                     )

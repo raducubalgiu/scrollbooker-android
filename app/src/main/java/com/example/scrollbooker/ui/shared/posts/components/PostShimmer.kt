@@ -22,15 +22,12 @@ import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 
 @Composable
-fun PostShimmer(
-    paddingBottom: Dp = 90.dp
-) {
+fun PostShimmer() {
     val brush = rememberShimmerBrush(mode = ShimmerMode.DARK)
 
     Box(modifier = Modifier
         .fillMaxSize()
-        .padding(SpacingS)
-        .padding(bottom = paddingBottom),
+        .padding(SpacingS),
         contentAlignment = Alignment.BottomStart
     ) {
         Column {

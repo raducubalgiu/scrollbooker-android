@@ -1,8 +1,11 @@
 package com.example.scrollbooker.ui.profile
 import androidx.annotation.OptIn
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -10,6 +13,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.PagerDefaults
 import androidx.compose.foundation.pager.PagerSnapDistance
@@ -17,6 +21,7 @@ import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -36,12 +41,16 @@ import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverl
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.media3.common.Player
@@ -191,20 +200,20 @@ fun MyProfilePostDetailScreen(
 @Composable
 fun PostPlayerWithThumbnail(
     player: ExoPlayer,
-    thumbnailUrl: String
+    thumbnailUrl: String,
+    showPlayIcon: Boolean = false
 ) {
-    var showThumb by remember(thumbnailUrl) { mutableStateOf(true) }
-    var isBuffering by remember { mutableStateOf(false) }
+    var isBuffering by remember { mutableStateOf(true) }
+    var isRenderedFirstFrame by remember { mutableStateOf(false) }
 
     DisposableEffect(player) {
         val listener = object : Player.Listener {
-            override fun onPlaybackStateChanged(playbackState: Int) {
-                isBuffering = playbackState == Player.STATE_BUFFERING
+            override fun onPlaybackStateChanged(state: Int) {
+                isBuffering = state == Player.STATE_BUFFERING
             }
 
             override fun onRenderedFirstFrame() {
-                showThumb = false
-                isBuffering = false
+                isRenderedFirstFrame = true
             }
         }
         player.addListener(listener)
@@ -214,13 +223,32 @@ fun PostPlayerWithThumbnail(
     Box(Modifier.fillMaxSize()) {
         PostPlayerView(player)
 
-        if(showThumb) {
+        if(!isRenderedFirstFrame) {
             AsyncImage(
                 modifier = Modifier.fillMaxSize(),
                 model = thumbnailUrl,
                 contentDescription = null,
                 contentScale = ContentScale.Crop
             )
+        }
+
+        AnimatedVisibility(
+            visible = showPlayIcon,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .zIndex(20f),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    modifier = Modifier.size(75.dp),
+                    painter = painterResource(R.drawable.ic_play_solid),
+                    contentDescription = null,
+                    tint = Color.White.copy(0.5f)
+                )
+            }
         }
     }
 }

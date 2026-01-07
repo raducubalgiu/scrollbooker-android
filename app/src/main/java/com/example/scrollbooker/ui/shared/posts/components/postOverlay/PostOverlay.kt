@@ -62,7 +62,8 @@ fun PostOverlay(
                     user = post.user,
                     businessOwner = post.businessOwner,
                     isVideoReview = isVideoReview,
-                    onNavigateToUser = onNavigateToUserProfile
+                    onNavigateToUser = onNavigateToUserProfile,
+                    onOpenPhone = { onAction(PostOverlayActionEnum.OPEN_PHONE) }
                 )
 
                 Spacer(Modifier.height(SpacingS))

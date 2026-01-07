@@ -51,13 +51,14 @@ fun PostOverlayUser(
     businessOwner: PostBusinessOwner,
     isVideoReview: Boolean,
     onNavigateToUser: (Int) -> Unit,
+    onOpenPhone: () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isBusiness = user.id == businessOwner.id
 
     if(showPhone) {
         Button(
-            onClick = {},
+            onClick = onOpenPhone,
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.White.copy(alpha = 0.1f),
                 contentColor = OnBackground
@@ -67,9 +68,7 @@ fun PostOverlayUser(
                 horizontal = BasePadding
             )
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     modifier = Modifier.size(17.dp),
                     painter = painterResource(R.drawable.ic_call_outline),
@@ -80,7 +79,7 @@ fun PostOverlayUser(
                 Spacer(Modifier.width(SpacingS))
 
                 Text(
-                    text = "Sună",
+                    text = stringResource(R.string.call),
                     style = bodyLarge,
                     fontWeight = FontWeight.SemiBold,
                     color = Color.White

@@ -35,69 +35,69 @@ fun PostView(
     showBottomBar: Boolean = false,
     onShowBottomBar: (() -> Unit)? = null,
 ) {
-    val latestOnAction by rememberUpdatedState(onAction)
-
-    val stableOnAction = remember(post.id) {
-        {  action: PostOverlayActionEnum ->
-            latestOnAction(action, post)
-        }
-    }
-
-    val postUi = remember(post, postActionState) {
-        post.copy(
-            userActions = post.userActions.applyUiState(postActionState),
-            counters = post.counters.applyUiState(postActionState)
-        )
-    }
-
-    val player = remember { viewModel.getOrCreatePlayer(post) }
-
-    val playerState by viewModel.getPlayerState(post.id)
-        .collectAsStateWithLifecycle()
-
-    val isPlaying = playerState.isPlaying
-    val showControls by remember(playerState, isDrawerOpen) {
-        derivedStateOf {
-            playerState.hasStartedPlayback &&
-                    !playerState.isPlaying &&
-                    !playerState.isBuffering &&
-                    !isDrawerOpen
-        }
-    }
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(BackgroundDark)
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-                onClick = { viewModel.togglePlayer(post.id) }
-            )
-    ) {
-        AsyncImage(
-            modifier = Modifier.fillMaxSize(),
-            model = post.mediaFiles.first().thumbnailUrl,
-            contentDescription = null,
-            contentScale = ContentScale.Crop
-        )
-
-        PostPlayerView(player)
-
-//        PostControls(
-//            player = player,
-//            post = post,
-//            isPlaying = isPlaying,
-//            visible = showControls
+//    val latestOnAction by rememberUpdatedState(onAction)
+//
+//    val stableOnAction = remember(post.id) {
+//        {  action: PostOverlayActionEnum ->
+//            latestOnAction(action, post)
+//        }
+//    }
+//
+//    val postUi = remember(post, postActionState) {
+//        post.copy(
+//            userActions = post.userActions.applyUiState(postActionState),
+//            counters = post.counters.applyUiState(postActionState)
 //        )
-
-        PostOverlay(
-            post = postUi,
-            postActionState = postActionState,
-            onAction = stableOnAction,
-            showBottomBar = showBottomBar,
-            onShowBottomBar = onShowBottomBar,
-            onNavigateToUserProfile = { feedNavigate.toUserProfile(it) }
-        )
-    }
+//    }
+//
+//    val player = remember { viewModel.getOrCreatePlayer(post) }
+//
+//    val playerState by viewModel.getPlayerState(post.id)
+//        .collectAsStateWithLifecycle()
+//
+//    val isPlaying = playerState.isPlaying
+//    val showControls by remember(playerState, isDrawerOpen) {
+//        derivedStateOf {
+//            playerState.hasStartedPlayback &&
+//                    !playerState.isPlaying &&
+//                    !playerState.isBuffering &&
+//                    !isDrawerOpen
+//        }
+//    }
+//
+//    Box(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .background(BackgroundDark)
+//            .clickable(
+//                interactionSource = remember { MutableInteractionSource() },
+//                indication = null,
+//                onClick = { viewModel.togglePlayer(post.id) }
+//            )
+//    ) {
+//        AsyncImage(
+//            modifier = Modifier.fillMaxSize(),
+//            model = post.mediaFiles.first().thumbnailUrl,
+//            contentDescription = null,
+//            contentScale = ContentScale.Crop
+//        )
+//
+//        PostPlayerView(player)
+//
+////        PostControls(
+////            player = player,
+////            post = post,
+////            isPlaying = isPlaying,
+////            visible = showControls
+////        )
+//
+//        PostOverlay(
+//            post = postUi,
+//            postActionState = postActionState,
+//            onAction = stableOnAction,
+//            showBottomBar = showBottomBar,
+//            onShowBottomBar = onShowBottomBar,
+//            onNavigateToUserProfile = { feedNavigate.toUserProfile(it) }
+//        )
+//    }
 }
