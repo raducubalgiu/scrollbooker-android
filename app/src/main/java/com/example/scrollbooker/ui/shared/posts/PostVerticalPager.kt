@@ -39,7 +39,7 @@ fun PostVerticalPager(
 ) {
     val playerViewModel: PlayerViewModel = hiltViewModel()
     val showBottomBar by feedViewModel.showBottomBar.collectAsStateWithLifecycle()
-    val currentPost by feedViewModel.currentPost(tabIndex).collectAsStateWithLifecycle()
+    //val currentPost by feedViewModel.currentPost(tabIndex).collectAsStateWithLifecycle()
 
     val pagerState = rememberPagerState(pageCount = { posts.itemCount })
     val currentOnReleasePlayer by rememberUpdatedState(playerViewModel::releasePlayer)
@@ -50,18 +50,18 @@ fun PostVerticalPager(
         }
     }
 
-    LaunchedEffect(drawerState.currentValue) {
-        snapshotFlow { drawerState.currentValue }
-            .collectLatest { drawerValue ->
-                currentPost?.id?.let {
-                    if (drawerValue == DrawerValue.Open) {
-                        playerViewModel.pauseIfPlaying(it)
-                    } else {
-                        playerViewModel.resumeIfPlaying(it)
-                    }
-                }
-            }
-    }
+//    LaunchedEffect(drawerState.currentValue) {
+//        snapshotFlow { drawerState.currentValue }
+//            .collectLatest { drawerValue ->
+//                currentPost?.id?.let {
+//                    if (drawerValue == DrawerValue.Open) {
+//                        playerViewModel.pauseIfPlaying(it)
+//                    } else {
+//                        playerViewModel.resumeIfPlaying(it)
+//                    }
+//                }
+//            }
+//    }
 
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }
@@ -77,7 +77,7 @@ fun PostVerticalPager(
                         nextPost = nextPost
                     )
                 }
-                feedViewModel.updateCurrentPost(tabIndex, post)
+                //feedViewModel.updateCurrentPost(tabIndex, post)
             }
     }
 

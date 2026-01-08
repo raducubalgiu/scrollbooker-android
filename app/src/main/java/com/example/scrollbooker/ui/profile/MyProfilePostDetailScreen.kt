@@ -45,6 +45,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -159,6 +160,7 @@ fun MyProfilePostDetailScreen(
                         if(player != null) {
                             PostPlayerWithThumbnail(
                                 player = player,
+                                postId = post.id,
                                 thumbnailUrl = post.mediaFiles.first().thumbnailUrl
                             )
                         } else {
@@ -200,16 +202,23 @@ fun MyProfilePostDetailScreen(
 @Composable
 fun PostPlayerWithThumbnail(
     player: ExoPlayer,
+    postId: Int,
     thumbnailUrl: String,
     showPlayIcon: Boolean = false
 ) {
-    var isBuffering by remember { mutableStateOf(true) }
-    var isRenderedFirstFrame by remember { mutableStateOf(false) }
+    var isRenderedFirstFrame by rememberSaveable(postId) { mutableStateOf(false) }
+    var playbackState by remember { mutableIntStateOf(player.playbackState) }
+
+    LaunchedEffect(player, postId) {
+        if(player.playbackState == Player.STATE_READY) {
+            isRenderedFirstFrame = true
+        }
+    }
 
     DisposableEffect(player) {
         val listener = object : Player.Listener {
             override fun onPlaybackStateChanged(state: Int) {
-                isBuffering = state == Player.STATE_BUFFERING
+                playbackState == state
             }
 
             override fun onRenderedFirstFrame() {
@@ -223,14 +232,14 @@ fun PostPlayerWithThumbnail(
     Box(Modifier.fillMaxSize()) {
         PostPlayerView(player)
 
-        if(!isRenderedFirstFrame) {
-            AsyncImage(
-                modifier = Modifier.fillMaxSize(),
-                model = thumbnailUrl,
-                contentDescription = null,
-                contentScale = ContentScale.Crop
-            )
-        }
+//        if(!isRenderedFirstFrame) {
+//            AsyncImage(
+//                modifier = Modifier.fillMaxSize(),
+//                model = thumbnailUrl,
+//                contentDescription = null,
+//                contentScale = ContentScale.Crop
+//            )
+//        }
 
         AnimatedVisibility(
             visible = showPlayIcon,

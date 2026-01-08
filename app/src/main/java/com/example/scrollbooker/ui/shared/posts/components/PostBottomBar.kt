@@ -25,15 +25,8 @@ import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverl
 @Composable
 fun PostBottomBar(
     onAction: (PostOverlayActionEnum) -> Unit,
-    showBottomBar: Boolean,
-    currentPost: Post?
+    showBottomBar: Boolean
 ) {
-    val latestOnAction by rememberUpdatedState(onAction)
-
-    val stableOnAction = remember(currentPost?.id) {
-        {  action: PostOverlayActionEnum -> latestOnAction(action) }
-    }
-
     AnimatedContent(
         targetState = showBottomBar,
         transitionSpec = { fadeIn(tween(300)) togetherWith fadeOut(tween(300)) },
@@ -50,7 +43,7 @@ fun PostBottomBar(
                     ),
                     fullWidth = false,
                     contentPadding = PaddingValues(14.dp),
-                    onClick = { currentPost?.let { p -> stableOnAction(p.ctaAction()) } },
+                    onClick = {  },
                     title = "Rezervă instant"
                 )
             }

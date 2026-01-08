@@ -32,7 +32,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -60,14 +59,15 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.extensions.getOrNull
+import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
+import com.example.scrollbooker.ui.feed.FeedScreenViewModel.FeedTab
 import com.example.scrollbooker.ui.feed.components.FeedTabs
 import com.example.scrollbooker.ui.feed.drawer.FeedDrawer
 import com.example.scrollbooker.ui.profile.PostPlayerWithThumbnail
 import com.example.scrollbooker.ui.shared.posts.components.PostBottomBar
 import com.example.scrollbooker.ui.shared.posts.components.PostShimmer
-import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostControls
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlay
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlayActionEnum
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheets
@@ -81,7 +81,6 @@ import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.PhoneSh
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.ReviewDetailsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.ReviewsSheet
 import com.example.scrollbooker.ui.theme.BackgroundDark
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
@@ -98,18 +97,25 @@ fun FeedScreen(
     val businessDomainsState by feedViewModel.businessDomainsWithBusinessTypes.collectAsStateWithLifecycle()
     val selectedFromVm by feedViewModel.selectedBusinessTypes.collectAsStateWithLifecycle()
     val showBottomBar by feedViewModel.showBottomBar.collectAsStateWithLifecycle()
-    val userPausedSet by feedViewModel.userPausedPostIds.collectAsStateWithLifecycle()
+    val activeTab by feedViewModel.activeTab.collectAsStateWithLifecycle()
+    val userPausedPostId by feedViewModel.userPausedPostId(activeTab).collectAsStateWithLifecycle()
 
     val horizontalPagerState = rememberPagerState { 2 }
     val scope = rememberCoroutineScope()
-
-    val currentTab by remember { derivedStateOf { horizontalPagerState.currentPage } }
-    val currentPost by feedViewModel.currentPost(currentTab).collectAsStateWithLifecycle()
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var sheetContent by remember { mutableStateOf<PostSheetsContent>(None) }
 
     var isDrawerOpen by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(activeTab) {
+        snapshotFlow { horizontalPagerState.settledPage }
+            .distinctUntilChanged()
+            .collectLatest { page ->
+                val tab = if (page == 0) FeedTab.Explore else FeedTab.Following
+                feedViewModel.setActiveTab(tab)
+            }
+    }
 
     if(sheetState.isVisible) {
         key(sheetContent) {
@@ -172,7 +178,7 @@ fun FeedScreen(
 
             val settledPage by remember { derivedStateOf { pagerState.settledPage } }
 
-            LaunchedEffect(pagerState.settledPage) {
+            LaunchedEffect(pagerState) {
                 snapshotFlow {
                     val page = settledPage
                     settledPage to posts.getOrNull(page)?.id
@@ -181,8 +187,9 @@ fun FeedScreen(
                     .collectLatest { (page, postId) ->
                         if (postId == null) return@collectLatest
 
-                        feedViewModel.onPageSettled(page)
+                        feedViewModel.onPageSettled(activeTab, page, postId)
                         feedViewModel.ensureWindow(
+                            tab = activeTab,
                             centerIndex = page,
                             getPost = { idx -> posts.getOrNull(idx) }
                         )
@@ -193,8 +200,8 @@ fun FeedScreen(
                 snapshotFlow { settledPage to isDrawerOpen }
                     .distinctUntilChanged()
                     .collectLatest { (page, drawerOpen) ->
-                        if(drawerOpen) feedViewModel.pauseIfPlaying(page)
-                        else feedViewModel.resumeAfterDrawer(page)
+                        if(drawerOpen) feedViewModel.pauseIfPlaying(activeTab, page)
+                        else feedViewModel.resumeAfterDrawer(activeTab, page)
                     }
             }
 
@@ -239,25 +246,33 @@ fun FeedScreen(
                                 val postId = post.id
 
                                 key(postId) {
+                                    val player = feedViewModel.getPlayerForIndex(activeTab, page)
+
                                     val postActionState by feedViewModel
                                         .observePostUi(postId)
                                         .collectAsStateWithLifecycle()
 
-                                    val player = feedViewModel.getPlayerForIndex(page)
+                                    val postUi = remember(post, postActionState) {
+                                        post.copy(
+                                            userActions = post.userActions.applyUiState(postActionState),
+                                            counters = post.counters.applyUiState(postActionState)
+                                        )
+                                    }
 
                                     Box(modifier = Modifier
                                         .fillMaxSize()
                                         .clickable(
                                             interactionSource = remember { MutableInteractionSource() },
                                             indication = null,
-                                            onClick = { feedViewModel.togglePlayer(page) }
+                                            onClick = { feedViewModel.togglePlayer(activeTab, page) }
                                         )
                                     ) {
                                         if (player != null) {
                                             PostPlayerWithThumbnail(
                                                 player = player,
+                                                postId = postId,
                                                 thumbnailUrl = post.mediaFiles.first().thumbnailUrl,
-                                                showPlayIcon = userPausedSet.contains(postId)
+                                                showPlayIcon = userPausedPostId == postId
                                             )
                                         } else {
                                             AsyncImage(
@@ -269,7 +284,7 @@ fun FeedScreen(
                                         }
 
                                         PostOverlay(
-                                            post = post,
+                                            post = postUi,
                                             postActionState = postActionState,
                                             onAction = {
                                                 handlePostAction(
@@ -296,18 +311,8 @@ fun FeedScreen(
                     .zIndex(14f)
                 ) {
                     PostBottomBar(
-                        onAction = { action ->
-                            currentPost?.let { post ->
-                                handlePostAction(
-                                    feedViewModel = feedViewModel,
-                                    action = action,
-                                    handleOpenSheet = { handleOpenSheet(it) },
-                                    post = post
-                                )
-                            }
-                        },
-                        showBottomBar = showBottomBar,
-                        currentPost = currentPost
+                        onAction = { action -> },
+                        showBottomBar = showBottomBar
                     )
                 }
             }
