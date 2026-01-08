@@ -1,7 +1,10 @@
 package com.example.scrollbooker.ui.feed
 import android.content.Context
+import android.os.HandlerThread
+import android.os.Process
 import androidx.annotation.OptIn
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.AudioAttributes
@@ -25,6 +28,7 @@ import com.example.scrollbooker.entity.social.post.domain.useCase.GetFollowingPo
 import com.example.scrollbooker.entity.social.post.domain.useCase.LikePostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.UnBookmarkPostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.UnLikePostUseCase
+import com.example.scrollbooker.ui.shared.posts.PlayerUIState
 import com.example.scrollbooker.ui.shared.posts.PostActionUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -41,12 +45,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.collections.component1
 import kotlin.collections.component2
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 
 @HiltViewModel
 class FeedScreenViewModel @Inject constructor(
@@ -86,61 +88,25 @@ class FeedScreenViewModel @Inject constructor(
     }
     val followingPosts: Flow<PagingData<Post>> get() = _followingPosts
 
-    enum class FeedTab { Explore, Following }
-
-    class TabPlaybackState {
-        val indexToPlayer = mutableStateMapOf<Int, ExoPlayer>()
-        val indexToPostId = mutableStateMapOf<Int, Int>()
-
-        var focusedIndex by mutableStateOf<Int?>(null)
-        var lastSettledPostId by mutableStateOf<Int?>(null)
-
-        var userPausedPostId by mutableStateOf<Int?>(null)
-
-        val autoPausedByDrawer = mutableSetOf<Int>()
-    }
-
     // Player
-    private val tabStates: MutableMap<FeedTab, TabPlaybackState> = mutableMapOf(
-        FeedTab.Explore to TabPlaybackState(),
-        FeedTab.Following to TabPlaybackState()
-    )
-
-    private val _activeTab = MutableStateFlow<FeedTab>(FeedTab.Explore)
-    val activeTab: StateFlow<FeedTab> = _activeTab.asStateFlow()
-
     private val maxPlayers = 3
     private val pool = ArrayDeque<ExoPlayer>(maxPlayers)
+    private val indexToPlayer: SnapshotStateMap<Int, ExoPlayer> = mutableStateMapOf()
+    private val indexToPostId: SnapshotStateMap<Int, Int> = mutableStateMapOf()
+
+    private var focusedIndex: Int? = null
     private val windowMutex = Mutex()
 
+    private val _userPausedPostIds = MutableStateFlow<Set<Int>>(emptySet())
+    val userPausedPostIds: StateFlow<Set<Int>> = _userPausedPostIds.asStateFlow()
+
+    private val autoPausedByDrawer = mutableSetOf<Int>()
+
     init {
-        repeat(maxPlayers) { pool.add(createPlayer(application)) }
-        loadAllBusinessDomainsWithBusinessTypes()
-    }
-
-
-    fun setActiveTab(newTab: FeedTab) {
-        val oldTab = _activeTab.value
-        if(oldTab == newTab) return
-
-        resetSession(oldTab)
-        _activeTab.value = newTab
-    }
-
-    fun resetSession(tab: FeedTab) {
-        val state = tabStates.getValue(tab)
-
-        state.indexToPlayer.values.forEach { p ->
-            resetPlayer(p)
-            pool.addLast(p)
+        viewModelScope.launch {
+            repeat(maxPlayers) { pool.add(createPlayer(application)) }
+            loadAllBusinessDomainsWithBusinessTypes()
         }
-        state.indexToPlayer.clear()
-        state.indexToPostId.clear()
-
-        state.focusedIndex = null
-        state.lastSettledPostId = null
-        state.userPausedPostId = null
-        state.autoPausedByDrawer.clear()
     }
 
     @OptIn(UnstableApi::class)
@@ -178,78 +144,73 @@ class FeedScreenViewModel @Inject constructor(
     }
 
     fun ensureWindow(
-        tab: FeedTab,
         centerIndex: Int,
         getPost: (Int) -> Post?
     ) {
         viewModelScope.launch {
             windowMutex.withLock {
-                ensureWindowInternal(tab, centerIndex, getPost)
+                ensureWindowInternal(centerIndex, getPost)
             }
         }
     }
 
-    private fun ensureWindowInternal(tab: FeedTab, centerIndex: Int, getPost: (Int) -> Post?) {
-        val state = tabStates.getValue(tab)
+    private fun ensureWindowInternal(
+        centerIndex: Int,
+        getPost: (Int) -> Post?
+    ) {
+        val desired = listOf(centerIndex - 1, centerIndex, centerIndex + 1)
+            .filter { it >= 0 }
 
-        val desired = listOf(centerIndex - 1, centerIndex, centerIndex + 1).filter { it >= 0 }
-
-        val toRemove = state.indexToPlayer.keys - desired.toSet()
+        val toRemove = indexToPlayer.keys - desired
         toRemove.forEach { idx ->
-            state.indexToPlayer.remove(idx)?.let { p ->
-                state.indexToPostId.remove(idx)
-                resetPlayer(p)
-                pool.addLast(p)
+            indexToPlayer.remove(idx)?.let { player ->
+                indexToPostId.remove(idx)
+                resetPlayer(player)
+                pool.addLast(player)
             }
         }
 
         desired.forEach { idx ->
+            if (idx < 0) return@forEach
             val post = getPost(idx) ?: return@forEach
-            val existingPlayer = state.indexToPlayer[idx]
-            val existingPostId = state.indexToPostId[idx]
-            if (existingPlayer != null && existingPostId == post.id) return@forEach
 
-            val player = existingPlayer ?: pool.removeFirstOrNull() ?: return@forEach
-            if (existingPlayer != null) resetPlayer(player)
+            val existing = indexToPlayer[idx]
+            val existingPostId = indexToPostId[idx]
+            if (existing != null && existingPostId == post.id) return@forEach
 
-            state.indexToPlayer[idx] = player
-            state.indexToPostId[idx] = post.id
+            val player = existing ?: pool.removeFirstOrNull() ?: return@forEach
+
+            if (existing != null) {
+                resetPlayer(player)
+            }
+
+            indexToPlayer[idx] = player
+            indexToPostId[idx] = post.id
 
             prepareForPost(player, post)
 
-            val isFocused = idx == state.focusedIndex
-            val isUserPaused = state.userPausedPostId == post.id
+            val isFocused = (idx == focusedIndex)
+            val isUserPaused = _userPausedPostIds.value.contains(post.id)
 
-            player.playWhenReady = isFocused && !isUserPaused && _activeTab.value == tab
-            player.volume = if (player.playWhenReady) 1f else 0f
-            if (!player.playWhenReady) player.pause()
+            player.playWhenReady = isFocused && !isUserPaused
+            player.volume = if(isFocused && !isUserPaused) 1f else 0f
+
+            if(!isFocused || isUserPaused) player.pause()
         }
 
-        if (_activeTab.value == tab) applyFocus(tab, centerIndex)
+        applyFocus(centerIndex)
     }
 
-    fun onPageSettled(tab: FeedTab, index: Int, postId: Int) {
-        val state = tabStates.getValue(tab)
-
-        val changedPost = state.lastSettledPostId != null && state.lastSettledPostId != postId
-
-        if (changedPost) {
-            state.userPausedPostId = null
-        }
-
-        state.lastSettledPostId = postId
-        state.focusedIndex = index
-
-        if (_activeTab.value == tab) applyFocus(tab, index)
+    fun onPageSettled(index: Int) {
+        focusedIndex = index
+        applyFocus(index)
     }
 
-    private fun applyFocus(tab: FeedTab, index: Int) {
-        val state = tabStates.getValue(tab)
-
-        state.indexToPlayer.forEach { (idx, player) ->
-            val postId = state.indexToPostId[idx]
-            val isUserPaused = postId != null && state.userPausedPostId == postId
-            val shouldPlay = (_activeTab.value == tab) && (idx == index) && !isUserPaused
+    private fun applyFocus(index: Int) {
+        indexToPlayer.forEach { (idx, player) ->
+            val postId = indexToPostId[idx]
+            val isUserPaused = postId != null && _userPausedPostIds.value.contains(postId)
+            val shouldPlay = (idx == index) && !isUserPaused
 
             player.playWhenReady = shouldPlay
             player.volume = if (shouldPlay) 1f else 0f
@@ -273,81 +234,78 @@ class FeedScreenViewModel @Inject constructor(
         player.volume = 0f
     }
 
-    fun getPlayerForIndex(tab: FeedTab, index: Int): ExoPlayer? =
-        tabStates[tab]?.indexToPlayer?.get(index)
+    fun getPlayerForIndex(index: Int): ExoPlayer? = indexToPlayer[index]
 
-    fun userPausedPostId(tab: FeedTab): StateFlow<Int?> =
-        activeTab
-            .map { tabStates[it]?.userPausedPostId }
-            .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    fun togglePlayer(index: Int) {
+        val player = getPlayerForIndex(index) ?: return
+        val postId = indexToPostId[index] ?: return
 
-    fun togglePlayer(tab: FeedTab, index: Int) {
-        val state = tabStates.getValue(tab)
-        val player = state.indexToPlayer[index] ?: return
-        val postId = state.indexToPostId[index] ?: return
+        val isFocused = (index == focusedIndex)
 
-        val isFocused = state.focusedIndex == index && _activeTab.value == tab
-
-        if (player.isPlaying) {
+        if(player.isPlaying) {
             player.pause()
             player.playWhenReady = false
-            state.userPausedPostId = postId
+            _userPausedPostIds.update { it + postId }
         } else {
-            state.userPausedPostId = null
-            if (isFocused) {
+            _userPausedPostIds.update { it - postId }
+
+            if(isFocused) {
                 player.volume = 1f
                 player.playWhenReady = true
             } else {
-                state.focusedIndex = index
-                applyFocus(tab, index)
+                focusedIndex = index
+                applyFocus(index)
             }
         }
     }
 
-    fun pauseIfPlaying(tab: FeedTab, index: Int) {
-        val state = tabStates.getValue(tab)
-        val player = state.indexToPlayer[index] ?: return
-
-        if (player.isPlaying) {
-            state.autoPausedByDrawer.add(index)
-            player.playWhenReady = false
+    fun pauseIfPlaying(index: Int) {
+        val player = getPlayerForIndex(index)
+        if(player?.isPlaying == true) {
+            autoPausedByDrawer.add(index)
             player.pause()
-            player.volume = 0f
+            player.playWhenReady = false
         }
     }
 
-    fun resumeAfterDrawer(tab: FeedTab, index: Int) {
-        val state = tabStates.getValue(tab)
-        if (!state.autoPausedByDrawer.contains(index)) return
+    fun resumeIfAllowed(index: Int) {
+        val player = getPlayerForIndex(index) ?: return
+        val postId = indexToPostId[index] ?: return
+        val isUserPaused = userPausedPostIds.value.contains(postId)
 
-        val postId = state.indexToPostId[index] ?: return
-        val isUserPaused = state.userPausedPostId == postId
-
-        if (_activeTab.value == tab && state.focusedIndex == index && !isUserPaused) {
-            state.indexToPlayer[index]?.apply {
-                volume = 1f
-                playWhenReady = true
-            }
+        if(index == focusedIndex && !isUserPaused) {
+            player.playWhenReady = true
         }
+    }
+
+    fun resumeAfterDrawer(index: Int) {
+        if(!autoPausedByDrawer.remove(index)) return
+        resumeIfAllowed(index)
     }
 
     fun stopDetailSession() {
-        tabStates.values.forEach { state ->
-            state.indexToPlayer.values.forEach { player ->
-                player.playWhenReady = false
-                player.pause()
-                player.volume = 0f
-            }
+        indexToPlayer.values.forEach { player ->
+            player.pause()
+            player.playWhenReady = false
         }
     }
 
     override fun onCleared() {
         stopDetailSession()
-
-        pool.forEach { it.release() }
-        pool.clear()
-
         super.onCleared()
+    }
+
+    // Actions
+    private val _currentByTab = MutableStateFlow<Map<Int, Post?>>(emptyMap())
+    val currentByTab: StateFlow<Map<Int, Post?>> = _currentByTab.asStateFlow()
+
+    fun currentPost(tab: Int): StateFlow<Post?> =
+        currentByTab
+            .map { it[tab] }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+
+    fun updateCurrentPost(tab: Int, post: Post?) {
+        _currentByTab.update { it + (tab to post) }
     }
 
     private val _showBottomBar = MutableStateFlow<Boolean>(true)
