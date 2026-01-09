@@ -31,12 +31,12 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -55,7 +55,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -70,7 +69,6 @@ import com.example.scrollbooker.ui.feed.drawer.FeedDrawer
 import com.example.scrollbooker.ui.profile.PostPlayerWithThumbnail
 import com.example.scrollbooker.ui.shared.posts.components.PostBottomBar
 import com.example.scrollbooker.ui.shared.posts.components.PostShimmer
-import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostControls
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlay
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlayActionEnum
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheets
@@ -84,10 +82,10 @@ import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.PhoneSh
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.ReviewDetailsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.ReviewsSheet
 import com.example.scrollbooker.ui.theme.BackgroundDark
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -162,7 +160,9 @@ fun FeedScreen(
             activeFiltersCount = selectedFromVm.size,
             onChangeTab = {
                 feedViewModel.pauseAllNow()
-                scope.launch { horizontalPagerState.animateScrollToPage(it) }
+                scope.launch {
+                    horizontalPagerState.animateScrollToPage(it)
+                }
             },
             onOpenDrawer = { isDrawerOpen = true },
             onNavigateSearch = { feedNavigate.toFeedSearch() }
@@ -175,11 +175,11 @@ fun FeedScreen(
             userScrollEnabled = false
         ) { tabIndex ->
             val posts = if (tabIndex == 0) explorePosts else followingPosts
-            val pagerState = rememberPagerState { posts.itemCount }
+            val verticalPagerState = rememberPagerState { posts.itemCount }
 
-            val settledPage by remember { derivedStateOf { pagerState.settledPage } }
+            val settledPage by remember { derivedStateOf { verticalPagerState.settledPage } }
 
-            LaunchedEffect(pagerState.settledPage) {
+            LaunchedEffect(verticalPagerState) {
                 snapshotFlow {
                     val page = settledPage
                     settledPage to posts.getOrNull(page)?.id
@@ -188,15 +188,15 @@ fun FeedScreen(
                     .collectLatest { (page, postId) ->
                         if (postId == null) return@collectLatest
 
-                        feedViewModel.onPageSettled(page)
                         feedViewModel.ensureWindow(
                             centerIndex = page,
                             getPost = { idx -> posts.getOrNull(idx) }
                         )
+                        feedViewModel.onPageSettled(page)
                     }
             }
 
-            LaunchedEffect(pagerState) {
+            LaunchedEffect(verticalPagerState) {
                 snapshotFlow { settledPage to isDrawerOpen }
                     .distinctUntilChanged()
                     .collectLatest { (page, drawerOpen) ->
@@ -213,7 +213,7 @@ fun FeedScreen(
             )
 
             val fling = PagerDefaults.flingBehavior(
-                state = pagerState,
+                state = verticalPagerState,
                 pagerSnapDistance = PagerSnapDistance.atMost(1),
                 decayAnimationSpec = decay,
                 snapAnimationSpec = snapSpec
@@ -234,7 +234,7 @@ fun FeedScreen(
                         is LoadState.Loading -> PostShimmer()
                         is LoadState.NotLoading -> {
                             VerticalPager(
-                                state = pagerState,
+                                state = verticalPagerState,
                                 overscrollEffect = null,
                                 flingBehavior = fling,
                                 pageSize = PageSize.Fill,

@@ -116,7 +116,7 @@ class FeedScreenViewModel @Inject constructor(
     private val indexToPlayer: SnapshotStateMap<Int, ExoPlayer> = mutableStateMapOf()
     private val indexToPostId: SnapshotStateMap<Int, Int> = mutableStateMapOf()
 
-    private var focusedIndex: Int? = null
+    private var focusedIndex: Int = 0
     private val windowMutex = Mutex()
 
     @Volatile private var generation: Long = 0L
@@ -209,29 +209,18 @@ class FeedScreenViewModel @Inject constructor(
 
             val existing = indexToPlayer[idx]
             val existingPostId = indexToPostId[idx]
+
             if (existing != null && existingPostId == post.id) return@forEach
 
             val player = existing ?: pool.removeFirstOrNull() ?: return@forEach
 
-            if (existing != null) {
-                resetPlayer(player)
-            }
+            resetPlayer(player)
 
             indexToPlayer[idx] = player
             indexToPostId[idx] = post.id
 
             prepareForPost(player, post)
-
-            val isFocused = (idx == focusedIndex)
-            val isUserPaused = _userPausedPostIds.value.contains(post.id)
-
-            player.playWhenReady = isFocused && !isUserPaused
-            player.volume = if(isFocused && !isUserPaused) 1f else 0f
-
-            if(!isFocused || isUserPaused) player.pause()
         }
-
-        applyFocus(centerIndex)
     }
 
     fun onPageSettled(index: Int) {
@@ -245,17 +234,32 @@ class FeedScreenViewModel @Inject constructor(
             val isUserPaused = postId != null && _userPausedPostIds.value.contains(postId)
             val shouldPlay = (idx == index) && !isUserPaused
 
-            player.playWhenReady = shouldPlay
-            player.volume = if (shouldPlay) 1f else 0f
-            if (!shouldPlay) player.pause()
+            if(shouldPlay) {
+                player.volume = 1f
+                player.playWhenReady = true
+                player.play()
+            } else {
+                player.playWhenReady = false
+                player.volume = 0f
+                player.pause()
+            }
+
+//            if(player.playWhenReady != shouldPlay) player.playWhenReady = shouldPlay
+//            val targetVol = if(shouldPlay) 1f else 0f
+//            if(player.volume != targetVol) player.volume = targetVol
+//
+//            if(!shouldPlay && player.isPlaying) player.pause()
         }
     }
 
     private fun prepareForPost(player: ExoPlayer, post: Post) {
-        val mediaItem = MediaItem.fromUri(post.mediaFiles.first().url)
-        player.setMediaItem(mediaItem)
+        val url = post.mediaFiles.first().url
+        val current = player.currentMediaItem?.localConfiguration?.uri?.toString()
+
+        if(current == url) return
+
+        player.setMediaItem(MediaItem.fromUri(url))
         player.prepare()
-        player.seekTo(0)
     }
 
     private fun resetPlayer(player: ExoPlayer) {
@@ -270,26 +274,18 @@ class FeedScreenViewModel @Inject constructor(
     fun getPlayerForIndex(index: Int): ExoPlayer? = indexToPlayer[index]
 
     fun togglePlayer(index: Int) {
-        val player = getPlayerForIndex(index) ?: return
         val postId = indexToPostId[index] ?: return
 
-        val isFocused = (index == focusedIndex)
-
-        if(player.isPlaying) {
-            player.pause()
-            player.playWhenReady = false
-            _userPausedPostIds.update { it + postId }
-        } else {
-            _userPausedPostIds.update { it - postId }
-
-            if(isFocused) {
-                player.volume = 1f
-                player.playWhenReady = true
-            } else {
-                focusedIndex = index
-                applyFocus(index)
-            }
+        if(focusedIndex != index) {
+            focusedIndex = index
         }
+
+        val isPausedByUser = _userPausedPostIds.value.contains(postId)
+        _userPausedPostIds.update { set ->
+            if(isPausedByUser) set - postId else set + postId
+        }
+
+        applyFocus(index)
     }
 
     fun pauseIfPlaying(index: Int) {
