@@ -128,10 +128,8 @@ class FeedScreenViewModel @Inject constructor(
     private val autoPausedByDrawer = mutableSetOf<Int>()
 
     init {
-        viewModelScope.launch {
-            repeat(maxPlayers) { pool.add(createPlayer(application)) }
-            loadAllBusinessDomainsWithBusinessTypes()
-        }
+        repeat(maxPlayers) { pool.add(createPlayer(application)) }
+        loadAllBusinessDomainsWithBusinessTypes()
     }
 
     @OptIn(UnstableApi::class)
@@ -167,8 +165,6 @@ class FeedScreenViewModel @Inject constructor(
                 volume = 1f
             }
     }
-
-
 
     fun ensureWindow(
         centerIndex: Int,

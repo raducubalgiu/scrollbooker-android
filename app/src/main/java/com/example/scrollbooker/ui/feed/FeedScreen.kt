@@ -32,11 +32,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -55,7 +53,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -70,7 +67,6 @@ import com.example.scrollbooker.ui.feed.drawer.FeedDrawer
 import com.example.scrollbooker.ui.profile.PostPlayerWithThumbnail
 import com.example.scrollbooker.ui.shared.posts.components.PostBottomBar
 import com.example.scrollbooker.ui.shared.posts.components.PostShimmer
-import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostControls
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlay
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlayActionEnum
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheets
@@ -84,7 +80,6 @@ import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.PhoneSh
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.ReviewDetailsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.ReviewsSheet
 import com.example.scrollbooker.ui.theme.BackgroundDark
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
@@ -179,7 +174,7 @@ fun FeedScreen(
 
             val settledPage by remember { derivedStateOf { pagerState.settledPage } }
 
-            LaunchedEffect(pagerState.settledPage) {
+            LaunchedEffect(pagerState) {
                 snapshotFlow {
                     val page = settledPage
                     settledPage to posts.getOrNull(page)?.id
