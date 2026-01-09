@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
@@ -23,12 +24,20 @@ import com.example.scrollbooker.ui.feed.FeedScreenViewModel
 @Composable
 fun FeedDrawer(
     viewModel: FeedScreenViewModel,
+    isDrawerOpen: Boolean,
     businessDomainsState: FeatureState<List<BusinessDomainsWithBusinessTypes>>,
     selectedFromVm: Set<Int>,
     onClose: () -> Unit
 ) {
     var selected by rememberSaveable(selectedFromVm) {
         mutableStateOf(selectedFromVm)
+    }
+
+    LaunchedEffect(isDrawerOpen) {
+        if(!isDrawerOpen) {
+            viewModel.setIsFiltering(true)
+            viewModel.setSelectedBusinessTypes(selected)
+        }
     }
 
     Column(
@@ -70,7 +79,7 @@ fun FeedDrawer(
             isConfirmEnabled = selectedFromVm != selected,
             onClear = { selected = emptySet() },
             onConfirm = {
-                viewModel.setSelectedBusinessTypes(selected)
+                viewModel.pauseAllNow()
                 onClose()
             },
         )

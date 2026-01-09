@@ -8,7 +8,10 @@ import kotlinx.coroutines.flow.Flow
 class GetExplorePostsUseCase(
     private val repository: PostRepository
 ) {
-    operator fun invoke(selectedBusinessTypes: List<Int?>): Flow<PagingData<Post>> {
-        return repository.getExplorePosts(selectedBusinessTypes)
+    operator fun invoke(
+        selectedBusinessTypes: List<Int?>,
+        isFiltering: Boolean = false
+    ): Flow<PagingData<Post>> {
+        return repository.getExplorePosts(selectedBusinessTypes, isFiltering)
     }
 }

@@ -36,6 +36,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -54,12 +55,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.extensions.getOrNull
+import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.ui.feed.components.FeedTabs
@@ -146,6 +149,7 @@ fun FeedScreen(
         ) {
             FeedDrawer(
                 viewModel = feedViewModel,
+                isDrawerOpen = isDrawerOpen,
                 businessDomainsState = businessDomainsState,
                 selectedFromVm = selectedFromVm,
                 onClose = { isDrawerOpen = false },
@@ -156,7 +160,10 @@ fun FeedScreen(
             modifier = Modifier.statusBarsPadding(),
             selectedTabIndex = horizontalPagerState.settledPage,
             activeFiltersCount = selectedFromVm.size,
-            onChangeTab = { scope.launch { horizontalPagerState.animateScrollToPage(it) } },
+            onChangeTab = {
+                feedViewModel.pauseAllNow()
+                scope.launch { horizontalPagerState.animateScrollToPage(it) }
+            },
             onOpenDrawer = { isDrawerOpen = true },
             onNavigateSearch = { feedNavigate.toFeedSearch() }
         )
@@ -243,6 +250,13 @@ fun FeedScreen(
                                         .observePostUi(postId)
                                         .collectAsStateWithLifecycle()
 
+                                    val postUi = remember(post, postActionState) {
+                                        post.copy(
+                                            userActions = post.userActions.applyUiState(postActionState),
+                                            counters = post.counters.applyUiState(postActionState)
+                                        )
+                                    }
+
                                     val player = feedViewModel.getPlayerForIndex(page)
 
                                     Box(modifier = Modifier
@@ -269,7 +283,7 @@ fun FeedScreen(
                                         }
 
                                         PostOverlay(
-                                            post = post,
+                                            post = postUi,
                                             postActionState = postActionState,
                                             onAction = {
                                                 handlePostAction(
@@ -320,7 +334,7 @@ fun CustomDrawer(
     isOpen: Boolean,
     onOpenChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
-    drawerWidthFraction: Float = 0.8f,
+    drawerWidthFraction: Float = 0.9f,
     scrimColor: Color = Color.Black.copy(alpha = 0.7f),
     drawerContent: @Composable ColumnScope.() -> Unit,
 ) {

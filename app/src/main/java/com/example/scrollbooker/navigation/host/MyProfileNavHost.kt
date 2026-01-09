@@ -31,6 +31,9 @@ import com.example.scrollbooker.ui.profile.MyProfileScreen
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
 import androidx.compose.ui.unit.IntOffset
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.scrollbooker.navigation.transition.slideInFromLeft
+import com.example.scrollbooker.navigation.transition.slideOutToLeft
+import com.example.scrollbooker.navigation.transition.slideOutToRight
 
 @Composable
 fun MyProfileNavHost(
@@ -49,9 +52,9 @@ fun MyProfileNavHost(
         navController = navController,
         startDestination = MainRoute.MyProfileNavigator.route,
         enterTransition = { slideInFromRight() },
-        exitTransition = { fadeOut() },
-        popEnterTransition = { EnterTransition.None},
-        popExitTransition = { ExitTransition.None }
+        exitTransition = { slideOutToLeft() },
+        popEnterTransition = { slideInFromLeft() },
+        popExitTransition = { slideOutToRight() }
     ) {
         navigation(
             route = MainRoute.MyProfileNavigator.route,

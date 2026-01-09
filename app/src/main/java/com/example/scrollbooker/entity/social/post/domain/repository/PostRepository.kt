@@ -6,7 +6,10 @@ import com.example.scrollbooker.entity.social.post.domain.model.Post
 import kotlinx.coroutines.flow.Flow
 
 interface PostRepository {
-    fun getExplorePosts(selectedBusinessTypes: List<Int?>): Flow<PagingData<Post>>
+    fun getExplorePosts(
+        selectedBusinessTypes: List<Int?>,
+        isFiltering: Boolean
+    ): Flow<PagingData<Post>>
     fun getFollowingPosts(): Flow<PagingData<Post>>
     fun getUserPosts(userId: Int): Flow<PagingData<Post>>
     fun getUserVideoReviewsPosts(userId: Int): Flow<PagingData<Post>>

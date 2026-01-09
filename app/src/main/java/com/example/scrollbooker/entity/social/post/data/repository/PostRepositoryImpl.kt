@@ -16,10 +16,15 @@ import javax.inject.Inject
 class PostRepositoryImpl @Inject constructor(
     private val apiService: PostApiService
 ): PostRepository {
-    override fun getExplorePosts(selectedBusinessTypes: List<Int?>): Flow<PagingData<Post>> {
+    override fun getExplorePosts(
+        selectedBusinessTypes: List<Int?>,
+        isFiltering: Boolean
+    ): Flow<PagingData<Post>> {
         return Pager(
             config = PagingConfig(pageSize = 10),
-            pagingSourceFactory = { PostExplorePagingSource(apiService, selectedBusinessTypes) }
+            pagingSourceFactory = {
+                PostExplorePagingSource(apiService, selectedBusinessTypes, isFiltering)
+            }
         ).flow
     }
 

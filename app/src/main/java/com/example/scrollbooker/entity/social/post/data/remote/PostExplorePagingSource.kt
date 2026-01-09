@@ -10,7 +10,8 @@ import java.lang.Exception
 
 class PostExplorePagingSource(
     private val api: PostApiService,
-    private val selectedBusinessTypes: List<Int?>
+    private val selectedBusinessTypes: List<Int?>,
+    private val isFiltering: Boolean
 ) : PagingSource<Int, Post>() {
 
     override fun getRefreshKey(state: PagingState<Int, Post>): Int? {
@@ -25,7 +26,10 @@ class PostExplorePagingSource(
         val limit = 10
 
         return try {
-            val response = api.getExplorePosts(selectedBusinessTypes, page, limit)
+            val response = if(isFiltering) withVisibleLoading {
+                api.getExplorePosts(selectedBusinessTypes, page, limit)
+            } else api.getExplorePosts(selectedBusinessTypes, page, limit)
+
             val posts = response.results.map { it.toDomain() }
 
             val totalLoaded = (page - 1) * limit + response.results.size

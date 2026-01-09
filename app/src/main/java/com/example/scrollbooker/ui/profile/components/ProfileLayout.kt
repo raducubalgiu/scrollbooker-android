@@ -58,7 +58,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun ProfileLayout(
     viewModel: MyProfileViewModel,
-    //profileTabViewModel: ProfileTabViewModel,
     isMyProfile: Boolean,
     isInitLoading: Boolean,
     profileData: FeatureState<UserProfile>,
