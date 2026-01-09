@@ -1,0 +1,7 @@
+package com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.repository
+import com.example.scrollbooker.entity.nomenclature.businessType.domain.model.BusinessType
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomain
+
+interface ServiceDomainRepository {
+    suspend fun getServiceDomainsByBusinessDomain(businessDomainId: Int): List<ServiceDomain>
+}

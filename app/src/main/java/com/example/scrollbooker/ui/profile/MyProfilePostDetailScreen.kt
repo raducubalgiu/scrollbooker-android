@@ -210,11 +210,16 @@ fun PostPlayerWithThumbnail(
     DisposableEffect(player) {
         val listener = object : Player.Listener {
             override fun onPlaybackStateChanged(state: Int) {
+                Timber.tag("EXO!!!!").d("state=$state id=${player.hashCode()}")
                 isBuffering = state == Player.STATE_BUFFERING
             }
 
             override fun onRenderedFirstFrame() {
                 isRenderedFirstFrame = true
+            }
+
+            override fun onIsPlayingChanged(isPlaying: Boolean) {
+                Timber.tag("EXO!!!!").d("isPlaying=$isPlaying id=${player.hashCode()}")
             }
         }
         player.addListener(listener)
@@ -224,14 +229,14 @@ fun PostPlayerWithThumbnail(
     Box(Modifier.fillMaxSize()) {
         PostPlayerView(player)
 
-        if(!isRenderedFirstFrame) {
-            AsyncImage(
-                modifier = Modifier.fillMaxSize(),
-                model = thumbnailUrl,
-                contentDescription = null,
-                contentScale = ContentScale.Crop
-            )
-        }
+//        if(!isRenderedFirstFrame) {
+//            AsyncImage(
+//                modifier = Modifier.fillMaxSize(),
+//                model = thumbnailUrl,
+//                contentDescription = null,
+//                contentScale = ContentScale.Crop
+//            )
+//        }
 
         AnimatedVisibility(
             visible = showPlayIcon,

@@ -59,11 +59,11 @@ fun ServicesMainFilters(
     val verticalScroll = rememberScrollState()
 
     val businessDomains by viewModel.businessDomains.collectAsState()
-    val businessTypes by viewModel.businessTypes.collectAsState()
+    val serviceDomains by viewModel.serviceDomains.collectAsState()
     val services by viewModel.services.collectAsState()
     val serviceFilters by viewModel.filters.collectAsState()
 
-    val businessTypesOptions = when(val state = businessTypes) {
+    val serviceDomainsOptions = when(val state = serviceDomains) {
         is FeatureState.Success -> state.data.map { bt ->
             Option(
                 value = bt.id.toString(),
@@ -143,14 +143,14 @@ fun ServicesMainFilters(
 
                 Column(Modifier.padding(horizontal = BasePadding)) {
                     InputSelect(
-                        options = businessTypesOptions,
-                        selectedOption = state.businessTypeId.toString(),
-                        placeholder = "Alege Business-ul",
+                        options = serviceDomainsOptions,
+                        selectedOption = state.serviceDomainId.toString(),
+                        placeholder = "Alege Categoria",
                         isEnabled = selectedBusinessDomainId != null,
                         onValueChange = {
-                            viewModel.setBusinessTypeId(it?.toInt())
+                            viewModel.setServiceDomainId(it?.toInt())
                         },
-                        isLoading = businessTypes is FeatureState.Loading,
+                        isLoading = serviceDomains is FeatureState.Loading,
                     )
 
                     Spacer(Modifier.height(BasePadding))
@@ -159,7 +159,7 @@ fun ServicesMainFilters(
                         options = servicesOptions,
                         selectedOption = state.serviceId.toString(),
                         placeholder = stringResource(R.string.chooseServices),
-                        isEnabled = state.businessTypeId != null,
+                        isEnabled = state.serviceDomainId != null,
                         onValueChange = {
                             viewModel.setServiceId(it?.toInt())
                         },

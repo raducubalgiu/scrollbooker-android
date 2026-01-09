@@ -24,6 +24,9 @@ import com.example.scrollbooker.entity.nomenclature.filter.domain.model.Filter
 import com.example.scrollbooker.entity.nomenclature.filter.domain.useCase.GetFiltersByServiceUseCase
 import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
 import com.example.scrollbooker.entity.nomenclature.service.domain.useCase.GetServicesByBusinessTypeUseCase
+import com.example.scrollbooker.entity.nomenclature.service.domain.useCase.GetServicesByServiceDomainUseCase
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomain
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.useCase.GetAllServiceDomainsByBusinessDomainUseCase
 import com.example.scrollbooker.ui.search.sheets.filters.SearchFiltersSheetState
 import com.example.scrollbooker.ui.search.sheets.services.SearchServicesFiltersSheetState
 import com.mapbox.geojson.Feature
@@ -79,7 +82,7 @@ data class SheetUiState(
 
 data class SearchFiltersState(
     val businessDomainId: Int? = null,
-    val businessTypeId: Int? = null,
+    val serviceDomainId: Int? = null,
     val serviceId: Int? = null,
     val subFilterIds: Set<Int> = emptySet(),
     val maxPrice: BigDecimal? = BigDecimal(1500),
@@ -107,7 +110,7 @@ data class SearchRequestState(
             zoom = zoom,
             maxMarkers = 400,
             businessDomainId = filters.businessDomainId,
-            businessTypeId = filters.businessTypeId,
+            serviceDomainId = filters.serviceDomainId,
             serviceId = filters.serviceId,
             subFilterIds = filters.subFilterIds.toList(),
             userLocation = userLocation,
@@ -141,7 +144,8 @@ class SearchViewModel @Inject constructor(
     private val getBusinessesSheetUseCase: GetBusinessesSheetUseCase,
     private val getAllBusinessDomainsUseCase: GetAllBusinessDomainsUseCase,
     private val getAllBusinessTypesByBusinessDomainUseCase: GetAllBusinessTypesByBusinessDomainUseCase,
-    private val getServicesByBusinessTypeUseCase: GetServicesByBusinessTypeUseCase,
+    private val getAllServiceDomainsByBusinessDomainUseCase: GetAllServiceDomainsByBusinessDomainUseCase,
+    private val getServicesByServiceDomainUseCase: GetServicesByServiceDomainUseCase,
     private val getFiltersByServiceUseCase: GetFiltersByServiceUseCase
 ): ViewModel() {
     private val _request = MutableStateFlow(SearchRequestState())
@@ -235,9 +239,10 @@ class SearchViewModel @Inject constructor(
             }
             .cachedIn(viewModelScope)
 
-    val businessTypes: StateFlow<FeatureState<List<BusinessType>>?> =
+    val serviceDomains: StateFlow<FeatureState<List<ServiceDomain>>?> =
         _servicesSheetFilters
             .map { it.businessDomainId }
+            .filterNotNull()
             .distinctUntilChanged()
             .flatMapLatest { domainId ->
                 flow {
@@ -247,7 +252,7 @@ class SearchViewModel @Inject constructor(
                         emit(FeatureState.Loading)
 
                         val result = withVisibleLoading {
-                            getAllBusinessTypesByBusinessDomainUseCase(domainId)
+                            getAllServiceDomainsByBusinessDomainUseCase(domainId)
                         }
 
                         emit(result)
@@ -262,7 +267,8 @@ class SearchViewModel @Inject constructor(
 
     val services: StateFlow<FeatureState<List<Service>>?> =
         _servicesSheetFilters
-            .map { it.businessTypeId }
+            .map { it.serviceDomainId }
+            .filterNotNull()
             .distinctUntilChanged()
             .flatMapLatest { typeId ->
                 flow {
@@ -272,7 +278,7 @@ class SearchViewModel @Inject constructor(
                         emit(FeatureState.Loading)
 
                         val result = withVisibleLoading {
-                            getServicesByBusinessTypeUseCase(typeId)
+                            getServicesByServiceDomainUseCase(typeId)
                         }
 
                         val featureState: FeatureState<List<Service>> =
@@ -366,7 +372,7 @@ class SearchViewModel @Inject constructor(
             current.copy(
                 filters = current.filters.copy(
                     businessDomainId = domainId,
-                    businessTypeId = null,
+                    serviceDomainId = null,
                     serviceId = null,
                     subFilterIds = emptySet()
                 )
@@ -375,7 +381,7 @@ class SearchViewModel @Inject constructor(
         _servicesSheetFilters.update { current ->
             current.copy(
                 businessDomainId = domainId,
-                businessTypeId = null,
+                serviceDomainId = null,
                 serviceId = null,
                 subFilterIds = emptySet()
             )
@@ -417,7 +423,7 @@ class SearchViewModel @Inject constructor(
             current.copy(
                 filters = current.filters.copy(
                     businessDomainId = sheet.businessDomainId,
-                    businessTypeId = sheet.businessTypeId,
+                    serviceDomainId = sheet.serviceDomainId,
                     serviceId = sheet.serviceId,
                     subFilterIds = sheet.subFilterIds,
                     startDate = sheet.startDate,
@@ -433,7 +439,7 @@ class SearchViewModel @Inject constructor(
         _servicesSheetFilters.update {
             it.copy(
                 businessDomainId = null,
-                businessTypeId = null,
+                serviceDomainId = null,
                 serviceId = null,
                 subFilterIds = emptySet(),
                 startDate = null,
@@ -448,17 +454,17 @@ class SearchViewModel @Inject constructor(
         _servicesSheetFilters.update {
             it.copy(
                 businessDomainId = domainId,
-                businessTypeId = null,
+                serviceDomainId = null,
                 serviceId = null,
                 subFilterIds = emptySet()
             )
         }
     }
 
-    fun setBusinessTypeId(typeId: Int?) {
+    fun setServiceDomainId(typeId: Int?) {
         _servicesSheetFilters.update {
             it.copy(
-                businessTypeId = typeId,
+                serviceDomainId = typeId,
                 serviceId = null,
                 subFilterIds = emptySet()
             )

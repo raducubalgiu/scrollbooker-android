@@ -1,4 +1,11 @@
 package com.example.scrollbooker.ui.myBusiness.myProducts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +21,7 @@ import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -21,6 +29,7 @@ import androidx.compose.material.icons.filled.Percent
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ShapeDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -34,6 +43,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -50,16 +60,24 @@ import com.example.scrollbooker.components.core.inputs.InputCheckbox
 import com.example.scrollbooker.components.core.inputs.InputSelect
 import com.example.scrollbooker.components.core.inputs.Option
 import com.example.scrollbooker.components.core.layout.Layout
+import com.example.scrollbooker.components.core.shimmer.rememberShimmerBrush
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.checkLength
 import com.example.scrollbooker.core.util.checkMinMax
+import com.example.scrollbooker.ui.search.components.SearchAdvancedFilters
+import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.labelLarge
+import com.example.scrollbooker.ui.theme.titleMedium
 import java.math.BigDecimal
 import java.math.RoundingMode
+import kotlin.collections.forEachIndexed
+import kotlin.collections.isNotEmpty
 
 data class ProductValidationResult(
     val isValid: Boolean,
@@ -84,13 +102,12 @@ fun AddProductScreen(
     val servicesState by viewModel.servicesState.collectAsState()
     val currenciesState by viewModel.currenciesState.collectAsState()
     val filtersState by viewModel.filtersState.collectAsState()
+    val selectedSubFiltersIds by viewModel.selectedSubFilters.collectAsState()
 
-    val selectedFilters by viewModel.selectedFilterOptions
     val isSaving by viewModel.isSaving.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.loadCurrencies()
-        viewModel.loadFilters()
     }
 
     var name by rememberSaveable { mutableStateOf("") }
@@ -175,11 +192,7 @@ fun AddProductScreen(
     }
 
     Layout(
-        modifier = Modifier.padding(bottom = BasePadding),
-        onBack = {
-            viewModel.removeSelectedFilters()
-            onBack()
-        },
+        onBack = onBack,
         headerTitle = stringResource(R.string.addNewProduct),
         enablePaddingH = false
     ) {
@@ -195,10 +208,7 @@ fun AddProductScreen(
         ) {
             Column(modifier = Modifier
                 .fillMaxSize()
-                .padding(
-                    top = BasePadding,
-                    bottom = WindowInsets.ime.asPaddingValues().calculateBottomPadding()
-                ),
+                .padding(bottom = WindowInsets.ime.asPaddingValues().calculateBottomPadding()),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(modifier = Modifier
@@ -213,55 +223,120 @@ fun AddProductScreen(
                         selectedOption = serviceId,
                         onValueChange = {
                             focusManager.clearFocus()
+
                             serviceId = it.toString()
+                            viewModel.loadFilters(serviceId.toInt())
                         },
                         isLoading = isLoadingServices,
                         isEnabled = !isErrorServices && !isLoadingServices
                     )
+
                     Spacer(Modifier.height(BasePadding))
+
+                    when(val filters = filtersState) {
+                        is FeatureState.Loading -> {
+                            repeat(3) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(52.dp)
+                                        .clip(RoundedCornerShape(12.dp))
+                                        .background(rememberShimmerBrush())
+                                )
+                                Spacer(Modifier.height(8.dp))
+                            }
+                        }
+                        is FeatureState.Success -> {
+                            AnimatedVisibility(
+                                visible = serviceId.isNotEmpty(),
+                                enter = fadeIn() + expandVertically(),
+                                exit = fadeOut() + shrinkVertically()
+                            ) {
+                                Surface(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .animateContentSize(),
+                                    shape = RoundedCornerShape(16.dp),
+                                    color = SurfaceBG
+                                ) {
+                                    Column(Modifier.padding(16.dp)) {
+                                        Text(
+                                            text = "Filtrare avansată",
+                                            style = titleMedium
+                                        )
+
+                                        Spacer(Modifier.height(BasePadding))
+
+                                        filters.data.map { filter ->
+                                            if(filter.singleSelect) {
+//                                                InputSelect(
+//                                                    label = filter.name,
+//                                                    placeholder = "Selecteaza filtrul",
+//                                                    options = filter.subFilters.map {
+//                                                        Option(value = it.id.toString(), name = it.name)
+//                                                    },
+//                                                    selectedOption = selectedFilters[filter.id.toString()] ?: "",
+//                                                    onValueChange = { value ->
+//                                                        focusManager.clearFocus()
+//                                                        viewModel.updateSelectedFilter(
+//                                                            filter.id.toString(),
+//                                                            value=value.toString()
+//                                                        )
+//                                                    },
+//                                                    isLoading = isLoadingFilters,
+//                                                    isEnabled = !isErrorFilters && !isLoadingFilters
+//                                                )
+                                            } else {
+                                                Column {
+                                                    Text(
+                                                        text = filter.name,
+                                                        fontWeight = FontWeight.SemiBold,
+                                                        color = Color.Gray
+                                                    )
+
+                                                    Spacer(Modifier.height(SpacingS))
+
+                                                    filter.subFilters.forEach { sub ->
+                                                        InputCheckbox(
+                                                            checked = selectedSubFiltersIds.contains(sub.id),
+                                                            headLine = sub.name,
+                                                            onCheckedChange = {
+                                                                viewModel.setSubFilterId(sub.id)
+                                                            }
+                                                        )
+                                                    }
+                                                }
+                                            }
+
+                                            Spacer(Modifier.height(BasePadding))
+                                        }
+                                    }
+                                }
+                            }
+
+                            Spacer(Modifier.height(BasePadding))
+                        }
+                        else -> Unit
+                    }
 
                     Input(
                         value = name,
                         onValueChange = { name = it },
                         label = stringResource(R.string.name),
-                        isError = !validation.isNameValid,
-                        errorMessage = validation.nameError.toString(),
+                        //isError = !validation.isNameValid,
+                        //errorMessage = validation.nameError.toString(),
                         singleLine = false,
                         maxLines = 3
                     )
 
                     Spacer(Modifier.height(BasePadding))
 
-                    when(val filters = filtersState) {
-                        is FeatureState.Success -> {
-                            filters.data.map { filter ->
-                                InputSelect(
-                                    label = filter.name,
-                                    placeholder = "Selecteaza filtrul",
-                                    options = filter.subFilters.map {
-                                        Option(value = it.id.toString(), name = it.name)
-                                    },
-                                    selectedOption = selectedFilters[filter.id.toString()] ?: "",
-                                    onValueChange = { value ->
-                                        focusManager.clearFocus()
-                                        viewModel.updateSelectedFilter(filter.id.toString(), value=value.toString())
-                                    },
-                                    isLoading = isLoadingFilters,
-                                    isEnabled = !isErrorFilters && !isLoadingFilters
-                                )
-
-                                Spacer(Modifier.height(BasePadding))
-                            }
-                        }
-                        else -> Unit
-                    }
-
                     Input(
                         value = description,
                         onValueChange = { description = it },
                         label = stringResource(R.string.description),
-                        isError = !validation.isDescriptionValid,
-                        errorMessage = validation.descriptionError.toString(),
+                        //isError = !validation.isDescriptionValid,
+                        //errorMessage = validation.descriptionError.toString(),
                         singleLine = false,
 
                     )
@@ -298,8 +373,8 @@ fun AddProductScreen(
                             imeAction = ImeAction.Next
                         ),
                         label = stringResource(R.string.price),
-                        isError = !validation.isPriceValid,
-                        errorMessage = validation.priceError.toString()
+                        //isError = !validation.isPriceValid,
+                        //errorMessage = validation.priceError.toString()
                     )
                     Spacer(Modifier.height(BasePadding))
 
@@ -318,8 +393,8 @@ fun AddProductScreen(
                                 tint = Color.Gray
                             )
                         },
-                        isError = !validation.isDiscountValid,
-                        errorMessage = validation.discountError.toString()
+                        //isError = !validation.isDiscountValid,
+                        //errorMessage = validation.discountError.toString()
                     )
                     Spacer(Modifier.height(BasePadding))
 

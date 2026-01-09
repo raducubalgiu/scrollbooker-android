@@ -13,6 +13,11 @@ interface ServicesApiService {
         @Path("businessTypeId") businessTypeId: Int
     ): List<ServiceDto>
 
+    @GET("service-domains/{serviceDomainId}/services")
+    suspend fun getServicesByServiceDomainId(
+        @Path("serviceDomainId") serviceDomainId: Int
+    ): List<ServiceDto>
+
     @GET("users/{userId}/services")
     suspend fun getServicesByUserId(
         @Path("userId") userId: Int

@@ -11,7 +11,7 @@ import toDayMonthShort
 @Parcelize
 data class SearchServicesFiltersSheetState(
     val businessDomainId: Int? = null,
-    val businessTypeId: Int? = null,
+    val serviceDomainId: Int? = null,
     val serviceId: Int? = null,
     val subFilterIds: Set<Int> = emptySet(),
     val startDate: LocalDate? = null,
@@ -21,7 +21,7 @@ data class SearchServicesFiltersSheetState(
 ) : Parcelable
 
 fun SearchServicesFiltersSheetState.hasActiveFilters(): Boolean {
-    return businessTypeId != null ||
+    return serviceDomainId != null ||
             serviceId != null ||
             subFilterIds.isNotEmpty() ||
             startDate != null ||
@@ -41,7 +41,7 @@ fun SearchServicesFiltersSheetState.applyOn(
     base: SearchFiltersState
 ): SearchFiltersState =
     base.copy(
-        businessTypeId = businessTypeId,
+        serviceDomainId = serviceDomainId,
         serviceId = serviceId,
         subFilterIds = subFilterIds,
         startDate = startDate,

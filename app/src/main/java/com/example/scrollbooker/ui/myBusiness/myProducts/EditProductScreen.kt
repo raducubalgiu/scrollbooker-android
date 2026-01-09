@@ -78,12 +78,12 @@ fun EditProductScreen(
     val currenciesState by viewModel.currenciesState.collectAsState()
     val filtersState by viewModel.filtersState.collectAsState()
     val isSaving by viewModel.isSaving.collectAsState()
-    val selectedFilters by viewModel.selectedFilterOptions
+    //val selectedFilters by viewModel.selectedFilterOptions
 
     LaunchedEffect(Unit) {
         viewModel.loadProduct(productId)
         viewModel.loadCurrencies()
-        viewModel.loadFilters()
+        //viewModel.loadFilters()
     }
 
     when (val product = productState) {
@@ -176,7 +176,7 @@ fun EditProductScreen(
 
             Layout(
                 onBack = {
-                    viewModel.removeSelectedFilters()
+                    //viewModel.removeSelectedFilters()
                     onBack()
                 },
                 enablePaddingH = false
@@ -230,24 +230,24 @@ fun EditProductScreen(
                             when (val filters = filtersState) {
                                 is FeatureState.Success -> {
                                     filters.data.map { filter ->
-                                        InputSelect(
-                                            label = filter.name,
-                                            placeholder = "Selecteaza filtrul",
-                                            options = filter.subFilters.map {
-                                                Option(value = it.id.toString(), name = it.name)
-                                            },
-                                            selectedOption = selectedFilters[filter.id.toString()]
-                                                ?: "",
-                                            onValueChange = { value ->
-                                                focusManager.clearFocus()
-                                                viewModel.updateSelectedFilter(
-                                                    filter.id.toString(),
-                                                    value = value.toString()
-                                                )
-                                            },
-                                            isLoading = isLoadingFilters,
-                                            isEnabled = !isErrorFilters && !isLoadingFilters
-                                        )
+//                                        InputSelect(
+//                                            label = filter.name,
+//                                            placeholder = "Selecteaza filtrul",
+//                                            options = filter.subFilters.map {
+//                                                Option(value = it.id.toString(), name = it.name)
+//                                            },
+//                                            selectedOption = selectedFilters[filter.id.toString()]
+//                                                ?: "",
+//                                            onValueChange = { value ->
+//                                                focusManager.clearFocus()
+//                                                viewModel.updateSelectedFilter(
+//                                                    filter.id.toString(),
+//                                                    value = value.toString()
+//                                                )
+//                                            },
+//                                            isLoading = isLoadingFilters,
+//                                            isEnabled = !isErrorFilters && !isLoadingFilters
+//                                        )
 
                                         Spacer(Modifier.height(BasePadding))
                                     }

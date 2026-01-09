@@ -9,6 +9,7 @@ fun FilterDto.toDomain(): Filter {
     return Filter(
         id = id,
         name = name,
+        singleSelect = singleSelect,
         subFilters = subFilters.map { it.toDomain() }
     )
 }

@@ -1,7 +1,6 @@
 package com.example.scrollbooker.ui.myBusiness.myProducts
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -17,7 +16,7 @@ import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProduc
 import com.example.scrollbooker.entity.nomenclature.currency.domain.model.Currency
 import com.example.scrollbooker.entity.nomenclature.currency.domain.useCase.GetUserCurrenciesUseCase
 import com.example.scrollbooker.entity.nomenclature.filter.domain.model.Filter
-import com.example.scrollbooker.entity.nomenclature.filter.domain.useCase.GetFiltersByBusinessTypeUseCase
+import com.example.scrollbooker.entity.nomenclature.filter.domain.useCase.GetFiltersByServiceUseCase
 import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
 import com.example.scrollbooker.entity.nomenclature.service.domain.useCase.GetServicesByBusinessIdUseCase
 
@@ -28,6 +27,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull
@@ -44,7 +44,7 @@ class MyProductsViewModel @Inject constructor(
     private val getProductUseCase: GetProductByIdUseCase,
     private val getProductsByUserIdAndServiceIdUseCase: GetProductsByUserIdAndServiceIdUseCase,
     private val getUserCurrenciesUseCase: GetUserCurrenciesUseCase,
-    private val getFiltersByBusinessTypeUseCase: GetFiltersByBusinessTypeUseCase,
+    private val getFiltersByServiceUseCase: GetFiltersByServiceUseCase,
     private val createProductUseCase: CreateProductUseCase,
     private val deleteProductUseCase: DeleteProductUseCase
 ): ViewModel() {
@@ -54,11 +54,8 @@ class MyProductsViewModel @Inject constructor(
     private val _currenciesState = MutableStateFlow<FeatureState<List<Currency>>>(FeatureState.Loading)
     val currenciesState: StateFlow<FeatureState<List<Currency>>> = _currenciesState
 
-    private val _filtersState = MutableStateFlow<FeatureState<List<Filter>>>(FeatureState.Loading)
-    val filtersState: StateFlow<FeatureState<List<Filter>>> = _filtersState
-
-    private val _selectedFilterOptions = mutableStateOf<Map<String, String>>(emptyMap())
-    val selectedFilterOptions: State<Map<String, String>> = _selectedFilterOptions
+    private val _filtersState = MutableStateFlow<FeatureState<List<Filter>>?>(null)
+    val filtersState: StateFlow<FeatureState<List<Filter>>?> = _filtersState
 
     private val _isSaving = MutableStateFlow<Boolean>(false)
     val isSaving: StateFlow<Boolean> = _isSaving
@@ -71,6 +68,17 @@ class MyProductsViewModel @Inject constructor(
 
     private val _productsReloadTrigger = mutableIntStateOf(0)
     val productsReloadTrigger: State<Int> = _productsReloadTrigger
+
+    private val _selectedSubFilters = MutableStateFlow<Set<Int>>(emptySet())
+    val selectedSubFilters: StateFlow<Set<Int>> = _selectedSubFilters.asStateFlow()
+
+    fun setSubFilterId(subFilterId: Int) {
+        if(_selectedSubFilters.value.contains(subFilterId)) {
+            _selectedSubFilters.value =  _selectedSubFilters.value - subFilterId
+        } else {
+            _selectedSubFilters.value = _selectedSubFilters.value + subFilterId
+        }
+    }
 
     init {
         loadServices()
@@ -102,16 +110,6 @@ class MyProductsViewModel @Inject constructor(
         _selectedProduct.value = product
     }
 
-    fun updateSelectedFilter(key: String, value: String) {
-        _selectedFilterOptions.value = _selectedFilterOptions.value.toMutableMap().apply {
-            this[key] = value
-        }
-    }
-
-    fun removeSelectedFilters() {
-        _selectedFilterOptions.value = emptyMap()
-    }
-
     fun createProduct(
         name: String,
         description: String,
@@ -125,8 +123,6 @@ class MyProductsViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             _isSaving.value = true
-
-            val subFilters = selectedFilterOptions.value.values.mapNotNull { it.toIntOrNull() }
             val businessId = authDataStore.getBusinessId().firstOrNull()
 
             if(businessId == null) {
@@ -147,7 +143,7 @@ class MyProductsViewModel @Inject constructor(
                         currencyId = currencyId.toInt(),
                         canBeBooked = canBeBooked
                     ),
-                    subFilters = subFilters
+                    subFilters = _selectedSubFilters.value.toList()
                 )
             }
 
@@ -241,10 +237,10 @@ class MyProductsViewModel @Inject constructor(
         }
     }
 
-    fun loadFilters() {
+    fun loadFilters(serviceId: Int) {
         viewModelScope.launch {
             _filtersState.value = FeatureState.Loading
-            _filtersState.value = withVisibleLoading { getFiltersByBusinessTypeUseCase() }
+            _filtersState.value = withVisibleLoading { getFiltersByServiceUseCase(serviceId) }
         }
     }
 }
