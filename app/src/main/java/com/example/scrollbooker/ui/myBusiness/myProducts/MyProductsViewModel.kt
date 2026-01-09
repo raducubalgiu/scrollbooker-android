@@ -80,6 +80,10 @@ class MyProductsViewModel @Inject constructor(
         }
     }
 
+    fun clearSubfilters() {
+        _selectedSubFilters.value = emptySet()
+    }
+
     init {
         loadServices()
     }

@@ -11,6 +11,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -26,6 +27,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Percent
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ShapeDefaults
@@ -42,6 +44,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -117,6 +120,7 @@ fun AddProductScreen(
     var currencyId by rememberSaveable { mutableStateOf("") }
     var price by rememberSaveable { mutableStateOf("0") }
     var discount by rememberSaveable { mutableStateOf("0") }
+    var canBeBooked by rememberSaveable { mutableStateOf(true) }
 
     val priceDecimal = price.toBigDecimalOrNull() ?: BigDecimal.ZERO
     val discountDecimal = discount.toBigDecimalOrNull() ?: BigDecimal.ZERO
@@ -426,6 +430,24 @@ fun AddProductScreen(
                             unfocusedLabelColor = Primary
                         )
                     )
+
+                    Spacer(Modifier.height(BasePadding))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "Acest produs poate fi rezervat?",
+                            style = titleMedium
+                        )
+
+                        Checkbox(
+                            checked = canBeBooked,
+                            onCheckedChange = { canBeBooked = it }
+                        )
+                    }
                 }
 
                 Spacer(Modifier.height(BasePadding))
@@ -449,7 +471,7 @@ fun AddProductScreen(
                                 duration = duration,
                                 serviceId = serviceId,
                                 currencyId = currencyId,
-                                canBeBooked = false
+                                canBeBooked = canBeBooked
                             )
                         },
                     )
