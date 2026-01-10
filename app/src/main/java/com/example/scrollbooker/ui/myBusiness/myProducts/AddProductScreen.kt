@@ -40,6 +40,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -75,6 +76,7 @@ import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.SurfaceBG
+import com.example.scrollbooker.ui.theme.bodySmall
 import com.example.scrollbooker.ui.theme.labelLarge
 import com.example.scrollbooker.ui.theme.titleMedium
 import java.math.BigDecimal
@@ -105,7 +107,6 @@ fun AddProductScreen(
     val servicesState by viewModel.servicesState.collectAsState()
     val currenciesState by viewModel.currenciesState.collectAsState()
     val filtersState by viewModel.filtersState.collectAsState()
-    val selectedSubFiltersIds by viewModel.selectedSubFilters.collectAsState()
 
     val isSaving by viewModel.isSaving.collectAsState()
 
@@ -121,6 +122,9 @@ fun AddProductScreen(
     var price by rememberSaveable { mutableStateOf("0") }
     var discount by rememberSaveable { mutableStateOf("0") }
     var canBeBooked by rememberSaveable { mutableStateOf(true) }
+    var selectedSubFilterIds by rememberSaveable {
+        mutableStateOf<Set<Int>>(emptySet())
+    }
 
     val priceDecimal = price.toBigDecimalOrNull() ?: BigDecimal.ZERO
     val discountDecimal = discount.toBigDecimalOrNull() ?: BigDecimal.ZERO
@@ -272,24 +276,42 @@ fun AddProductScreen(
                                         Spacer(Modifier.height(BasePadding))
 
                                         filters.data.map { filter ->
+                                            val options = filter.subFilters.map {
+                                                Option(value = it.id.toString(), name = it.name)
+                                            }
+
                                             if(filter.singleSelect) {
-//                                                InputSelect(
-//                                                    label = filter.name,
-//                                                    placeholder = "Selecteaza filtrul",
-//                                                    options = filter.subFilters.map {
-//                                                        Option(value = it.id.toString(), name = it.name)
-//                                                    },
-//                                                    selectedOption = selectedFilters[filter.id.toString()] ?: "",
-//                                                    onValueChange = { value ->
-//                                                        focusManager.clearFocus()
-//                                                        viewModel.updateSelectedFilter(
-//                                                            filter.id.toString(),
-//                                                            value=value.toString()
-//                                                        )
-//                                                    },
-//                                                    isLoading = isLoadingFilters,
-//                                                    isEnabled = !isErrorFilters && !isLoadingFilters
-//                                                )
+                                                Column {
+                                                    Text(
+                                                        text = filter.name,
+                                                        fontWeight = FontWeight.SemiBold,
+                                                        color = Color.Gray
+                                                    )
+
+                                                    Spacer(Modifier.height(SpacingS))
+
+                                                    InputSelect(
+                                                        label = filter.name,
+                                                        placeholder = "Selecteaza filtrul",
+                                                        options = options,
+                                                        selectedOptions = selectedSubFilterIds,
+                                                        displayLabel = false,
+                                                        onValueChange = { value ->
+                                                            focusManager.clearFocus()
+
+                                                            if(value == null) return@InputSelect
+                                                            val intValue = value.toInt()
+                                                            val isSelected = intValue in selectedSubFilterIds
+
+                                                            selectedSubFilterIds = if(isSelected) selectedSubFilterIds - intValue
+                                                            else selectedSubFilterIds + intValue
+                                                        },
+                                                        isLoading = isLoadingFilters,
+                                                        isEnabled = !isErrorFilters && !isLoadingFilters,
+                                                        background = Background,
+                                                        color = OnBackground
+                                                    )
+                                                }
                                             } else {
                                                 Column {
                                                     Text(
@@ -301,11 +323,14 @@ fun AddProductScreen(
                                                     Spacer(Modifier.height(SpacingS))
 
                                                     filter.subFilters.forEach { sub ->
+                                                        val isChecked = sub.id in selectedSubFilterIds
+
                                                         InputCheckbox(
-                                                            checked = selectedSubFiltersIds.contains(sub.id),
+                                                            checked = isChecked,
                                                             headLine = sub.name,
                                                             onCheckedChange = {
-                                                                viewModel.setSubFilterId(sub.id)
+                                                                selectedSubFilterIds = if(isChecked) selectedSubFilterIds - sub.id
+                                                                else selectedSubFilterIds + sub.id
                                                             }
                                                         )
                                                     }
@@ -448,6 +473,12 @@ fun AddProductScreen(
                             onCheckedChange = { canBeBooked = it }
                         )
                     }
+
+                    Text(
+                        text = "Produsele care NU sunt marcate ca fiind disponibile pentru rezervare, vor aparea in sectiunea produselor tale.. insa acestea vor avea doar scop informativ (nu vor putea fi rezervate instant de catre clienti).",
+                        style = bodySmall,
+                        color = Color.Gray
+                    )
                 }
 
                 Spacer(Modifier.height(BasePadding))
@@ -471,7 +502,8 @@ fun AddProductScreen(
                                 duration = duration,
                                 serviceId = serviceId,
                                 currencyId = currencyId,
-                                canBeBooked = canBeBooked
+                                canBeBooked = canBeBooked,
+                                subFilters = selectedSubFilterIds
                             )
                         },
                     )

@@ -34,6 +34,14 @@ class MainUIViewModel @Inject constructor(
                 initialValue = emptySet()
             )
 
+    val hasEmployees: StateFlow<Boolean> =
+        authDataStore.getHasEmployees()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.Eagerly,
+                initialValue = false
+            )
+
     fun incAppointmentsNumber() {
         _appointments.value++
     }

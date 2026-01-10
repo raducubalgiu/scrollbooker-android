@@ -31,6 +31,7 @@ data class BusinessCard(
     val description: String,
     val icon: ImageVector,
     val permission: PermissionEnum,
+    val hasEmployees: Boolean,
     val navigate: () -> Unit,
 )
 
@@ -46,6 +47,7 @@ fun MyBusinessScreen(
             description = stringResource(R.string.businessLocationDetails),
             icon = Icons.Outlined.LocationOn,
             navigate = {},
+            hasEmployees = false,
             permission = PermissionEnum.MY_BUSINESS_LOCATION_VIEW
         ),
         BusinessCard(
@@ -53,6 +55,7 @@ fun MyBusinessScreen(
             description = stringResource(R.string.userScheduleDetails),
             icon = Icons.Outlined.Schedule,
             navigate = { myBusinessNavigate.toMySchedules() },
+            hasEmployees = false,
             permission = PermissionEnum.MY_SCHEDULES_VIEW
         ),
         BusinessCard(
@@ -60,6 +63,7 @@ fun MyBusinessScreen(
             description = stringResource(R.string.userProductsDetails),
             icon = Icons.Outlined.ShoppingBag,
             navigate = { myBusinessNavigate.toMyProducts() },
+            hasEmployees = false,
             permission = PermissionEnum.MY_PRODUCTS_VIEW
         ),
         BusinessCard(
@@ -67,6 +71,7 @@ fun MyBusinessScreen(
             description = stringResource(R.string.servicesDetails),
             icon = Icons.Outlined.Book,
             navigate = { myBusinessNavigate.toMyServices() },
+            hasEmployees = false,
             permission = PermissionEnum.MY_SERVICES_VIEW
         ),
         BusinessCard(
@@ -74,13 +79,15 @@ fun MyBusinessScreen(
             description = stringResource(R.string.servicesDetails),
             icon = Icons.Outlined.CalendarToday,
             navigate = { myBusinessNavigate.toMyCalendar() },
-            permission = PermissionEnum.MY_CALENDAR_VIEW
+            permission = PermissionEnum.MY_CALENDAR_VIEW,
+            hasEmployees = false
         ),
         BusinessCard(
             title = stringResource(R.string.paymentMethods),
             description = stringResource(R.string.paymentMethodsDetails),
             icon = Icons.Outlined.Payment,
             navigate = { myBusinessNavigate.toMyCurrencies() },
+            hasEmployees = false,
             permission = PermissionEnum.MY_CURRENCIES_VIEW
         ),
         BusinessCard(
@@ -88,6 +95,7 @@ fun MyBusinessScreen(
             description = stringResource(R.string.servicesDetails),
             icon = Icons.Outlined.PeopleOutline,
             navigate = { myBusinessNavigate.toMyEmployees() },
+            hasEmployees = true,
             permission = PermissionEnum.MY_EMPLOYEES_VIEW
         ),
         BusinessCard(
@@ -95,6 +103,7 @@ fun MyBusinessScreen(
             description = stringResource(R.string.servicesDetails),
             icon = Icons.Outlined.Repeat,
             navigate = { myBusinessNavigate.toMyEmploymentRequests() },
+            hasEmployees = true,
             permission = PermissionEnum.MY_EMPLOYMENT_REQUESTS_VIEW
         )
     )
@@ -110,7 +119,10 @@ fun MyBusinessScreen(
             contentPadding = PaddingValues(vertical = 8.dp),
             modifier = Modifier.fillMaxSize()
         ) {
-            val visiblePages = pages.filter { permissionsController.has(it.permission) }
+            val visiblePages = pages.filter {
+                permissionsController.has(it.permission) &&
+                permissionsController.verifyHasEmployees(it.hasEmployees)
+            }
 
             items(visiblePages) { page ->
                 MyBusinessCard(

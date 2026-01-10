@@ -77,7 +77,6 @@ class FeedScreenViewModel @Inject constructor(
     val selectedBusinessTypes: StateFlow<Set<Int>> = _selectedBusinessTypes
 
     private val _isFiltering = MutableStateFlow<Boolean>(false)
-    val isFiltering: StateFlow<Boolean> = _isFiltering.asStateFlow()
 
     fun setSelectedBusinessTypes(businessTypes: Set<Int>) {
         _selectedBusinessTypes.value = businessTypes

@@ -6,6 +6,7 @@ data class UserInfo(
     val fullname: String,
     val businessId: Int,
     val businessTypeId: Int,
+    val hasEmployees: Boolean,
     val isValidated: Boolean,
     val registrationStep: RegistrationStepEnum?
 )

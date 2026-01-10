@@ -16,6 +16,7 @@ import com.example.scrollbooker.ui.BottomBarController
 import com.example.scrollbooker.ui.LocalBottomBarController
 import com.example.scrollbooker.ui.MainUIViewModel
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.example.scrollbooker.ui.LocalLocationController
@@ -35,7 +36,8 @@ fun NavGraphBuilder.mainGraph(onLogout: () -> Unit) {
             val mainUiViewModel: MainUIViewModel = hiltViewModel()
             val locationViewModel: LocationViewModel = hiltViewModel()
 
-            val permissions by mainUiViewModel.permissions.collectAsState()
+            val permissions by mainUiViewModel.permissions.collectAsStateWithLifecycle()
+            val hasEmployees by mainUiViewModel.hasEmployees.collectAsStateWithLifecycle()
 
             val tabsController = remember(tabsViewModel) {
                 TabsController(
@@ -55,8 +57,8 @@ fun NavGraphBuilder.mainGraph(onLogout: () -> Unit) {
                 )
             }
 
-            val permissionsController = remember(permissions) {
-                UserPermissionsController(permissions)
+            val permissionsController = remember(permissions, hasEmployees) {
+                UserPermissionsController(permissions, hasEmployees)
             }
 
             val locationController = remember(locationViewModel) {

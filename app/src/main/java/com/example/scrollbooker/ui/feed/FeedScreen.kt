@@ -1,73 +1,42 @@
 package com.example.scrollbooker.ui.feed
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.SpringSpec
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.gestures.draggable
-import androidx.compose.foundation.gestures.rememberDraggableState
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PageSize
-import androidx.compose.foundation.pager.PagerDefaults
-import androidx.compose.foundation.pager.PagerSnapDistance
-import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import coil.compose.AsyncImage
-import com.example.scrollbooker.components.core.layout.ErrorScreen
-import com.example.scrollbooker.core.extensions.getOrNull
-import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
+import com.example.scrollbooker.R
+import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.ui.feed.components.FeedTabs
 import com.example.scrollbooker.ui.feed.drawer.FeedDrawer
-import com.example.scrollbooker.ui.profile.PostPlayerWithThumbnail
+import com.example.scrollbooker.ui.feed.drawer.FeedDrawerLayout
+import com.example.scrollbooker.ui.shared.posts.PostVerticalPager
 import com.example.scrollbooker.ui.shared.posts.components.PostBottomBar
-import com.example.scrollbooker.ui.shared.posts.components.PostShimmer
-import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlay
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlayActionEnum
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheets
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent
@@ -80,10 +49,7 @@ import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.PhoneSh
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.ReviewDetailsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.ReviewsSheet
 import com.example.scrollbooker.ui.theme.BackgroundDark
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -93,10 +59,10 @@ fun FeedScreen(
     explorePosts: LazyPagingItems<Post>
 ) {
     val followingPosts = feedViewModel.followingPosts.collectAsLazyPagingItems()
+
     val businessDomainsState by feedViewModel.businessDomainsWithBusinessTypes.collectAsStateWithLifecycle()
     val selectedFromVm by feedViewModel.selectedBusinessTypes.collectAsStateWithLifecycle()
     val showBottomBar by feedViewModel.showBottomBar.collectAsStateWithLifecycle()
-    val userPausedSet by feedViewModel.userPausedPostIds.collectAsStateWithLifecycle()
 
     val horizontalPagerState = rememberPagerState { 2 }
     val scope = rememberCoroutineScope()
@@ -136,7 +102,7 @@ fun FeedScreen(
             .fillMaxSize()
             .background(BackgroundDark)
     ) {
-        CustomDrawer(
+        FeedDrawerLayout(
             isOpen = isDrawerOpen,
             onOpenChange = { isDrawerOpen = it },
             drawerWidthFraction = 0.8f,
@@ -163,243 +129,55 @@ fun FeedScreen(
             onNavigateSearch = { feedNavigate.toFeedSearch() }
         )
 
-        HorizontalPager(
-            state = horizontalPagerState,
-            overscrollEffect = null,
-            beyondViewportPageCount = 0,
-            userScrollEnabled = false
-        ) { tabIndex ->
-            val posts = if (tabIndex == 0) explorePosts else followingPosts
-            val pagerState = rememberPagerState { posts.itemCount }
+        Column(Modifier.fillMaxSize()) {
+            Box(Modifier.weight(1f)) {
+                HorizontalPager(
+                    modifier = Modifier.fillMaxSize(),
+                    state = horizontalPagerState,
+                    overscrollEffect = null,
+                    beyondViewportPageCount = 0,
+                    userScrollEnabled = false
+                ) { tabIndex ->
+                    val posts = if (tabIndex == 0) explorePosts else followingPosts
 
-            val settledPage by remember { derivedStateOf { pagerState.settledPage } }
-
-            LaunchedEffect(pagerState) {
-                snapshotFlow {
-                    val page = settledPage
-                    settledPage to posts.getOrNull(page)?.id
-                }
-                    .distinctUntilChanged()
-                    .collectLatest { (page, postId) ->
-                        if (postId == null) return@collectLatest
-
-                        feedViewModel.onPageSettled(page)
-                        feedViewModel.ensureWindow(
-                            centerIndex = page,
-                            getPost = { idx -> posts.getOrNull(idx) }
-                        )
-                    }
-            }
-
-            LaunchedEffect(pagerState) {
-                snapshotFlow { settledPage to isDrawerOpen }
-                    .distinctUntilChanged()
-                    .collectLatest { (page, drawerOpen) ->
-                        if(drawerOpen) feedViewModel.pauseIfPlaying(page)
-                        else feedViewModel.resumeAfterDrawer(page)
-                    }
-            }
-
-            val decay = rememberSplineBasedDecay<Float>()
-
-            val snapSpec: SpringSpec<Float> = spring(
-                dampingRatio = Spring.DampingRatioNoBouncy,
-                stiffness = Spring.StiffnessHigh,
-            )
-
-            val fling = PagerDefaults.flingBehavior(
-                state = pagerState,
-                pagerSnapDistance = PagerSnapDistance.atMost(1),
-                decayAnimationSpec = decay,
-                snapAnimationSpec = snapSpec
-            )
-
-            val currentOnReleasePlayer by rememberUpdatedState(feedViewModel::stopDetailSession)
-
-            LifecycleStartEffect(true) {
-                onStopOrDispose {
-                    currentOnReleasePlayer()
-                }
-            }
-
-            Column(Modifier.fillMaxSize()) {
-                Column(Modifier.weight(1f)) {
-                    when(posts.loadState.refresh) {
-                        is LoadState.Error -> ErrorScreen()
-                        is LoadState.Loading -> PostShimmer()
-                        is LoadState.NotLoading -> {
-                            VerticalPager(
-                                state = pagerState,
-                                overscrollEffect = null,
-                                flingBehavior = fling,
-                                pageSize = PageSize.Fill,
-                                pageSpacing = 0.dp,
-                                beyondViewportPageCount = 1,
-                                modifier = Modifier.fillMaxSize(),
-                            ) { page ->
-                                val post = posts.getOrNull(page) ?: return@VerticalPager
-                                val postId = post.id
-
-                                key(postId) {
-                                    val postActionState by feedViewModel
-                                        .observePostUi(postId)
-                                        .collectAsStateWithLifecycle()
-
-                                    val postUi = remember(post, postActionState) {
-                                        post.copy(
-                                            userActions = post.userActions.applyUiState(postActionState),
-                                            counters = post.counters.applyUiState(postActionState)
-                                        )
-                                    }
-
-                                    val player = feedViewModel.getPlayerForIndex(page)
-
-                                    Box(modifier = Modifier
-                                        .fillMaxSize()
-                                        .clickable(
-                                            interactionSource = remember { MutableInteractionSource() },
-                                            indication = null,
-                                            onClick = { feedViewModel.togglePlayer(page) }
-                                        )
-                                    ) {
-                                        if (player != null) {
-                                            PostPlayerWithThumbnail(
-                                                player = player,
-                                                thumbnailUrl = post.mediaFiles.first().thumbnailUrl,
-                                                showPlayIcon = userPausedSet.contains(postId)
-                                            )
-                                        } else {
-                                            AsyncImage(
-                                                modifier = Modifier.fillMaxSize(),
-                                                model = post.mediaFiles.first().thumbnailUrl,
-                                                contentDescription = null,
-                                                contentScale = ContentScale.Crop
-                                            )
-                                        }
-
-                                        PostOverlay(
-                                            post = postUi,
-                                            postActionState = postActionState,
-                                            onAction = {
-                                                handlePostAction(
-                                                    feedViewModel = feedViewModel,
-                                                    action = it,
-                                                    handleOpenSheet = { handleOpenSheet(it) },
-                                                    post = post
-                                                )
-                                            },
-                                            enableOpacity = false,
-                                            showBottomBar = showBottomBar,
-                                            onShowBottomBar = { feedViewModel.toggleBottomBar() },
-                                            onNavigateToUserProfile = { feedNavigate.toUserProfile(it) }
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                Column(modifier = Modifier
-                    .height(90.dp)
-                    .zIndex(14f)
-                ) {
-                    PostBottomBar(
-                        onAction = { action ->
-                            currentPost?.let { post ->
+                    Box(Modifier.fillMaxSize()) {
+                        PostVerticalPager(
+                            feedViewModel = feedViewModel,
+                            posts = posts,
+                            isDrawerOpen = isDrawerOpen,
+                            onAction = { action, post ->
                                 handlePostAction(
                                     feedViewModel = feedViewModel,
                                     action = action,
                                     handleOpenSheet = { handleOpenSheet(it) },
                                     post = post
                                 )
-                            }
-                        },
-                        showBottomBar = showBottomBar,
-                        currentPost = currentPost
-                    )
+                            },
+                            showBottomBar = showBottomBar,
+                            onNavigateToUserProfile = { feedNavigate.toUserProfile(it) }
+                        )
+                    }
                 }
             }
-        }
-    }
-}
 
-@Composable
-fun CustomDrawer(
-    isOpen: Boolean,
-    onOpenChange: (Boolean) -> Unit,
-    modifier: Modifier = Modifier,
-    drawerWidthFraction: Float = 0.9f,
-    scrimColor: Color = Color.Black.copy(alpha = 0.7f),
-    drawerContent: @Composable ColumnScope.() -> Unit,
-) {
-    val scope = rememberCoroutineScope()
-    val density = LocalDensity.current
-
-    BoxWithConstraints(
-        modifier = modifier
-            .fillMaxSize()
-            .zIndex(15f)
-    ) {
-        val fullWidthPx = with(density) { maxWidth.toPx() }
-        val drawerWidthPx = fullWidthPx * drawerWidthFraction
-        val closedOffsetX = -drawerWidthPx
-
-        val offsetX = remember { Animatable(if (isOpen) 0f else closedOffsetX) }
-
-        LaunchedEffect(isOpen, drawerWidthPx) {
-            val target = if (isOpen) 0f else closedOffsetX
-            if (offsetX.targetValue != target) {
-                offsetX.animateTo(target)
-            }
-        }
-
-        val openProgress = ((offsetX.value - closedOffsetX) / (0f - closedOffsetX)).coerceIn(0f, 1f)
-        
-        if (openProgress > 0f) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .zIndex(9f)
-                    .graphicsLayer { alpha = openProgress }
-                    .background(scrimColor)
-                    .pointerInput(Unit) {
-                        detectTapGestures { onOpenChange(false) }
-                    }
-            )
-        }
-
-        Box(
-            modifier = Modifier
-                .zIndex(10f)
-                .fillMaxHeight()
-                .width(with(density) { drawerWidthPx.toDp() })
-                .offset { IntOffset(offsetX.value.roundToInt(), 0) }
-                .draggable(
-                    orientation = Orientation.Horizontal,
-                    state = rememberDraggableState { delta ->
-                        scope.launch {
-                            val newValue = (offsetX.value + delta).coerceIn(closedOffsetX, 0f)
-                            offsetX.snapTo(newValue)
+            Column(modifier = Modifier
+                .height(90.dp)
+                .zIndex(14f)
+            ) {
+                PostBottomBar(
+                    onAction = { action ->
+                        currentPost?.let { post ->
+                            handlePostAction(
+                                feedViewModel = feedViewModel,
+                                action = action,
+                                handleOpenSheet = { handleOpenSheet(it) },
+                                post = post
+                            )
                         }
                     },
-                    onDragStopped = { velocity ->
-                        val shouldOpen = when {
-                            velocity > 800f -> true
-                            velocity < -800f -> false
-                            else -> openProgress > 0.5f
-                        }
-
-                        onOpenChange(shouldOpen)
-                    }
+                    showBottomBar = showBottomBar,
+                    currentPost = currentPost
                 )
-        ) {
-            Column(modifier = Modifier
-                .fillMaxSize()
-                .background(BackgroundDark)
-                .safeDrawingPadding()
-            ) {
-                drawerContent()
             }
         }
     }

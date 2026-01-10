@@ -11,6 +11,7 @@ fun UserInfoDto.toDomain(): UserInfo {
         fullname = fullname,
         businessId = businessId,
         businessTypeId = businessTypeId,
+        hasEmployees = hasEmployees,
         isValidated = isValidated,
         registrationStep = RegistrationStepEnum.fromKeyOrNull(registrationStep)
     )

@@ -13,6 +13,9 @@ data class UserInfoDto(
     @SerializedName("business_type_id")
     val businessTypeId: Int,
 
+    @SerializedName("has_employees")
+    val hasEmployees: Boolean,
+
     @SerializedName("is_validated")
     val isValidated: Boolean,
 

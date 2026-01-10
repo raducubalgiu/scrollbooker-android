@@ -93,13 +93,13 @@ fun EditProductScreen(
     val filtersState by viewModel.filtersState.collectAsState()
     val isSaving by viewModel.isSaving.collectAsState()
 
-    val selectedSubFiltersIds by viewModel.selectedSubFilters.collectAsState()
-
-    LaunchedEffect(Unit) {
-        viewModel.loadProduct(productId)
-        viewModel.loadCurrencies()
-        viewModel.clearSubfilters()
-    }
+//    val selectedSubFiltersIds by viewModel.selectedSubFilters.collectAsState()
+//
+//    LaunchedEffect(Unit) {
+//        viewModel.loadProduct(productId)
+//        viewModel.loadCurrencies()
+//        viewModel.clearSubfilters()
+//    }
 
     when (val product = productState) {
         is FeatureState.Error -> ErrorScreen()
@@ -293,15 +293,15 @@ fun EditProductScreen(
 
                                                             Spacer(Modifier.height(SpacingS))
 
-                                                            filter.subFilters.forEach { sub ->
-                                                                InputCheckbox(
-                                                                    checked = selectedSubFiltersIds.contains(sub.id),
-                                                                    headLine = sub.name,
-                                                                    onCheckedChange = {
-                                                                        viewModel.setSubFilterId(sub.id)
-                                                                    }
-                                                                )
-                                                            }
+//                                                            filter.subFilters.forEach { sub ->
+//                                                                InputCheckbox(
+//                                                                    checked = selectedSubFiltersIds.contains(sub.id),
+//                                                                    headLine = sub.name,
+//                                                                    onCheckedChange = {
+//                                                                        viewModel.setSubFilterId(sub.id)
+//                                                                    }
+//                                                                )
+//                                                            }
                                                         }
                                                     }
 
@@ -424,30 +424,30 @@ fun EditProductScreen(
 
                         Spacer(Modifier.height(BasePadding))
 
-                        Column {
-                            HorizontalDivider(color = Divider, thickness = 0.5.dp)
-                            MainButton(
-                                modifier = Modifier
-                                    .padding(top = BasePadding)
-                                    .padding(horizontal = BasePadding),
-                                isLoading = isSaving,
-                                enabled = validation.isValid && !isSaving,
-                                title = stringResource(R.string.save),
-                                onClick = {
-                                    viewModel.createProduct(
-                                        name = name,
-                                        description = description,
-                                        price = price,
-                                        priceWithDiscount = priceWithDiscount,
-                                        discount = discount,
-                                        duration = duration,
-                                        serviceId = serviceId,
-                                        currencyId = currencyId,
-                                        canBeBooked = true
-                                    )
-                                },
-                            )
-                        }
+//                        Column {
+//                            HorizontalDivider(color = Divider, thickness = 0.5.dp)
+//                            MainButton(
+//                                modifier = Modifier
+//                                    .padding(top = BasePadding)
+//                                    .padding(horizontal = BasePadding),
+//                                isLoading = isSaving,
+//                                enabled = validation.isValid && !isSaving,
+//                                title = stringResource(R.string.save),
+//                                onClick = {
+//                                    viewModel.createProduct(
+//                                        name = name,
+//                                        description = description,
+//                                        price = price,
+//                                        priceWithDiscount = priceWithDiscount,
+//                                        discount = discount,
+//                                        duration = duration,
+//                                        serviceId = serviceId,
+//                                        currencyId = currencyId,
+//                                        canBeBooked = true
+//                                    )
+//                                },
+//                            )
+//                        }
                     }
                 }
             }

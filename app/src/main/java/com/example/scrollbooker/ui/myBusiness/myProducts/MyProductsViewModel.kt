@@ -69,20 +69,20 @@ class MyProductsViewModel @Inject constructor(
     private val _productsReloadTrigger = mutableIntStateOf(0)
     val productsReloadTrigger: State<Int> = _productsReloadTrigger
 
-    private val _selectedSubFilters = MutableStateFlow<Set<Int>>(emptySet())
-    val selectedSubFilters: StateFlow<Set<Int>> = _selectedSubFilters.asStateFlow()
+//    private val _selectedSubFilters = MutableStateFlow<Set<Int>>(emptySet())
+//    val selectedSubFilters: StateFlow<Set<Int>> = _selectedSubFilters.asStateFlow()
+//
+//    fun setSubFilterId(subFilterId: Int) {
+//        if(_selectedSubFilters.value.contains(subFilterId)) {
+//            _selectedSubFilters.value =  _selectedSubFilters.value - subFilterId
+//        } else {
+//            _selectedSubFilters.value = _selectedSubFilters.value + subFilterId
+//        }
+//    }
 
-    fun setSubFilterId(subFilterId: Int) {
-        if(_selectedSubFilters.value.contains(subFilterId)) {
-            _selectedSubFilters.value =  _selectedSubFilters.value - subFilterId
-        } else {
-            _selectedSubFilters.value = _selectedSubFilters.value + subFilterId
-        }
-    }
-
-    fun clearSubfilters() {
-        _selectedSubFilters.value = emptySet()
-    }
+//    fun clearSubfilters() {
+//        _selectedSubFilters.value = emptySet()
+//    }
 
     init {
         loadServices()
@@ -123,7 +123,8 @@ class MyProductsViewModel @Inject constructor(
         duration: String,
         serviceId: String,
         currencyId: String,
-        canBeBooked: Boolean
+        canBeBooked: Boolean,
+        subFilters: Set<Int>
     ) {
         viewModelScope.launch {
             _isSaving.value = true
@@ -147,7 +148,7 @@ class MyProductsViewModel @Inject constructor(
                         currencyId = currencyId.toInt(),
                         canBeBooked = canBeBooked
                     ),
-                    subFilters = _selectedSubFilters.value.toList()
+                    subFilters = subFilters.toList()
                 )
             }
 

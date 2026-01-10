@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
@@ -28,7 +29,8 @@ fun EmptyScreen(
     modifier: Modifier = Modifier,
     arrangement: Arrangement.Vertical = Arrangement.Center,
     message: String,
-    icon: Painter
+    icon: Painter,
+    color: Color = OnSurfaceBG
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
@@ -48,7 +50,7 @@ fun EmptyScreen(
             Text(
                 style = bodyLarge,
                 text = message,
-                color = OnSurfaceBG,
+                color = color,
                 textAlign = TextAlign.Center
             )
         }
