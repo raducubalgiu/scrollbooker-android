@@ -12,6 +12,7 @@ import com.example.scrollbooker.navigation.transition.slideInFromRight
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
+import com.example.scrollbooker.ui.profile.edit.EditAvatarCropScreen
 import com.example.scrollbooker.ui.profile.edit.EditBioScreen
 import com.example.scrollbooker.ui.profile.edit.EditFullNameScreen
 import com.example.scrollbooker.ui.profile.edit.EditGenderScreen
@@ -43,8 +44,15 @@ fun NavGraphBuilder.editProfileGraph(
             EditProfileScreen(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
-                onNavigateToCropScreen = {},
+                onNavigateToCropScreen = { editProfileNavigate.toEditAvatarCropScreen() },
                 editProfileNavigate = editProfileNavigate,
+            )
+        }
+
+        composable(route = MainRoute.EditAvatarCropScreen.route) {
+            EditAvatarCropScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() }
             )
         }
 

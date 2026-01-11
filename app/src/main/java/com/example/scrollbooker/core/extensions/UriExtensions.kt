@@ -1,5 +1,4 @@
 package com.example.scrollbooker.core.extensions
-
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns

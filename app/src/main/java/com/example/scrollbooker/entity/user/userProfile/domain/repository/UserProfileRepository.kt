@@ -1,5 +1,6 @@
 package com.example.scrollbooker.entity.user.userProfile.domain.repository
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
+import com.example.scrollbooker.entity.user.userProfile.data.remote.UserAvatarRequest
 import com.example.scrollbooker.entity.user.userProfile.domain.model.SearchUsernameResponse
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfileAbout
@@ -13,6 +14,7 @@ interface UserProfileRepository {
     suspend fun updateGender(gender: String): AuthState
     suspend fun updateWebsite(website: String)
     suspend fun updatePublicEmail(publicEmail: String)
+    suspend fun updateAvatar(request: UserAvatarRequest)
 
     suspend fun updateBio(bio: String)
     suspend fun searchUsername(username: String): SearchUsernameResponse

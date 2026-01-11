@@ -1,7 +1,5 @@
 package com.example.scrollbooker.ui.profile.edit
-import android.content.Context
 import android.net.Uri
-import androidx.activity.compose.LocalActivityResultRegistryOwner
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -11,7 +9,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,8 +19,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -56,7 +51,6 @@ import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.titleMedium
 import kotlinx.coroutines.launch
-import java.io.File
 
 data class EditProfileAction(
     val title: String,
@@ -69,7 +63,7 @@ data class EditProfileAction(
 fun EditProfileScreen(
     onBack: () -> Unit,
     editProfileNavigate: EditProfileNavigator,
-    onNavigateToCropScreen: (Uri) -> Unit,
+    onNavigateToCropScreen: () -> Unit,
     viewModel: MyProfileViewModel
 ) {
     val userState by viewModel.userProfileState.collectAsState()
@@ -134,22 +128,19 @@ fun EditProfileScreen(
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    val context = LocalContext.current
-
     val pickImage = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
     ) { uri: Uri? ->
-        if(uri != null) {
-            onNavigateToCropScreen(uri)
-        }
-    }
+        uri?.let {
+            viewModel.setPhoto(it)
 
-    val pickContent = rememberLauncherForActivityResult(
-        ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        //viewModel.changePhoto(uri)
-        if(uri != null) {
-            onNavigateToCropScreen(uri)
+            scope.launch {
+                sheetState.hide()
+
+                if (!sheetState.isVisible) {
+                    onNavigateToCropScreen()
+                }
+            }
         }
     }
 

@@ -11,9 +11,14 @@ import com.example.scrollbooker.entity.user.userProfile.data.remote.UpdateGender
 import com.example.scrollbooker.entity.user.userProfile.data.remote.UpdatePublicEmailRequest
 import com.example.scrollbooker.entity.user.userProfile.data.remote.UpdateUsernameRequest
 import com.example.scrollbooker.entity.user.userProfile.data.remote.UpdateWebsiteRequest
+import com.example.scrollbooker.entity.user.userProfile.data.remote.UserAvatarRequest
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfileAbout
 import com.example.scrollbooker.entity.user.userProfile.domain.repository.UserProfileRepository
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import retrofit2.http.Multipart
 import javax.inject.Inject
 
 class UserProfileRepositoryImpl @Inject constructor(
@@ -45,6 +50,16 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     override suspend fun updatePublicEmail(publicEmail: String) {
         return apiService.updatePublicEmail(UpdatePublicEmailRequest(publicEmail))
+    }
+
+    override suspend fun updateAvatar(request: UserAvatarRequest) {
+        val requestBody = request.bytes.toRequestBody(request.mimeType.toMediaType())
+        val part = MultipartBody.Part.createFormData(
+            name = "avatar",
+            filename = request.fileName,
+            body = requestBody
+        )
+        apiService.updateAvatar(part)
     }
 
     override suspend fun updateBio(bio: String) {

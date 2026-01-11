@@ -1,9 +1,12 @@
 package com.example.scrollbooker.entity.user.userProfile.data.remote
 import com.example.scrollbooker.entity.auth.data.remote.AuthStateDto
 import com.example.scrollbooker.entity.user.userProfile.domain.model.SearchUsernameResponse
+import okhttp3.MultipartBody
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.PATCH
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -23,6 +26,12 @@ interface UserProfileApiService {
     @PATCH("users/user-info/username")
     suspend fun updateUsername(
         @Body request: UpdateUsernameRequest
+    )
+
+    @Multipart
+    @PATCH("users/user-info/avatar")
+    suspend fun updateAvatar(
+        @Part avatar: MultipartBody.Part
     )
 
     @PATCH("users/user-info/birthdate")

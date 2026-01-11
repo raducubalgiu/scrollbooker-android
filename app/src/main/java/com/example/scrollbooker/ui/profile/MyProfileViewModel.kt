@@ -31,10 +31,12 @@ import com.example.scrollbooker.entity.social.bookmark.domain.useCase.GetUserBoo
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetUserPostsUseCase
 import com.example.scrollbooker.entity.social.repost.domain.useCase.GetUserRepostsUseCase
+import com.example.scrollbooker.entity.user.userProfile.data.remote.toUserAvatarRequest
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfileAbout
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserProfileAboutUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserProfileUseCase
+import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateAvatarUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateBioUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateFullNameUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateGenderUseCase
@@ -86,6 +88,7 @@ class MyProfileViewModel @Inject constructor(
     private val updateGenderUseCase: UpdateGenderUseCase,
     private val updateWebsiteUseCase: UpdateWebsiteUseCase,
     private val updatePublicEmailUseCase: UpdatePublicEmailUseCase,
+    private val updateAvatarUseCase: UpdateAvatarUseCase,
     private val getUserPostsUseCase: GetUserPostsUseCase,
     private val getUserProfileUseCase: GetUserProfileUseCase,
     private val getEmployeesByOwnerUseCase: GetEmployeesByOwnerUseCase,
@@ -530,6 +533,36 @@ class MyProfileViewModel @Inject constructor(
                 }
                 .onFailure { error ->
                     Timber.Forest.tag("EditProfile").e(error, "ERROR: on Edit Public Email User Data")
+                    _editState.value = FeatureState.Error(error = null)
+                }
+        }
+    }
+
+    fun updateAvatar(uri: Uri) {
+        viewModelScope.launch {
+            _editState.value = FeatureState.Loading
+
+            val request = runCatching { uri.toUserAvatarRequest(app.contentResolver) }
+                .getOrElse { e ->
+                    _editState.value = FeatureState.Error(e)
+                    return@launch
+                }
+
+            val result = withVisibleLoading { updateAvatarUseCase(request) }
+
+            result
+                .onSuccess {
+                    _editState.value = FeatureState.Success(Unit)
+
+                    val currentProfile = (_userProfileState.value as? FeatureState.Success)?.data
+                    if(currentProfile != null) {
+                        val updatedProfile = currentProfile.copy(avatar = uri.toString())
+                        _userProfileState.value = FeatureState.Success(updatedProfile)
+                    }
+                    isSaved = true
+                }
+                .onFailure { error ->
+                    Timber.Forest.tag("EditProfile").e(error, "ERROR: on Edit User Avatar")
                     _editState.value = FeatureState.Error(error = null)
                 }
         }

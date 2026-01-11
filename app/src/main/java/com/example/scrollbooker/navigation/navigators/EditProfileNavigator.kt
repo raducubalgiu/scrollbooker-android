@@ -27,4 +27,7 @@ class EditProfileNavigator (
     fun toEditWebsite() {
         navController.navigate(MainRoute.EditWebsite.route)
     }
+    fun toEditAvatarCropScreen() {
+        navController.navigate(MainRoute.EditAvatarCropScreen.route)
+    }
 }
