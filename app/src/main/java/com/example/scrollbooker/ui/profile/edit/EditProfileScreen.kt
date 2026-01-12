@@ -211,7 +211,7 @@ fun EditProfileScreen(
                 ) {
                     Box(contentAlignment = Alignment.Center) {
                         Avatar(
-                            url = "",
+                            url = user?.avatar ?: "",
                             size = AvatarSizeXXL
                         )
 

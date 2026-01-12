@@ -148,7 +148,7 @@ fun SearchMap(
 
             primaryMarkers.forEach { m ->
                 SearchMarkerPrimary(
-                    imageUrl = null,
+                    imageUrl = m.owner.avatar,
                     domainColor = m.businessShortDomain.toDomainColor(),
                     ratingsAverage = m.owner.ratingsAverage,
                     coordinates = m.coordinates,

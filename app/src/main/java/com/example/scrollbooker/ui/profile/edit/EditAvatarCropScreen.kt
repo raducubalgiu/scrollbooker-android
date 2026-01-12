@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
+import com.example.scrollbooker.core.util.FeatureState
 
 @Composable
 fun EditAvatarCropScreen(
@@ -24,6 +26,16 @@ fun EditAvatarCropScreen(
     onBack: () -> Unit
 ) {
     val photoUri by viewModel.photoUri.collectAsState()
+    val state = viewModel.editState.collectAsState().value
+
+    val isLoading = state == FeatureState.Loading
+
+    if(viewModel.isSaved) {
+        LaunchedEffect(state) {
+            onBack()
+            viewModel.isSaved = false
+        }
+    }
 
     Scaffold(topBar = { Header(onBack = onBack) }) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
@@ -44,7 +56,9 @@ fun EditAvatarCropScreen(
                 onClick = {
                     photoUri?.let { viewModel.updateAvatar(it)  }
                 },
-                title = stringResource(R.string.save)
+                title = stringResource(R.string.save),
+                isLoading = isLoading,
+                enabled = !isLoading
             )
         }
     }
