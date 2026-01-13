@@ -15,6 +15,7 @@ sealed class OnboardingRoute(val route: String) {
     object CollectBusinessDetails: AuthRoute(route = "collect_business_details")
     object CollectBusinessLocation: AuthRoute(route = "collect_business_location")
     object CollectBusinessGallery: AuthRoute(route = "collect_business_gallery")
+    object CollectBusinessGalleryPreview: AuthRoute(route = "collect_business_gallery_preview")
 
     object CollectBusinessServices: AuthRoute(route = RegistrationStepEnum.COLLECT_BUSINESS_SERVICES.key)
     object CollectBusinessSchedules: AuthRoute(route = RegistrationStepEnum.COLLECT_BUSINESS_SCHEDULES.key)

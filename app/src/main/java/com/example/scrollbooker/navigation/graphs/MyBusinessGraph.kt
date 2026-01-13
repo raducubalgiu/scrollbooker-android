@@ -16,6 +16,9 @@ import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessServices.MyServicesScreen
 import com.example.scrollbooker.ui.LocalUserPermissions
 import com.example.scrollbooker.ui.myBusiness.MyBusinessScreen
+import com.example.scrollbooker.ui.myBusiness.myBusinessLocation.MyBusinessEditGalleryScreen
+import com.example.scrollbooker.ui.myBusiness.myBusinessLocation.MyBusinessLocationScreen
+import com.example.scrollbooker.ui.myBusiness.myBusinessLocation.MyBusinessLocationViewModel
 import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarScreen
 import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarViewModel
 import com.example.scrollbooker.ui.myBusiness.myCurrencies.MyCurrenciesScreen
@@ -58,6 +61,40 @@ fun NavGraphBuilder.myBusinessGraph(
                 myBusinessNavigate = myBusinessNavigate,
                 onBack = { navController.popBackStack() }
             )
+        }
+
+        navigation(
+            route = MainRoute.MyBusinessLocationNavigator.route,
+            startDestination = MainRoute.MyBusinessLocation.route
+        ) {
+            composable(MainRoute.MyBusinessLocation.route) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(MainRoute.MyBusinessLocationNavigator.route)
+                }
+
+                val viewModel = hiltViewModel<MyBusinessLocationViewModel>(parentEntry)
+
+                MyBusinessLocationScreen(
+                    viewModel = viewModel,
+                    onBack = { navController.popBackStack() },
+                    onNavigateToEditGallery = {
+                        navController.navigate(MainRoute.MyBusinessEditGallery.route)
+                    }
+                )
+            }
+
+            composable(MainRoute.MyBusinessEditGallery.route) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry(MainRoute.MyBusinessLocationNavigator.route)
+                }
+
+                val viewModel = hiltViewModel<MyBusinessLocationViewModel>(parentEntry)
+
+                MyBusinessEditGalleryScreen(
+                    viewModel = viewModel,
+                    onBack = { navController.popBackStack() }
+                )
+            }
         }
 
         navigation(

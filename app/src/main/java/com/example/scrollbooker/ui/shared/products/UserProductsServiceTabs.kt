@@ -1,7 +1,6 @@
 package com.example.scrollbooker.ui.shared.products
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -20,7 +19,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.components.core.layout.ErrorScreen
@@ -91,7 +89,7 @@ fun UserProductsServiceTabs(
                             ServiceTab(
                                 isSelected = isSelected,
                                 serviceName = serv.service.name,
-                                productsCount = serv.productsCount,
+                                count = serv.productsCount,
                                 onClick = {
                                     scope.launch {
                                         pagerState.animateScrollToPage(index)

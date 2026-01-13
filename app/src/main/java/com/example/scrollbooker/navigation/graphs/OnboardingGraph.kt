@@ -15,6 +15,7 @@ import com.example.scrollbooker.ui.myBusiness.myBusinessLocation.MyBusinessLocat
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessCurrenciesScreen
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessCurrenciesViewModel
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessDetailsScreen
+import com.example.scrollbooker.ui.onboarding.business.CollectBusinessGalleryPreviewScreen
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessGalleryScreen
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessHasEmployeesScreen
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessHasEmployeesViewModel
@@ -164,6 +165,25 @@ fun NavGraphBuilder.onBoardingGraph(
             val viewModel: CollectBusinessViewModel = hiltViewModel(parentEntry)
 
             CollectBusinessGalleryScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() },
+                onNext = {
+                    navController.currentBackStackEntry?.lifecycleScope?.launch {
+                        val business = viewModel.createBusiness()
+
+                        business.onSuccess { authViewModel.updateAuthState(it.authState) }
+                    }
+                }
+            )
+        }
+
+        composable(route = OnboardingRoute.CollectBusinessGalleryPreview.route) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(OnboardingRoute.CollectBusiness.route)
+            }
+            val viewModel: CollectBusinessViewModel = hiltViewModel(parentEntry)
+
+            CollectBusinessGalleryPreviewScreen(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
                 onNext = {

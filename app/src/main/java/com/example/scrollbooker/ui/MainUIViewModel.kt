@@ -5,12 +5,12 @@ import com.example.scrollbooker.entity.booking.appointment.domain.useCase.GetUse
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,22 +25,27 @@ class MainUIViewModel @Inject constructor(
     private val _notifications = MutableStateFlow<Int>(0)
     val notifications: StateFlow<Int> = _notifications.asStateFlow()
 
-    val permissions: StateFlow<Set<String>> =
+    private val _permissions = MutableStateFlow<Set<String>>(emptySet())
+    val permissions: StateFlow<Set<String>> = _permissions.asStateFlow()
+
+    private val _hasEmployees = MutableStateFlow<Boolean>(false)
+    val hasEmployees: StateFlow<Boolean> = _hasEmployees
+
+    init {
+        viewModelScope.launch { loadAppointmentsNumber() }
+        viewModelScope.launch { loadNotificationsNumber() }
+
         authDataStore.getUserPermissions()
             .map { it.toSet() }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.Eagerly,
-                initialValue = emptySet()
-            )
+            .distinctUntilChanged()
+            .onEach { _permissions.value = it }
+            .launchIn(viewModelScope)
 
-    val hasEmployees: StateFlow<Boolean> =
         authDataStore.getHasEmployees()
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.Eagerly,
-                initialValue = false
-            )
+            .distinctUntilChanged()
+            .onEach { _hasEmployees.value = it }
+            .launchIn(viewModelScope)
+    }
 
     fun incAppointmentsNumber() {
         _appointments.value++
@@ -67,13 +72,5 @@ class MainUIViewModel @Inject constructor(
     private suspend fun loadNotificationsNumber() {
         // To be implemented here with the notifications number
         _notifications.value = getUserAppointmentsNumberUseCase()
-    }
-
-    init {
-        viewModelScope.launch {
-            val p1 = launch { loadAppointmentsNumber() }
-            val p2 = launch { loadNotificationsNumber() }
-            joinAll(p1, p2)
-        }
     }
 }

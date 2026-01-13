@@ -6,6 +6,10 @@ import com.example.scrollbooker.navigation.routes.MainRoute
 class MyBusinessNavigator (
     private val navController: NavHostController
 ) {
+    fun toMyBusinessLocation() {
+        navController.navigate(MainRoute.MyBusinessLocation.route)
+    }
+
     fun toMySchedules() {
         navController.navigate(MainRoute.MySchedules.route)
     }

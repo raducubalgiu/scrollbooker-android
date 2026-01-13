@@ -376,4 +376,6 @@
     <string name="preview">Previzualizare</string>
     <string name="call">Sună</string>
     <string name="phone">Telefon</string>
+    <string name="summary">Sumar</string>
+    <string name="editImages">Editează imaginile</string>
 </resources>

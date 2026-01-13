@@ -46,7 +46,7 @@ fun MyBusinessScreen(
             title = stringResource(R.string.location),
             description = stringResource(R.string.businessLocationDetails),
             icon = Icons.Outlined.LocationOn,
-            navigate = {},
+            navigate = { myBusinessNavigate.toMyBusinessLocation() },
             hasEmployees = false,
             permission = PermissionEnum.MY_BUSINESS_LOCATION_VIEW
         ),
@@ -63,7 +63,7 @@ fun MyBusinessScreen(
             description = stringResource(R.string.userProductsDetails),
             icon = Icons.Outlined.ShoppingBag,
             navigate = { myBusinessNavigate.toMyProducts() },
-            hasEmployees = false,
+            hasEmployees = true,
             permission = PermissionEnum.MY_PRODUCTS_VIEW
         ),
         BusinessCard(
@@ -79,15 +79,15 @@ fun MyBusinessScreen(
             description = stringResource(R.string.servicesDetails),
             icon = Icons.Outlined.CalendarToday,
             navigate = { myBusinessNavigate.toMyCalendar() },
+            hasEmployees = true,
             permission = PermissionEnum.MY_CALENDAR_VIEW,
-            hasEmployees = false
         ),
         BusinessCard(
             title = stringResource(R.string.paymentMethods),
             description = stringResource(R.string.paymentMethodsDetails),
             icon = Icons.Outlined.Payment,
             navigate = { myBusinessNavigate.toMyCurrencies() },
-            hasEmployees = false,
+            hasEmployees = true,
             permission = PermissionEnum.MY_CURRENCIES_VIEW
         ),
         BusinessCard(
@@ -95,7 +95,7 @@ fun MyBusinessScreen(
             description = stringResource(R.string.servicesDetails),
             icon = Icons.Outlined.PeopleOutline,
             navigate = { myBusinessNavigate.toMyEmployees() },
-            hasEmployees = true,
+            hasEmployees = false,
             permission = PermissionEnum.MY_EMPLOYEES_VIEW
         ),
         BusinessCard(
@@ -103,7 +103,7 @@ fun MyBusinessScreen(
             description = stringResource(R.string.servicesDetails),
             icon = Icons.Outlined.Repeat,
             navigate = { myBusinessNavigate.toMyEmploymentRequests() },
-            hasEmployees = true,
+            hasEmployees = false,
             permission = PermissionEnum.MY_EMPLOYMENT_REQUESTS_VIEW
         )
     )

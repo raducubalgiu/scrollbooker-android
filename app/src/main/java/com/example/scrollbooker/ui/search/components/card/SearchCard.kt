@@ -24,14 +24,16 @@ import com.example.scrollbooker.ui.theme.Divider
 
 @Composable
 fun SearchCard(
+    modifier: Modifier = Modifier,
     business: BusinessSheet,
+    showMoreProductsBtn: Boolean = true,
     onNavigateToBusinessProfile: () -> Unit,
     onOpenBookingsSheet: (BusinessOwner) -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
             .padding(horizontal = BasePadding)
@@ -69,13 +71,15 @@ fun SearchCard(
                 }
             }
 
-            MainButtonOutlined(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = BasePadding),
-                title = stringResource(R.string.seeAllServices),
-                onClick = { onOpenBookingsSheet(business.owner) }
-            )
+            if(showMoreProductsBtn) {
+                MainButtonOutlined(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = BasePadding),
+                    title = stringResource(R.string.seeAllServices),
+                    onClick = { onOpenBookingsSheet(business.owner) }
+                )
+            }
         }
     }
 }

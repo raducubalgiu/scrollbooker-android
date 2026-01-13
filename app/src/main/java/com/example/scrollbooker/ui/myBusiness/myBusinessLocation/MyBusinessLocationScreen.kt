@@ -1,106 +1,89 @@
 package com.example.scrollbooker.ui.myBusiness.myBusinessLocation
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.inputs.InputRadio
-import com.example.scrollbooker.components.core.inputs.SearchBar
-import com.example.scrollbooker.components.core.layout.FormLayout
-import com.example.scrollbooker.components.core.layout.LoadingScreen
-import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.core.util.Dimens.SpacingXL
-import com.example.scrollbooker.core.util.Dimens.SpacingXXL
-import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.components.core.headers.Header
+import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.ui.myBusiness.myBusinessLocation.tabs.MyBusinessGalleryTab
+import com.example.scrollbooker.ui.myBusiness.myBusinessLocation.tabs.MyBusinessLocationTab
+import com.example.scrollbooker.ui.shared.products.components.ServiceTab
+import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.OnSurfaceBG
+import kotlinx.coroutines.launch
 
 @Composable
 fun MyBusinessLocationScreen(
     viewModel: MyBusinessLocationViewModel,
     onBack: () -> Unit,
-    onNextOrSave: () -> Unit,
+    onNavigateToEditGallery: () -> Unit
 ) {
-    val currentQuery by viewModel.currentQuery.collectAsState()
-    val searchState by viewModel.searchState.collectAsState()
-    val selectedAddress by viewModel.selectedBusinessAddress.collectAsState()
+    val scope = rememberCoroutineScope()
+    val tabs = remember { MyBusinessLocationTab.getTabs }
 
-    FormLayout(
-        headLine = stringResource(id = R.string.locationAddress),
-        subHeadLine = stringResource(id = R.string.addYourBusinessLocation),
-        buttonTitle = stringResource(id = R.string.nextStep),
-        isEnabled = selectedAddress != null,
-        onBack = onBack,
-        onNext = onNextOrSave,
-    ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            Column(
-                modifier = Modifier
-                    .padding(
-                        start = SpacingXL,
-                        end = SpacingXXL,
-                        bottom = SpacingS
+    val pagerState = rememberPagerState(initialPage = 0) { 4 }
+    val selectedTabIndex = pagerState.currentPage
+
+    Scaffold(
+        topBar = { Header(
+            onBack = onBack,
+            title = stringResource(R.string.myBusiness)
+        ) }
+    ) { innerPadding ->
+        Column(Modifier.fillMaxSize().padding(innerPadding)) {
+            ScrollableTabRow(
+                containerColor = Background,
+                contentColor = OnSurfaceBG,
+                edgePadding = BasePadding,
+                selectedTabIndex = pagerState.currentPage,
+                indicator = {},
+                divider = {
+                    HorizontalDivider(
+                        modifier = Modifier.padding(top = 5.dp),
+                        color = Divider,
+                        thickness = 0.55.dp
                     )
+                }
             ) {
-                SearchBar(
-                    value = currentQuery,
-                    onValueChange = {
-                        viewModel.searchAddress(it)
-                    },
-                    placeholder = stringResource(R.string.search)
-                )
+                tabs.forEachIndexed { index, tab ->
+                    val isSelected = selectedTabIndex == index
+
+                    ServiceTab(
+                        isSelected = isSelected,
+                        serviceName = stringResource(tab.label),
+                        onClick = {
+                            scope.launch { pagerState.animateScrollToPage(index) }
+                        }
+                    )
+                }
             }
 
-            when(val state = searchState) {
-                is FeatureState.Loading -> LoadingScreen()
-                is FeatureState.Success -> {
-                    val results = state.data
-
-                    if (results.isEmpty()) {
-                        Text("Nici o adresa gasita")
-                    } else {
-                        LazyColumn {
-                            itemsIndexed(results) { index, address ->
-                                InputRadio(
-                                    selected = selectedAddress?.placeId == address.placeId,
-                                    headLine = address.description,
-                                    onSelect = { viewModel.setBusinessAddress(address) },
-                                    leadingIcon = {
-                                        Icon(
-                                            painter = painterResource(R.drawable.ic_search_solid),
-                                            contentDescription = null
-                                        )
-                                    }
-                                )
-
-                                if(index < results.size - 1) {
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(horizontal = SpacingXXL)
-                                            .height(0.55.dp)
-                                            .background(Divider.copy(alpha = 0.5f))
-                                    )
-                                }
-                            }
-                        }
-                    }
+            HorizontalPager(
+                state = pagerState,
+                beyondViewportPageCount = 0,
+                modifier = Modifier.fillMaxSize(),
+                pageSize = PageSize.Fill,
+                key = { it }
+            ) { page ->
+                when(page) {
+                    0 -> {}
+                    1 -> MyBusinessGalleryTab(onNavigateToEditGallery)
                 }
-                else -> Unit
             }
         }
+
     }
 }
