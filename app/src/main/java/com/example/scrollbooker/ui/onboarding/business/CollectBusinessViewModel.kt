@@ -1,4 +1,5 @@
-package com.example.scrollbooker.ui.myBusiness.myBusinessLocation
+package com.example.scrollbooker.ui.onboarding.business
+
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -29,7 +30,7 @@ data class BusinessPhotoUIState(
 )
 
 @HiltViewModel
-class MyBusinessLocationViewModel @Inject constructor(
+class CollectBusinessViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
     private val getAllBusinessTypesUseCase: GetAllPaginatedBusinessTypesUseCase,
     private val searchBusinessAddressUseCase: SearchBusinessAddressUseCase,

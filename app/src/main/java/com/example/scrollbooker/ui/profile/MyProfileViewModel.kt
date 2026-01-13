@@ -555,6 +555,7 @@ class MyProfileViewModel @Inject constructor(
                     _editState.value = FeatureState.Success(Unit)
 
                     val currentProfile = (_userProfileState.value as? FeatureState.Success)?.data
+
                     if(currentProfile != null) {
                         val updatedProfile = currentProfile.copy(avatar = uri.toString())
                         _userProfileState.value = FeatureState.Success(updatedProfile)

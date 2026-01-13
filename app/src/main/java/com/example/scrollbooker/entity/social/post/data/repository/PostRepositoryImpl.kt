@@ -17,13 +17,12 @@ class PostRepositoryImpl @Inject constructor(
     private val apiService: PostApiService
 ): PostRepository {
     override fun getExplorePosts(
-        selectedBusinessTypes: List<Int?>,
-        isFiltering: Boolean
+        selectedBusinessTypes: List<Int?>
     ): Flow<PagingData<Post>> {
         return Pager(
             config = PagingConfig(pageSize = 10),
             pagingSourceFactory = {
-                PostExplorePagingSource(apiService, selectedBusinessTypes, isFiltering)
+                PostExplorePagingSource(apiService, selectedBusinessTypes)
             }
         ).flow
     }

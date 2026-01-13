@@ -7,8 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface PostRepository {
     fun getExplorePosts(
-        selectedBusinessTypes: List<Int?>,
-        isFiltering: Boolean
+        selectedBusinessTypes: List<Int?>
     ): Flow<PagingData<Post>>
     fun getFollowingPosts(): Flow<PagingData<Post>>
     fun getUserPosts(userId: Int): Flow<PagingData<Post>>

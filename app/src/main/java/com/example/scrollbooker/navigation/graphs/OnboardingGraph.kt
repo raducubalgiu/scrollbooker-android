@@ -25,6 +25,7 @@ import com.example.scrollbooker.ui.onboarding.business.CollectBusinessServicesSc
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessServicesViewModel
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessTypeScreen
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessValidationScreen
+import com.example.scrollbooker.ui.onboarding.business.CollectBusinessViewModel
 import com.example.scrollbooker.ui.onboarding.client.CollectClientBirthDateScreen
 import com.example.scrollbooker.ui.onboarding.client.CollectClientBirthDateViewModel
 import com.example.scrollbooker.ui.onboarding.client.CollectClientGenderScreen
@@ -120,7 +121,7 @@ fun NavGraphBuilder.onBoardingGraph(
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(OnboardingRoute.CollectBusiness.route)
             }
-            val viewModel: MyBusinessLocationViewModel = hiltViewModel(parentEntry)
+            val viewModel: CollectBusinessViewModel = hiltViewModel(parentEntry)
 
             CollectBusinessTypeScreen(
                 viewModel = viewModel,
@@ -132,7 +133,7 @@ fun NavGraphBuilder.onBoardingGraph(
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(OnboardingRoute.CollectBusiness.route)
             }
-            val viewModel: MyBusinessLocationViewModel = hiltViewModel(parentEntry)
+            val viewModel: CollectBusinessViewModel = hiltViewModel(parentEntry)
 
             CollectBusinessDetailsScreen(
                 viewModel = viewModel,
@@ -145,7 +146,7 @@ fun NavGraphBuilder.onBoardingGraph(
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(OnboardingRoute.CollectBusiness.route)
             }
-            val viewModel: MyBusinessLocationViewModel = hiltViewModel(parentEntry)
+            val viewModel: CollectBusinessViewModel = hiltViewModel(parentEntry)
 
             CollectBusinessLocationScreen(
                 viewModel = viewModel,
@@ -160,7 +161,7 @@ fun NavGraphBuilder.onBoardingGraph(
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(OnboardingRoute.CollectBusiness.route)
             }
-            val viewModel: MyBusinessLocationViewModel = hiltViewModel(parentEntry)
+            val viewModel: CollectBusinessViewModel = hiltViewModel(parentEntry)
 
             CollectBusinessGalleryScreen(
                 viewModel = viewModel,

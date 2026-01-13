@@ -28,7 +28,7 @@ import com.example.scrollbooker.ui.auth.AuthViewModel
 class MainActivity : ComponentActivity() {
     private val themeViewModel: ThemeViewModel by viewModels()
     private val authViewModel: AuthViewModel by viewModels()
-    private val permissionsViewModel: PermissionViewModel by viewModels()
+    //private val permissionsViewModel: PermissionViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
@@ -47,12 +47,10 @@ class MainActivity : ComponentActivity() {
 
             ScrollBookerTheme(themePreferenceEnum) {
                 Surface(Modifier.fillMaxSize().background(Background)) {
-                    AppPermissionsProvider(permissionsViewModel) {
-                        RootNavHost(
-                            rootNavController = rootNavController,
-                            authViewModel = authViewModel
-                        )
-                    }
+                    RootNavHost(
+                        rootNavController = rootNavController,
+                        authViewModel = authViewModel
+                    )
                 }
             }
         }

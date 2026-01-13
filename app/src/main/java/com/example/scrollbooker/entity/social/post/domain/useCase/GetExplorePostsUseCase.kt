@@ -9,9 +9,8 @@ class GetExplorePostsUseCase(
     private val repository: PostRepository
 ) {
     operator fun invoke(
-        selectedBusinessTypes: List<Int?>,
-        isFiltering: Boolean = false
+        selectedBusinessTypes: List<Int?>
     ): Flow<PagingData<Post>> {
-        return repository.getExplorePosts(selectedBusinessTypes, isFiltering)
+        return repository.getExplorePosts(selectedBusinessTypes)
     }
 }

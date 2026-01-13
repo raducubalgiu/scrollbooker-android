@@ -58,7 +58,7 @@ fun AvatarWithRating(
             modifier = Modifier
                 .offset(y = 15.dp)
                 .shadow(
-                    elevation = 2.dp,
+                    elevation = 1.dp,
                     shape = CircleShape,
                     clip = false
                 )

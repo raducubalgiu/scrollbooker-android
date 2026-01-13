@@ -76,14 +76,8 @@ class FeedScreenViewModel @Inject constructor(
     private val _selectedBusinessTypes = MutableStateFlow<Set<Int>>(emptySet())
     val selectedBusinessTypes: StateFlow<Set<Int>> = _selectedBusinessTypes
 
-    private val _isFiltering = MutableStateFlow<Boolean>(false)
-
     fun setSelectedBusinessTypes(businessTypes: Set<Int>) {
         _selectedBusinessTypes.value = businessTypes
-    }
-
-    fun setIsFiltering(isFiltering: Boolean) {
-        _isFiltering.value = isFiltering
     }
 
     // Feed
@@ -91,15 +85,9 @@ class FeedScreenViewModel @Inject constructor(
     val explorePosts: Flow<PagingData<Post>> = selectedBusinessTypes
         .map { it.toList() }
         .flatMapLatest { selectedTypes ->
-            val filteringSnapshot = _isFiltering.value
-
             getExplorePostsUseCase(
-                selectedBusinessTypes = selectedTypes,
-                isFiltering = filteringSnapshot
+                selectedBusinessTypes = selectedTypes
             )
-            .onEach {
-                if(filteringSnapshot) _isFiltering.value = false
-            }
         }
         .cachedIn(viewModelScope)
 
@@ -118,9 +106,6 @@ class FeedScreenViewModel @Inject constructor(
     private var focusedIndex: Int? = null
     private val windowMutex = Mutex()
 
-    @Volatile private var generation: Long = 0L
-    private var ensureJob: Job? = null
-
     private val _userPausedPostIds = MutableStateFlow<Set<Int>>(emptySet())
     val userPausedPostIds: StateFlow<Set<Int>> = _userPausedPostIds.asStateFlow()
 
@@ -135,10 +120,10 @@ class FeedScreenViewModel @Inject constructor(
     private fun createLoadControl(): DefaultLoadControl {
         return DefaultLoadControl.Builder()
             .setBufferDurationsMs(
-                1500,
-                5000,
-                500,
-                1500
+                3000,
+                10000,
+                1000,
+                2000
             )
             .setTargetBufferBytes(C.LENGTH_UNSET)
             .setPrioritizeTimeOverSizeThresholds(true)
@@ -161,7 +146,6 @@ class FeedScreenViewModel @Inject constructor(
             .apply {
                 repeatMode = Player.REPEAT_MODE_ONE
                 playWhenReady = false
-                volume = 1f
             }
     }
 
@@ -169,23 +153,17 @@ class FeedScreenViewModel @Inject constructor(
         centerIndex: Int,
         getPost: (Int) -> Post?
     ) {
-        val myGen = generation
-        ensureJob?.cancel()
-        ensureJob = viewModelScope.launch {
+        viewModelScope.launch {
             windowMutex.withLock {
-                if (myGen != generation) return@withLock
-                ensureWindowInternal(myGen, centerIndex, getPost)
+                ensureWindowInternal(centerIndex, getPost)
             }
         }
     }
 
     private fun ensureWindowInternal(
-        myGen: Long,
         centerIndex: Int,
         getPost: (Int) -> Post?
     ) {
-        if (myGen != generation) return
-
         val desired = listOf(centerIndex - 1, centerIndex, centerIndex + 1)
             .filter { it >= 0 }
 
@@ -221,7 +199,6 @@ class FeedScreenViewModel @Inject constructor(
             val isUserPaused = _userPausedPostIds.value.contains(post.id)
 
             player.playWhenReady = isFocused && !isUserPaused
-            player.volume = if(isFocused && !isUserPaused) 1f else 0f
 
             if(!isFocused || isUserPaused) player.pause()
         }
@@ -241,8 +218,6 @@ class FeedScreenViewModel @Inject constructor(
             val shouldPlay = (idx == index) && !isUserPaused
 
             player.playWhenReady = shouldPlay
-            player.volume = if (shouldPlay) 1f else 0f
-            if (!shouldPlay) player.pause()
         }
     }
 
@@ -255,11 +230,7 @@ class FeedScreenViewModel @Inject constructor(
 
     private fun resetPlayer(player: ExoPlayer) {
         player.playWhenReady = false
-        player.pause()
-        player.stop()
-        player.clearMediaItems()
         player.seekTo(0)
-        player.volume = 0f
     }
 
     fun getPlayerForIndex(index: Int): ExoPlayer? = indexToPlayer[index]
@@ -271,14 +242,12 @@ class FeedScreenViewModel @Inject constructor(
         val isFocused = (index == focusedIndex)
 
         if(player.isPlaying) {
-            player.pause()
             player.playWhenReady = false
             _userPausedPostIds.update { it + postId }
         } else {
             _userPausedPostIds.update { it - postId }
 
             if(isFocused) {
-                player.volume = 1f
                 player.playWhenReady = true
             } else {
                 focusedIndex = index
@@ -291,7 +260,6 @@ class FeedScreenViewModel @Inject constructor(
         val player = getPlayerForIndex(index)
         if(player?.isPlaying == true) {
             autoPausedByDrawer.add(index)
-            player.pause()
             player.playWhenReady = false
         }
     }
@@ -312,21 +280,16 @@ class FeedScreenViewModel @Inject constructor(
     }
 
     fun pauseAllNow() {
-        generation++
-        ensureJob?.cancel()
         val players = indexToPlayer.values.toList()
         viewModelScope.launch(Dispatchers.Main.immediate) {
             players.forEach { p ->
                 p.playWhenReady = false
-                p.volume = 0f
-                p.pause()
             }
         }
     }
 
     fun stopDetailSession() {
         indexToPlayer.values.forEach { player ->
-            player.pause()
             player.playWhenReady = false
         }
     }

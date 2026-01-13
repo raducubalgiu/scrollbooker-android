@@ -1,5 +1,6 @@
 package com.example.scrollbooker.entity.booking.business.domain.repository
 
+import android.net.Uri
 import androidx.paging.PagingData
 import com.example.scrollbooker.core.util.PaginatedResponseDto
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
@@ -26,8 +27,10 @@ interface BusinessRepository {
         description: String?,
         placeId: String,
         businessTypeId: Int,
-        ownerFullName: String
+        ownerFullName: String,
+        photos: List<Uri?>
     ): BusinessCreateResponse
+
     suspend fun getBusinessesMarkers(request: SearchBusinessRequest): PaginatedResponseDto<BusinessMarker>
     fun getBusinessesSheet(
         request: SearchBusinessRequest,

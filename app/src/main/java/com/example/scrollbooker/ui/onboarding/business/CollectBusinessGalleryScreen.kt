@@ -27,7 +27,6 @@ import com.example.scrollbooker.components.core.layout.FormLayout
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
-import com.example.scrollbooker.ui.myBusiness.myBusinessLocation.MyBusinessLocationViewModel
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.headlineSmall
 import androidx.compose.runtime.getValue
@@ -37,25 +36,27 @@ import androidx.compose.runtime.setValue
 import androidx.media3.common.util.UnstableApi
 import com.example.scrollbooker.components.customized.BusinessMediaLauncher
 import com.example.scrollbooker.components.customized.BusinessMediaTypeEnum
+import com.example.scrollbooker.core.util.FeatureState
 
 @OptIn(UnstableApi::class)
 @Composable
 fun CollectBusinessGalleryScreen(
-    viewModel: MyBusinessLocationViewModel,
+    viewModel: CollectBusinessViewModel,
     onBack: () -> Unit,
     onNext: () -> Unit
 ) {
     val verticalScroll = rememberScrollState()
     val photosState by viewModel.photosState.collectAsState()
     val videoUri by viewModel.videoState.collectAsState()
+    val isSaving by viewModel.isSaving.collectAsState()
 
     var pendingSlotIndex by rememberSaveable { mutableStateOf<Int?>(null) }
 
-    val pickVideo = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia()
-    ) { url: Uri? ->
-        viewModel.setVideo(url)
-    }
+//    val pickVideo = rememberLauncherForActivityResult(
+//        contract = ActivityResultContracts.PickVisualMedia()
+//    ) { url: Uri? ->
+//        viewModel.setVideo(url)
+//    }
 
     val pickImage = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
@@ -67,6 +68,7 @@ fun CollectBusinessGalleryScreen(
         pendingSlotIndex = null
     }
 
+    val isLoading = isSaving == FeatureState.Loading
     val isEnabled = videoUri != null || photosState.images.any { it != null }
 
     FormLayout(
@@ -75,27 +77,28 @@ fun CollectBusinessGalleryScreen(
         buttonTitle = stringResource(R.string.nextStep),
         onBack = onBack,
         onNext = onNext,
-        isEnabled = isEnabled
+        isEnabled = isEnabled && !isLoading,
+        isLoading = isLoading
     ) {
         Column(modifier = Modifier
             .padding(horizontal = SpacingXXL)
             .verticalScroll(verticalScroll)
         ) {
-            BusinessMediaTitle(
-                title = stringResource(R.string.video),
-                description = stringResource(R.string.addVideoDescription)
-            )
-
-            BusinessMediaLauncher(
-                type = BusinessMediaTypeEnum.VIDEO,
-                uri = videoUri,
-                onClick = {
-                    pickVideo.launch(
-                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly)
-                    )
-                },
-                onClear = { viewModel.clearVideo() }
-            )
+//            BusinessMediaTitle(
+//                title = stringResource(R.string.video),
+//                description = stringResource(R.string.addVideoDescription)
+//            )
+//
+//            BusinessMediaLauncher(
+//                type = BusinessMediaTypeEnum.VIDEO,
+//                uri = videoUri,
+//                onClick = {
+//                    pickVideo.launch(
+//                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly)
+//                    )
+//                },
+//                onClear = { viewModel.clearVideo() }
+//            )
 
             BusinessMediaTitle(
                 title = "${stringResource(R.string.images)}*",

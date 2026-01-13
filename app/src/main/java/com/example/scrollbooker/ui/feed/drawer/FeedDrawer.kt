@@ -35,7 +35,6 @@ fun FeedDrawer(
 
     LaunchedEffect(isDrawerOpen) {
         if(!isDrawerOpen) {
-            viewModel.setIsFiltering(true)
             viewModel.setSelectedBusinessTypes(selected)
         }
     }

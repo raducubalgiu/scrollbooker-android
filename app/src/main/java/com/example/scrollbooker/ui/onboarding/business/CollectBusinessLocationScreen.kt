@@ -32,24 +32,27 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.ui.myBusiness.myBusinessLocation.MyBusinessLocationViewModel
 import com.example.scrollbooker.ui.theme.Divider
 
 @Composable
 fun CollectBusinessLocationScreen(
-    viewModel: MyBusinessLocationViewModel,
+    viewModel: CollectBusinessViewModel,
     onBack: () -> Unit,
     onNextOrSave: () -> Unit,
 ) {
     val currentQuery by viewModel.currentQuery.collectAsState()
     val searchState by viewModel.searchState.collectAsState()
     val selectedAddress by viewModel.selectedBusinessAddress.collectAsState()
+    val isSaving by viewModel.isSaving.collectAsState()
+
+    val isLoading = isSaving == FeatureState.Loading
 
     FormLayout(
         headLine = stringResource(id = R.string.locationAddress),
         subHeadLine = stringResource(id = R.string.addYourBusinessLocation),
         buttonTitle = stringResource(id = R.string.nextStep),
-        isEnabled = selectedAddress != null,
+        isEnabled = selectedAddress != null && !isLoading,
+        isLoading = isLoading,
         onBack = onBack,
         onNext = onNextOrSave,
     ) {

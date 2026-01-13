@@ -4,6 +4,7 @@ import android.view.ViewGroup
 import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -32,6 +33,14 @@ fun PostPlayerView(player: ExoPlayer) {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT,
             )
+        }
+    }
+
+    DisposableEffect(player) {
+        playerView.player = player
+        onDispose {
+            playerView.player = null
+            player.clearVideoSurface()
         }
     }
 

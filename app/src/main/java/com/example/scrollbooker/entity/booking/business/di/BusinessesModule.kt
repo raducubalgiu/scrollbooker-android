@@ -1,5 +1,6 @@
 package com.example.scrollbooker.entity.booking.business.di
 
+import android.content.Context
 import com.example.scrollbooker.core.util.Constants
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessApiService
 import com.example.scrollbooker.entity.booking.business.data.repository.BusinessRepositoryImpl
@@ -17,6 +18,7 @@ import com.example.scrollbooker.store.AuthDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -39,8 +41,11 @@ object BusinessModule {
 
     @Provides
     @Singleton
-    fun provideBusinessRepository(apiService: BusinessApiService): BusinessRepository {
-        return BusinessRepositoryImpl(apiService)
+    fun provideBusinessRepository(
+        apiService: BusinessApiService,
+        @ApplicationContext context: Context
+    ): BusinessRepository {
+        return BusinessRepositoryImpl(apiService, context)
     }
 
     @Provides
