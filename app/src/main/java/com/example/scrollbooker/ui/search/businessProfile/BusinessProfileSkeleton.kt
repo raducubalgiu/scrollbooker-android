@@ -1,8 +1,4 @@
 package com.example.scrollbooker.ui.search.businessProfile
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,21 +13,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.Text
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.divider.VerticalDivider
@@ -102,7 +92,7 @@ fun BusinessProfileSkeleton() {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = BasePadding),
+                    .padding(vertical = SpacingXL),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -150,6 +140,7 @@ fun BusinessProfileSkeleton() {
                             height = 40.dp,
                             containerColor = SurfaceBG,
                             contentColor = OnBackground,
+                            shape = ShapeDefaults.ExtraLarge,
                             onClick = { }
                         ) {
                             Spacer(
@@ -165,6 +156,7 @@ fun BusinessProfileSkeleton() {
                         ProfileActionButton(
                             modifier = Modifier.weight(5f),
                             height = 40.dp,
+                            shape = ShapeDefaults.ExtraLarge,
                             containerColor = SurfaceBG,
                             contentColor = OnBackground,
                             onClick = { }

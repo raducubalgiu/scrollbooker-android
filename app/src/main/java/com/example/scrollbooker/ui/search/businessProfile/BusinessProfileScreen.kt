@@ -43,10 +43,10 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.ui.search.businessProfile.tabs.BusinessAboutTab
 import com.example.scrollbooker.ui.search.businessProfile.tabs.BusinessEmployeesTab
-import com.example.scrollbooker.ui.search.businessProfile.tabs.BusinessPhotosTab
 import com.example.scrollbooker.ui.search.businessProfile.tabs.BusinessReviewsTab
 import com.example.scrollbooker.ui.search.businessProfile.tabs.BusinessServicesTab
 import com.example.scrollbooker.ui.search.businessProfile.tabs.BusinessSocialTab
+import com.example.scrollbooker.ui.search.businessProfile.tabs.BusinessSummaryTab
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
@@ -216,8 +216,8 @@ fun BusinessProfileScreen(onBack: () -> Unit) {
                         }
                     }
 
-                    item(key = BusinessProfileSection.Photos.key) {
-                        BusinessPhotosTab(
+                    item(key = BusinessProfileSection.Summary.key) {
+                        BusinessSummaryTab(
                             modifier = Modifier.padding(
                                 top = imageHeight - overlayHeight,
                                 bottom = BasePadding

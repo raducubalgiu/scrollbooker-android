@@ -1,8 +1,6 @@
 package com.example.scrollbooker.ui.search.businessProfile.tabs
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,20 +8,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
@@ -33,14 +27,18 @@ import com.example.scrollbooker.components.core.divider.VerticalDivider
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.core.util.Dimens.SpacingXL
+import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.ui.profile.components.userInfo.components.CounterItem
+import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.titleLarge
+import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
-fun BusinessPhotosTab(
+fun BusinessSummaryTab(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier
@@ -50,21 +48,20 @@ fun BusinessPhotosTab(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = BasePadding),
+                .padding(vertical = SpacingXL),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             AvatarWithRating(
                 url = "https://media.scrollbooker.ro/logo.jpg",
                 rating = 4.5f,
+                elevation = 2.dp,
                 onClick = {}
             )
 
             Spacer(Modifier.width(BasePadding))
 
-            Column(
-                modifier = Modifier.fillMaxWidth()
-            ) {
+            Column(modifier = Modifier.fillMaxWidth()) {
                 Column(Modifier.fillMaxWidth()) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -73,7 +70,7 @@ fun BusinessPhotosTab(
                     ) {
                         CounterItem(
                             counter = 120,
-                            label = "Recenzii",
+                            label = stringResource(R.string.reviews),
                             onNavigate = {}
                         )
 
@@ -81,7 +78,7 @@ fun BusinessPhotosTab(
 
                         CounterItem(
                             counter = 500,
-                            label = "Urmaritori",
+                            label = stringResource(R.string.followers),
                             onNavigate = {}
                         )
 
@@ -89,13 +86,13 @@ fun BusinessPhotosTab(
 
                         CounterItem(
                             counter = 120,
-                            label = "Urmareste",
+                            label = stringResource(R.string.following),
                             onNavigate = {}
                         )
                     }
                 }
 
-                Spacer(Modifier.height(BasePadding))
+                Spacer(Modifier.height(SpacingXL))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -110,7 +107,7 @@ fun BusinessPhotosTab(
                             contentColor = OnPrimary,
                         ),
                         border = BorderStroke(1.dp, Primary),
-                        shape = ShapeDefaults.Medium,
+                        shape = ShapeDefaults.ExtraLarge,
                         onClick = {}
                     )
 
@@ -119,7 +116,7 @@ fun BusinessPhotosTab(
                     MainButtonOutlined(
                         modifier = Modifier.weight(0.5f),
                         title = stringResource(R.string.follow),
-                        shape = ShapeDefaults.Medium,
+                        shape = ShapeDefaults.ExtraLarge,
                         onClick = {}
                     )
                 }
@@ -133,32 +130,28 @@ fun BusinessPhotosTab(
             fontSize = 20.sp
         )
 
-        Spacer(Modifier.height(SpacingM))
+        Spacer(Modifier.height(SpacingXS))
 
-        Text(
-            text = "Strada Randunelelor, nr 45, Sector 2",
-            color = Color.Gray,
-            style = bodyLarge,
-            fontSize = 17.sp
-        )
-
-        Spacer(Modifier.height(SpacingM))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_location_outline),
-                contentDescription = null,
-                tint = Color.Gray
-            )
-            Spacer(Modifier.width(SpacingS))
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                text = stringResource(R.string.distanceText, 5),
+                text = "4.5km",
                 color = Color.Gray,
-                style = bodyLarge,
-                fontSize = 17.sp
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            Text(
+                modifier = Modifier.padding(horizontal = 5.dp),
+                text = "\u2022",
+                color = Color.Gray
+            )
+
+            Text(
+                modifier = Modifier.fillMaxWidth(fraction = 0.8f),
+                text = "Strada Randunelelor, nr 45, Sector 3",
+                color = Color.Gray,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
 
@@ -168,21 +161,24 @@ fun BusinessPhotosTab(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .width(10.dp)
-                    .height(10.dp)
-                    .background(Color.Green)
+            Text(
+                text = "Deschis",
+                color = OnBackground,
+                style = titleMedium,
+                fontSize = 17.sp,
+                fontWeight = FontWeight.SemiBold
             )
 
-            Spacer(Modifier.width(SpacingS))
+            Text(
+                modifier = Modifier.padding(horizontal = 5.dp),
+                text = "\u2022",
+                color = Color.Gray
+            )
 
             Text(
-                text = "Deschis acum",
+                text = "Inchide la 18:00",
                 color = Color.Gray,
                 style = bodyLarge,
-                fontSize = 17.sp
             )
         }
     }

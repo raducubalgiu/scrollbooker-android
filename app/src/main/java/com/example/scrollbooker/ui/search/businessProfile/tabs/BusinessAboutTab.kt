@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.customized.SchedulesSection
 import com.example.scrollbooker.core.util.Dimens.BasePadding
@@ -18,23 +17,20 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
 import com.example.scrollbooker.ui.shared.location.LocationSection
 import com.example.scrollbooker.ui.theme.headlineMedium
+import com.example.scrollbooker.ui.theme.headlineSmall
 
 @Composable
 fun BusinessAboutTab() {
-    Column(modifier = Modifier
-        .fillMaxWidth()
-    ) {
-        Spacer(Modifier.height(SpacingXL))
-
+    Column(modifier = Modifier.fillMaxWidth()) {
         Text(
-            modifier = Modifier.padding(horizontal = BasePadding),
+            modifier = Modifier.padding(
+                horizontal = BasePadding,
+                vertical = SpacingXL
+            ),
             text = stringResource(R.string.about),
-            style = headlineMedium,
-            fontSize = 26.sp,
+            style = headlineSmall,
             fontWeight = FontWeight.SemiBold
         )
-
-        Spacer(Modifier.height(SpacingXL))
 
         Text(
             modifier = Modifier.padding(horizontal = BasePadding),
@@ -99,16 +95,12 @@ fun BusinessAboutTab() {
             )
         )
 
-        Spacer(Modifier.height(SpacingXL))
-
         Text(
             modifier = Modifier.padding(horizontal = BasePadding),
             text = stringResource(R.string.location),
-            style = headlineMedium,
+            style = headlineSmall,
             fontWeight = FontWeight.SemiBold
         )
-
-        Spacer(Modifier.height(SpacingXL))
 
         LocationSection(
             modifier = Modifier.padding(horizontal = BasePadding)

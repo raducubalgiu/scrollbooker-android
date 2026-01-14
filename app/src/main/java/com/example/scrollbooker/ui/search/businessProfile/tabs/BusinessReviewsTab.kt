@@ -32,22 +32,21 @@ import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.ui.theme.headlineMedium
+import com.example.scrollbooker.ui.theme.headlineSmall
 import com.example.scrollbooker.ui.theme.titleLarge
 
 @Composable
 fun BusinessReviewsTab() {
     Column(modifier = Modifier.fillMaxWidth()) {
-        Spacer(Modifier.height(SpacingXL))
-
         Text(
-            modifier = Modifier.padding(horizontal = BasePadding),
+            modifier = Modifier.padding(
+                horizontal = BasePadding,
+                vertical = SpacingXL
+            ),
             text = stringResource(R.string.reviews),
-            style = headlineMedium,
-            fontSize = 26.sp,
+            style = headlineSmall,
             fontWeight = FontWeight.SemiBold
         )
-
-        Spacer(Modifier.height(BasePadding))
 
         RatingsStars(
             modifier = Modifier.padding(start = BasePadding),
@@ -114,7 +113,5 @@ fun BusinessReviewsTab() {
 
             item { Spacer(Modifier.width(BasePadding)) }
         }
-
-        Spacer(Modifier.height(SpacingXL))
     }
 }

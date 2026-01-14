@@ -20,12 +20,9 @@ import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.AvatarWithRating
 import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
-import com.example.scrollbooker.components.core.buttons.MainButtonSmall
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingM
-import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
-import com.example.scrollbooker.ui.theme.headlineMedium
+import com.example.scrollbooker.ui.theme.headlineSmall
 import com.example.scrollbooker.ui.theme.titleMedium
 
 data class BusinessEmp(
@@ -65,17 +62,15 @@ fun BusinessEmployeesTab() {
     )
 
     Column(modifier = Modifier.fillMaxWidth()) {
-        Spacer(Modifier.height(SpacingXL))
-
         Text(
-            modifier = Modifier.padding(horizontal = BasePadding),
+            modifier = Modifier.padding(
+                horizontal = BasePadding,
+                vertical = SpacingXL
+            ),
             text = stringResource(R.string.team),
-            style = headlineMedium,
-            fontSize = 26.sp,
+            style = headlineSmall,
             fontWeight = FontWeight.SemiBold
         )
-
-        Spacer(Modifier.height(SpacingXL))
 
         LazyRow {
             item { Spacer(Modifier.width(BasePadding)) }

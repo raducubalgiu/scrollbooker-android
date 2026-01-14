@@ -35,6 +35,7 @@ fun AvatarWithRating(
     url: String,
     rating: Float,
     size: Dp = 75.dp,
+    elevation: Dp = 1.dp,
     onClick: () -> Unit
 ) {
     Box(
@@ -58,7 +59,7 @@ fun AvatarWithRating(
             modifier = Modifier
                 .offset(y = 15.dp)
                 .shadow(
-                    elevation = 1.dp,
+                    elevation = elevation,
                     shape = CircleShape,
                     clip = false
                 )

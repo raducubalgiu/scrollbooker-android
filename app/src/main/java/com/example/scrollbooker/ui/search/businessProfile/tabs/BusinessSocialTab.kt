@@ -25,27 +25,23 @@ import coil.compose.AsyncImage
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
+import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.ui.theme.headlineMedium
+import com.example.scrollbooker.ui.theme.headlineSmall
 
 @Composable
 fun BusinessSocialTab() {
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(vertical = BasePadding)
-    ) {
+    Column(modifier = Modifier.fillMaxSize()) {
         Text(
             modifier = Modifier.padding(horizontal = BasePadding),
             text = stringResource(R.string.social),
-            style = headlineMedium,
-            fontSize = 26.sp,
+            style = headlineSmall,
             fontWeight = FontWeight.SemiBold
         )
 
-        Spacer(Modifier.height(BasePadding))
+        Spacer(Modifier.height(SpacingXL))
 
-        LazyRow(modifier = Modifier
-            .padding(top = BasePadding)
-        ) {
+        LazyRow {
             item { Spacer(Modifier.width(BasePadding)) }
 
             items(10) {
