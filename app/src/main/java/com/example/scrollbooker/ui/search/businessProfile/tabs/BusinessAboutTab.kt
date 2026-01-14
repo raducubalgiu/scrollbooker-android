@@ -12,8 +12,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
+import com.example.scrollbooker.components.customized.SchedulesSection
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
+import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
+import com.example.scrollbooker.ui.shared.location.LocationSection
 import com.example.scrollbooker.ui.theme.headlineMedium
 
 @Composable
@@ -48,6 +51,69 @@ fun BusinessAboutTab() {
 
         Spacer(Modifier.height(SpacingXL))
 
-        //UserScheduleSheet()
+        SchedulesSection(
+            modifier = Modifier.padding(horizontal = BasePadding),
+            schedules = listOf(
+                Schedule(
+                    id = 1,
+                    dayOfWeek = "Monday",
+                    startTime = "09:00:00",
+                    endTime = "18:00:00"
+                ),
+                Schedule(
+                    id = 1,
+                    dayOfWeek = "Thursday",
+                    startTime = "09:00:00",
+                    endTime = "18:00:00"
+                ),
+                Schedule(
+                    id = 1,
+                    dayOfWeek = "Wednesday",
+                    startTime = "09:00:00",
+                    endTime = "18:00:00"
+                ),
+                Schedule(
+                    id = 1,
+                    dayOfWeek = "Thursday",
+                    startTime = "09:00:00",
+                    endTime = "18:00:00"
+                ),
+                Schedule(
+                    id = 1,
+                    dayOfWeek = "Friday",
+                    startTime = "09:00:00",
+                    endTime = "18:00:00"
+                ),
+                Schedule(
+                    id = 1,
+                    dayOfWeek = "Saturday",
+                    startTime = null,
+                    endTime = null
+                ),
+                Schedule(
+                    id = 1,
+                    dayOfWeek = "Sunday",
+                    startTime = null,
+                    endTime = null
+                )
+            )
+        )
+
+        Spacer(Modifier.height(SpacingXL))
+
+        Text(
+            modifier = Modifier.padding(horizontal = BasePadding),
+            text = stringResource(R.string.location),
+            style = headlineMedium,
+            fontWeight = FontWeight.SemiBold
+        )
+
+        Spacer(Modifier.height(SpacingXL))
+
+        LocationSection(
+            modifier = Modifier.padding(horizontal = BasePadding)
+        )
+
+        Spacer(Modifier.height(SpacingXL))
     }
 }

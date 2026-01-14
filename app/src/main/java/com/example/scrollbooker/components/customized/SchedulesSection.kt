@@ -39,6 +39,7 @@ import kotlin.ranges.contains
 
 @Composable
 fun SchedulesSection(
+    modifier: Modifier = Modifier,
     schedules: List<Schedule>
 ) {
     val today = LocalDate.now().dayOfWeek
@@ -73,7 +74,7 @@ fun SchedulesSection(
         }
 
         Row(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .padding(bottom = SpacingXL),
             verticalAlignment = Alignment.CenterVertically,

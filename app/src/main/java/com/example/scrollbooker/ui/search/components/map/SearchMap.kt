@@ -55,6 +55,7 @@ fun SearchMap(
     val scope = rememberCoroutineScope()
 
     val cameraPosition by viewModel.cameraPosition.collectAsState()
+
     val viewportState = rememberMapViewportState {
         setCameraOptions {
             center(Point.fromLngLat(cameraPosition.longitude, cameraPosition.latitude))
@@ -102,6 +103,10 @@ fun SearchMap(
 
     var selectedMarker by rememberSaveable { mutableStateOf<BusinessMarker?>(null) }
 
+    var mapStyle by rememberSaveable {
+        mutableStateOf("mapbox://styles/radubalgiu/cmip1r7g000pm01sca0vz7dxp")
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         SearchMapActions(
             paddingBottom = paddingBottom,
@@ -132,7 +137,7 @@ fun SearchMap(
                 .graphicsLayer { this.alpha = alpha },
             mapViewportState = viewportState,
             composeMapInitOptions = mapInitOptions,
-            style = { MapStyle(style = "mapbox://styles/radubalgiu/cmip1r7g000pm01sca0vz7dxp") },
+            style = { MapStyle(style = mapStyle) },
             scaleBar = {},
         ) {
             val secondaryMarkers = markers.filter { !it.isPrimary }

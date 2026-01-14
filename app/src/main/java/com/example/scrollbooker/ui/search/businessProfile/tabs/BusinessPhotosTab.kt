@@ -1,4 +1,5 @@
 package com.example.scrollbooker.ui.search.businessProfile.tabs
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,7 +11,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,6 +34,8 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.ui.profile.components.userInfo.components.CounterItem
+import com.example.scrollbooker.ui.theme.OnPrimary
+import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.titleLarge
 
@@ -45,46 +51,78 @@ fun BusinessPhotosTab(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = BasePadding),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             AvatarWithRating(
                 url = "https://media.scrollbooker.ro/logo.jpg",
-                size = 100.dp,
                 rating = 4.5f,
                 onClick = {}
             )
 
-            Column(Modifier.fillMaxWidth()
+            Spacer(Modifier.width(BasePadding))
+
+            Column(
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    CounterItem(
-                        counter = 120,
-                        label = "Recenzii",
-                        onNavigate = {}
-                    )
+                Column(Modifier.fillMaxWidth()) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        CounterItem(
+                            counter = 120,
+                            label = "Recenzii",
+                            onNavigate = {}
+                        )
 
-                    VerticalDivider()
+                        VerticalDivider()
 
-                    CounterItem(
-                        counter = 500,
-                        label = "Urmaritori",
-                        onNavigate = {}
-                    )
+                        CounterItem(
+                            counter = 500,
+                            label = "Urmaritori",
+                            onNavigate = {}
+                        )
+
+                        VerticalDivider()
+
+                        CounterItem(
+                            counter = 120,
+                            label = "Urmareste",
+                            onNavigate = {}
+                        )
+                    }
                 }
 
                 Spacer(Modifier.height(BasePadding))
 
-                MainButtonOutlined(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = BasePadding),
-                    title = stringResource(R.string.follow),
-                    onClick = {}
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    MainButtonOutlined(
+                        modifier = Modifier.weight(0.5f),
+                        title = stringResource(R.string.call),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Primary,
+                            contentColor = OnPrimary,
+                        ),
+                        border = BorderStroke(1.dp, Primary),
+                        shape = ShapeDefaults.Medium,
+                        onClick = {}
+                    )
+
+                    Spacer(Modifier.width(SpacingS))
+
+                    MainButtonOutlined(
+                        modifier = Modifier.weight(0.5f),
+                        title = stringResource(R.string.follow),
+                        shape = ShapeDefaults.Medium,
+                        onClick = {}
+                    )
+                }
             }
         }
 

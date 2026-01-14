@@ -7,6 +7,7 @@ import androidx.compose.material3.ShapeDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.SurfaceBG
@@ -16,12 +17,13 @@ fun ProfileActionButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     isEnabled: Boolean = true,
+    height: Dp = 50.dp,
     containerColor: Color = SurfaceBG,
     contentColor: Color = OnSurfaceBG,
     content: @Composable () -> Unit,
 ) {
     Button(
-        modifier = modifier.height(50.dp),
+        modifier = modifier.height(height),
         onClick = onClick,
         enabled = isEnabled,
         shape = ShapeDefaults.Small,

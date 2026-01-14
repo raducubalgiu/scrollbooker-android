@@ -146,7 +146,7 @@ fun ProfileInfoTab(
                     style = titleLarge
                 )
 
-                SchedulesSection(data.schedules)
+                SchedulesSection(schedules = data.schedules)
             }
         }
     }

@@ -27,21 +27,24 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMediaFile
 
 @Composable
 fun SearchCardCarousel(
-    mediaFiles: List<BusinessMediaFile>
+    mediaFiles: List<BusinessMediaFile>,
+    imageHeight: Dp = 230.dp,
+    radius: Dp = 12.dp
 ) {
     val pagerState = rememberPagerState { mediaFiles.size }
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(230.dp)
-            .clip(RoundedCornerShape(12.dp))
+            .height(imageHeight)
+            .clip(RoundedCornerShape(radius))
     ) {
         HorizontalPager(
             state = pagerState,

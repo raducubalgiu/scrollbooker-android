@@ -52,7 +52,7 @@ fun UserScheduleSheet(
                 is FeatureState.Loading -> ScheduleShimmer()
                 is FeatureState.Error -> ErrorScreen()
                 is FeatureState.Success -> {
-                    SchedulesSection(state.data)
+                    SchedulesSection(schedules = state.data)
 
                     Spacer(Modifier.padding(bottom = BasePadding))
                 }
