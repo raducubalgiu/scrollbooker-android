@@ -103,7 +103,7 @@ fun BusinessPreviewCard(
                                 )
                             }
                             AsyncImage(
-                                model = "https://media.scrollbooker.ro/business-video-1-cover.jpeg",
+                                model = selectedMarker.mediaPreview?.thumbnailUrl,
                                 contentDescription = null,
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier.fillMaxSize()

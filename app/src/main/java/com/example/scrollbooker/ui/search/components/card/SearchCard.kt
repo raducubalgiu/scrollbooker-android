@@ -43,7 +43,9 @@ fun SearchCard(
                 indication = null
             )
     ) {
-        SearchCardCarousel()
+        SearchCardCarousel(
+            mediaFiles = business.mediaFiles
+        )
 
         Spacer(Modifier.height(12.dp))
 

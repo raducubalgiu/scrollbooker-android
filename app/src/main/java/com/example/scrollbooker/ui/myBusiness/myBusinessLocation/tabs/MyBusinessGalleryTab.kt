@@ -13,7 +13,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.entity.booking.appointment.domain.model.BusinessCoordinates
-import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMediaPreview
+import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMediaFile
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessOwner
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessSheet
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
@@ -46,10 +46,15 @@ fun MyBusinessGalleryTab(
                         lng = 25.234f
                     ),
                     hasVideo = false,
-                    mediaPreview = BusinessMediaPreview(
-                        type = "photo",
-                        thumbnailUrl = "",
-                        previewVideoUrl = ""
+                    mediaFiles = listOf(
+                        BusinessMediaFile(
+                            type = "photo",
+                            thumbnailUrl = "",
+                            url = "",
+                            urlKey = "",
+                            thumbnailKey = "",
+                            orderIndex = 0
+                        )
                     ),
                     products = listOf(
                         Product(

@@ -29,20 +29,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMediaFile
 
 @Composable
-fun SearchCardCarousel() {
-    val pagerState = rememberPagerState { 3 }
-    val images = listOf(
-        "https://media.scrollbooker.ro/business-video-1-cover.jpeg",
-        "https://media.scrollbooker.ro/business-video-1-cover.jpeg",
-        "https://media.scrollbooker.ro/business-video-1-cover.jpeg"
-    )
+fun SearchCardCarousel(
+    mediaFiles: List<BusinessMediaFile>
+) {
+    val pagerState = rememberPagerState { mediaFiles.size }
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp)
+            .height(230.dp)
             .clip(RoundedCornerShape(12.dp))
     ) {
         HorizontalPager(
@@ -52,7 +50,7 @@ fun SearchCardCarousel() {
         ) { page ->
             key(page) {
                 AsyncImage(
-                    model = images[page],
+                    model = mediaFiles[page].thumbnailUrl,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize()
@@ -82,7 +80,7 @@ fun SearchCardCarousel() {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            repeat(images.size) { index ->
+            repeat(mediaFiles.size) { index ->
                 val isSelected = pagerState.currentPage == index
 
                 val targetSize = if (isSelected) 7.dp else 6.dp

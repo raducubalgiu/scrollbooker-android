@@ -2,9 +2,7 @@ package com.example.scrollbooker.entity.booking.business.data.mappers
 
 import com.example.scrollbooker.core.enums.BusinessShortDomainEnum
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessMarkerDto
-import com.example.scrollbooker.entity.booking.business.data.remote.BusinessMediaPreviewDto
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMarker
-import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMediaPreview
 
 fun BusinessMarkerDto.toDomain(): BusinessMarker {
     return BusinessMarker(
@@ -15,13 +13,5 @@ fun BusinessMarkerDto.toDomain(): BusinessMarker {
         hasVideo = hasVideo,
         mediaPreview = mediaPreview?.toDomain(),
         isPrimary = isPrimary
-    )
-}
-
-fun BusinessMediaPreviewDto.toDomain(): BusinessMediaPreview {
-    return BusinessMediaPreview(
-        type = type,
-        thumbnailUrl = thumbnailUrl,
-        previewVideoUrl = previewVideoUrl
     )
 }

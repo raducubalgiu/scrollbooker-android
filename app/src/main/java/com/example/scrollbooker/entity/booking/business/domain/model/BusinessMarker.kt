@@ -9,11 +9,5 @@ data class BusinessMarker(
     val coordinates: BusinessCoordinates,
     val isPrimary: Boolean,
     val hasVideo: Boolean,
-    val mediaPreview: BusinessMediaPreview?,
-)
-
-data class BusinessMediaPreview(
-    val type: String,
-    val thumbnailUrl: String?,
-    val previewVideoUrl: String?
+    val mediaPreview: BusinessMediaFile?,
 )

@@ -19,8 +19,8 @@ data class BusinessSheetDto(
     @SerializedName("has_video")
     val hasVideo: Boolean,
 
-    @SerializedName("media_preview")
-    val mediaPreview: BusinessMediaPreviewDto?,
+    @SerializedName("media_files")
+    val mediaFiles: List<BusinessMediaFileDto>,
 
     val products: List<ProductDto>,
 )

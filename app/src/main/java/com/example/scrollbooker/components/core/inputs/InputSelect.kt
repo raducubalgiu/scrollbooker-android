@@ -76,26 +76,15 @@ fun InputSelect(
 
     val selected: Option? = remember(options, selectedOption, selectedOptions) {
         when {
-            selectedOptions.isNotEmpty() ->
-                options.firstOrNull() { it.value?.toInt() in selectedOptions }
-
             !selectedOption.isNullOrBlank() ->
                 options.firstOrNull() { it.value == selectedOption }
+
+            selectedOptions.isNotEmpty() ->
+                options.firstOrNull() { it.value?.toInt() in selectedOptions }
 
             else -> null
         }
     }
-
-//    val isSelected = options.forEach { option ->
-//        val value = option.value
-//
-//        return when {
-//            value == null -> null
-//            selectedOption != null -> Option()
-//            selectedOptions?.isNotEmpty() == true -> Option()
-//            else -> null
-//        }
-//    }
 
     val hasValue = selected != null
 

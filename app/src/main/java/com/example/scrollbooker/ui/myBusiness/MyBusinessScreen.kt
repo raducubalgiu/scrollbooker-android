@@ -71,7 +71,7 @@ fun MyBusinessScreen(
             description = stringResource(R.string.servicesDetails),
             icon = Icons.Outlined.Book,
             navigate = { myBusinessNavigate.toMyServices() },
-            hasEmployees = false,
+            hasEmployees = true,
             permission = PermissionEnum.MY_SERVICES_VIEW
         ),
         BusinessCard(

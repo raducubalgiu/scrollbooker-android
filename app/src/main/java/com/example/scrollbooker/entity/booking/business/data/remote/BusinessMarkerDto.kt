@@ -19,15 +19,5 @@ data class BusinessMarkerDto(
     val hasVideo: Boolean,
 
     @SerializedName("media_preview")
-    val mediaPreview: BusinessMediaPreviewDto?,
-)
-
-data class BusinessMediaPreviewDto(
-    val type: String,
-
-    @SerializedName("thumbnail_url")
-    val thumbnailUrl: String?,
-
-    @SerializedName("preview_video_url")
-    val previewVideoUrl: String?
+    val mediaPreview: BusinessMediaFileDto?,
 )

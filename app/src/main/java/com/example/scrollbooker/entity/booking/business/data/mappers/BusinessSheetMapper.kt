@@ -11,7 +11,7 @@ fun BusinessSheetDto.toDomain(): BusinessSheet {
         address = address,
         coordinates = coordinates,
         hasVideo = hasVideo,
-        mediaPreview = mediaPreview?.toDomain(),
+        mediaFiles = mediaFiles.map { it.toDomain() },
         products = products.map { it.toDomain() }
     )
 }
