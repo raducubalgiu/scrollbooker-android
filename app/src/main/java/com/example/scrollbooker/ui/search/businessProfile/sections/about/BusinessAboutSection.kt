@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.search.businessProfile.sections
+package com.example.scrollbooker.ui.search.businessProfile.sections.about
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -45,7 +45,7 @@ fun BusinessAboutSection(
         Text(
             modifier = Modifier.padding(horizontal = BasePadding),
             text = stringResource(R.string.schedule),
-            style = headlineMedium,
+            style = headlineSmall,
             fontWeight = FontWeight.SemiBold
         )
 

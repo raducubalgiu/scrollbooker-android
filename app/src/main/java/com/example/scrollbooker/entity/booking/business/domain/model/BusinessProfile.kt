@@ -3,6 +3,7 @@ import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
 import com.example.scrollbooker.entity.social.post.domain.model.BusinessPlan
 import com.example.scrollbooker.entity.user.userProfile.domain.model.OpeningHours
+import org.threeten.bp.ZonedDateTime
 
 data class BusinessProfile(
     val owner: BusinessProfileOwner,
@@ -15,7 +16,7 @@ data class BusinessProfile(
     val products: List<Product>,
     val employees: List<BusinessProfileEmployee>,
     val schedules: List<Schedule>,
-    val reviews: List<BusinessProfileReview>
+    val reviews: BusinessProfileReviews
 )
 
 data class BusinessProfileOwner(
@@ -44,11 +45,17 @@ data class BusinessProfileEmployee(
     val ratingsAverage: Float
 )
 
+data class BusinessProfileReviews(
+    val total: Int,
+    val data: List<BusinessProfileReview>
+)
+
 data class BusinessProfileReview(
     val id: Int,
     val review: String,
+    val rating: Int,
     val reviewer: BusinessProfileReviewer,
-    val createdAt: String
+    val createdAt: ZonedDateTime
 )
 
 data class BusinessProfileReviewer(

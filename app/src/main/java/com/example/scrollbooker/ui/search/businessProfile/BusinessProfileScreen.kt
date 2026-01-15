@@ -35,13 +35,13 @@ import com.example.scrollbooker.ui.search.SearchViewModel
 import com.example.scrollbooker.ui.search.businessProfile.components.BusinessProfileHeader
 import com.example.scrollbooker.ui.search.businessProfile.components.BusinessProfileSkeleton
 import com.example.scrollbooker.ui.search.businessProfile.components.BusinessProfileTabRow
-import com.example.scrollbooker.ui.search.businessProfile.sections.BusinessAboutSection
-import com.example.scrollbooker.ui.search.businessProfile.sections.BusinessEmployeesSection
+import com.example.scrollbooker.ui.search.businessProfile.sections.about.BusinessAboutSection
+import com.example.scrollbooker.ui.search.businessProfile.sections.employees.BusinessEmployeesSection
 import com.example.scrollbooker.ui.search.businessProfile.sections.BusinessProfileSection
-import com.example.scrollbooker.ui.search.businessProfile.sections.BusinessReviewsSection
-import com.example.scrollbooker.ui.search.businessProfile.sections.BusinessServicesSection
-import com.example.scrollbooker.ui.search.businessProfile.sections.BusinessSocialSection
-import com.example.scrollbooker.ui.search.businessProfile.sections.BusinessSummarySection
+import com.example.scrollbooker.ui.search.businessProfile.sections.posts.BusinessPostsSection
+import com.example.scrollbooker.ui.search.businessProfile.sections.reviews.BusinessReviewsSection
+import com.example.scrollbooker.ui.search.businessProfile.sections.services.BusinessServicesSection
+import com.example.scrollbooker.ui.search.businessProfile.sections.summary.BusinessSummarySection
 import com.example.scrollbooker.ui.theme.Background
 import kotlinx.coroutines.launch
 
@@ -182,6 +182,7 @@ fun BusinessProfileScreen(
                                         .find { it.key == targetKey }
                                         ?.index
                                         ?: (itemKeys.indexOf(targetKey) + 1)
+
                                     lazyListState.animateScrollToItem(targetIndex)
 
                                     selectedTabIndex = index
@@ -209,12 +210,15 @@ fun BusinessProfileScreen(
                     }
 
                     item(key = BusinessProfileSection.Social.key) {
-                        BusinessSocialSection()
+                        BusinessPostsSection()
                     }
 
                     if(employees.isNotEmpty()) {
                         item(key = BusinessProfileSection.Employees.key) {
-                            BusinessEmployeesSection(employees)
+                            BusinessEmployeesSection(
+                                employees = employees,
+                                onNavigateToUserProfile = {}
+                            )
                         }
                     }
 

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.search.businessProfile.sections
+package com.example.scrollbooker.ui.search.businessProfile.sections.posts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,7 +28,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.ui.theme.headlineSmall
 
 @Composable
-fun BusinessSocialSection() {
+fun BusinessPostsSection() {
     Column(modifier = Modifier.fillMaxSize()) {
         Text(
             modifier = Modifier.padding(horizontal = BasePadding),

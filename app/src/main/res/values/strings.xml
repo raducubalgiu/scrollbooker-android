@@ -144,9 +144,9 @@
     <string name="notFoundEmployees">Momentan nu ai nici un angajat</string>
     <string name="notFoundBookmarks">Încă nu ai salvat nici o postare</string>
     <string name="notFoundReposts">Încă nu ai repostat nimic</string>
-    <string name="notFoundReviews">Nu au fost găsite review-uri</string>
-    <string name="notFoundWrittenReviews">Nu au fost găsite review-uri scrise</string>
-    <string name="notFoundVideoReviews">Nu au fost găsite review-uri video</string>
+    <string name="notFoundReviews">Încă nu au fost adăugate recenzii</string>
+    <string name="notFoundWrittenReviews">Nu au fost găsite recenzii scrise</string>
+    <string name="notFoundVideoReviews">Nu au fost găsite recenzii video</string>
     <string name="notFoundBookings">Nu au fist găsite rezervări</string>
     <string name="businessLocationDetails">Detalii despre locația business-ului meu</string>
     <string name="userScheduleDetails">Detalii despre programul meu</string>
@@ -363,6 +363,7 @@
     <string name="dateAndHour">Data și ora</string>
     <string name="notFoundLocations">Nu au fost găsite locații</string>
     <string name="seeAllServices">Vezi toate serviciile</string>
+    <string name="seeAllReviews">Vezi toate recenziile</string>
     <string name="timeInterval">Interval orar</string>
     <string name="configureLastMinute">Configurează oferta Last Minute</string>
     <string name="configureLastMinuteDescription">Reducerea Last Minute se aplică automat tuturor serviciilor rezervate în acest interval, peste eventualele reduceri ale produselor.</string>

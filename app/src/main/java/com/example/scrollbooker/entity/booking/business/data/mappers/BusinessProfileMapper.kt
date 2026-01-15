@@ -6,16 +6,19 @@ import com.example.scrollbooker.entity.booking.business.data.remote.BusinessProf
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessProfileOwnerDto
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessProfileReviewDto
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessProfileReviewerDto
+import com.example.scrollbooker.entity.booking.business.data.remote.BusinessProfileReviewsDto
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfile
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileCounters
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileEmployee
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileOwner
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileReview
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileReviewer
+import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileReviews
 import com.example.scrollbooker.entity.booking.products.data.mappers.toDomain
 import com.example.scrollbooker.entity.booking.schedule.data.mappers.toDomain
 import com.example.scrollbooker.entity.social.post.data.mappers.toDomain
 import com.example.scrollbooker.entity.user.userProfile.data.mappers.toDomain
+import org.threeten.bp.ZonedDateTime
 
 fun BusinessProfileDto.toDomain(): BusinessProfile {
     return BusinessProfile(
@@ -29,7 +32,7 @@ fun BusinessProfileDto.toDomain(): BusinessProfile {
         products = products.map { it.toDomain() },
         employees = employees.map { it.toDomain() },
         schedules = schedules.map { it.toDomain() },
-        reviews = reviews.map { it.toDomain() }
+        reviews = reviews.toDomain()
     )
 }
 
@@ -65,12 +68,20 @@ fun BusinessProfileEmployeeDto.toDomain(): BusinessProfileEmployee {
     )
 }
 
+fun BusinessProfileReviewsDto.toDomain(): BusinessProfileReviews {
+    return BusinessProfileReviews(
+        total = total,
+        data = data.map { it.toDomain() }
+    )
+}
+
 fun BusinessProfileReviewDto.toDomain(): BusinessProfileReview {
     return BusinessProfileReview(
         id = id,
         review = review,
+        rating = rating,
         reviewer = reviewer.toDomain(),
-        createdAt = createdAt
+        createdAt = ZonedDateTime.parse(createdAt)
     )
 }
 

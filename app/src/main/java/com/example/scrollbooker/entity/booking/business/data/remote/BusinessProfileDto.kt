@@ -27,7 +27,7 @@ data class BusinessProfileDto(
     val products: List<ProductDto>,
     val employees: List<BusinessProfileEmployeeDto>,
     val schedules: List<ScheduleDto>,
-    val reviews: List<BusinessProfileReviewDto>
+    val reviews: BusinessProfileReviewsDto
 )
 
 data class BusinessProfileOwnerDto(
@@ -72,9 +72,15 @@ data class BusinessProfileEmployeeDto(
     val ratingsAverage: Float
 )
 
+data class BusinessProfileReviewsDto(
+    val total: Int,
+    val data: List<BusinessProfileReviewDto>
+)
+
 data class BusinessProfileReviewDto(
     val id: Int,
     val review: String,
+    val rating: Int,
     val reviewer: BusinessProfileReviewerDto,
 
     @SerializedName("created_at")

@@ -1,10 +1,12 @@
-package com.example.scrollbooker.ui.search.businessProfile.sections
+package com.example.scrollbooker.ui.search.businessProfile.sections.services
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -112,6 +114,10 @@ fun BusinessServicesSection() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = BasePadding),
+            contentPadding = PaddingValues(
+                vertical = BasePadding
+            ),
+            shape = ShapeDefaults.Medium,
             title = stringResource(R.string.seeAllServices),
             onClick = {  }
         )

@@ -1,30 +1,26 @@
-package com.example.scrollbooker.ui.search.businessProfile.sections
+package com.example.scrollbooker.ui.search.businessProfile.sections.reviews
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.customized.RatingsStars
+import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingM
-import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
-import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileReview
+import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileReviews
 import com.example.scrollbooker.ui.theme.headlineSmall
-import com.example.scrollbooker.ui.theme.titleLarge
 
 @Composable
 fun BusinessReviewsSection(
-    reviews: List<BusinessProfileReview>,
+    reviews: BusinessProfileReviews,
     ratingsAverage: Float,
     ratingsCount: Int
 ) {
@@ -39,41 +35,35 @@ fun BusinessReviewsSection(
             fontWeight = FontWeight.SemiBold
         )
 
-        RatingsStars(
-            modifier = Modifier.padding(start = BasePadding),
-            rating = ratingsAverage,
-            maxRating = 5,
+        BusinessReviewsSummary(
+            ratingsAverage = ratingsAverage,
+            ratingsCount = ratingsCount
         )
-
-        Spacer(Modifier.height(SpacingS))
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = BasePadding),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = ratingsAverage.toString(),
-                style = titleLarge,
-                fontWeight = FontWeight.SemiBold
-            )
-
-            Spacer(Modifier.width(SpacingM))
-
-            Text(
-                text = "(${ratingsCount})",
-                style = titleLarge,
-                fontWeight = FontWeight.SemiBold
-            )
-        }
 
         Spacer(Modifier.height(SpacingXL))
 
-        if(reviews.isEmpty()) {
+        if(reviews.data.isEmpty()) {
             Text(
                 modifier = Modifier.padding(start = BasePadding),
-                text = "Inca nu au fost adaugate recenzii"
+                text = stringResource(R.string.notFoundReviews)
+            )
+        }
+
+        BusinessReviewsList(
+            reviews = reviews.data
+        )
+
+        if(reviews.total > reviews.data.size) {
+            MainButtonOutlined(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(BasePadding),
+                contentPadding = PaddingValues(
+                    vertical = BasePadding
+                ),
+                shape = ShapeDefaults.Medium,
+                title = stringResource(R.string.seeAllReviews),
+                onClick = {  }
             )
         }
 
