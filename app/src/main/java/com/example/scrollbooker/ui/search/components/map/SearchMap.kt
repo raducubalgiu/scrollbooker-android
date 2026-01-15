@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.scrollbooker.core.enums.toDomainColor
 import com.example.scrollbooker.ui.search.CameraPositionState
 import com.example.scrollbooker.ui.search.SearchViewModel
@@ -53,6 +54,12 @@ fun SearchMap(
     val density = LocalDensity.current
     val markers = markersUiState.data?.results.orEmpty()
     val scope = rememberCoroutineScope()
+
+    val selectedMarker by viewModel.selectedMarker.collectAsStateWithLifecycle()
+
+    var mapStyle by rememberSaveable {
+        mutableStateOf("mapbox://styles/radubalgiu/cmip1r7g000pm01sca0vz7dxp")
+    }
 
     val cameraPosition by viewModel.cameraPosition.collectAsState()
 
@@ -101,12 +108,6 @@ fun SearchMap(
         }
     }
 
-    var selectedMarker by rememberSaveable { mutableStateOf<BusinessMarker?>(null) }
-
-    var mapStyle by rememberSaveable {
-        mutableStateOf("mapbox://styles/radubalgiu/cmip1r7g000pm01sca0vz7dxp")
-    }
-
     Box(modifier = Modifier.fillMaxSize()) {
         SearchMapActions(
             paddingBottom = paddingBottom,
@@ -116,7 +117,7 @@ fun SearchMap(
 
         BusinessPreviewCard(
             selectedMarker = selectedMarker,
-            onCloseClick = { selectedMarker = null },
+            onCloseClick = { viewModel.setSelectedMarker(null) },
             onNavigateToBusinessProfile = onNavigateToBusinessProfile,
             isVisible = selectedMarker != null,
             paddingBottom = paddingBottom
@@ -147,7 +148,7 @@ fun SearchMap(
                 SearchMarkerSecondary(
                     color = m.businessShortDomain.toDomainColor(),
                     coordinates = m.coordinates,
-                    onMarkerClick = { selectedMarker = m }
+                    onMarkerClick = { viewModel.setSelectedMarker(m) }
                 )
             }
 
@@ -157,7 +158,7 @@ fun SearchMap(
                     domainColor = m.businessShortDomain.toDomainColor(),
                     ratingsAverage = m.owner.ratingsAverage,
                     coordinates = m.coordinates,
-                    onMarkerClick = { selectedMarker = m },
+                    onMarkerClick = { viewModel.setSelectedMarker(m) },
                 )
             }
 

@@ -15,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.example.scrollbooker.ui.search.SearchViewModel
@@ -33,6 +34,12 @@ fun SearchServicesSheet(
     var step by remember { mutableStateOf(ServicesSheetFiltersStepEnum.MAIN_FILTERS) }
     val mainFiltersStep = ServicesSheetFiltersStepEnum.MAIN_FILTERS
     val dateTimeStep = ServicesSheetFiltersStepEnum.DATE_TIME
+
+    val requestBusinessDomainId = requestState.filters.businessDomainId
+
+    var selectedBusinessDomainId by rememberSaveable(requestBusinessDomainId) {
+        mutableStateOf<Int?>(requestBusinessDomainId)
+    }
 
     Column(modifier = Modifier
         .fillMaxSize()

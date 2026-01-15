@@ -16,7 +16,6 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
 import com.example.scrollbooker.ui.shared.location.LocationSection
-import com.example.scrollbooker.ui.theme.headlineMedium
 import com.example.scrollbooker.ui.theme.headlineSmall
 
 @Composable

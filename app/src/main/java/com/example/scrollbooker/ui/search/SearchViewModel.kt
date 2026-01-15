@@ -1,4 +1,5 @@
 package com.example.scrollbooker.ui.search
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -39,6 +40,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
@@ -165,6 +167,9 @@ class SearchViewModel @Inject constructor(
     private val _selectedBusinessOwner = MutableStateFlow<BusinessOwner?>(null)
     val selectedBusinessOwner: StateFlow<BusinessOwner?> = _selectedBusinessOwner.asStateFlow()
 
+    private val _selectedMarker = MutableStateFlow<BusinessMarker?>(null)
+    val selectedMarker: StateFlow<BusinessMarker?> = _selectedMarker.asStateFlow()
+
     private val _sheetUiState = MutableStateFlow(SheetUiState())
 
     private val _sheetTotalCount = MutableStateFlow(0)
@@ -192,8 +197,7 @@ class SearchViewModel @Inject constructor(
     private val sharedRequestFlow = rawRequestFlow
         .shareIn(
             scope = viewModelScope,
-            started = SharingStarted.Eagerly,
-            replay = 1
+            started = SharingStarted.WhileSubscribed(5_000)
         )
 
     init {
@@ -332,6 +336,10 @@ class SearchViewModel @Inject constructor(
 
     init {
         loadAllBusinessDomains()
+    }
+
+    fun setSelectedMarker(marker: BusinessMarker?) {
+        _selectedMarker.value = marker
     }
 
     fun setBusinessOwner(businessOwner: BusinessOwner) {
@@ -513,31 +521,4 @@ class SearchViewModel @Inject constructor(
             )
         }
     }
-
-    private val _selectedBusinessId = MutableStateFlow<Int?>(null)
-    val selectedBusinessId: StateFlow<Int?> = _selectedBusinessId.asStateFlow()
-
-    fun openBusinessProfile(id: Int) {
-        _selectedBusinessId.value = id
-    }
-
-    fun closeBusinessProfile() {
-        _selectedBusinessId.value = null
-    }
-
-    val businessProfileState: StateFlow<FeatureState<BusinessProfile>> =
-        selectedBusinessId
-            .filterNotNull()
-            .distinctUntilChanged()
-            .flatMapLatest { id ->
-                flow {
-                    emit(FeatureState.Loading)
-                    emit(withVisibleLoading { getBusinessProfileUseCase(id) })
-                }
-            }
-            .stateIn(
-                viewModelScope,
-                SharingStarted.WhileSubscribed(5_000),
-                FeatureState.Loading
-            )
 }

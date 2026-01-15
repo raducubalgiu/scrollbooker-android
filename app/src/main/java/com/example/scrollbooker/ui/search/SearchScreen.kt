@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -78,6 +79,8 @@ fun SearchScreen(
     val markersUiState by viewModel.markersUiState.collectAsState()
     val state by viewModel.request.collectAsState()
 
+    val listState = rememberLazyListState()
+
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { granted ->
@@ -126,7 +129,10 @@ fun SearchScreen(
                 viewModel = viewModel,
                 sheetState = sheetState,
                 sheetAction = sheetAction,
-                onClose = { sheetAction = SearchSheetActionEnum.NONE },
+                onClose = {
+                    scope.launch { listState.scrollToItem(0) }
+                    sheetAction = SearchSheetActionEnum.NONE
+                },
             )
         }
     }
@@ -136,6 +142,7 @@ fun SearchScreen(
 
     val isMapReady by viewModel.isMapReady.collectAsState()
     val isStyleLoaded by viewModel.isStyleLoaded.collectAsState()
+
     val isMapLoading = !isMapReady || !isStyleLoaded
 
     val refreshState = businessesSheet.loadState.refresh
@@ -211,7 +218,10 @@ fun SearchScreen(
                 SearchBusinessDomainList(
                     businessDomains = businessDomains,
                     selectedBusinessDomain = state.filters.businessDomainId,
-                    onClick = { viewModel.setBusinessDomain(it) }
+                    onClick = {
+                        scope.launch { listState.scrollToItem(0) }
+                        viewModel.setBusinessDomain(it)
+                    }
                 )
 
                 if(markersUiState.isLoading) {
@@ -236,6 +246,7 @@ fun SearchScreen(
                     SearchList(
                         isInitialLoading = isInitialLoading,
                         appendState = appendState,
+                        listState = listState,
                         businessesSheet = businessesSheet,
                         onNavigateToBusinessProfile = onNavigateToBusinessProfile,
                         onOpenBookingsSheet = {

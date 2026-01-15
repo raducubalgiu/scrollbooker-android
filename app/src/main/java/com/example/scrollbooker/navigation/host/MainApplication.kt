@@ -2,10 +2,14 @@ package com.example.scrollbooker.navigation.host
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -13,26 +17,24 @@ import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.navigation.LocalTabsController
 import com.example.scrollbooker.navigation.bottomBar.MainTab
-import com.example.scrollbooker.ui.feed.FeedScreenViewModel
-import com.example.scrollbooker.ui.feed.search.FeedSearchViewModel
+import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
+import com.example.scrollbooker.ui.search.SearchScreen
+import com.example.scrollbooker.ui.search.SearchViewModel
 
 @Composable
 fun MainApplication(onLogout: () -> Unit) {
     val tabsController = LocalTabsController.current
     val currentTab by tabsController.currentTab.collectAsState()
+    var mapInitialized by rememberSaveable { mutableStateOf(false) }
 
     // My Profile View Model
     val myProfileViewModel: MyProfileViewModel = hiltViewModel()
     val myProfileData by myProfileViewModel.userProfileState.collectAsState()
     val myPosts = myProfileViewModel.userPosts.collectAsLazyPagingItems()
 
-    // Feed Search View Model
-    val feedViewModel: FeedScreenViewModel = hiltViewModel()
-    val explorePosts = feedViewModel.explorePosts.collectAsLazyPagingItems()
-
-    val feedSearchViewModel: FeedSearchViewModel = hiltViewModel()
-    val userSearch by feedSearchViewModel.userSearch.collectAsState()
+    // Search View Model
+    val searchViewModel = hiltViewModel<SearchViewModel>()
 
     val saveableStateHolder = rememberSaveableStateHolder()
     val navControllers = remember {
@@ -43,21 +45,29 @@ fun MainApplication(onLogout: () -> Unit) {
         }
     }
 
+    val searchNavHostController = navControllers[MainTab.Search]!!
+
+    LaunchedEffect(currentTab) {
+        if(currentTab is MainTab.Search) {
+            mapInitialized = true
+        }
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
+        if(mapInitialized) {
+            SearchScreen(
+                viewModel = searchViewModel,
+                onNavigateToBusinessProfile = {
+                    searchNavHostController.navigate(MainRoute.BusinessProfile.createRoute(it))
+                }
+            )
+        }
+
         saveableStateHolder.SaveableStateProvider(currentTab.route) {
             when (currentTab) {
-                is MainTab.Feed -> {
-                    FeedNavHost(
-                        navController = navControllers[MainTab.Feed]!!,
-                        feedViewModel = feedViewModel,
-                        explorePosts = explorePosts,
-                        feedSearchViewModel = feedSearchViewModel,
-                        userSearch = userSearch
-                    )
-                }
-
+                is MainTab.Feed -> FeedNavHost(navController = navControllers[MainTab.Feed]!!)
                 is MainTab.Inbox -> InboxNavHost(navControllers[MainTab.Inbox]!!)
-                is MainTab.Search -> SearchNavHost(navControllers[MainTab.Search]!!)
+                is MainTab.Search -> SearchNavHost(searchNavHostController)
                 is MainTab.Appointments -> AppointmentsNavHost(navControllers[MainTab.Appointments]!!)
 
                 is MainTab.Profile -> {

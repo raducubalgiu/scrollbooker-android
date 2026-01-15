@@ -1,11 +1,9 @@
 package com.example.scrollbooker.ui.feed
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -21,15 +19,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.ui.feed.components.FeedTabs
@@ -54,10 +48,10 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FeedScreen(
-    feedViewModel: FeedScreenViewModel,
     feedNavigate: FeedNavigator,
-    explorePosts: LazyPagingItems<Post>
 ) {
+    val feedViewModel: FeedScreenViewModel = hiltViewModel()
+    val explorePosts = feedViewModel.explorePosts.collectAsLazyPagingItems()
     val followingPosts = feedViewModel.followingPosts.collectAsLazyPagingItems()
 
     val businessDomainsState by feedViewModel.businessDomainsWithBusinessTypes.collectAsStateWithLifecycle()

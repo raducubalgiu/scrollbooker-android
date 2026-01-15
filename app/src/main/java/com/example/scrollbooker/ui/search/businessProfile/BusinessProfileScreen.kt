@@ -47,7 +47,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun BusinessProfileScreen(
-    viewModel: SearchViewModel,
+    viewModel: BusinessProfileViewModel,
     onBack: () -> Unit
 ) {
     val state by viewModel.businessProfileState.collectAsState()

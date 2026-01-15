@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -22,6 +23,7 @@ import com.example.scrollbooker.ui.search.components.card.SearchCard
 fun SearchList(
     isInitialLoading: Boolean,
     appendState: LoadState,
+    listState: LazyListState,
     businessesSheet: LazyPagingItems<BusinessSheet>,
     onNavigateToBusinessProfile: (Int) -> Unit,
     onOpenBookingsSheet: (BusinessOwner) -> Unit
@@ -40,7 +42,9 @@ fun SearchList(
                     )
                 }
 
-                LazyColumn {
+                LazyColumn(
+                    state = listState
+                ) {
                     items(businessesSheet.itemCount) { index ->
                         businessesSheet[index]?.let { business ->
                             SearchCard(

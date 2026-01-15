@@ -2,41 +2,35 @@ package com.example.scrollbooker.navigation.host
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.feed.FeedScreen
 import com.example.scrollbooker.ui.feed.searchResults.FeedSearchResultsScreen
 import com.example.scrollbooker.ui.feed.search.FeedSearchScreen
 import com.example.scrollbooker.ui.feed.search.FeedSearchViewModel
-import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.entity.search.domain.model.UserSearch
-import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.ui.LocalMainNavController
-import com.example.scrollbooker.ui.feed.FeedScreenViewModel
 
 @Composable
-fun FeedNavHost(
-    navController: NavHostController,
-    feedViewModel: FeedScreenViewModel,
-    explorePosts: LazyPagingItems<Post>,
-    feedSearchViewModel: FeedSearchViewModel,
-    userSearch: FeatureState<UserSearch>
-) {
+fun FeedNavHost(navController: NavHostController) {
     val mainNavController = LocalMainNavController.current
     val feedNavigate = remember(mainNavController, navController) {
         FeedNavigator(mainNavController, navController)
     }
+
+    val feedSearchViewModel: FeedSearchViewModel = hiltViewModel()
+    val userSearch by feedSearchViewModel.userSearch.collectAsState()
 
     NavHost(
         navController = navController,
@@ -54,9 +48,7 @@ fun FeedNavHost(
             popExitTransition = { ExitTransition.None }
         ) { backStackEntry ->
             FeedScreen(
-                feedViewModel = feedViewModel,
-                feedNavigate = feedNavigate,
-                explorePosts = explorePosts
+                feedNavigate = feedNavigate
             )
         }
 
