@@ -7,19 +7,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.ScrollableTabRow
-import androidx.compose.material3.ShapeDefaults
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -28,34 +20,29 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.ui.search.SearchViewModel
-import com.example.scrollbooker.ui.search.businessProfile.tabs.BusinessAboutTab
-import com.example.scrollbooker.ui.search.businessProfile.tabs.BusinessEmployeesTab
-import com.example.scrollbooker.ui.search.businessProfile.tabs.BusinessReviewsTab
-import com.example.scrollbooker.ui.search.businessProfile.tabs.BusinessServicesTab
-import com.example.scrollbooker.ui.search.businessProfile.tabs.BusinessSocialTab
-import com.example.scrollbooker.ui.search.businessProfile.tabs.BusinessSummaryTab
+import com.example.scrollbooker.ui.search.businessProfile.components.BusinessProfileHeader
+import com.example.scrollbooker.ui.search.businessProfile.components.BusinessProfileSkeleton
+import com.example.scrollbooker.ui.search.businessProfile.components.BusinessProfileTabRow
+import com.example.scrollbooker.ui.search.businessProfile.sections.BusinessAboutSection
+import com.example.scrollbooker.ui.search.businessProfile.sections.BusinessEmployeesSection
+import com.example.scrollbooker.ui.search.businessProfile.sections.BusinessProfileSection
+import com.example.scrollbooker.ui.search.businessProfile.sections.BusinessReviewsSection
+import com.example.scrollbooker.ui.search.businessProfile.sections.BusinessServicesSection
+import com.example.scrollbooker.ui.search.businessProfile.sections.BusinessSocialSection
+import com.example.scrollbooker.ui.search.businessProfile.sections.BusinessSummarySection
 import com.example.scrollbooker.ui.theme.Background
-import com.example.scrollbooker.ui.theme.Divider
-import com.example.scrollbooker.ui.theme.OnBackground
-import com.example.scrollbooker.ui.theme.OnSurfaceBG
-import com.example.scrollbooker.ui.theme.bodyLarge
 import kotlinx.coroutines.launch
 
 @Composable
@@ -77,18 +64,29 @@ fun BusinessProfileScreen(
             val profile = businessProfile.data
             val employees = profile.employees
 
-//            val sections = remember(employees) {
-//                BusinessProfileSection.getSections(employees)
-//            }
-
-            val sections = BusinessProfileSection.all
+            val sections = remember(employees) {
+                BusinessProfileSection.getSections(employees)
+            }
             val itemKeys = sections.map { it.key }
 
-            val lazyListState = rememberLazyListState()
-            var selectedTabIndex by remember { mutableIntStateOf(0) }
-            val coroutineScope = rememberCoroutineScope()
-
             val density = LocalDensity.current
+            val lazyListState = rememberLazyListState()
+
+            var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
+            val scope = rememberCoroutineScope()
+
+            LaunchedEffect(lazyListState) {
+                snapshotFlow { lazyListState.layoutInfo.visibleItemsInfo }
+                    .collect { visibleItems ->
+                        val visibleSections = visibleItems.filter { it.key in itemKeys }
+                        val topMostSection = visibleSections.minByOrNull { it.offset }
+                        val newIndex = topMostSection?.key?.let { itemKeys.indexOf(it) }
+
+                        if(newIndex != null && newIndex != selectedTabIndex) {
+                            selectedTabIndex = newIndex
+                        }
+                    }
+            }
 
             val insets = WindowInsets.statusBars.asPaddingValues()
             val statusBarHeight = with(density) { insets.calculateTopPadding().toPx() }
@@ -170,71 +168,30 @@ fun BusinessProfileScreen(
                             .fillMaxSize()
                             .zIndex(3f)
                         )
-                        Surface(
-                            tonalElevation = 4.dp,
-                            color = Background
-                        ) {
-                            ScrollableTabRow(
-                                selectedTabIndex = selectedTabIndex,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(tabRowHeight),
-                                containerColor = Color.Transparent,
-                                contentColor = OnSurfaceBG,
-                                edgePadding = SpacingS,
-                                indicator = { tabPositions ->
-                                    Box(
-                                        Modifier
-                                            .tabIndicatorOffset(tabPositions[selectedTabIndex])
-                                            .height(3.dp)
-                                            .padding(horizontal = 20.dp)
-                                            .background(
-                                                color = OnBackground.copy(alpha = animatedAlpha),
-                                                shape = ShapeDefaults.ExtraLarge
-                                            )
-                                    )
-                                },
-                                divider = {
-                                    HorizontalDivider(
-                                        modifier = Modifier.alpha(animatedAlpha),
-                                        color = Divider,
-                                        thickness = 0.55.dp
-                                    )
-                                }
-                            ) {
-                                sections.forEachIndexed { index, section ->
-                                    Tab(
-                                        selected = selectedTabIndex == index,
-                                        onClick = {
-                                            coroutineScope.launch {
-                                                val targetKey = section.key
-                                                val targetIndex = lazyListState.layoutInfo
-                                                    .visibleItemsInfo
-                                                    .find { it.key == targetKey }
-                                                    ?.index
-                                                    ?: (itemKeys.indexOf(targetKey) + 1)
-                                                lazyListState.animateScrollToItem(targetIndex)
 
-                                                selectedTabIndex = index
-                                            }
-                                        },
-                                        text = {
-                                            Text(
-                                                modifier = Modifier.alpha(animatedAlpha),
-                                                text = stringResource(section.label),
-                                                fontWeight = FontWeight.Bold,
-                                                style = bodyLarge,
-                                                fontSize = 17.sp
-                                            )
-                                        }
-                                    )
+                        BusinessProfileTabRow(
+                            selectedTabIndex = selectedTabIndex,
+                            sections = sections,
+                            tabRowHeight = tabRowHeight,
+                            animatedAlpha = animatedAlpha,
+                            onChangeTab = { index, section ->
+                                scope.launch {
+                                    val targetKey = section.key
+                                    val targetIndex = lazyListState.layoutInfo
+                                        .visibleItemsInfo
+                                        .find { it.key == targetKey }
+                                        ?.index
+                                        ?: (itemKeys.indexOf(targetKey) + 1)
+                                    lazyListState.animateScrollToItem(targetIndex)
+
+                                    selectedTabIndex = index
                                 }
                             }
-                        }
+                        )
                     }
 
                     item(key = BusinessProfileSection.Summary.key) {
-                        BusinessSummaryTab(
+                        BusinessSummarySection(
                             owner = profile.owner,
                             businessPlan = profile.businessPlan,
                             address = profile.address,
@@ -248,21 +205,21 @@ fun BusinessProfileScreen(
                     }
 
                     item(key = BusinessProfileSection.Services.key) {
-                        BusinessServicesTab()
+                        BusinessServicesSection()
                     }
 
                     item(key = BusinessProfileSection.Social.key) {
-                        BusinessSocialTab()
+                        BusinessSocialSection()
                     }
 
                     if(employees.isNotEmpty()) {
                         item(key = BusinessProfileSection.Employees.key) {
-                            BusinessEmployeesTab(employees)
+                            BusinessEmployeesSection(employees)
                         }
                     }
 
                     item(key = BusinessProfileSection.Reviews.key) {
-                        BusinessReviewsTab(
+                        BusinessReviewsSection(
                             reviews = profile.reviews,
                             ratingsAverage = profile.owner.counters.ratingsAverage,
                             ratingsCount = profile.owner.counters.ratingsCount
@@ -270,24 +227,11 @@ fun BusinessProfileScreen(
                     }
 
                     item(key = BusinessProfileSection.About.key) {
-                        BusinessAboutTab(
+                        BusinessAboutSection(
                             description = profile.description ?: "",
                             schedules = profile.schedules
                         )
                     }
-                }
-
-                LaunchedEffect(lazyListState) {
-                    snapshotFlow { lazyListState.layoutInfo.visibleItemsInfo }
-                        .collect { visibleItems ->
-                            val visibleSections = visibleItems.filter { it.key in itemKeys }
-                            val topMostSection = visibleSections.minByOrNull { it.offset }
-                            val newIndex = topMostSection?.key?.let { itemKeys.indexOf(it) }
-
-                            if(newIndex != null && newIndex != selectedTabIndex) {
-                                selectedTabIndex = newIndex
-                            }
-                        }
                 }
             }
         }

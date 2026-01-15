@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.search.businessProfile.tabs
+package com.example.scrollbooker.ui.search.businessProfile.sections
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -43,7 +43,7 @@ import com.example.scrollbooker.ui.theme.titleLarge
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
-fun BusinessSummaryTab(
+fun BusinessSummarySection(
     owner: BusinessProfileOwner,
     distance: Float?,
     businessPlan: BusinessPlan,

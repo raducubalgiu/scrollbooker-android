@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.search.businessProfile.tabs
+package com.example.scrollbooker.ui.search.businessProfile.sections
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,17 +20,15 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
-import com.example.scrollbooker.ui.theme.headlineMedium
 import com.example.scrollbooker.ui.theme.headlineSmall
 
 @Composable
-fun BusinessSocialTab() {
+fun BusinessSocialSection() {
     Column(modifier = Modifier.fillMaxSize()) {
         Text(
             modifier = Modifier.padding(horizontal = BasePadding),

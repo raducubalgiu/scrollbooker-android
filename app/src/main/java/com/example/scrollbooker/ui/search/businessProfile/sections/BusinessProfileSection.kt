@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.search.businessProfile
+package com.example.scrollbooker.ui.search.businessProfile.sections
 
 import androidx.annotation.StringRes
 import com.example.scrollbooker.R

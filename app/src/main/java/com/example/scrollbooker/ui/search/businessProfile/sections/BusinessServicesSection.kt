@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.search.businessProfile.tabs
+package com.example.scrollbooker.ui.search.businessProfile.sections
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,7 +23,7 @@ import com.example.scrollbooker.ui.theme.headlineSmall
 import java.math.BigDecimal
 
 @Composable
-fun BusinessServicesTab() {
+fun BusinessServicesSection() {
     val products = listOf(
         Product(
             id = 1,

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.search.businessProfile
+package com.example.scrollbooker.ui.search.businessProfile.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween

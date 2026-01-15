@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.search.businessProfile.tabs
+package com.example.scrollbooker.ui.search.businessProfile.sections
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,7 +23,7 @@ import com.example.scrollbooker.ui.theme.headlineSmall
 import com.example.scrollbooker.ui.theme.titleLarge
 
 @Composable
-fun BusinessReviewsTab(
+fun BusinessReviewsSection(
     reviews: List<BusinessProfileReview>,
     ratingsAverage: Float,
     ratingsCount: Int

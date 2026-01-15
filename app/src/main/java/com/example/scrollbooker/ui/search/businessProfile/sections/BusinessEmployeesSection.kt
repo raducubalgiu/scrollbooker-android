@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.search.businessProfile.tabs
+package com.example.scrollbooker.ui.search.businessProfile.sections
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,14 +26,8 @@ import com.example.scrollbooker.entity.booking.business.domain.model.BusinessPro
 import com.example.scrollbooker.ui.theme.headlineSmall
 import com.example.scrollbooker.ui.theme.titleMedium
 
-data class BusinessEmp(
-    val fullName: String,
-    val avatar: String,
-    val rating: Float
-)
-
 @Composable
-fun BusinessEmployeesTab(
+fun BusinessEmployeesSection(
     employees: List<BusinessProfileEmployee>
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
