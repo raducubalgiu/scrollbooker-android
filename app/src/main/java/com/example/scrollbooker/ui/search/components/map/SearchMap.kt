@@ -47,7 +47,7 @@ fun SearchMap(
     userLocation: GeoPoint?,
     isMapLoading: Boolean,
     onSheetExpand: () -> Unit,
-    onNavigateToBusinessProfile: () -> Unit,
+    onNavigateToBusinessProfile: (Int) -> Unit,
     paddingBottom: Dp
 ) {
     val density = LocalDensity.current
@@ -117,7 +117,7 @@ fun SearchMap(
         BusinessPreviewCard(
             selectedMarker = selectedMarker,
             onCloseClick = { selectedMarker = null },
-            onCardClick = onNavigateToBusinessProfile,
+            onNavigateToBusinessProfile = onNavigateToBusinessProfile,
             isVisible = selectedMarker != null,
             paddingBottom = paddingBottom
         )

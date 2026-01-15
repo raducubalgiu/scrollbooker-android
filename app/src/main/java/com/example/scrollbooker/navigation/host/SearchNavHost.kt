@@ -30,7 +30,10 @@ fun SearchNavHost(navController: NavHostController) {
 
         SearchScreen(
             viewModel = viewModel,
-            onNavigateToBusinessProfile = { navController.navigate(MainRoute.BusinessProfile.route) }
+            onNavigateToBusinessProfile = {
+                viewModel.openBusinessProfile(it)
+                navController.navigate(MainRoute.BusinessProfile.route)
+            }
         )
 
         AnimatedContent(
@@ -46,7 +49,11 @@ fun SearchNavHost(navController: NavHostController) {
         ) { showProfile ->
             if (showProfile) {
                 BusinessProfileScreen(
-                    onBack = { navController.popBackStack() }
+                    viewModel = viewModel,
+                    onBack = {
+                        viewModel.closeBusinessProfile()
+                        navController.popBackStack()
+                    }
                 )
             } else {
                 Box(Modifier.fillMaxSize())

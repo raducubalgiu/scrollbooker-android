@@ -38,6 +38,8 @@ import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun BusinessProfileHeader(
+    mediaFiles: List<BusinessMediaFile>,
+    fullName: String,
     onBack: () -> Unit,
     imageAlpha: Float,
     imageHeight: Dp,
@@ -55,32 +57,7 @@ fun BusinessProfileHeader(
         SearchCardCarousel(
             imageHeight = imageHeight,
             radius = 0.dp,
-            mediaFiles = listOf(
-                BusinessMediaFile(
-                    url = "https://media.scrollbooker.ro/frizeria-figaro-location-1.avif",
-                    urlKey = "",
-                    thumbnailUrl = "https://media.scrollbooker.ro/frizeria-figaro-location-1.avif",
-                    thumbnailKey = "",
-                    type = "photo",
-                    orderIndex = 0
-                ),
-                BusinessMediaFile(
-                    url = "https://media.scrollbooker.ro/frizeria-figaro-location-1.avif",
-                    urlKey = "",
-                    thumbnailUrl = "https://media.scrollbooker.ro/frizeria-figaro-location-1.avif",
-                    thumbnailKey = "",
-                    type = "photo",
-                    orderIndex = 0
-                ),
-                BusinessMediaFile(
-                    url = "https://media.scrollbooker.ro/frizeria-figaro-location-1.avif",
-                    urlKey = "",
-                    thumbnailUrl = "https://media.scrollbooker.ro/frizeria-figaro-location-1.avif",
-                    thumbnailKey = "",
-                    type = "photo",
-                    orderIndex = 0
-                )
-            )
+            mediaFiles = mediaFiles
         )
     }
 
@@ -112,7 +89,7 @@ fun BusinessProfileHeader(
             exit = fadeOut(tween(250))
         ) {
             Text(
-                text = "House Of Barbers",
+                text = fullName,
                 style = titleMedium,
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp

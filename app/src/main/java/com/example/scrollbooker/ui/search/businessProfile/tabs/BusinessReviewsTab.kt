@@ -1,42 +1,33 @@
 package com.example.scrollbooker.ui.search.businessProfile.tabs
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.customized.RatingsStars
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
-import com.example.scrollbooker.ui.theme.headlineMedium
+import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileReview
 import com.example.scrollbooker.ui.theme.headlineSmall
 import com.example.scrollbooker.ui.theme.titleLarge
 
 @Composable
-fun BusinessReviewsTab() {
+fun BusinessReviewsTab(
+    reviews: List<BusinessProfileReview>,
+    ratingsAverage: Float,
+    ratingsCount: Int
+) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             modifier = Modifier.padding(
@@ -50,7 +41,7 @@ fun BusinessReviewsTab() {
 
         RatingsStars(
             modifier = Modifier.padding(start = BasePadding),
-            rating = 4.5f,
+            rating = ratingsAverage,
             maxRating = 5,
         )
 
@@ -63,7 +54,7 @@ fun BusinessReviewsTab() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "4.5",
+                text = ratingsAverage.toString(),
                 style = titleLarge,
                 fontWeight = FontWeight.SemiBold
             )
@@ -71,7 +62,7 @@ fun BusinessReviewsTab() {
             Spacer(Modifier.width(SpacingM))
 
             Text(
-                text = "(1,000)",
+                text = "(${ratingsCount})",
                 style = titleLarge,
                 fontWeight = FontWeight.SemiBold
             )
@@ -79,39 +70,45 @@ fun BusinessReviewsTab() {
 
         Spacer(Modifier.height(SpacingXL))
 
-        LazyRow(modifier = Modifier
-            .padding(top = BasePadding)
-        ) {
-            item { Spacer(Modifier.width(BasePadding)) }
-
-            items(10) {
-                Box(
-                    modifier = Modifier
-                        .height(185.dp)
-                        .clip(ShapeDefaults.Small)
-                        .aspectRatio(9f / 12f)
-                        .background(
-                            brush = Brush.verticalGradient(
-                                colors = listOf(
-                                    Color.Black.copy(alpha = 0.1f),
-                                    Color.Transparent,
-                                    Color.Black.copy(alpha = 0.2f)
-                                )
-                            )
-                        )
-                ) {
-                    AsyncImage(
-                        model = "",
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
-
-                Spacer(Modifier.width(SpacingM))
-            }
-
-            item { Spacer(Modifier.width(BasePadding)) }
+        if(reviews.isEmpty()) {
+            Text(
+                modifier = Modifier.padding(start = BasePadding),
+                text = "Inca nu au fost adaugate recenzii"
+            )
         }
+
+//
+//        LazyRow(modifier = Modifier.padding(top = BasePadding)) {
+//            item { Spacer(Modifier.width(BasePadding)) }
+//
+//            items(10) {
+//                Box(
+//                    modifier = Modifier
+//                        .height(185.dp)
+//                        .clip(ShapeDefaults.Small)
+//                        .aspectRatio(9f / 12f)
+//                        .background(
+//                            brush = Brush.verticalGradient(
+//                                colors = listOf(
+//                                    Color.Black.copy(alpha = 0.1f),
+//                                    Color.Transparent,
+//                                    Color.Black.copy(alpha = 0.2f)
+//                                )
+//                            )
+//                        )
+//                ) {
+//                    AsyncImage(
+//                        model = "",
+//                        contentDescription = null,
+//                        contentScale = ContentScale.Crop,
+//                        modifier = Modifier.fillMaxSize()
+//                    )
+//                }
+//
+//                Spacer(Modifier.width(SpacingM))
+//            }
+//
+//            item { Spacer(Modifier.width(BasePadding)) }
+//        }
     }
 }

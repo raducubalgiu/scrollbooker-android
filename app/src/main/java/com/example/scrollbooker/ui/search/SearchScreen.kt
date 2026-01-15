@@ -60,7 +60,7 @@ import rememberLocationsCountText
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel,
-    onNavigateToBusinessProfile: () -> Unit
+    onNavigateToBusinessProfile: (Int) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current

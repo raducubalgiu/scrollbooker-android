@@ -13,7 +13,9 @@ import com.example.scrollbooker.entity.booking.business.data.remote.BusinessBoun
 import com.example.scrollbooker.entity.booking.business.data.remote.SearchBusinessRequest
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMarker
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessOwner
+import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfile
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessSheet
+import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessProfileUseCase
 import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessesMarkersUseCase
 import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessesSheetUseCase
 import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.BusinessDomain
@@ -146,13 +148,16 @@ class SearchViewModel @Inject constructor(
     private val getAllBusinessTypesByBusinessDomainUseCase: GetAllBusinessTypesByBusinessDomainUseCase,
     private val getAllServiceDomainsByBusinessDomainUseCase: GetAllServiceDomainsByBusinessDomainUseCase,
     private val getServicesByServiceDomainUseCase: GetServicesByServiceDomainUseCase,
-    private val getFiltersByServiceUseCase: GetFiltersByServiceUseCase
+    private val getFiltersByServiceUseCase: GetFiltersByServiceUseCase,
+    private val getBusinessProfileUseCase: GetBusinessProfileUseCase
 ): ViewModel() {
     private val _request = MutableStateFlow(SearchRequestState())
     val request: StateFlow<SearchRequestState> = _request.asStateFlow()
 
-    private val _businessDomains = MutableStateFlow<FeatureState<List<BusinessDomain>>>(FeatureState.Loading)
-    val businessDomains: StateFlow<FeatureState<List<BusinessDomain>>> = _businessDomains.asStateFlow()
+    private val _businessDomains =
+        MutableStateFlow<FeatureState<List<BusinessDomain>>>(FeatureState.Loading)
+    val businessDomains: StateFlow<FeatureState<List<BusinessDomain>>> =
+        _businessDomains.asStateFlow()
 
     private val _markersUiState = MutableStateFlow(MarkersUiState())
     val markersUiState: StateFlow<MarkersUiState> = _markersUiState.asStateFlow()
@@ -175,7 +180,8 @@ class SearchViewModel @Inject constructor(
     val cameraPosition: StateFlow<CameraPositionState> = _cameraPosition.asStateFlow()
 
     private val _servicesSheetFilters = MutableStateFlow(SearchServicesFiltersSheetState())
-    val servicesSheetFilters: StateFlow<SearchServicesFiltersSheetState> = _servicesSheetFilters.asStateFlow()
+    val servicesSheetFilters: StateFlow<SearchServicesFiltersSheetState> =
+        _servicesSheetFilters.asStateFlow()
 
     private val rawRequestFlow: Flow<SearchBusinessRequest> =
         _request
@@ -195,12 +201,12 @@ class SearchViewModel @Inject constructor(
             .flatMapLatest { req ->
                 flow {
                     _markersUiState.update { current ->
-                        current.copy(isLoading=true, error = null)
+                        current.copy(isLoading = true, error = null)
                     }
 
                     val result = withVisibleLoading { getBusinessesMarkersUseCase(req) }
 
-                    when(result) {
+                    when (result) {
                         is FeatureState.Success -> _markersUiState.update { current ->
                             current.copy(
                                 data = result.data,
@@ -208,13 +214,15 @@ class SearchViewModel @Inject constructor(
                                 error = null
                             )
                         }
-                        is FeatureState.Error ->  _markersUiState.update { current ->
+
+                        is FeatureState.Error -> _markersUiState.update { current ->
                             current.copy(
                                 data = null,
                                 isLoading = false,
                                 error = result.error
                             )
                         }
+
                         else -> Unit
                     }
 
@@ -246,7 +254,7 @@ class SearchViewModel @Inject constructor(
             .distinctUntilChanged()
             .flatMapLatest { domainId ->
                 flow {
-                    if(domainId == null) {
+                    if (domainId == null) {
                         emit(null)
                     } else {
                         emit(FeatureState.Loading)
@@ -272,7 +280,7 @@ class SearchViewModel @Inject constructor(
             .distinctUntilChanged()
             .flatMapLatest { typeId ->
                 flow {
-                    if(typeId == null) {
+                    if (typeId == null) {
                         emit(null)
                     } else {
                         emit(FeatureState.Loading)
@@ -303,7 +311,7 @@ class SearchViewModel @Inject constructor(
             .distinctUntilChanged()
             .flatMapLatest { serviceId ->
                 flow {
-                    if(serviceId == null) {
+                    if (serviceId == null) {
                         emit(null)
                     } else {
                         emit(FeatureState.Loading)
@@ -329,6 +337,7 @@ class SearchViewModel @Inject constructor(
     fun setBusinessOwner(businessOwner: BusinessOwner) {
         _selectedBusinessOwner.value = businessOwner
     }
+
     fun clearBusinessOwner() {
         _selectedBusinessOwner.value = null
     }
@@ -348,7 +357,7 @@ class SearchViewModel @Inject constructor(
         val zoom = _cameraPosition.value.zoom.toFloat()
 
         _request.update { current ->
-            if(current.bBox == bBox && current.zoom == zoom) {
+            if (current.bBox == bBox && current.zoom == zoom) {
                 current
             } else {
                 current.copy(
@@ -504,4 +513,31 @@ class SearchViewModel @Inject constructor(
             )
         }
     }
+
+    private val _selectedBusinessId = MutableStateFlow<Int?>(null)
+    val selectedBusinessId: StateFlow<Int?> = _selectedBusinessId.asStateFlow()
+
+    fun openBusinessProfile(id: Int) {
+        _selectedBusinessId.value = id
+    }
+
+    fun closeBusinessProfile() {
+        _selectedBusinessId.value = null
+    }
+
+    val businessProfileState: StateFlow<FeatureState<BusinessProfile>> =
+        selectedBusinessId
+            .filterNotNull()
+            .distinctUntilChanged()
+            .flatMapLatest { id ->
+                flow {
+                    emit(FeatureState.Loading)
+                    emit(withVisibleLoading { getBusinessProfileUseCase(id) })
+                }
+            }
+            .stateIn(
+                viewModelScope,
+                SharingStarted.WhileSubscribed(5_000),
+                FeatureState.Loading
+            )
 }

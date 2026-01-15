@@ -4,6 +4,7 @@ import com.example.scrollbooker.entity.booking.appointment.domain.model.Business
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 
 data class BusinessSheet(
+    val id: Int,
     val owner: BusinessOwner,
     val businessShortDomain: String,
     val address: String,

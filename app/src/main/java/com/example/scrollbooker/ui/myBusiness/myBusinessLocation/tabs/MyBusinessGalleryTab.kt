@@ -84,7 +84,7 @@ fun MyBusinessGalleryTab(
                             serviceId = 1,
                             businessId = 1,
                             currencyId = 1,
-                            subFilters = listOf(SubFilter(id=1, name = "Dummy")),
+                            subFilters = listOf(SubFilter(id = 1, name = "Dummy")),
                             canBeBooked = true
                         ),
                         Product(
@@ -99,10 +99,11 @@ fun MyBusinessGalleryTab(
                             serviceId = 1,
                             businessId = 1,
                             currencyId = 1,
-                            subFilters = listOf(SubFilter(id=1, name = "Dummy")),
+                            subFilters = listOf(SubFilter(id = 1, name = "Dummy")),
                             canBeBooked = true
                         )
-                    )
+                    ),
+                    id = 1
                 ),
                 onNavigateToBusinessProfile = {},
                 onOpenBookingsSheet = {},

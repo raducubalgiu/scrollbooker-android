@@ -20,7 +20,10 @@ import com.example.scrollbooker.ui.theme.headlineMedium
 import com.example.scrollbooker.ui.theme.headlineSmall
 
 @Composable
-fun BusinessAboutTab() {
+fun BusinessAboutTab(
+    description: String,
+    schedules: List<Schedule>
+) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             modifier = Modifier.padding(
@@ -34,7 +37,8 @@ fun BusinessAboutTab() {
 
         Text(
             modifier = Modifier.padding(horizontal = BasePadding),
-            text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.")
+            text = description
+        )
 
         Spacer(Modifier.height(SpacingXL))
 
@@ -49,61 +53,12 @@ fun BusinessAboutTab() {
 
         SchedulesSection(
             modifier = Modifier.padding(horizontal = BasePadding),
-            schedules = listOf(
-                Schedule(
-                    id = 1,
-                    dayOfWeek = "Monday",
-                    startTime = "09:00:00",
-                    endTime = "18:00:00"
-                ),
-                Schedule(
-                    id = 1,
-                    dayOfWeek = "Thursday",
-                    startTime = "09:00:00",
-                    endTime = "18:00:00"
-                ),
-                Schedule(
-                    id = 1,
-                    dayOfWeek = "Wednesday",
-                    startTime = "09:00:00",
-                    endTime = "18:00:00"
-                ),
-                Schedule(
-                    id = 1,
-                    dayOfWeek = "Thursday",
-                    startTime = "09:00:00",
-                    endTime = "18:00:00"
-                ),
-                Schedule(
-                    id = 1,
-                    dayOfWeek = "Friday",
-                    startTime = "09:00:00",
-                    endTime = "18:00:00"
-                ),
-                Schedule(
-                    id = 1,
-                    dayOfWeek = "Saturday",
-                    startTime = null,
-                    endTime = null
-                ),
-                Schedule(
-                    id = 1,
-                    dayOfWeek = "Sunday",
-                    startTime = null,
-                    endTime = null
-                )
-            )
-        )
-
-        Text(
-            modifier = Modifier.padding(horizontal = BasePadding),
-            text = stringResource(R.string.location),
-            style = headlineSmall,
-            fontWeight = FontWeight.SemiBold
+            schedules = schedules
         )
 
         LocationSection(
-            modifier = Modifier.padding(horizontal = BasePadding)
+            modifier = Modifier.padding(horizontal = BasePadding),
+            showAddress = false
         )
 
         Spacer(Modifier.height(SpacingXL))

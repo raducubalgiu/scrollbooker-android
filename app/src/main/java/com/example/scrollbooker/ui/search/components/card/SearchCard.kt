@@ -27,7 +27,7 @@ fun SearchCard(
     modifier: Modifier = Modifier,
     business: BusinessSheet,
     showMoreProductsBtn: Boolean = true,
-    onNavigateToBusinessProfile: () -> Unit,
+    onNavigateToBusinessProfile: (Int) -> Unit,
     onOpenBookingsSheet: (BusinessOwner) -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -38,7 +38,7 @@ fun SearchCard(
             .clip(RoundedCornerShape(12.dp))
             .padding(horizontal = BasePadding)
             .clickable(
-                onClick = onNavigateToBusinessProfile,
+                onClick = { onNavigateToBusinessProfile(business.id) },
                 interactionSource = interactionSource,
                 indication = null
             )

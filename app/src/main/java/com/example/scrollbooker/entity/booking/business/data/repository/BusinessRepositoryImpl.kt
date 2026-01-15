@@ -20,6 +20,7 @@ import com.example.scrollbooker.entity.booking.business.domain.model.BusinessAdd
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessCreateResponse
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessLocation
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMarker
+import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfile
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessSheet
 import com.example.scrollbooker.entity.booking.business.domain.model.RecommendedBusiness
 import com.example.scrollbooker.entity.booking.business.domain.repository.BusinessRepository
@@ -83,6 +84,10 @@ class BusinessRepositoryImpl @Inject constructor(
 
     override suspend fun getBusinessById(businessId: Int): Business {
         return apiService.getBusinessById(businessId).toDomain()
+    }
+
+    override suspend fun getBusinessProfileById(businessId: Int): BusinessProfile {
+        return apiService.getBusinessProfileById(businessId).toDomain()
     }
 
     override suspend fun getBusinessLocation(

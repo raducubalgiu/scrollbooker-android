@@ -6,6 +6,7 @@ import com.example.scrollbooker.entity.booking.products.data.mappers.toDomain
 
 fun BusinessSheetDto.toDomain(): BusinessSheet {
     return BusinessSheet(
+        id = id,
         owner = owner.toDomain(),
         businessShortDomain = businessShortDomain,
         address = address,

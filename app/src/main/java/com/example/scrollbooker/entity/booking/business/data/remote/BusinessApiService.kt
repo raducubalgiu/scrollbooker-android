@@ -25,6 +25,11 @@ interface BusinessApiService {
         @Path("businessId") businessId: Int
     ): BusinessDto
 
+    @GET("/businesses/{businessId}/profile")
+    suspend fun getBusinessProfileById(
+        @Path("businessId") businessId: Int
+    ): BusinessProfileDto
+
     @GET("/businesses/recommended")
     suspend fun getRecommendedBusinesses(
         @Query("lng") lng: Float?,

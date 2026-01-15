@@ -24,12 +24,17 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.AvatarWithRating
 import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
 import com.example.scrollbooker.components.core.divider.VerticalDivider
+import com.example.scrollbooker.core.enums.BusinessPlanEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
+import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileOwner
+import com.example.scrollbooker.entity.social.post.domain.model.BusinessPlan
+import com.example.scrollbooker.entity.user.userProfile.domain.model.OpeningHours
 import com.example.scrollbooker.ui.profile.components.userInfo.components.CounterItem
+import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.Primary
@@ -39,8 +44,16 @@ import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun BusinessSummaryTab(
+    owner: BusinessProfileOwner,
+    distance: Float?,
+    businessPlan: BusinessPlan,
+    address: String,
+    openingHours: OpeningHours,
     modifier: Modifier = Modifier
 ) {
+    val hasPhone = businessPlan.name == BusinessPlanEnum.STANDARD
+    val isFollow = owner.isFollow
+
     Column(modifier = modifier
         .fillMaxWidth()
         .padding(horizontal = BasePadding)
@@ -53,8 +66,8 @@ fun BusinessSummaryTab(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             AvatarWithRating(
-                url = "https://media.scrollbooker.ro/logo.jpg",
-                rating = 4.5f,
+                url = owner.avatar ?: "",
+                rating = owner.counters.ratingsAverage,
                 elevation = 2.dp,
                 onClick = {}
             )
@@ -69,7 +82,7 @@ fun BusinessSummaryTab(
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
                         CounterItem(
-                            counter = 120,
+                            counter = owner.counters.ratingsCount,
                             label = stringResource(R.string.reviews),
                             onNavigate = {}
                         )
@@ -77,7 +90,7 @@ fun BusinessSummaryTab(
                         VerticalDivider()
 
                         CounterItem(
-                            counter = 500,
+                            counter = owner.counters.followersCount,
                             label = stringResource(R.string.followers),
                             onNavigate = {}
                         )
@@ -85,7 +98,7 @@ fun BusinessSummaryTab(
                         VerticalDivider()
 
                         CounterItem(
-                            counter = 120,
+                            counter = owner.counters.followingsCount,
                             label = stringResource(R.string.following),
                             onNavigate = {}
                         )
@@ -99,24 +112,43 @@ fun BusinessSummaryTab(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    MainButtonOutlined(
-                        modifier = Modifier.weight(0.5f),
-                        title = stringResource(R.string.call),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Primary,
-                            contentColor = OnPrimary,
-                        ),
-                        border = BorderStroke(1.dp, Primary),
-                        shape = ShapeDefaults.ExtraLarge,
-                        onClick = {}
-                    )
+                    if(businessPlan.name == BusinessPlanEnum.STANDARD) {
+                        MainButtonOutlined(
+                            modifier = Modifier.weight(0.5f),
+                            title = stringResource(R.string.call),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Primary,
+                                contentColor = OnPrimary,
+                            ),
+                            border = BorderStroke(1.dp, Primary),
+                            shape = ShapeDefaults.ExtraLarge,
+                            onClick = {}
+                        )
 
-                    Spacer(Modifier.width(SpacingS))
+                        Spacer(Modifier.width(SpacingS))
+                    }
 
                     MainButtonOutlined(
                         modifier = Modifier.weight(0.5f),
                         title = stringResource(R.string.follow),
                         shape = ShapeDefaults.ExtraLarge,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = when {
+                                hasPhone -> Color.Transparent
+                                isFollow -> Color.Transparent
+                                else -> Primary
+                            },
+                            contentColor = when {
+                                hasPhone -> OnBackground
+                                isFollow -> OnBackground
+                                else -> OnPrimary
+                            }
+                        ),
+                        border = BorderStroke(1.dp, when {
+                            hasPhone -> Divider
+                            isFollow -> Divider
+                            else -> Primary
+                        }),
                         onClick = {}
                     )
                 }
@@ -124,7 +156,7 @@ fun BusinessSummaryTab(
         }
 
         Text(
-            text = "House Of Barbers",
+            text = owner.fullName,
             style = titleLarge,
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp
@@ -133,22 +165,24 @@ fun BusinessSummaryTab(
         Spacer(Modifier.height(SpacingXS))
 
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = "4.5km",
-                color = Color.Gray,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            distance?.let {
+                Text(
+                    text = "${it}km",
+                    color = Color.Gray,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
 
-            Text(
-                modifier = Modifier.padding(horizontal = 5.dp),
-                text = "\u2022",
-                color = Color.Gray
-            )
+                Text(
+                    modifier = Modifier.padding(horizontal = 5.dp),
+                    text = "\u2022",
+                    color = Color.Gray
+                )
+            }
 
             Text(
                 modifier = Modifier.fillMaxWidth(fraction = 0.8f),
-                text = "Strada Randunelelor, nr 45, Sector 3",
+                text = address,
                 color = Color.Gray,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -162,7 +196,8 @@ fun BusinessSummaryTab(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Deschis",
+                text = if(openingHours.openNow) stringResource(R.string.open)
+                       else stringResource(R.string.closed),
                 color = OnBackground,
                 style = titleMedium,
                 fontSize = 17.sp,
@@ -176,7 +211,8 @@ fun BusinessSummaryTab(
             )
 
             Text(
-                text = "Inchide la 18:00",
+                text = if(openingHours.openNow) "Inchide la ${openingHours.closingTime}"
+                       else "Deschide ${openingHours.nextOpenDay} la ${openingHours.nextOpenTime}",
                 color = Color.Gray,
                 style = bodyLarge,
             )

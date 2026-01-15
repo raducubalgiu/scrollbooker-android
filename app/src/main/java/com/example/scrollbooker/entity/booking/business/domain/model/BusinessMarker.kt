@@ -3,6 +3,7 @@ import com.example.scrollbooker.core.enums.BusinessShortDomainEnum
 import com.example.scrollbooker.entity.booking.appointment.domain.model.BusinessCoordinates
 
 data class BusinessMarker(
+    val id: Int,
     val owner: BusinessOwner,
     val businessShortDomain: BusinessShortDomainEnum,
     val address: String,
