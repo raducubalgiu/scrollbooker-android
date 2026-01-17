@@ -45,20 +45,22 @@ fun BusinessProfileHeader(
     imageHeight: Dp,
     imageTranslationY: Float
 ) {
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .height(imageHeight)
-        .graphicsLayer {
-            alpha = imageAlpha
-            translationY = imageTranslationY
+    if(imageAlpha > 0.01f) {
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .height(imageHeight)
+            .graphicsLayer {
+                alpha = imageAlpha
+                translationY = imageTranslationY
+            }
+            .zIndex(2f)
+        ) {
+            SearchCardCarousel(
+                imageHeight = imageHeight,
+                radius = 0.dp,
+                mediaFiles = mediaFiles
+            )
         }
-        .zIndex(2f)
-    ) {
-        SearchCardCarousel(
-            imageHeight = imageHeight,
-            radius = 0.dp,
-            mediaFiles = mediaFiles
-        )
     }
 
     Row(

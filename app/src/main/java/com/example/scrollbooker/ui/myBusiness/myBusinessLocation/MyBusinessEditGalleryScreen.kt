@@ -4,38 +4,54 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircleOutline
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.FormLayout
-import com.example.scrollbooker.components.customized.BusinessMediaLauncher
-import com.example.scrollbooker.components.customized.BusinessMediaTypeEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.headlineSmall
+import kotlinx.coroutines.launch
 
 @Composable
 fun MyBusinessEditGalleryScreen(
@@ -44,16 +60,9 @@ fun MyBusinessEditGalleryScreen(
 ) {
     val verticalScroll = rememberScrollState()
     val photosState by viewModel.photosState.collectAsState()
-    val videoUri by viewModel.videoState.collectAsState()
     val isSaving by viewModel.isSaving.collectAsState()
 
     var pendingSlotIndex by rememberSaveable { mutableStateOf<Int?>(null) }
-
-//    val pickVideo = rememberLauncherForActivityResult(
-//        contract = ActivityResultContracts.PickVisualMedia()
-//    ) { url: Uri? ->
-//        viewModel.setVideo(url)
-//    }
 
     val pickImage = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
@@ -65,15 +74,17 @@ fun MyBusinessEditGalleryScreen(
         pendingSlotIndex = null
     }
 
+    val scope = rememberCoroutineScope()
+
     val isLoading = isSaving == FeatureState.Loading
-    val isEnabled = videoUri != null || photosState.images.any { it != null }
+    val isEnabled = photosState.images.any { it != null }
 
     FormLayout(
         headLine = stringResource(R.string.photoGallery),
         subHeadLine = stringResource(R.string.photoGalleryDescription),
         buttonTitle = stringResource(R.string.save),
         onBack = onBack,
-        onNext = {},
+        onNext = { scope.launch { viewModel.updateBusinessGallery() } },
         isEnabled = isEnabled && !isLoading,
         isLoading = isLoading
     ) {
@@ -81,41 +92,58 @@ fun MyBusinessEditGalleryScreen(
             .padding(horizontal = SpacingXXL)
             .verticalScroll(verticalScroll)
         ) {
-//            BusinessMediaTitle(
-//                title = stringResource(R.string.video),
-//                description = stringResource(R.string.addVideoDescription)
-//            )
-//
-//            BusinessMediaLauncher(
-//                type = BusinessMediaTypeEnum.VIDEO,
-//                uri = videoUri,
-//                onClick = {
-//                    pickVideo.launch(
-//                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly)
-//                    )
-//                },
-//                onClear = { viewModel.clearVideo() }
-//            )
-
             BusinessMediaTitle(
                 title = "${stringResource(R.string.images)}*",
                 description = stringResource(R.string.addImagesDescription)
             )
 
             repeat(5) { i ->
-                BusinessMediaLauncher(
-                    type = BusinessMediaTypeEnum.PHOTO,
-                    uri = photosState.images[i],
-                    onClick = {
+                val uri = photosState.images[i]
+
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .clip(RoundedCornerShape(BasePadding))
+                    .background(SurfaceBG)
+                    .clickable {
                         pendingSlotIndex = i
                         pickImage.launch(
                             PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                         )
                     },
-                    onClear = {
-                        viewModel.clearImage(i)
+                    contentAlignment = Alignment.Center
+                ) {
+                    if(uri == null) {
+                        Icon(
+                            modifier = Modifier.size(35.dp),
+                            imageVector = Icons.Default.AddCircleOutline,
+                            contentDescription = "Add",
+                            tint = Divider
+                        )
+                    } else {
+                        AsyncImage(
+                            model = uri,
+                            contentDescription = "Selected image",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(200.dp),
+                            contentScale = ContentScale.Crop
+                        )
+
+                        IconButton(
+                            modifier = Modifier.align(Alignment.TopEnd),
+                            onClick = { viewModel.clearImage(i) }
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_close_circle_solid),
+                                contentDescription = "Remove Image",
+                                tint = Color.White
+                            )
+                        }
                     }
-                )
+                }
+
+                Spacer(Modifier.height(SpacingS))
             }
         }
     }

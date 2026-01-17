@@ -26,7 +26,7 @@ class BusinessSheetPagingSource(
         val limit = 10
 
         return try {
-            val response = withVisibleLoading {
+            val response = withVisibleLoading(minLoadingMs = 300L) {
                 api.getBusinessesSheet(request, page, limit)
             }
 

@@ -69,6 +69,13 @@ interface BusinessApiService {
         @Part photos: List<MultipartBody.Part>
     ): BusinessCreateResponseDto
 
+    @Multipart
+    @PATCH("/businesses/{businessId}/gallery")
+    suspend fun updateBusinessGallery(
+        @Path("businessId") businessId: Int,
+        @Part photos: List<MultipartBody.Part>
+    )
+
     @POST("/businesses/markers")
     suspend fun getBusinessesMarkers(
         @Body request: SearchBusinessRequest

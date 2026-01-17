@@ -1,26 +1,15 @@
 package com.example.scrollbooker.ui.myBusiness.myBusinessLocation
 import android.net.Uri
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
-import com.example.scrollbooker.entity.booking.business.domain.model.BusinessAddress
-import com.example.scrollbooker.entity.booking.business.domain.model.BusinessCreateResponse
-import com.example.scrollbooker.entity.booking.business.domain.useCase.CreateBusinessUseCase
-import com.example.scrollbooker.entity.booking.business.domain.useCase.SearchBusinessAddressUseCase
-import com.example.scrollbooker.entity.nomenclature.businessType.domain.model.BusinessType
-import com.example.scrollbooker.entity.nomenclature.businessType.domain.useCase.GetAllPaginatedBusinessTypesUseCase
+import com.example.scrollbooker.entity.booking.business.domain.useCase.UpdateBusinessGalleryUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -31,83 +20,13 @@ data class BusinessPhotoUIState(
 @HiltViewModel
 class MyBusinessLocationViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
-    private val getAllBusinessTypesUseCase: GetAllPaginatedBusinessTypesUseCase,
-    private val searchBusinessAddressUseCase: SearchBusinessAddressUseCase,
-    private val createBusinessUseCase: CreateBusinessUseCase
+    private val updateBusinessGalleryUseCase: UpdateBusinessGalleryUseCase
 ): ViewModel() {
     private val _photosState = MutableStateFlow(BusinessPhotoUIState())
     val photosState: StateFlow<BusinessPhotoUIState> = _photosState
 
-    private val _videoState = MutableStateFlow<Uri?>(null)
-    val videoState: StateFlow<Uri?> = _videoState
-
-    private val _businessTypes: Flow<PagingData<BusinessType>> by lazy {
-        getAllBusinessTypesUseCase().cachedIn(viewModelScope)
-    }
-    val businessTypes: Flow<PagingData<BusinessType>> get() = _businessTypes
-
-    private val _selectedBusinessType = MutableStateFlow<BusinessType?>(null)
-    val selectedBusinessType: StateFlow<BusinessType?> = _selectedBusinessType
-
-    fun setBusinessType(businessType: BusinessType) {
-        _selectedBusinessType.value = businessType
-    }
-
-    private val _searchState = MutableStateFlow<FeatureState<List<BusinessAddress>>?>(null)
-    val searchState: StateFlow<FeatureState<List<BusinessAddress>>?> = _searchState
-
-    private val _selectedAddress = MutableStateFlow<BusinessAddress?>(null)
-    val selectedBusinessAddress: StateFlow<BusinessAddress?> = _selectedAddress
-
-    private val _currentQuery = MutableStateFlow("")
-    val currentQuery: StateFlow<String> = _currentQuery
-
-    fun setBusinessAddress(businessAddress: BusinessAddress) {
-        _selectedAddress.value = businessAddress
-    }
-
-    private val _currentName = MutableStateFlow("")
-    val currentName: StateFlow<String> = _currentName
-
-    fun setBusinessName(businessName: String) {
-        _currentName.value = businessName
-    }
-
-    private val _currentDescription = MutableStateFlow("")
-    val currentDescription: StateFlow<String> = _currentDescription
-
-    fun setBusinessDescription(businessDescription: String) {
-        _currentDescription.value = businessDescription
-    }
-
     private val _isSaving = MutableStateFlow<FeatureState<Unit>?>(null)
     val isSaving: StateFlow<FeatureState<Unit>?> = _isSaving
-
-    private var debounceJob: Job? = null
-
-    fun searchAddress(query: String) {
-        _currentQuery.value = query
-
-        if(query.length < 3) {
-            debounceJob?.cancel()
-            _searchState.value = null
-            return
-        }
-
-        debounceJob?.cancel()
-        debounceJob = viewModelScope.launch {
-            delay(200)
-
-            val latest = currentQuery.value
-            if(latest.length < 3 || latest != query) return@launch
-
-            _searchState.value = FeatureState.Loading
-
-            _searchState.value = withVisibleLoading {
-                searchBusinessAddressUseCase(query)
-            }
-        }
-    }
 
     fun setImage(slot: Int, uri: Uri?) {
         if(slot !in 0..4) return
@@ -116,34 +35,21 @@ class MyBusinessLocationViewModel @Inject constructor(
         }
     }
 
-    fun setVideo(uri: Uri?) {
-        if(uri != null) {
-            _videoState.value = uri
-        }
-    }
-
     fun clearImage(slot: Int) = setImage(slot, null)
 
-    fun clearVideo() {
-        _videoState.value = null
-    }
-
-    suspend fun createBusiness(): Result<BusinessCreateResponse> {
+    suspend fun updateBusinessGallery(): Result<Unit> {
         _isSaving.value = FeatureState.Loading
-        val placeId = _selectedAddress.value?.placeId
-        val businessTypeId = _selectedBusinessType.value?.id
 
-        if(placeId.isNullOrEmpty() || businessTypeId == null) {
-            Timber.tag("Create Business").e("Place Id or Business Type Id is null")
-            return Result.failure(Throwable("Place Id or Business Type Id is null"))
+        val businessId = authDataStore.getBusinessId().firstOrNull()
+
+        if(businessId == null) {
+            Timber.tag("Update Business Gallery").e("Business Id not found in AuthDataStore")
+            return Result.failure(exception = Throwable("Business Id not found in AuthDataStore"))
         }
 
         val result = withVisibleLoading {
-            createBusinessUseCase(
-                description = _currentDescription.value,
-                placeId = placeId,
-                businessTypeId = businessTypeId,
-                ownerFullName = _currentName.value,
+            updateBusinessGalleryUseCase(
+                businessId = businessId,
                 photos = _photosState.value.images
             )
         }
@@ -155,9 +61,6 @@ class MyBusinessLocationViewModel @Inject constructor(
             }
             .onSuccess { response ->
                 _isSaving.value = FeatureState.Success(Unit)
-
-                authDataStore.setBusinessId(response.businessId)
-                authDataStore.setBusinessTypeId(businessTypeId)
             }
     }
 }

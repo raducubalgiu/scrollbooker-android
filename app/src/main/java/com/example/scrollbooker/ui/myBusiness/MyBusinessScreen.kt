@@ -47,7 +47,7 @@ fun MyBusinessScreen(
             description = stringResource(R.string.businessLocationDetails),
             icon = Icons.Outlined.LocationOn,
             navigate = { myBusinessNavigate.toMyBusinessLocation() },
-            hasEmployees = false,
+            hasEmployees = true,
             permission = PermissionEnum.MY_BUSINESS_LOCATION_VIEW
         ),
         BusinessCard(

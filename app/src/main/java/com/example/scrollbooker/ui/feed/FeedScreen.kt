@@ -48,9 +48,9 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FeedScreen(
+    feedViewModel: FeedScreenViewModel,
     feedNavigate: FeedNavigator,
 ) {
-    val feedViewModel: FeedScreenViewModel = hiltViewModel()
     val explorePosts = feedViewModel.explorePosts.collectAsLazyPagingItems()
     val followingPosts = feedViewModel.followingPosts.collectAsLazyPagingItems()
 

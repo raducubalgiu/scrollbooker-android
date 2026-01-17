@@ -33,6 +33,11 @@ interface BusinessRepository {
         photos: List<Uri?>
     ): BusinessCreateResponse
 
+    suspend fun updateBusinessGallery(
+        businessId: Int,
+        photos: List<Uri?>
+    )
+
     suspend fun getBusinessesMarkers(request: SearchBusinessRequest): PaginatedResponseDto<BusinessMarker>
     fun getBusinessesSheet(
         request: SearchBusinessRequest,

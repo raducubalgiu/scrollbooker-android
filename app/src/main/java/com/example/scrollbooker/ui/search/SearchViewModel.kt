@@ -156,6 +156,9 @@ class SearchViewModel @Inject constructor(
     private val _request = MutableStateFlow(SearchRequestState())
     val request: StateFlow<SearchRequestState> = _request.asStateFlow()
 
+    private val _isMapMounted = MutableStateFlow<Boolean>(false)
+    val isMapMounted: StateFlow<Boolean> = _isMapMounted.asStateFlow()
+
     private val _businessDomains =
         MutableStateFlow<FeatureState<List<BusinessDomain>>>(FeatureState.Loading)
     val businessDomains: StateFlow<FeatureState<List<BusinessDomain>>> =
@@ -201,6 +204,8 @@ class SearchViewModel @Inject constructor(
         )
 
     init {
+        loadAllBusinessDomains()
+
         sharedRequestFlow
             .flatMapLatest { req ->
                 flow {
@@ -208,7 +213,7 @@ class SearchViewModel @Inject constructor(
                         current.copy(isLoading = true, error = null)
                     }
 
-                    val result = withVisibleLoading { getBusinessesMarkersUseCase(req) }
+                    val result = withVisibleLoading(minLoadingMs = 300L) { getBusinessesMarkersUseCase(req) }
 
                     when (result) {
                         is FeatureState.Success -> _markersUiState.update { current ->
@@ -334,8 +339,10 @@ class SearchViewModel @Inject constructor(
                 initialValue = null
             )
 
-    init {
-        loadAllBusinessDomains()
+    fun setMapMounted() {
+        if(!_isMapMounted.value) {
+            _isMapMounted.value = true
+        }
     }
 
     fun setSelectedMarker(marker: BusinessMarker?) {

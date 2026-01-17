@@ -2,7 +2,6 @@ package com.example.scrollbooker.entity.booking.business.data.repository
 
 import android.content.Context
 import android.net.Uri
-import android.provider.OpenableColumns
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -27,16 +26,16 @@ import com.example.scrollbooker.entity.booking.business.domain.repository.Busine
 import com.example.scrollbooker.entity.nomenclature.service.data.mappers.toDomain
 import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import timber.log.Timber
 import java.io.File
-import java.util.UUID
 import javax.inject.Inject
 
 class BusinessRepositoryImpl @Inject constructor(
@@ -50,22 +49,48 @@ class BusinessRepositoryImpl @Inject constructor(
         ownerFullName: String,
         photos: List<Uri?>
     ): BusinessCreateResponse {
-        val validPhotos = photos.filterNotNull()
+        val tempFiles = mutableListOf<File>()
 
-        if(validPhotos.isEmpty()) {
-            Timber.tag("Create Business").e("At least one business photo is required")
-            throw IllegalStateException("At least one business photo is required")
+        try {
+            val parts = photos.filterNotNull().map { uri ->
+                val (part, file) = uriToMultipartPart(context, uri)
+                tempFiles += file
+                part
+            }
+
+            return apiService.createBusiness(
+                description = description.toNullableTextBody(),
+                placeId = placeId.toTextBody(),
+                businessTypeId = businessTypeId.toTextBody(),
+                ownerFullName = ownerFullName.toTextBody(),
+                photos = parts
+            ).toDomain()
+        } finally {
+            tempFiles.forEach { runCatching { it.delete() } }
         }
+    }
 
-        val photoParts = validPhotos.map { uri -> uriToMultipartPart(context, uri) }
+    override suspend fun updateBusinessGallery(
+        businessId: Int,
+        photos: List<Uri?>
+    ) = withContext(Dispatchers.IO) {
 
-        return apiService.createBusiness(
-            description = description.toNullableTextBody(),
-            placeId = placeId.toTextBody(),
-            businessTypeId = businessTypeId.toTextBody(),
-            ownerFullName = ownerFullName.toTextBody(),
-            photos = photoParts
-        ).toDomain()
+        val tempFiles = mutableListOf<File>()
+
+        try {
+            val parts = photos.filterNotNull().map { uri ->
+                val (part, file) = uriToMultipartPart(context, uri)
+                tempFiles += file
+                part
+            }
+
+            apiService.updateBusinessGallery(
+                businessId = businessId,
+                photos = parts
+            )
+        } finally {
+            tempFiles.forEach { runCatching { it.delete() } }
+        }
     }
 
     override suspend fun searchBusinessAddress(query: String): List<BusinessAddress> {
@@ -142,23 +167,21 @@ private fun String?.toNullableTextBody(): RequestBody? = this?.toTextBody()
 
 private fun uriToMultipartPart(
     context: Context,
-    uri: Uri,
-): MultipartBody.Part {
+    uri: Uri
+): Pair<MultipartBody.Part, File> {
+
     val resolver = context.contentResolver
-
     val mime = resolver.getType(uri) ?: "image/jpeg"
-    val fileName = resolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
-        ?.use { c ->
-            val idx = c.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-            if (c.moveToFirst() && idx >= 0) c.getString(idx) else null
-        } ?: "photo_${UUID.randomUUID()}.jpg"
 
-    val cacheFile = File(context.cacheDir, fileName)
-    resolver.openInputStream(uri).use { input ->
-        requireNotNull(input) { "Cannot open input stream for uri=$uri" }
-        cacheFile.outputStream().use { output -> input.copyTo(output) }
-    }
+    val tempFile = File.createTempFile("photo_", ".jpg", context.cacheDir)
 
-    val body = cacheFile.asRequestBody(mime.toMediaTypeOrNull())
-    return MultipartBody.Part.createFormData("photos", cacheFile.name, body)
+    resolver.openInputStream(uri)?.use { input ->
+        tempFile.outputStream().use { output -> input.copyTo(output) }
+    } ?: error("Cannot open input stream for uri=$uri")
+
+    val body = tempFile.asRequestBody(mime.toMediaTypeOrNull())
+    val part = MultipartBody.Part.createFormData("photos", tempFile.name, body)
+
+    return part to tempFile
 }
+

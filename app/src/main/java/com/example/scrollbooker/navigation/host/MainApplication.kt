@@ -26,7 +26,6 @@ import com.example.scrollbooker.ui.search.SearchViewModel
 fun MainApplication(onLogout: () -> Unit) {
     val tabsController = LocalTabsController.current
     val currentTab by tabsController.currentTab.collectAsState()
-    var mapInitialized by rememberSaveable { mutableStateOf(false) }
 
     // My Profile View Model
     val myProfileViewModel: MyProfileViewModel = hiltViewModel()
@@ -35,6 +34,7 @@ fun MainApplication(onLogout: () -> Unit) {
 
     // Search View Model
     val searchViewModel = hiltViewModel<SearchViewModel>()
+    val isMapMounted by searchViewModel.isMapMounted.collectAsState()
 
     val saveableStateHolder = rememberSaveableStateHolder()
     val navControllers = remember {
@@ -49,12 +49,12 @@ fun MainApplication(onLogout: () -> Unit) {
 
     LaunchedEffect(currentTab) {
         if(currentTab is MainTab.Search) {
-            mapInitialized = true
+            searchViewModel.setMapMounted()
         }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        if(mapInitialized) {
+        if(isMapMounted) {
             SearchScreen(
                 viewModel = searchViewModel,
                 onNavigateToBusinessProfile = {
