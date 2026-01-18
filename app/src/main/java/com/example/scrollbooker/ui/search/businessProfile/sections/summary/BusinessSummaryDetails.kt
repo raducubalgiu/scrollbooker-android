@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
+import com.example.scrollbooker.core.util.formatOpeningHours
 import com.example.scrollbooker.entity.user.userProfile.domain.model.OpeningHours
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.bodyLarge
@@ -87,8 +88,7 @@ fun BusinessSummaryDetails(
         )
 
         Text(
-            text = if(openingHours.openNow) "Inchide la ${openingHours.closingTime}"
-            else "Deschide ${openingHours.nextOpenDay} la ${openingHours.nextOpenTime}",
+            text = formatOpeningHours(openingHours).toString(),
             color = Color.Gray,
             style = bodyLarge,
         )

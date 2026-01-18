@@ -3,7 +3,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -26,7 +25,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -34,7 +32,6 @@ import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.ui.search.SearchViewModel
 import com.example.scrollbooker.ui.search.businessProfile.components.BusinessProfileHeader
 import com.example.scrollbooker.ui.search.businessProfile.components.BusinessProfileSkeleton
 import com.example.scrollbooker.ui.search.businessProfile.components.BusinessProfileTabRow
@@ -51,6 +48,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun BusinessProfileScreen(
     viewModel: BusinessProfileViewModel,
+    onNavigateToUserProfile: (Int) -> Unit,
     onBack: () -> Unit
 ) {
     val state by viewModel.businessProfileState.collectAsState()
@@ -178,18 +176,15 @@ fun BusinessProfileScreen(
                             tabRowHeight = tabRowHeight,
                             animatedAlpha = animatedAlpha,
                             onChangeTab = { index, section ->
-                                scope.launch {
-                                    val targetKey = section.key
-                                    val targetIndex = lazyListState.layoutInfo
-                                        .visibleItemsInfo
-                                        .find { it.key == targetKey }
-                                        ?.index
-                                        ?: (itemKeys.indexOf(targetKey) + 1)
+                                val targetKey = section.key
+                                val targetIndex = lazyListState.layoutInfo
+                                    .visibleItemsInfo
+                                    .find { it.key == targetKey }
+                                    ?.index
+                                    ?: (itemKeys.indexOf(targetKey) + 1)
+                                selectedTabIndex = index
 
-                                    lazyListState.animateScrollToItem(targetIndex)
-
-                                    selectedTabIndex = index
-                                }
+                                scope.launch { lazyListState.animateScrollToItem(targetIndex) }
                             }
                         )
                     }
@@ -201,6 +196,10 @@ fun BusinessProfileScreen(
                             address = profile.address,
                             distance = profile.distanceKm,
                             openingHours = profile.openingHours,
+                            onNavigateToOwnerProfile = onNavigateToUserProfile,
+                            onFlyToReviewsSection = {
+
+                            },
                             modifier = Modifier.padding(
                                 top = imageHeight - overlayHeight,
                                 bottom = BasePadding
@@ -220,7 +219,7 @@ fun BusinessProfileScreen(
                         item(key = BusinessProfileSection.Employees.key) {
                             BusinessEmployeesSection(
                                 employees = employees,
-                                onNavigateToUserProfile = {}
+                                onNavigateToEmployeeProfile = onNavigateToUserProfile
                             )
                         }
                     }
@@ -229,7 +228,8 @@ fun BusinessProfileScreen(
                         BusinessReviewsSection(
                             reviews = profile.reviews,
                             ratingsAverage = profile.owner.counters.ratingsAverage,
-                            ratingsCount = profile.owner.counters.ratingsCount
+                            ratingsCount = profile.owner.counters.ratingsCount,
+                            onNavigateToReviewerProfile = onNavigateToUserProfile
                         )
                     }
 

@@ -65,6 +65,9 @@ fun AppointmentsScreen(
 
     val isRefreshing = appointments.loadState.refresh is LoadState.Loading
 
+    val refreshState = appointments.loadState.refresh
+    val isInitialLoading = refreshState is LoadState.Loading && appointments.itemCount == 0
+
     if(sheetState.isVisible) {
         AppointmentsFilterSheet(
             sheetState = sheetState,
@@ -115,10 +118,10 @@ fun AppointmentsScreen(
                     Spacer(Modifier.height(BasePadding))
                 }
 
-                when(appointments.loadState.refresh) {
-                    is LoadState.Loading -> LoadingScreen()
-                    is LoadState.Error -> ErrorScreen()
-                    is LoadState.NotLoading -> {
+                when {
+                    isInitialLoading -> LoadingScreen()
+                    refreshState is LoadState.Error -> ErrorScreen()
+                    else -> {
                         PullToRefreshBox(
                             isRefreshing = isRefreshing,
                             onRefresh = {

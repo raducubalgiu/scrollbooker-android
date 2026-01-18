@@ -32,7 +32,8 @@ import com.example.scrollbooker.ui.theme.Primary
 fun BusinessSummaryActions(
     counters: BusinessProfileCounters,
     hasPhone: Boolean,
-    isFollow: Boolean
+    isFollow: Boolean,
+    onFlyToReviewsSection: () -> Unit
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(
@@ -43,7 +44,7 @@ fun BusinessSummaryActions(
             CounterItem(
                 counter = counters.ratingsCount,
                 label = stringResource(R.string.reviews),
-                onNavigate = {}
+                onNavigate = onFlyToReviewsSection
             )
 
             VerticalDivider()

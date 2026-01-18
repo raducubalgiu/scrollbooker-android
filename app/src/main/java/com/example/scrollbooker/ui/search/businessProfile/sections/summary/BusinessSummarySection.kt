@@ -25,6 +25,8 @@ fun BusinessSummarySection(
     businessPlan: BusinessPlan,
     address: String,
     openingHours: OpeningHours,
+    onNavigateToOwnerProfile: (Int) -> Unit,
+    onFlyToReviewsSection: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val hasPhone = businessPlan.name == BusinessPlanEnum.STANDARD
@@ -44,7 +46,7 @@ fun BusinessSummarySection(
                 url = owner.avatar ?: "",
                 rating = owner.counters.ratingsAverage,
                 elevation = 2.dp,
-                onClick = {}
+                onClick = { onNavigateToOwnerProfile(owner.id) }
             )
 
             Spacer(Modifier.width(BasePadding))
@@ -52,7 +54,8 @@ fun BusinessSummarySection(
             BusinessSummaryActions(
                 counters = owner.counters,
                 hasPhone = hasPhone,
-                isFollow = owner.isFollow
+                isFollow = owner.isFollow,
+                onFlyToReviewsSection = onFlyToReviewsSection
             )
         }
 

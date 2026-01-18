@@ -38,13 +38,15 @@ fun UserSocialList(
     onNavigateUserProfile: (Int) -> Unit
 ) {
     val refreshState = users.loadState.refresh
+    val isInitialLoading = refreshState is LoadState.Loading && users.itemCount == 0
+
     val appendState = users.loadState.append
 
     Box(modifier = Modifier.fillMaxSize()) {
-        when(refreshState) {
-            is LoadState.Loading -> { LoadingScreen() }
-            is LoadState.Error -> ErrorScreen()
-            is LoadState.NotLoading -> {
+        when {
+            isInitialLoading -> LoadingScreen()
+            refreshState is LoadState.Error -> ErrorScreen()
+            else -> {
                 if(users.itemCount == 0) {
                     MessageScreen(
                         message = stringResource(R.string.dontFoundResults),

@@ -184,9 +184,7 @@ fun ServicesMainFilters(
                         is FeatureState.Success -> {
                             SearchAdvancedFilters(
                                 selectedSubFilterIds = state.subFilterIds,
-                                onSubFilterAppend = {
-                                    viewModel.setSubFilterId(it)
-                                },
+                                onSubFilterAppend = { viewModel.setSubFilterId(it) },
                                 filters = filters.data
                             )
                         }

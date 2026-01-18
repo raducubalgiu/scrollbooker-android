@@ -28,6 +28,8 @@ fun InboxScreen(
     val notifications = viewModel.notifications.collectAsLazyPagingItems()
     val refreshState = notifications.loadState.refresh
 
+    val isInitialLoading = refreshState is LoadState.Loading && notifications.itemCount == 0
+
     Scaffold(
         topBar = { Header(title = stringResource(id = R.string.inbox)) },
         bottomBar = { BottomBar() }
@@ -36,10 +38,10 @@ fun InboxScreen(
             .fillMaxSize()
             .padding(innerPadding)
         ) {
-            when(refreshState) {
-                is LoadState.Loading -> { LoadingScreen() }
-                is LoadState.Error -> ErrorScreen()
-                is LoadState.NotLoading -> {
+            when {
+                isInitialLoading -> LoadingScreen()
+                refreshState is LoadState.Error -> ErrorScreen()
+                else -> {
                     if(notifications.itemCount == 0) {
                         MessageScreen(
                             message = stringResource(R.string.dontHaveAnyNotification),

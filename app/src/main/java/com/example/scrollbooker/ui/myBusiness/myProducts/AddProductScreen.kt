@@ -294,7 +294,7 @@ fun AddProductScreen(
                                                         label = filter.name,
                                                         placeholder = "Selecteaza filtrul",
                                                         options = options,
-                                                        selectedOptions = selectedSubFilterIds,
+                                                        //selectedOptions = selectedSubFilterIds,
                                                         displayLabel = false,
                                                         onValueChange = { value ->
                                                             focusManager.clearFocus()

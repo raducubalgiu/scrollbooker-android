@@ -52,7 +52,6 @@ fun InputSelect(
     label: String? = null,
     placeholder: String = "",
     options: List<Option>,
-    selectedOptions: Set<Int> = emptySet(),
     selectedOption: String? = null,
     onValueChange: (String?) -> Unit,
     isLoading: Boolean = false,
@@ -74,16 +73,8 @@ fun InputSelect(
         label = "ArrowRotation"
     )
 
-    val selected: Option? = remember(options, selectedOption, selectedOptions) {
-        when {
-            !selectedOption.isNullOrBlank() ->
-                options.firstOrNull() { it.value == selectedOption }
-
-            selectedOptions.isNotEmpty() ->
-                options.firstOrNull() { it.value?.toInt() in selectedOptions }
-
-            else -> null
-        }
+    val selected: Option? = remember(selectedOption, options) {
+        options.firstOrNull() { it.value == selectedOption }
     }
 
     val hasValue = selected != null
@@ -136,8 +127,7 @@ fun InputSelect(
 
                     if(
                         selectedOption?.isBlank() == true ||
-                        selectedOption == "null" ||
-                        selectedOptions.isEmpty() == true
+                        selectedOption == "null"
                     ) {
                         Text(
                             text = placeholder,
@@ -186,7 +176,6 @@ fun InputSelect(
                     val isSelected = when {
                         value == null -> false
                         selectedOption != null -> selected?.value == value
-                        selectedOptions.isNotEmpty() == true -> value.toInt() in selectedOptions
                         else -> false
                     }
 

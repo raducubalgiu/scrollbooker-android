@@ -22,7 +22,8 @@ import com.example.scrollbooker.ui.theme.headlineSmall
 fun BusinessReviewsSection(
     reviews: BusinessProfileReviews,
     ratingsAverage: Float,
-    ratingsCount: Int
+    ratingsCount: Int,
+    onNavigateToReviewerProfile: (Int) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
@@ -50,7 +51,8 @@ fun BusinessReviewsSection(
         }
 
         BusinessReviewsList(
-            reviews = reviews.data
+            reviews = reviews.data,
+            onNavigateToReviewerProfile = onNavigateToReviewerProfile
         )
 
         if(reviews.total > reviews.data.size) {

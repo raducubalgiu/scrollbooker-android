@@ -14,6 +14,7 @@ import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
+import com.example.scrollbooker.ui.LocalMainNavController
 import com.example.scrollbooker.ui.search.businessProfile.BusinessProfileScreen
 import com.example.scrollbooker.ui.search.businessProfile.BusinessProfileViewModel
 
@@ -21,6 +22,8 @@ import com.example.scrollbooker.ui.search.businessProfile.BusinessProfileViewMod
 fun SearchNavHost(
     navController: NavHostController
 ) {
+    val mainNavController = LocalMainNavController.current
+
     NavHost(
         navController = navController,
         startDestination = MainRoute.Search.route,
@@ -34,13 +37,16 @@ fun SearchNavHost(
         }
         composable(
             route = MainRoute.BusinessProfile.route,
-            arguments = listOf(navArgument(MainRoute.BusinessProfile.ARG) { type = NavType.IntType })
+            arguments = listOf(navArgument(MainRoute.BusinessProfile.ARG) { type = NavType.IntType }),
         ) {
             val viewModel: BusinessProfileViewModel = hiltViewModel()
 
             BusinessProfileScreen(
                 viewModel = viewModel,
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+                onNavigateToUserProfile = {
+                    mainNavController.navigate("${MainRoute.UserProfile.route}/$it")
+                }
             )
         }
     }

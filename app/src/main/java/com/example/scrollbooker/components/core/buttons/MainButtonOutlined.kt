@@ -40,6 +40,7 @@ fun MainButtonOutlined(
     modifier: Modifier = Modifier,
     title: String,
     onClick: () -> Unit,
+    fullWidth: Boolean = false,
     contentPadding: PaddingValues = PaddingValues(
         vertical = SpacingM,
         horizontal = SpacingXL
@@ -68,7 +69,7 @@ fun MainButtonOutlined(
         shape = shape,
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = if(fullWidth) Modifier.fillMaxWidth() else Modifier,
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {

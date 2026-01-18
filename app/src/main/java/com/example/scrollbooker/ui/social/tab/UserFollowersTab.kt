@@ -13,6 +13,7 @@ fun UserFollowersTab(
 ) {
     val userFollowers = viewModel.userFollowers.collectAsLazyPagingItems()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
+
     val followedOverrides by viewModel.followedOverrides.collectAsState()
     val followRequestLocks by viewModel.followRequestLocks.collectAsState()
 

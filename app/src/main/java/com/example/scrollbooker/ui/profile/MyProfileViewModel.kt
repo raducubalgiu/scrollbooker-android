@@ -136,6 +136,11 @@ class MyProfileViewModel @Inject constructor(
         .flatMapLatest { userId -> getUserPostsUseCase(userId) }
         .onEach { _initCompleted.value = true }
         .cachedIn(viewModelScope)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = PagingData.empty()
+        )
 
     @kotlin.OptIn(ExperimentalCoroutinesApi::class)
     val employees: Flow<PagingData<Employee>> = authDataStore.getUserId()
@@ -146,9 +151,7 @@ class MyProfileViewModel @Inject constructor(
     @kotlin.OptIn(ExperimentalCoroutinesApi::class)
     val userReposts: Flow<PagingData<Post>> = authDataStore.getUserId()
         .filterNotNull()
-        .flatMapLatest { userId ->
-            getUserRepostsUseCase(userId)
-        }
+        .flatMapLatest { userId -> getUserRepostsUseCase(userId) }
         .cachedIn(viewModelScope)
 
     @kotlin.OptIn(ExperimentalCoroutinesApi::class)
