@@ -38,7 +38,9 @@ fun SearchCard(
             .clip(RoundedCornerShape(12.dp))
             .padding(horizontal = BasePadding)
             .clickable(
-                onClick = { onNavigateToBusinessProfile(business.id) },
+                onClick = {
+                    onNavigateToBusinessProfile(business.id)
+                },
                 interactionSource = interactionSource,
                 indication = null
             )

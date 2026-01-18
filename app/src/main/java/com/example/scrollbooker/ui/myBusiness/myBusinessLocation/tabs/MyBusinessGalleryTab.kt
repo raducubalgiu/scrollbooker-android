@@ -105,7 +105,7 @@ fun MyBusinessGalleryTab(
                     ),
                     id = 1
                 ),
-                onNavigateToBusinessProfile = {},
+                onNavigateToBusinessProfile = { businessId -> {} },
                 onOpenBookingsSheet = {},
                 showMoreProductsBtn = false
             )

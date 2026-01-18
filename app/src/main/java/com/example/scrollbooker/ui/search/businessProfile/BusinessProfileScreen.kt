@@ -52,6 +52,8 @@ fun BusinessProfileScreen(
     onBack: () -> Unit
 ) {
     val state by viewModel.businessProfileState.collectAsState()
+    val isFollow by viewModel.isFollowState.collectAsState()
+    val isSaving by viewModel.isSaving.collectAsState()
 
     when(val businessProfile = state) {
         is FeatureState.Error -> {
@@ -197,9 +199,10 @@ fun BusinessProfileScreen(
                             distance = profile.distanceKm,
                             openingHours = profile.openingHours,
                             onNavigateToOwnerProfile = onNavigateToUserProfile,
-                            onFlyToReviewsSection = {
-
-                            },
+                            onFlyToReviewsSection = {},
+                            isFollow = isFollow,
+                            isFollowEnabled = !isSaving,
+                            onFollow = { viewModel.follow() },
                             modifier = Modifier.padding(
                                 top = imageHeight - overlayHeight,
                                 bottom = BasePadding

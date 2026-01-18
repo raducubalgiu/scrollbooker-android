@@ -111,7 +111,7 @@ class ProfileViewModel @Inject constructor(
                     unfollowUserUseCase(targetUserId)
                 }
             } catch(e: Exception) {
-                Timber.tag("Follow/Unfollow").e("ERROR: $e")
+                Timber.tag("Follow/Unfollow").e(e, "ERROR: on Follow/Unfollow Action")
                 _isFollowState.value = previous
             } finally {
                 _isSaving.value = false

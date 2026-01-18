@@ -37,7 +37,9 @@ fun SearchNavHost(
         }
         composable(
             route = MainRoute.BusinessProfile.route,
-            arguments = listOf(navArgument(MainRoute.BusinessProfile.ARG) { type = NavType.IntType }),
+            arguments = listOf(
+                navArgument(MainRoute.BusinessProfile.ARG_BUSINESS_ID) { type = NavType.IntType }
+            ),
         ) {
             val viewModel: BusinessProfileViewModel = hiltViewModel()
 

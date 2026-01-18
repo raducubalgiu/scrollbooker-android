@@ -25,6 +25,9 @@ fun BusinessSummarySection(
     businessPlan: BusinessPlan,
     address: String,
     openingHours: OpeningHours,
+    isFollow: Boolean?,
+    isFollowEnabled: Boolean,
+    onFollow: () -> Unit,
     onNavigateToOwnerProfile: (Int) -> Unit,
     onFlyToReviewsSection: () -> Unit,
     modifier: Modifier = Modifier
@@ -54,7 +57,9 @@ fun BusinessSummarySection(
             BusinessSummaryActions(
                 counters = owner.counters,
                 hasPhone = hasPhone,
-                isFollow = owner.isFollow,
+                isFollow = isFollow,
+                isFollowEnabled = isFollowEnabled,
+                onFollow = onFollow,
                 onFlyToReviewsSection = onFlyToReviewsSection
             )
         }

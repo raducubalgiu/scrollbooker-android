@@ -32,7 +32,9 @@ import com.example.scrollbooker.ui.theme.Primary
 fun BusinessSummaryActions(
     counters: BusinessProfileCounters,
     hasPhone: Boolean,
-    isFollow: Boolean,
+    isFollow: Boolean?,
+    isFollowEnabled: Boolean,
+    onFollow: () -> Unit,
     onFlyToReviewsSection: () -> Unit
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -87,29 +89,33 @@ fun BusinessSummaryActions(
                 Spacer(Modifier.width(SpacingS))
             }
 
-            MainButtonOutlined(
-                modifier = Modifier.weight(0.5f),
-                title = stringResource(R.string.follow),
-                shape = ShapeDefaults.ExtraLarge,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = when {
-                        hasPhone -> Color.Transparent
-                        isFollow -> Color.Transparent
+            isFollow?.let {
+                MainButtonOutlined(
+                    modifier = Modifier.weight(0.5f),
+                    title = if(it) stringResource(R.string.following)
+                    else stringResource(R.string.follow),
+                    shape = ShapeDefaults.ExtraLarge,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = when {
+                            hasPhone -> Color.Transparent
+                            it -> Color.Transparent
+                            else -> Primary
+                        },
+                        contentColor = when {
+                            hasPhone -> OnBackground
+                            it -> OnBackground
+                            else -> OnPrimary
+                        }
+                    ),
+                    border = BorderStroke(1.dp, when {
+                        hasPhone -> Divider
+                        it -> Divider
                         else -> Primary
-                    },
-                    contentColor = when {
-                        hasPhone -> OnBackground
-                        isFollow -> OnBackground
-                        else -> OnPrimary
-                    }
-                ),
-                border = BorderStroke(1.dp, when {
-                    hasPhone -> Divider
-                    isFollow -> Divider
-                    else -> Primary
-                }),
-                onClick = {}
-            )
+                    }),
+                    isEnabled = isFollowEnabled,
+                    onClick = onFollow
+                )
+            }
         }
     }
 }

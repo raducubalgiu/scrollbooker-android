@@ -42,7 +42,7 @@ fun BusinessEmployeeItem(
             url = avatar,
             size = 85.dp,
             rating = ratingsAverage,
-            onClick = {}
+            onClick = onNavigateToUserProfile
         )
 
         Spacer(Modifier.height(SpacingXL))

@@ -44,7 +44,7 @@ fun BusinessPreviewCard(
     isVisible: Boolean,
     paddingBottom: Dp,
     onCloseClick: () -> Unit = {},
-    onNavigateToBusinessProfile: (Int) -> Unit = {},
+    onNavigateToBusinessProfile: (Int) -> Unit,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -67,8 +67,8 @@ fun BusinessPreviewCard(
                     .background(Background)
                     .clickable(
                         onClick = {
-                            selectedMarker?.id?.let {
-                                onNavigateToBusinessProfile(it)
+                            if(selectedMarker?.id != null) {
+                                onNavigateToBusinessProfile(selectedMarker.id)
                             }
                         },
                         interactionSource = interactionSource,
