@@ -1,8 +1,10 @@
 package com.example.scrollbooker.entity.booking.products.data.mappers
 
+import com.example.scrollbooker.core.enums.FilterTypeEnum
 import com.example.scrollbooker.entity.booking.products.data.remote.ProductDto
+import com.example.scrollbooker.entity.booking.products.data.remote.ProductFilterDto
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
-import com.example.scrollbooker.entity.nomenclature.filter.data.mapper.toDomain
+import com.example.scrollbooker.entity.booking.products.domain.model.ProductFilter
 
 fun ProductDto.toDomain(): Product {
     return Product(
@@ -17,7 +19,19 @@ fun ProductDto.toDomain(): Product {
         serviceId = serviceId,
         businessId = businessId,
         currencyId = currencyId,
-        subFilters = subFilters.map { it.toDomain() },
-        canBeBooked = canBeBooked
+        canBeBooked = canBeBooked,
+        filters = filters.map { it.toDomain() }
+    )
+}
+
+fun ProductFilterDto.toDomain(): ProductFilter {
+    return ProductFilter(
+        id = id,
+        name = name,
+        subFilters = subFilters,
+        type = FilterTypeEnum.fromKey(type),
+        unit = unit,
+        minim = minim,
+        maxim = maxim
     )
 }

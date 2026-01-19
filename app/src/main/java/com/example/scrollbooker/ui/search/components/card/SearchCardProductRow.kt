@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.scrollbooker.core.enums.FilterTypeEnum
 import com.example.scrollbooker.core.extensions.formatDuration
 import com.example.scrollbooker.core.extensions.toTwoDecimals
 import com.example.scrollbooker.core.util.Dimens.BasePadding
@@ -91,15 +92,36 @@ fun SearchCardProductRow(
                     text = "\u2022",
                     color = Color.Gray
                 )
-                product.subFilters.mapIndexed { i, subFilter ->
-                    Text(
-                        text = subFilter.name,
-                        color = Color.Gray,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        style = bodyMedium
-                    )
-                    if(i < product.subFilters.size - 1) {
+                product.filters.mapIndexed { i, filter ->
+                    when(filter.type) {
+                        FilterTypeEnum.OPTIONS -> {
+                            filter.subFilters.map { subFilter ->
+                                Text(
+                                    text = subFilter.name,
+                                    color = Color.Gray,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                        }
+                        FilterTypeEnum.RANGE -> {
+                            val text = when {
+                                filter.minim != null && filter.maxim == null -> "> ${filter.minim}"
+                                filter.minim == null && filter.maxim != null -> "< ${filter.maxim}"
+                                else -> "${filter.minim} - ${filter.maxim}"
+                            }
+
+                            Text(
+                                text = "$text ${filter.unit}",
+                                color = Color.Gray,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+                        null -> Unit
+                    }
+
+                    if(i < product.filters.size - 1) {
                         Text(
                             modifier = Modifier.padding(horizontal = 5.dp),
                             text = "\u2022",

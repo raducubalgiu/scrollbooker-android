@@ -69,7 +69,7 @@ fun MyBusinessGalleryTab(
                             serviceId = 1,
                             businessId = 1,
                             currencyId = 1,
-                            subFilters = emptyList(),
+                            filters = emptyList(),
                             canBeBooked = true
                         ),
                         Product(
@@ -84,7 +84,7 @@ fun MyBusinessGalleryTab(
                             serviceId = 1,
                             businessId = 1,
                             currencyId = 1,
-                            subFilters = listOf(SubFilter(id = 1, name = "Dummy")),
+                            filters = emptyList(),
                             canBeBooked = true
                         ),
                         Product(
@@ -99,7 +99,7 @@ fun MyBusinessGalleryTab(
                             serviceId = 1,
                             businessId = 1,
                             currencyId = 1,
-                            subFilters = listOf(SubFilter(id = 1, name = "Dummy")),
+                            filters = emptyList(),
                             canBeBooked = true
                         )
                     ),

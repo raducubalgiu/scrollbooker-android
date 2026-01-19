@@ -39,7 +39,7 @@ fun BusinessServicesSection() {
             serviceId = 2,
             businessId = 1,
             currencyId = 1,
-            subFilters = emptyList(),
+            filters = emptyList(),
             canBeBooked = true
         ),
         Product(
@@ -54,7 +54,7 @@ fun BusinessServicesSection() {
             serviceId = 2,
             businessId = 1,
             currencyId = 1,
-            subFilters = emptyList(),
+            filters = emptyList(),
             canBeBooked = true
         ),
         Product(
@@ -69,7 +69,7 @@ fun BusinessServicesSection() {
             serviceId = 2,
             businessId = 1,
             currencyId = 1,
-            subFilters = emptyList(),
+            filters = emptyList(),
             canBeBooked = true
         ),
         Product(
@@ -84,7 +84,7 @@ fun BusinessServicesSection() {
             serviceId = 2,
             businessId = 1,
             currencyId = 1,
-            subFilters = emptyList(),
+            filters = emptyList(),
             canBeBooked = true
         )
     )

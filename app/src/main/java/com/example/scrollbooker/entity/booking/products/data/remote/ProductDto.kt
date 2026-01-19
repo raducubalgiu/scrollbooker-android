@@ -1,6 +1,8 @@
 package com.example.scrollbooker.entity.booking.products.data.remote
 
+import com.example.scrollbooker.core.enums.FilterTypeEnum
 import com.example.scrollbooker.entity.nomenclature.filter.data.remote.SubFilterDto
+import com.example.scrollbooker.entity.nomenclature.filter.domain.model.SubFilter
 import com.google.gson.annotations.SerializedName
 import java.math.BigDecimal
 
@@ -28,9 +30,20 @@ data class ProductDto(
     @SerializedName("currency_id")
     val currencyId: Int,
 
-    @SerializedName("sub_filters")
-    val subFilters: List<SubFilterDto>,
-
     @SerializedName("can_be_booked")
-    val canBeBooked: Boolean
+    val canBeBooked: Boolean,
+
+    val filters: List<ProductFilterDto>
+)
+
+data class ProductFilterDto(
+    val id: Int,
+    val name: String,
+
+    @SerializedName("sub_filters")
+    val subFilters: List<SubFilter>,
+    val type: String,
+    val unit: String?,
+    val minim: BigDecimal?,
+    val maxim: BigDecimal?
 )

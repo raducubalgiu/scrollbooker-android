@@ -350,8 +350,8 @@ fun AddProductScreen(
 
                                                                     InputCheckbox(
                                                                         modifier = Modifier.clip(shape = ShapeDefaults.Medium),
-                                                                        checked = isChecked,
                                                                         height = 55.dp,
+                                                                        checked = isChecked,
                                                                         headLine = sub.name,
                                                                         onCheckedChange = {
                                                                             viewModel.toggleMultiOption(filter.id, sub.id)
@@ -368,8 +368,9 @@ fun AddProductScreen(
                                                 }
                                                 FilterTypeEnum.RANGE -> {
                                                     val range = selectedFilters[filter.id] as? FilterSelection.Range
-                                                    val fromText = range?.from?.toString().orEmpty()
-                                                    val toText = range?.to?.toString().orEmpty()
+                                                    val fromText = range?.minim?.toString().orEmpty()
+                                                    val toText = range?.maxim?.toString().orEmpty()
+                                                    val isNotApplicable = (selectedFilters[filter.id] as? FilterSelection.Range)?.isNotApplicable == true
 
                                                     Text(
                                                         text = filter.name,
@@ -388,11 +389,12 @@ fun AddProductScreen(
                                                             modifier = Modifier.weight(0.5f),
                                                             value = fromText,
                                                             onValueChange = { new ->
-                                                                val from = new.toIntOrNull()
-                                                                val to = (selectedFilters[filter.id] as? FilterSelection.Range)?.to
+                                                                val minim = new.toBigDecimalOrNull()
+                                                                val maxim = (selectedFilters[filter.id] as? FilterSelection.Range)?.maxim
 
-                                                                viewModel.setRange(filter.id, from, to)
+                                                                viewModel.setRange(filter.id, minim, maxim)
                                                             },
+                                                            isEnabled = !isNotApplicable,
                                                             label = "Peste (kg)",
                                                             colors = TextFieldDefaults.colors(
                                                                 focusedContainerColor = Background,
@@ -419,11 +421,12 @@ fun AddProductScreen(
                                                             modifier = Modifier.weight(0.5f),
                                                             value = toText,
                                                             onValueChange = { new ->
-                                                                val to = new.toIntOrNull()
-                                                                val from = (selectedFilters[filter.id] as? FilterSelection.Range)?.from
+                                                                val minim = (selectedFilters[filter.id] as? FilterSelection.Range)?.minim
+                                                                val maxim = new.toBigDecimalOrNull()
 
-                                                                viewModel.setRange(filter.id, from, to)
+                                                                viewModel.setRange(filter.id, minim, maxim)
                                                             },
+                                                            isEnabled = !isNotApplicable,
                                                             label = "Sub (kg)",
                                                             colors = TextFieldDefaults.colors(
                                                                 focusedContainerColor = Background,
@@ -444,6 +447,16 @@ fun AddProductScreen(
                                                             ),
                                                         )
                                                     }
+
+                                                    Spacer(Modifier.height(SpacingS))
+
+                                                    InputCheckbox(
+                                                        modifier = Modifier.clip(shape = ShapeDefaults.Medium),
+                                                        height = 55.dp,
+                                                        checked = isNotApplicable,
+                                                        onCheckedChange = { viewModel.setApplicable(filter.id) },
+                                                        headLine = "Nu conteaza"
+                                                    )
                                                 }
                                                 null -> Unit
                                             }
@@ -612,8 +625,7 @@ fun AddProductScreen(
                                 duration = duration,
                                 serviceId = serviceId,
                                 currencyId = currencyId,
-                                canBeBooked = canBeBooked,
-                                subFilters = selectedSubFilterIds
+                                canBeBooked = canBeBooked
                             )
                         },
                     )

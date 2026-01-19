@@ -5,6 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.example.scrollbooker.entity.booking.products.data.mappers.toDomain
 import com.example.scrollbooker.entity.booking.products.data.mappers.toDto
+import com.example.scrollbooker.entity.booking.products.data.remote.AddProductFilterRequest
 import com.example.scrollbooker.entity.booking.products.data.remote.ProductCreateRequestDto
 import com.example.scrollbooker.entity.booking.products.data.remote.ProductPagingSource
 import com.example.scrollbooker.entity.booking.products.data.remote.ProductsApiService
@@ -45,9 +46,12 @@ class ProductRepositoryImpl @Inject constructor(
 
     override suspend fun createProduct(
         productCreate: ProductCreate,
-        subFilters: List<Int>
+        filters: List<AddProductFilterRequest>
     ): Product {
-        val request = ProductCreateRequestDto(product = productCreate.toDto(), subFilters = subFilters)
+        val request = ProductCreateRequestDto(
+            product = productCreate.toDto(),
+            filters = filters
+        )
         return api.createProduct(request).toDomain()
     }
 

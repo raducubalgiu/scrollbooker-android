@@ -1,5 +1,6 @@
 package com.example.scrollbooker.entity.booking.products.domain.model
 
+import com.example.scrollbooker.core.enums.FilterTypeEnum
 import com.example.scrollbooker.entity.nomenclature.filter.domain.model.SubFilter
 import java.math.BigDecimal
 
@@ -15,6 +16,16 @@ data class Product(
     val serviceId: Int,
     val businessId: Int,
     val currencyId: Int,
+    val canBeBooked: Boolean,
+    val filters: List<ProductFilter>
+)
+
+data class ProductFilter(
+    val id: Int,
+    val name: String,
     val subFilters: List<SubFilter>,
-    val canBeBooked: Boolean
+    val type: FilterTypeEnum?,
+    val unit: String?,
+    val minim: BigDecimal?,
+    val maxim: BigDecimal?
 )

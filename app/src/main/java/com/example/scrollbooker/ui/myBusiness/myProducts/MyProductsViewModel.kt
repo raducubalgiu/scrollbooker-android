@@ -5,8 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.example.scrollbooker.core.enums.FilterTypeEnum
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
+import com.example.scrollbooker.entity.booking.products.data.remote.AddProductFilterRequest
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.model.ProductCreate
 import com.example.scrollbooker.entity.booking.products.domain.useCase.CreateProductUseCase
@@ -36,11 +38,16 @@ import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.math.BigDecimal
 import javax.inject.Inject
 
 sealed interface FilterSelection {
     data class Options(val ids: Set<Int> = emptySet()): FilterSelection
-    data class Range(val from: Int?, val to: Int?): FilterSelection
+    data class Range(
+        val minim: BigDecimal?,
+        val maxim: BigDecimal?,
+        val isNotApplicable: Boolean = false
+    ): FilterSelection
 }
 
 typealias SelectedFilters = Map<Int, FilterSelection>
@@ -96,10 +103,38 @@ class MyProductsViewModel @Inject constructor(
         }
     }
 
-    fun setRange(filterId: Int, from: Int?, to: Int?) {
+    fun setRange(filterId: Int, from: BigDecimal?, to: BigDecimal?) {
         _selectedFilters.update { current ->
             if (from == null && to == null) current - filterId
-            else current + (filterId to FilterSelection.Range(from = from, to = to))
+            else current + (filterId to FilterSelection.Range(minim = from, maxim = to))
+        }
+    }
+
+    fun setApplicable(filterId: Int) {
+        _selectedFilters.update { current ->
+            val prev = current[filterId] as? FilterSelection.Range
+
+            val next = if (prev == null) {
+                FilterSelection.Range(
+                    minim = null,
+                    maxim = null,
+                    isNotApplicable = true
+                )
+            } else {
+                val newIsNotApplicable = !prev.isNotApplicable
+
+                if (newIsNotApplicable) {
+                    prev.copy(
+                        minim = null,
+                        maxim = null,
+                        isNotApplicable = true
+                    )
+                } else {
+                    prev.copy(isNotApplicable = false)
+                }
+            }
+
+            current + (filterId to next)
         }
     }
 
@@ -143,8 +178,7 @@ class MyProductsViewModel @Inject constructor(
         duration: String,
         serviceId: String,
         currencyId: String,
-        canBeBooked: Boolean,
-        subFilters: Set<Int>
+        canBeBooked: Boolean
     ) {
         viewModelScope.launch {
             _isSaving.value = true
@@ -153,6 +187,38 @@ class MyProductsViewModel @Inject constructor(
             if(businessId == null) {
                 throw kotlin.IllegalStateException("Business Id not found in Auth Data Store")
             }
+
+
+            val filters: List<AddProductFilterRequest> =
+                _selectedFilters.value.entries.mapNotNull { (filterId, selection) ->
+                    when (selection) {
+                        is FilterSelection.Options -> {
+                            if (selection.ids.isEmpty()) return@mapNotNull null
+
+                            AddProductFilterRequest(
+                                filterId = filterId,
+                                subFilterIds = selection.ids.toList(),
+                                type = FilterTypeEnum.OPTIONS.key,
+                                minim = null,
+                                maxim = null,
+                                isNotApplicable = false
+                            )
+                        }
+
+                        is FilterSelection.Range -> {
+                            if (selection.minim == null && selection.maxim == null) return@mapNotNull null
+
+                            AddProductFilterRequest(
+                                filterId = filterId,
+                                subFilterIds = emptyList(),
+                                type = FilterTypeEnum.RANGE.key,
+                                minim = selection.minim,
+                                maxim = selection.maxim,
+                                isNotApplicable = selection.isNotApplicable
+                            )
+                        }
+                    }
+                }
 
             val response = withVisibleLoading {
                 createProductUseCase(
@@ -168,7 +234,7 @@ class MyProductsViewModel @Inject constructor(
                         currencyId = currencyId.toInt(),
                         canBeBooked = canBeBooked
                     ),
-                    subFilters = subFilters.toList()
+                    filters = filters
                 )
             }
 

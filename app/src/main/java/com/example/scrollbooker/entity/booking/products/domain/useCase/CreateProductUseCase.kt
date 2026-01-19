@@ -1,4 +1,5 @@
 package com.example.scrollbooker.entity.booking.products.domain.useCase
+import com.example.scrollbooker.entity.booking.products.data.remote.AddProductFilterRequest
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.model.ProductCreate
 import com.example.scrollbooker.entity.booking.products.domain.repository.ProductRepository
@@ -9,8 +10,8 @@ class CreateProductUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(
         productCreate: ProductCreate,
-        subFilters: List<Int>
+        filters: List<AddProductFilterRequest>
     ): Result<Product> = runCatching {
-        repository.createProduct(productCreate, subFilters)
+        repository.createProduct(productCreate, filters)
     }
 }
