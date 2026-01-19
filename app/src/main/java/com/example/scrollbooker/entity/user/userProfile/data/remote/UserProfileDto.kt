@@ -1,4 +1,5 @@
 package com.example.scrollbooker.entity.user.userProfile.data.remote
+import com.example.scrollbooker.entity.social.post.data.remote.BusinessPlanDto
 import com.google.gson.annotations.SerializedName
 import java.math.BigDecimal
 
@@ -39,6 +40,9 @@ data class UserProfileDto (
 
     @SerializedName("business_owner")
     val businessOwner: BusinessOwnerDto?,
+
+    @SerializedName("business_plan")
+    val businessPlan: BusinessPlanDto?,
 
     @SerializedName("is_own_profile")
     val isOwnProfile: Boolean,

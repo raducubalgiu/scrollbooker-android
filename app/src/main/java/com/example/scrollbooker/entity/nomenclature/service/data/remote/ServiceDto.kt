@@ -6,6 +6,9 @@ data class ServiceDto(
     val id: Int,
     val name: String,
 
+    @SerializedName("display_name")
+    val displayName: String,
+
     @SerializedName("business_domain_id")
     val businessDomainId: Int,
 )

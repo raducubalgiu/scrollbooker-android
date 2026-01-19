@@ -1,5 +1,8 @@
 package com.example.scrollbooker.ui.search.sheets.services.steps
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,6 +32,7 @@ import com.example.scrollbooker.components.core.inputs.InputSelect
 import com.example.scrollbooker.components.core.inputs.Option
 import com.example.scrollbooker.components.core.shimmer.rememberShimmerBrush
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.core.util.FeatureState
@@ -63,6 +67,8 @@ fun ServicesMainFilters(
     val services by viewModel.services.collectAsState()
     val serviceFilters by viewModel.filters.collectAsState()
 
+    val selectedFilters by viewModel.selectedFilters.collectAsState()
+
     val serviceDomainsOptions = when(val state = serviceDomains) {
         is FeatureState.Success -> state.data.map { bt ->
             Option(
@@ -74,10 +80,10 @@ fun ServicesMainFilters(
     }
 
     val servicesOptions = when(val state = services) {
-        is FeatureState.Success -> state.data.map { bt ->
+        is FeatureState.Success -> state.data.map { s ->
             Option(
-                value = bt.id.toString(),
-                name = bt.name
+                value = s.id.toString(),
+                name = s.displayName
             )
         }
         else -> emptyList()
@@ -139,56 +145,64 @@ fun ServicesMainFilters(
                     }
                 )
 
-                Spacer(Modifier.height(SpacingXXL))
+                Spacer(Modifier.height(SpacingXL))
 
-                Column(Modifier.padding(horizontal = BasePadding)) {
-                    InputSelect(
-                        options = serviceDomainsOptions,
-                        selectedOption = state.serviceDomainId.toString(),
-                        placeholder = "Alege Categoria",
-                        isEnabled = selectedBusinessDomainId != null,
-                        onValueChange = {
-                            viewModel.setServiceDomainId(it?.toInt())
-                        },
-                        isLoading = serviceDomains is FeatureState.Loading,
-                    )
+                AnimatedVisibility(
+                    visible = selectedBusinessDomainId != null,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    Column(Modifier.padding(horizontal = BasePadding)) {
+                        InputSelect(
+                            options = serviceDomainsOptions,
+                            selectedOption = state.serviceDomainId.toString(),
+                            placeholder = "Alege Categoria",
+                            isEnabled = selectedBusinessDomainId != null,
+                            onValueChange = {
+                                viewModel.setServiceDomainId(it?.toInt())
+                            },
+                            isLoading = serviceDomains is FeatureState.Loading,
+                        )
 
-                    Spacer(Modifier.height(BasePadding))
+                        Spacer(Modifier.height(BasePadding))
 
-                    InputSelect(
-                        options = servicesOptions,
-                        selectedOption = state.serviceId.toString(),
-                        placeholder = stringResource(R.string.chooseServices),
-                        isEnabled = state.serviceDomainId != null,
-                        onValueChange = {
-                            viewModel.setServiceId(it?.toInt())
-                        },
-                        isLoading = services is FeatureState.Loading,
-                    )
+                        InputSelect(
+                            options = servicesOptions,
+                            selectedOption = state.serviceId.toString(),
+                            placeholder = stringResource(R.string.chooseServices),
+                            isEnabled = state.serviceDomainId != null,
+                            onValueChange = {
+                                viewModel.setServiceId(it?.toInt())
+                            },
+                            isLoading = services is FeatureState.Loading,
+                        )
 
-                    Spacer(Modifier.height(BasePadding))
+                        Spacer(Modifier.height(BasePadding))
 
-                    when(val filters = serviceFilters) {
-                        is FeatureState.Loading -> {
-                            repeat(3) {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(52.dp)
-                                        .clip(RoundedCornerShape(12.dp))
-                                        .background(rememberShimmerBrush())
-                                )
-                                Spacer(Modifier.height(8.dp))
+                        when(val filters = serviceFilters) {
+                            is FeatureState.Loading -> {
+                                repeat(3) {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(52.dp)
+                                            .clip(RoundedCornerShape(12.dp))
+                                            .background(rememberShimmerBrush())
+                                    )
+                                    Spacer(Modifier.height(8.dp))
+                                }
                             }
+                            is FeatureState.Success -> {
+                                SearchAdvancedFilters(
+                                    selectedFilters = selectedFilters,
+                                    onSetSelectedFilter = { filterId, subFilterId ->
+                                        viewModel.setSelectedFilter(filterId, subFilterId)
+                                    },
+                                    filters = filters.data
+                                )
+                            }
+                            else -> Unit
                         }
-                        is FeatureState.Success -> {
-                            SearchAdvancedFilters(
-                                selectedSubFilterIds = state.subFilterIds,
-                                onSubFilterAppend = { viewModel.setSubFilterId(it) },
-                                filters = filters.data
-                            )
-                        }
-                        else -> Unit
                     }
                 }
             }
@@ -196,7 +210,7 @@ fun ServicesMainFilters(
 
         SearchServicesSheetFooter(
             isClearEnabled = isClearEnabled,
-            isConfirmEnabled = isConfirmEnabled,
+            isConfirmEnabled = true,
             onConfirm = { onFilter(state) },
             onClear = {
                 selectedBusinessDomainId = null

@@ -47,12 +47,11 @@ fun InputCheckbox(
     leadingIcon: (@Composable () -> Unit)? = null
 ) {
     Row(
-        Modifier
+        modifier
             .fillMaxWidth()
             .height(height)
             .background(Background)
-            .clickable { if(isEnabled) onCheckedChange() }
-            .then(modifier),
+            .clickable { if(isEnabled) onCheckedChange() },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

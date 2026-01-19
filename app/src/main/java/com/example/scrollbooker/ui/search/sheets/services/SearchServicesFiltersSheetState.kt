@@ -13,7 +13,6 @@ data class SearchServicesFiltersSheetState(
     val businessDomainId: Int? = null,
     val serviceDomainId: Int? = null,
     val serviceId: Int? = null,
-    val subFilterIds: Set<Int> = emptySet(),
     val startDate: LocalDate? = null,
     val endDate: LocalDate? = null,
     val startTime: LocalTime? = null,
@@ -23,7 +22,6 @@ data class SearchServicesFiltersSheetState(
 fun SearchServicesFiltersSheetState.hasActiveFilters(): Boolean {
     return serviceDomainId != null ||
             serviceId != null ||
-            subFilterIds.isNotEmpty() ||
             startDate != null ||
             endDate != null ||
             startTime != null ||
@@ -43,7 +41,6 @@ fun SearchServicesFiltersSheetState.applyOn(
     base.copy(
         serviceDomainId = serviceDomainId,
         serviceId = serviceId,
-        subFilterIds = subFilterIds,
         startDate = startDate,
         endDate = endDate,
         startTime = startTime,
@@ -53,7 +50,6 @@ fun SearchServicesFiltersSheetState.applyOn(
 fun SearchServicesFiltersSheetState.hasChangesComparedTo(
     base: SearchFiltersState
 ): Boolean = this.applyOn(base) != base
-
 
 fun SearchServicesFiltersSheetState.dateTimeSummary(): String? {
     val hasDate = startDate != null || endDate != null

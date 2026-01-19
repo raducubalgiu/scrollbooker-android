@@ -18,11 +18,14 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -65,15 +68,19 @@ import com.example.scrollbooker.components.core.inputs.InputSelect
 import com.example.scrollbooker.components.core.inputs.Option
 import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.components.core.shimmer.rememberShimmerBrush
+import com.example.scrollbooker.core.enums.FilterTypeEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.checkLength
 import com.example.scrollbooker.core.util.checkMinMax
 import com.example.scrollbooker.ui.search.components.SearchAdvancedFilters
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.LastMinute
 import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodySmall
@@ -108,6 +115,8 @@ fun AddProductScreen(
     val currenciesState by viewModel.currenciesState.collectAsState()
     val filtersState by viewModel.filtersState.collectAsState()
 
+    val selectedFilters by viewModel.selectedFilters.collectAsState()
+
     val isSaving by viewModel.isSaving.collectAsState()
 
     LaunchedEffect(Unit) {
@@ -139,7 +148,7 @@ fun AddProductScreen(
         is FeatureState.Success -> state.data.map { service ->
             Option(
                 value = service.id.toString(),
-                name = service.name
+                name = service.displayName
             )
         }
         else -> emptyList()
@@ -276,68 +285,168 @@ fun AddProductScreen(
                                         Spacer(Modifier.height(BasePadding))
 
                                         filters.data.map { filter ->
-                                            val options = filter.subFilters.map {
-                                                Option(value = it.id.toString(), name = it.name)
-                                            }
+                                            when(filter.type) {
+                                                FilterTypeEnum.OPTIONS -> {
+                                                    if(filter.singleSelect) {
+                                                        val options = filter.subFilters.map {
+                                                            Option(value = it.id.toString(), name = it.name)
+                                                        }
 
-                                            if(filter.singleSelect) {
-                                                Column {
-                                                    Text(
-                                                        text = filter.name,
-                                                        fontWeight = FontWeight.SemiBold,
-                                                        color = Color.Gray
-                                                    )
+                                                        val selectedSubFilterIds = selectedFilters[filter.id]
+                                                        val selectedOption = (selectedSubFilterIds as? FilterSelection.Options)
+                                                            ?.ids
+                                                            ?.firstOrNull()
+                                                            ?.toString()
+                                                            ?: ""
 
-                                                    Spacer(Modifier.height(SpacingS))
+                                                        Column {
+                                                            Text(
+                                                                text = filter.name,
+                                                                fontWeight = FontWeight.SemiBold,
+                                                                color = Color.Gray
+                                                            )
 
-                                                    InputSelect(
-                                                        label = filter.name,
-                                                        placeholder = "Selecteaza filtrul",
-                                                        options = options,
-                                                        //selectedOptions = selectedSubFilterIds,
-                                                        displayLabel = false,
-                                                        onValueChange = { value ->
-                                                            focusManager.clearFocus()
+                                                            Spacer(Modifier.height(SpacingS))
 
-                                                            if(value == null) return@InputSelect
-                                                            val intValue = value.toInt()
-                                                            val isSelected = intValue in selectedSubFilterIds
+                                                            InputSelect(
+                                                                label = filter.name,
+                                                                placeholder = "Selecteaza filtrul",
+                                                                selectedOption = selectedOption,
+                                                                options = options,
+                                                                displayLabel = false,
+                                                                onValueChange = { value ->
+                                                                    focusManager.clearFocus()
 
-                                                            selectedSubFilterIds = if(isSelected) selectedSubFilterIds - intValue
-                                                            else selectedSubFilterIds + intValue
-                                                        },
-                                                        isLoading = isLoadingFilters,
-                                                        isEnabled = !isErrorFilters && !isLoadingFilters,
-                                                        background = Background,
-                                                        color = OnBackground
-                                                    )
-                                                }
-                                            } else {
-                                                Column {
-                                                    Text(
-                                                        text = filter.name,
-                                                        fontWeight = FontWeight.SemiBold,
-                                                        color = Color.Gray
-                                                    )
+                                                                    viewModel.setSingleOption(filter.id, value?.toInt())
+                                                                },
+                                                                isLoading = isLoadingFilters,
+                                                                isEnabled = !isErrorFilters && !isLoadingFilters,
+                                                                background = Background,
+                                                                color = OnBackground
+                                                            )
+                                                        }
+                                                    } else {
+                                                        Column {
+                                                            Text(
+                                                                text = filter.name,
+                                                                fontWeight = FontWeight.SemiBold,
+                                                                color = Color.Gray
+                                                            )
 
-                                                    Spacer(Modifier.height(SpacingS))
+                                                            Spacer(Modifier.height(SpacingS))
 
-                                                    filter.subFilters.forEach { sub ->
-                                                        val isChecked = sub.id in selectedSubFilterIds
+                                                            Column(
+                                                                modifier = Modifier
+                                                                    .heightIn(max = 110.dp + SpacingS)
+                                                                    .verticalScroll(rememberScrollState())
+                                                            ) {
+                                                                filter.subFilters.forEach { sub ->
+                                                                    val selectedSubFilterIds: Set<Int> =
+                                                                        (selectedFilters[filter.id] as? FilterSelection.Options)
+                                                                            ?.ids
+                                                                            .orEmpty()
 
-                                                        InputCheckbox(
-                                                            checked = isChecked,
-                                                            headLine = sub.name,
-                                                            onCheckedChange = {
-                                                                selectedSubFilterIds = if(isChecked) selectedSubFilterIds - sub.id
-                                                                else selectedSubFilterIds + sub.id
+                                                                    val isChecked = sub.id in selectedSubFilterIds
+
+                                                                    InputCheckbox(
+                                                                        modifier = Modifier.clip(shape = ShapeDefaults.Medium),
+                                                                        checked = isChecked,
+                                                                        height = 55.dp,
+                                                                        headLine = sub.name,
+                                                                        onCheckedChange = {
+                                                                            viewModel.toggleMultiOption(filter.id, sub.id)
+                                                                        }
+                                                                    )
+
+                                                                    Spacer(Modifier.height(SpacingS))
+                                                                }
                                                             }
+                                                        }
+                                                    }
+
+                                                    Spacer(Modifier.height(BasePadding))
+                                                }
+                                                FilterTypeEnum.RANGE -> {
+                                                    val range = selectedFilters[filter.id] as? FilterSelection.Range
+                                                    val fromText = range?.from?.toString().orEmpty()
+                                                    val toText = range?.to?.toString().orEmpty()
+
+                                                    Text(
+                                                        text = filter.name,
+                                                        fontWeight = FontWeight.SemiBold,
+                                                        color = Color.Gray
+                                                    )
+
+                                                    Spacer(Modifier.height(SpacingS))
+
+                                                    Row(
+                                                        modifier = Modifier.fillMaxWidth(),
+                                                        verticalAlignment = Alignment.CenterVertically,
+                                                        horizontalArrangement = Arrangement.SpaceBetween
+                                                    ) {
+                                                        Input(
+                                                            modifier = Modifier.weight(0.5f),
+                                                            value = fromText,
+                                                            onValueChange = { new ->
+                                                                val from = new.toIntOrNull()
+                                                                val to = (selectedFilters[filter.id] as? FilterSelection.Range)?.to
+
+                                                                viewModel.setRange(filter.id, from, to)
+                                                            },
+                                                            label = "Peste (kg)",
+                                                            colors = TextFieldDefaults.colors(
+                                                                focusedContainerColor = Background,
+                                                                unfocusedContainerColor = Background,
+                                                                cursorColor = LastMinute,
+                                                                focusedIndicatorColor = Color.Transparent,
+                                                                unfocusedIndicatorColor = Color.Transparent,
+                                                                focusedLabelColor = LastMinute,
+                                                                unfocusedLabelColor = Color.Gray,
+                                                                focusedTextColor = OnBackground,
+                                                                unfocusedTextColor = OnBackground,
+                                                                disabledIndicatorColor = Color.Transparent,
+                                                                errorContainerColor = SurfaceBG,
+                                                            ),
+                                                            keyboardOptions = KeyboardOptions(
+                                                                keyboardType =  KeyboardType.Number,
+                                                                imeAction = ImeAction.Next
+                                                            ),
+                                                        )
+
+                                                        Spacer(Modifier.width(BasePadding))
+
+                                                        Input(
+                                                            modifier = Modifier.weight(0.5f),
+                                                            value = toText,
+                                                            onValueChange = { new ->
+                                                                val to = new.toIntOrNull()
+                                                                val from = (selectedFilters[filter.id] as? FilterSelection.Range)?.from
+
+                                                                viewModel.setRange(filter.id, from, to)
+                                                            },
+                                                            label = "Sub (kg)",
+                                                            colors = TextFieldDefaults.colors(
+                                                                focusedContainerColor = Background,
+                                                                unfocusedContainerColor = Background,
+                                                                cursorColor = LastMinute,
+                                                                focusedIndicatorColor = Color.Transparent,
+                                                                unfocusedIndicatorColor = Color.Transparent,
+                                                                focusedLabelColor = LastMinute,
+                                                                unfocusedLabelColor = Color.Gray,
+                                                                focusedTextColor = OnBackground,
+                                                                unfocusedTextColor = OnBackground,
+                                                                disabledIndicatorColor = Color.Transparent,
+                                                                errorContainerColor = SurfaceBG,
+                                                            ),
+                                                            keyboardOptions = KeyboardOptions(
+                                                                keyboardType =  KeyboardType.Number,
+                                                                imeAction = ImeAction.Next
+                                                            ),
                                                         )
                                                     }
                                                 }
+                                                null -> Unit
                                             }
-
-                                            Spacer(Modifier.height(BasePadding))
                                         }
                                     }
                                 }
@@ -367,6 +476,7 @@ fun AddProductScreen(
                         //isError = !validation.isDescriptionValid,
                         //errorMessage = validation.descriptionError.toString(),
                         singleLine = false,
+                        maxLines = 5
 
                     )
                     Spacer(Modifier.height(BasePadding))

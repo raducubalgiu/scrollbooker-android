@@ -21,6 +21,12 @@ data class IntentAction(
 
 val INTENT_ACTION_SPECS = listOf<IntentActionSpec>(
     IntentActionSpec(
+        icon = R.drawable.ic_call_outline,
+        title = R.string.phone,
+        valueOf = {""},
+        onlyBusinessOrEmployee = true
+    ),
+    IntentActionSpec(
         icon = R.drawable.ic_location_outline,
         title = R.string.address,
         valueOf = {""},

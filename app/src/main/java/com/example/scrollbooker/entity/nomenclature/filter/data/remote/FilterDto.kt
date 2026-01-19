@@ -9,6 +9,8 @@ data class FilterDto(
     @SerializedName("single_select")
     val singleSelect: Boolean,
 
+    val type: String,
+
     @SerializedName("sub_filters")
     val subFilters: List<SubFilterDto>
 )

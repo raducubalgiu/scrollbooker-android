@@ -81,6 +81,7 @@ fun ProfileUserInfo(
     val isOpenNow = user.openingHours.openNow
 
     val intentActions = rememberIntentActions(user)
+
     val filteredIntentList = remember(user, intentActions) {
         filterIntentActions(intentActions, user.isBusinessOrEmployee)
     }
@@ -179,7 +180,9 @@ fun ProfileUserInfo(
 
         Spacer(Modifier.height(SpacingM))
 
-        ProfileIntentActionsList(intentList = filteredIntentList)
+        ProfileIntentActionsList(
+            intentList = filteredIntentList
+        )
 
         if(!user.isOwnProfile && user.distanceKm != null) {
             ProfileLocationDistance(distance = user.distanceKm)

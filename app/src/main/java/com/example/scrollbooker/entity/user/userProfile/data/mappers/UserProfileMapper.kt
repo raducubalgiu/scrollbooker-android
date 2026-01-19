@@ -1,5 +1,6 @@
 package com.example.scrollbooker.entity.user.userProfile.data.mappers
 
+import com.example.scrollbooker.entity.social.post.data.mappers.toDomain
 import com.example.scrollbooker.entity.user.userProfile.data.remote.BusinessOwnerDto
 import com.example.scrollbooker.entity.user.userProfile.data.remote.OpeningHoursDto
 import com.example.scrollbooker.entity.user.userProfile.data.remote.UserCountersDto
@@ -29,6 +30,7 @@ fun UserProfileDto.toDomain(): UserProfile {
         openingHours = openingHours.toDomain(),
         isFollow = isFollow,
         businessOwner = businessOwner?.toDomain(),
+        businessPlan = businessPlan?.toDomain(),
         isOwnProfile = isOwnProfile,
         isBusinessOrEmployee = isBusinessOrEmployee,
         distanceKm = distanceKm,

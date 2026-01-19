@@ -24,6 +24,7 @@ import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.useCas
 import com.example.scrollbooker.entity.nomenclature.businessType.domain.model.BusinessType
 import com.example.scrollbooker.entity.nomenclature.businessType.domain.useCase.GetAllBusinessTypesByBusinessDomainUseCase
 import com.example.scrollbooker.entity.nomenclature.filter.domain.model.Filter
+import com.example.scrollbooker.entity.nomenclature.filter.domain.model.SubFilter
 import com.example.scrollbooker.entity.nomenclature.filter.domain.useCase.GetFiltersByServiceUseCase
 import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
 import com.example.scrollbooker.entity.nomenclature.service.domain.useCase.GetServicesByBusinessTypeUseCase
@@ -191,6 +192,11 @@ class SearchViewModel @Inject constructor(
     val servicesSheetFilters: StateFlow<SearchServicesFiltersSheetState> =
         _servicesSheetFilters.asStateFlow()
 
+    private val _selectedFilters = MutableStateFlow<Map<Int, Int>>(emptyMap())
+    val selectedFilters: StateFlow<Map<Int, Int>> = _selectedFilters.asStateFlow()
+
+    val selectedSubFilterIds: Set<Int> = _selectedFilters.value.values.toSet()
+
     private val rawRequestFlow: Flow<SearchBusinessRequest> =
         _request
             .mapNotNull { it.toRequest() }
@@ -339,6 +345,12 @@ class SearchViewModel @Inject constructor(
                 initialValue = null
             )
 
+    fun setSelectedFilter(filterId: Int, subFilterId: Int) {
+        _selectedFilters.update { current ->
+            current + (filterId to subFilterId)
+        }
+    }
+
     fun setMapMounted() {
         if(!_isMapMounted.value) {
             _isMapMounted.value = true
@@ -406,8 +418,7 @@ class SearchViewModel @Inject constructor(
             current.copy(
                 businessDomainId = domainId,
                 serviceDomainId = null,
-                serviceId = null,
-                subFilterIds = emptySet()
+                serviceId = null
             )
         }
     }
@@ -449,7 +460,7 @@ class SearchViewModel @Inject constructor(
                     businessDomainId = sheet.businessDomainId,
                     serviceDomainId = sheet.serviceDomainId,
                     serviceId = sheet.serviceId,
-                    subFilterIds = sheet.subFilterIds,
+                    subFilterIds = _selectedFilters.value.values.toSet(),
                     startDate = sheet.startDate,
                     endDate = sheet.endDate,
                     startTime = sheet.startTime,
@@ -465,13 +476,13 @@ class SearchViewModel @Inject constructor(
                 businessDomainId = null,
                 serviceDomainId = null,
                 serviceId = null,
-                subFilterIds = emptySet(),
                 startDate = null,
                 endDate = null,
                 startTime = null,
                 endTime = null
             )
         }
+        _selectedFilters.value = emptyMap()
     }
 
     fun onSheetBusinessDomainSelected(domainId: Int?) {
@@ -480,37 +491,26 @@ class SearchViewModel @Inject constructor(
                 businessDomainId = domainId,
                 serviceDomainId = null,
                 serviceId = null,
-                subFilterIds = emptySet()
             )
         }
+        _selectedFilters.value = emptyMap()
     }
 
     fun setServiceDomainId(typeId: Int?) {
         _servicesSheetFilters.update {
             it.copy(
                 serviceDomainId = typeId,
-                serviceId = null,
-                subFilterIds = emptySet()
+                serviceId = null
             )
         }
+        _selectedFilters.value = emptyMap()
     }
 
     fun setServiceId(serviceId: Int?) {
         _servicesSheetFilters.update {
-            it.copy(
-                serviceId = serviceId,
-                subFilterIds = emptySet()
-            )
+            it.copy(serviceId = serviceId,)
         }
-    }
-
-    fun setSubFilterId(subFilterId: Int) {
-        _servicesSheetFilters.update { current ->
-            val currentIds = current.subFilterIds
-            val newIds = currentIds + subFilterId
-
-            current.copy(subFilterIds = newIds)
-        }
+        _selectedFilters.value = emptyMap()
     }
 
     fun setDateTime(

@@ -33,9 +33,17 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+
+sealed interface FilterSelection {
+    data class Options(val ids: Set<Int> = emptySet()): FilterSelection
+    data class Range(val from: Int?, val to: Int?): FilterSelection
+}
+
+typealias SelectedFilters = Map<Int, FilterSelection>
 
 @HiltViewModel
 class MyProductsViewModel @Inject constructor(
@@ -69,20 +77,32 @@ class MyProductsViewModel @Inject constructor(
     private val _productsReloadTrigger = mutableIntStateOf(0)
     val productsReloadTrigger: State<Int> = _productsReloadTrigger
 
-//    private val _selectedSubFilters = MutableStateFlow<Set<Int>>(emptySet())
-//    val selectedSubFilters: StateFlow<Set<Int>> = _selectedSubFilters.asStateFlow()
-//
-//    fun setSubFilterId(subFilterId: Int) {
-//        if(_selectedSubFilters.value.contains(subFilterId)) {
-//            _selectedSubFilters.value =  _selectedSubFilters.value - subFilterId
-//        } else {
-//            _selectedSubFilters.value = _selectedSubFilters.value + subFilterId
-//        }
-//    }
+    private val _selectedFilters = MutableStateFlow<SelectedFilters>(emptyMap())
+    val selectedFilters: StateFlow<SelectedFilters> = _selectedFilters.asStateFlow()
 
-//    fun clearSubfilters() {
-//        _selectedSubFilters.value = emptySet()
-//    }
+    fun setSingleOption(filterId: Int, subFilterId: Int?) {
+        _selectedFilters.update { current ->
+            if (subFilterId == null) current - filterId
+            else current + (filterId to FilterSelection.Options(setOf(subFilterId)))
+        }
+    }
+
+    fun toggleMultiOption(filterId: Int, subFilterId: Int) {
+        _selectedFilters.update { current ->
+            val prev = (current[filterId] as? FilterSelection.Options)?.ids.orEmpty()
+            val next = if (subFilterId in prev) prev - subFilterId else prev + subFilterId
+            if (next.isEmpty()) current - filterId
+            else current + (filterId to FilterSelection.Options(next))
+        }
+    }
+
+    fun setRange(filterId: Int, from: Int?, to: Int?) {
+        _selectedFilters.update { current ->
+            if (from == null && to == null) current - filterId
+            else current + (filterId to FilterSelection.Range(from = from, to = to))
+        }
+    }
+
 
     init {
         loadServices()

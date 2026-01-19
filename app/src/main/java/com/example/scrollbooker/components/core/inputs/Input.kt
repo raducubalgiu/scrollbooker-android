@@ -68,9 +68,6 @@ fun Input(
         unfocusedLabelColor = Color.Gray,
         focusedTextColor = OnSurfaceBG,
         unfocusedTextColor = OnSurfaceBG,
-        disabledContainerColor = SurfaceBG,
-        disabledTextColor = Divider,
-        disabledIndicatorColor = Color.Transparent,
         errorContainerColor = SurfaceBG,
     )
 ) {

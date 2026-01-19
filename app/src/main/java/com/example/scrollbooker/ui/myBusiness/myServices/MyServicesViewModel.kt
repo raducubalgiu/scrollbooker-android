@@ -71,6 +71,7 @@ class MyServicesViewModel @Inject constructor(
                         Service(
                             id = it.id,
                             name = it.name,
+                            displayName = it.displayName,
                             businessDomainId = it.businessDomainId
                         )
                     }

@@ -52,7 +52,7 @@ fun InputSelect(
     label: String? = null,
     placeholder: String = "",
     options: List<Option>,
-    selectedOption: String? = null,
+    selectedOption: String,
     onValueChange: (String?) -> Unit,
     isLoading: Boolean = false,
     isEnabled: Boolean = true,

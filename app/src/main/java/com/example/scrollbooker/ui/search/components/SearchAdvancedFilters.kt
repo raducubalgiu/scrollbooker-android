@@ -28,8 +28,8 @@ import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun SearchAdvancedFilters(
-    selectedSubFilterIds: Set<Int>,
-    onSubFilterAppend: (Int) -> Unit,
+    selectedFilters: Map<Int, Int>,
+    onSetSelectedFilter: (Int, Int) -> Unit,
     filters: List<Filter>
 ) {
     AnimatedVisibility(
@@ -54,16 +54,15 @@ fun SearchAdvancedFilters(
 
                 filters.forEachIndexed { index, filter ->
                     val options = filter.subFilters.map { Option(value = it.id.toString(), name = it.name) }
-                    val selectedOption = filter.subFilters
-                        .firstOrNull() { it.id in selectedSubFilterIds }
+
+                    val selectedSubFilterId = selectedFilters[filter.id]
+                    val selectedOption = filter.subFilters.find { it.id == selectedSubFilterId}
 
                     InputSelect(
                         options = options,
                         selectedOption = selectedOption?.id?.toString() ?: "",
                         placeholder = filter.name,
-                        onValueChange = { subFilterId ->
-                            subFilterId?.let { onSubFilterAppend(it.toInt()) }
-                        },
+                        onValueChange = { subId -> subId?.toIntOrNull()?.let { onSetSelectedFilter(filter.id, it) } },
                         isRequired = false,
                         background = Background,
                         color = OnBackground
