@@ -34,12 +34,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.sheet.Sheet
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.ui.LocalLocationController
 import com.example.scrollbooker.ui.LocationPermissionStatus
 import com.example.scrollbooker.ui.PrecisionMode
@@ -56,13 +58,23 @@ import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheetUse
 import com.example.scrollbooker.ui.theme.Background
 import kotlinx.coroutines.launch
 import rememberLocationsCountText
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
-    viewModel: SearchViewModel,
+    isSearchTab: Boolean,
     onNavigateToBusinessProfile: (Int) -> Unit
 ) {
+    val viewModel: SearchViewModel = hiltViewModel()
+    val isMapMounted by viewModel.isMapMounted.collectAsState()
+
+    LaunchedEffect(isSearchTab) {
+        if(isSearchTab) {
+            viewModel.setMapMounted()
+        }
+    }
+
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val activity = context as Activity
@@ -198,15 +210,17 @@ fun SearchScreen(
     ) { padding ->
         val paddingBottom = padding.calculateBottomPadding() + sheetHeaderDp + BasePadding
 
-        SearchMap(
-            viewModel = viewModel,
-            markersUiState = markersUiState,
-            userLocation = locationState.lastAccurateLocation,
-            isMapLoading = isMapLoading,
-            onSheetExpand = { scope.launch { scaffoldState.bottomSheetState.expand() } },
-            paddingBottom = paddingBottom,
-            onNavigateToBusinessProfile = onNavigateToBusinessProfile
-        )
+        if(isMapMounted) {
+            SearchMap(
+                viewModel = viewModel,
+                markersUiState = markersUiState,
+                userLocation = locationState.lastAccurateLocation,
+                isMapLoading = isMapLoading,
+                onSheetExpand = { scope.launch { scaffoldState.bottomSheetState.expand() } },
+                paddingBottom = paddingBottom,
+                onNavigateToBusinessProfile = onNavigateToBusinessProfile
+            )
+        }
 
         Box(modifier = Modifier
             .padding(

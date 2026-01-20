@@ -55,9 +55,15 @@ fun FeedNavHost(navController: NavHostController) {
 
         navigation(
             route = MainRoute.FeedSearchNavigator.route,
-            startDestination = MainRoute.FeedSearch.route
+            startDestination = MainRoute.FeedSearch.route,
         ) {
-            composable(route = MainRoute.FeedSearch.route) { backStackEntry ->
+            composable(
+                route = MainRoute.FeedSearch.route,
+                enterTransition = { EnterTransition.None },
+                exitTransition = { ExitTransition.None },
+                popEnterTransition = { slideInFromLeft() },
+                popExitTransition = { ExitTransition.None }
+            ) { backStackEntry ->
                 val parentEntry = remember(backStackEntry) {
                     navController.getBackStackEntry(MainRoute.FeedSearchNavigator.route)
                 }

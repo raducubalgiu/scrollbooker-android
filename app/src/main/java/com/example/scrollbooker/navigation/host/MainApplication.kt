@@ -29,10 +29,6 @@ fun MainApplication(onLogout: () -> Unit) {
     val myProfileData by myProfileViewModel.userProfileState.collectAsState()
     val myPosts = myProfileViewModel.userPosts.collectAsLazyPagingItems()
 
-    // Search View Model
-    val searchViewModel: SearchViewModel = hiltViewModel()
-    val isMapMounted by searchViewModel.isMapMounted.collectAsState()
-
     val saveableStateHolder = rememberSaveableStateHolder()
     val navControllers = remember {
         mutableMapOf<MainTab, NavHostController>()
@@ -44,21 +40,13 @@ fun MainApplication(onLogout: () -> Unit) {
 
     val searchNavHostController = navControllers[MainTab.Search]!!
 
-    LaunchedEffect(currentTab) {
-        if(currentTab is MainTab.Search) {
-            searchViewModel.setMapMounted()
-        }
-    }
-
     Box(modifier = Modifier.fillMaxSize()) {
-        if(isMapMounted) {
-            SearchScreen(
-                viewModel = searchViewModel,
-                onNavigateToBusinessProfile = {
-                    searchNavHostController.navigate(MainRoute.BusinessProfile.createRoute(it))
-                }
-            )
-        }
+        SearchScreen(
+            isSearchTab = currentTab is MainTab.Search,
+            onNavigateToBusinessProfile = {
+                searchNavHostController.navigate(MainRoute.BusinessProfile.createRoute(it))
+            }
+        )
 
         saveableStateHolder.SaveableStateProvider(currentTab.route) {
             when (currentTab) {
