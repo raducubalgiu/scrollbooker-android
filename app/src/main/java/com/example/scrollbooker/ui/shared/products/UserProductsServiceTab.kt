@@ -1,19 +1,14 @@
 package com.example.scrollbooker.ui.shared.products
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -23,11 +18,10 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.components.core.layout.ErrorScreen
-import com.example.scrollbooker.components.customized.ProductCard
+import com.example.scrollbooker.components.customized.ProductCard.ProductCard
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.components.customized.LoadMoreSpinner
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
-import androidx.compose.runtime.getValue
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.entity.nomenclature.service.domain.model.ServiceEmployee
 import com.example.scrollbooker.ui.shared.products.components.EmployeesList

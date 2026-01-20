@@ -18,7 +18,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.SegmentedButtons
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
-import com.example.scrollbooker.components.customized.ProductCard
+import com.example.scrollbooker.components.customized.ProductCard.ProductCard
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.products.domain.model.Product

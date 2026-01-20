@@ -1,7 +1,5 @@
 package com.example.scrollbooker.entity.booking.products.data.remote
 
-import com.example.scrollbooker.core.enums.FilterTypeEnum
-import com.example.scrollbooker.entity.nomenclature.filter.data.remote.SubFilterDto
 import com.example.scrollbooker.entity.nomenclature.filter.domain.model.SubFilter
 import com.google.gson.annotations.SerializedName
 import java.math.BigDecimal
