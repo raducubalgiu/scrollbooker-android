@@ -16,6 +16,8 @@ fun checkLength(context: Context, field: String, minLength: Int = 0, maxLength: 
 }
 
 fun checkMinMax(context: Context, field: String, min: Int? = null, max: Int? = null): String? {
+    if(field.isEmpty()) return context.getString(R.string.requiredValidationMessage)
+    
     val value = field.trim().toIntOrNull() ?: return null
 
     return when {

@@ -76,7 +76,6 @@ fun OwnClientService(
                                     options = options,
                                     selectedOption = selectedServiceId,
                                     onValueChange = onSelectedServiceId,
-                                    shouldDisplayRequiredMessage = false
                                 )
                                 AnimatedVisibility(visible = isNotValidSelect) {
                                     HorizontalDivider(color = MaterialTheme.colorScheme.error)

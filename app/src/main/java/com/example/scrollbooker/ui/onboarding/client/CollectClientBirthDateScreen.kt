@@ -118,8 +118,7 @@ fun CollectClientBirthDateScreen(
                     options = dayOptions,
                     placeholder = stringResource(R.string.day),
                     selectedOption = selectedDay.toString(),
-                    onValueChange = { viewModel.setSelectedDay(it) },
-                    isRequired = false
+                    onValueChange = { viewModel.setSelectedDay(it) }
                 )
             }
 
@@ -130,8 +129,7 @@ fun CollectClientBirthDateScreen(
                     options = monthOptions,
                     placeholder = stringResource(R.string.month),
                     selectedOption = selectedMonth.toString(),
-                    onValueChange = { viewModel.setSelectedMonth(it) },
-                    isRequired = false
+                    onValueChange = { viewModel.setSelectedMonth(it) }
                 )
             }
 
@@ -142,8 +140,7 @@ fun CollectClientBirthDateScreen(
                     options = yearOptions,
                     placeholder = stringResource(R.string.year),
                     selectedOption = selectedYear.toString(),
-                    onValueChange = { viewModel.setSelectedYear(it) },
-                    isRequired = false
+                    onValueChange = { viewModel.setSelectedYear(it) }
                 )
             }
         }

@@ -88,7 +88,7 @@
     <string name="priceWithDiscount">Preț cu discount</string>
     <string name="discount">Discount</string>
     <string name="currency">Monedă</string>
-    <string name="duration">Durată</string>
+    <string name="duration">Durată (minute)</string>
     <string name="service">Serviciu</string>
     <string name="description">Descriere</string>
     <string name="shareProfile">Distribuie profilul</string>

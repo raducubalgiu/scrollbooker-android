@@ -78,7 +78,9 @@ fun OwnClientSheet(
     val pagerState = rememberPagerState { 2 }
 
     val (form, onEvent) = rememberOwnClientFormState()
+
     val validation = remember(form) { form.validate(context) }
+
     var showErrors by rememberSaveable { mutableStateOf(false) }
 
     val selectedOwnClientSlot = state.selectedOwnClientSlot

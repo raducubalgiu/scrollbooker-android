@@ -55,7 +55,7 @@ fun MyBusinessScreen(
             description = stringResource(R.string.userScheduleDetails),
             icon = Icons.Outlined.Schedule,
             navigate = { myBusinessNavigate.toMySchedules() },
-            hasEmployees = false,
+            hasEmployees = true,
             permission = PermissionEnum.MY_SCHEDULES_VIEW
         ),
         BusinessCard(
@@ -95,7 +95,7 @@ fun MyBusinessScreen(
             description = stringResource(R.string.servicesDetails),
             icon = Icons.Outlined.PeopleOutline,
             navigate = { myBusinessNavigate.toMyEmployees() },
-            hasEmployees = false,
+            hasEmployees = true,
             permission = PermissionEnum.MY_EMPLOYEES_VIEW
         ),
         BusinessCard(
@@ -103,7 +103,7 @@ fun MyBusinessScreen(
             description = stringResource(R.string.servicesDetails),
             icon = Icons.Outlined.Repeat,
             navigate = { myBusinessNavigate.toMyEmploymentRequests() },
-            hasEmployees = false,
+            hasEmployees = true,
             permission = PermissionEnum.MY_EMPLOYMENT_REQUESTS_VIEW
         )
     )

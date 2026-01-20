@@ -1,4 +1,5 @@
 package com.example.scrollbooker.components.core.inputs
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -6,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -13,10 +15,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,19 +35,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
-import com.example.scrollbooker.core.util.checkRequired
+import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.SurfaceBG
+import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.labelLarge
 
 @Composable
@@ -56,17 +61,14 @@ fun InputSelect(
     onValueChange: (String?) -> Unit,
     isLoading: Boolean = false,
     isEnabled: Boolean = true,
-    isRequired: Boolean = true,
-    shouldDisplayRequiredMessage: Boolean = true,
+    isError: Boolean = false,
+    errorMessage: String = "",
     displayLabel: Boolean = true,
     background: Color = SurfaceBG,
     color: Color = OnSurfaceBG
 ) {
     var expanded by remember { mutableStateOf(false) }
     var parentWidth by remember { mutableIntStateOf(0) }
-
-    val context = LocalContext.current
-    val required = checkRequired(context, selectedOption)
 
     val rotation by animateFloatAsState(
         targetValue = if(expanded) 180f else 0f,
@@ -80,7 +82,7 @@ fun InputSelect(
     val hasValue = selected != null
 
     val placeholderColor = when {
-        //isRequired && selectedOption.isBlank() || selectedOption == "null" -> MaterialTheme.colorScheme.error
+        isError -> MaterialTheme.colorScheme.error
         expanded -> Primary
         else -> Color.Gray
     }
@@ -126,7 +128,7 @@ fun InputSelect(
                     }
 
                     if(
-                        selectedOption?.isBlank() == true ||
+                        selectedOption.isBlank() == true ||
                         selectedOption == "null"
                     ) {
                         Text(
@@ -199,25 +201,25 @@ fun InputSelect(
         }
     }
 
-//    AnimatedVisibility(visible = isRequired && required != null && shouldDisplayRequiredMessage) {
-//        Column(modifier = Modifier
-//            .padding(top = BasePadding)
-//        ) {
-//            Row(verticalAlignment = Alignment.CenterVertically) {
-//                Icon(
-//                    imageVector = Icons.Outlined.Warning,
-//                    contentDescription = null,
-//                    tint = Error
-//                )
-//                Spacer(Modifier.width(SpacingS))
-//                Text(
-//                    text = stringResource(R.string.requiredValidationMessage),
-//                    color = Error,
-//                    style = bodyMedium
-//                )
-//            }
-//        }
-//    }
+    AnimatedVisibility(visible = isError) {
+        Column(modifier = Modifier
+            .padding(top = BasePadding)
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = Icons.Outlined.Warning,
+                    contentDescription = null,
+                    tint = Error
+                )
+                Spacer(Modifier.width(SpacingS))
+                Text(
+                    text = errorMessage,
+                    color = Error,
+                    style = bodyMedium
+                )
+            }
+        }
+    }
 }
 
 data class Option(

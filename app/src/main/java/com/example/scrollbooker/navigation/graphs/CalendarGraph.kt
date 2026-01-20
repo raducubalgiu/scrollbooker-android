@@ -19,7 +19,6 @@ import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.ui.LocalBottomBarController
 import com.example.scrollbooker.ui.LocalMainNavController
 import com.example.scrollbooker.ui.shared.calendar.AppointmentConfirmationScreen
-import com.example.scrollbooker.ui.shared.calendar.CalendarScreen
 import com.example.scrollbooker.ui.shared.calendar.CalendarViewModel
 import kotlinx.coroutines.launch
 
@@ -54,17 +53,17 @@ fun NavGraphBuilder.calendarGraph(
             val productId = backStackEntry.arguments?.getInt("productId") ?: return@composable
             val productName = backStackEntry.arguments?.getString("productName") ?: return@composable
 
-            CalendarScreen(
-                viewModel = viewModel,
-                userId = userId,
-                slotDuration = slotDuration,
-                productId = productId,
-                productName = productName,
-                onBack = { mainNavController.popBackStack() },
-                onNavigateToConfirmation = {
-                    mainNavController.navigate(MainRoute.AppointmentConfirmation.route)
-                }
-            )
+//            CalendarScreen(
+//                viewModel = viewModel,
+//                userId = userId,
+//                slotDuration = slotDuration,
+//                productId = productId,
+//                productName = productName,
+//                onBack = { mainNavController.popBackStack() },
+//                onNavigateToConfirmation = {
+//                    mainNavController.navigate(MainRoute.AppointmentConfirmation.route)
+//                }
+//            )
         }
 
         composable(route = MainRoute.AppointmentConfirmation.route) { backStackEntry ->

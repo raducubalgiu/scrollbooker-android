@@ -25,7 +25,6 @@ import com.example.scrollbooker.core.util.translateDayOfWeek
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.titleMedium
-import timber.log.Timber
 
 @Composable
 fun ScheduleRow(
@@ -69,7 +68,6 @@ fun ScheduleRow(
                     placeholder = stringResource(R.string.closed),
                     options = slots,
                     selectedOption = selectedStartTime.toString(),
-                    isRequired = false,
                     onValueChange = {
                         selectedStartTime = it
                         onChange(it, selectedEndTime)
@@ -86,7 +84,6 @@ fun ScheduleRow(
                     placeholder = stringResource(R.string.closed),
                     options = slots,
                     selectedOption = selectedEndTime.toString(),
-                    isRequired = false,
                     onValueChange = {
                         selectedEndTime = it
                         onChange(selectedStartTime, selectedEndTime)

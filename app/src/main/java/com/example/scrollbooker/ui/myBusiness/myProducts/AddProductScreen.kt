@@ -1,16 +1,12 @@
 package com.example.scrollbooker.ui.myBusiness.myProducts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -19,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Percent
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -27,9 +24,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -39,12 +40,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
+import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.inputs.Input
 import com.example.scrollbooker.components.core.inputs.InputSelect
 import com.example.scrollbooker.components.core.inputs.Option
-import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.ui.myBusiness.myProducts.components.AddProductValidation
 import com.example.scrollbooker.ui.myBusiness.myProducts.components.CanBeBookedSection
 import com.example.scrollbooker.ui.myBusiness.myProducts.components.FiltersActions
 import com.example.scrollbooker.ui.myBusiness.myProducts.components.FiltersSection
@@ -55,25 +57,15 @@ import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.labelLarge
 
-data class ProductValidationResult(
-    val isValid: Boolean,
-    val isNameValid: Boolean,
-    val nameError: String?,
-    val isDescriptionValid: Boolean,
-    val descriptionError: String?,
-    val isPriceValid: Boolean,
-    val priceError: String?,
-    val isDiscountValid: Boolean,
-    val discountError: String?
-)
-
 @Composable
 fun AddProductScreen(
     viewModel: AddProductsViewModel,
     onBack: () -> Unit
 ) {
-    val scrollState = rememberScrollState()
+    val context = LocalContext.current
     val focusManager = LocalFocusManager.current
+    val scrollState = rememberScrollState()
+
     val actions = rememberFiltersSectionActions(viewModel)
 
     val servicesState by viewModel.servicesState.collectAsState()
@@ -113,6 +105,14 @@ fun AddProductScreen(
         else -> emptyList()
     }
 
+    var showErrors by rememberSaveable { mutableStateOf(false) }
+    val validation by remember(productState, showErrors, context) {
+        derivedStateOf {
+            if(!showErrors) AddProductValidation(isValid = true)
+            else productState.validate(context)
+        }
+    }
+
     val isLoadingServices = servicesState is FeatureState.Loading
     val isErrorServices = servicesState is FeatureState.Error
 
@@ -120,26 +120,27 @@ fun AddProductScreen(
     val isErrorCurrencies = currenciesState is FeatureState.Error
 
     val isLoadingFilters = filtersState is FeatureState.Loading
-    val isErrorFilters = filtersState is FeatureState.Error
 
-    Layout(
-        onBack = onBack,
-        headerTitle = stringResource(R.string.addNewProduct),
-        enablePaddingH = false
-    ) {
+    val isNameValid = validation.nameError.isNullOrBlank()
+    val isDurationValid = validation.durationError.isNullOrBlank()
+    val isPriceValid = validation.priceError.isNullOrBlank()
+    val isDiscountValid = validation.discountError.isNullOrBlank()
+    val isValidServiceId = validation.serviceIdError.isNullOrBlank()
+    val isValidCurrencyId = validation.currencyIdError.isNullOrBlank()
+
+    Scaffold(
+        topBar = { Header(onBack=onBack, title = stringResource(R.string.addNewProduct)) }
+    ) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(innerPadding)
                 .clickable(
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() }
                 ) { focusManager.clearFocus() }
         ) {
-            Column(modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = WindowInsets.ime.asPaddingValues().calculateBottomPadding()),
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
+            Column(modifier = Modifier.fillMaxSize()) {
                 Column(modifier = Modifier
                     .weight(1f)
                     .verticalScroll(scrollState)
@@ -158,7 +159,9 @@ fun AddProductScreen(
                             }
                         },
                         isLoading = isLoadingServices,
-                        isEnabled = !isErrorServices && !isLoadingServices
+                        isEnabled = !isErrorServices && !isLoadingServices,
+                        isError = showErrors && !isValidServiceId,
+                        errorMessage = validation.serviceIdError.toString()
                     )
 
                     Spacer(Modifier.height(BasePadding))
@@ -177,14 +180,12 @@ fun AddProductScreen(
                         else -> Unit
                     }
 
-
-
                     Input(
-                        value = productState.name,
-                        onValueChange = { viewModel.setName(it) },
                         label = stringResource(R.string.name),
-                        //isError = !validation.isNameValid,
-                        //errorMessage = validation.nameError.toString(),
+                        value = productState.name,
+                        onValueChange = viewModel::setName,
+                        isError = showErrors && !isNameValid,
+                        errorMessage = validation.nameError.toString(),
                         singleLine = false,
                         maxLines = 3
                     )
@@ -192,22 +193,25 @@ fun AddProductScreen(
                     Spacer(Modifier.height(BasePadding))
 
                     Input(
-                        value = productState.description,
-                        onValueChange = { viewModel.setDescription(it) },
                         label = stringResource(R.string.description),
-                        //isError = !validation.isDescriptionValid,
-                        //errorMessage = validation.descriptionError.toString(),
+                        value = productState.description,
+                        onValueChange = viewModel::setDescription,
                         singleLine = false,
                         maxLines = 5
-
                     )
 
                     Spacer(Modifier.height(BasePadding))
 
                     Input(
+                        label = stringResource(R.string.duration),
                         value = productState.duration,
-                        onValueChange = { viewModel.setDuration(it) },
-                        label = stringResource(R.string.duration)
+                        onValueChange = viewModel::setDuration,
+                        isError = showErrors && !isDurationValid,
+                        errorMessage = validation.durationError.toString(),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType =  KeyboardType.Number,
+                            imeAction = ImeAction.Next
+                        ),
                     )
 
                     Spacer(Modifier.height(BasePadding))
@@ -217,40 +221,32 @@ fun AddProductScreen(
                         placeholder = stringResource(R.string.pickCurrency),
                         options = currenciesOptionList,
                         selectedOption = productState.currencyId,
-                        onValueChange = { currencyId ->
-                            focusManager.clearFocus()
-
-                            currencyId?.let {
-                                viewModel.setCurrencyId(it)
-                            }
-                        },
+                        onValueChange = { it?.let { viewModel.setCurrencyId(it) } },
                         isLoading = isLoadingCurrencies,
-                        isEnabled = !isErrorCurrencies && !isLoadingCurrencies
+                        isEnabled = !isErrorCurrencies && !isLoadingCurrencies,
+                        isError = showErrors && !isValidCurrencyId,
+                        errorMessage = validation.currencyIdError.toString()
                     )
 
                     Spacer(Modifier.height(BasePadding))
 
                     Input(
+                        label = stringResource(R.string.price),
                         value = productState.price,
                         onValueChange = { viewModel.setPrice(it) },
+                        isError = showErrors && !isPriceValid,
+                        errorMessage = validation.priceError.toString(),
                         keyboardOptions = KeyboardOptions(
                             keyboardType =  KeyboardType.Number,
                             imeAction = ImeAction.Next
                         ),
-                        label = stringResource(R.string.price),
-                        //isError = !validation.isPriceValid,
-                        //errorMessage = validation.priceError.toString()
                     )
                     Spacer(Modifier.height(BasePadding))
 
                     Input(
+                        label = stringResource(R.string.discount),
                         value = productState.discount,
                         onValueChange = { viewModel.setDiscount(it) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType =  KeyboardType.Number,
-                            imeAction = ImeAction.Next
-                        ),
-                        label = stringResource(R.string.discount),
                         trailingIcon = {
                             Icon(
                                 imageVector = Icons.Default.Percent,
@@ -258,9 +254,14 @@ fun AddProductScreen(
                                 tint = Color.Gray
                             )
                         },
-                        //isError = !validation.isDiscountValid,
-                        //errorMessage = validation.discountError.toString()
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType =  KeyboardType.Number,
+                            imeAction = ImeAction.Next
+                        ),
+                        isError = showErrors && !isDiscountValid,
+                        errorMessage = validation.discountError.toString()
                     )
+
                     Spacer(Modifier.height(BasePadding))
 
                     TextField(
@@ -306,7 +307,13 @@ fun AddProductScreen(
                         isLoading = isSaving,
                         enabled = !isSaving,
                         title = stringResource(R.string.save),
-                        onClick = { viewModel.createProduct() },
+                        onClick = {
+                            showErrors = true
+
+                            if(validation.isValid) {
+                                viewModel.createProduct()
+                            }
+                        },
                     )
                 }
             }

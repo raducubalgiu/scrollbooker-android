@@ -63,7 +63,6 @@ fun SearchAdvancedFilters(
                         selectedOption = selectedOption?.id?.toString() ?: "",
                         placeholder = filter.name,
                         onValueChange = { subId -> subId?.toIntOrNull()?.let { onSetSelectedFilter(filter.id, it) } },
-                        isRequired = false,
                         background = Background,
                         color = OnBackground
                     )

@@ -15,6 +15,7 @@ import com.example.scrollbooker.entity.nomenclature.filter.domain.useCase.GetFil
 import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
 import com.example.scrollbooker.entity.nomenclature.service.domain.useCase.GetServicesByBusinessIdUseCase
 import com.example.scrollbooker.store.AuthDataStore
+import com.example.scrollbooker.ui.myBusiness.myProducts.components.AddProductState
 import com.example.scrollbooker.ui.myBusiness.myProducts.components.calculatePriceWithDiscount
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,18 +39,6 @@ sealed interface FilterSelection {
 }
 
 typealias SelectedFilters = Map<Int, FilterSelection>
-
-data class AddProductState(
-    val name: String = "",
-    val description: String = "",
-    val price: String = "0",
-    val priceWithDiscount: String = "0",
-    val discount: String = "0",
-    val duration: String = "",
-    val serviceId: String = "",
-    val currencyId: String = "",
-    val canBeBooked: Boolean = true
-)
 
 @HiltViewModel
 class AddProductsViewModel @Inject constructor(

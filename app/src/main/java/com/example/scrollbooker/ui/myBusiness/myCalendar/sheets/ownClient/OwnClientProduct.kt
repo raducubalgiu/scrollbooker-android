@@ -76,7 +76,6 @@ fun OwnClientProduct(
                                     options = options,
                                     selectedOption = selectedProductId,
                                     onValueChange = onSelectedProductId,
-                                    shouldDisplayRequiredMessage = false
                                 )
                                 AnimatedVisibility(visible = isNotValidSelect) {
                                     HorizontalDivider(color = MaterialTheme.colorScheme.error)

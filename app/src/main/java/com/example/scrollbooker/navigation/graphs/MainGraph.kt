@@ -1,6 +1,5 @@
 package com.example.scrollbooker.navigation.graphs
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
@@ -90,7 +89,6 @@ fun NavGraphBuilder.mainGraph(onLogout: () -> Unit) {
 
                     // Global Routes
                     globalGraph(mainNavController)
-                    calendarGraph(mainNavController)
                     cameraGraph(mainNavController)
                 }
             }
