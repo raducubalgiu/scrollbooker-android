@@ -5,19 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.example.scrollbooker.core.enums.FilterTypeEnum
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
-import com.example.scrollbooker.entity.booking.products.data.remote.AddProductFilterRequest
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
-import com.example.scrollbooker.entity.booking.products.domain.model.ProductCreate
-import com.example.scrollbooker.entity.booking.products.domain.useCase.CreateProductUseCase
 import com.example.scrollbooker.entity.booking.products.domain.useCase.DeleteProductUseCase
-import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductByIdUseCase
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByUserIdAndServiceIdUseCase
-import com.example.scrollbooker.entity.nomenclature.currency.domain.model.Currency
 import com.example.scrollbooker.entity.nomenclature.currency.domain.useCase.GetUserCurrenciesUseCase
-import com.example.scrollbooker.entity.nomenclature.filter.domain.model.Filter
 import com.example.scrollbooker.entity.nomenclature.filter.domain.useCase.GetFiltersByServiceUseCase
 import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
 import com.example.scrollbooker.entity.nomenclature.service.domain.useCase.GetServicesByBusinessIdUseCase
@@ -29,115 +22,33 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.shareIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.math.BigDecimal
 import javax.inject.Inject
-
-sealed interface FilterSelection {
-    data class Options(val ids: Set<Int> = emptySet()): FilterSelection
-    data class Range(
-        val minim: BigDecimal?,
-        val maxim: BigDecimal?,
-        val isNotApplicable: Boolean = false
-    ): FilterSelection
-}
-
-typealias SelectedFilters = Map<Int, FilterSelection>
 
 @HiltViewModel
 class MyProductsViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
     private val getServicesByBusinessIdUseCase: GetServicesByBusinessIdUseCase,
-    private val getProductUseCase: GetProductByIdUseCase,
     private val getProductsByUserIdAndServiceIdUseCase: GetProductsByUserIdAndServiceIdUseCase,
-    private val getUserCurrenciesUseCase: GetUserCurrenciesUseCase,
-    private val getFiltersByServiceUseCase: GetFiltersByServiceUseCase,
-    private val createProductUseCase: CreateProductUseCase,
     private val deleteProductUseCase: DeleteProductUseCase
 ): ViewModel() {
     private val _servicesState = MutableStateFlow<FeatureState<List<Service>>>(FeatureState.Loading)
     val servicesState: StateFlow<FeatureState<List<Service>>> = _servicesState
 
-    private val _currenciesState = MutableStateFlow<FeatureState<List<Currency>>>(FeatureState.Loading)
-    val currenciesState: StateFlow<FeatureState<List<Currency>>> = _currenciesState
-
-    private val _filtersState = MutableStateFlow<FeatureState<List<Filter>>?>(null)
-    val filtersState: StateFlow<FeatureState<List<Filter>>?> = _filtersState
-
     private val _isSaving = MutableStateFlow<Boolean>(false)
     val isSaving: StateFlow<Boolean> = _isSaving
-
-    private val _product = MutableStateFlow<FeatureState<Product>>(FeatureState.Loading)
-    val product: StateFlow<FeatureState<Product>> = _product
 
     private val _selectedProduct = MutableStateFlow<Product?>(null)
     val selectedProduct = _selectedProduct
 
     private val _productsReloadTrigger = mutableIntStateOf(0)
     val productsReloadTrigger: State<Int> = _productsReloadTrigger
-
-    private val _selectedFilters = MutableStateFlow<SelectedFilters>(emptyMap())
-    val selectedFilters: StateFlow<SelectedFilters> = _selectedFilters.asStateFlow()
-
-    fun setSingleOption(filterId: Int, subFilterId: Int?) {
-        _selectedFilters.update { current ->
-            if (subFilterId == null) current - filterId
-            else current + (filterId to FilterSelection.Options(setOf(subFilterId)))
-        }
-    }
-
-    fun toggleMultiOption(filterId: Int, subFilterId: Int) {
-        _selectedFilters.update { current ->
-            val prev = (current[filterId] as? FilterSelection.Options)?.ids.orEmpty()
-            val next = if (subFilterId in prev) prev - subFilterId else prev + subFilterId
-            if (next.isEmpty()) current - filterId
-            else current + (filterId to FilterSelection.Options(next))
-        }
-    }
-
-    fun setRange(filterId: Int, from: BigDecimal?, to: BigDecimal?) {
-        _selectedFilters.update { current ->
-            if (from == null && to == null) current - filterId
-            else current + (filterId to FilterSelection.Range(minim = from, maxim = to))
-        }
-    }
-
-    fun setApplicable(filterId: Int) {
-        _selectedFilters.update { current ->
-            val prev = current[filterId] as? FilterSelection.Range
-
-            val next = if (prev == null) {
-                FilterSelection.Range(
-                    minim = null,
-                    maxim = null,
-                    isNotApplicable = true
-                )
-            } else {
-                val newIsNotApplicable = !prev.isNotApplicable
-
-                if (newIsNotApplicable) {
-                    prev.copy(
-                        minim = null,
-                        maxim = null,
-                        isNotApplicable = true
-                    )
-                } else {
-                    prev.copy(isNotApplicable = false)
-                }
-            }
-
-            current + (filterId to next)
-        }
-    }
-
 
     init {
         loadServices()
@@ -162,90 +73,6 @@ class MyProductsViewModel @Inject constructor(
                 getProductsByUserIdAndServiceIdUseCase(userId, serviceId, employeeId)
                     .cachedIn(viewModelScope)
             }.shareIn(viewModelScope, SharingStarted.Lazily, replay = 1)
-        }
-    }
-
-    fun setProduct(product: Product) {
-        _selectedProduct.value = product
-    }
-
-    fun createProduct(
-        name: String,
-        description: String,
-        price: String,
-        priceWithDiscount: String,
-        discount: String,
-        duration: String,
-        serviceId: String,
-        currencyId: String,
-        canBeBooked: Boolean
-    ) {
-        viewModelScope.launch {
-            _isSaving.value = true
-            val businessId = authDataStore.getBusinessId().firstOrNull()
-
-            if(businessId == null) {
-                throw kotlin.IllegalStateException("Business Id not found in Auth Data Store")
-            }
-
-
-            val filters: List<AddProductFilterRequest> =
-                _selectedFilters.value.entries.mapNotNull { (filterId, selection) ->
-                    when (selection) {
-                        is FilterSelection.Options -> {
-                            if (selection.ids.isEmpty()) return@mapNotNull null
-
-                            AddProductFilterRequest(
-                                filterId = filterId,
-                                subFilterIds = selection.ids.toList(),
-                                type = FilterTypeEnum.OPTIONS.key,
-                                minim = null,
-                                maxim = null,
-                                isNotApplicable = false
-                            )
-                        }
-
-                        is FilterSelection.Range -> {
-                            if (selection.minim == null && selection.maxim == null) return@mapNotNull null
-
-                            AddProductFilterRequest(
-                                filterId = filterId,
-                                subFilterIds = emptyList(),
-                                type = FilterTypeEnum.RANGE.key,
-                                minim = selection.minim,
-                                maxim = selection.maxim,
-                                isNotApplicable = selection.isNotApplicable
-                            )
-                        }
-                    }
-                }
-
-            val response = withVisibleLoading {
-                createProductUseCase(
-                    productCreate = ProductCreate(
-                        name = name,
-                        description = description,
-                        price = price.toBigDecimal(),
-                        priceWithDiscount = priceWithDiscount.toBigDecimal(),
-                        discount = discount.toBigDecimal(),
-                        duration = duration.toInt(),
-                        serviceId = serviceId.toInt(),
-                        businessId = businessId,
-                        currencyId = currencyId.toInt(),
-                        canBeBooked = canBeBooked
-                    ),
-                    filters = filters
-                )
-            }
-
-            response
-                .onSuccess { response ->
-                    _isSaving.value = false
-                }
-                .onFailure { e ->
-                    Timber.tag("Create Product").e("ERROR: on Creating Product in MyProducts $e")
-                    _isSaving.value = false
-                }
         }
     }
 
@@ -277,35 +104,6 @@ class MyProductsViewModel @Inject constructor(
         }
     }
 
-    fun loadProduct(productId: Int) {
-        viewModelScope.launch {
-            _product.value = FeatureState.Loading
-            _product.value = withVisibleLoading { getProductUseCase(productId) }
-        }
-    }
-
-    fun loadCurrencies() {
-        viewModelScope.launch {
-            _currenciesState.value = FeatureState.Loading
-
-            val result = withVisibleLoading {
-                val userId = authDataStore.getUserId().firstOrNull()
-                    ?: throw IllegalStateException("User Id not found in authDataStore")
-
-                getUserCurrenciesUseCase(userId)
-            }
-
-            result
-                .onSuccess { response ->
-                    _currenciesState.value = FeatureState.Success(response)
-                }
-                .onFailure { e ->
-                    Timber.tag("Currencies").e("ERROR: on Fetching Currencies in MyProducts $e")
-                    _currenciesState.value = FeatureState.Error()
-                }
-        }
-    }
-
     fun loadServices() {
         viewModelScope.launch {
             _servicesState.value = FeatureState.Loading
@@ -325,13 +123,6 @@ class MyProductsViewModel @Inject constructor(
                     Timber.tag("Services").e("ERROR: on Fetching Services in MyProducts $e")
                     _servicesState.value = FeatureState.Error()
                 }
-        }
-    }
-
-    fun loadFilters(serviceId: Int) {
-        viewModelScope.launch {
-            _filtersState.value = FeatureState.Loading
-            _filtersState.value = withVisibleLoading { getFiltersByServiceUseCase(serviceId) }
         }
     }
 }

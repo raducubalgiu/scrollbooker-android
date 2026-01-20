@@ -12,7 +12,8 @@ fun FilterDto.toDomain(): Filter {
         name = name,
         singleSelect = singleSelect,
         type = FilterTypeEnum.fromKey(type),
-        subFilters = subFilters.map { it.toDomain() }
+        subFilters = subFilters.map { it.toDomain() },
+        unit = unit
     )
 }
 

@@ -1,58 +1,35 @@
 package com.example.scrollbooker.ui.myBusiness.myProducts
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Percent
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ShapeDefaults
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -63,33 +40,20 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.inputs.Input
-import com.example.scrollbooker.components.core.inputs.InputCheckbox
 import com.example.scrollbooker.components.core.inputs.InputSelect
 import com.example.scrollbooker.components.core.inputs.Option
 import com.example.scrollbooker.components.core.layout.Layout
-import com.example.scrollbooker.components.core.shimmer.rememberShimmerBrush
-import com.example.scrollbooker.core.enums.FilterTypeEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.core.util.checkLength
-import com.example.scrollbooker.core.util.checkMinMax
-import com.example.scrollbooker.ui.search.components.SearchAdvancedFilters
-import com.example.scrollbooker.ui.theme.Background
+import com.example.scrollbooker.ui.myBusiness.myProducts.components.CanBeBookedSection
+import com.example.scrollbooker.ui.myBusiness.myProducts.components.FiltersActions
+import com.example.scrollbooker.ui.myBusiness.myProducts.components.FiltersSection
+import com.example.scrollbooker.ui.myBusiness.myProducts.components.FiltersSkeleton
+import com.example.scrollbooker.ui.myBusiness.myProducts.components.calculatePriceWithDiscount
 import com.example.scrollbooker.ui.theme.Divider
-import com.example.scrollbooker.ui.theme.LastMinute
-import com.example.scrollbooker.ui.theme.OnBackground
-import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.SurfaceBG
-import com.example.scrollbooker.ui.theme.bodySmall
 import com.example.scrollbooker.ui.theme.labelLarge
-import com.example.scrollbooker.ui.theme.titleMedium
-import java.math.BigDecimal
-import java.math.RoundingMode
-import kotlin.collections.forEachIndexed
-import kotlin.collections.isNotEmpty
 
 data class ProductValidationResult(
     val isValid: Boolean,
@@ -105,44 +69,29 @@ data class ProductValidationResult(
 
 @Composable
 fun AddProductScreen(
-    viewModel: MyProductsViewModel,
+    viewModel: AddProductsViewModel,
     onBack: () -> Unit
 ) {
+    val scrollState = rememberScrollState()
     val focusManager = LocalFocusManager.current
-    val context = LocalContext.current
+    val actions = rememberFiltersSectionActions(viewModel)
 
     val servicesState by viewModel.servicesState.collectAsState()
     val currenciesState by viewModel.currenciesState.collectAsState()
     val filtersState by viewModel.filtersState.collectAsState()
 
+    val productState by viewModel.productState.collectAsState()
     val selectedFilters by viewModel.selectedFilters.collectAsState()
-
     val isSaving by viewModel.isSaving.collectAsState()
 
-    LaunchedEffect(Unit) {
-        viewModel.loadCurrencies()
+    val priceWithDiscount by remember(productState.price, productState.discount) {
+        derivedStateOf {
+            calculatePriceWithDiscount(
+                price = productState.price,
+                discountPercent = productState.discount
+            ).toPlainString()
+        }
     }
-
-    var name by rememberSaveable { mutableStateOf("") }
-    var serviceId by rememberSaveable { mutableStateOf("") }
-    var description by rememberSaveable { mutableStateOf("") }
-    var duration by rememberSaveable { mutableStateOf("") }
-    var currencyId by rememberSaveable { mutableStateOf("") }
-    var price by rememberSaveable { mutableStateOf("0") }
-    var discount by rememberSaveable { mutableStateOf("0") }
-    var canBeBooked by rememberSaveable { mutableStateOf(true) }
-    var selectedSubFilterIds by rememberSaveable {
-        mutableStateOf<Set<Int>>(emptySet())
-    }
-
-    val priceDecimal = price.toBigDecimalOrNull() ?: BigDecimal.ZERO
-    val discountDecimal = discount.toBigDecimalOrNull() ?: BigDecimal.ZERO
-
-    val priceWithDiscount = priceDecimal.multiply(
-        BigDecimal.ONE.subtract(discountDecimal.divide(BigDecimal(100)))
-    ).setScale(2, RoundingMode.HALF_UP).toString()
-
-    val scrollState = rememberScrollState()
 
     val servicesOptionList = when(val state = servicesState) {
         is FeatureState.Success -> state.data.map { service ->
@@ -173,41 +122,6 @@ fun AddProductScreen(
     val isLoadingFilters = filtersState is FeatureState.Loading
     val isErrorFilters = filtersState is FeatureState.Error
 
-    val validation by remember (name, description, price, discount, serviceId, currencyId) {
-        derivedStateOf {
-            val checkName = checkLength(context, name, minLength = 3, maxLength = 100)
-            val isNameValid = checkName.isNullOrBlank()
-
-            val checkDescription = checkLength(context, description, minLength = 3, maxLength = 255)
-            val isDescriptionValid = checkDescription.isNullOrBlank()
-
-            val checkPrice = checkMinMax(context, price, min = 10)
-            val isPriceValid = checkPrice.isNullOrBlank()
-
-            val checkDiscount = checkMinMax(context, discount, max = 90)
-            val isDiscountValid = checkDiscount.isNullOrBlank()
-
-            val isValid = serviceId.isNotEmpty() &&
-                    currencyId.isNotEmpty() &&
-                    isNameValid &&
-                    isDescriptionValid &&
-                    isPriceValid &&
-                    isDiscountValid
-
-            ProductValidationResult(
-                isValid = isValid,
-                isNameValid = isNameValid,
-                nameError = checkName.toString(),
-                isDescriptionValid = isDescriptionValid,
-                descriptionError = checkDescription.toString(),
-                isPriceValid = isPriceValid,
-                priceError = checkPrice.toString(),
-                isDiscountValid = isDiscountValid,
-                discountError = checkDiscount.toString()
-            )
-        }
-    }
-
     Layout(
         onBack = onBack,
         headerTitle = stringResource(R.string.addNewProduct),
@@ -219,9 +133,7 @@ fun AddProductScreen(
                 .clickable(
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() }
-                ) {
-                    focusManager.clearFocus()
-                }
+                ) { focusManager.clearFocus() }
         ) {
             Column(modifier = Modifier
                 .fillMaxSize()
@@ -237,12 +149,13 @@ fun AddProductScreen(
                         label = stringResource(R.string.service),
                         placeholder = stringResource(R.string.pickService),
                         options = servicesOptionList,
-                        selectedOption = serviceId,
-                        onValueChange = {
-                            focusManager.clearFocus()
-
-                            serviceId = it.toString()
-                            viewModel.loadFilters(serviceId.toInt())
+                        selectedOption = productState.serviceId,
+                        onValueChange = { serviceId ->
+                            serviceId?.let {
+                                viewModel.resetFilters()
+                                viewModel.setServiceId(it)
+                                viewModel.loadFilters(it.toInt())
+                            }
                         },
                         isLoading = isLoadingServices,
                         isEnabled = !isErrorServices && !isLoadingServices
@@ -251,228 +164,24 @@ fun AddProductScreen(
                     Spacer(Modifier.height(BasePadding))
 
                     when(val filters = filtersState) {
-                        is FeatureState.Loading -> {
-                            repeat(3) {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(52.dp)
-                                        .clip(RoundedCornerShape(12.dp))
-                                        .background(rememberShimmerBrush())
-                                )
-                                Spacer(Modifier.height(8.dp))
-                            }
-                        }
+                        is FeatureState.Loading -> FiltersSkeleton()
                         is FeatureState.Success -> {
-                            AnimatedVisibility(
-                                visible = serviceId.isNotEmpty(),
-                                enter = fadeIn() + expandVertically(),
-                                exit = fadeOut() + shrinkVertically()
-                            ) {
-                                Surface(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .animateContentSize(),
-                                    shape = RoundedCornerShape(16.dp),
-                                    color = SurfaceBG
-                                ) {
-                                    Column(Modifier.padding(16.dp)) {
-                                        Text(
-                                            text = "Filtrare avansată",
-                                            style = titleMedium
-                                        )
-
-                                        Spacer(Modifier.height(BasePadding))
-
-                                        filters.data.map { filter ->
-                                            when(filter.type) {
-                                                FilterTypeEnum.OPTIONS -> {
-                                                    if(filter.singleSelect) {
-                                                        val options = filter.subFilters.map {
-                                                            Option(value = it.id.toString(), name = it.name)
-                                                        }
-
-                                                        val selectedSubFilterIds = selectedFilters[filter.id]
-                                                        val selectedOption = (selectedSubFilterIds as? FilterSelection.Options)
-                                                            ?.ids
-                                                            ?.firstOrNull()
-                                                            ?.toString()
-                                                            ?: ""
-
-                                                        Column {
-                                                            Text(
-                                                                text = filter.name,
-                                                                fontWeight = FontWeight.SemiBold,
-                                                                color = Color.Gray
-                                                            )
-
-                                                            Spacer(Modifier.height(SpacingS))
-
-                                                            InputSelect(
-                                                                label = filter.name,
-                                                                placeholder = "Selecteaza filtrul",
-                                                                selectedOption = selectedOption,
-                                                                options = options,
-                                                                displayLabel = false,
-                                                                onValueChange = { value ->
-                                                                    focusManager.clearFocus()
-
-                                                                    viewModel.setSingleOption(filter.id, value?.toInt())
-                                                                },
-                                                                isLoading = isLoadingFilters,
-                                                                isEnabled = !isErrorFilters && !isLoadingFilters,
-                                                                background = Background,
-                                                                color = OnBackground
-                                                            )
-                                                        }
-                                                    } else {
-                                                        Column {
-                                                            Text(
-                                                                text = filter.name,
-                                                                fontWeight = FontWeight.SemiBold,
-                                                                color = Color.Gray
-                                                            )
-
-                                                            Spacer(Modifier.height(SpacingS))
-
-                                                            Column(
-                                                                modifier = Modifier
-                                                                    .heightIn(max = 110.dp + SpacingS)
-                                                                    .verticalScroll(rememberScrollState())
-                                                            ) {
-                                                                filter.subFilters.forEach { sub ->
-                                                                    val selectedSubFilterIds: Set<Int> =
-                                                                        (selectedFilters[filter.id] as? FilterSelection.Options)
-                                                                            ?.ids
-                                                                            .orEmpty()
-
-                                                                    val isChecked = sub.id in selectedSubFilterIds
-
-                                                                    InputCheckbox(
-                                                                        modifier = Modifier.clip(shape = ShapeDefaults.Medium),
-                                                                        height = 55.dp,
-                                                                        checked = isChecked,
-                                                                        headLine = sub.name,
-                                                                        onCheckedChange = {
-                                                                            viewModel.toggleMultiOption(filter.id, sub.id)
-                                                                        }
-                                                                    )
-
-                                                                    Spacer(Modifier.height(SpacingS))
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-
-                                                    Spacer(Modifier.height(BasePadding))
-                                                }
-                                                FilterTypeEnum.RANGE -> {
-                                                    val range = selectedFilters[filter.id] as? FilterSelection.Range
-                                                    val fromText = range?.minim?.toString().orEmpty()
-                                                    val toText = range?.maxim?.toString().orEmpty()
-                                                    val isNotApplicable = (selectedFilters[filter.id] as? FilterSelection.Range)?.isNotApplicable == true
-
-                                                    Text(
-                                                        text = filter.name,
-                                                        fontWeight = FontWeight.SemiBold,
-                                                        color = Color.Gray
-                                                    )
-
-                                                    Spacer(Modifier.height(SpacingS))
-
-                                                    Row(
-                                                        modifier = Modifier.fillMaxWidth(),
-                                                        verticalAlignment = Alignment.CenterVertically,
-                                                        horizontalArrangement = Arrangement.SpaceBetween
-                                                    ) {
-                                                        Input(
-                                                            modifier = Modifier.weight(0.5f),
-                                                            value = fromText,
-                                                            onValueChange = { new ->
-                                                                val minim = new.toBigDecimalOrNull()
-                                                                val maxim = (selectedFilters[filter.id] as? FilterSelection.Range)?.maxim
-
-                                                                viewModel.setRange(filter.id, minim, maxim)
-                                                            },
-                                                            isEnabled = !isNotApplicable,
-                                                            label = "Peste (kg)",
-                                                            colors = TextFieldDefaults.colors(
-                                                                focusedContainerColor = Background,
-                                                                unfocusedContainerColor = Background,
-                                                                cursorColor = LastMinute,
-                                                                focusedIndicatorColor = Color.Transparent,
-                                                                unfocusedIndicatorColor = Color.Transparent,
-                                                                focusedLabelColor = LastMinute,
-                                                                unfocusedLabelColor = Color.Gray,
-                                                                focusedTextColor = OnBackground,
-                                                                unfocusedTextColor = OnBackground,
-                                                                disabledIndicatorColor = Color.Transparent,
-                                                                errorContainerColor = SurfaceBG,
-                                                            ),
-                                                            keyboardOptions = KeyboardOptions(
-                                                                keyboardType =  KeyboardType.Number,
-                                                                imeAction = ImeAction.Next
-                                                            ),
-                                                        )
-
-                                                        Spacer(Modifier.width(BasePadding))
-
-                                                        Input(
-                                                            modifier = Modifier.weight(0.5f),
-                                                            value = toText,
-                                                            onValueChange = { new ->
-                                                                val minim = (selectedFilters[filter.id] as? FilterSelection.Range)?.minim
-                                                                val maxim = new.toBigDecimalOrNull()
-
-                                                                viewModel.setRange(filter.id, minim, maxim)
-                                                            },
-                                                            isEnabled = !isNotApplicable,
-                                                            label = "Sub (kg)",
-                                                            colors = TextFieldDefaults.colors(
-                                                                focusedContainerColor = Background,
-                                                                unfocusedContainerColor = Background,
-                                                                cursorColor = LastMinute,
-                                                                focusedIndicatorColor = Color.Transparent,
-                                                                unfocusedIndicatorColor = Color.Transparent,
-                                                                focusedLabelColor = LastMinute,
-                                                                unfocusedLabelColor = Color.Gray,
-                                                                focusedTextColor = OnBackground,
-                                                                unfocusedTextColor = OnBackground,
-                                                                disabledIndicatorColor = Color.Transparent,
-                                                                errorContainerColor = SurfaceBG,
-                                                            ),
-                                                            keyboardOptions = KeyboardOptions(
-                                                                keyboardType =  KeyboardType.Number,
-                                                                imeAction = ImeAction.Next
-                                                            ),
-                                                        )
-                                                    }
-
-                                                    Spacer(Modifier.height(SpacingS))
-
-                                                    InputCheckbox(
-                                                        modifier = Modifier.clip(shape = ShapeDefaults.Medium),
-                                                        height = 55.dp,
-                                                        checked = isNotApplicable,
-                                                        onCheckedChange = { viewModel.setApplicable(filter.id) },
-                                                        headLine = "Nu conteaza"
-                                                    )
-                                                }
-                                                null -> Unit
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            Spacer(Modifier.height(BasePadding))
+                            FiltersSection(
+                                isVisible = productState.serviceId.isNotEmpty(),
+                                filters = filters.data,
+                                selectedFilters = selectedFilters,
+                                isLoadingFilters = isLoadingFilters,
+                                actions = actions
+                            )
                         }
                         else -> Unit
                     }
 
+
+
                     Input(
-                        value = name,
-                        onValueChange = { name = it },
+                        value = productState.name,
+                        onValueChange = { viewModel.setName(it) },
                         label = stringResource(R.string.name),
                         //isError = !validation.isNameValid,
                         //errorMessage = validation.nameError.toString(),
@@ -483,8 +192,8 @@ fun AddProductScreen(
                     Spacer(Modifier.height(BasePadding))
 
                     Input(
-                        value = description,
-                        onValueChange = { description = it },
+                        value = productState.description,
+                        onValueChange = { viewModel.setDescription(it) },
                         label = stringResource(R.string.description),
                         //isError = !validation.isDescriptionValid,
                         //errorMessage = validation.descriptionError.toString(),
@@ -492,11 +201,12 @@ fun AddProductScreen(
                         maxLines = 5
 
                     )
+
                     Spacer(Modifier.height(BasePadding))
 
                     Input(
-                        value = duration,
-                        onValueChange = { duration = it },
+                        value = productState.duration,
+                        onValueChange = { viewModel.setDuration(it) },
                         label = stringResource(R.string.duration)
                     )
 
@@ -506,10 +216,13 @@ fun AddProductScreen(
                         label = stringResource(R.string.currency),
                         placeholder = stringResource(R.string.pickCurrency),
                         options = currenciesOptionList,
-                        selectedOption = currencyId,
-                        onValueChange = {
+                        selectedOption = productState.currencyId,
+                        onValueChange = { currencyId ->
                             focusManager.clearFocus()
-                            currencyId = it.toString()
+
+                            currencyId?.let {
+                                viewModel.setCurrencyId(it)
+                            }
                         },
                         isLoading = isLoadingCurrencies,
                         isEnabled = !isErrorCurrencies && !isLoadingCurrencies
@@ -518,8 +231,8 @@ fun AddProductScreen(
                     Spacer(Modifier.height(BasePadding))
 
                     Input(
-                        value = price.toString(),
-                        onValueChange = { price = it },
+                        value = productState.price,
+                        onValueChange = { viewModel.setPrice(it) },
                         keyboardOptions = KeyboardOptions(
                             keyboardType =  KeyboardType.Number,
                             imeAction = ImeAction.Next
@@ -531,8 +244,8 @@ fun AddProductScreen(
                     Spacer(Modifier.height(BasePadding))
 
                     Input(
-                        value = discount.toString(),
-                        onValueChange = { discount = it },
+                        value = productState.discount,
+                        onValueChange = { viewModel.setDiscount(it) },
                         keyboardOptions = KeyboardOptions(
                             keyboardType =  KeyboardType.Number,
                             imeAction = ImeAction.Next
@@ -552,9 +265,7 @@ fun AddProductScreen(
 
                     TextField(
                         modifier = Modifier.fillMaxWidth(),
-                        textStyle = TextStyle(
-                            fontWeight = FontWeight.Bold
-                        ),
+                        textStyle = TextStyle(fontWeight = FontWeight.Bold),
                         value = priceWithDiscount.toString(),
                         onValueChange = {},
                         shape = ShapeDefaults.Medium,
@@ -581,56 +292,38 @@ fun AddProductScreen(
 
                     Spacer(Modifier.height(BasePadding))
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = "Acest produs poate fi rezervat?",
-                            style = titleMedium
-                        )
-
-                        Checkbox(
-                            checked = canBeBooked,
-                            onCheckedChange = { canBeBooked = it }
-                        )
-                    }
-
-                    Text(
-                        text = "Produsele care NU sunt marcate ca fiind disponibile pentru rezervare, vor aparea in sectiunea produselor tale.. insa acestea vor avea doar scop informativ (nu vor putea fi rezervate instant de catre clienti).",
-                        style = bodySmall,
-                        color = Color.Gray
+                    CanBeBookedSection(
+                        canBeBooked = productState.canBeBooked,
+                        onCheckChange = { viewModel.setCanBeBooked(it) }
                     )
                 }
 
-                Spacer(Modifier.height(BasePadding))
-
                 Column {
                     HorizontalDivider(color = Divider, thickness = 0.5.dp)
+
                     MainButton(
-                        modifier = Modifier
-                            .padding(top = BasePadding)
-                            .padding(horizontal = BasePadding),
+                        modifier = Modifier.padding(BasePadding),
                         isLoading = isSaving,
-                        enabled = validation.isValid && !isSaving,
+                        enabled = !isSaving,
                         title = stringResource(R.string.save),
-                        onClick = {
-                            viewModel.createProduct(
-                                name = name,
-                                description = description,
-                                price = price,
-                                priceWithDiscount = priceWithDiscount,
-                                discount = discount,
-                                duration = duration,
-                                serviceId = serviceId,
-                                currencyId = currencyId,
-                                canBeBooked = canBeBooked
-                            )
-                        },
+                        onClick = { viewModel.createProduct() },
                     )
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun rememberFiltersSectionActions(
+    addProductsViewModel: AddProductsViewModel
+): FiltersActions {
+    return remember(addProductsViewModel) {
+        FiltersActions(
+            singleOption = addProductsViewModel::setSingleOption,
+            toggleMultiOption = addProductsViewModel::toggleMultiOption,
+            setRange = addProductsViewModel::setRange,
+            toggleApplicable = addProductsViewModel::setApplicable
+        )
     }
 }

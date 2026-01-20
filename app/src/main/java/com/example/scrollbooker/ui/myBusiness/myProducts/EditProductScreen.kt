@@ -83,15 +83,15 @@ fun EditProductScreen(
     productId: Int,
     onBack: () -> Unit
 ) {
-    val focusManager = LocalFocusManager.current
-    val context = LocalContext.current
-
-    val productState by viewModel.product.collectAsState()
-
-    val servicesState by viewModel.servicesState.collectAsState()
-    val currenciesState by viewModel.currenciesState.collectAsState()
-    val filtersState by viewModel.filtersState.collectAsState()
-    val isSaving by viewModel.isSaving.collectAsState()
+//    val focusManager = LocalFocusManager.current
+//    val context = LocalContext.current
+//
+//    val productState by viewModel.product.collectAsState()
+//
+//    val servicesState by viewModel.servicesState.collectAsState()
+//    val currenciesState by viewModel.currenciesState.collectAsState()
+//    val filtersState by viewModel.filtersState.collectAsState()
+//    val isSaving by viewModel.isSaving.collectAsState()
 
 //    val selectedSubFiltersIds by viewModel.selectedSubFilters.collectAsState()
 //
@@ -101,356 +101,356 @@ fun EditProductScreen(
 //        viewModel.clearSubfilters()
 //    }
 
-    when (val product = productState) {
-        is FeatureState.Error -> ErrorScreen()
-        is FeatureState.Loading -> LoadingScreen()
-        is FeatureState.Success -> {
-            var name by rememberSaveable { mutableStateOf(product.data.name.toString()) }
-            var serviceId by rememberSaveable { mutableStateOf(product.data.serviceId.toString()) }
-            var description by rememberSaveable { mutableStateOf(product.data.description.toString()) }
-            var duration by rememberSaveable { mutableStateOf(product.data.duration.toString()) }
-            var currencyId by rememberSaveable { mutableStateOf(product.data.currencyId.toString()) }
-            var price by rememberSaveable { mutableStateOf(product.data.price.toString()) }
-            var discount by rememberSaveable { mutableStateOf(product.data.discount.toString()) }
-
-            val priceDecimal = price.toBigDecimalOrNull() ?: BigDecimal.ZERO
-            val discountDecimal = discount.toBigDecimalOrNull() ?: BigDecimal.ZERO
-
-            val priceWithDiscount = priceDecimal.multiply(
-                BigDecimal.ONE.subtract(discountDecimal.divide(BigDecimal(100)))
-            ).setScale(2, RoundingMode.HALF_UP).toString()
-
-            val scrollState = rememberScrollState()
-
-            val servicesOptionList = when (val state = servicesState) {
-                is FeatureState.Success -> state.data.map { service ->
-                    Option(
-                        value = service.id.toString(),
-                        name = service.name
-                    )
-                }
-
-                else -> emptyList()
-            }
-
-            val currenciesOptionList = when (val state = currenciesState) {
-                is FeatureState.Success -> state.data.map { service ->
-                    Option(
-                        value = service.id.toString(),
-                        name = service.name
-                    )
-                }
-
-                else -> emptyList()
-            }
-
-            val isLoadingServices = servicesState is FeatureState.Loading
-            val isErrorServices = servicesState is FeatureState.Error
-
-            val isLoadingCurrencies = currenciesState is FeatureState.Loading
-            val isErrorCurrencies = currenciesState is FeatureState.Error
-
-            val isLoadingFilters = filtersState is FeatureState.Loading
-            val isErrorFilters = filtersState is FeatureState.Error
-
-            val validation by remember(name, description, price, discount, serviceId, currencyId) {
-                derivedStateOf {
-                    val checkName = checkLength(context, name, minLength = 3, maxLength = 100)
-                    val isNameValid = checkName.isNullOrBlank()
-
-                    val checkDescription =
-                        checkLength(context, description, minLength = 3, maxLength = 255)
-                    val isDescriptionValid = checkDescription.isNullOrBlank()
-
-                    val checkPrice = checkMinMax(context, price, min = 10)
-                    val isPriceValid = checkPrice.isNullOrBlank()
-
-                    val checkDiscount = checkMinMax(context, discount, max = 90)
-                    val isDiscountValid = checkDiscount.isNullOrBlank()
-
-                    val isValid = serviceId.isNotEmpty() &&
-                            currencyId.isNotEmpty() &&
-                            isNameValid &&
-                            isDescriptionValid &&
-                            isPriceValid &&
-                            isDiscountValid
-
-                    ProductValidationResult(
-                        isValid = isValid,
-                        isNameValid = isNameValid,
-                        nameError = checkName.toString(),
-                        isDescriptionValid = isDescriptionValid,
-                        descriptionError = checkDescription.toString(),
-                        isPriceValid = isPriceValid,
-                        priceError = checkPrice.toString(),
-                        isDiscountValid = isDiscountValid,
-                        discountError = checkDiscount.toString()
-                    )
-                }
-            }
-
-            Layout(
-                onBack = onBack,
-                enablePaddingH = false
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clickable(
-                            indication = null,
-                            interactionSource = remember { MutableInteractionSource() }
-                        ) { focusManager.clearFocus() }
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(bottom = WindowInsets.ime.asPaddingValues().calculateBottomPadding()),
-                        verticalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .weight(1f)
-                                .verticalScroll(scrollState)
-                                .padding(horizontal = BasePadding)
-                        ) {
-                            InputSelect(
-                                label = stringResource(R.string.service),
-                                placeholder = stringResource(R.string.pickService),
-                                options = servicesOptionList,
-                                selectedOption = serviceId,
-                                onValueChange = {
-                                    focusManager.clearFocus()
-
-                                    serviceId = it.toString()
-                                    viewModel.loadFilters(serviceId.toInt())
-                                },
-                                isLoading = isLoadingServices,
-                                isEnabled = !isErrorServices && !isLoadingServices
-                            )
-
-                            Spacer(Modifier.height(BasePadding))
-
-                            when(val filters = filtersState) {
-                                is FeatureState.Loading -> {
-                                    repeat(3) {
-                                        Box(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .height(52.dp)
-                                                .clip(RoundedCornerShape(12.dp))
-                                                .background(rememberShimmerBrush())
-                                        )
-                                        Spacer(Modifier.height(8.dp))
-                                    }
-                                }
-                                is FeatureState.Success -> {
-                                    AnimatedVisibility(
-                                        visible = serviceId.isNotEmpty(),
-                                        enter = fadeIn() + expandVertically(),
-                                        exit = fadeOut() + shrinkVertically()
-                                    ) {
-                                        Surface(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .animateContentSize(),
-                                            shape = RoundedCornerShape(16.dp),
-                                            color = SurfaceBG
-                                        ) {
-                                            Column(Modifier.padding(16.dp)) {
-                                                Text(
-                                                    text = "Filtrare avansată",
-                                                    style = titleMedium
-                                                )
-
-                                                Spacer(Modifier.height(BasePadding))
-
-                                                filters.data.map { filter ->
-                                                    if(filter.singleSelect) {
-//                                                InputSelect(
-//                                                    label = filter.name,
-//                                                    placeholder = "Selecteaza filtrul",
-//                                                    options = filter.subFilters.map {
-//                                                        Option(value = it.id.toString(), name = it.name)
-//                                                    },
-//                                                    selectedOption = selectedFilters[filter.id.toString()] ?: "",
-//                                                    onValueChange = { value ->
-//                                                        focusManager.clearFocus()
-//                                                        viewModel.updateSelectedFilter(
-//                                                            filter.id.toString(),
-//                                                            value=value.toString()
-//                                                        )
-//                                                    },
-//                                                    isLoading = isLoadingFilters,
-//                                                    isEnabled = !isErrorFilters && !isLoadingFilters
+//    when (val product = productState) {
+//        is FeatureState.Error -> ErrorScreen()
+//        is FeatureState.Loading -> LoadingScreen()
+//        is FeatureState.Success -> {
+//            var name by rememberSaveable { mutableStateOf(product.data.name.toString()) }
+//            var serviceId by rememberSaveable { mutableStateOf(product.data.serviceId.toString()) }
+//            var description by rememberSaveable { mutableStateOf(product.data.description.toString()) }
+//            var duration by rememberSaveable { mutableStateOf(product.data.duration.toString()) }
+//            var currencyId by rememberSaveable { mutableStateOf(product.data.currencyId.toString()) }
+//            var price by rememberSaveable { mutableStateOf(product.data.price.toString()) }
+//            var discount by rememberSaveable { mutableStateOf(product.data.discount.toString()) }
+//
+//            val priceDecimal = price.toBigDecimalOrNull() ?: BigDecimal.ZERO
+//            val discountDecimal = discount.toBigDecimalOrNull() ?: BigDecimal.ZERO
+//
+//            val priceWithDiscount = priceDecimal.multiply(
+//                BigDecimal.ONE.subtract(discountDecimal.divide(BigDecimal(100)))
+//            ).setScale(2, RoundingMode.HALF_UP).toString()
+//
+//            val scrollState = rememberScrollState()
+//
+//            val servicesOptionList = when (val state = servicesState) {
+//                is FeatureState.Success -> state.data.map { service ->
+//                    Option(
+//                        value = service.id.toString(),
+//                        name = service.name
+//                    )
+//                }
+//
+//                else -> emptyList()
+//            }
+//
+//            val currenciesOptionList = when (val state = currenciesState) {
+//                is FeatureState.Success -> state.data.map { service ->
+//                    Option(
+//                        value = service.id.toString(),
+//                        name = service.name
+//                    )
+//                }
+//
+//                else -> emptyList()
+//            }
+//
+//            val isLoadingServices = servicesState is FeatureState.Loading
+//            val isErrorServices = servicesState is FeatureState.Error
+//
+//            val isLoadingCurrencies = currenciesState is FeatureState.Loading
+//            val isErrorCurrencies = currenciesState is FeatureState.Error
+//
+//            val isLoadingFilters = filtersState is FeatureState.Loading
+//            val isErrorFilters = filtersState is FeatureState.Error
+//
+//            val validation by remember(name, description, price, discount, serviceId, currencyId) {
+//                derivedStateOf {
+//                    val checkName = checkLength(context, name, minLength = 3, maxLength = 100)
+//                    val isNameValid = checkName.isNullOrBlank()
+//
+//                    val checkDescription =
+//                        checkLength(context, description, minLength = 3, maxLength = 255)
+//                    val isDescriptionValid = checkDescription.isNullOrBlank()
+//
+//                    val checkPrice = checkMinMax(context, price, min = 10)
+//                    val isPriceValid = checkPrice.isNullOrBlank()
+//
+//                    val checkDiscount = checkMinMax(context, discount, max = 90)
+//                    val isDiscountValid = checkDiscount.isNullOrBlank()
+//
+//                    val isValid = serviceId.isNotEmpty() &&
+//                            currencyId.isNotEmpty() &&
+//                            isNameValid &&
+//                            isDescriptionValid &&
+//                            isPriceValid &&
+//                            isDiscountValid
+//
+//                    ProductValidationResult(
+//                        isValid = isValid,
+//                        isNameValid = isNameValid,
+//                        nameError = checkName.toString(),
+//                        isDescriptionValid = isDescriptionValid,
+//                        descriptionError = checkDescription.toString(),
+//                        isPriceValid = isPriceValid,
+//                        priceError = checkPrice.toString(),
+//                        isDiscountValid = isDiscountValid,
+//                        discountError = checkDiscount.toString()
+//                    )
+//                }
+//            }
+//
+//            Layout(
+//                onBack = onBack,
+//                enablePaddingH = false
+//            ) {
+//                Box(
+//                    modifier = Modifier
+//                        .fillMaxSize()
+//                        .clickable(
+//                            indication = null,
+//                            interactionSource = remember { MutableInteractionSource() }
+//                        ) { focusManager.clearFocus() }
+//                ) {
+//                    Column(
+//                        modifier = Modifier
+//                            .fillMaxSize()
+//                            .padding(bottom = WindowInsets.ime.asPaddingValues().calculateBottomPadding()),
+//                        verticalArrangement = Arrangement.SpaceBetween
+//                    ) {
+//                        Column(
+//                            modifier = Modifier
+//                                .weight(1f)
+//                                .verticalScroll(scrollState)
+//                                .padding(horizontal = BasePadding)
+//                        ) {
+//                            InputSelect(
+//                                label = stringResource(R.string.service),
+//                                placeholder = stringResource(R.string.pickService),
+//                                options = servicesOptionList,
+//                                selectedOption = serviceId,
+//                                onValueChange = {
+//                                    focusManager.clearFocus()
+//
+//                                    serviceId = it.toString()
+//                                    viewModel.loadFilters(serviceId.toInt())
+//                                },
+//                                isLoading = isLoadingServices,
+//                                isEnabled = !isErrorServices && !isLoadingServices
+//                            )
+//
+//                            Spacer(Modifier.height(BasePadding))
+//
+//                            when(val filters = filtersState) {
+//                                is FeatureState.Loading -> {
+//                                    repeat(3) {
+//                                        Box(
+//                                            modifier = Modifier
+//                                                .fillMaxWidth()
+//                                                .height(52.dp)
+//                                                .clip(RoundedCornerShape(12.dp))
+//                                                .background(rememberShimmerBrush())
+//                                        )
+//                                        Spacer(Modifier.height(8.dp))
+//                                    }
+//                                }
+//                                is FeatureState.Success -> {
+//                                    AnimatedVisibility(
+//                                        visible = serviceId.isNotEmpty(),
+//                                        enter = fadeIn() + expandVertically(),
+//                                        exit = fadeOut() + shrinkVertically()
+//                                    ) {
+//                                        Surface(
+//                                            modifier = Modifier
+//                                                .fillMaxWidth()
+//                                                .animateContentSize(),
+//                                            shape = RoundedCornerShape(16.dp),
+//                                            color = SurfaceBG
+//                                        ) {
+//                                            Column(Modifier.padding(16.dp)) {
+//                                                Text(
+//                                                    text = "Filtrare avansată",
+//                                                    style = titleMedium
 //                                                )
-                                                    } else {
-                                                        Column {
-                                                            Text(
-                                                                text = filter.name,
-                                                                fontWeight = FontWeight.SemiBold,
-                                                                color = Color.Gray
-                                                            )
-
-                                                            Spacer(Modifier.height(SpacingS))
-
-//                                                            filter.subFilters.forEach { sub ->
-//                                                                InputCheckbox(
-//                                                                    checked = selectedSubFiltersIds.contains(sub.id),
-//                                                                    headLine = sub.name,
-//                                                                    onCheckedChange = {
-//                                                                        viewModel.setSubFilterId(sub.id)
-//                                                                    }
-//                                                                )
-//                                                            }
-                                                        }
-                                                    }
-
-                                                    Spacer(Modifier.height(BasePadding))
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    Spacer(Modifier.height(BasePadding))
-                                }
-                                else -> Unit
-                            }
-
-                            Input(
-                                value = name,
-                                onValueChange = { name = it },
-                                label = stringResource(R.string.name),
-                                isError = !validation.isNameValid,
-                                errorMessage = validation.nameError.toString()
-                            )
-
-                            Spacer(Modifier.height(BasePadding))
-
-                            Input(
-                                value = description,
-                                onValueChange = { description = it },
-                                label = stringResource(R.string.description),
-                                isError = !validation.isDescriptionValid,
-                                errorMessage = validation.descriptionError.toString(),
-                                singleLine = false
-                            )
-                            Spacer(Modifier.height(BasePadding))
-
-                            Input(
-                                value = duration,
-                                onValueChange = { duration = it },
-                                label = stringResource(R.string.duration)
-                            )
-
-                            Spacer(Modifier.height(BasePadding))
-
-                            InputSelect(
-                                label = stringResource(R.string.currency),
-                                placeholder = stringResource(R.string.pickCurrency),
-                                options = currenciesOptionList,
-                                selectedOption = currencyId,
-                                onValueChange = {
-                                    focusManager.clearFocus()
-                                    currencyId = it.toString()
-                                },
-                                isLoading = isLoadingCurrencies,
-                                isEnabled = !isErrorCurrencies && !isLoadingCurrencies
-                            )
-
-                            Spacer(Modifier.height(BasePadding))
-
-                            Input(
-                                value = price.toString(),
-                                onValueChange = { price = it },
-                                keyboardOptions = KeyboardOptions(
-                                    keyboardType = KeyboardType.Number,
-                                    imeAction = ImeAction.Next
-                                ),
-                                label = stringResource(R.string.price),
-                                isError = !validation.isPriceValid,
-                                errorMessage = validation.priceError.toString()
-                            )
-                            Spacer(Modifier.height(BasePadding))
-
-                            Input(
-                                value = discount.toString(),
-                                onValueChange = { discount = it },
-                                keyboardOptions = KeyboardOptions(
-                                    keyboardType = KeyboardType.Number,
-                                    imeAction = ImeAction.Next
-                                ),
-                                label = stringResource(R.string.discount),
-                                trailingIcon = {
-                                    Icon(
-                                        imageVector = Icons.Default.Percent,
-                                        contentDescription = null,
-                                        tint = Color.Gray
-                                    )
-                                },
-                                isError = !validation.isDiscountValid,
-                                errorMessage = validation.discountError.toString()
-                            )
-                            Spacer(Modifier.height(BasePadding))
-
-                            TextField(
-                                modifier = Modifier.fillMaxWidth(),
-                                textStyle = TextStyle(
-                                    fontWeight = FontWeight.Bold
-                                ),
-                                value = priceWithDiscount.toString(),
-                                onValueChange = {},
-                                shape = ShapeDefaults.Medium,
-                                readOnly = true,
-                                keyboardOptions = KeyboardOptions(
-                                    keyboardType = KeyboardType.Number,
-                                    imeAction = ImeAction.Next
-                                ),
-                                label = {
-                                    Text(
-                                        text = stringResource(R.string.priceWithDiscount),
-                                        style = labelLarge
-                                    )
-                                },
-                                colors = TextFieldDefaults.colors(
-                                    focusedContainerColor = SurfaceBG,
-                                    unfocusedContainerColor = SurfaceBG,
-                                    unfocusedIndicatorColor = Color.Transparent,
-                                    focusedIndicatorColor = Color.Transparent,
-                                    unfocusedPlaceholderColor = Primary,
-                                    unfocusedLabelColor = Primary
-                                )
-                            )
-                        }
-
-                        Spacer(Modifier.height(BasePadding))
-
-//                        Column {
-//                            HorizontalDivider(color = Divider, thickness = 0.5.dp)
-//                            MainButton(
-//                                modifier = Modifier
-//                                    .padding(top = BasePadding)
-//                                    .padding(horizontal = BasePadding),
-//                                isLoading = isSaving,
-//                                enabled = validation.isValid && !isSaving,
-//                                title = stringResource(R.string.save),
-//                                onClick = {
-//                                    viewModel.createProduct(
-//                                        name = name,
-//                                        description = description,
-//                                        price = price,
-//                                        priceWithDiscount = priceWithDiscount,
-//                                        discount = discount,
-//                                        duration = duration,
-//                                        serviceId = serviceId,
-//                                        currencyId = currencyId,
-//                                        canBeBooked = true
+//
+//                                                Spacer(Modifier.height(BasePadding))
+//
+//                                                filters.data.map { filter ->
+//                                                    if(filter.singleSelect) {
+////                                                InputSelect(
+////                                                    label = filter.name,
+////                                                    placeholder = "Selecteaza filtrul",
+////                                                    options = filter.subFilters.map {
+////                                                        Option(value = it.id.toString(), name = it.name)
+////                                                    },
+////                                                    selectedOption = selectedFilters[filter.id.toString()] ?: "",
+////                                                    onValueChange = { value ->
+////                                                        focusManager.clearFocus()
+////                                                        viewModel.updateSelectedFilter(
+////                                                            filter.id.toString(),
+////                                                            value=value.toString()
+////                                                        )
+////                                                    },
+////                                                    isLoading = isLoadingFilters,
+////                                                    isEnabled = !isErrorFilters && !isLoadingFilters
+////                                                )
+//                                                    } else {
+//                                                        Column {
+//                                                            Text(
+//                                                                text = filter.name,
+//                                                                fontWeight = FontWeight.SemiBold,
+//                                                                color = Color.Gray
+//                                                            )
+//
+//                                                            Spacer(Modifier.height(SpacingS))
+//
+////                                                            filter.subFilters.forEach { sub ->
+////                                                                InputCheckbox(
+////                                                                    checked = selectedSubFiltersIds.contains(sub.id),
+////                                                                    headLine = sub.name,
+////                                                                    onCheckedChange = {
+////                                                                        viewModel.setSubFilterId(sub.id)
+////                                                                    }
+////                                                                )
+////                                                            }
+//                                                        }
+//                                                    }
+//
+//                                                    Spacer(Modifier.height(BasePadding))
+//                                                }
+//                                            }
+//                                        }
+//                                    }
+//
+//                                    Spacer(Modifier.height(BasePadding))
+//                                }
+//                                else -> Unit
+//                            }
+//
+//                            Input(
+//                                value = name,
+//                                onValueChange = { name = it },
+//                                label = stringResource(R.string.name),
+//                                isError = !validation.isNameValid,
+//                                errorMessage = validation.nameError.toString()
+//                            )
+//
+//                            Spacer(Modifier.height(BasePadding))
+//
+//                            Input(
+//                                value = description,
+//                                onValueChange = { description = it },
+//                                label = stringResource(R.string.description),
+//                                isError = !validation.isDescriptionValid,
+//                                errorMessage = validation.descriptionError.toString(),
+//                                singleLine = false
+//                            )
+//                            Spacer(Modifier.height(BasePadding))
+//
+//                            Input(
+//                                value = duration,
+//                                onValueChange = { duration = it },
+//                                label = stringResource(R.string.duration)
+//                            )
+//
+//                            Spacer(Modifier.height(BasePadding))
+//
+//                            InputSelect(
+//                                label = stringResource(R.string.currency),
+//                                placeholder = stringResource(R.string.pickCurrency),
+//                                options = currenciesOptionList,
+//                                selectedOption = currencyId,
+//                                onValueChange = {
+//                                    focusManager.clearFocus()
+//                                    currencyId = it.toString()
+//                                },
+//                                isLoading = isLoadingCurrencies,
+//                                isEnabled = !isErrorCurrencies && !isLoadingCurrencies
+//                            )
+//
+//                            Spacer(Modifier.height(BasePadding))
+//
+//                            Input(
+//                                value = price.toString(),
+//                                onValueChange = { price = it },
+//                                keyboardOptions = KeyboardOptions(
+//                                    keyboardType = KeyboardType.Number,
+//                                    imeAction = ImeAction.Next
+//                                ),
+//                                label = stringResource(R.string.price),
+//                                isError = !validation.isPriceValid,
+//                                errorMessage = validation.priceError.toString()
+//                            )
+//                            Spacer(Modifier.height(BasePadding))
+//
+//                            Input(
+//                                value = discount.toString(),
+//                                onValueChange = { discount = it },
+//                                keyboardOptions = KeyboardOptions(
+//                                    keyboardType = KeyboardType.Number,
+//                                    imeAction = ImeAction.Next
+//                                ),
+//                                label = stringResource(R.string.discount),
+//                                trailingIcon = {
+//                                    Icon(
+//                                        imageVector = Icons.Default.Percent,
+//                                        contentDescription = null,
+//                                        tint = Color.Gray
 //                                    )
 //                                },
+//                                isError = !validation.isDiscountValid,
+//                                errorMessage = validation.discountError.toString()
+//                            )
+//                            Spacer(Modifier.height(BasePadding))
+//
+//                            TextField(
+//                                modifier = Modifier.fillMaxWidth(),
+//                                textStyle = TextStyle(
+//                                    fontWeight = FontWeight.Bold
+//                                ),
+//                                value = priceWithDiscount.toString(),
+//                                onValueChange = {},
+//                                shape = ShapeDefaults.Medium,
+//                                readOnly = true,
+//                                keyboardOptions = KeyboardOptions(
+//                                    keyboardType = KeyboardType.Number,
+//                                    imeAction = ImeAction.Next
+//                                ),
+//                                label = {
+//                                    Text(
+//                                        text = stringResource(R.string.priceWithDiscount),
+//                                        style = labelLarge
+//                                    )
+//                                },
+//                                colors = TextFieldDefaults.colors(
+//                                    focusedContainerColor = SurfaceBG,
+//                                    unfocusedContainerColor = SurfaceBG,
+//                                    unfocusedIndicatorColor = Color.Transparent,
+//                                    focusedIndicatorColor = Color.Transparent,
+//                                    unfocusedPlaceholderColor = Primary,
+//                                    unfocusedLabelColor = Primary
+//                                )
 //                            )
 //                        }
-                    }
-                }
-            }
-        }
-    }
+//
+//                        Spacer(Modifier.height(BasePadding))
+//
+////                        Column {
+////                            HorizontalDivider(color = Divider, thickness = 0.5.dp)
+////                            MainButton(
+////                                modifier = Modifier
+////                                    .padding(top = BasePadding)
+////                                    .padding(horizontal = BasePadding),
+////                                isLoading = isSaving,
+////                                enabled = validation.isValid && !isSaving,
+////                                title = stringResource(R.string.save),
+////                                onClick = {
+////                                    viewModel.createProduct(
+////                                        name = name,
+////                                        description = description,
+////                                        price = price,
+////                                        priceWithDiscount = priceWithDiscount,
+////                                        discount = discount,
+////                                        duration = duration,
+////                                        serviceId = serviceId,
+////                                        currencyId = currencyId,
+////                                        canBeBooked = true
+////                                    )
+////                                },
+////                            )
+////                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
 }

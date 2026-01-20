@@ -32,6 +32,7 @@ import com.example.scrollbooker.ui.myBusiness.myEmploymentRequests.EmploymentReq
 import com.example.scrollbooker.ui.myBusiness.myEmploymentRequests.EmploymentRequestsViewModel
 import com.example.scrollbooker.ui.myBusiness.myEmploymentRequests.EmploymentSelectEmployeeScreen
 import com.example.scrollbooker.ui.myBusiness.myProducts.AddProductScreen
+import com.example.scrollbooker.ui.myBusiness.myProducts.AddProductsViewModel
 import com.example.scrollbooker.ui.myBusiness.myProducts.EditProductScreen
 import com.example.scrollbooker.ui.myBusiness.myProducts.MyProductsScreen
 import com.example.scrollbooker.ui.myBusiness.myProducts.MyProductsViewModel
@@ -266,7 +267,7 @@ fun NavGraphBuilder.myBusinessGraph(
                     navController.getBackStackEntry(MainRoute.MyProductsNavigator.route)
                 }
 
-                val viewModel = hiltViewModel<MyProductsViewModel>(parentEntry)
+                val viewModel: MyProductsViewModel = hiltViewModel(parentEntry)
 
                 MyProductsScreen(
                     viewModel=viewModel,
@@ -281,7 +282,8 @@ fun NavGraphBuilder.myBusinessGraph(
                     navController.getBackStackEntry(MainRoute.MyProductsNavigator.route)
                 }
 
-                val viewModel = hiltViewModel<MyProductsViewModel>(parentEntry)
+                val myProductsViewModel: MyProductsViewModel = hiltViewModel(parentEntry)
+                val viewModel: AddProductsViewModel = hiltViewModel()
 
                 AddProductScreen(
                     viewModel = viewModel,

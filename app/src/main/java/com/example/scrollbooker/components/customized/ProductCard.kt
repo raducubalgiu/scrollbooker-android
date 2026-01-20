@@ -192,38 +192,38 @@ fun ProductCard(
                 Spacer(Modifier.height(BasePadding))
             }
 
-//            if(displayActions) {
-//                Row(
-//                    modifier = Modifier
-//                        .fillMaxWidth(),
-//                    horizontalArrangement = Arrangement.SpaceBetween,
-//                    verticalAlignment = Alignment.CenterVertically
-//                ) {
-//                    MainButtonOutlined(
-//                        modifier = Modifier
-//                            .weight(0.5f)
-//                            .clip(shape = ShapeDefaults.ExtraLarge),
-//                        title = stringResource(R.string.edit),
-//                        onClick = { onNavigateToEdit?.invoke(product.id) },
-//                        icon = painterResource(R.drawable.ic_edit_outline),
-//                        iconColor = Color.Gray
-//                    )
-//
-//                    Spacer(Modifier.width(SpacingS))
-//
-//                    MainButtonOutlined(
-//                        modifier = Modifier
-//                            .weight(0.5f)
-//                            .clip(shape = ShapeDefaults.ExtraLarge),
-//                        title = stringResource(R.string.delete),
-//                        isLoading = isLoadingDelete,
-//                        isEnabled = !isLoadingDelete,
-//                        onClick = { onDeleteProduct?.invoke(product.id) },
-//                        icon = painterResource(R.drawable.ic_delete_outline),
-//                        iconColor = Error
-//                    )
-//                }
-//            }
+            if(displayActions) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    MainButtonOutlined(
+                        modifier = Modifier
+                            .weight(0.5f)
+                            .clip(shape = ShapeDefaults.ExtraLarge),
+                        title = stringResource(R.string.edit),
+                        onClick = { onNavigateToEdit?.invoke(product.id) },
+                        icon = painterResource(R.drawable.ic_edit_outline),
+                        iconColor = Color.Gray
+                    )
+
+                    Spacer(Modifier.width(SpacingS))
+
+                    MainButtonOutlined(
+                        modifier = Modifier
+                            .weight(0.5f)
+                            .clip(shape = ShapeDefaults.ExtraLarge),
+                        title = stringResource(R.string.delete),
+                        isLoading = isLoadingDelete,
+                        isEnabled = !isLoadingDelete,
+                        onClick = { onDeleteProduct?.invoke(product.id) },
+                        icon = painterResource(R.drawable.ic_delete_outline),
+                        iconColor = Error
+                    )
+                }
+            }
         }
     }
 }

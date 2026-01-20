@@ -12,7 +12,9 @@ data class FilterDto(
     val type: String,
 
     @SerializedName("sub_filters")
-    val subFilters: List<SubFilterDto>
+    val subFilters: List<SubFilterDto>,
+
+    val unit: String?
 )
 
 data class SubFilterDto(

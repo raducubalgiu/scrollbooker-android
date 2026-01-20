@@ -7,7 +7,8 @@ data class Filter(
     val name: String,
     val singleSelect: Boolean,
     val type: FilterTypeEnum?,
-    val subFilters: List<SubFilter>
+    val subFilters: List<SubFilter>,
+    val unit: String?
 )
 
 data class SubFilter(
