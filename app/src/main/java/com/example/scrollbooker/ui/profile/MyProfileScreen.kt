@@ -26,6 +26,7 @@ import com.example.scrollbooker.core.util.Dimens.IconSizeXL
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
+import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.UserPermissionsController
 import com.example.scrollbooker.ui.profile.components.ProfileLayout
@@ -42,7 +43,8 @@ fun MyProfileScreen(
     permissionController: UserPermissionsController,
     myProfileData: FeatureState<UserProfile>,
     myPosts: LazyPagingItems<Post>,
-    profileNavigate: ProfileNavigator
+    profileNavigate: ProfileNavigator,
+    onNavigateToSocial: (Int, Int, String, Boolean) -> Unit
 ) {
     val menuSheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
@@ -97,6 +99,7 @@ fun MyProfileScreen(
                 profileData = myProfileData,
                 isFollowEnabled = false,
                 posts = myPosts,
+                onNavigateToSocial = onNavigateToSocial,
                 profileNavigate = profileNavigate
             )
         }

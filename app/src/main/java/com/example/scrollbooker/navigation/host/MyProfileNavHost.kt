@@ -1,5 +1,6 @@
 package com.example.scrollbooker.navigation.host
 import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -29,10 +30,17 @@ import com.example.scrollbooker.ui.profile.MyProfilePostDetailScreen
 import com.example.scrollbooker.ui.profile.MyProfileScreen
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
 import androidx.compose.ui.unit.IntOffset
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.scrollbooker.core.extensions.isInRoute
+import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
+import com.example.scrollbooker.ui.social.SocialScreen
+import com.example.scrollbooker.ui.social.SocialViewModel
 
 @Composable
 fun MyProfileNavHost(
@@ -58,6 +66,22 @@ fun MyProfileNavHost(
         navigation(
             route = MainRoute.MyProfileNavigator.route,
             startDestination = MainRoute.MyProfile.route,
+            exitTransition = {
+                if (targetState.isInRoute(MainRoute.MyProfilePostDetail.route)) {
+                    ExitTransition.None
+                } else {
+                    slideOutToLeft()
+                }
+            },
+            popEnterTransition = {
+                if (initialState.isInRoute(MainRoute.MyProfilePostDetail.route)) {
+                    EnterTransition.None
+                } else {
+                    slideInFromLeft()
+                }
+            },
+            enterTransition = { slideInFromRight() },
+            popExitTransition = { slideOutToRight() }
         ) {
             composable(MainRoute.MyProfile.route) {
                 val mainNavController = LocalMainNavController.current
@@ -75,7 +99,12 @@ fun MyProfileNavHost(
                     permissionController = permissionController,
                     myProfileData = myProfileData,
                     myPosts = myPosts,
-                    profileNavigate = profileNavigate
+                    profileNavigate = profileNavigate,
+                    onNavigateToSocial = { tabIndex, userId, username, isBusinessOrEmployee ->
+                        navController.navigate(
+                            "${MainRoute.Social.route}/$tabIndex/$userId/$username/$isBusinessOrEmployee"
+                        )
+                    }
                 )
             }
 
@@ -100,6 +129,33 @@ fun MyProfileNavHost(
             settingsGraph(
                 navController = navController,
                 onLogout = onLogout
+            )
+        }
+
+        composable(
+            route = "${MainRoute.Social.route}/{tabIndex}/{userId}/{username}/{isBusinessOrEmployee}",
+            arguments = listOf(
+                navArgument("tabIndex") { type = NavType.IntType },
+                navArgument("userId") { type = NavType.IntType },
+                navArgument("username") { type = NavType.StringType },
+                navArgument("isBusinessOrEmployee") { type = NavType.BoolType }
+            )
+        ) { backStackEntry ->
+            val tabIndex = backStackEntry.arguments?.getInt("tabIndex") ?: return@composable
+            val userId = backStackEntry.arguments?.getInt("userId") ?: return@composable
+            val username = backStackEntry.arguments?.getString("username") ?: return@composable
+            val isBusinessOrEmployee = backStackEntry.arguments?.getBoolean("isBusinessOrEmployee") ?: return@composable
+
+            val viewModel = hiltViewModel<SocialViewModel>(backStackEntry)
+            val socialParams = NavigateSocialParam(tabIndex, userId, username, isBusinessOrEmployee)
+
+            val mainNavController = LocalMainNavController.current
+
+            SocialScreen(
+                viewModal = viewModel,
+                socialParam = socialParams,
+                onBack = { navController.popBackStack() },
+                onNavigateUserProfile = { mainNavController.navigate("${MainRoute.UserProfile.route}/$it") }
             )
         }
     }

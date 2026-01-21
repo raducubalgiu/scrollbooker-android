@@ -65,7 +65,8 @@ fun ProfileLayout(
     isFollowEnabled: Boolean,
     onFollow: (() -> Unit)? = null,
     posts: LazyPagingItems<Post>,
-    profileNavigate: ProfileNavigator
+    profileNavigate: ProfileNavigator,
+    onNavigateToSocial: (Int, Int, String, Boolean) -> Unit
 ) {
     val scope = rememberCoroutineScope()
 
@@ -219,16 +220,7 @@ fun ProfileLayout(
                             ProfileCounters(
                                 counters = user.counters,
                                 isBusinessOrEmployee = user.isBusinessOrEmployee,
-                                onNavigateToSocial = { tabIndex ->
-                                    profileNavigate.toSocial(
-                                        NavigateSocialParam(
-                                            tabIndex = tabIndex,
-                                            userId = user.id,
-                                            username = user.username,
-                                            isBusinessOrEmployee = user.isBusinessOrEmployee
-                                        )
-                                    )
-                                }
+                                onNavigateToSocial = { onNavigateToSocial(it, user.id, user.username, user.isBusinessOrEmployee) }
                             )
 
                             ProfileUserInfo(
