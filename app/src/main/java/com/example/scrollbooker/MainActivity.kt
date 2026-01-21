@@ -32,7 +32,7 @@ import com.example.scrollbooker.ui.auth.AuthViewModel
 class MainActivity : ComponentActivity() {
     private val themeViewModel: ThemeViewModel by viewModels()
     private val authViewModel: AuthViewModel by viewModels()
-    private val permissionsViewModel: PermissionViewModel by viewModels()
+    //private val permissionsViewModel: PermissionViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
@@ -49,25 +49,21 @@ class MainActivity : ComponentActivity() {
             val rootNavController = rememberNavController()
             val themePreferenceEnum by themeViewModel.themePreferences.collectAsState()
 
-            val permissionController = remember(permissionsViewModel) {
-                AppPermissionsController(
-                    state = permissionsViewModel.mediaState,
-                    refreshMedia = permissionsViewModel::refreshMedia,
-                    markMediaRequested = permissionsViewModel::markMediaPermissionRequested,
-                    videos = permissionsViewModel.videos
-                )
-            }
+//            val permissionController = remember(permissionsViewModel) {
+//                AppPermissionsController(
+//                    state = permissionsViewModel.mediaState,
+//                    refreshMedia = permissionsViewModel::refreshMedia,
+//                    markMediaRequested = permissionsViewModel::markMediaPermissionRequested,
+//                    videos = permissionsViewModel.videos
+//                )
+//            }
 
             ScrollBookerTheme(themePreferenceEnum) {
-                CompositionLocalProvider(
-                    LocalAppPermissions provides permissionController
-                ) {
-                    Surface(Modifier.fillMaxSize().background(Background)) {
-                        RootNavHost(
-                            rootNavController = rootNavController,
-                            authViewModel = authViewModel
-                        )
-                    }
+                Surface(Modifier.fillMaxSize().background(Background)) {
+                    RootNavHost(
+                        rootNavController = rootNavController,
+                        authViewModel = authViewModel
+                    )
                 }
             }
         }

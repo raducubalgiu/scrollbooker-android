@@ -48,6 +48,7 @@ fun FeedSearchHeader(
                 )
             }
         }
+
         SearchBarSmall(
             value = value,
             onValueChange = onValueChange,

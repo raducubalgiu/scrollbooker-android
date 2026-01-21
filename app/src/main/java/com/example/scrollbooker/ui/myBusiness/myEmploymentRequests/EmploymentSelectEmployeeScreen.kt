@@ -35,6 +35,9 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -48,6 +51,8 @@ fun EmploymentSelectEmployeeScreen(
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+
     val coroutineScope = rememberCoroutineScope()
 
     val usersState by viewModel.searchUsersClientsState.collectAsState()
@@ -55,9 +60,10 @@ fun EmploymentSelectEmployeeScreen(
     val selectedEmployee by viewModel.selectedEmployee.collectAsState()
 
     LaunchedEffect(Unit) {
-        delay(200)
-        focusRequester.requestFocus()
-        keyboardController?.show()
+        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            focusRequester.requestFocus()
+            keyboardController?.show()
+        }
     }
 
     DisposableEffect(Unit) {
@@ -113,12 +119,9 @@ fun EmploymentSelectEmployeeScreen(
                     )
             ) {
                 SearchBar(
-                    modifier = Modifier
-                        .focusRequester(focusRequester),
+                    modifier = Modifier.focusRequester(focusRequester),
                     value = currentQuery,
-                    onValueChange = {
-                        viewModel.searchEmployees(it)
-                    },
+                    onValueChange = viewModel::handleSearch,
                     placeholder = stringResource(R.string.search),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
                 )
@@ -141,9 +144,7 @@ fun EmploymentSelectEmployeeScreen(
                 is FeatureState.Success<*> -> {
                     val users = (usersState as FeatureState.Success).data
 
-                    LazyColumn(
-                        Modifier.weight(1f)
-                    ) {
+                    LazyColumn(Modifier.weight(1f)) {
                         items(users) { user ->
                             InputRadio(
                                 selected = user.id == selectedEmployee?.id,

@@ -17,16 +17,27 @@ import com.example.scrollbooker.entity.search.domain.useCase.SearchUsersUseCase
 import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
+@OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class EmploymentRequestsViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
@@ -117,30 +128,30 @@ class EmploymentRequestsViewModel @Inject constructor(
         }
     }
 
-    private var debounceJob: Job? = null
+    init {
+        _currentQuery
+            .map { it.trim() }
+            .distinctUntilChanged()
+            .debounce(200)
+            .onEach { query ->
+                if (query.length < 2) {
+                    _searchUsersClientsState.value = null
+                    return@onEach
+                }
 
-    fun searchEmployees(query: String) {
-        _currentQuery.value = query
-
-        if(query.length < 3) {
-            debounceJob?.cancel()
-            _searchUsersClientsState.value = null
-            return
-        }
-
-        debounceJob?.cancel()
-        debounceJob = viewModelScope.launch {
-            delay(200)
-
-            val latest = currentQuery.value
-            if(latest.length < 3 || latest != query) return@launch
-
-            _searchUsersClientsState.value = FeatureState.Loading
-
-            _searchUsersClientsState.value = withVisibleLoading {
-                searchUsersUseCase(query)
+                _searchUsersClientsState.value = FeatureState.Loading
             }
-        }
+            .filter { it.length >= 2 }
+            .mapLatest { query ->
+                withVisibleLoading { searchUsersUseCase(query) }
+            }
+            .onEach { result -> _searchUsersClientsState.value = result }
+            .catch { e -> _searchUsersClientsState.value = FeatureState.Error(e) }
+            .launchIn(viewModelScope)
+    }
+
+    fun handleSearch(query: String) {
+        _currentQuery.value = query
     }
 
     suspend fun createEmploymentRequest(): Result<Unit> {

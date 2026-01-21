@@ -11,14 +11,24 @@ import com.example.scrollbooker.entity.search.domain.useCase.DeleteUserSearchUse
 import com.example.scrollbooker.entity.search.domain.useCase.GetUserSearchUseCase
 import com.example.scrollbooker.entity.search.domain.useCase.SearchUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
+@OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class FeedSearchViewModel @Inject constructor(
     private val searchUseCase: SearchUseCase,
@@ -26,36 +36,49 @@ class FeedSearchViewModel @Inject constructor(
     private val createUserSearchUseCase: CreateUserSearchUseCase,
     private val deleteUserSearchUseCase: DeleteUserSearchUseCase,
 ): ViewModel() {
-    private val _searchState = MutableStateFlow<FeatureState<List<Search>>?>(null)
-    val searchState: StateFlow<FeatureState<List<Search>>?> = _searchState
-
     private val _currentSearch = MutableStateFlow<String>("")
     val currentSearch: StateFlow<String> = _currentSearch
 
-    private var debounceJob: Job? = null
+    private val _searchState = MutableStateFlow<FeatureState<List<Search>>?>(null)
+    val searchState: StateFlow<FeatureState<List<Search>>?> = _searchState
 
-    fun handleSearch(query: String, lng: Float = 25.993102.toFloat(), lat: Float = 44.450507.toFloat()) {
-        _currentSearch.value = query
+    private val _display = MutableStateFlow<Boolean>(false)
+    val display: StateFlow<Boolean> = _display.asStateFlow()
 
-        if(query.length < 2) {
-            debounceJob?.cancel()
-            _currentSearch.value = ""
-            return
-        }
+    fun setDisplay() {
+        if(_display.value) return
+        _display.value = true
+    }
 
-        debounceJob?.cancel()
-        debounceJob = viewModelScope.launch {
-            delay(200)
+    private val lat = 44.450507f
+    private val lng = 25.99f
 
-            val latest = currentSearch.value
-            if(latest.length < 2 || latest != query) return@launch
+    init {
+        _currentSearch
+            .map { it.trim() }
+            .distinctUntilChanged()
+            .debounce(200)
+            .onEach { query ->
+                if (query.length < 2) {
+                    _searchState.value = null
+                    return@onEach
+                }
 
-            _searchState.value = FeatureState.Loading
-
-            _searchState.value = withVisibleLoading {
-                searchUseCase(query, lat, lng)
+                _searchState.value = FeatureState.Loading
             }
-        }
+            .filter { it.length >= 2 }
+            .mapLatest { query ->
+                withVisibleLoading {
+                    searchUseCase(query, lat, lng)
+                }
+            }
+            .onEach { result -> _searchState.value = result }
+            .catch { e -> _searchState.value = FeatureState.Error(e) }
+            .launchIn(viewModelScope)
+    }
+
+    fun handleSearch(query: String) {
+        _currentSearch.value = query
     }
 
     fun clearSearch() {
