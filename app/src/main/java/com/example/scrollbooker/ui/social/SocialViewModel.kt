@@ -35,9 +35,6 @@ class SocialViewModel @Inject constructor(
     private val _followersRefreshTrigger = MutableStateFlow(0)
     private val _followingsRefreshTrigger = MutableStateFlow(0)
 
-    private val _isRefreshing = MutableStateFlow<Boolean>(false)
-    val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
-
     @OptIn(ExperimentalCoroutinesApi::class)
     val userFollowers: Flow<PagingData<UserSocial>> = _followersRefreshTrigger
         .flatMapLatest { getUserSocialFollowersUseCase(userId) }
