@@ -6,6 +6,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import com.example.scrollbooker.store.util.ThemePreferenceEnum
@@ -98,11 +99,17 @@ fun ScrollBookerTheme(
         ThemePreferenceEnum.DARK -> true
     }
 
-    val extendedColors = if(isDarkTheme) DarkExtendedColor else LightExtendedColors
+    val extendedColors = remember(isDarkTheme) {
+        if(isDarkTheme) DarkExtendedColor else LightExtendedColors
+    }
+
+    val colorScheme = remember(isDarkTheme) {
+        if(isDarkTheme) DarkColorScheme else LightColorScheme
+    }
 
     CompositionLocalProvider(LocalExtendedColors provides extendedColors) {
         MaterialTheme(
-            colorScheme = if(isDarkTheme) DarkColorScheme else LightColorScheme,
+            colorScheme = colorScheme,
             typography = Typography,
             content = content
         )
