@@ -23,7 +23,6 @@ import com.mapbox.geojson.Point
 import com.mapbox.maps.extension.compose.DisposableMapEffect
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessBoundingBox
-import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMarker
 import com.example.scrollbooker.ui.GeoPoint
 import com.example.scrollbooker.ui.search.MarkersUiState
 import com.example.scrollbooker.ui.search.components.SearchMapActions
@@ -238,8 +237,8 @@ fun SearchMap(
     }
 }
 
-private const val MIN_ZOOM_DELTA = 0.3f
-private const val MIN_MOVE_METERS = 1000f
+private const val MIN_ZOOM_DELTA = 0.5f
+private const val MIN_MOVE_METERS = 10000f
 
 private fun shouldRequestNewData(
     last: CameraPositionState?,

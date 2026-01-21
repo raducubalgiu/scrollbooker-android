@@ -219,7 +219,7 @@ class SearchViewModel @Inject constructor(
                         current.copy(isLoading = true, error = null)
                     }
 
-                    val result = withVisibleLoading(minLoadingMs = 300L) { getBusinessesMarkersUseCase(req) }
+                    val result = withVisibleLoading { getBusinessesMarkersUseCase(req) }
 
                     when (result) {
                         is FeatureState.Success -> _markersUiState.update { current ->
