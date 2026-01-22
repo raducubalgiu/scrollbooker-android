@@ -76,10 +76,6 @@ class AuthDataStore(private val context: Context) {
         context.dataStore.edit { prefs -> prefs[BUSINESS_TYPE_ID] = businessTypeId }
     }
 
-    suspend fun setHasEmployees(hasEmployees: Boolean) {
-        context.dataStore.edit { prefs -> prefs[HAS_EMPLOYEES] = hasEmployees }
-    }
-
     val tokensPrefs: Flow<TokensPrefs> =
         context.dataStore.data
             .catch { e ->
