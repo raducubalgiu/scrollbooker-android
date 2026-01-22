@@ -1,15 +1,21 @@
 package com.example.scrollbooker.ui.myBusiness.mySchedules.components
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Warning
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,23 +26,24 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.inputs.InputSelect
 import com.example.scrollbooker.components.core.inputs.Option
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.generateTimeSlots
 import com.example.scrollbooker.core.util.translateDayOfWeek
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
+import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun ScheduleRow(
     schedule: Schedule,
-    onChange: (start: String?, end: String?) -> Unit
+    onChange: (start: String?, end: String?) -> Unit,
+    isNotValid: Boolean,
+    showErrors: Boolean
 ) {
-    var selectedStartTime by remember {
-        mutableStateOf(schedule.startTime)
-    }
-    var selectedEndTime by remember {
-        mutableStateOf(schedule.endTime)
-    }
+    var selectedStartTime by rememberSaveable { mutableStateOf(schedule.startTime) }
+    var selectedEndTime by rememberSaveable { mutableStateOf(schedule.endTime) }
 
     val closed = stringResource(R.string.closed)
 
@@ -88,6 +95,24 @@ fun ScheduleRow(
                         selectedEndTime = it
                         onChange(selectedStartTime, selectedEndTime)
                     }
+                )
+            }
+        }
+    }
+
+    AnimatedVisibility(visible = isNotValid && showErrors) {
+        Column(modifier = Modifier.padding(top = BasePadding)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = Icons.Outlined.Warning,
+                    contentDescription = null,
+                    tint = Error
+                )
+                Spacer(Modifier.width(SpacingS))
+                Text(
+                    text = "Data de start nu poate fi mai mare decat data de sfarsit",
+                    color = Error,
+                    style = bodyMedium
                 )
             }
         }

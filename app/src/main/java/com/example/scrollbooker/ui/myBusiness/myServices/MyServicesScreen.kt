@@ -59,6 +59,7 @@ fun MyServicesScreen(
                             onCheckedChange = { viewModel.toggleService(service.id) },
                             headLine = service.name
                         )
+
                         if(index < result.data.lastIndex) {
                             Box(
                                 modifier = Modifier
