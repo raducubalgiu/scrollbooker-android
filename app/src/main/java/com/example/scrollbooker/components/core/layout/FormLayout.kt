@@ -36,7 +36,8 @@ fun FormLayout(
     buttonTitle: String? = "",
     onBack: (() -> Unit)? = null,
     onNext: (() -> Unit)? = null,
-    content: @Composable () -> Unit,
+    snackBarHost: @Composable (() -> Unit) = {},
+    content: @Composable () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -51,7 +52,8 @@ fun FormLayout(
                     isLoading = isLoading
                 )
             }
-        }
+        },
+        snackbarHost = snackBarHost,
     ) { innerPadding ->
         Box(modifier = Modifier
             .fillMaxSize()
