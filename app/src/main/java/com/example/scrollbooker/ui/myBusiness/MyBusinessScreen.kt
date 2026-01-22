@@ -9,7 +9,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Book
 import androidx.compose.material.icons.outlined.CalendarToday
 import androidx.compose.material.icons.outlined.LocationOn
-import androidx.compose.material.icons.outlined.Payment
 import androidx.compose.material.icons.outlined.PeopleOutline
 import androidx.compose.material.icons.outlined.Repeat
 import androidx.compose.material.icons.outlined.Schedule
@@ -76,13 +75,13 @@ fun MyBusinessScreen(
             navigate = { myBusinessNavigate.toMyCalendar() },
             permission = PermissionEnum.MY_CALENDAR_VIEW,
         ),
-        BusinessCard(
-            title = stringResource(R.string.paymentMethods),
-            description = stringResource(R.string.paymentMethodsDetails),
-            icon = Icons.Outlined.Payment,
-            navigate = { myBusinessNavigate.toMyCurrencies() },
-            permission = PermissionEnum.MY_CURRENCIES_VIEW
-        ),
+//        BusinessCard(
+//            title = stringResource(R.string.paymentMethods),
+//            description = stringResource(R.string.paymentMethodsDetails),
+//            icon = Icons.Outlined.Payment,
+//            navigate = { myBusinessNavigate.toMyCurrencies() },
+//            permission = PermissionEnum.MY_CURRENCIES_VIEW
+//        ),
         BusinessCard(
             title = stringResource(R.string.employees),
             description = stringResource(R.string.servicesDetails),

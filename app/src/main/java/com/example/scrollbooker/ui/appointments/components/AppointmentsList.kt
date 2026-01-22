@@ -4,8 +4,10 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -18,41 +20,49 @@ import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointm
 import com.example.scrollbooker.ui.appointments.components.AppointmentCard.AppointmentCard
 import com.example.scrollbooker.ui.theme.Divider
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppointmentsList(
     appointments: LazyPagingItems<Appointment>,
-    onNavigateToAppointmentDetails: (Appointment) -> Unit
+    onNavigateToAppointmentDetails: (Appointment) -> Unit,
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit
 ) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(BasePadding)
+    PullToRefreshBox(
+        isRefreshing = isRefreshing,
+        onRefresh = onRefresh,
     ) {
-        items(appointments.itemCount) { index ->
-            appointments[index]?.let { appointment ->
-                AppointmentCard(
-                    appointment = appointment,
-                    navigateToAppointmentDetails = onNavigateToAppointmentDetails
-                )
-
-                if(index < appointments.itemCount - 1) {
-                    HorizontalDivider(
-                        modifier = Modifier
-                            .padding(
-                                horizontal = BasePadding,
-                                vertical = SpacingXL
-                            ),
-                        color = Divider,
-                        thickness = 0.55.dp
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(BasePadding)
+        ) {
+            items(appointments.itemCount) { index ->
+                appointments[index]?.let { appointment ->
+                    AppointmentCard(
+                        appointment = appointment,
+                        navigateToAppointmentDetails = onNavigateToAppointmentDetails
                     )
+
+                    if(index < appointments.itemCount - 1) {
+                        HorizontalDivider(
+                            modifier = Modifier
+                                .padding(
+                                    horizontal = BasePadding,
+                                    vertical = SpacingXL
+                                ),
+                            color = Divider,
+                            thickness = 0.55.dp
+                        )
+                    }
                 }
             }
-        }
 
-        item {
-            when (appointments.loadState.append) {
-                is LoadState.Loading -> LoadMoreSpinner()
-                is LoadState.Error -> Text("Ceva nu a mers cum trebuie")
-                is LoadState.NotLoading -> Unit
+            item {
+                when (appointments.loadState.append) {
+                    is LoadState.Loading -> LoadMoreSpinner()
+                    is LoadState.Error -> Text("Ceva nu a mers cum trebuie")
+                    is LoadState.NotLoading -> Unit
+                }
             }
         }
     }
