@@ -3,14 +3,22 @@ package com.example.scrollbooker.store
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import java.io.IOException
 
 private val Context.dataStore by preferencesDataStore(name = "auth_prefs")
+
+data class TokensPrefs(
+    val accessToken: String?,
+    val refreshToken: String?,
+)
 
 class AuthDataStore(private val context: Context) {
     companion object {
@@ -72,11 +80,20 @@ class AuthDataStore(private val context: Context) {
         context.dataStore.edit { prefs -> prefs[HAS_EMPLOYEES] = hasEmployees }
     }
 
-    fun getAccessToken(): Flow<String?> = context.dataStore.data.map { it[ACCESS_TOKEN] }
+    val tokensPrefs: Flow<TokensPrefs> =
+        context.dataStore.data
+            .catch { e ->
+                if (e is IOException) emit(emptyPreferences()) else throw e
+            }
+            .map { prefs ->
+                TokensPrefs(
+                    accessToken = prefs[ACCESS_TOKEN],
+                    refreshToken = prefs[REFRESH_TOKEN]
+                )
+            }
+
     fun getRefreshToken(): Flow<String?> = context.dataStore.data.map { it[REFRESH_TOKEN] }
     fun getUserId(): Flow<Int?> = context.dataStore.data.map { it[USER_ID] }
-    fun getUsername(): Flow<String?> = context.dataStore.data.map { it[USERNAME] }
-    fun getFullName(): Flow<String?> = context.dataStore.data.map { it[FULLNAME] }
     fun getBusinessId(): Flow<Int?> = context.dataStore.data.map { it[BUSINESS_ID] }
     fun getBusinessTypeId(): Flow<Int?> = context.dataStore.data.map { it[BUSINESS_TYPE_ID] }
     fun getHasEmployees(): Flow<Boolean> = context.dataStore.data.map { it[HAS_EMPLOYEES] == true }
