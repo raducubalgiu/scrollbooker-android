@@ -11,6 +11,7 @@ import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -22,12 +23,11 @@ class MySchedulesViewModel @Inject constructor(
     private val getSchedulesByUserIdUseCase: GetSchedulesByUserIdUseCase,
     private val updateSchedulesUseCase: UpdateSchedulesUseCase
 ): ViewModel() {
-    private val _schedulesState =
-        MutableStateFlow<FeatureState<List<Schedule>>>(FeatureState.Loading)
+    private val _schedulesState = MutableStateFlow<FeatureState<List<Schedule>>>(FeatureState.Loading)
     val schedulesState: StateFlow<FeatureState<List<Schedule>>> = _schedulesState
 
-    private val _isSaving = MutableStateFlow<FeatureState<Unit>?>(null)
-    val isSaving: StateFlow<FeatureState<Unit>?> = _isSaving
+    private val _isSaving = MutableStateFlow<Boolean>(false)
+    val isSaving: StateFlow<Boolean> = _isSaving.asStateFlow()
 
     init {
         loadSchedules()
@@ -69,7 +69,7 @@ class MySchedulesViewModel @Inject constructor(
     }
 
     suspend fun updateSchedules(): List<Schedule>? {
-        _isSaving.value = FeatureState.Loading
+        _isSaving.value = true
 
         val schedules = (_schedulesState.value as? FeatureState.Success)?.data
         if (schedules.isNullOrEmpty()) return null
@@ -78,11 +78,11 @@ class MySchedulesViewModel @Inject constructor(
 
         return result
             .onFailure { error ->
-                _isSaving.value = FeatureState.Error(error)
+                _isSaving.value = false
                 Timber.Forest.tag("Schedules").e("ERROR: on Updating Schedules $error")
             }
             .onSuccess { updated ->
-                _isSaving.value = FeatureState.Success(Unit)
+                _isSaving.value = false
             }
             .getOrNull()
     }
