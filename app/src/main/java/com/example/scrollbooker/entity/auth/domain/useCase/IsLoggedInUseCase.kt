@@ -8,7 +8,6 @@ import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.user.userInfo.domain.useCase.GetUserInfoUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import timber.log.Timber
 import javax.inject.Inject
 
