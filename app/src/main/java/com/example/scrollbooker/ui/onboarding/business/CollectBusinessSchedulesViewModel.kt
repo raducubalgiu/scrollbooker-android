@@ -7,12 +7,12 @@ import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
 import com.example.scrollbooker.entity.booking.schedule.domain.useCase.GetSchedulesByUserIdUseCase
-import com.example.scrollbooker.entity.booking.schedule.domain.useCase.UpdateSchedulesUseCase
 import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectBusinessSchedulesUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -28,8 +28,8 @@ class CollectBusinessSchedulesViewModel @Inject constructor(
         MutableStateFlow<FeatureState<List<Schedule>>>(FeatureState.Loading)
     val schedulesState: StateFlow<FeatureState<List<Schedule>>> = _schedulesState
 
-    private val _isSaving = MutableStateFlow<FeatureState<Unit>?>(null)
-    val isSaving: StateFlow<FeatureState<Unit>?> = _isSaving
+    private val _isSaving = MutableStateFlow<Boolean>(false)
+    val isSaving: StateFlow<Boolean> = _isSaving.asStateFlow()
 
     init {
         loadSchedules()
@@ -71,7 +71,7 @@ class CollectBusinessSchedulesViewModel @Inject constructor(
     }
 
     suspend fun updateSchedules(): Result<AuthState> {
-        _isSaving.value = FeatureState.Loading
+        _isSaving.value = true
 
         val schedules = (_schedulesState.value as? FeatureState.Success)?.data
         if (schedules.isNullOrEmpty()) return Result.failure(Throwable("Schedules not found"))
@@ -80,11 +80,11 @@ class CollectBusinessSchedulesViewModel @Inject constructor(
 
         result
             .onFailure { error ->
-                _isSaving.value = FeatureState.Error(error)
+                _isSaving.value = false
                 Timber.Forest.tag("Schedules").e("ERROR: on Collecting Business Schedules $error")
             }
             .onSuccess { updated ->
-                _isSaving.value = FeatureState.Success(Unit)
+                _isSaving.value =false
             }
 
         return result

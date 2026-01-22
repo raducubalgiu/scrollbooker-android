@@ -17,9 +17,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
+import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.FormLayout
 import com.example.scrollbooker.components.core.layout.LoadingScreen
-import com.example.scrollbooker.core.snackbar.SnackbarManager
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.FeatureState
@@ -31,10 +31,10 @@ fun MySchedulesSection(
     isSaving: Boolean,
     onUpdateRow: (Schedule, String?, String?) -> Unit,
     onHandleSave: () -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    snackBarHost: @Composable (() -> Unit) = {},
 ) {
     var showErrors by rememberSaveable { mutableStateOf(false) }
-
     val schedules = (state as? FeatureState.Success)?.data
 
     val isFormValid by remember(schedules) {
@@ -65,7 +65,8 @@ fun MySchedulesSection(
             if(isFormValid == true) {
                 onHandleSave()
             }
-        }
+        },
+        snackBarHost = snackBarHost
     ) {
         Column(modifier = Modifier
             .fillMaxSize()
@@ -73,7 +74,7 @@ fun MySchedulesSection(
         ) {
             when(val schedules = state) {
                 is FeatureState.Loading -> LoadingScreen()
-                is FeatureState.Error -> SnackbarManager.showToast(stringResource(id = R.string.somethingWentWrong))
+                is FeatureState.Error -> ErrorScreen()
                 is FeatureState.Success -> {
                     LazyColumn {
                         items(schedules.data) { schedule ->

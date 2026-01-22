@@ -2,6 +2,9 @@ package com.example.scrollbooker.ui.myBusiness.mySchedules
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.scrollbooker.R
+import com.example.scrollbooker.core.snackbar.SnackBarUiEvent
+import com.example.scrollbooker.core.snackbar.UiText
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
@@ -9,8 +12,11 @@ import com.example.scrollbooker.entity.booking.schedule.domain.useCase.GetSchedu
 import com.example.scrollbooker.entity.booking.schedule.domain.useCase.UpdateSchedulesUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
@@ -25,6 +31,12 @@ class MySchedulesViewModel @Inject constructor(
 ): ViewModel() {
     private val _schedulesState = MutableStateFlow<FeatureState<List<Schedule>>>(FeatureState.Loading)
     val schedulesState: StateFlow<FeatureState<List<Schedule>>> = _schedulesState
+
+    private val _events = MutableSharedFlow<SnackBarUiEvent.Show>(
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
+    val events = _events.asSharedFlow()
 
     private val _isSaving = MutableStateFlow<Boolean>(false)
     val isSaving: StateFlow<Boolean> = _isSaving.asStateFlow()
@@ -80,9 +92,15 @@ class MySchedulesViewModel @Inject constructor(
             .onFailure { error ->
                 _isSaving.value = false
                 Timber.Forest.tag("Schedules").e("ERROR: on Updating Schedules $error")
+                _events.tryEmit(SnackBarUiEvent.somethingWentWrong())
             }
             .onSuccess { updated ->
                 _isSaving.value = false
+                _events.tryEmit(
+                    SnackBarUiEvent.Show(
+                        message = UiText.Resource(R.string.scheduleSaved)
+                    )
+                )
             }
             .getOrNull()
     }
