@@ -385,5 +385,6 @@
     <string name="itDoesntMatter">Nu contează</string>
     <string name="productCanBeBooked">Acest produs poate fi rezervat?</string>
     <string name="productCanBeBookedDescription">Produsele care NU sunt marcate ca fiind disponibile pentru rezervare, vor apărea în secțiunea produselor tale.. însă acestea vor avea doar scop informativ (nu vor putea fi rezervate instant de către clienți)</string>
-    <string name="scheduleSaved">Programul a fost salvat cu success</string>
+    <string name="scheduleSaved">Programul a fost salvat cu succes</string>
+    <string name="servicesSaved">Serviciile au fost salvate cu succes</string>
 </resources>

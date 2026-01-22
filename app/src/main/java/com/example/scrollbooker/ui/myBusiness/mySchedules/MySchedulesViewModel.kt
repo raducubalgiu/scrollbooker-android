@@ -96,9 +96,12 @@ class MySchedulesViewModel @Inject constructor(
             }
             .onSuccess { updated ->
                 _isSaving.value = false
+
+                _schedulesState.value = FeatureState.Success(updated)
+
                 _events.tryEmit(
                     SnackBarUiEvent.Show(
-                        message = UiText.Resource(R.string.scheduleSaved)
+                        message = UiText.Resource(R.string.servicesSaved)
                     )
                 )
             }

@@ -2,6 +2,9 @@ package com.example.scrollbooker.ui.myBusiness.myServices
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.scrollbooker.R
+import com.example.scrollbooker.core.snackbar.SnackBarUiEvent
+import com.example.scrollbooker.core.snackbar.UiText
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.business.domain.useCase.UpdateBusinessServicesUseCase
@@ -10,8 +13,11 @@ import com.example.scrollbooker.entity.nomenclature.service.domain.useCase.GetSe
 import com.example.scrollbooker.entity.nomenclature.service.domain.useCase.GetServicesByBusinessIdUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
@@ -26,7 +32,6 @@ class MyServicesViewModel @Inject constructor(
     private val getServicesByBusinessTypeUseCase: GetServicesByBusinessTypeUseCase,
     private val updateBusinessServicesUseCase: UpdateBusinessServicesUseCase
 ): ViewModel() {
-
     private val _state = MutableStateFlow<FeatureState<List<Service>>>(FeatureState.Loading)
     val state: StateFlow<FeatureState<List<Service>>> = _state
 
@@ -38,6 +43,12 @@ class MyServicesViewModel @Inject constructor(
 
     private val _isSaving = MutableStateFlow<FeatureState<Unit>?>(null)
     val isSaving: StateFlow<FeatureState<Unit>?> = _isSaving
+
+    private val _events = MutableSharedFlow<SnackBarUiEvent.Show>(
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
+    val events = _events.asSharedFlow()
 
     init {
         fetchServices()
@@ -103,10 +114,22 @@ class MyServicesViewModel @Inject constructor(
         return result
             .onFailure { e ->
                 _isSaving.value = FeatureState.Error(e)
+                _events.tryEmit(SnackBarUiEvent.somethingWentWrong())
                 Timber.tag("Update Services").e("ERROR: on updating Business Services $e")
             }
-            .onSuccess {
+            .onSuccess { updated ->
                 _isSaving.value = FeatureState.Success(Unit)
+
+                val selectedIds = updated.map { it.id }.toSet()
+
+                _defaultSelectedServiceIds.value = selectedIds
+                _selectedServiceIds.value = selectedIds
+
+                _events.tryEmit(
+                    SnackBarUiEvent.Show(
+                        message = UiText.Resource(R.string.scheduleSaved)
+                    )
+                )
             }
             .getOrNull()
     }

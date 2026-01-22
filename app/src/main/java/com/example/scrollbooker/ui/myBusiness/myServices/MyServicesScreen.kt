@@ -7,9 +7,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -20,6 +23,8 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.components.core.layout.LoadingScreen
+import com.example.scrollbooker.core.snackbar.CustomSnackBar
+import com.example.scrollbooker.core.snackbar.rememberSnackBarController
 import com.example.scrollbooker.ui.myBusiness.myServices.MyServicesViewModel
 import com.example.scrollbooker.ui.theme.Divider
 
@@ -39,6 +44,15 @@ fun MyServicesScreen(
     val isLoading = isSaving is FeatureState.Loading
     val isEnabled = !isLoading && selectedIds.isNotEmpty() && selectedIds != defaultSelectedIds
 
+    val hostState = remember { SnackbarHostState() }
+    val snackBarController = rememberSnackBarController(hostState)
+
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            snackBarController.show(event)
+        }
+    }
+
     FormLayout(
         headLine = stringResource(id = R.string.services),
         subHeadLine = stringResource(id = R.string.addYourBusinessServices),
@@ -46,7 +60,13 @@ fun MyServicesScreen(
         onBack = onBack,
         onNext = onNextOrSave,
         isEnabled = isEnabled,
-        isLoading = isLoading
+        isLoading = isLoading,
+        snackBarHost = {
+            CustomSnackBar(
+                hostState = hostState,
+                type = snackBarController.currentType
+            )
+        }
     ) {
         when (val result = state) {
             is FeatureState.Loading -> LoadingScreen()
