@@ -26,6 +26,7 @@ fun BottomBar() {
     val currentTab by tabs.currentTab.collectAsState()
 
     val bottom = LocalBottomBarController.current
+
     val appointmentsNumber by bottom.appointments.collectAsState()
     val notificationsNumber by bottom.notifications.collectAsState()
 

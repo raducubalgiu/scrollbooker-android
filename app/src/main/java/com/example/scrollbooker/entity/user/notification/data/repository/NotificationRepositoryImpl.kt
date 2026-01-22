@@ -13,6 +13,10 @@ import javax.inject.Inject
 class NotificationRepositoryImpl @Inject constructor(
     private val api: NotificationsApiService
 ): NotificationRepository {
+    override suspend fun getUserNotificationsNumber(): Int {
+        return api.getUserNotificationsNumber()
+    }
+
     override fun getNotifications(): Flow<PagingData<Notification>> {
         return Pager(
             config = PagingConfig(pageSize = 10),

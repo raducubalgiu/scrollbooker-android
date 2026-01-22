@@ -2,6 +2,7 @@ package com.example.scrollbooker.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.GetUserAppointmentsNumberUseCase
+import com.example.scrollbooker.entity.user.notification.domain.useCase.GetUserNotificationsNumberUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainUIViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
+    private val getUserNotificationsNumberUseCase: GetUserNotificationsNumberUseCase,
     private val getUserAppointmentsNumberUseCase: GetUserAppointmentsNumberUseCase,
 ): ViewModel() {
     private val _appointments = MutableStateFlow<Int>(0)
@@ -32,8 +34,8 @@ class MainUIViewModel @Inject constructor(
     val hasEmployees: StateFlow<Boolean> = _hasEmployees
 
     init {
-        viewModelScope.launch { loadAppointmentsNumber() }
-        viewModelScope.launch { loadNotificationsNumber() }
+        loadAppointmentsNumber()
+        loadNotificationsNumber()
 
         authDataStore.getUserPermissions()
             .map { it.toSet() }
@@ -65,12 +67,15 @@ class MainUIViewModel @Inject constructor(
         _notifications.value = n.coerceAtLeast(0)
     }
 
-    private suspend fun loadAppointmentsNumber() {
-        _appointments.value = getUserAppointmentsNumberUseCase()
+    private fun loadAppointmentsNumber() {
+        viewModelScope.launch {
+            _appointments.value = getUserAppointmentsNumberUseCase()
+        }
     }
 
-    private suspend fun loadNotificationsNumber() {
-        // To be implemented here with the notifications number
-        _notifications.value = getUserAppointmentsNumberUseCase()
+    private fun loadNotificationsNumber() {
+        viewModelScope.launch {
+            _notifications.value = getUserNotificationsNumberUseCase()
+        }
     }
 }

@@ -5,5 +5,6 @@ import com.example.scrollbooker.entity.user.notification.domain.model.Notificati
 import kotlinx.coroutines.flow.Flow
 
 interface NotificationRepository {
+    suspend fun getUserNotificationsNumber(): Int
     fun getNotifications(): Flow<PagingData<Notification>>
 }

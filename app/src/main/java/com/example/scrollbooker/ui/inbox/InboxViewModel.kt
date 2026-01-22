@@ -34,7 +34,7 @@ import kotlin.collections.plus
 
 @HiltViewModel
 class InboxViewModel @Inject constructor(
-    getNotificationsUseCase: GetNotificationsUseCase,
+    private val getNotificationsUseCase: GetNotificationsUseCase,
     private val followUserUseCase: FollowUserUseCase,
     private val unfollowUserUseCase: UnfollowUserUseCase,
     private val respondEmploymentRequestUseCase: RespondEmploymentRequestUseCase,

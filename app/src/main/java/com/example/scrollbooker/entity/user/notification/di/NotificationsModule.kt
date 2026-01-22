@@ -5,6 +5,7 @@ import com.example.scrollbooker.entity.user.notification.data.remote.Notificatio
 import com.example.scrollbooker.entity.user.notification.data.repository.NotificationRepositoryImpl
 import com.example.scrollbooker.entity.user.notification.domain.repository.NotificationRepository
 import com.example.scrollbooker.entity.user.notification.domain.useCase.GetNotificationsUseCase
+import com.example.scrollbooker.entity.user.notification.domain.useCase.GetUserNotificationsNumberUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,6 +33,14 @@ object NotificationsModule {
     @Singleton
     fun provideNotificationsRepository(apiService: NotificationsApiService): NotificationRepository {
         return NotificationRepositoryImpl(apiService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetUserNotificationsUseCase(
+        repository: NotificationRepository,
+    ): GetUserNotificationsNumberUseCase {
+        return GetUserNotificationsNumberUseCase(repository)
     }
 
     @Provides
