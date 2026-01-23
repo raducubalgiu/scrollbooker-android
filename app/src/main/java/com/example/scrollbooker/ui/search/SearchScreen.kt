@@ -41,7 +41,6 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.sheet.Sheet
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.ui.LocalLocationController
 import com.example.scrollbooker.ui.LocationPermissionStatus
 import com.example.scrollbooker.ui.PrecisionMode
@@ -58,15 +57,14 @@ import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheetUse
 import com.example.scrollbooker.ui.theme.Background
 import kotlinx.coroutines.launch
 import rememberLocationsCountText
-import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
+    viewModel: SearchViewModel,
     isSearchTab: Boolean,
     onNavigateToBusinessProfile: (Int) -> Unit
 ) {
-    val viewModel: SearchViewModel = hiltViewModel()
     val isMapMounted by viewModel.isMapMounted.collectAsState()
 
     LaunchedEffect(isSearchTab) {

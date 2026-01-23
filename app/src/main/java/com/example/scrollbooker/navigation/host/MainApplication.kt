@@ -2,7 +2,6 @@ package com.example.scrollbooker.navigation.host
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -29,6 +28,8 @@ fun MainApplication(onLogout: () -> Unit) {
     val myProfileData by myProfileViewModel.userProfileState.collectAsState()
     val myPosts = myProfileViewModel.userPosts.collectAsLazyPagingItems()
 
+    val viewModel: SearchViewModel = hiltViewModel()
+
     val saveableStateHolder = rememberSaveableStateHolder()
     val navControllers = remember {
         mutableMapOf<MainTab, NavHostController>()
@@ -42,6 +43,7 @@ fun MainApplication(onLogout: () -> Unit) {
 
     Box(modifier = Modifier.fillMaxSize()) {
         SearchScreen(
+            viewModel = viewModel,
             isSearchTab = currentTab is MainTab.Search,
             onNavigateToBusinessProfile = {
                 searchNavHostController.navigate(MainRoute.BusinessProfile.createRoute(it))
