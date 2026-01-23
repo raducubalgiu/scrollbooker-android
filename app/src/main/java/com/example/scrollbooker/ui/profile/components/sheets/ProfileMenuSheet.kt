@@ -81,7 +81,7 @@ fun ProfileMenuSheet(
                 .fillMaxWidth()
                 .padding(vertical = BasePadding)
         ) {
-            val visiblePages = links.filter { permissionController.has(it.permission) }
+            val visiblePages = links.filter { permissionController.hasPermission(it.permission) }
 
             LazyColumn {
                 items(visiblePages) { link ->

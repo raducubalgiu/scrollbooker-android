@@ -7,8 +7,7 @@ data class UserPermissionsController(
     val values: Set<String>,
     val hasEmployees: Boolean
 ) {
-    fun has(code: PermissionEnum) = values.contains(code.key)
-    fun verifyHasEmployees(has: Boolean): Boolean = has != hasEmployees
+    fun hasPermission(code: PermissionEnum) = values.contains(code.key)
 }
 
 val LocalUserPermissions = staticCompositionLocalOf {

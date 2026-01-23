@@ -12,7 +12,7 @@ fun Protected(
 ) {
     val permissionController = LocalUserPermissions.current
     val isAllowed = remember(permission, permissionController.values) {
-        permissionController.has(permission)
+        permissionController.hasPermission(permission)
     }
 
     if(isAllowed) {

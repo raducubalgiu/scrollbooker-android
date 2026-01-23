@@ -44,22 +44,22 @@ fun MyBusinessScreen(
             title = stringResource(R.string.location),
             description = stringResource(R.string.businessLocationDetails),
             icon = Icons.Outlined.LocationOn,
+            permission = PermissionEnum.MY_BUSINESS_LOCATION_VIEW,
             navigate = { myBusinessNavigate.toMyBusinessLocation() },
-            permission = PermissionEnum.MY_BUSINESS_LOCATION_VIEW
         ),
         BusinessCard(
             title = stringResource(R.string.scheduleShort),
             description = stringResource(R.string.userScheduleDetails),
             icon = Icons.Outlined.Schedule,
+            permission = PermissionEnum.MY_SCHEDULES_VIEW,
             navigate = { myBusinessNavigate.toMySchedules() },
-            permission = PermissionEnum.MY_SCHEDULES_VIEW
         ),
         BusinessCard(
             title = stringResource(R.string.products),
             description = stringResource(R.string.userProductsDetails),
             icon = Icons.Outlined.ShoppingBag,
+            permission = PermissionEnum.MY_PRODUCTS_VIEW,
             navigate = { myBusinessNavigate.toMyProducts() },
-            permission = PermissionEnum.MY_PRODUCTS_VIEW
         ),
         BusinessCard(
             title = stringResource(R.string.services),
@@ -75,13 +75,6 @@ fun MyBusinessScreen(
             navigate = { myBusinessNavigate.toMyCalendar() },
             permission = PermissionEnum.MY_CALENDAR_VIEW,
         ),
-//        BusinessCard(
-//            title = stringResource(R.string.paymentMethods),
-//            description = stringResource(R.string.paymentMethodsDetails),
-//            icon = Icons.Outlined.Payment,
-//            navigate = { myBusinessNavigate.toMyCurrencies() },
-//            permission = PermissionEnum.MY_CURRENCIES_VIEW
-//        ),
         BusinessCard(
             title = stringResource(R.string.employees),
             description = stringResource(R.string.servicesDetails),
@@ -109,7 +102,7 @@ fun MyBusinessScreen(
             contentPadding = PaddingValues(vertical = 8.dp),
             modifier = Modifier.fillMaxSize()
         ) {
-            val visiblePages = pages.filter { permissionsController.has(it.permission) }
+            val visiblePages = pages.filter { permissionsController.hasPermission(it.permission) }
 
             items(visiblePages) { page ->
                 MyBusinessCard(
