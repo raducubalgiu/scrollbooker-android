@@ -69,19 +69,20 @@ fun ProductCard(
                 }
             }
 
-            Spacer(Modifier.height(BasePadding))
-
             if(!product.canBeBooked) {
+                Spacer(Modifier.height(BasePadding))
+
                 Text(
                     text = "Acest serviciu poate fi rezervat doar in urma unei discutii telefonice",
                     color = Error,
                     style = bodySmall
                 )
-
                 Spacer(Modifier.height(BasePadding))
             }
 
             if(displayActions) {
+                Spacer(Modifier.height(BasePadding))
+
                 ProductCardActions(
                     isLoadingDelete = isLoadingDelete,
                     onNavigateToEdit = { onNavigateToEdit?.invoke(product.id) },
