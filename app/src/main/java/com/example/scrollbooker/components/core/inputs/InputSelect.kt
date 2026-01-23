@@ -177,7 +177,7 @@ fun InputSelect(
 
                     val isSelected = when {
                         value == null -> false
-                        selectedOption != null -> selected?.value == value
+                        selectedOption != "null" -> selected?.value == value
                         else -> false
                     }
 
@@ -224,5 +224,6 @@ fun InputSelect(
 
 data class Option(
     val value: String?,
-    val name: String?
+    val name: String?,
+    val description: String? = null
 )
