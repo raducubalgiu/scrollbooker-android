@@ -83,7 +83,8 @@ fun ServicesMainFilters(
         is FeatureState.Success -> state.data.map { s ->
             Option(
                 value = s.id.toString(),
-                name = s.displayName
+                name = s.displayName,
+                description = s.description
             )
         }
         else -> emptyList()
@@ -171,9 +172,7 @@ fun ServicesMainFilters(
                             selectedOption = state.serviceId.toString(),
                             placeholder = stringResource(R.string.chooseServices),
                             isEnabled = state.serviceDomainId != null,
-                            onValueChange = {
-                                viewModel.setServiceId(it?.toInt())
-                            },
+                            onValueChange = { viewModel.setServiceId(it?.toInt()) },
                             isLoading = services is FeatureState.Loading,
                         )
 

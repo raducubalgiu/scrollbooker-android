@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
@@ -69,6 +70,16 @@ fun ProductCard(
                 }
             }
 
+            if(product.description.isNotEmpty()) {
+                Spacer(Modifier.height(BasePadding))
+
+                Text(
+                    text = product.description,
+                    color = Color.Gray,
+                    style = bodySmall
+                )
+            }
+
             if(!product.canBeBooked) {
                 Spacer(Modifier.height(BasePadding))
 
@@ -77,7 +88,6 @@ fun ProductCard(
                     color = Error,
                     style = bodySmall
                 )
-                Spacer(Modifier.height(BasePadding))
             }
 
             if(displayActions) {

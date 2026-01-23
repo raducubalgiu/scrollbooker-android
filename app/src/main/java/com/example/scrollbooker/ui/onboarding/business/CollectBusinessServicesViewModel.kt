@@ -73,6 +73,7 @@ class CollectBusinessServicesViewModel @Inject constructor(
                             id = it.id,
                             name = it.name,
                             displayName = it.displayName,
+                            description = it.description,
                             businessDomainId = it.businessDomainId
                         )
                     }

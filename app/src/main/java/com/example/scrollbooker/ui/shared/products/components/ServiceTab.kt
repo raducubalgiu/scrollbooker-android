@@ -59,18 +59,18 @@ fun ServiceTab(
                     color = if (isSelected) OnSurfaceBG else Color.Gray,
                     fontWeight = if(isSelected) FontWeight.Bold else FontWeight.SemiBold,
                 )
-
-                if(count > 0) {
-                    Spacer(Modifier.width(SpacingS))
-
-                    Text(
-                        text = "$count",
-                        style = bodyLarge,
-                        fontSize = 16.sp,
-                        color = if (isSelected) OnSurfaceBG else Color.Gray,
-                        fontWeight = if(isSelected) FontWeight.Bold else FontWeight.SemiBold,
-                    )
-                }
+//
+//                if(count > 0) {
+//                    Spacer(Modifier.width(SpacingS))
+//
+//                    Text(
+//                        text = "$count",
+//                        style = bodyLarge,
+//                        fontSize = 16.sp,
+//                        color = if (isSelected) OnSurfaceBG else Color.Gray,
+//                        fontWeight = if(isSelected) FontWeight.Bold else FontWeight.SemiBold,
+//                    )
+//                }
             }
         }
     }
