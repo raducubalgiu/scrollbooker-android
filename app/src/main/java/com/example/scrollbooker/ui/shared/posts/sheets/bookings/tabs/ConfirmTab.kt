@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
@@ -40,7 +39,7 @@ import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheetUse
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodySmall
-import com.example.scrollbooker.ui.theme.headlineSmall
+import com.example.scrollbooker.ui.theme.titleLarge
 import com.example.scrollbooker.ui.theme.titleMedium
 import java.math.BigDecimal
 
@@ -101,7 +100,7 @@ fun ConfirmTab(
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
                     text = "Luni, 10 nov, 15:00",
-                    style = headlineSmall,
+                    style = titleLarge,
                     fontWeight = FontWeight.SemiBold
                 )
 
