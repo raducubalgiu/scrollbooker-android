@@ -18,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -26,7 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.core.extensions.withAlpha
-import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.ui.shared.posts.util.formatCounters
 
@@ -56,7 +55,7 @@ fun PostActionButton(
         contentAlignment = Alignment.Center
     ) {
         Column(
-            modifier = modifier.padding(top = BasePadding),
+            modifier = modifier.padding(top = SpacingS),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Icon(

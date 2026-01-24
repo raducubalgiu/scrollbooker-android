@@ -33,13 +33,13 @@ fun SearchMarker(
     isPrimary: Boolean,
     isSelected: Boolean,
     marker: BusinessMarker,
-    baseAvatarSize: Dp = 58.dp,
+    baseAvatarSize: Dp = 50.dp,
     onClick: () -> Unit
 ) {
     val showPrimaryUi = isPrimary || isSelected
 
     val animatedAvatarSize by animateDpAsState(
-        targetValue = if (isSelected) baseAvatarSize * 1.28f else baseAvatarSize,
+        targetValue = if (isSelected) baseAvatarSize * 1.6f else baseAvatarSize,
         animationSpec = tween(
             durationMillis = 180,
             easing = FastOutSlowInEasing

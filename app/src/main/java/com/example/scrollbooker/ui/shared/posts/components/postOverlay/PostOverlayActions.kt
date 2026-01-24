@@ -22,7 +22,6 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.components.core.avatar.AvatarWithRating
 import com.example.scrollbooker.core.extensions.withAlpha
-import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.social.post.domain.model.PostCounters
 import com.example.scrollbooker.entity.social.post.domain.model.PostUser
@@ -118,7 +117,7 @@ fun PostOverlayActions(
 
         onShowBottomBar?.let {
             IconButton(
-                modifier = Modifier.padding(top = 8.dp),
+                modifier = Modifier.padding(top = SpacingS),
                 onClick = onShowBottomBar,
                 colors = IconButtonDefaults.iconButtonColors(
                     containerColor = Color.Black.copy(alpha = if(enableOpacity) 0.2f else 0.5f),
@@ -133,6 +132,6 @@ fun PostOverlayActions(
             }
         }
 
-        Spacer(Modifier.height(BasePadding))
+        Spacer(Modifier.height(SpacingS))
     }
 }

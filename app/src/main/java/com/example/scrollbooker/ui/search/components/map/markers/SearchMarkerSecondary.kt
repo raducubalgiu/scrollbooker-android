@@ -15,7 +15,7 @@ import com.example.scrollbooker.ui.theme.Background
 
 @Composable
 fun SearchMarkerSecondary(
-    markerSize: Dp = 18.dp,
+    markerSize: Dp = 16.dp,
     borderWidth: Dp = 3.dp,
     color: Color,
     backgroundColor: Color = Background,
