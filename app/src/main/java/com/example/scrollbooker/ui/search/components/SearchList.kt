@@ -1,6 +1,4 @@
 package com.example.scrollbooker.ui.search.components
-
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,7 +11,6 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.EmptyScreen
-import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.customized.LoadMoreSpinner
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessOwner
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessSheet
@@ -21,7 +18,6 @@ import com.example.scrollbooker.ui.search.components.card.SearchCard
 
 @Composable
 fun SearchList(
-    isInitialLoading: Boolean,
     appendState: LoadState,
     listState: LazyListState,
     businessesSheet: LazyPagingItems<BusinessSheet>,
@@ -31,34 +27,26 @@ fun SearchList(
     val isAppending = appendState is LoadState.Loading
 
     Column(Modifier.fillMaxSize()) {
-        if(isInitialLoading) {
-            LoadingScreen()
-        } else {
-            Box(Modifier.fillMaxSize()) {
-                if(businessesSheet.itemCount == 0) {
-                    EmptyScreen(
-                        message = stringResource(R.string.notFoundLocations),
-                        icon = painterResource(R.drawable.ic_store_outline)
+        if(businessesSheet.itemCount == 0) {
+            EmptyScreen(
+                message = stringResource(R.string.notFoundLocations),
+                icon = painterResource(R.drawable.ic_store_outline)
+            )
+        }
+
+        LazyColumn(state = listState) {
+            items(businessesSheet.itemCount) { index ->
+                businessesSheet[index]?.let { business ->
+                    SearchCard(
+                        business = business,
+                        onNavigateToBusinessProfile = onNavigateToBusinessProfile,
+                        onOpenBookingsSheet = onOpenBookingsSheet
                     )
                 }
+            }
 
-                LazyColumn(
-                    state = listState
-                ) {
-                    items(businessesSheet.itemCount) { index ->
-                        businessesSheet[index]?.let { business ->
-                            SearchCard(
-                                business = business,
-                                onNavigateToBusinessProfile = onNavigateToBusinessProfile,
-                                onOpenBookingsSheet = onOpenBookingsSheet
-                            )
-                        }
-                    }
-
-                    if (isAppending) {
-                        item { LoadMoreSpinner() }
-                    }
-                }
+            if (isAppending) {
+                item { LoadMoreSpinner() }
             }
         }
     }

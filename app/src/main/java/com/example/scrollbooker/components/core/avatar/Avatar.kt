@@ -38,7 +38,6 @@ fun Avatar(
         url.takeIf { it.isNotBlank() }?.let {
             ImageRequest.Builder(context)
                 .data(it)
-                .crossfade(true)
                 .build()
         }
     }

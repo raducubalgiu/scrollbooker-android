@@ -15,7 +15,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.scrollbooker.core.enums.toDomainColor
 import com.example.scrollbooker.ui.search.CameraPositionState
 import com.example.scrollbooker.ui.search.SearchViewModel
 import com.example.scrollbooker.ui.theme.SurfaceBG
@@ -23,12 +22,11 @@ import com.mapbox.geojson.Point
 import com.mapbox.maps.extension.compose.DisposableMapEffect
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessBoundingBox
+import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMarker
 import com.example.scrollbooker.ui.GeoPoint
 import com.example.scrollbooker.ui.search.MarkersUiState
 import com.example.scrollbooker.ui.search.components.SearchMapActions
-import com.example.scrollbooker.ui.search.components.SearchMapLoading
-import com.example.scrollbooker.ui.search.components.map.markers.SearchMarkerPrimary
-import com.example.scrollbooker.ui.search.components.map.markers.SearchMarkerSecondary
+import com.example.scrollbooker.ui.search.components.map.markers.SearchMarker
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.ContextMode
 import com.mapbox.maps.MapOptions
@@ -51,10 +49,14 @@ fun SearchMap(
     paddingBottom: Dp
 ) {
     val density = LocalDensity.current
-    val markers = markersUiState.data?.results.orEmpty()
     val scope = rememberCoroutineScope()
 
-    val selectedMarker by viewModel.selectedMarker.collectAsStateWithLifecycle()
+    val markers = markersUiState.data?.results.orEmpty()
+    val selectedMarkerId by viewModel.selectedMarkerId.collectAsStateWithLifecycle()
+
+    val selectedMarker = remember(markers, selectedMarkerId) {
+        markers.firstOrNull() { it.id == selectedMarkerId }
+    }
 
     var mapStyle by rememberSaveable {
         mutableStateOf("mapbox://styles/radubalgiu/cmip1r7g000pm01sca0vz7dxp")
@@ -116,7 +118,7 @@ fun SearchMap(
 
         BusinessPreviewCard(
             selectedMarker = selectedMarker,
-            onCloseClick = { viewModel.setSelectedMarker(null) },
+            onCloseClick = { viewModel.setSelectedMarkerId(null) },
             onNavigateToBusinessProfile = onNavigateToBusinessProfile,
             isVisible = selectedMarker != null,
             paddingBottom = paddingBottom
@@ -128,7 +130,7 @@ fun SearchMap(
                 .background(SurfaceBG)
                 .zIndex(12f),
                 contentAlignment = Alignment.Center
-            ) { SearchMapLoading() }
+            ) {  }
         }
 
         MapboxMap(
@@ -140,36 +142,46 @@ fun SearchMap(
             style = { MapStyle(style = mapStyle) },
             scaleBar = {},
         ) {
-            val secondaryMarkers = markers.filter { !it.isPrimary }
-            val primaryMarkers = markers.filter { it.isPrimary }
-
-            secondaryMarkers.forEach { m ->
-                SearchMarkerSecondary(
-                    color = m.businessShortDomain.toDomainColor(),
-                    coordinates = m.coordinates,
-                    onMarkerClick = { viewModel.setSelectedMarker(m) }
-                )
+            val sortedMarkers = remember(markers, selectedMarkerId) {
+                markers.sortedWith(compareBy<BusinessMarker> { it.id == selectedMarkerId })
             }
 
-            primaryMarkers.forEach { m ->
-                SearchMarkerPrimary(
-                    imageUrl = m.owner.avatar,
-                    domainColor = m.businessShortDomain.toDomainColor(),
-                    ratingsAverage = m.owner.ratingsAverage,
-                    coordinates = m.coordinates,
-                    onMarkerClick = { viewModel.setSelectedMarker(m) },
-                )
+            val bottomMarkers = sortedMarkers.filterNot { it.isPrimary || it.id == selectedMarkerId }
+            val topMarkers = sortedMarkers.filter { it.isPrimary || it.id == selectedMarkerId }
+            val selected = sortedMarkers.firstOrNull() { it.id == selectedMarkerId }
+
+            bottomMarkers.forEach { m ->
+                key(m.id) {
+                    SearchMarker(
+                        isPrimary = false,
+                        isSelected = false,
+                        marker = m,
+                        onClick = { viewModel.setSelectedMarkerId(m.id) }
+                    )
+                }
             }
 
-//            ViewAnnotation(
-//                options = viewAnnotationOptions {
-//                    geometry(Point.fromLngLat(
-//                        25.978861.toDouble(),
-//                        44.443697.toDouble()
-//                    ))
-//                    allowOverlap(true)
-//                }
-//            ) { SearchMarkerUserLocation() }
+            topMarkers.forEach { m ->
+                key(m.id) {
+                    SearchMarker(
+                        isPrimary = true,
+                        isSelected = false,
+                        marker = m,
+                        onClick = { viewModel.setSelectedMarkerId(m.id) }
+                    )
+                }
+            }
+
+            selected?.let { m ->
+                key(m.id to true) {
+                    SearchMarker(
+                        isPrimary = true,
+                        isSelected = true,
+                        marker = m,
+                        onClick = { viewModel.setSelectedMarkerId(m.id) }
+                    )
+                }
+            }
 
             DisposableMapEffect(Unit) { mapView ->
                 viewModel.setMapReady(false)

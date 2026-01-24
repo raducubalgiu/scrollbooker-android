@@ -34,7 +34,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -251,12 +250,11 @@ fun SearchScreen(
                 sheetContent = {
                     SearchSheetHeader(
                         onMeasured = { sheetHeaderDp = it },
-                        isLoading = isInitialLoading || isRefreshing || !isMapReady || !isStyleLoaded,
+                        isLoading = isInitialLoading || isRefreshing || isMapLoading,
                         businessesCountText = businessesCountText
                     )
 
                     SearchList(
-                        isInitialLoading = isInitialLoading,
                         appendState = appendState,
                         listState = listState,
                         businessesSheet = businessesSheet,
