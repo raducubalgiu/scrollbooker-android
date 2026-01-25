@@ -21,6 +21,8 @@ import com.example.scrollbooker.ui.myBusiness.myBusinessLocation.MyBusinessLocat
 import com.example.scrollbooker.ui.myBusiness.myBusinessLocation.MyBusinessLocationViewModel
 import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarScreen
 import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarViewModel
+import com.example.scrollbooker.ui.myBusiness.myClasses.MyClassesScreen
+import com.example.scrollbooker.ui.myBusiness.myClasses.MyClassesViewModel
 import com.example.scrollbooker.ui.myBusiness.myCurrencies.MyCurrenciesScreen
 import com.example.scrollbooker.ui.myBusiness.myCurrencies.MyCurrenciesViewModel
 import com.example.scrollbooker.ui.myBusiness.myEmployees.EmployeesDismissalScreen
@@ -239,6 +241,15 @@ fun NavGraphBuilder.myBusinessGraph(
                 viewModel = viewModel,
                 buttonTitle = stringResource(R.string.save),
                 onBack = { navController.popBackStack() },
+            )
+        }
+
+        composable(MainRoute.MyClasses.route) { backStackEntry ->
+            val viewModel = hiltViewModel<MyClassesViewModel>(backStackEntry)
+
+            MyClassesScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() }
             )
         }
 

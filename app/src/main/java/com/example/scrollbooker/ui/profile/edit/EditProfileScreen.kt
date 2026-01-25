@@ -38,6 +38,7 @@ import kotlinx.coroutines.launch
 data class EditProfileAction(
     val title: String,
     val value: String,
+    val hasPermission: Boolean = true,
     val navigate: () -> Unit
 )
 
@@ -85,11 +86,13 @@ fun EditProfileScreen(
         EditProfileAction(
             title = stringResource(R.string.email),
             value = user?.publicEmail ?: "",
+            hasPermission = user?.isBusinessOrEmployee == true,
             navigate = { editProfileNavigate.toEditPublicEmail() }
         ),
         EditProfileAction(
             title = stringResource(R.string.website),
             value = user?.website ?: "",
+            hasPermission = user?.isBusinessOrEmployee == true,
             navigate = { editProfileNavigate.toEditWebsite() }
         ),
         EditProfileAction(
@@ -108,6 +111,8 @@ fun EditProfileScreen(
             navigate = {  }
         ),
     )
+
+    val actions = actionsList.filter { it.hasPermission }
 
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -174,21 +179,19 @@ fun EditProfileScreen(
                 }
             }
 
-            if(user?.isBusinessOrEmployee == true) {
-                Spacer(Modifier.height(BasePadding))
+            Spacer(Modifier.height(BasePadding))
 
-                EditProfileSectionTitle(title = stringResource(R.string.buttonActionInProfile))
+            EditProfileSectionTitle(title = stringResource(R.string.buttonActionInProfile))
 
-                actionsList.forEachIndexed { index, about ->
-                    ItemListInfo(
-                        headLine = about.title,
-                        supportingText = about.value,
-                        onClick = about.navigate
-                    )
+            actions.forEachIndexed { index, about ->
+                ItemListInfo(
+                    headLine = about.title,
+                    supportingText = about.value,
+                    onClick = about.navigate
+                )
 
-                    if(index <= aboutList.size) {
-                        Spacer(Modifier.padding(vertical = SpacingXXS))
-                    }
+                if(index <= aboutList.size) {
+                    Spacer(Modifier.padding(vertical = SpacingXXS))
                 }
             }
         }

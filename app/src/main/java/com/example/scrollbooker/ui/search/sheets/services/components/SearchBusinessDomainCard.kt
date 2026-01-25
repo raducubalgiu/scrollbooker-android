@@ -23,8 +23,8 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.LastMinute
 import com.example.scrollbooker.ui.theme.OnBackground
-import com.example.scrollbooker.ui.theme.Primary
 
 @Composable
 fun SearchBusinessDomainCard(
@@ -42,7 +42,7 @@ fun SearchBusinessDomainCard(
         contentColor = OnBackground,
         border = BorderStroke(
             width = if(isSelected) 2.dp else 1.dp,
-            color = if(isSelected) Primary else Divider
+            color = if(isSelected) LastMinute else Divider
         )
     ) {
         Row(

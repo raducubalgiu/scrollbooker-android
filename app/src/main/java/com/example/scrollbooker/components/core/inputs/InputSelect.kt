@@ -19,6 +19,7 @@ import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ShapeDefaults
@@ -43,13 +44,20 @@ import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
+import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Error
+import com.example.scrollbooker.ui.theme.LastMinute
 import com.example.scrollbooker.ui.theme.OnPrimary
+import com.example.scrollbooker.ui.theme.OnSecondary
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
+import com.example.scrollbooker.ui.theme.Secondary
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyMedium
+import com.example.scrollbooker.ui.theme.bodySmall
 import com.example.scrollbooker.ui.theme.labelLarge
+import com.example.scrollbooker.ui.theme.titleMedium
+import com.example.scrollbooker.ui.theme.titleSmall
 
 @Composable
 fun InputSelect(
@@ -83,7 +91,7 @@ fun InputSelect(
 
     val placeholderColor = when {
         isError -> MaterialTheme.colorScheme.error
-        expanded -> Primary
+        expanded -> LastMinute
         else -> Color.Gray
     }
 
@@ -169,6 +177,7 @@ fun InputSelect(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
                 modifier = Modifier
+                    .clip(shape = ShapeDefaults.Medium)
                     .background(background)
                     .width(with(LocalDensity.current) { parentWidth.toDp() })
             ) {
@@ -183,13 +192,35 @@ fun InputSelect(
 
                     DropdownMenuItem(
                         enabled = isEnabled,
-                        modifier = Modifier.background(
-                            if(isSelected) Primary.copy(alpha = 0.6f) else Color.Transparent),
+                        modifier = Modifier
+                            .background(if(isSelected) LastMinute.copy(alpha = 0.2f) else Color.Transparent),
                         text = {
-                            Text(
-                                text = option.name ?: placeholder,
-                                color = if(isSelected) OnPrimary else color
-                            )
+                            val hasDescription = option.description?.isNotEmpty() == true
+
+                            Column(
+                                modifier = Modifier.padding(vertical = SpacingS)
+                            ) {
+                                Text(
+                                    text = option.name ?: placeholder,
+                                    color = color,
+                                    style = titleSmall,
+                                    fontWeight = if(hasDescription) FontWeight.SemiBold else FontWeight.Normal,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+
+                                Spacer(Modifier.padding(vertical = SpacingXS))
+
+                                if(hasDescription) {
+                                    Text(
+                                        text = option.description,
+                                        color = Color.Gray,
+                                        style = bodySmall,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                }
+                            }
                         },
                         onClick = {
                             onValueChange(option.value)

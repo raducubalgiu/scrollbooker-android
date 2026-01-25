@@ -15,13 +15,20 @@ import com.example.scrollbooker.entity.nomenclature.businessType.domain.model.Bu
 import com.example.scrollbooker.entity.nomenclature.businessType.domain.useCase.GetAllPaginatedBusinessTypesUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -29,6 +36,7 @@ data class BusinessPhotoUIState(
     val images: List<Uri?> = List(5) { null }
 )
 
+@OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class CollectBusinessViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
@@ -39,9 +47,6 @@ class CollectBusinessViewModel @Inject constructor(
     private val _photosState = MutableStateFlow(BusinessPhotoUIState())
     val photosState: StateFlow<BusinessPhotoUIState> = _photosState
 
-    private val _videoState = MutableStateFlow<Uri?>(null)
-    val videoState: StateFlow<Uri?> = _videoState
-
     private val _businessTypes: Flow<PagingData<BusinessType>> by lazy {
         getAllBusinessTypesUseCase().cachedIn(viewModelScope)
     }
@@ -50,9 +55,11 @@ class CollectBusinessViewModel @Inject constructor(
     private val _selectedBusinessType = MutableStateFlow<BusinessType?>(null)
     val selectedBusinessType: StateFlow<BusinessType?> = _selectedBusinessType
 
-    fun setBusinessType(businessType: BusinessType) {
-        _selectedBusinessType.value = businessType
-    }
+    private val _currentName = MutableStateFlow("")
+    val currentName: StateFlow<String> = _currentName
+
+    private val _currentDescription = MutableStateFlow("")
+    val currentDescription: StateFlow<String> = _currentDescription
 
     private val _searchState = MutableStateFlow<FeatureState<List<BusinessAddress>>?>(null)
     val searchState: StateFlow<FeatureState<List<BusinessAddress>>?> = _searchState
@@ -63,51 +70,49 @@ class CollectBusinessViewModel @Inject constructor(
     private val _currentQuery = MutableStateFlow("")
     val currentQuery: StateFlow<String> = _currentQuery
 
-    fun setBusinessAddress(businessAddress: BusinessAddress) {
-        _selectedAddress.value = businessAddress
+    private val _isSaving = MutableStateFlow<FeatureState<Unit>?>(null)
+    val isSaving: StateFlow<FeatureState<Unit>?> = _isSaving
+
+    init {
+        _currentQuery
+            .map { it.trim() }
+            .distinctUntilChanged()
+            .debounce(400)
+            .onEach { query ->
+                if (query.length < 2) {
+                    _searchState.value = null
+                    return@onEach
+                }
+
+                _searchState.value = FeatureState.Loading
+            }
+            .filter { it.length >= 2 }
+            .mapLatest { query ->
+                withVisibleLoading { searchBusinessAddressUseCase(query) }
+            }
+            .onEach { result -> _searchState.value = result }
+            .catch { e -> _searchState.value = FeatureState.Error(e) }
+            .launchIn(viewModelScope)
     }
 
-    private val _currentName = MutableStateFlow("")
-    val currentName: StateFlow<String> = _currentName
+    fun handleSearch(query: String) {
+        _currentQuery.value = query
+    }
 
     fun setBusinessName(businessName: String) {
         _currentName.value = businessName
     }
 
-    private val _currentDescription = MutableStateFlow("")
-    val currentDescription: StateFlow<String> = _currentDescription
-
     fun setBusinessDescription(businessDescription: String) {
         _currentDescription.value = businessDescription
     }
 
-    private val _isSaving = MutableStateFlow<FeatureState<Unit>?>(null)
-    val isSaving: StateFlow<FeatureState<Unit>?> = _isSaving
+    fun setBusinessAddress(businessAddress: BusinessAddress) {
+        _selectedAddress.value = businessAddress
+    }
 
-    private var debounceJob: Job? = null
-
-    fun searchAddress(query: String) {
-        _currentQuery.value = query
-
-        if(query.length < 3) {
-            debounceJob?.cancel()
-            _searchState.value = null
-            return
-        }
-
-        debounceJob?.cancel()
-        debounceJob = viewModelScope.launch {
-            delay(200)
-
-            val latest = currentQuery.value
-            if(latest.length < 3 || latest != query) return@launch
-
-            _searchState.value = FeatureState.Loading
-
-            _searchState.value = withVisibleLoading {
-                searchBusinessAddressUseCase(query)
-            }
-        }
+    fun setBusinessType(businessType: BusinessType) {
+        _selectedBusinessType.value = businessType
     }
 
     fun setImage(slot: Int, uri: Uri?) {
@@ -117,17 +122,7 @@ class CollectBusinessViewModel @Inject constructor(
         }
     }
 
-    fun setVideo(uri: Uri?) {
-        if(uri != null) {
-            _videoState.value = uri
-        }
-    }
-
     fun clearImage(slot: Int) = setImage(slot, null)
-
-    fun clearVideo() {
-        _videoState.value = null
-    }
 
     suspend fun createBusiness(): Result<BusinessCreateResponse> {
         _isSaving.value = FeatureState.Loading

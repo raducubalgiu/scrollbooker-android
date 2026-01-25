@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.inputs.InputRadio
 import com.example.scrollbooker.components.core.inputs.SearchBar
+import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.FormLayout
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
@@ -67,7 +68,7 @@ fun CollectBusinessLocationScreen(
             ) {
                 SearchBar(
                     value = currentQuery,
-                    onValueChange = { viewModel.searchAddress(it) },
+                    onValueChange = viewModel::handleSearch,
                     placeholder = stringResource(R.string.searchAddress),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
                 )
@@ -75,6 +76,7 @@ fun CollectBusinessLocationScreen(
 
             when(val state = searchState) {
                 is FeatureState.Loading -> LoadingScreen()
+                is FeatureState.Error -> ErrorScreen()
                 is FeatureState.Success -> {
                     val results = state.data
 

@@ -39,7 +39,6 @@ import com.example.scrollbooker.components.core.headers.HeaderEdit
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.SurfaceBG
-import com.mapbox.maps.extension.style.expressions.dsl.generated.color
 
 @Composable
 fun MyProductsScreen(

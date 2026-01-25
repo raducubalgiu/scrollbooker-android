@@ -70,10 +70,11 @@ fun ServicesMainFilters(
     val selectedFilters by viewModel.selectedFilters.collectAsState()
 
     val serviceDomainsOptions = when(val state = serviceDomains) {
-        is FeatureState.Success -> state.data.map { bt ->
+        is FeatureState.Success -> state.data.map { sd ->
             Option(
-                value = bt.id.toString(),
-                name = bt.name
+                value = sd.id.toString(),
+                name = sd.name,
+                description = sd.description
             )
         }
         else -> emptyList()
