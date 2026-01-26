@@ -1,13 +1,6 @@
 package com.example.scrollbooker.navigation.host
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.core.FiniteAnimationSpec
-import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
@@ -29,7 +22,6 @@ import com.example.scrollbooker.ui.LocalUserPermissions
 import com.example.scrollbooker.ui.profile.MyProfilePostDetailScreen
 import com.example.scrollbooker.ui.profile.MyProfileScreen
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
-import androidx.compose.ui.unit.IntOffset
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
@@ -50,11 +42,6 @@ fun MyProfileNavHost(
     navController: NavHostController,
     onLogout: () -> Unit
 ) {
-    val pushSpec: FiniteAnimationSpec<IntOffset> = tween(320, easing = LinearOutSlowInEasing)
-    val popSpec: FiniteAnimationSpec<IntOffset> = tween(280, easing = LinearOutSlowInEasing)
-    val fadeInSpec: FiniteAnimationSpec<Float> = tween(220, easing = LinearOutSlowInEasing)
-    val fadeOutSpec: FiniteAnimationSpec<Float> = tween(220, easing = LinearOutSlowInEasing)
-
     NavHost(
         navController = navController,
         startDestination = MainRoute.MyProfileNavigator.route,
@@ -110,10 +97,10 @@ fun MyProfileNavHost(
 
             composable(
                 route = MainRoute.MyProfilePostDetail.route,
-                enterTransition = { slideInVertically(pushSpec) { it } + fadeIn(fadeInSpec) },
-                exitTransition = { slideOutVertically(popSpec) { it } + fadeOut(fadeOutSpec) },
+                enterTransition = { EnterTransition.None },
+                exitTransition = { ExitTransition.None },
                 popEnterTransition = { EnterTransition.None },
-                popExitTransition = { slideOutVertically(popSpec) { it } }
+                popExitTransition = { ExitTransition.None }
             ) {
                 val posts = viewModel.detailPostsFlow.collectAsLazyPagingItems()
 
