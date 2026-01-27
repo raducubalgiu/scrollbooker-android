@@ -48,11 +48,25 @@ fun MyBusinessScreen(
             navigate = { myBusinessNavigate.toMyBusinessLocation() },
         ),
         BusinessCard(
+            title = "Subscription",
+            description = stringResource(R.string.userScheduleDetails),
+            icon = Icons.Outlined.Schedule,
+            permission = PermissionEnum.MY_SCHEDULES_VIEW,
+            navigate = { myBusinessNavigate.toMySubscription() },
+        ),
+        BusinessCard(
             title = stringResource(R.string.scheduleShort),
             description = stringResource(R.string.userScheduleDetails),
             icon = Icons.Outlined.Schedule,
             permission = PermissionEnum.MY_SCHEDULES_VIEW,
             navigate = { myBusinessNavigate.toMySchedules() },
+        ),
+        BusinessCard(
+            title = stringResource(R.string.services),
+            description = stringResource(R.string.servicesDetails),
+            icon = Icons.Outlined.Book,
+            navigate = { myBusinessNavigate.toMyServices() },
+            permission = PermissionEnum.MY_SERVICES_VIEW
         ),
         BusinessCard(
             title = stringResource(R.string.classes),
@@ -67,13 +81,6 @@ fun MyBusinessScreen(
             icon = Icons.Outlined.ShoppingBag,
             permission = PermissionEnum.MY_PRODUCTS_VIEW,
             navigate = { myBusinessNavigate.toMyProducts() },
-        ),
-        BusinessCard(
-            title = stringResource(R.string.services),
-            description = stringResource(R.string.servicesDetails),
-            icon = Icons.Outlined.Book,
-            navigate = { myBusinessNavigate.toMyServices() },
-            permission = PermissionEnum.MY_SERVICES_VIEW
         ),
         BusinessCard(
             title = stringResource(R.string.calendar),

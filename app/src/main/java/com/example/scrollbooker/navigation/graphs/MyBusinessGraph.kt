@@ -41,6 +41,8 @@ import com.example.scrollbooker.ui.myBusiness.myProducts.MyProductsViewModel
 import com.example.scrollbooker.ui.myBusiness.mySchedules.MySchedulesScreen
 import com.example.scrollbooker.ui.myBusiness.mySchedules.MySchedulesViewModel
 import com.example.scrollbooker.ui.myBusiness.myServices.MyServicesViewModel
+import com.example.scrollbooker.ui.myBusiness.mySubscription.MySubscriptionScreen
+import com.example.scrollbooker.ui.myBusiness.mySubscription.MySubscriptionViewModel
 import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.myBusinessGraph(
@@ -208,6 +210,15 @@ fun NavGraphBuilder.myBusinessGraph(
                     },
                 )
             }
+        }
+
+        composable(MainRoute.MySubscription.route) { backStackEntry ->
+            val viewModel = hiltViewModel<MySubscriptionViewModel>(backStackEntry)
+
+            MySubscriptionScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() }
+            )
         }
 
         composable(MainRoute.MySchedules.route) { backStackEntry ->

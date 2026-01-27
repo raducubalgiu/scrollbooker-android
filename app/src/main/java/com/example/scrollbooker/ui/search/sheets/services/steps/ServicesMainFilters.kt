@@ -73,8 +73,7 @@ fun ServicesMainFilters(
         is FeatureState.Success -> state.data.map { sd ->
             Option(
                 value = sd.id.toString(),
-                name = sd.name,
-                description = sd.description
+                name = sd.name
             )
         }
         else -> emptyList()
@@ -84,8 +83,7 @@ fun ServicesMainFilters(
         is FeatureState.Success -> state.data.map { s ->
             Option(
                 value = s.id.toString(),
-                name = s.displayName,
-                description = s.description
+                name = s.displayName
             )
         }
         else -> emptyList()
