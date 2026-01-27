@@ -73,7 +73,8 @@ fun PostSheets(
             }
             is PostSheetsContent.MoreOptionsSheet -> {
                 MoreOptionsSheet(
-                    onClose = onClose
+                    onClose = onClose,
+                    isOwnPost = content.isOwnPost
                 )
             }
             is PostSheetsContent.BookingsSheet -> {

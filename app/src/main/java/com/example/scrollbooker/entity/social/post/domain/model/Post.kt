@@ -16,6 +16,7 @@ data class Post(
     val counters: PostCounters,
     val hashtags: List<Hashtag>,
     val isVideoReview: Boolean,
+    val isOwnPost: Boolean,
     val rating: Int?,
     val bookable: Boolean,
     val businessId: Int?,
@@ -96,7 +97,8 @@ data class PostCounters(
     val likeCount: Int,
     val bookmarkCount: Int,
     val repostCount: Int,
-    val bookingsCount: Int
+    val bookingsCount: Int,
+    val viewsCount: Int
 )
 
 data class FixedSlots(

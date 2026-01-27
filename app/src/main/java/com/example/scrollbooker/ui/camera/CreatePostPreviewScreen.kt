@@ -235,10 +235,12 @@ fun CreatePostPreviewScreen(
                             likeCount = 0,
                             bookmarkCount = 0,
                             repostCount = 0,
-                            bookingsCount = 0
+                            bookingsCount = 0,
+                            viewsCount = 0
                         ),
                         hashtags = emptyList(),
                         isVideoReview = false,
+                        isOwnPost = false,
                         rating = null,
                         bookable = false,
                         businessId = null,

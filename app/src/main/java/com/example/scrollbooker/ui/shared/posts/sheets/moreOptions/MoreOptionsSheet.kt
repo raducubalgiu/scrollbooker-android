@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CopyAll
 import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -32,7 +33,10 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable
-fun MoreOptionsSheet(onClose: () -> Unit) {
+fun MoreOptionsSheet(
+    onClose: () -> Unit,
+    isOwnPost: Boolean
+) {
     SheetHeader(onClose = onClose)
 
     Row(modifier = Modifier
@@ -75,6 +79,29 @@ fun MoreOptionsSheet(onClose: () -> Unit) {
         Text(text = stringResource(R.string.copyLink))
     }
 
+    if (isOwnPost) {
+        Spacer(Modifier.height(BasePadding))
+
+        Row(
+            modifier = Modifier.padding(horizontal = BasePadding),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(
+                onClick = {},
+                colors = IconButtonDefaults.iconButtonColors(
+                    containerColor = SurfaceBG
+                )
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Delete,
+                    contentDescription = null
+                )
+            }
+
+            Text(text = stringResource(R.string.deletePost))
+        }
+    }
+
     Spacer(Modifier.height(SpacingXL))
 }
 
@@ -95,7 +122,9 @@ private fun ShareButton(
             imageVector = icon,
             contentDescription = null
         )
+
         Spacer(Modifier.height(BasePadding))
+
         Text(
             text = text,
             fontWeight = FontWeight.SemiBold

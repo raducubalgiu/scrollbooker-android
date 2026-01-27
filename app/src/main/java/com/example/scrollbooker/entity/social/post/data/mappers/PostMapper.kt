@@ -41,6 +41,7 @@ fun PostDto.toDomain(): Post {
         counters = counters.toDomain(),
         hashtags = hashtags.orEmpty().map { it.toDomain() },
         isVideoReview = isVideoReview,
+        isOwnPost = isOwnPost,
         bookable = bookable,
         rating = rating,
         businessId = businessId,
@@ -141,7 +142,8 @@ fun PostCountersDto.toDomain(): PostCounters {
         likeCount = likeCount,
         bookmarkCount = bookmarkCount,
         repostCount = repostCount,
-        bookingsCount = bookingsCount
+        bookingsCount = bookingsCount,
+        viewsCount = viewsCount
     )
 }
 

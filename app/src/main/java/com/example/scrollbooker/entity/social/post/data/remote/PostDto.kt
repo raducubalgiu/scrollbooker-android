@@ -28,6 +28,9 @@ data class PostDto(
     @SerializedName("is_video_review")
     val isVideoReview: Boolean,
 
+    @SerializedName("is_own_post")
+    val isOwnPost: Boolean,
+
     val rating: Int?,
 
     val bookable: Boolean,
@@ -162,7 +165,10 @@ data class PostCountersDto(
     val repostCount: Int,
 
     @SerializedName("bookings_count")
-    val bookingsCount: Int
+    val bookingsCount: Int,
+
+    @SerializedName("views_count")
+    val viewsCount: Int
 )
 
 data class FixedSlotsDto(

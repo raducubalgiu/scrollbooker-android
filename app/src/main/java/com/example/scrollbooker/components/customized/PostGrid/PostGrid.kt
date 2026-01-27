@@ -23,7 +23,6 @@ import timber.log.Timber
 @Composable
 fun PostGrid(
     post: Post,
-    viewsCount: Float = 14.200f,
     onNavigateToPost: (Int) -> Unit
 ) {
     Box(modifier = Modifier
@@ -72,7 +71,9 @@ fun PostGrid(
                 }
                 Column {
                     //post.product?.let { PostGridCover(post.product) }
-                    PostGridViews(viewsCount)
+                    PostGridViews(
+                        viewsCount = post.counters.viewsCount
+                    )
                 }
             }
         }

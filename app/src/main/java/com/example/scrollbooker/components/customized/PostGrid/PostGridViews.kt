@@ -1,6 +1,4 @@
 package com.example.scrollbooker.components.customized.PostGrid
-
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -21,7 +19,7 @@ import com.example.scrollbooker.ui.theme.bodyLarge
 
 @Composable
 fun PostGridViews(
-    viewsCount: Float
+    viewsCount: Int
 ) {
     Row(modifier = Modifier
         //.align(Alignment.BottomStart)
