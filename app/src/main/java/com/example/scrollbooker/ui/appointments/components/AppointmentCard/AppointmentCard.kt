@@ -79,7 +79,10 @@ fun AppointmentCard(
 
         Spacer(Modifier.height(BasePadding))
 
-        if(appointment.status == AppointmentStatusEnum.FINISHED) {
+        if(
+            appointment.status == AppointmentStatusEnum.FINISHED &&
+            appointment.isCustomer
+        ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(6.dp),

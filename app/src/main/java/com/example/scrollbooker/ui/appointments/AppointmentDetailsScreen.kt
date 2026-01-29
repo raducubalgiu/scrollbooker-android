@@ -27,7 +27,6 @@ import com.example.scrollbooker.core.enums.AppointmentStatusEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentWrittenReview
-import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.ui.appointments.components.AppointmentDetailsActions
 import com.example.scrollbooker.ui.appointments.components.AppointmentDetailsHeader
 import com.example.scrollbooker.ui.appointments.components.AppointmentDetailsMessage
@@ -55,6 +54,8 @@ fun AppointmentDetailsScreen(
     val appointment by viewModel.selectedAppointment.collectAsState()
     val isSaving by viewModel.isSaving.collectAsState()
     val appointmentId = appointment?.id
+
+    val isFinished = appointment?.status == AppointmentStatusEnum.FINISHED
 
     val scope = rememberCoroutineScope()
 
@@ -211,11 +212,12 @@ fun AppointmentDetailsScreen(
                 AppointmentDetailsActions(
                     modifier = Modifier.padding(bottom = SpacingXL),
                     status = a.status,
+                    isCustomer = a.isCustomer,
                     onNavigateToCancel = onNavigateToCancel,
                     onShowBookingsSheet = { scope.launch { sheetState.show() } }
                 )
 
-                if(!a.hasWrittenReview && a.status == AppointmentStatusEnum.FINISHED) {
+                if(!a.hasWrittenReview && isFinished && a.isCustomer) {
                     ReviewCTA(
                         modifier = Modifier.padding(bottom = SpacingXL),
                         onRatingClick = {
@@ -242,21 +244,23 @@ fun AppointmentDetailsScreen(
                     )
                 }
 
-                if(!a.hasVideoReview && a.status == AppointmentStatusEnum.FINISHED) {
+                if(!a.hasVideoReview && isFinished && a.isCustomer) {
                     VideoReviewCTA(onNavigateToCamera = onNavigateToCamera)
                 }
 
                 a.message?.let { AppointmentDetailsMessage(it) }
             }
 
-            Text(
-                modifier = Modifier.padding(top = SpacingXL),
-                text = stringResource(R.string.location),
-                style = titleMedium,
-                fontWeight = FontWeight.SemiBold
-            )
+            if(appointment?.isCustomer == true) {
+                Text(
+                    modifier = Modifier.padding(top = SpacingXL),
+                    text = stringResource(R.string.location),
+                    style = titleMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
 
-            LocationSection()
+                LocationSection()
+            }
 
             Spacer(Modifier.height(BasePadding))
         }

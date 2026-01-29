@@ -16,6 +16,7 @@ import com.example.scrollbooker.ui.theme.Error
 fun AppointmentDetailsActions(
     modifier: Modifier = Modifier,
     status: AppointmentStatusEnum?,
+    isCustomer: Boolean,
     onNavigateToCancel: () -> Unit,
     onShowBookingsSheet: () -> Unit
 ) {
@@ -32,10 +33,12 @@ fun AppointmentDetailsActions(
                 )
             }
             AppointmentStatusEnum.FINISHED -> {
-                MainButton(
-                    title = stringResource(R.string.bookAgain),
-                    onClick = onShowBookingsSheet
-                )
+                if(isCustomer) {
+                    MainButton(
+                        title = stringResource(R.string.bookAgain),
+                        onClick = onShowBookingsSheet
+                    )
+                }
             }
             else -> Unit
         }
