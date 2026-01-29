@@ -9,6 +9,7 @@ data class UserProfile(
     val avatar: String?,
     val gender: String,
     val bio: String?,
+    val dateOfBirth: String?,
     val website: String?,
     val publicEmail: String?,
     val instagram: String?,

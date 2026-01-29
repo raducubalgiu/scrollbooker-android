@@ -18,6 +18,7 @@ fun UserProfileDto.toDomain(): UserProfile {
         avatar = avatar,
         gender = gender,
         bio = bio,
+        dateOfBirth = dateOfBirth,
         website = website,
         publicEmail = publicEmail,
         instagram = instagram,

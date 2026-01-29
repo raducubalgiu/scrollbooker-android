@@ -14,6 +14,9 @@ data class UserProfileDto (
     val gender: String,
     val bio: String?,
 
+    @SerializedName("date_of_birth")
+    val dateOfBirth: String?,
+
     val website: String?,
 
     @SerializedName("public_email")
