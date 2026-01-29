@@ -7,13 +7,9 @@ import com.example.scrollbooker.core.enums.AppointmentStatusEnum
 import com.example.scrollbooker.core.enums.AppointmentStatusEnum.CANCELED
 import com.example.scrollbooker.core.enums.AppointmentStatusEnum.FINISHED
 import com.example.scrollbooker.core.enums.AppointmentStatusEnum.IN_PROGRESS
-import com.example.scrollbooker.core.util.AppLocaleProvider
 import com.example.scrollbooker.entity.nomenclature.currency.domain.model.Currency
-import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
-import org.threeten.bp.format.DateTimeFormatter
 import java.math.BigDecimal
-import java.util.Locale
 
 data class Appointment(
     val id: Int,
@@ -75,45 +71,6 @@ data class AppointmentBusiness(
     val coordinates: BusinessCoordinates,
     val mapUrl: String?
 )
-
-private val DAY_FMT = DateTimeFormatter.ofPattern("dd")
-private fun monthFmt(locale: Locale) = DateTimeFormatter.ofPattern("MMM", locale)
-private val TIME_FMT = DateTimeFormatter.ofPattern("HH:mm")
-
-fun Appointment.localStart(zone: ZoneId = ZoneId.systemDefault()): ZonedDateTime =
-    startDate.withZoneSameInstant(zone)
-
-fun Appointment.getDay(zone: ZoneId = ZoneId.systemDefault()): String =
-    localStart(zone).format(DAY_FMT)
-
-fun Appointment.getMonth(
-    zone: ZoneId = ZoneId.systemDefault(),
-    locale: Locale = AppLocaleProvider.current()
-): String =
-    localStart(zone).format(monthFmt(locale)).replaceFirstChar { it.uppercase() }
-
-fun Appointment.getTime(zone: ZoneId = ZoneId.systemDefault()): String =
-    localStart(zone).format(TIME_FMT)
-
-fun Appointment.displayAppointmentDate(
-    zone: ZoneId = ZoneId.systemDefault(),
-    locale: Locale = AppLocaleProvider.current()
-): String {
-    val dt = localStart(zone)
-
-    val dayOfWeek = dt.format(DateTimeFormatter.ofPattern("EEE", locale))
-        .replaceFirstChar { if (it.isLowerCase()) it.titlecase(locale) else it.toString() }
-
-    val day = dt.format(DateTimeFormatter.ofPattern("d", locale))
-
-    val month = dt.format(monthFmt(locale))
-        .lowercase()
-        .removeSuffix(".")
-
-    val time = dt.format(TIME_FMT)
-
-    return "$dayOfWeek, $day $month, $time"
-}
 
 fun Appointment.getProductNames(): String =
     products.joinToString(", ") { it.name }

@@ -22,12 +22,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.components.core.avatar.AvatarWithRating
+import com.example.scrollbooker.core.extensions.display
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointment
-import com.example.scrollbooker.entity.booking.appointment.domain.model.displayAppointmentDate
 import com.example.scrollbooker.entity.booking.appointment.domain.model.getStatusColor
 import com.example.scrollbooker.entity.booking.appointment.domain.model.getStatusRes
 import com.example.scrollbooker.ui.theme.bodyLarge
@@ -56,7 +56,7 @@ fun AppointmentDetailsHeader(
 
         Column(modifier = Modifier.fillMaxWidth()) {
             Text(
-                text = appointment.displayAppointmentDate(),
+                text = appointment.startDate.display(),
                 style = headlineMedium,
                 fontWeight = FontWeight.SemiBold
             )

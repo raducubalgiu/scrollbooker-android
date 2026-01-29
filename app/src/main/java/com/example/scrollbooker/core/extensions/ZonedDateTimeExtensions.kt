@@ -16,6 +16,11 @@ fun ZonedDateTime.toZone(
     zone: ZoneId = ZoneId.systemDefault()
 ): ZonedDateTime = withZoneSameInstant(zone)
 
+fun ZonedDateTime.time(
+    zone: ZoneId = ZoneId.systemDefault()
+): String =
+    toZone(zone).format(TIME_FMT)
+
 fun ZonedDateTime.day(
     zone: ZoneId = ZoneId.systemDefault()
 ): String =

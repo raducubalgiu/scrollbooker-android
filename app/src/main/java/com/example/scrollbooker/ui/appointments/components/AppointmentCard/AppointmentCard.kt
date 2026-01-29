@@ -24,15 +24,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.enums.AppointmentStatusEnum
+import com.example.scrollbooker.core.extensions.day
+import com.example.scrollbooker.core.extensions.month
+import com.example.scrollbooker.core.extensions.time
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointment
-import com.example.scrollbooker.entity.booking.appointment.domain.model.getDay
-import com.example.scrollbooker.entity.booking.appointment.domain.model.getMonth
 import com.example.scrollbooker.entity.booking.appointment.domain.model.getStatusColor
 import com.example.scrollbooker.entity.booking.appointment.domain.model.getStatusRes
-import com.example.scrollbooker.entity.booking.appointment.domain.model.getTime
 import com.example.scrollbooker.ui.theme.bodySmall
 import com.example.scrollbooker.ui.theme.titleMedium
 
@@ -70,9 +70,9 @@ fun AppointmentCard(
                 Spacer(Modifier.width(SpacingS))
 
                 AppointmentCardDate(
-                    day = appointment.getDay(),
-                    month = appointment.getMonth(),
-                    startTime = appointment.getTime()
+                    day = appointment.startDate.day(),
+                    month = appointment.startDate.month(),
+                    startTime = appointment.startDate.time()
                 )
             }
         }
