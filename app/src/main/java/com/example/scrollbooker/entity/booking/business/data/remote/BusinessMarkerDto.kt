@@ -22,4 +22,7 @@ data class BusinessMarkerDto(
 
     @SerializedName("media_preview")
     val mediaPreview: BusinessMediaFileDto?,
+
+    @SerializedName("media_files")
+    val mediaFiles: List<BusinessMediaFileDto?>,
 )

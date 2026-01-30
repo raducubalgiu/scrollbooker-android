@@ -12,7 +12,7 @@ fun BusinessMarkerDto.toDomain(): BusinessMarker {
         address = address,
         coordinates = coordinates,
         hasVideo = hasVideo,
-        mediaPreview = mediaPreview?.toDomain(),
+        mediaFiles = mediaFiles.map { it?.toDomain() },
         isPrimary = isPrimary
     )
 }

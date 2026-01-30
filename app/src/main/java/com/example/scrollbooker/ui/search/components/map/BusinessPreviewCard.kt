@@ -67,7 +67,7 @@ fun BusinessPreviewCard(
                 marker?.let {
                     Column(modifier = Modifier.background(Background)) {
                         BusinessPreviewHeader(
-                            imageUrl = it.mediaPreview?.thumbnailUrl,
+                            mediaFiles = it.mediaFiles,
                             onCloseClick = onCloseClick
                         )
 

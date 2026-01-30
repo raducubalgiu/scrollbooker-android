@@ -10,5 +10,5 @@ data class BusinessMarker(
     val coordinates: BusinessCoordinates,
     val isPrimary: Boolean,
     val hasVideo: Boolean,
-    val mediaPreview: BusinessMediaFile?,
+    val mediaFiles: List<BusinessMediaFile?> = emptyList(),
 )

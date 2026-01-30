@@ -83,7 +83,7 @@ fun SearchMarker(
                 )
             ) {
                 SearchMarkerPrimary(
-                    imageUrl = marker.mediaPreview?.thumbnailUrl,
+                    imageUrl = if(marker.mediaFiles.isNotEmpty()) marker.mediaFiles.first()?.thumbnailUrl else null,
                     domainColor = marker.businessShortDomain.toDomainColor(),
                     baseAvatarSize = baseAvatarSize,
                     animatedAvatarSize = animatedAvatarSize,

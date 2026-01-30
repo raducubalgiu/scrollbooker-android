@@ -14,18 +14,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMediaFile
+import com.example.scrollbooker.ui.search.components.card.SearchCardCarousel
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
 
 @Composable
 fun BusinessPreviewHeader(
-    imageUrl: String?,
+    mediaFiles: List<BusinessMediaFile?>,
     onCloseClick: () -> Unit
 ) {
     Box(
@@ -33,11 +33,9 @@ fun BusinessPreviewHeader(
             .fillMaxWidth()
             .height(200.dp)
     ) {
-        AsyncImage(
-            model = imageUrl,
-            contentDescription = null,
-            modifier = Modifier.matchParentSize(),
-            contentScale = ContentScale.Crop,
+        SearchCardCarousel(
+            mediaFiles = mediaFiles,
+            imageHeight = 200.dp
         )
 
         Box(

@@ -34,7 +34,7 @@ import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMed
 
 @Composable
 fun SearchCardCarousel(
-    mediaFiles: List<BusinessMediaFile>,
+    mediaFiles: List<BusinessMediaFile?>,
     imageHeight: Dp = 230.dp,
     radius: Dp = 12.dp
 ) {
@@ -53,7 +53,7 @@ fun SearchCardCarousel(
         ) { page ->
             key(page) {
                 AsyncImage(
-                    model = mediaFiles[page].thumbnailUrl,
+                    model = mediaFiles[page]?.thumbnailUrl,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize()
