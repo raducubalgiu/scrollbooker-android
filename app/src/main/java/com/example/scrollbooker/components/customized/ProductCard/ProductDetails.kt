@@ -55,12 +55,13 @@ fun ProductDetails(
                 style = bodyLarge,
                 color = Color.Gray
             )
-            Text(
-                modifier = Modifier.padding(horizontal = 5.dp),
-                text = "\u2022",
-                color = Color.Gray
-            )
             filters.sortedBy { it.id }.mapIndexed { i, filter ->
+                Text(
+                    modifier = Modifier.padding(horizontal = 5.dp),
+                    text = "\u2022",
+                    color = Color.Gray
+                )
+
                 when(filter.type) {
                     FilterTypeEnum.OPTIONS -> {
                         filter.subFilters.mapIndexed { subIndex, subFilter ->

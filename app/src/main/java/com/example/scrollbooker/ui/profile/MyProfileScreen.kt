@@ -57,6 +57,7 @@ import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.UserPermissionsController
 import com.example.scrollbooker.ui.profile.components.sheets.ProfileMenuSheet
+import com.example.scrollbooker.ui.profile.components.sheets.UserScheduleSheet
 import com.example.scrollbooker.ui.profile.components.userInfo.ProfileShimmer
 import com.example.scrollbooker.ui.profile.components.userInfo.ProfileUserInfo
 import com.example.scrollbooker.ui.profile.tabs.ProfileTab
@@ -90,8 +91,19 @@ fun MyProfileScreen(
     myPosts: LazyPagingItems<Post>,
     profileNavigate: ProfileNavigator,
 ) {
-    val menuSheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
+
+    val scheduleSheetState = rememberModalBottomSheetState()
+    val menuSheetState = rememberModalBottomSheetState()
+
+    val schedules by viewModel.schedules.collectAsStateWithLifecycle()
+
+    if(scheduleSheetState.isVisible) {
+        UserScheduleSheet(
+            sheetState = scheduleSheetState,
+            schedules = schedules,
+        )
+    }
 
     if(menuSheetState.isVisible) {
         ProfileMenuSheet(
@@ -289,7 +301,9 @@ fun MyProfileScreen(
                                 ) {
                                     ProfileUserInfo(
                                         user = user,
-                                        onOpenScheduleSheet = { },
+                                        onOpenScheduleSheet = {
+                                            scope.launch { scheduleSheetState.show() }
+                                        },
                                         onNavigateToBusinessOwner = {
                                             it?.let { profileNavigate.toUserProfile(it) }
                                         },
