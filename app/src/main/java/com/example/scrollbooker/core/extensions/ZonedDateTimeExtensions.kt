@@ -6,25 +6,26 @@ import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import java.util.Locale
 
-private val DAY_FMT = DateTimeFormatter.ofPattern("dd")
-private val TIME_FMT = DateTimeFormatter.ofPattern("HH:mm")
-private val YEAR_FMT = DateTimeFormatter.ofPattern("YYYY")
-
+private fun dayFmt(locale: Locale) = DateTimeFormatter.ofPattern("dd", locale)
 private fun monthFmt(locale: Locale) = DateTimeFormatter.ofPattern("MMM", locale)
+private fun yearFmt(locale: Locale) = DateTimeFormatter.ofPattern("YYYY", locale)
+private fun timeFmt(locale: Locale) = DateTimeFormatter.ofPattern("HH:mm", locale)
 
 fun ZonedDateTime.toZone(
     zone: ZoneId = ZoneId.systemDefault()
 ): ZonedDateTime = withZoneSameInstant(zone)
 
 fun ZonedDateTime.time(
-    zone: ZoneId = ZoneId.systemDefault()
+    zone: ZoneId = ZoneId.systemDefault(),
+    locale: Locale = AppLocaleProvider.current()
 ): String =
-    toZone(zone).format(TIME_FMT)
+    toZone(zone).format(timeFmt(locale))
 
 fun ZonedDateTime.day(
-    zone: ZoneId = ZoneId.systemDefault()
+    zone: ZoneId = ZoneId.systemDefault(),
+    locale: Locale = AppLocaleProvider.current()
 ): String =
-    toZone(zone).format(DAY_FMT)
+    toZone(zone).format(dayFmt(locale))
 
 fun ZonedDateTime.month(
     zone: ZoneId = ZoneId.systemDefault(),
@@ -45,13 +46,13 @@ fun ZonedDateTime.display(
         .removeSuffix(".")
 
     val day = dt.format(DateTimeFormatter.ofPattern("d", locale)).removeSuffix(".")
-    val year = dt.format(DateTimeFormatter.ofPattern("YYYY", locale))
+    val year = dt.format(yearFmt(locale))
 
     val month = dt.format(monthFmt(locale))
         .lowercase()
         .removeSuffix(".")
 
-    val time = dt.format(TIME_FMT)
+    val time = dt.format(timeFmt(locale))
 
     return "$dayOfWeek, $day $month $year $time"
 }
