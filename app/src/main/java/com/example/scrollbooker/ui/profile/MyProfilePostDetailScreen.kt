@@ -204,7 +204,6 @@ fun PostPlayerWithThumbnail(
     thumbnailUrl: String,
     showPlayIcon: Boolean = false
 ) {
-    var isBuffering by remember { mutableStateOf(true) }
     var isRenderedFirstFrame by remember { mutableStateOf(false) }
 
     DisposableEffect(player) {

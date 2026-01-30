@@ -10,14 +10,16 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -31,25 +33,29 @@ import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
 import com.example.scrollbooker.ui.theme.Divider
-import com.example.scrollbooker.ui.theme.headlineSmall
 import com.example.scrollbooker.ui.theme.titleLarge
 
 @Composable
 fun ProfileEmployeesTab(
-    paddingTop: Dp,
     viewModel: MyProfileViewModel,
-    onNavigateToEmployeeProfile: (Int) -> Unit
+    onNavigateToEmployeeProfile: (Int) -> Unit,
+    onUpdateTop: (Boolean) -> Unit
 ) {
     val employees = viewModel.employees.collectAsLazyPagingItems()
 
     val refreshState = employees.loadState.refresh
     val appendState = employees.loadState.append
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = paddingTop)
-    ) {
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(listState) {
+        snapshotFlow {
+            listState.firstVisibleItemIndex == 0 &&
+                    listState.firstVisibleItemScrollOffset == 0
+        }.collect { onUpdateTop(it) }
+    }
+
+    Column(modifier = Modifier.fillMaxSize()) {
         when(refreshState) {
             is LoadState.Loading -> { LoadingScreen() }
             is LoadState.Error -> ErrorScreen()

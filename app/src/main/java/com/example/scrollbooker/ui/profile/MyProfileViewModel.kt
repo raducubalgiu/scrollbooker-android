@@ -103,12 +103,14 @@ class MyProfileViewModel @Inject constructor(
         MutableStateFlow<FeatureState<UserProfile>>(FeatureState.Loading)
     val userProfileState: StateFlow<FeatureState<UserProfile>> = _userProfileState
 
-    private val _initCompleted = MutableStateFlow(false)
-    val isInitLoading = combine(_userProfileState, _initCompleted) { profile, done ->
-        (profile is FeatureState.Loading || !done)
-    }.stateIn(viewModelScope, SharingStarted.Companion.Eagerly, true)
+    private val _headerOffset = MutableStateFlow<Float>(0f)
+    val headerOffset: StateFlow<Float> = _headerOffset.asStateFlow()
 
-    private fun loadUserProfile() {
+    fun setHeaderOffset(offset: Float) {
+        _headerOffset.value = offset
+    }
+
+    fun loadUserProfile() {
         viewModelScope.launch {
             val userId = authDataStore.getUserId().firstOrNull()
 
@@ -119,7 +121,9 @@ class MyProfileViewModel @Inject constructor(
 
             _userProfileState.value = FeatureState.Loading
 
-            val response = withVisibleLoading { getUserProfileUseCase(userId, lat = null, lng = null) }
+            val response = withVisibleLoading {
+                getUserProfileUseCase(userId, lat = null, lng = null)
+            }
 
             _userProfileState.value = response
         }
@@ -134,7 +138,6 @@ class MyProfileViewModel @Inject constructor(
     val userPosts: Flow<PagingData<Post>> = authDataStore.getUserId()
         .filterNotNull()
         .flatMapLatest { userId -> getUserPostsUseCase(userId) }
-        .onEach { _initCompleted.value = true }
         .cachedIn(viewModelScope)
         .stateIn(
             scope = viewModelScope,

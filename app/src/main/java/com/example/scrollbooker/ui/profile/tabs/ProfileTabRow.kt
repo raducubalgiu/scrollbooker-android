@@ -30,17 +30,17 @@ import kotlinx.coroutines.launch
 fun ProfileTabRow(
     pagerState: PagerState,
     tabs: List<ProfileTab>,
-    onTabRowSizeChanged: (IntSize) -> Unit
+    //onTabRowSizeChanged: (IntSize) -> Unit
 ) {
     val selectedTabIndex = pagerState.currentPage
     val scope = rememberCoroutineScope()
 
     TabRow(
         modifier = Modifier
-            .fillMaxWidth()
-            .onSizeChanged { size ->
-                onTabRowSizeChanged(size)
-            },
+            .fillMaxWidth(),
+//            .onSizeChanged { size ->
+//                onTabRowSizeChanged(size)
+//            },
         containerColor = Background,
         contentColor = OnSurfaceBG,
         indicator = {  tabPositions ->

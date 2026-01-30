@@ -12,10 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
-import coil.request.CachePolicy
-import coil.request.ImageRequest
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import timber.log.Timber
@@ -33,12 +30,7 @@ fun PostGrid(
         })
     ) {
         AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(post.mediaFiles.first().thumbnailUrl)
-                .diskCachePolicy(CachePolicy.ENABLED)
-                .memoryCachePolicy(CachePolicy.ENABLED)
-                .crossfade(true)
-                .build(),
+            model = post.mediaFiles.first().thumbnailUrl,
             contentDescription = "Post Grid",
             contentScale = ContentScale.Crop,
             onError = { Timber.tag("Post Grid Error").e("ERROR: ${it.result.throwable.message}") },

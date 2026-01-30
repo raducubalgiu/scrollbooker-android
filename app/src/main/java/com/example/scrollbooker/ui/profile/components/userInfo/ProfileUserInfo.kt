@@ -34,13 +34,17 @@ import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
+import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
 import com.example.scrollbooker.ui.profile.components.userInfo.components.INTENT_ACTION_SPECS
 import com.example.scrollbooker.ui.profile.components.userInfo.components.IntentAction
+import com.example.scrollbooker.ui.profile.components.userInfo.components.MyProfileActions
 import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileBio
 import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileBusinessEmployee
+import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileCounters
 import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileIntentActionsList
 import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileLocationDistance
 import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileOpeningHours
+import com.example.scrollbooker.ui.profile.components.userInfo.components.UserProfileActions
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.titleMedium
@@ -73,9 +77,11 @@ fun filterIntentActions(
 @Composable
 fun ProfileUserInfo(
     user: UserProfile,
-    actions: @Composable () -> Unit,
     onOpenScheduleSheet: () -> Unit,
-    onNavigateToBusinessOwner: (Int?) -> Unit
+    onNavigateToBusinessOwner: (Int?) -> Unit,
+    onNavigateToSocial: (NavigateSocialParam) -> Unit,
+    onNavigateToEditProfile: () -> Unit,
+    onNavigateToMyCalendar: () -> Unit
 ) {
     val isBusinessOrEmployee = user.isBusinessOrEmployee
     val isOpenNow = user.openingHours.openNow
@@ -85,6 +91,19 @@ fun ProfileUserInfo(
     val filteredIntentList = remember(user, intentActions) {
         filterIntentActions(intentActions, user.isBusinessOrEmployee)
     }
+
+    ProfileCounters(
+        counters = user.counters,
+        isBusinessOrEmployee = user.isBusinessOrEmployee,
+        onNavigateToSocial = { onNavigateToSocial(
+            NavigateSocialParam(
+                tabIndex = it,
+                userId = user.id,
+                username = user.username,
+                isBusinessOrEmployee = user.isBusinessOrEmployee
+            )
+        )}
+    )
 
     Column(modifier = Modifier
         .padding(horizontal = SpacingXL)
@@ -163,7 +182,21 @@ fun ProfileUserInfo(
             start = BasePadding,
             end = BasePadding
         ),
-    ) { actions() }
+    ) {
+        if (user.isOwnProfile) {
+            MyProfileActions(
+                isBusinessOrEmployee = user.isBusinessOrEmployee,
+                onEditProfile = onNavigateToEditProfile,
+                onNavigateToMyCalendar = onNavigateToMyCalendar
+            )
+        } else {
+            UserProfileActions(
+                isFollow = false,
+                isFollowEnabled = false,
+                onFollow = {}
+            )
+        }
+    }
 
     if(isBusinessOrEmployee) {
         if(user.id != user.businessOwner?.id) {

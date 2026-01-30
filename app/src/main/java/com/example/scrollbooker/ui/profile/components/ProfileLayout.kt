@@ -117,144 +117,145 @@ fun ProfileLayout(
         }
     }
 
-    if (isInitLoading) {
-        ProfileShimmer()
-        LoadingScreen()
-    } else {
-        when (val profileData = profileData) {
-            is FeatureState.Error -> ErrorScreen()
-            is FeatureState.Loading -> Unit
-            is FeatureState.Success -> {
-                val user = profileData.data
-
-                val tabs = remember(user.isBusinessOrEmployee, isMyProfile) {
-                    ProfileTab.getTabs(user.isBusinessOrEmployee, isMyProfile)
-                }
-
-                val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
-
-                Box(modifier = Modifier
-                    .fillMaxSize()
-                    .nestedScroll(nestedScrollConnection)
-                ) {
-                    HorizontalPager(
-                        state = pagerState,
-                        beyondViewportPageCount = 0,
-                        modifier = Modifier.fillMaxWidth(),
-                        overscrollEffect = null
-                    ) { page ->
-                        when (tabs[page]) {
-                            ProfileTab.Posts -> ProfilePostsTab(
-                                paddingTop = currentHeaderHeightDp,
-                                posts = posts,
-                                onNavigateToPost = { postUi, post -> navigateToPost(
-                                    viewModel, profileNavigate, postUi, post
-                                )}
-                            )
-
-                            ProfileTab.Products -> {}
-
-                            ProfileTab.Employees -> {
-                                ProfileEmployeesTab(
-                                    paddingTop = currentHeaderHeightDp,
-                                    viewModel = viewModel,
-                                    onNavigateToEmployeeProfile = { profileNavigate.toUserProfile(it) }
-                                )
-                            }
-
-                            ProfileTab.Reposts -> {
-                                ProfileRepostsTab(
-                                    paddingTop = currentHeaderHeightDp,
-                                    viewModel = viewModel,
-                                    onNavigateToPost = { postUi, post -> navigateToPost(
-                                        viewModel, profileNavigate, postUi, post
-                                    )}
-                                )
-                            }
-
-                            ProfileTab.Bookmarks -> {
-                                ProfileBookmarksTab(
-                                    paddingTop = currentHeaderHeightDp,
-                                    viewModel = viewModel,
-                                    onNavigateToPost = { postUi, post -> navigateToPost(
-                                        viewModel, profileNavigate, postUi, post
-                                    )}
-                                )
-                            }
-
-                            ProfileTab.Info -> {
-                                ProfileInfoTab(
-                                    paddingTop = currentHeaderHeightDp,
-                                    viewModel = viewModel
-                                )
-                            }
-                        }
-                    }
-
-                    // Header Overlay
-                    Column(
-                        modifier = Modifier
-                            .align(Alignment.TopStart)
-                            .offset { IntOffset(0, headerOffsetPx) }
-                            .pointerInput(Unit) {
-                                detectVerticalDragGestures { change, dragAmount ->
-                                    val oldOffset = headerOffsetPx.toFloat()
-                                    val newOffset = (oldOffset + dragAmount).coerceIn(
-                                        -collapsibleHeightPx.toFloat(),
-                                        0f
-                                    )
-                                    headerOffsetPx = newOffset.toInt()
-                                    if (newOffset != oldOffset) {
-                                        change.consume()
-                                    }
-                                }
-                            }
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .onSizeChanged { size ->
-                                    collapsibleHeightPx = size.height
-                                }
-                        ) {
-                            ProfileCounters(
-                                counters = user.counters,
-                                isBusinessOrEmployee = user.isBusinessOrEmployee,
-                                onNavigateToSocial = { onNavigateToSocial(it, user.id, user.username, user.isBusinessOrEmployee) }
-                            )
-
-                            ProfileUserInfo(
-                                user = user,
-                                actions = {
-                                    if (user.isOwnProfile) {
-                                        MyProfileActions(
-                                            isBusinessOrEmployee = user.isBusinessOrEmployee,
-                                            onEditProfile = { profileNavigate.toEditProfile() },
-                                            onNavigateToMyCalendar = { profileNavigate.toMyCalendar() }
-                                        )
-                                    } else {
-                                        UserProfileActions(
-                                            isFollow = isFollow,
-                                            isFollowEnabled = isFollowEnabled,
-                                            onFollow = onFollow
-                                        )
-                                    }
-                                },
-                                onOpenScheduleSheet = { scope.launch { scheduleSheetState.show() } },
-                                onNavigateToBusinessOwner = { it?.let { profileNavigate.toUserProfile(it) } }
-                            )
-                        }
-
-                        ProfileTabRow(
-                            pagerState = pagerState,
-                            tabs = tabs,
-                            onTabRowSizeChanged = { tabRowHeightPx = it.height },
-                        )
-                    }
-                }
-            }
-        }
-    }
+//    if (isInitLoading) {
+//        ProfileShimmer()
+//    } else {
+//        when (val profileData = profileData) {
+//            is FeatureState.Error -> ErrorScreen()
+//            is FeatureState.Loading -> Unit
+//            is FeatureState.Success -> {
+//                val user = profileData.data
+//
+//                val tabs = remember(user.isBusinessOrEmployee, isMyProfile) {
+//                    ProfileTab.getTabs(user.isBusinessOrEmployee, isMyProfile)
+//                }
+//
+//                val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
+//
+//                Box(modifier = Modifier
+//                    .fillMaxSize()
+//                    .nestedScroll(nestedScrollConnection)
+//                ) {
+//                    HorizontalPager(
+//                        state = pagerState,
+//                        beyondViewportPageCount = 0,
+//                        modifier = Modifier.fillMaxWidth(),
+//                        overscrollEffect = null
+//                    ) { page ->
+//                        when (tabs[page]) {
+//                            ProfileTab.Posts -> ProfilePostsTab(
+//                                posts = posts,
+//                                onUpdateTop = {},
+//                                onNavigateToPost = { postUi, post -> navigateToPost(
+//                                    viewModel, profileNavigate, postUi, post
+//                                )}
+//                            )
+//
+//                            ProfileTab.Products -> {}
+//
+//                            ProfileTab.Employees -> {
+//                                ProfileEmployeesTab(
+//                                    viewModel = viewModel,
+//                                    onNavigateToEmployeeProfile = { profileNavigate.toUserProfile(it) },
+//                                    onUpdateTop = {}
+//                                )
+//                            }
+//
+//                            ProfileTab.Reposts -> {
+//                                ProfileRepostsTab(
+//                                    viewModel = viewModel,
+//                                    onNavigateToPost = { postUi, post ->
+//                                        navigateToPost(
+//                                            viewModel, profileNavigate, postUi, post
+//                                        )
+//                                    },
+//                                    onUpdateTop = {}
+//                                )
+//                            }
+//
+//                            ProfileTab.Bookmarks -> {
+//                                ProfileBookmarksTab(
+//                                    viewModel = viewModel,
+//                                    onNavigateToPost = { postUi, post ->
+//                                        navigateToPost(
+//                                            viewModel, profileNavigate, postUi, post
+//                                        )
+//                                    },
+//                                    onUpdateTop = {}
+//                                )
+//                            }
+//
+//                            ProfileTab.Info -> {
+//                                ProfileInfoTab(
+//                                    viewModel = viewModel
+//                                )
+//                            }
+//                        }
+//                    }
+//
+//                    // Header Overlay
+//                    Column(
+//                        modifier = Modifier
+//                            .align(Alignment.TopStart)
+//                            .offset { IntOffset(0, headerOffsetPx) }
+//                            .pointerInput(Unit) {
+//                                detectVerticalDragGestures { change, dragAmount ->
+//                                    val oldOffset = headerOffsetPx.toFloat()
+//                                    val newOffset = (oldOffset + dragAmount).coerceIn(
+//                                        -collapsibleHeightPx.toFloat(),
+//                                        0f
+//                                    )
+//                                    headerOffsetPx = newOffset.toInt()
+//                                    if (newOffset != oldOffset) {
+//                                        change.consume()
+//                                    }
+//                                }
+//                            }
+//                    ) {
+//                        Column(
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .onSizeChanged { size ->
+//                                    collapsibleHeightPx = size.height
+//                                }
+//                        ) {
+//                            ProfileCounters(
+//                                counters = user.counters,
+//                                isBusinessOrEmployee = user.isBusinessOrEmployee,
+//                                onNavigateToSocial = { onNavigateToSocial(it, user.id, user.username, user.isBusinessOrEmployee) }
+//                            )
+//
+//                            ProfileUserInfo(
+//                                user = user,
+//                                actions = {
+//                                    if (user.isOwnProfile) {
+//                                        MyProfileActions(
+//                                            isBusinessOrEmployee = user.isBusinessOrEmployee,
+//                                            onEditProfile = { profileNavigate.toEditProfile() },
+//                                            onNavigateToMyCalendar = { profileNavigate.toMyCalendar() }
+//                                        )
+//                                    } else {
+//                                        UserProfileActions(
+//                                            isFollow = isFollow,
+//                                            isFollowEnabled = isFollowEnabled,
+//                                            onFollow = onFollow
+//                                        )
+//                                    }
+//                                },
+//                                onOpenScheduleSheet = { scope.launch { scheduleSheetState.show() } },
+//                                onNavigateToBusinessOwner = { it?.let { profileNavigate.toUserProfile(it) } }
+//                            )
+//                        }
+//
+//                        ProfileTabRow(
+//                            pagerState = pagerState,
+//                            tabs = tabs
+//                        )
+//                    }
+//                }
+//            }
+//        }
+//    }
 }
 
 private fun navigateToPost(

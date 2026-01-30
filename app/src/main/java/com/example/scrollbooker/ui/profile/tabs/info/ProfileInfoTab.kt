@@ -16,18 +16,19 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
 import com.example.scrollbooker.ui.theme.titleLarge
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -47,15 +48,21 @@ import timber.log.Timber
 @Composable
 fun ProfileInfoTab(
     viewModel: MyProfileViewModel,
-    paddingTop: Dp
+    onUpdateTop: (Boolean) -> Unit
 ) {
     val state by viewModel.about.collectAsState()
 
+    val scrollState = rememberScrollState()
+
+    LaunchedEffect(scrollState) {
+        snapshotFlow { scrollState.value == 0 }
+            .collect { onUpdateTop(it) }
+    }
+
     Column(modifier = Modifier
         .fillMaxSize()
-        .padding(top = paddingTop)
         .padding(horizontal = BasePadding)
-        .verticalScroll(rememberScrollState())
+        .verticalScroll(scrollState)
     ) {
         when(val about = state) {
             is FeatureState.Error -> ErrorScreen()
