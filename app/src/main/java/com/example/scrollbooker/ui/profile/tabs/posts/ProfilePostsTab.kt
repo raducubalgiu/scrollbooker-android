@@ -30,19 +30,10 @@ import com.example.scrollbooker.ui.profile.SelectedPostUi
 @Composable
 fun ProfilePostsTab(
     posts: LazyPagingItems<Post>,
-    onUpdateTop: (Boolean) -> Unit,
     onNavigateToPost: (SelectedPostUi, Post) -> Unit
 ) {
     val refreshState = posts.loadState.refresh
     val appendState = posts.loadState.refresh
-
-    val gridState = rememberLazyGridState()
-
-    LaunchedEffect(gridState) {
-        snapshotFlow {
-            gridState.firstVisibleItemIndex == 0 && gridState.firstVisibleItemScrollOffset == 0
-        }.collect { onUpdateTop(it) }
-    }
 
     when(refreshState) {
         is LoadState.Error -> ErrorScreen()

@@ -31,29 +31,19 @@ import com.example.scrollbooker.components.customized.LoadMoreSpinner
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
-import com.example.scrollbooker.ui.profile.MyProfileViewModel
+import com.example.scrollbooker.ui.profile.components.ProfileLayoutViewModel
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.titleLarge
 
 @Composable
 fun ProfileEmployeesTab(
-    viewModel: MyProfileViewModel,
-    onNavigateToEmployeeProfile: (Int) -> Unit,
-    onUpdateTop: (Boolean) -> Unit
+    viewModel: ProfileLayoutViewModel,
+    onNavigateToEmployeeProfile: (Int) -> Unit
 ) {
     val employees = viewModel.employees.collectAsLazyPagingItems()
 
     val refreshState = employees.loadState.refresh
     val appendState = employees.loadState.append
-
-    val listState = rememberLazyListState()
-
-    LaunchedEffect(listState) {
-        snapshotFlow {
-            listState.firstVisibleItemIndex == 0 &&
-                    listState.firstVisibleItemScrollOffset == 0
-        }.collect { onUpdateTop(it) }
-    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         when(refreshState) {

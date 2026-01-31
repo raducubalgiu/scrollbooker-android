@@ -21,28 +21,19 @@ import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.customized.LoadMoreSpinner
 import com.example.scrollbooker.entity.social.post.domain.model.Post
-import com.example.scrollbooker.ui.profile.MyProfileViewModel
 import com.example.scrollbooker.ui.profile.PostTabEnum
 import com.example.scrollbooker.ui.profile.SelectedPostUi
+import com.example.scrollbooker.ui.profile.components.ProfileLayoutViewModel
 
 @Composable
 fun ProfileBookmarksTab(
-    viewModel: MyProfileViewModel,
-    onNavigateToPost: (SelectedPostUi, Post) -> Unit,
-    onUpdateTop: (Boolean) -> Unit
+    viewModel: ProfileLayoutViewModel,
+    onNavigateToPost: (SelectedPostUi, Post) -> Unit
 ) {
-    val posts = viewModel.userBookmarkedPosts.collectAsLazyPagingItems()
+    val posts = viewModel.bookmarks.collectAsLazyPagingItems()
 
     val refreshState = posts.loadState.refresh
     val appendState = posts.loadState.refresh
-
-    val gridState = rememberLazyGridState()
-
-    LaunchedEffect(gridState) {
-        snapshotFlow {
-            gridState.firstVisibleItemIndex == 0 && gridState.firstVisibleItemScrollOffset == 0
-        }.collect { onUpdateTop(it) }
-    }
 
     when(refreshState) {
         is LoadState.Error -> ErrorScreen()

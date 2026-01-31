@@ -1,23 +1,18 @@
 package com.example.scrollbooker.ui.profile
 import android.annotation.SuppressLint
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.profile.components.ProfileLayout
-import com.example.scrollbooker.ui.profile.tabs.ProfileTabViewModel
-import com.example.scrollbooker.ui.theme.Background
+import com.example.scrollbooker.ui.profile.components.ProfileLayoutViewModel
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -27,15 +22,15 @@ fun UserProfileScreen(
     onBack: () -> Unit,
     profileNavigate: ProfileNavigator
 ) {
-    val profileTabViewModel: ProfileTabViewModel = hiltViewModel()
+    val layoutViewModel: ProfileLayoutViewModel = hiltViewModel()
 
-    val profileData by viewModel.userProfileState.collectAsState()
+    val profile by viewModel.userProfileState.collectAsStateWithLifecycle()
     val posts = viewModel.userPosts.collectAsLazyPagingItems()
-    val isInitLoading by viewModel.isInitLoading.collectAsState()
-    val isFollow by viewModel.isFollowState.collectAsState()
-    val isSaving by viewModel.isSaving.collectAsState()
+    val userData = (profile as? FeatureState.Success)?.data
 
-    val userData = (profileData as? FeatureState.Success)?.data
+    LaunchedEffect(Unit) {
+        layoutViewModel.setUserId(userData?.id)
+    }
 
     Scaffold(
         topBar = {
@@ -45,22 +40,13 @@ fun UserProfileScreen(
             )
         }
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Background)
-                .padding(top = innerPadding.calculateTopPadding())
-        ) {
-//            ProfileLayout(
-//                profileTabViewModel = profileTabViewModel,
-//                isInitLoading = isInitLoading,
-//                profileData = profileData,
-//                isFollow = isFollow,
-//                onFollow = { viewModel.onFollow() },
-//                isFollowEnabled = !isSaving,
-//                posts = posts,
-//                profileNavigate = profileNavigate
-//            )
-        }
+        ProfileLayout(
+            layoutViewModel = layoutViewModel,
+            innerPadding = innerPadding,
+            profile = profile,
+            profileNavigate = profileNavigate,
+            onNavigateToPost = { postUi, post -> },
+            posts = posts
+        )
     }
 }

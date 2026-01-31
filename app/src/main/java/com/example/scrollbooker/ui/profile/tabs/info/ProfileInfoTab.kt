@@ -25,7 +25,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.ui.profile.MyProfileViewModel
 import com.example.scrollbooker.ui.theme.titleLarge
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
@@ -43,21 +42,16 @@ import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.customized.SchedulesSection
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.ui.profile.components.ProfileLayoutViewModel
 import timber.log.Timber
 
 @Composable
 fun ProfileInfoTab(
-    viewModel: MyProfileViewModel,
-    onUpdateTop: (Boolean) -> Unit
+    viewModel: ProfileLayoutViewModel
 ) {
     val state by viewModel.about.collectAsState()
 
     val scrollState = rememberScrollState()
-
-    LaunchedEffect(scrollState) {
-        snapshotFlow { scrollState.value == 0 }
-            .collect { onUpdateTop(it) }
-    }
 
     Column(modifier = Modifier
         .fillMaxSize()
