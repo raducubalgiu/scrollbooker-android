@@ -32,7 +32,7 @@ import com.example.scrollbooker.ui.theme.titleMedium
 @Composable
 fun ReviewCTA(
     modifier: Modifier = Modifier,
-    onRatingClick: (Int) -> Unit
+    onRatingClick: (Int) -> Unit,
 ) {
     Column(modifier = modifier
         .fillMaxWidth()

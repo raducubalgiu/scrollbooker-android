@@ -240,6 +240,7 @@ fun AppointmentDetailsScreen(
                         customerAvatar = a.customer.avatar ?: "",
                         review = rev.review,
                         rating = rev.rating,
+                        isCustomer = a.isCustomer,
                         onOpenCancelSheet = { scope.launch { cancelReviewSheetState.show() } }
                     )
                 }

@@ -36,6 +36,7 @@ import com.example.scrollbooker.ui.theme.SurfaceBG
 @Composable
 fun AppointmentDetailsWrittenReview(
     customerAvatar: String,
+    isCustomer: Boolean,
     review: String?,
     rating: Int,
     onOpenCancelSheet: () -> Unit
@@ -63,7 +64,7 @@ fun AppointmentDetailsWrittenReview(
 
                 Column {
                     Text(
-                        text = "Ai evaluat $rating din 5",
+                        text = "A evaluat $rating din 5",
                         color = Color.Gray
                     )
                     RatingsStars(
@@ -73,11 +74,13 @@ fun AppointmentDetailsWrittenReview(
                 }
             }
 
-            IconButton(onClick = onOpenCancelSheet) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_elipsis_vertical),
-                    contentDescription = null
-                )
+            if(isCustomer) {
+                IconButton(onClick = onOpenCancelSheet) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_elipsis_vertical),
+                        contentDescription = null
+                    )
+                }
             }
         }
 
