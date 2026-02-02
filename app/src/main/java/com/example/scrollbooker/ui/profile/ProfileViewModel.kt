@@ -19,18 +19,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.lang.Exception
 import javax.inject.Inject
-import kotlin.collections.plus
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
@@ -46,11 +43,6 @@ class ProfileViewModel @Inject constructor(
         MutableStateFlow<FeatureState<UserProfile>>(FeatureState.Loading)
     val userProfileState: StateFlow<FeatureState<UserProfile>> = _userProfileState
 
-    private val _initCompleted = MutableStateFlow(false)
-    val isInitLoading = combine(_userProfileState, _initCompleted) { profile, done ->
-        (profile is FeatureState.Loading || !done)
-    }.stateIn(viewModelScope, SharingStarted.Companion.Eagerly, true)
-
     private val _isFollowState = MutableStateFlow<Boolean?>(null)
     val isFollowState: StateFlow<Boolean?> = _isFollowState.asStateFlow()
 
@@ -61,7 +53,6 @@ class ProfileViewModel @Inject constructor(
     val userPosts: StateFlow<PagingData<Post>> = userId
         .filterNotNull()
         .flatMapLatest { userId -> getUserPostsUseCase(userId) }
-        .onEach { _initCompleted.value = true }
         .cachedIn(viewModelScope)
         .stateIn(viewModelScope, SharingStarted.Companion.Lazily, PagingData.Companion.empty())
 
@@ -91,7 +82,7 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun onFollow() {
+    fun follow() {
         viewModelScope.launch {
             val targetUserId = userId.value
 
@@ -101,18 +92,48 @@ class ProfileViewModel @Inject constructor(
             val previous = isFollowState.value == true
             val optimistic = !previous
 
+            val currentProfile = (_userProfileState.value as? FeatureState.Success)?.data
+            val oldFollowersCount = currentProfile?.counters?.followersCount ?: 0
+
             _isSaving.value = true
             _isFollowState.value = optimistic
 
             try {
                 if(optimistic) {
                     followUserUseCase(targetUserId)
+
+                    if(currentProfile != null) {
+                        val updatedProfile = currentProfile.copy(
+                            counters = currentProfile.counters.copy(
+                                followersCount = oldFollowersCount + 1
+                            )
+                        )
+                        _userProfileState.value = FeatureState.Success(updatedProfile)
+                    }
                 } else {
                     unfollowUserUseCase(targetUserId)
+
+                    if(currentProfile != null) {
+                        val updatedProfile = currentProfile.copy(
+                            counters = currentProfile.counters.copy(
+                                followersCount = oldFollowersCount - 1
+                            )
+                        )
+                        _userProfileState.value = FeatureState.Success(updatedProfile)
+                    }
                 }
             } catch(e: Exception) {
                 Timber.tag("Follow/Unfollow").e(e, "ERROR: on Follow/Unfollow Action")
                 _isFollowState.value = previous
+
+                if(currentProfile != null) {
+                    val updatedProfile = currentProfile.copy(
+                        counters = currentProfile.counters.copy(
+                            followersCount = oldFollowersCount
+                        )
+                    )
+                    _userProfileState.value = FeatureState.Success(updatedProfile)
+                }
             } finally {
                 _isSaving.value = false
             }

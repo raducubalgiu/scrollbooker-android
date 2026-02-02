@@ -1,6 +1,5 @@
 package com.example.scrollbooker.ui.profile.components
 
-import android.R
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -71,7 +70,7 @@ class ProfileLayoutViewModel @Inject constructor(
     }
 
     // Tabs
-    @kotlin.OptIn(ExperimentalCoroutinesApi::class)
+    @OptIn(ExperimentalCoroutinesApi::class)
     val posts: Flow<PagingData<Post>> = userIdFlow
         .filterNotNull()
         .flatMapLatest { userId -> getUserPostsUseCase(userId) }
@@ -82,19 +81,19 @@ class ProfileLayoutViewModel @Inject constructor(
             initialValue = PagingData.empty()
         )
 
-    @kotlin.OptIn(ExperimentalCoroutinesApi::class)
+    @OptIn(ExperimentalCoroutinesApi::class)
     val employees: Flow<PagingData<Employee>> = userIdFlow
         .filterNotNull()
         .flatMapLatest { userId -> getEmployeesByOwnerUseCase(userId) }
         .cachedIn(viewModelScope)
 
-    @kotlin.OptIn(ExperimentalCoroutinesApi::class)
+    @OptIn(ExperimentalCoroutinesApi::class)
     val reposts: Flow<PagingData<Post>> = userIdFlow
         .filterNotNull()
         .flatMapLatest { userId -> getUserRepostsUseCase(userId) }
         .cachedIn(viewModelScope)
 
-    @kotlin.OptIn(ExperimentalCoroutinesApi::class)
+    @OptIn(ExperimentalCoroutinesApi::class)
     val bookmarks: Flow<PagingData<Post>> = userIdFlow
         .filterNotNull()
         .flatMapLatest { userId ->
@@ -112,7 +111,7 @@ class ProfileLayoutViewModel @Inject constructor(
             initialValue = FeatureState.Loading
         )
 
-    @kotlin.OptIn(ExperimentalCoroutinesApi::class)
+    @OptIn(ExperimentalCoroutinesApi::class)
     val schedules: StateFlow<FeatureState<List<Schedule>>> = userIdFlow
         .filterNotNull()
         .distinctUntilChanged()

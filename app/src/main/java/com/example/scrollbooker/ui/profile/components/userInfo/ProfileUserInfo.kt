@@ -77,6 +77,9 @@ fun filterIntentActions(
 @Composable
 fun ProfileUserInfo(
     user: UserProfile,
+    isFollow: Boolean,
+    isFollowEnabled: Boolean,
+    onFollow: (() -> Unit)? = null,
     onOpenScheduleSheet: () -> Unit,
     onNavigateToBusinessOwner: (Int?) -> Unit,
     onNavigateToSocial: (NavigateSocialParam) -> Unit,
@@ -191,9 +194,9 @@ fun ProfileUserInfo(
             )
         } else {
             UserProfileActions(
-                isFollow = false,
-                isFollowEnabled = false,
-                onFollow = {}
+                isFollow = isFollow,
+                isFollowEnabled = isFollowEnabled,
+                onFollow = onFollow
             )
         }
     }

@@ -56,7 +56,10 @@ fun ProfileLayout(
     profile: FeatureState<UserProfile>,
     profileNavigate: ProfileNavigator,
     onNavigateToPost: (SelectedPostUi, Post) -> Unit,
-    posts: LazyPagingItems<Post>
+    posts: LazyPagingItems<Post>,
+    isFollow: Boolean = false,
+    isFollowEnabled: Boolean = false,
+    onFollow: (() -> Unit)? = null
 ) {
     val scope = rememberCoroutineScope()
 
@@ -185,6 +188,9 @@ fun ProfileLayout(
                             ) {
                                 ProfileUserInfo(
                                     user = user,
+                                    isFollow = isFollow,
+                                    isFollowEnabled = isFollowEnabled,
+                                    onFollow = onFollow,
                                     onOpenScheduleSheet = { scope.launch { scheduleSheetState.show() } },
                                     onNavigateToBusinessOwner = { it?.let { profileNavigate.toUserProfile(it) } },
                                     onNavigateToSocial = { profileNavigate.toSocial(it) },

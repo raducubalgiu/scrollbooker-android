@@ -26,6 +26,10 @@ fun UserProfileScreen(
 
     val profile by viewModel.userProfileState.collectAsStateWithLifecycle()
     val posts = viewModel.userPosts.collectAsLazyPagingItems()
+
+    val isFollow by viewModel.isFollowState.collectAsStateWithLifecycle()
+    val isSaving by viewModel.isSaving.collectAsStateWithLifecycle()
+
     val userData = (profile as? FeatureState.Success)?.data
 
     LaunchedEffect(Unit) {
@@ -46,7 +50,10 @@ fun UserProfileScreen(
             profile = profile,
             profileNavigate = profileNavigate,
             onNavigateToPost = { postUi, post -> },
-            posts = posts
+            posts = posts,
+            isFollow = isFollow == true,
+            isFollowEnabled = !isSaving,
+            onFollow = { viewModel.follow() }
         )
     }
 }
