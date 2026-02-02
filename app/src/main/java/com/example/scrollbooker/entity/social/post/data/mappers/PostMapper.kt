@@ -173,8 +173,7 @@ fun UserPostActions.applyUiState(ui: PostActionUiState): UserPostActions =
 
 fun PostCounters.applyUiState(ui: PostActionUiState): PostCounters =
     copy(
-        likeCount = likeCount + ui.likeCountDelta,
-        bookmarkCount = bookmarkCount + ui.bookmarkCountDelta,
-        repostCount = repostCount + ui.reportCountDelta,
-        commentCount = commentCount + ui.commentCountDelta
+        likeCount = likeCount + ui.likesCount,
+        bookmarkCount = bookmarkCount + ui.bookmarksCount,
+        commentCount = commentCount + ui.commentsCount
     )

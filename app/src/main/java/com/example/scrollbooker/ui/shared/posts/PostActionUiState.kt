@@ -5,14 +5,12 @@ data class PostActionUiState(
     val isBookmarked: Boolean? = null,
     val isReposted: Boolean? = null,
 
-    val likeCountDelta: Int = 0,
-    val bookmarkCountDelta: Int = 0,
-    val reportCountDelta: Int = 0,
-    val commentCountDelta: Int = 0,
+    val likesCount: Int = 0,
+    val bookmarksCount: Int = 0,
+    val commentsCount: Int = 0,
 
     val isSavingLike: Boolean = false,
-    val isSavingBookmark: Boolean = false,
-    val isSavingRepost: Boolean = false
+    val isSavingBookmark: Boolean = false
 ) {
     companion object { val EMPTY = PostActionUiState() }
 }

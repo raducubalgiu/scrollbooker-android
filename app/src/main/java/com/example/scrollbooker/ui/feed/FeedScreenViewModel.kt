@@ -36,7 +36,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -59,11 +61,18 @@ class FeedScreenViewModel @Inject constructor(
     @ApplicationContext private val application: Context,
 ) : ViewModel() {
     // Drawer
-    private val _businessDomainsWithBusinessTypes =
-        MutableStateFlow<FeatureState<List<BusinessDomainsWithBusinessTypes>>>(FeatureState.Loading)
-
-    val businessDomainsWithBusinessTypes: StateFlow<FeatureState<List<BusinessDomainsWithBusinessTypes>>> =
-        _businessDomainsWithBusinessTypes.asStateFlow()
+    val businessDomainsWithBusinessTypes: StateFlow<
+            FeatureState<List<BusinessDomainsWithBusinessTypes>>> =
+        flow {
+            emit(FeatureState.Loading)
+            emit(getAllBusinessDomainsWithBusinessTypesUseCase())
+        }.catch { e ->
+            emit(FeatureState.Error(e))
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = FeatureState.Loading
+        )
 
     private val _selectedBusinessTypes = MutableStateFlow<Set<Int>>(emptySet())
     val selectedBusinessTypes: StateFlow<Set<Int>> = _selectedBusinessTypes
@@ -115,7 +124,6 @@ class FeedScreenViewModel @Inject constructor(
 
     init {
         repeat(maxPlayers) { pool.add(createPlayer(application)) }
-        loadAllBusinessDomainsWithBusinessTypes()
     }
 
     @OptIn(UnstableApi::class)
@@ -375,8 +383,8 @@ class FeedScreenViewModel @Inject constructor(
             setFlag = { s, v -> s.copy(isLiked = v) },
             savingOn = { it.copy(isSavingLike = true) },
             savingOff = { it.copy(isSavingLike = false) },
-            getDelta = { it.likeCountDelta },
-            setDelta = { s, d -> s.copy(likeCountDelta = d) },
+            getDelta = { it.likesCount },
+            setDelta = { s, d -> s.copy(likesCount = d) },
             doOn = { likePostUseCase(post.id) },
             doOff = { unLikePostUseCase(post.id) }
         )
@@ -391,17 +399,10 @@ class FeedScreenViewModel @Inject constructor(
             setFlag = { s, v -> s.copy(isBookmarked = v) },
             savingOn = { it.copy(isSavingBookmark = true) },
             savingOff = { it.copy(isSavingBookmark = false) },
-            getDelta = { it.bookmarkCountDelta },
-            setDelta = { s, d -> s.copy(bookmarkCountDelta = d) },
+            getDelta = { it.bookmarksCount },
+            setDelta = { s, d -> s.copy(bookmarksCount = d) },
             doOn = { bookmarkPostUseCase(post.id) },
             doOff = { unBookmarkPostUseCase(post.id) }
         )
-    }
-
-    private fun loadAllBusinessDomainsWithBusinessTypes() {
-        viewModelScope.launch {
-            _businessDomainsWithBusinessTypes.value = FeatureState.Loading
-            _businessDomainsWithBusinessTypes.value = getAllBusinessDomainsWithBusinessTypesUseCase()
-        }
     }
 }
