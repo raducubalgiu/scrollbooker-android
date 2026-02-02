@@ -27,6 +27,10 @@ class ProfileNavigator (
         navController.navigate(MainRoute.MyProfilePostDetail.route)
     }
 
+    fun toUserPostDetail() {
+        rootNavController.navigate(MainRoute.MyProfilePostDetail.route)
+    }
+
     fun toMyCalendar() {
         navController.navigate(MainRoute.MyCalendar.route)
     }

@@ -194,6 +194,7 @@ fun ProfileUserInfo(
             )
         } else {
             UserProfileActions(
+                isBusinessOrEmployee = user.isBusinessOrEmployee,
                 isFollow = isFollow,
                 isFollowEnabled = isFollowEnabled,
                 onFollow = onFollow

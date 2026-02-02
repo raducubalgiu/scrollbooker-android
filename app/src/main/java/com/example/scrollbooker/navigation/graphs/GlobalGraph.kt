@@ -39,18 +39,19 @@ fun NavGraphBuilder.globalGraph(
                 )
             }
 
-            UserProfileScreen(
-                viewModel = viewModel,
-                onBack = { navController.popBackStack() },
-                profileNavigate = profileNavigate,
-                onNavigateToSocial = { socialParams ->
-                    val ( tabIndex, userId, username, isBusinessOrEmployee ) = socialParams
-
-                    navController.navigate(
-                        "${MainRoute.Social.route}/${tabIndex}/${userId}/${username}/${isBusinessOrEmployee}"
-                    )
-                }
-            )
+//            UserProfileScreen(
+//
+//                viewModel = viewModel,
+//                onBack = { navController.popBackStack() },
+//                profileNavigate = profileNavigate,
+//                onNavigateToSocial = { socialParams ->
+//                    val ( tabIndex, userId, username, isBusinessOrEmployee ) = socialParams
+//
+//                    navController.navigate(
+//                        "${MainRoute.Social.route}/${tabIndex}/${userId}/${username}/${isBusinessOrEmployee}"
+//                    )
+//                }
+//            )
         }
 
 

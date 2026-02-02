@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,15 +18,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
+import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnPrimary
+import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun UserProfileActions(
+    isBusinessOrEmployee: Boolean,
     isFollow: Boolean?,
     isFollowEnabled: Boolean,
     onFollow: (() -> Unit)? = null
@@ -32,17 +37,16 @@ fun UserProfileActions(
     Row(modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        isFollow?.let {
+        if(isBusinessOrEmployee) {
             ProfileActionButton(
                 modifier = Modifier.weight(5f),
-                containerColor = if(isFollow) SurfaceBG else Primary,
+                containerColor = Primary,
                 contentColor = OnPrimary,
-                isEnabled = isFollowEnabled,
-                onClick = { onFollow?.invoke() }
+                onClick = {  }
             ) {
                 Text(
-                    text = if(isFollow) stringResource(R.string.following) else stringResource(R.string.follow),
-                    color = if(isFollow) OnBackground else OnPrimary,
+                    text = stringResource(R.string.book),
+                    color = OnPrimary,
                     style = titleMedium,
                     fontWeight = FontWeight.Bold,
                 )
@@ -51,22 +55,42 @@ fun UserProfileActions(
 
         Spacer(Modifier.width(SpacingS))
 
-        ProfileActionButton(
-            modifier = Modifier.weight(5f),
-            onClick = {}
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_calendar_outline),
-                    contentDescription = null
-                )
-                Spacer(Modifier.width(SpacingS))
-                Text(
-                    text = stringResource(R.string.calendar),
-                    style = titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = OnBackground
-                )
+        isFollow?.let {
+            ProfileActionButton(
+                modifier = Modifier.weight(5f),
+                containerColor = when {
+                    isFollow -> SurfaceBG
+                    isBusinessOrEmployee -> SurfaceBG
+                    else -> Primary
+                },
+                contentColor = OnPrimary,
+                isEnabled = isFollowEnabled,
+                onClick = { onFollow?.invoke() }
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = if(isFollow) stringResource(R.string.following) else stringResource(R.string.follow),
+                        color = when {
+                            isFollow -> OnSurfaceBG
+                            isBusinessOrEmployee -> OnSurfaceBG
+                            else -> OnPrimary
+                        },
+                        style = titleMedium,
+                        fontWeight = FontWeight.Bold,
+                    )
+
+                    if(isFollow) {
+                        Spacer(Modifier.width(SpacingS))
+
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            contentDescription = "Check",
+                            tint = Primary
+                        )
+                    }
+                }
             }
         }
 

@@ -461,6 +461,24 @@ class ProfileLayoutViewModel @Inject constructor(
 
     fun getPlayerForIndex(index: Int): ExoPlayer? = indexToPlayer[index]
 
+    fun togglePlayer(index: Int) {
+        val player = getPlayerForIndex(index) ?: return
+
+        val isFocused = (index == focusedIndex)
+
+        if(player.isPlaying) {
+            player.playWhenReady = false
+
+        } else {
+            if(isFocused) {
+                player.playWhenReady = true
+            } else {
+                focusedIndex = index
+                applyFocus(index)
+            }
+        }
+    }
+
     fun stopDetailSession() {
         indexToPlayer.values.forEach { player ->
             resetPlayer(player)

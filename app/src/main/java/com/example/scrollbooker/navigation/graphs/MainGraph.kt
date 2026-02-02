@@ -22,6 +22,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.core.extensions.isInRoute
 import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
@@ -35,8 +36,10 @@ import com.example.scrollbooker.ui.LocalUserPermissions
 import com.example.scrollbooker.ui.LocationController
 import com.example.scrollbooker.ui.LocationViewModel
 import com.example.scrollbooker.ui.UserPermissionsController
+import com.example.scrollbooker.ui.profile.MyProfilePostDetailScreen
 import com.example.scrollbooker.ui.profile.ProfileViewModel
 import com.example.scrollbooker.ui.profile.UserProfileScreen
+import com.example.scrollbooker.ui.profile.components.ProfileLayoutViewModel
 import com.example.scrollbooker.ui.social.SocialScreen
 import com.example.scrollbooker.ui.social.SocialViewModel
 
@@ -86,6 +89,9 @@ fun NavGraphBuilder.mainGraph(onLogout: () -> Unit) {
             }
 
             val mainNavController = rememberNavController()
+
+            val layoutViewModel: ProfileLayoutViewModel = hiltViewModel()
+            val posts = layoutViewModel.detailPostsFlow.collectAsLazyPagingItems()
 
             CompositionLocalProvider(
                 LocalMainNavController provides mainNavController,
@@ -138,6 +144,7 @@ fun NavGraphBuilder.mainGraph(onLogout: () -> Unit) {
                             }
 
                             UserProfileScreen(
+                                layoutViewModel = layoutViewModel,
                                 viewModel = viewModel,
                                 onBack = { mainNavController.popBackStack() },
                                 profileNavigate = profileNavigate,
@@ -147,6 +154,23 @@ fun NavGraphBuilder.mainGraph(onLogout: () -> Unit) {
                                     mainNavController.navigate(
                                         "${MainRoute.Social.route}/${tabIndex}/${userId}/${username}/${isBusinessOrEmployee}"
                                     )
+                                }
+                            )
+                        }
+
+                        composable(
+                            route = MainRoute.MyProfilePostDetail.route,
+                            enterTransition = { EnterTransition.None },
+                            exitTransition = { ExitTransition.None },
+                            popEnterTransition = { EnterTransition.None },
+                            popExitTransition = { ExitTransition.None }
+                        ) {
+                            MyProfilePostDetailScreen(
+                                layoutViewModel = layoutViewModel,
+                                posts = posts,
+                                onBack = { mainNavController.popBackStack() },
+                                onNavigateToUserProfile = {
+                                    mainNavController.navigate("${MainRoute.UserProfile.route}/${it}")
                                 }
                             )
                         }
