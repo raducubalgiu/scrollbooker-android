@@ -42,6 +42,8 @@ fun MyProfileNavHost(
     navController: NavHostController,
     onLogout: () -> Unit
 ) {
+    val posts = viewModel.detailPostsFlow.collectAsLazyPagingItems()
+
     NavHost(
         navController = navController,
         startDestination = MainRoute.MyProfileNavigator.route,
@@ -104,8 +106,6 @@ fun MyProfileNavHost(
                 popEnterTransition = { EnterTransition.None },
                 popExitTransition = { ExitTransition.None }
             ) {
-                val posts = viewModel.detailPostsFlow.collectAsLazyPagingItems()
-
                 MyProfilePostDetailScreen(
                     viewModel = viewModel,
                     posts = posts,
