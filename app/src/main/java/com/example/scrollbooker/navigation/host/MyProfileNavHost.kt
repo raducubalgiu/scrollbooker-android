@@ -86,7 +86,14 @@ fun MyProfileNavHost(
                     permissionController = permissionController,
                     myProfileData = myProfileData,
                     myPosts = myPosts,
-                    profileNavigate = profileNavigate
+                    profileNavigate = profileNavigate,
+                    onNavigateToSocial = { socialParams ->
+                        val ( tabIndex, userId, username, isBusinessOrEmployee ) = socialParams
+
+                        navController.navigate(
+                            "${MainRoute.Social.route}/${tabIndex}/${userId}/${username}/${isBusinessOrEmployee}"
+                        )
+                    }
                 )
             }
 

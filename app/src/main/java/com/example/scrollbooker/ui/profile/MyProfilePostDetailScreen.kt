@@ -51,12 +51,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.LifecycleStartEffect
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import coil.compose.AsyncImage
 import com.example.scrollbooker.core.extensions.getOrNull
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
 import com.example.scrollbooker.ui.shared.posts.components.PostPlayerView
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -150,6 +152,17 @@ fun MyProfilePostDetailScreen(
                     val post = posts.getOrNull(page) ?: return@VerticalPager
                     val player = viewModel.getPlayerForIndex(page)
 
+                    val postActionState by viewModel
+                        .observePostUi(post.id)
+                        .collectAsStateWithLifecycle()
+
+                    val postUi = remember(post, postActionState) {
+                        post.copy(
+                            userActions = post.userActions.applyUiState(postActionState),
+                            counters = post.counters.applyUiState(postActionState)
+                        )
+                    }
+
                     Box(modifier = Modifier.fillMaxSize()) {
                         if(player != null) {
                             PostPlayerWithThumbnail(
@@ -166,13 +179,10 @@ fun MyProfilePostDetailScreen(
                         }
 
                         PostOverlay(
-                            post = post,
-                            isSavingLike = false,
-                            isSavingBookmark = false,
+                            post = postUi,
+                            isSavingLike = postActionState.isSavingLike,
+                            isSavingBookmark = postActionState.isSavingBookmark,
                             onAction = {},
-                            enableOpacity = false,
-                            showBottomBar = false,
-                            onShowBottomBar = null,
                             onNavigateToUserProfile = {}
                         )
                     }

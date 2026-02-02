@@ -21,6 +21,7 @@ import com.example.scrollbooker.core.util.Dimens.IconSizeXL
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
+import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.UserPermissionsController
 import com.example.scrollbooker.ui.profile.components.ProfileLayout
@@ -38,6 +39,7 @@ fun MyProfileScreen(
     myProfileData: FeatureState<UserProfile>,
     myPosts: LazyPagingItems<Post>,
     profileNavigate: ProfileNavigator,
+    onNavigateToSocial: (NavigateSocialParam) -> Unit
 ) {
     val layoutViewModel: ProfileLayoutViewModel = hiltViewModel()
     val userData = (myProfileData as? FeatureState.Success)?.data
@@ -73,7 +75,10 @@ fun MyProfileScreen(
             innerPadding = innerPadding,
             profile = myProfileData,
             profileNavigate = profileNavigate,
-            onNavigateToPost = { postUi, post -> navigateToPost(viewModel, profileNavigate, postUi, post) },
+            onNavigateToPost = { postUi, post ->
+                navigateToPost(viewModel, profileNavigate, postUi, post)
+            },
+            onNavigateToSocial = onNavigateToSocial,
             posts = myPosts
         )
     }

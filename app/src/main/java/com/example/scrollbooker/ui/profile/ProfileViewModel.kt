@@ -54,7 +54,11 @@ class ProfileViewModel @Inject constructor(
         .filterNotNull()
         .flatMapLatest { userId -> getUserPostsUseCase(userId) }
         .cachedIn(viewModelScope)
-        .stateIn(viewModelScope, SharingStarted.Companion.Lazily, PagingData.Companion.empty())
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Companion.WhileSubscribed(5_000),
+            initialValue = PagingData.Companion.empty()
+        )
 
     init {
         userId.filterNotNull()

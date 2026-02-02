@@ -10,9 +10,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.profile.components.ProfileLayout
 import com.example.scrollbooker.ui.profile.components.ProfileLayoutViewModel
+import com.example.scrollbooker.ui.theme.Background
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -20,6 +22,7 @@ import com.example.scrollbooker.ui.profile.components.ProfileLayoutViewModel
 fun UserProfileScreen(
     viewModel: ProfileViewModel,
     onBack: () -> Unit,
+    onNavigateToSocial: (NavigateSocialParam) -> Unit,
     profileNavigate: ProfileNavigator
 ) {
     val layoutViewModel: ProfileLayoutViewModel = hiltViewModel()
@@ -42,18 +45,20 @@ fun UserProfileScreen(
                 title = userData?.username ?: "",
                 onBack = onBack
             )
-        }
+        },
+        containerColor = Background
     ) { innerPadding ->
         ProfileLayout(
             layoutViewModel = layoutViewModel,
             innerPadding = innerPadding,
             profile = profile,
             profileNavigate = profileNavigate,
+            onNavigateToSocial = onNavigateToSocial,
             onNavigateToPost = { postUi, post -> },
             posts = posts,
             isFollow = isFollow == true,
             isFollowEnabled = !isSaving,
-            onFollow = { viewModel.follow() }
+            onFollow = { viewModel.follow() },
         )
     }
 }

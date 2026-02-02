@@ -140,18 +140,30 @@ fun NavGraphBuilder.mainGraph(onLogout: () -> Unit) {
                             UserProfileScreen(
                                 viewModel = viewModel,
                                 onBack = { mainNavController.popBackStack() },
-                                profileNavigate = profileNavigate
+                                profileNavigate = profileNavigate,
+                                onNavigateToSocial = { socialParams ->
+                                    val ( tabIndex, userId, username, isBusinessOrEmployee ) = socialParams
+
+                                    mainNavController.navigate(
+                                        "${MainRoute.Social.route}/${tabIndex}/${userId}/${username}/${isBusinessOrEmployee}"
+                                    )
+                                }
                             )
                         }
                     }
 
-                    composable(route = "${MainRoute.Social.route}/{tabIndex}/{userId}/{username}/{isBusinessOrEmployee}",
+                    composable(
+                        route = "${MainRoute.Social.route}/{tabIndex}/{userId}/{username}/{isBusinessOrEmployee}",
                         arguments = listOf(
                             navArgument("tabIndex") { type = NavType.IntType },
                             navArgument("userId") { type = NavType.IntType },
                             navArgument("username") { type = NavType.StringType },
                             navArgument("isBusinessOrEmployee") { type = NavType.BoolType }
-                        )
+                        ),
+                        enterTransition = { slideInFromRight() },
+                        exitTransition = { slideOutToLeft() },
+                        popEnterTransition = { slideInFromLeft() },
+                        popExitTransition = { slideOutToRight() }
                     ) { backStackEntry ->
                         val tabIndex = backStackEntry.arguments?.getInt("tabIndex") ?: return@composable
                         val userId = backStackEntry.arguments?.getInt("userId") ?: return@composable

@@ -33,7 +33,7 @@ fun PostOverlay(
     onAction: (PostOverlayActionEnum) -> Unit,
 
     enableOpacity: Boolean = false,
-    showBottomBar: Boolean,
+    showBottomBar: Boolean = false,
     onShowBottomBar: (() -> Unit)? = null,
     onNavigateToUserProfile: (Int) -> Unit,
 ) {

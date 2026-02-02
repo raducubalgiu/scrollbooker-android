@@ -34,6 +34,7 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
+import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.profile.SelectedPostUi
 import com.example.scrollbooker.ui.profile.components.sheets.UserScheduleSheet
@@ -56,6 +57,7 @@ fun ProfileLayout(
     profile: FeatureState<UserProfile>,
     profileNavigate: ProfileNavigator,
     onNavigateToPost: (SelectedPostUi, Post) -> Unit,
+    onNavigateToSocial: (NavigateSocialParam) -> Unit,
     posts: LazyPagingItems<Post>,
     isFollow: Boolean = false,
     isFollowEnabled: Boolean = false,
@@ -193,7 +195,7 @@ fun ProfileLayout(
                                     onFollow = onFollow,
                                     onOpenScheduleSheet = { scope.launch { scheduleSheetState.show() } },
                                     onNavigateToBusinessOwner = { it?.let { profileNavigate.toUserProfile(it) } },
-                                    onNavigateToSocial = { profileNavigate.toSocial(it) },
+                                    onNavigateToSocial = onNavigateToSocial,
                                     onNavigateToEditProfile = { profileNavigate.toEditProfile() },
                                     onNavigateToMyCalendar = { profileNavigate.toMyCalendar() },
                                 )

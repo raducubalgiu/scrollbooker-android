@@ -23,14 +23,6 @@ class ProfileNavigator (
         rootNavController.navigate("${MainRoute.UserProfile.route}/${ownerId}")
     }
 
-    fun toCalendar (calendarParams: NavigateCalendarParam) {
-        val (userId, slotDuration, productId, productName) = calendarParams
-
-        rootNavController.navigate(
-            "${MainRoute.Calendar.route}/${userId}/${slotDuration}/${productId}/${productName}"
-        )
-    }
-
     fun toPostDetail() {
         navController.navigate(MainRoute.MyProfilePostDetail.route)
     }
