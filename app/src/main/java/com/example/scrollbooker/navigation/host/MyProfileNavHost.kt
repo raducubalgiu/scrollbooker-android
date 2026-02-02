@@ -31,18 +31,20 @@ import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
+import com.example.scrollbooker.ui.profile.components.ProfileLayoutViewModel
 import com.example.scrollbooker.ui.social.SocialScreen
 import com.example.scrollbooker.ui.social.SocialViewModel
 
 @Composable
 fun MyProfileNavHost(
     viewModel: MyProfileViewModel,
+    layoutViewModel: ProfileLayoutViewModel,
     myProfileData: FeatureState<UserProfile>,
     myPosts: LazyPagingItems<Post>,
     navController: NavHostController,
     onLogout: () -> Unit
 ) {
-    val posts = viewModel.detailPostsFlow.collectAsLazyPagingItems()
+    val posts = layoutViewModel.detailPostsFlow.collectAsLazyPagingItems()
 
     NavHost(
         navController = navController,
@@ -85,6 +87,7 @@ fun MyProfileNavHost(
 
                 MyProfileScreen(
                     viewModel = viewModel,
+                    layoutViewModel = layoutViewModel,
                     permissionController = permissionController,
                     myProfileData = myProfileData,
                     myPosts = myPosts,
@@ -107,7 +110,7 @@ fun MyProfileNavHost(
                 popExitTransition = { ExitTransition.None }
             ) {
                 MyProfilePostDetailScreen(
-                    viewModel = viewModel,
+                    layoutViewModel = layoutViewModel,
                     posts = posts,
                     onBack = { navController.popBackStack() }
                 )

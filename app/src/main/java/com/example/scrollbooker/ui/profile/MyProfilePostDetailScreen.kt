@@ -60,6 +60,8 @@ import com.example.scrollbooker.core.extensions.getOrNull
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
+import com.example.scrollbooker.ui.profile.components.PostTabEnum
+import com.example.scrollbooker.ui.profile.components.ProfileLayoutViewModel
 import com.example.scrollbooker.ui.shared.posts.components.PostPlayerView
 import com.example.scrollbooker.ui.shared.posts.components.PostShimmer
 import kotlinx.coroutines.flow.collectLatest
@@ -69,16 +71,15 @@ import kotlinx.coroutines.flow.drop
 @OptIn(UnstableApi::class)
 @Composable
 fun MyProfilePostDetailScreen(
-    viewModel: MyProfileViewModel,
+    layoutViewModel: ProfileLayoutViewModel,
     posts: LazyPagingItems<Post>,
     onBack: () -> Unit
 ) {
-    val selectedPost by viewModel.selectedPost.collectAsState()
+    val selectedPost by layoutViewModel.selectedPost.collectAsState()
     val startIndex = selectedPost?.index ?: 0
 
     val title: String = when(selectedPost?.tab) {
         PostTabEnum.MY_POSTS -> stringResource(R.string.posts)
-        PostTabEnum.REPOSTS -> stringResource(R.string.repost)
         PostTabEnum.BOOKMARKS -> stringResource(R.string.bookmarks)
         null -> ""
     }
@@ -93,8 +94,8 @@ fun MyProfilePostDetailScreen(
                 .distinctUntilChanged()
                 .drop(1)
                 .collectLatest { page ->
-                    viewModel.onPageSettled(page)
-                    viewModel.ensureWindow(
+                    layoutViewModel.onPageSettled(page)
+                    layoutViewModel.ensureWindow(
                         centerIndex = page,
                         getPost = { idx -> posts.getOrNull(idx) }
                     )
@@ -116,7 +117,7 @@ fun MyProfilePostDetailScreen(
             snapAnimationSpec = snapSpec
         )
 
-        val currentOnReleasePlayer by rememberUpdatedState(viewModel::stopDetailSession)
+        val currentOnReleasePlayer by rememberUpdatedState(layoutViewModel::stopDetailSession)
 
         LifecycleStartEffect(true) {
             onStopOrDispose {
@@ -156,9 +157,9 @@ fun MyProfilePostDetailScreen(
                     modifier = Modifier.weight(1f),
                 ) { page ->
                     val post = posts.getOrNull(page) ?: return@VerticalPager
-                    val player = viewModel.getPlayerForIndex(page)
+                    val player = layoutViewModel.getPlayerForIndex(page)
 
-                    val postActionState by viewModel
+                    val postActionState by layoutViewModel
                         .observePostUi(post.id)
                         .collectAsStateWithLifecycle()
 

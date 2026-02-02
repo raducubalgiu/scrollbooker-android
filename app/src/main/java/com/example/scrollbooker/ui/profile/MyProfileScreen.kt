@@ -26,6 +26,7 @@ import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.UserPermissionsController
 import com.example.scrollbooker.ui.profile.components.ProfileLayout
 import com.example.scrollbooker.ui.profile.components.ProfileLayoutViewModel
+import com.example.scrollbooker.ui.profile.components.SelectedPostUi
 import com.example.scrollbooker.ui.profile.components.sheets.ProfileMenuSheet
 import com.example.scrollbooker.ui.theme.Background
 import kotlinx.coroutines.launch
@@ -35,13 +36,13 @@ import kotlinx.coroutines.launch
 @Composable
 fun MyProfileScreen(
     viewModel: MyProfileViewModel,
+    layoutViewModel: ProfileLayoutViewModel,
     permissionController: UserPermissionsController,
     myProfileData: FeatureState<UserProfile>,
     myPosts: LazyPagingItems<Post>,
     profileNavigate: ProfileNavigator,
     onNavigateToSocial: (NavigateSocialParam) -> Unit
 ) {
-    val layoutViewModel: ProfileLayoutViewModel = hiltViewModel()
     val userData = (myProfileData as? FeatureState.Success)?.data
 
     LaunchedEffect(Unit) {
@@ -76,7 +77,7 @@ fun MyProfileScreen(
             profile = myProfileData,
             profileNavigate = profileNavigate,
             onNavigateToPost = { postUi, post ->
-                navigateToPost(viewModel, profileNavigate, postUi, post)
+                navigateToPost(layoutViewModel, profileNavigate, postUi, post)
             },
             onNavigateToSocial = onNavigateToSocial,
             posts = myPosts
@@ -113,7 +114,7 @@ private fun MyProfileHeader(
 }
 
 private fun navigateToPost(
-    viewModel: MyProfileViewModel,
+    viewModel: ProfileLayoutViewModel,
     profileNavigate: ProfileNavigator,
     postUi: SelectedPostUi,
     post: Post

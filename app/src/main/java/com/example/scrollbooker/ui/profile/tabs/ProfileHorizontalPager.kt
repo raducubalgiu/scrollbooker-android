@@ -16,8 +16,8 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
-import com.example.scrollbooker.ui.profile.SelectedPostUi
 import com.example.scrollbooker.ui.profile.components.ProfileLayoutViewModel
+import com.example.scrollbooker.ui.profile.components.SelectedPostUi
 import com.example.scrollbooker.ui.profile.tabs.bookmarks.ProfileBookmarksTab
 import com.example.scrollbooker.ui.profile.tabs.employees.ProfileEmployeesTab
 import com.example.scrollbooker.ui.profile.tabs.info.ProfileInfoTab

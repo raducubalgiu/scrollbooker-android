@@ -15,6 +15,7 @@ import com.example.scrollbooker.navigation.LocalTabsController
 import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
+import com.example.scrollbooker.ui.profile.components.ProfileLayoutViewModel
 import com.example.scrollbooker.ui.search.SearchScreen
 import com.example.scrollbooker.ui.search.SearchViewModel
 
@@ -25,8 +26,10 @@ fun MainApplication(onLogout: () -> Unit) {
 
     // My Profile View Model
     val myProfileViewModel: MyProfileViewModel = hiltViewModel()
+    val layoutViewModel: ProfileLayoutViewModel = hiltViewModel()
+
     val myProfileData by myProfileViewModel.userProfileState.collectAsState()
-    val myPosts = myProfileViewModel.userPosts.collectAsLazyPagingItems()
+    val myPosts = layoutViewModel.posts.collectAsLazyPagingItems()
 
     val viewModel: SearchViewModel = hiltViewModel()
 
@@ -61,6 +64,7 @@ fun MainApplication(onLogout: () -> Unit) {
                     MyProfileNavHost(
                         navController = navControllers[MainTab.Profile]!!,
                         viewModel = myProfileViewModel,
+                        layoutViewModel = layoutViewModel,
                         myProfileData = myProfileData,
                         myPosts = myPosts,
                         onLogout = onLogout

@@ -1,4 +1,5 @@
 package com.example.scrollbooker.ui.profile.tabs.employees
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -10,12 +11,9 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -47,11 +45,18 @@ fun ProfileEmployeesTab(
 
     Column(modifier = Modifier.fillMaxSize()) {
         when(refreshState) {
-            is LoadState.Loading -> { LoadingScreen() }
+            is LoadState.Loading -> {
+                LoadingScreen(
+                    modifier = Modifier.padding(top = 50.dp),
+                    arrangement = Arrangement.Top
+                )
+            }
             is LoadState.Error -> ErrorScreen()
             is LoadState.NotLoading -> {
                 if(employees.itemCount == 0) {
                     MessageScreen(
+                        modifier = Modifier.padding(top = 50.dp),
+                        arrangement = Arrangement.Top,
                         message = stringResource(R.string.dontFoundResults),
                         icon = painterResource(R.drawable.ic_users_outline)
                     )

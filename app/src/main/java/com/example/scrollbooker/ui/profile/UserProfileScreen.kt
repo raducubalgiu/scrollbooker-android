@@ -48,17 +48,17 @@ fun UserProfileScreen(
         },
         containerColor = Background
     ) { innerPadding ->
-        ProfileLayout(
-            layoutViewModel = layoutViewModel,
-            innerPadding = innerPadding,
-            profile = profile,
-            profileNavigate = profileNavigate,
-            onNavigateToSocial = onNavigateToSocial,
-            onNavigateToPost = { postUi, post -> },
-            posts = posts,
-            isFollow = isFollow == true,
-            isFollowEnabled = !isSaving,
-            onFollow = { viewModel.follow() },
-        )
+//        ProfileLayout(
+//            layoutViewModel = layoutViewModel,
+//            innerPadding = innerPadding,
+//            profile = profile,
+//            profileNavigate = profileNavigate,
+//            onNavigateToSocial = onNavigateToSocial,
+//            onNavigateToPost = { postUi, post -> },
+//            posts = posts,
+//            isFollow = isFollow == true,
+//            isFollowEnabled = !isSaving,
+//            onFollow = { viewModel.follow() },
+//        )
     }
 }
