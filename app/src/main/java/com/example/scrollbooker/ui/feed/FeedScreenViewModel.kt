@@ -86,27 +86,113 @@ class FeedScreenViewModel @Inject constructor(
 
     fun toggleBottomBar() { _showBottomBar.value = !_showBottomBar.value }
 
+    @kotlin.OptIn(ExperimentalCoroutinesApi::class)
+    val explorePosts: Flow<PagingData<Post>> = selectedBusinessTypes
+        .map { it.toList() }
+        .flatMapLatest { selectedBusinessTypes -> getExplorePostsUseCase(selectedBusinessTypes) }
+        .cachedIn(viewModelScope)
+
+    val followingPosts: Flow<PagingData<Post>> =
+        getFollowingPostsUseCase()
+        .cachedIn(viewModelScope)
+
+    private val _currentByTab = MutableStateFlow<Map<Int, Post?>>(emptyMap())
+    val currentByTab: StateFlow<Map<Int, Post?>> = _currentByTab.asStateFlow()
+
+    fun currentPost(tab: Int): StateFlow<Post?> =
+        currentByTab
+            .map { it[tab] }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+
+    // Post Action
     private val _postUi = MutableStateFlow<Map<Int, PostActionUiState>>(emptyMap())
     fun observePostUi(postId: Int): StateFlow<PostActionUiState> =
         _postUi.map { it[postId] ?: PostActionUiState.EMPTY }
             .stateIn(viewModelScope, SharingStarted.Eagerly, PostActionUiState.EMPTY)
 
-    // Feed
-    @kotlin.OptIn(ExperimentalCoroutinesApi::class)
-    val explorePosts: Flow<PagingData<Post>> = selectedBusinessTypes
-        .map { it.toList() }
-        .flatMapLatest { selectedTypes ->
-            getExplorePostsUseCase(
-                selectedBusinessTypes = selectedTypes
-            )
+    private inline fun MutableStateFlow<Map<Int, PostActionUiState>>.edit(
+        postId: Int,
+        crossinline reducer: (PostActionUiState) -> PostActionUiState
+    ) {
+        update { map ->
+            val curr = map[postId] ?: PostActionUiState.EMPTY
+            map + (postId to reducer(curr))
         }
-        .cachedIn(viewModelScope)
-
-    private val _followingPosts: Flow<PagingData<Post>> by lazy {
-        getFollowingPostsUseCase()
-            .cachedIn(viewModelScope)
     }
-    val followingPosts: Flow<PagingData<Post>> get() = _followingPosts
+
+    private inline fun toggleAction(
+        postId: Int,
+        backendFlag: Boolean,
+        backendCount: Int,
+        crossinline isFlagOverridden: (PostActionUiState) -> Boolean?,
+        crossinline setFlag: (PostActionUiState, Boolean) -> PostActionUiState,
+        crossinline savingOn: (PostActionUiState) -> PostActionUiState,
+        crossinline savingOff: (PostActionUiState) -> PostActionUiState,
+        crossinline getDelta: (PostActionUiState) -> Int,
+        crossinline setDelta: (PostActionUiState, Int) -> PostActionUiState,
+        crossinline doOn: suspend () -> Result<Unit>,
+        crossinline doOff: suspend () -> Result<Unit>,
+    ) {
+        val currentPostAction = _postUi.value[postId] ?: PostActionUiState.EMPTY
+
+        val currentFlag = isFlagOverridden(currentPostAction) ?: backendFlag
+
+        val wantOn = !currentFlag
+
+        _postUi.edit(postId) { s ->
+            val base = backendCount
+            val curr = base + getDelta(s)
+            val next = if(wantOn) curr + 1 else curr - 1
+
+            savingOn(setFlag(setDelta(s, next - base), wantOn))
+        }
+
+        viewModelScope.launch {
+            val result = if(wantOn) doOn() else doOff()
+
+            if(result.isSuccess) {
+                _postUi.edit(postId) { s -> savingOff(s) }
+            } else {
+                _postUi.edit(postId) { s ->
+                    val revertedFlag = !(isFlagOverridden(s)!!)
+                    val reverted = setFlag(setDelta(s, 0), revertedFlag)
+                    savingOff(reverted)
+                }
+            }
+        }
+    }
+
+    fun toggleLike(post: Post) {
+        toggleAction(
+            postId = post.id,
+            backendFlag = post.userActions.isLiked,
+            backendCount = post.counters.likeCount,
+            isFlagOverridden = { it.isLiked },
+            setFlag = { s, v -> s.copy(isLiked = v) },
+            savingOn = { it.copy(isSavingLike = true) },
+            savingOff = { it.copy(isSavingLike = false) },
+            getDelta = { it.likesCount },
+            setDelta = { s, d -> s.copy(likesCount = d) },
+            doOn = { likePostUseCase(post.id) },
+            doOff = { unLikePostUseCase(post.id) }
+        )
+    }
+
+    fun toggleBookmark(post: Post) {
+        toggleAction(
+            postId = post.id,
+            backendFlag = post.userActions.isBookmarked,
+            backendCount = post.counters.bookmarkCount,
+            isFlagOverridden = { it.isBookmarked },
+            setFlag = { s, v -> s.copy(isBookmarked = v) },
+            savingOn = { it.copy(isSavingBookmark = true) },
+            savingOff = { it.copy(isSavingBookmark = false) },
+            getDelta = { it.bookmarksCount },
+            setDelta = { s, d -> s.copy(bookmarksCount = d) },
+            doOn = { bookmarkPostUseCase(post.id) },
+            doOff = { unBookmarkPostUseCase(post.id) }
+        )
+    }
 
     // Player
     private val maxPlayers = 3
@@ -307,102 +393,5 @@ class FeedScreenViewModel @Inject constructor(
     override fun onCleared() {
         stopDetailSession()
         super.onCleared()
-    }
-
-    // Actions
-    private val _currentByTab = MutableStateFlow<Map<Int, Post?>>(emptyMap())
-    val currentByTab: StateFlow<Map<Int, Post?>> = _currentByTab.asStateFlow()
-
-    fun currentPost(tab: Int): StateFlow<Post?> =
-        currentByTab
-            .map { it[tab] }
-            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
-
-    fun updateCurrentPost(tab: Int, post: Post?) {
-        _currentByTab.update { it + (tab to post) }
-    }
-
-    private inline fun MutableStateFlow<Map<Int, PostActionUiState>>.edit(
-        postId: Int,
-        crossinline reducer: (PostActionUiState) -> PostActionUiState
-    ) {
-        update { map ->
-            val curr = map[postId] ?: PostActionUiState.EMPTY
-            map + (postId to reducer(curr))
-        }
-    }
-
-    private inline fun toggleAction(
-        postId: Int,
-        backendFlag: Boolean,
-        backendCount: Int,
-        crossinline isFlagOverridden: (PostActionUiState) -> Boolean?,
-        crossinline setFlag: (PostActionUiState, Boolean) -> PostActionUiState,
-        crossinline savingOn: (PostActionUiState) -> PostActionUiState,
-        crossinline savingOff: (PostActionUiState) -> PostActionUiState,
-        crossinline getDelta: (PostActionUiState) -> Int,
-        crossinline setDelta: (PostActionUiState, Int) -> PostActionUiState,
-        crossinline doOn: suspend () -> Result<Unit>,
-        crossinline doOff: suspend () -> Result<Unit>,
-    ) {
-        val currentPostAction = _postUi.value[postId] ?: PostActionUiState.EMPTY
-
-        val currentFlag = isFlagOverridden(currentPostAction) ?: backendFlag
-
-        val wantOn = !currentFlag
-
-        _postUi.edit(postId) { s ->
-            val base = backendCount
-            val curr = base + getDelta(s)
-            val next = if(wantOn) curr + 1 else curr - 1
-
-            savingOn(setFlag(setDelta(s, next - base), wantOn))
-        }
-
-        viewModelScope.launch {
-            val result = if(wantOn) doOn() else doOff()
-
-            if(result.isSuccess) {
-                _postUi.edit(postId) { s -> savingOff(s) }
-            } else {
-                _postUi.edit(postId) { s ->
-                    val revertedFlag = !(isFlagOverridden(s)!!)
-                    val reverted = setFlag(setDelta(s, 0), revertedFlag)
-                    savingOff(reverted)
-                }
-            }
-        }
-    }
-
-    fun toggleLike(post: Post) {
-        toggleAction(
-            postId = post.id,
-            backendFlag = post.userActions.isLiked,
-            backendCount = post.counters.likeCount,
-            isFlagOverridden = { it.isLiked },
-            setFlag = { s, v -> s.copy(isLiked = v) },
-            savingOn = { it.copy(isSavingLike = true) },
-            savingOff = { it.copy(isSavingLike = false) },
-            getDelta = { it.likesCount },
-            setDelta = { s, d -> s.copy(likesCount = d) },
-            doOn = { likePostUseCase(post.id) },
-            doOff = { unLikePostUseCase(post.id) }
-        )
-    }
-
-    fun toggleBookmark(post: Post) {
-        toggleAction(
-            postId = post.id,
-            backendFlag = post.userActions.isBookmarked,
-            backendCount = post.counters.bookmarkCount,
-            isFlagOverridden = { it.isBookmarked },
-            setFlag = { s, v -> s.copy(isBookmarked = v) },
-            savingOn = { it.copy(isSavingBookmark = true) },
-            savingOff = { it.copy(isSavingBookmark = false) },
-            getDelta = { it.bookmarksCount },
-            setDelta = { s, d -> s.copy(bookmarksCount = d) },
-            doOn = { bookmarkPostUseCase(post.id) },
-            doOff = { unBookmarkPostUseCase(post.id) }
-        )
     }
 }
