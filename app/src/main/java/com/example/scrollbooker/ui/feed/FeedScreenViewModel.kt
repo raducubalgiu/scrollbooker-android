@@ -1,9 +1,6 @@
 package com.example.scrollbooker.ui.feed
 import android.content.Context
-import android.os.HandlerThread
-import android.os.Process
 import androidx.annotation.OptIn
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
@@ -29,13 +26,11 @@ import com.example.scrollbooker.entity.social.post.domain.useCase.GetFollowingPo
 import com.example.scrollbooker.entity.social.post.domain.useCase.LikePostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.UnBookmarkPostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.UnLikePostUseCase
-import com.example.scrollbooker.ui.shared.posts.PlayerUIState
 import com.example.scrollbooker.ui.shared.posts.PostActionUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -43,14 +38,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import timber.log.Timber
 import javax.inject.Inject
 import kotlin.collections.component1
 import kotlin.collections.component2
@@ -79,6 +71,16 @@ class FeedScreenViewModel @Inject constructor(
     fun setSelectedBusinessTypes(businessTypes: Set<Int>) {
         _selectedBusinessTypes.value = businessTypes
     }
+
+    private val _showBottomBar = MutableStateFlow<Boolean>(true)
+    val showBottomBar: StateFlow<Boolean> = _showBottomBar.asStateFlow()
+
+    fun toggleBottomBar() { _showBottomBar.value = !_showBottomBar.value }
+
+    private val _postUi = MutableStateFlow<Map<Int, PostActionUiState>>(emptyMap())
+    fun observePostUi(postId: Int): StateFlow<PostActionUiState> =
+        _postUi.map { it[postId] ?: PostActionUiState.EMPTY }
+            .stateIn(viewModelScope, SharingStarted.Eagerly, PostActionUiState.EMPTY)
 
     // Feed
     @kotlin.OptIn(ExperimentalCoroutinesApi::class)
@@ -311,16 +313,6 @@ class FeedScreenViewModel @Inject constructor(
     fun updateCurrentPost(tab: Int, post: Post?) {
         _currentByTab.update { it + (tab to post) }
     }
-
-    private val _showBottomBar = MutableStateFlow<Boolean>(true)
-    val showBottomBar: StateFlow<Boolean> = _showBottomBar.asStateFlow()
-
-    fun toggleBottomBar() { _showBottomBar.value = !_showBottomBar.value }
-
-    private val _postUi = MutableStateFlow<Map<Int, PostActionUiState>>(emptyMap())
-    fun observePostUi(postId: Int): StateFlow<PostActionUiState> =
-        _postUi.map { it[postId] ?: PostActionUiState.EMPTY }
-            .stateIn(viewModelScope, SharingStarted.Eagerly, PostActionUiState.EMPTY)
 
     private inline fun MutableStateFlow<Map<Int, PostActionUiState>>.edit(
         postId: Int,

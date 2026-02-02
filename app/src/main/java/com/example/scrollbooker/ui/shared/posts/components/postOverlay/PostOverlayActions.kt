@@ -26,14 +26,14 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.social.post.domain.model.PostCounters
 import com.example.scrollbooker.entity.social.post.domain.model.PostUser
 import com.example.scrollbooker.entity.social.post.domain.model.UserPostActions
-import com.example.scrollbooker.ui.shared.posts.PostActionUiState
 import com.example.scrollbooker.ui.shared.posts.components.PostActionButton
 import com.example.scrollbooker.ui.theme.Error
 
 @Composable
 fun PostOverlayActions(
     user: PostUser,
-    postActionState: PostActionUiState,
+    isSavingLike: Boolean,
+    isSavingBookmark: Boolean,
     isVideoReview: Boolean,
     enableOpacity: Boolean,
     counters: PostCounters,
@@ -71,7 +71,7 @@ fun PostOverlayActions(
         Spacer(Modifier.height(SpacingS))
 
         PostActionButton(
-            isEnabled = !postActionState.isSavingLike,
+            isEnabled = !isSavingLike,
             enableOpacity = enableOpacity,
             counter = counters.likeCount,
             icon = R.drawable.ic_heart_solid,
@@ -99,7 +99,7 @@ fun PostOverlayActions(
         )
 
         PostActionButton(
-            isEnabled = !postActionState.isSavingBookmark,
+            isEnabled = !isSavingBookmark,
             enableOpacity = enableOpacity,
             counter = counters.bookmarkCount,
             icon = R.drawable.ic_bookmark_solid,

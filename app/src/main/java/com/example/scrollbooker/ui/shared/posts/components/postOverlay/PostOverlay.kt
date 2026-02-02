@@ -28,7 +28,8 @@ import com.example.scrollbooker.ui.shared.posts.components.PostActionButtonSmall
 @Composable
 fun PostOverlay(
     post: Post,
-    postActionState: PostActionUiState,
+    isSavingLike: Boolean,
+    isSavingBookmark: Boolean,
     onAction: (PostOverlayActionEnum) -> Unit,
 
     enableOpacity: Boolean = false,
@@ -85,7 +86,8 @@ fun PostOverlay(
 
             PostOverlayActions(
                 user = post.user,
-                postActionState = postActionState,
+                isSavingLike = isSavingLike,
+                isSavingBookmark = isSavingBookmark,
                 isVideoReview = post.isVideoReview,
                 enableOpacity = enableOpacity,
                 counters = post.counters,

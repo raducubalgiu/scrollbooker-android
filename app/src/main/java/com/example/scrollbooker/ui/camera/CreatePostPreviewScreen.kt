@@ -256,7 +256,8 @@ fun CreatePostPreviewScreen(
                         ),
                         createdAt = ""
                     ),
-                    postActionState = PostActionUiState(),
+                    isSavingLike = false,
+                    isSavingBookmark = false,
                     onAction = {},
                     showBottomBar = false,
                     onShowBottomBar = {},

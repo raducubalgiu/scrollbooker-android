@@ -171,7 +171,8 @@ fun PostVerticalPager(
 
                         PostOverlay(
                             post = postUi,
-                            postActionState = postActionState,
+                            isSavingLike = postActionState.isSavingLike,
+                            isSavingBookmark = postActionState.isSavingBookmark,
                             onAction = { onAction(it, post) },
                             enableOpacity = false,
                             showBottomBar = showBottomBar,

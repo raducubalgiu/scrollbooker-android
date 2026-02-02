@@ -173,7 +173,8 @@ fun MyProfilePostDetailScreen(
 
                         PostOverlay(
                             post = post,
-                            postActionState = PostActionUiState(),
+                            isSavingLike = false,
+                            isSavingBookmark = false,
                             onAction = {},
                             enableOpacity = false,
                             showBottomBar = false,
