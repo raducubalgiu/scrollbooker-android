@@ -1,3 +1,5 @@
+@file:kotlin.OptIn(ExperimentalMaterial3Api::class)
+
 package com.example.scrollbooker.ui.profile
 import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedVisibility
@@ -21,8 +23,10 @@ import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -42,6 +46,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
@@ -64,17 +69,30 @@ import com.example.scrollbooker.ui.profile.components.PostTabEnum
 import com.example.scrollbooker.ui.profile.components.ProfileLayoutViewModel
 import com.example.scrollbooker.ui.shared.posts.components.PostPlayerView
 import com.example.scrollbooker.ui.shared.posts.components.PostShimmer
+import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlayActionEnum
+import com.example.scrollbooker.ui.shared.posts.sheets.PostSheets
+import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent
+import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.BookingsSheet
+import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.CommentsSheet
+import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.LocationSheet
+import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.MoreOptionsSheet
+import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.None
+import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.PhoneSheet
+import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.ReviewsSheet
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.launch
 
-@OptIn(UnstableApi::class)
+@OptIn(UnstableApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun MyProfilePostDetailScreen(
     layoutViewModel: ProfileLayoutViewModel,
     posts: LazyPagingItems<Post>,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onNavigateToUserProfile: (Int) -> Unit
 ) {
+    val scope = rememberCoroutineScope()
     val selectedPost by layoutViewModel.selectedPost.collectAsState()
     val startIndex = selectedPost?.index ?: 0
 
@@ -82,6 +100,31 @@ fun MyProfilePostDetailScreen(
         PostTabEnum.MY_POSTS -> stringResource(R.string.posts)
         PostTabEnum.BOOKMARKS -> stringResource(R.string.bookmarks)
         null -> ""
+    }
+
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var sheetContent by remember { mutableStateOf<PostSheetsContent>(None) }
+
+    if(sheetState.isVisible) {
+        key(sheetContent) {
+            PostSheets(
+                sheetState = sheetState,
+                sheetContent = sheetContent,
+                onClose = {
+                    scope.launch {
+                        sheetState.hide()
+                        sheetContent = None
+                    }
+                },
+            )
+        }
+    }
+
+    fun handleOpenSheet(targetSheet: PostSheetsContent) {
+        scope.launch {
+            sheetState.show()
+            sheetContent = targetSheet
+        }
     }
 
     key(startIndex) {
@@ -189,8 +232,17 @@ fun MyProfilePostDetailScreen(
                             post = postUi,
                             isSavingLike = postActionState.isSavingLike,
                             isSavingBookmark = postActionState.isSavingBookmark,
-                            onAction = {},
-                            onNavigateToUserProfile = {}
+                            onAction = { action ->
+                                selectedPost?.let { post ->
+                                    handlePostAction(
+                                        feedViewModel = layoutViewModel,
+                                        action = action,
+                                        handleOpenSheet = { handleOpenSheet(it) },
+                                        post = post.post
+                                    )
+                                }
+                            },
+                            onNavigateToUserProfile = onNavigateToUserProfile
                         )
                     }
                 }
@@ -202,11 +254,41 @@ fun MyProfilePostDetailScreen(
                             horizontal = BasePadding
                         ),
                     contentPadding = PaddingValues(14.dp),
-                    onClick = {},
+                    onClick = {
+                        selectedPost?.let { post ->
+                            handlePostAction(
+                                feedViewModel = layoutViewModel,
+                                action = PostOverlayActionEnum.OPEN_BOOKINGS,
+                                handleOpenSheet = { handleOpenSheet(it) },
+                                post = post.post
+                            )
+                        }
+                    },
                     title = stringResource(R.string.bookNow),
                 )
             }
         }
+    }
+}
+
+private fun handlePostAction(
+    feedViewModel: ProfileLayoutViewModel,
+    action: PostOverlayActionEnum,
+    handleOpenSheet: (PostSheetsContent) -> Unit,
+    post: Post
+) {
+    when(action) {
+        PostOverlayActionEnum.OPEN_BOOKINGS -> handleOpenSheet(BookingsSheet(post.user))
+        PostOverlayActionEnum.OPEN_REVIEWS -> {
+            val id = if(post.isVideoReview) post.businessOwner.id else post.user.id
+            handleOpenSheet(ReviewsSheet(id))
+        }
+        PostOverlayActionEnum.OPEN_COMMENTS -> handleOpenSheet(CommentsSheet(post.id))
+        PostOverlayActionEnum.OPEN_LOCATION -> handleOpenSheet(LocationSheet(post.businessId))
+        PostOverlayActionEnum.OPEN_MORE_OPTIONS -> handleOpenSheet(MoreOptionsSheet(post.user.id, post.isOwnPost))
+        PostOverlayActionEnum.OPEN_PHONE -> handleOpenSheet(PhoneSheet(0.7f))
+        PostOverlayActionEnum.LIKE -> feedViewModel.toggleLike(post)
+        PostOverlayActionEnum.BOOKMARK -> feedViewModel.toggleBookmark(post)
     }
 }
 

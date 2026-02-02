@@ -27,7 +27,6 @@ import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheetUse
 import com.example.scrollbooker.ui.shared.posts.sheets.comments.CommentsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.moreOptions.MoreOptionsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.location.LocationSheet
-import com.example.scrollbooker.ui.shared.posts.sheets.reviewDetails.ReviewDetailsScreen
 import com.example.scrollbooker.ui.shared.posts.sheets.reviews.ReviewsSheet
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
@@ -92,11 +91,6 @@ fun PostSheets(
                         ratingsCount = user.ratingsCount,
                         ratingsAverage = user.ratingsAverage
                     ),
-                    onClose = onClose
-                )
-            }
-            is PostSheetsContent.ReviewDetailsSheet -> {
-                ReviewDetailsScreen(
                     onClose = onClose
                 )
             }

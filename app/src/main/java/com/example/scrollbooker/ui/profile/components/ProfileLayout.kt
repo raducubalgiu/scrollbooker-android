@@ -69,7 +69,6 @@ fun ProfileLayout(
     val currentTab by layoutViewModel.currentTab.collectAsStateWithLifecycle()
     val headerOffset by layoutViewModel.headerOffset.collectAsStateWithLifecycle()
 
-    val schedules by layoutViewModel.schedules.collectAsStateWithLifecycle()
     val scheduleSheetState = rememberModalBottomSheetState()
 
     val nestedScrollConnection = remember(headerHeightPx) {
@@ -114,7 +113,7 @@ fun ProfileLayout(
     if(scheduleSheetState.isVisible) {
         UserScheduleSheet(
             sheetState = scheduleSheetState,
-            schedules = schedules,
+            layoutViewModel = layoutViewModel,
         )
     }
 

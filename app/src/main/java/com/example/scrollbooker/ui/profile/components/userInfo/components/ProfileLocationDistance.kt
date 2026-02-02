@@ -37,7 +37,12 @@ fun ProfileLocationDistance(distance: Float) {
             contentDescription = null,
             tint = Color.Gray
         )
+
         Spacer(Modifier.width(4.dp))
-        Text(text = stringResource(R.string.distanceText, distance))
+
+        Text(
+            text = stringResource(R.string.distanceText, distance),
+            fontWeight = FontWeight.SemiBold
+        )
     }
 }

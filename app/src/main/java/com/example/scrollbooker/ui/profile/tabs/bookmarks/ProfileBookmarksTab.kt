@@ -65,7 +65,7 @@ fun ProfileBookmarksTab(
                                 onNavigateToPost = { id ->
                                     onNavigateToPost(
                                         SelectedPostUi(
-                                            postId = id,
+                                            post = it,
                                             tab = PostTabEnum.BOOKMARKS,
                                             index = index
                                         ),

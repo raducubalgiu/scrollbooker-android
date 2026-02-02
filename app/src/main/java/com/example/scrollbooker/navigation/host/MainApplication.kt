@@ -27,11 +27,10 @@ fun MainApplication(onLogout: () -> Unit) {
     // My Profile View Model
     val myProfileViewModel: MyProfileViewModel = hiltViewModel()
     val layoutViewModel: ProfileLayoutViewModel = hiltViewModel()
+    val searchViewModel: SearchViewModel = hiltViewModel()
 
     val myProfileData by myProfileViewModel.userProfileState.collectAsState()
     val myPosts = layoutViewModel.posts.collectAsLazyPagingItems()
-
-    val viewModel: SearchViewModel = hiltViewModel()
 
     val saveableStateHolder = rememberSaveableStateHolder()
     val navControllers = remember {
@@ -46,7 +45,7 @@ fun MainApplication(onLogout: () -> Unit) {
 
     Box(modifier = Modifier.fillMaxSize()) {
         SearchScreen(
-            viewModel = viewModel,
+            viewModel = searchViewModel,
             isSearchTab = currentTab is MainTab.Search,
             onNavigateToBusinessProfile = {
                 searchNavHostController.navigate(MainRoute.BusinessProfile.createRoute(it))

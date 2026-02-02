@@ -44,6 +44,7 @@ fun MyProfileNavHost(
     navController: NavHostController,
     onLogout: () -> Unit
 ) {
+    val mainNavController = LocalMainNavController.current
     val posts = layoutViewModel.detailPostsFlow.collectAsLazyPagingItems()
 
     NavHost(
@@ -75,7 +76,6 @@ fun MyProfileNavHost(
             popExitTransition = { slideOutToRight() }
         ) {
             composable(MainRoute.MyProfile.route) {
-                val mainNavController = LocalMainNavController.current
                 val permissionController = LocalUserPermissions.current
 
                 val profileNavigate = remember(mainNavController, navController) {
@@ -112,7 +112,10 @@ fun MyProfileNavHost(
                 MyProfilePostDetailScreen(
                     layoutViewModel = layoutViewModel,
                     posts = posts,
-                    onBack = { navController.popBackStack() }
+                    onBack = { navController.popBackStack() },
+                    onNavigateToUserProfile = {
+                        mainNavController.navigate("${MainRoute.UserProfile.route}/${it}")
+                    }
                 )
             }
 
@@ -140,8 +143,6 @@ fun MyProfileNavHost(
 
             val viewModel = hiltViewModel<SocialViewModel>(backStackEntry)
             val socialParams = NavigateSocialParam(tabIndex, userId, username, isBusinessOrEmployee)
-
-            val mainNavController = LocalMainNavController.current
 
             SocialScreen(
                 viewModal = viewModel,

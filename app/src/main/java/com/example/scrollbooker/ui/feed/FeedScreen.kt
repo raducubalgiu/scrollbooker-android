@@ -21,7 +21,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.entity.social.post.domain.model.Post
@@ -40,7 +39,6 @@ import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.Locatio
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.MoreOptionsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.None
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.PhoneSheet
-import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.ReviewDetailsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.ReviewsSheet
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import kotlinx.coroutines.launch
@@ -185,7 +183,6 @@ private fun handlePostAction(
 ) {
     when(action) {
         PostOverlayActionEnum.OPEN_BOOKINGS -> handleOpenSheet(BookingsSheet(post.user))
-        PostOverlayActionEnum.OPEN_REVIEW_DETAILS -> handleOpenSheet(ReviewDetailsSheet(post.user.id))
         PostOverlayActionEnum.OPEN_REVIEWS -> {
             val id = if(post.isVideoReview) post.businessOwner.id else post.user.id
             handleOpenSheet(ReviewsSheet(id))

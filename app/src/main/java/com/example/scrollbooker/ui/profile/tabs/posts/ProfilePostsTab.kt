@@ -62,7 +62,7 @@ fun ProfilePostsTab(
                                 onNavigateToPost = { id ->
                                     onNavigateToPost(
                                         SelectedPostUi(
-                                            postId = id,
+                                            post = it,
                                             tab = PostTabEnum.MY_POSTS,
                                             index = index
                                         ),

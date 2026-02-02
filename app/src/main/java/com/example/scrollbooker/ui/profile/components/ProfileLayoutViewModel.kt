@@ -69,7 +69,7 @@ enum class PostTabEnum {
 }
 
 data class SelectedPostUi(
-    val postId: Int,
+    val post: Post,
     val tab: PostTabEnum,
     val index: Int
 )
@@ -134,17 +134,11 @@ class ProfileLayoutViewModel @Inject constructor(
             .cachedIn(viewModelScope)
 
     // Tabs
-
     @kotlin.OptIn(ExperimentalCoroutinesApi::class)
     val posts: Flow<PagingData<Post>> = userIdFlow
         .filterNotNull()
         .flatMapLatest { userId -> getUserPostsUseCase(userId) }
         .cachedIn(viewModelScope)
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Eagerly,
-            initialValue = PagingData.empty()
-        )
 
     @kotlin.OptIn(ExperimentalCoroutinesApi::class)
     val employees: Flow<PagingData<Employee>> = userIdFlow
