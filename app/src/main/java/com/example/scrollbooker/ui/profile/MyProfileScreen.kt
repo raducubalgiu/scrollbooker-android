@@ -10,7 +10,6 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.headers.Header
@@ -35,7 +34,6 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyProfileScreen(
-    viewModel: MyProfileViewModel,
     layoutViewModel: ProfileLayoutViewModel,
     permissionController: UserPermissionsController,
     myProfileData: FeatureState<UserProfile>,
@@ -76,8 +74,8 @@ fun MyProfileScreen(
             innerPadding = innerPadding,
             profile = myProfileData,
             profileNavigate = profileNavigate,
-            onNavigateToPost = { postUi, post ->
-                navigateToPost(layoutViewModel, profileNavigate, postUi, post)
+            onNavigateToPost = {
+                navigateToPost(layoutViewModel, profileNavigate, it)
             },
             onNavigateToSocial = onNavigateToSocial,
             posts = myPosts
@@ -116,14 +114,13 @@ private fun MyProfileHeader(
 private fun navigateToPost(
     viewModel: ProfileLayoutViewModel,
     profileNavigate: ProfileNavigator,
-    postUi: SelectedPostUi,
-    post: Post
+    postUi: SelectedPostUi
 ) {
     viewModel.onPageSettled(postUi.index)
 
     viewModel.ensureImmediate(
         centerIndex = postUi.index,
-        getPost = { i -> if(i == postUi.index) post else null }
+        getPost = { i -> if(i == postUi.index) postUi.post else null }
     )
 
     viewModel.setSelectedPost(postUi)

@@ -18,7 +18,6 @@ import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.customized.LoadMoreSpinner
-import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.ui.profile.components.PostTabEnum
 import com.example.scrollbooker.ui.profile.components.ProfileLayoutViewModel
 import com.example.scrollbooker.ui.profile.components.SelectedPostUi
@@ -26,7 +25,7 @@ import com.example.scrollbooker.ui.profile.components.SelectedPostUi
 @Composable
 fun ProfileBookmarksTab(
     viewModel: ProfileLayoutViewModel,
-    onNavigateToPost: (SelectedPostUi, Post) -> Unit
+    onNavigateToPost: (SelectedPostUi) -> Unit
 ) {
     val posts = viewModel.bookmarks.collectAsLazyPagingItems()
 
@@ -68,8 +67,7 @@ fun ProfileBookmarksTab(
                                             post = it,
                                             tab = PostTabEnum.BOOKMARKS,
                                             index = index
-                                        ),
-                                        it
+                                        )
                                     )
                                 }
                             )

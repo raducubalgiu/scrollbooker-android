@@ -54,7 +54,7 @@ fun UserProfileScreen(
             profile = profile,
             profileNavigate = profileNavigate,
             onNavigateToSocial = onNavigateToSocial,
-            onNavigateToPost = { postUi, post -> },
+            onNavigateToPost = { postUi -> },
             posts = posts,
             isFollow = isFollow == true,
             isFollowEnabled = !isSaving,

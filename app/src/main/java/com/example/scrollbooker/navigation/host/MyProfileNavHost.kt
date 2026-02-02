@@ -86,7 +86,6 @@ fun MyProfileNavHost(
                 }
 
                 MyProfileScreen(
-                    viewModel = viewModel,
                     layoutViewModel = layoutViewModel,
                     permissionController = permissionController,
                     myProfileData = myProfileData,

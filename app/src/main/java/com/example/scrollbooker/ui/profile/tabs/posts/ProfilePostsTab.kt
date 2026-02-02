@@ -25,7 +25,7 @@ import com.example.scrollbooker.ui.profile.components.SelectedPostUi
 @Composable
 fun ProfilePostsTab(
     posts: LazyPagingItems<Post>,
-    onNavigateToPost: (SelectedPostUi, Post) -> Unit
+    onNavigateToPost: (SelectedPostUi) -> Unit
 ) {
     val refreshState = posts.loadState.refresh
     val appendState = posts.loadState.refresh
@@ -65,8 +65,7 @@ fun ProfilePostsTab(
                                             post = it,
                                             tab = PostTabEnum.MY_POSTS,
                                             index = index
-                                        ),
-                                        it
+                                        )
                                     )
                                 }
                             )

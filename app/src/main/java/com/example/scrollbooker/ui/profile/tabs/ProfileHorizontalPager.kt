@@ -29,7 +29,7 @@ fun ProfileHorizontalPager(
     pagerState: PagerState,
     profileNavigate: ProfileNavigator,
     tabs: List<ProfileTab>,
-    onNavigateToPost: (SelectedPostUi, Post) -> Unit,
+    onNavigateToPost: (SelectedPostUi) -> Unit,
     posts: LazyPagingItems<Post>
 ) {
     HorizontalPager(state = pagerState) { page ->

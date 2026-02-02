@@ -55,7 +55,7 @@ fun ProfileLayout(
     innerPadding: PaddingValues,
     profile: FeatureState<UserProfile>,
     profileNavigate: ProfileNavigator,
-    onNavigateToPost: (SelectedPostUi, Post) -> Unit,
+    onNavigateToPost: (SelectedPostUi) -> Unit,
     onNavigateToSocial: (NavigateSocialParam) -> Unit,
     posts: LazyPagingItems<Post>,
     isFollow: Boolean = false,
