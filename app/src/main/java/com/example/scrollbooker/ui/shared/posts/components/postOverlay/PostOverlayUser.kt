@@ -56,34 +56,57 @@ fun PostOverlayUser(
     val interactionSource = remember { MutableInteractionSource() }
     val isBusiness = user.id == businessOwner.id
 
-    if(showPhone) {
-        Button(
-            onClick = onOpenPhone,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.White.copy(alpha = 0.1f),
-                contentColor = OnBackground
-            ),
-            contentPadding = PaddingValues(
-                vertical = 10.dp,
-                horizontal = BasePadding
-            )
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    modifier = Modifier.size(17.dp),
-                    painter = painterResource(R.drawable.ic_call_outline),
-                    contentDescription = null,
-                    tint = Color.White
+    when {
+        isVideoReview -> {
+            Button(
+                onClick = {},
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White.copy(alpha = 0.1f),
+                    contentColor = OnBackground
+                ),
+                contentPadding = PaddingValues(
+                    vertical = 10.dp,
+                    horizontal = BasePadding
                 )
-
-                Spacer(Modifier.width(SpacingS))
-
+            ) {
                 Text(
-                    text = stringResource(R.string.call),
+                    text = "Recenzie video",
                     style = bodyLarge,
                     fontWeight = FontWeight.SemiBold,
                     color = Color.White
                 )
+            }
+        }
+
+        showPhone -> {
+            Button(
+                onClick = onOpenPhone,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White.copy(alpha = 0.1f),
+                    contentColor = OnBackground
+                ),
+                contentPadding = PaddingValues(
+                    vertical = 10.dp,
+                    horizontal = BasePadding
+                )
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        modifier = Modifier.size(17.dp),
+                        painter = painterResource(R.drawable.ic_call_outline),
+                        contentDescription = null,
+                        tint = Color.White
+                    )
+
+                    Spacer(Modifier.width(SpacingS))
+
+                    Text(
+                        text = stringResource(R.string.call),
+                        style = bodyLarge,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.White
+                    )
+                }
             }
         }
     }

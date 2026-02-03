@@ -123,7 +123,7 @@ fun Post.ctaAction(): PostOverlayActionEnum = when {
 }
 
 fun Post.ctaTitle(): Int = when {
-    isVideoReview -> R.string.seeMore
+    isVideoReview -> R.string.bookYours
     //product != null -> R.string.bookThisService
     else -> R.string.bookNow
 }

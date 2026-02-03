@@ -7,8 +7,8 @@ import com.example.scrollbooker.entity.booking.review.domain.model.ReviewsSummar
 
 fun ReviewsSummaryDto.toDomain(): ReviewsSummary {
     return ReviewsSummary(
-        averageRating = averageRating,
-        totalReviews = totalReviews,
+        ratingsAverage = ratingsAverage,
+        ratingsCount = ratingsCount,
         breakdown = breakdown.map { it.toDomain() }
     )
 }

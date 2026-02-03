@@ -1,8 +1,8 @@
 package com.example.scrollbooker.entity.booking.review.domain.model
 
 data class ReviewsSummary(
-    val averageRating: Float,
-    val totalReviews: Int,
+    val ratingsAverage: Float,
+    val ratingsCount: Int,
     val breakdown: List<RatingBreakdown>
 )
 

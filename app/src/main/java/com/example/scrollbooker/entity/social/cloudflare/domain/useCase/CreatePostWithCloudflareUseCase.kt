@@ -13,7 +13,11 @@ class CreatePostWithCloudflareUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(
         videoFile: File,
-        description: String?
+        description: String?,
+        businessOrEmployeeId: Int?,
+        isVideoReview: Boolean,
+        videoReviewMessage: String?,
+        rating: Int?
     ) {
         val direct = cloudflareRepository.directVideoUpload(
             CloudflareDirectUploadRequest(
@@ -27,7 +31,11 @@ class CreatePostWithCloudflareUseCase @Inject constructor(
             CreatePostRequest(
                 description = description,
                 provider = "cloudflare_stream",
-                providerUid = direct.providerUid
+                providerUid = direct.providerUid,
+                businessOrEmployeeId = businessOrEmployeeId,
+                isVideoReview = isVideoReview,
+                videoReviewMessage = videoReviewMessage,
+                rating = rating
             )
         )
     }

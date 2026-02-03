@@ -39,7 +39,9 @@ fun NavGraphBuilder.cameraGraph(mainNavController: NavHostController) {
         popEnterTransition = { EnterTransition.None },
         popExitTransition = { slideOutVertically(popSpec) { it } + fadeOut(fadeOutSpec) }
     ) {
-        composable(route = MainRoute.Camera.route) { backStackEntry ->
+        composable(
+            route = MainRoute.Camera.route
+        ) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 mainNavController.getBackStackEntry(MainRoute.CameraNavigator.route)
             }

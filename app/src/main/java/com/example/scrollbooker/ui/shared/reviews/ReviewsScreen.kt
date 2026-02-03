@@ -1,5 +1,4 @@
 package com.example.scrollbooker.ui.shared.reviews
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,15 +21,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.zIndex
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
-import com.example.scrollbooker.components.core.sheet.SheetHeader
+import com.example.scrollbooker.components.core.layout.MessageScreen
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.rememberCollapsingNestedScroll
 import com.example.scrollbooker.entity.booking.review.domain.model.ReviewsSummary
@@ -38,7 +37,6 @@ import com.example.scrollbooker.ui.shared.reviews.components.ReviewsSummarySecti
 import com.example.scrollbooker.ui.shared.reviews.tabs.ReviewsTabRow
 import com.example.scrollbooker.ui.shared.reviews.tabs.VideoReviewsTab
 import com.example.scrollbooker.ui.shared.reviews.tabs.WrittenReviewsTab
-import com.example.scrollbooker.ui.theme.Background
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -49,8 +47,7 @@ import kotlin.math.roundToInt
 fun ReviewsScreen(
     viewModel: ReviewsViewModel,
     userId: Int,
-    onNavigateToReviewDetail: () -> Unit,
-    onClose: (() -> Unit)? = null,
+    onNavigateToReviewDetail: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val tabs = listOf(stringResource(R.string.written), stringResource(R.string.video))
@@ -97,76 +94,67 @@ fun ReviewsScreen(
         onHeaderOffsetChanged = { headerOffset = it }
     )
 
-    Column(Modifier.fillMaxSize()) {
-        SheetHeader(
-            modifier = Modifier
-                .background(Background)
-                .zIndex(25f),
-            title = stringResource(R.string.reviews),
-            onClose = {
-                onClose?.invoke()
-            }
-        )
+    when(summaryState) {
+        is FeatureState.Error -> ErrorScreen()
+        is FeatureState.Loading -> LoadingScreen()
+        is FeatureState.Success -> {
+            val summary = (summaryState as FeatureState.Success<ReviewsSummary>).data
+            val hasReviews = summary.breakdown.any { it.count > 0 }
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .nestedScroll(nestedScrollConnection)
-        ) {
-            Column(
-                modifier = Modifier
-                    .graphicsLayer {
-                        translationY = headerHeightPx + headerOffset
-                    }
-            ) {
-                ReviewsTabRow(
-                    tabs = tabs,
-                    selectedTab = pagerState.currentPage,
-                    onChangeTab = {
-                        scope.launch {
-                            pagerState.animateScrollToPage(it)
-                            delay(200)
-                            viewModel.setTab(
-                                if(pagerState.settledPage == 0) ReviewsViewModel.ReviewsTab.WRITTEN
-                                else ReviewsViewModel.ReviewsTab.VIDEO
-                            )
-                        }
-                    }
-                )
-
-                HorizontalPager(
-                    state = pagerState,
-                    beyondViewportPageCount = 0
-                ) { page ->
-                    when(page) {
-                        0 -> {
-                            WrittenReviewsTab(
-                                viewModel = viewModel,
-                                writtenReviews = writtenReviews,
-                                onNavigateToReviewDetail = onNavigateToReviewDetail
-                            )
-                        }
-                        1 -> VideoReviewsTab(videoReviews)
-                    }
-                }
-            }
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .offset { IntOffset(0, headerOffset.roundToInt()) }
-            ) {
-                Column(
+            if(hasReviews) {
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .onSizeChanged { size -> headerHeightPx = size.height }
+                        .fillMaxSize()
+                        .nestedScroll(nestedScrollConnection)
                 ) {
-                    when(summaryState) {
-                        is FeatureState.Error -> ErrorScreen()
-                        is FeatureState.Loading -> LoadingScreen()
-                        is FeatureState.Success -> {
-                            val summary = (summaryState as FeatureState.Success<ReviewsSummary>).data
+                    Column(
+                        modifier = Modifier
+                            .graphicsLayer {
+                                translationY = headerHeightPx + headerOffset
+                            }
+                    ) {
+                        ReviewsTabRow(
+                            tabs = tabs,
+                            selectedTab = pagerState.currentPage,
+                            onChangeTab = {
+                                scope.launch {
+                                    pagerState.animateScrollToPage(it)
+                                    delay(200)
+                                    viewModel.setTab(
+                                        if(pagerState.settledPage == 0) ReviewsViewModel.ReviewsTab.WRITTEN
+                                        else ReviewsViewModel.ReviewsTab.VIDEO
+                                    )
+                                }
+                            }
+                        )
 
+                        HorizontalPager(
+                            state = pagerState,
+                            beyondViewportPageCount = 0
+                        ) { page ->
+                            when(page) {
+                                0 -> {
+                                    WrittenReviewsTab(
+                                        viewModel = viewModel,
+                                        writtenReviews = writtenReviews,
+                                        onNavigateToReviewDetail = onNavigateToReviewDetail
+                                    )
+                                }
+                                1 -> VideoReviewsTab(videoReviews)
+                            }
+                        }
+                    }
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .offset { IntOffset(0, headerOffset.roundToInt()) }
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .onSizeChanged { size -> headerHeightPx = size.height }
+                        ) {
                             ReviewsSummarySection(
                                 summary = summary,
                                 onRatingClick = { viewModel.toggleRating(it) },
@@ -175,6 +163,11 @@ fun ReviewsScreen(
                         }
                     }
                 }
+            } else {
+                MessageScreen(
+                    icon = painterResource(R.drawable.ic_clipboard_check_outline),
+                    message = stringResource(R.string.notFoundReviews),
+                )
             }
         }
     }

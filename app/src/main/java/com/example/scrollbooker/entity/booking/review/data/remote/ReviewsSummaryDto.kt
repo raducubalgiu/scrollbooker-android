@@ -3,11 +3,11 @@ package com.example.scrollbooker.entity.booking.review.data.remote
 import com.google.gson.annotations.SerializedName
 
 data class ReviewsSummaryDto(
-    @SerializedName("average_rating")
-    val averageRating: Float,
+    @SerializedName("ratings_average")
+    val ratingsAverage: Float,
 
-    @SerializedName("total_reviews")
-    val totalReviews: Int,
+    @SerializedName("ratings_count")
+    val ratingsCount: Int,
 
     val breakdown: List<RatingBreakdownDto>
 )

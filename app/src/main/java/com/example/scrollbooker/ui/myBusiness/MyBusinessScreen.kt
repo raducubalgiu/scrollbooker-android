@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Book
 import androidx.compose.material.icons.outlined.CalendarToday
 import androidx.compose.material.icons.outlined.LocationOn
+import androidx.compose.material.icons.outlined.Money
 import androidx.compose.material.icons.outlined.PeopleOutline
 import androidx.compose.material.icons.outlined.Repeat
 import androidx.compose.material.icons.outlined.Schedule
@@ -81,6 +82,13 @@ fun MyBusinessScreen(
             icon = Icons.Outlined.ShoppingBag,
             permission = PermissionEnum.MY_PRODUCTS_VIEW,
             navigate = { myBusinessNavigate.toMyProducts() },
+        ),
+        BusinessCard(
+            title = stringResource(R.string.currency),
+            description = stringResource(R.string.chooseDesiredCurrencies),
+            icon = Icons.Outlined.Money,
+            permission = PermissionEnum.MY_CURRENCIES_VIEW,
+            navigate = { myBusinessNavigate.toMyCurrencies() },
         ),
         BusinessCard(
             title = stringResource(R.string.calendar),

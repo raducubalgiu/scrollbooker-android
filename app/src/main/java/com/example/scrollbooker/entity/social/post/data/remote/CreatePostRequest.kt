@@ -10,5 +10,16 @@ data class CreatePostRequest(
     val providerUid: String,
 
     @SerializedName("order_index")
-    val orderIndex: Int = 0
+    val orderIndex: Int = 0,
+
+    @SerializedName("business_or_employee_id")
+    val businessOrEmployeeId: Int?,
+
+    @SerializedName("is_video_review")
+    val isVideoReview: Boolean,
+
+    @SerializedName("video_review_message")
+    val videoReviewMessage: String?,
+
+    val rating: Int?
 )

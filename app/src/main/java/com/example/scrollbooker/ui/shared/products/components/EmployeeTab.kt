@@ -25,6 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.avatar.AvatarWithRating
@@ -80,9 +81,11 @@ fun EmployeeTab(
             Spacer(Modifier.height(SpacingM))
             Text(
                 modifier = Modifier.padding(horizontal = BasePadding),
+                textAlign = TextAlign.Center,
                 text = fullName,
                 fontWeight = FontWeight.SemiBold,
-                maxLines = 1,
+                minLines = 2,
+                maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
         }

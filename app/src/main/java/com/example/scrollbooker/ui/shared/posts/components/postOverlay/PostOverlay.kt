@@ -22,7 +22,6 @@ import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.social.post.domain.model.ctaAction
 import com.example.scrollbooker.entity.social.post.domain.model.ctaTitle
 import com.example.scrollbooker.entity.social.post.domain.model.showPhone
-import com.example.scrollbooker.ui.shared.posts.PostActionUiState
 import com.example.scrollbooker.ui.shared.posts.components.PostActionButtonSmall
 
 @Composable

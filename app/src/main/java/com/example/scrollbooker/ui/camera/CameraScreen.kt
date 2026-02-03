@@ -38,54 +38,8 @@ fun CameraScreen(
     onNavigateToCameraGallery: () -> Unit,
     onBack: () -> Unit
 ) {
-    //val isCameraMounted by viewModel.isCameraMounted.collectAsState()
-    //val lifecycleOwner = LocalLifecycleOwner.current
-
-//    val permissions = remember {
-//        arrayOf(Manifest.permission.RECORD_AUDIO)
-//    }
-//
-//    val hasPerms = rememberHasAllPermissions(permissions)
-
-//    val permissionLauncher = rememberLauncherForActivityResult(
-//        contract = ActivityResultContracts.RequestMultiplePermissions()
-//    ) { /* handle individually if you want */ }
-
-//    LaunchedEffect(hasPerms) {
-//        if (!hasPerms) {
-//            permissionLauncher.launch(permissions)
-//        }
-//    }
-//
-//    DisposableEffect(lifecycleOwner, hasPerms) {
-//        if(hasPerms) viewModel.bindIfNeeded(lifecycleOwner)
-//        onDispose {  }
-//    }
-
-//    val previewView = remember {
-//        PreviewView(context).apply {
-//            implementationMode = PreviewView.ImplementationMode.PERFORMANCE
-//            scaleType = PreviewView.ScaleType.FILL_CENTER
-//        }
-//    }
-//
-//    LaunchedEffect(viewModel.cameraController) {
-//        previewView.controller = viewModel.cameraController
-//    }
-//
-//    LaunchedEffect(Unit) {
-//        if(!isCameraMounted) {
-//            delay(200)
-//            viewModel.setIsCameraMounted(true)
-//        }
-//    }
-//
-//    var isRecording by remember { mutableStateOf(false) }
-//    val bottomBarHeight = 90.dp
-
     val perms = LocalAppPermissions.current
     val state by perms.state.collectAsState()
-    val videos = perms.videos.collectAsLazyPagingItems()
 
     val context = LocalContext.current
 
@@ -178,24 +132,13 @@ fun CameraScreen(
                 }
             }
 
-//            if(isCameraMounted) {
-//                AndroidView(
-//                    modifier = Modifier
-//                        .fillMaxSize()
-//                        .clip(RoundedCornerShape(BasePadding))
-//                        .background(BackgroundDark),
-//                    factory = { previewView },
-//                    update = { it.controller = viewModel.cameraController }
-//                )
-//            }
-
             CameraActions(
                 mediaThumbUri = state.mediaThumbUri,
                 onMediaThumbClick = {
                     if(canOpenLibrary) onNavigateToCameraGallery()
                     else requestMediaPermissions()
                 },
-                onSwitchCamera = { viewModel.switchCamera() },
+                onSwitchCamera = {  },
                 isRecording = false,
                 onRecord = {  },
                 onLongPressRecord = {},
