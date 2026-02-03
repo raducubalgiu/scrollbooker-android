@@ -94,15 +94,8 @@ class ProfileLayoutViewModel @Inject constructor(
     private val _currentTab = MutableStateFlow<Int>(0)
     val currentTab: StateFlow<Int> = _currentTab.asStateFlow()
 
-    private val _headerOffset = MutableStateFlow<Float>(0f)
-    val headerOffset: StateFlow<Float> = _headerOffset.asStateFlow()
-
     fun setCurrentTab(index: Int) {
         _currentTab.value = index
-    }
-
-    fun setHeaderOffset(offset: Float) {
-        _headerOffset.value = offset
     }
 
     fun setUserId(userId: Int?) {

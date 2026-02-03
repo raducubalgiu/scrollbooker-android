@@ -1,42 +1,56 @@
 package com.example.scrollbooker.ui.shared.reviews
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.zIndex
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
+import com.example.scrollbooker.components.core.sheet.SheetHeader
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.util.rememberCollapsingNestedScroll
 import com.example.scrollbooker.entity.booking.review.domain.model.ReviewsSummary
 import com.example.scrollbooker.ui.shared.reviews.components.ReviewsSummarySection
 import com.example.scrollbooker.ui.shared.reviews.tabs.ReviewsTabRow
 import com.example.scrollbooker.ui.shared.reviews.tabs.VideoReviewsTab
 import com.example.scrollbooker.ui.shared.reviews.tabs.WrittenReviewsTab
+import com.example.scrollbooker.ui.theme.Background
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReviewsScreen(
     viewModel: ReviewsViewModel,
     userId: Int,
-    onNavigateToReviewDetail: () -> Unit
+    onNavigateToReviewDetail: () -> Unit,
+    onClose: (() -> Unit)? = null,
 ) {
     val scope = rememberCoroutineScope()
     val tabs = listOf(stringResource(R.string.written), stringResource(R.string.video))
@@ -44,6 +58,7 @@ fun ReviewsScreen(
 
     LaunchedEffect(userId) {
         viewModel.setUserId(userId)
+        viewModel.clearRatings()
         viewModel.setTab(ReviewsViewModel.ReviewsTab.WRITTEN)
         pagerState.scrollToPage(0)
     }
@@ -73,30 +88,40 @@ fun ReviewsScreen(
             }
     }
 
-    Box(Modifier.fillMaxSize()) {
-        LazyColumn {
-            item {
-                when(summaryState) {
-                    is FeatureState.Error -> ErrorScreen()
-                    is FeatureState.Loading -> LoadingScreen()
-                    is FeatureState.Success -> {
-                        val summary = (summaryState as FeatureState.Success<ReviewsSummary>).data
+    var headerHeightPx by remember { mutableIntStateOf(0) }
+    var headerOffset by remember { mutableFloatStateOf(0f) }
 
-                        ReviewsSummarySection(
-                            summary = summary,
-                            onRatingClick = { viewModel.toggleRating(it) },
-                            selectedRatings = selectedRatings,
-                        )
-                    }
-                }
+    val nestedScrollConnection = rememberCollapsingNestedScroll(
+        headerHeightPx = headerHeightPx,
+        headerOffset = headerOffset,
+        onHeaderOffsetChanged = { headerOffset = it }
+    )
+
+    Column(Modifier.fillMaxSize()) {
+        SheetHeader(
+            modifier = Modifier
+                .background(Background)
+                .zIndex(25f),
+            title = stringResource(R.string.reviews),
+            onClose = {
+                onClose?.invoke()
             }
+        )
 
-            stickyHeader {
-                val selectedTab = pagerState.currentPage
-
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .nestedScroll(nestedScrollConnection)
+        ) {
+            Column(
+                modifier = Modifier
+                    .graphicsLayer {
+                        translationY = headerHeightPx + headerOffset
+                    }
+            ) {
                 ReviewsTabRow(
                     tabs = tabs,
-                    selectedTab = selectedTab,
+                    selectedTab = pagerState.currentPage,
                     onChangeTab = {
                         scope.launch {
                             pagerState.animateScrollToPage(it)
@@ -108,29 +133,45 @@ fun ReviewsScreen(
                         }
                     }
                 )
-            }
 
-            item {
                 HorizontalPager(
                     state = pagerState,
-                    beyondViewportPageCount = 0,
+                    beyondViewportPageCount = 0
+                ) { page ->
+                    when(page) {
+                        0 -> {
+                            WrittenReviewsTab(
+                                viewModel = viewModel,
+                                writtenReviews = writtenReviews,
+                                onNavigateToReviewDetail = onNavigateToReviewDetail
+                            )
+                        }
+                        1 -> VideoReviewsTab(videoReviews)
+                    }
+                }
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .offset { IntOffset(0, headerOffset.roundToInt()) }
+            ) {
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(LocalConfiguration.current.screenHeightDp.dp * 0.9f)
-                ) { page ->
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.TopStart
-                    ) {
-                        when(page) {
-                            0 -> {
-                                WrittenReviewsTab(
-                                    viewModel = viewModel,
-                                    writtenReviews = writtenReviews,
-                                    onNavigateToReviewDetail = onNavigateToReviewDetail
-                                )
-                            }
-                            1 -> VideoReviewsTab(videoReviews)
+                        .onSizeChanged { size -> headerHeightPx = size.height }
+                ) {
+                    when(summaryState) {
+                        is FeatureState.Error -> ErrorScreen()
+                        is FeatureState.Loading -> LoadingScreen()
+                        is FeatureState.Success -> {
+                            val summary = (summaryState as FeatureState.Success<ReviewsSummary>).data
+
+                            ReviewsSummarySection(
+                                summary = summary,
+                                onRatingClick = { viewModel.toggleRating(it) },
+                                selectedRatings = selectedRatings,
+                            )
                         }
                     }
                 }

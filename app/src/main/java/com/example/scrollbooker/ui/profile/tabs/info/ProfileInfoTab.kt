@@ -42,6 +42,7 @@ import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.customized.SchedulesSection
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.util.rememberFlingBehavior
 import com.example.scrollbooker.ui.profile.components.ProfileLayoutViewModel
 import timber.log.Timber
 

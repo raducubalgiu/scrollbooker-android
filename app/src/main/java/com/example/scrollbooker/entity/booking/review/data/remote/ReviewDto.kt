@@ -12,7 +12,7 @@ data class ReviewDto(
 
     val customer: ReviewCustomerDto,
     val service: ReviewServiceDto,
-    val product: ReviewProductDto,
+    val product: ReviewProductDto?,
 
     @SerializedName("like_count")
     val likeCount: Int,

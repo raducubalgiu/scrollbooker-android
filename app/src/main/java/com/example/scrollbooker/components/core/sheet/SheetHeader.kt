@@ -21,7 +21,8 @@ fun SheetHeader(
     customTitle: (@Composable () -> Unit)? = null,
     onClose: () -> Unit
 ) {
-    Row(modifier = modifier.fillMaxWidth(),
+    Row(
+        modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

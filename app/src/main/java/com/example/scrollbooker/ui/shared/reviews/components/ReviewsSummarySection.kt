@@ -49,16 +49,13 @@ fun ReviewsSummarySection(
 
     Column(
         modifier = modifier
-            .fillMaxSize()
             .clip(ShapeDefaults.Small)
             .background(Background)
             .padding(bottom = SpacingM),
     ) {
         Column(modifier = Modifier
             .fillMaxWidth()
-            .padding(
-                top = BasePadding
-            ),
+            .padding(top = BasePadding),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {

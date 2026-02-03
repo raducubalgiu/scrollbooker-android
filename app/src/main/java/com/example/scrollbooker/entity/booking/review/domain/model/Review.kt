@@ -7,7 +7,7 @@ data class Review(
     val productBusinessOwner: ReviewProductBusinessOwner,
     val customer: ReviewCustomer,
     val service: ReviewService,
-    val product: ReviewProduct,
+    val product: ReviewProduct?,
     val likeCount: Int,
     val isLiked: Boolean,
     val isLikedByProductOwner: Boolean,

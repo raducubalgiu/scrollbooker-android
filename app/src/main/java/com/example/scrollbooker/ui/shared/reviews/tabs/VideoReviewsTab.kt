@@ -18,12 +18,15 @@ import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.core.layout.MessageScreen
 import com.example.scrollbooker.components.customized.PostGrid.PostGrid
 import com.example.scrollbooker.components.customized.LoadMoreSpinner
+import com.example.scrollbooker.core.util.rememberFlingBehavior
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 
 @Composable
 fun VideoReviewsTab(
     videoReviews: LazyPagingItems<Post>
 ) {
+    val flingBehavior = rememberFlingBehavior()
+
     when (videoReviews.loadState.refresh) {
         is LoadState.Loading -> {
             LoadingScreen(
@@ -46,7 +49,8 @@ fun VideoReviewsTab(
                 columns = GridCells.Fixed(3),
                 verticalArrangement = Arrangement.spacedBy(1.dp),
                 horizontalArrangement = Arrangement.spacedBy(1.dp),
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                flingBehavior = flingBehavior
             ) {
                 items(videoReviews.itemCount) { index ->
                     videoReviews[index]?.let { review ->

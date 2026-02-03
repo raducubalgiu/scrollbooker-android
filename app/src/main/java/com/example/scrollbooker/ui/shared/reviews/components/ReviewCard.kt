@@ -38,7 +38,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.components.customized.RatingsStars
 import com.example.scrollbooker.core.util.Dimens.AvatarSizeXXS
@@ -48,25 +47,27 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.entity.booking.review.data.remote.ReviewLabel
+import com.example.scrollbooker.entity.booking.review.domain.model.Review
 import com.example.scrollbooker.ui.shared.reviews.ReviewActionUiState
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.titleMedium
+import org.threeten.bp.OffsetDateTime
+import org.threeten.bp.format.DateTimeFormatter
 
 @Composable
 fun ReviewCard(
+    review: Review,
     reviewUi: ReviewActionUiState,
-    customerAvatar: String?,
-    productBusinessOwnerAvatar: String?,
-    customerFullName: String,
-    rating: Int,
-    review: String?,
-    createdAt: String,
     onNavigateToReviewDetail: () -> Unit,
     onLike: () -> Unit
 ) {
     var scale by remember { mutableFloatStateOf(1f) }
+    val createdAt = "${
+        OffsetDateTime.parse(review.createdAt, DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+            .format(DateTimeFormatter.ofPattern("dd MM yyyy, HH:mm"))
+    }"
 
     val animatedScale by animateFloatAsState(
         targetValue = scale,
@@ -82,11 +83,11 @@ fun ReviewCard(
     ) {
         Column(modifier = Modifier.fillMaxSize().padding(SpacingM)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Avatar(url = customerAvatar ?: "")
+                Avatar(url = review.customer.avatar ?: "")
                 Spacer(Modifier.width(SpacingM))
                 Column {
                     Text(
-                        text = customerFullName,
+                        text = review.customer.fullName,
                         style = bodyLarge,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -99,7 +100,7 @@ fun ReviewCard(
 
             Text(
                 modifier = Modifier.padding(top = BasePadding),
-                text = stringResource(id = ReviewLabel.fromValue(rating).labelRes),
+                text = stringResource(id = ReviewLabel.fromValue(review.rating).labelRes),
                 style = titleMedium,
                 fontWeight = FontWeight.SemiBold
             )
@@ -109,58 +110,61 @@ fun ReviewCard(
                 modifier = Modifier.padding(
                     vertical = SpacingS
                 ),
-                rating = rating.toFloat()
+                rating = review.rating.toFloat()
             )
 
-            Text(text = review ?: "...")
+            if(review.review.isNotEmpty() == true) {
+                Text(text = review.review)
 
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = SpacingXL),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = SpacingXL),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.End
                 ) {
-                    if(reviewUi.isLikedByProductOwner) {
-                        Avatar(
-                            url = productBusinessOwnerAvatar ?: "",
-                            size = AvatarSizeXXS
-                        )
-                        Spacer(Modifier.width(BasePadding))
-                    }
-
                     Row(
-                        modifier = Modifier.clickable(
-                            onClick = onLike,
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null
-                        ),
+                        horizontalArrangement = Arrangement.Start,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        AnimatedVisibility(
-                            visible = reviewUi.likeCount > 0,
-                            enter = fadeIn() + scaleIn(),
-                            exit = fadeOut() + scaleOut()
-                        ) {
-                            Text(
-                                text = "${reviewUi.likeCount}",
-                                style = bodyLarge,
-                                fontWeight = FontWeight.SemiBold,
-                                color = if(reviewUi.isLiked) Error else Color.Gray
+                        if(reviewUi.isLikedByProductOwner) {
+                            Avatar(
+                                url = review.productBusinessOwner.avatar ?: "",
+                                size = AvatarSizeXXS
                             )
+                            Spacer(Modifier.width(BasePadding))
                         }
 
-                        Spacer(Modifier.width(SpacingXS))
+                        Row(
+                            modifier = Modifier.clickable(
+                                onClick = onLike,
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null
+                            ),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            AnimatedVisibility(
+                                visible = reviewUi.likeCount > 0,
+                                enter = fadeIn() + scaleIn(),
+                                exit = fadeOut() + scaleOut()
+                            ) {
+                                Text(
+                                    text = "${reviewUi.likeCount}",
+                                    style = bodyLarge,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = if(reviewUi.isLiked) Error else Color.Gray
+                                )
+                            }
 
-                        Icon(
-                            modifier = Modifier.scale(animatedScale),
-                            imageVector = if(reviewUi.isLiked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                            contentDescription = null,
-                            tint = if(reviewUi.isLiked) Error else Color.Gray
-                        )
+                            Spacer(Modifier.width(SpacingXS))
+
+                            Icon(
+                                modifier = Modifier.scale(animatedScale),
+                                imageVector = if(reviewUi.isLiked) Icons.Default.Favorite
+                                              else Icons.Default.FavoriteBorder,
+                                contentDescription = null,
+                                tint = if(reviewUi.isLiked) Error else Color.Gray
+                            )
+                        }
                     }
                 }
             }

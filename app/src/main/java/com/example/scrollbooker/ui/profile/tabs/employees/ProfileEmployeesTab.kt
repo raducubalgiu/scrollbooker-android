@@ -29,6 +29,7 @@ import com.example.scrollbooker.components.customized.LoadMoreSpinner
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
+import com.example.scrollbooker.core.util.rememberFlingBehavior
 import com.example.scrollbooker.ui.profile.components.ProfileLayoutViewModel
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.titleLarge
@@ -42,6 +43,8 @@ fun ProfileEmployeesTab(
 
     val refreshState = employees.loadState.refresh
     val appendState = employees.loadState.append
+
+    val flingBehaviour = rememberFlingBehavior()
 
     Column(modifier = Modifier.fillMaxSize()) {
         when(refreshState) {
@@ -61,7 +64,10 @@ fun ProfileEmployeesTab(
                         icon = painterResource(R.drawable.ic_users_outline)
                     )
                 } else {
-                    LazyColumn(Modifier.fillMaxSize()) {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        flingBehavior = flingBehaviour
+                    ) {
                         item {
                             Text(
                                 modifier = Modifier.padding(BasePadding),

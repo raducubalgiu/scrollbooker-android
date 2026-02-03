@@ -1,5 +1,4 @@
 package com.example.scrollbooker.ui.shared.reviews.tabs
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -18,12 +17,10 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.core.layout.MessageScreen
 import com.example.scrollbooker.components.customized.LoadMoreSpinner
+import com.example.scrollbooker.core.util.rememberFlingBehavior
 import com.example.scrollbooker.entity.booking.review.domain.model.Review
 import com.example.scrollbooker.ui.shared.reviews.ReviewsViewModel
 import com.example.scrollbooker.ui.shared.reviews.components.ReviewCard
-import org.threeten.bp.OffsetDateTime
-import org.threeten.bp.format.DateTimeFormatter
-import timber.log.Timber
 
 @Composable
 fun WrittenReviewsTab(
@@ -31,6 +28,9 @@ fun WrittenReviewsTab(
     writtenReviews: LazyPagingItems<Review>,
     onNavigateToReviewDetail: () -> Unit
 ) {
+
+    val flingBehavior = rememberFlingBehavior()
+
     when (writtenReviews.loadState.refresh) {
         is LoadState.Loading -> {
             LoadingScreen(
@@ -38,7 +38,12 @@ fun WrittenReviewsTab(
                 arrangement = Arrangement.Top
             )
         }
-        is LoadState.Error -> ErrorScreen()
+        is LoadState.Error -> {
+            ErrorScreen(
+                modifier = Modifier.padding(top = 50.dp),
+                arrangement = Arrangement.Top
+            )
+        }
         is LoadState.NotLoading -> {
             if(writtenReviews.itemCount == 0) {
                 MessageScreen(
@@ -49,24 +54,19 @@ fun WrittenReviewsTab(
                 )
             }
 
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                flingBehavior = flingBehavior
+            ) {
                 items(writtenReviews.itemCount) { index ->
                     writtenReviews[index]?.let { review ->
                         val reviewUi by viewModel.observeReviewUi(review.id)
                             .collectAsStateWithLifecycle()
 
                         ReviewCard(
+                            review = review,
                             reviewUi = reviewUi,
                             onNavigateToReviewDetail = onNavigateToReviewDetail,
-                            customerAvatar = review.customer.avatar,
-                            productBusinessOwnerAvatar = review.productBusinessOwner.avatar,
-                            customerFullName = review.customer.fullName,
-                            rating = review.rating,
-                            review = review.review,
-                            createdAt = "${
-                                OffsetDateTime.parse(review.createdAt, DateTimeFormatter.ISO_OFFSET_DATE_TIME)
-                                    .format(DateTimeFormatter.ofPattern("dd MM yyyy, HH:mm"))
-                            }",
                             onLike = {
                                 viewModel.toggleLike(review.id, review.productBusinessOwner.id)
                             }

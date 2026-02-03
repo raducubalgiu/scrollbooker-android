@@ -18,6 +18,7 @@ import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.customized.LoadMoreSpinner
+import com.example.scrollbooker.core.util.rememberFlingBehavior
 import com.example.scrollbooker.ui.profile.components.PostTabEnum
 import com.example.scrollbooker.ui.profile.components.ProfileLayoutViewModel
 import com.example.scrollbooker.ui.profile.components.SelectedPostUi
@@ -31,6 +32,8 @@ fun ProfileBookmarksTab(
 
     val refreshState = posts.loadState.refresh
     val appendState = posts.loadState.refresh
+
+    val flingBehavior = rememberFlingBehavior()
 
     when(refreshState) {
         is LoadState.Error -> ErrorScreen()
@@ -55,7 +58,8 @@ fun ProfileBookmarksTab(
                     columns = GridCells.Fixed(3),
                     verticalArrangement = Arrangement.spacedBy(1.dp),
                     horizontalArrangement = Arrangement.spacedBy(1.dp),
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
+                    flingBehavior = flingBehavior
                 ) {
                     items(posts.itemCount) { index ->
                         posts[index]?.let {

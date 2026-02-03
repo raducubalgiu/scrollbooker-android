@@ -15,16 +15,14 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntOffset
@@ -32,6 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.util.rememberCollapsingNestedScroll
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
@@ -65,50 +64,17 @@ fun ProfileLayout(
     val scope = rememberCoroutineScope()
 
     var headerHeightPx by remember { mutableIntStateOf(0) }
+    var headerOffset by remember { mutableFloatStateOf(0f) }
 
     val currentTab by layoutViewModel.currentTab.collectAsStateWithLifecycle()
-    val headerOffset by layoutViewModel.headerOffset.collectAsStateWithLifecycle()
 
     val scheduleSheetState = rememberModalBottomSheetState()
 
-    val nestedScrollConnection = remember(headerHeightPx) {
-        object : NestedScrollConnection {
-
-            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                val delta = available.y
-                val min = -headerHeightPx.toFloat()
-                val max = 0f
-
-                if (delta < 0 && headerOffset > min) {
-                    val newOffset = (headerOffset + delta).coerceIn(min, max)
-                    val consumed = newOffset - headerOffset
-                    layoutViewModel.setHeaderOffset(newOffset)
-                    return Offset(0f, consumed)
-                }
-
-                return Offset.Zero
-            }
-
-            override fun onPostScroll(
-                consumed: Offset,
-                available: Offset,
-                source: NestedScrollSource
-            ): Offset {
-                val delta = available.y
-                val min = -headerHeightPx.toFloat()
-                val max = 0f
-
-                if (delta > 0 && headerOffset < max) {
-                    val newOffset = (headerOffset + delta).coerceIn(min, max)
-                    val consumedByHeader = newOffset - headerOffset
-                    layoutViewModel.setHeaderOffset(newOffset)
-                    return Offset(0f, consumedByHeader)
-                }
-
-                return Offset.Zero
-            }
-        }
-    }
+    val nestedScrollConnection = rememberCollapsingNestedScroll(
+        headerHeightPx = headerHeightPx,
+        headerOffset = headerOffset,
+        onHeaderOffsetChanged = { headerOffset = it }
+    )
 
     if(scheduleSheetState.isVisible) {
         UserScheduleSheet(
@@ -191,9 +157,9 @@ fun ProfileLayout(
                                     isFollow = isFollow,
                                     isFollowEnabled = isFollowEnabled,
                                     onFollow = onFollow,
+                                    onNavigateToSocial = onNavigateToSocial,
                                     onOpenScheduleSheet = { scope.launch { scheduleSheetState.show() } },
                                     onNavigateToBusinessOwner = { it?.let { profileNavigate.toUserProfile(it) } },
-                                    onNavigateToSocial = onNavigateToSocial,
                                     onNavigateToEditProfile = { profileNavigate.toEditProfile() },
                                     onNavigateToMyCalendar = { profileNavigate.toMyCalendar() },
                                 )

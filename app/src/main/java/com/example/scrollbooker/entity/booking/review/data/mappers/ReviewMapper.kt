@@ -19,7 +19,7 @@ fun ReviewDto.toDomain(): Review {
         productBusinessOwner = productBusinessOwner.toDomain(),
         customer = customer.toDomain(),
         service = service.toDomain(),
-        product = product.toDomain(),
+        product = product?.toDomain(),
         likeCount = likeCount,
         isLiked = isLiked,
         isLikedByProductOwner = isLikedByProductOwner,

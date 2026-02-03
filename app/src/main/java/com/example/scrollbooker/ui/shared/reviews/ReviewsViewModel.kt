@@ -62,6 +62,12 @@ class ReviewsViewModel @Inject constructor(
             ReviewsTab.VIDEO to emptySet<Int>()
         ))
 
+    fun clearRatings() {
+        if(_selectedRatings.value.isNotEmpty()) {
+            _selectedRatings.value = emptySet()
+        }
+    }
+
     fun setUserId(id: Int) { if (_userId.value != id) _userId.value = id }
 
     fun setTab(tab: ReviewsTab) {
