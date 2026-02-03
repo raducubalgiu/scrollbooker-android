@@ -159,7 +159,7 @@ fun NavGraphBuilder.mainGraph(onLogout: () -> Unit) {
                         }
 
                         composable(
-                            route = MainRoute.MyProfilePostDetail.route,
+                            route = MainRoute.UserProfilePostDetail.route,
                             enterTransition = { EnterTransition.None },
                             exitTransition = { ExitTransition.None },
                             popEnterTransition = { EnterTransition.None },

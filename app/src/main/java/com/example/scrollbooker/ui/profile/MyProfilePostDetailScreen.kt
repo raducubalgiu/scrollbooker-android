@@ -147,7 +147,6 @@ fun MyProfilePostDetailScreen(
                 }
         }
 
-
         val decay = rememberSplineBasedDecay<Float>()
 
         val snapSpec: SpringSpec<Float> = spring(
@@ -188,10 +187,6 @@ fun MyProfilePostDetailScreen(
                 .background(BackgroundDark)
                 .padding(bottom = innerPadding.calculateBottomPadding())
             ) {
-                if(posts.loadState.refresh is LoadState.Loading) {
-                    PostShimmer()
-                }
-
                 VerticalPager(
                     state = pagerState,
                     overscrollEffect = null,
@@ -251,7 +246,13 @@ fun MyProfilePostDetailScreen(
                                     )
                                 }
                             },
-                            onNavigateToUserProfile = onNavigateToUserProfile
+                            onNavigateToUserProfile = {
+                                if(it == post.user.id) {
+                                    onBack()
+                                } else {
+                                    onNavigateToUserProfile(it)
+                                }
+                            }
                         )
                     }
                 }

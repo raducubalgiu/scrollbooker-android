@@ -11,14 +11,6 @@ class ProfileNavigator (
         rootNavController.navigate(MainRoute.Camera.route)
     }
 
-    fun toSocial(socialParams: NavigateSocialParam) {
-        val ( tabIndex, userId, username, isBusinessOrEmployee ) = socialParams
-
-        rootNavController.navigate(
-            "${MainRoute.Social.route}/${tabIndex}/${userId}/${username}/${isBusinessOrEmployee}"
-        )
-    }
-
     fun toUserProfile(ownerId: Int) {
         rootNavController.navigate("${MainRoute.UserProfile.route}/${ownerId}")
     }
@@ -28,7 +20,7 @@ class ProfileNavigator (
     }
 
     fun toUserPostDetail() {
-        rootNavController.navigate(MainRoute.MyProfilePostDetail.route)
+        rootNavController.navigate(MainRoute.UserProfilePostDetail.route)
     }
 
     fun toMyCalendar() {

@@ -77,5 +77,5 @@ private fun navigateToPost(
     )
 
     viewModel.setSelectedPost(postUi)
-    profileNavigate.toPostDetail()
+    profileNavigate.toUserPostDetail()
 }
