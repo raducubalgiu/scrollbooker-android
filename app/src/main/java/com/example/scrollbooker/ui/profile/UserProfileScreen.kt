@@ -70,6 +70,7 @@ private fun navigateToPost(
     postUi: SelectedPostUi
 ) {
     viewModel.onPageSettled(postUi.index)
+    viewModel.seekToZero(postUi.index)
 
     viewModel.ensureImmediate(
         centerIndex = postUi.index,

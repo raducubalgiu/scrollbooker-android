@@ -266,46 +266,6 @@ class ProfileLayoutViewModel @Inject constructor(
         )
     }
 
-    private val productsFlowCache = mutableMapOf<Int, Flow<PagingData<Product>>>()
-
-    @kotlin.OptIn(ExperimentalCoroutinesApi::class)
-    val servicesState: StateFlow<FeatureState<List<ServiceWithEmployees>>> = userIdFlow
-        .filterNotNull()
-        .distinctUntilChanged()
-        .flatMapLatest { userId ->
-            flow {
-                emit(FeatureState.Loading)
-
-                val result = withVisibleLoading {
-                    getServicesByUserIdUseCase(userId)
-                }
-
-                emit(
-                    result.fold(
-                        onSuccess = { FeatureState.Success(it) },
-                        onFailure = { e ->
-                            Timber.tag("Services").e("ERROR: on Fetching Services in MyProducts $e")
-                            FeatureState.Error()
-                        }
-                    )
-                )
-            }
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Lazily,
-            initialValue = FeatureState.Loading
-        )
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    fun loadProducts(serviceId: Int, userId: Int, employeeId: Int?): Flow<PagingData<Product>> {
-        return productsFlowCache.getOrPut(serviceId) {
-            getProductsByUserIdAndServiceIdUseCase(userId, serviceId, employeeId)
-                .cachedIn(viewModelScope)
-                .shareIn(viewModelScope, SharingStarted.Lazily, replay = 1)
-        }
-    }
-
     // Player
     private val maxPlayers = 3
     private val pool = ArrayDeque<ExoPlayer>(maxPlayers)
@@ -402,11 +362,9 @@ class ProfileLayoutViewModel @Inject constructor(
 
             prepareForPost(player, post)
 
-            // vecinii preload: playWhenReady false
             player.playWhenReady = (idx == focusedIndex)
         }
 
-        // 3) după ensure, setează focus corect
         applyFocus(centerIndex)
     }
 
@@ -452,6 +410,11 @@ class ProfileLayoutViewModel @Inject constructor(
         player.volume = 0f
     }
 
+    fun seekToZero(index: Int) {
+        val player = getPlayerForIndex(index) ?: return
+        player.seekTo(0)
+    }
+
     fun getPlayerForIndex(index: Int): ExoPlayer? = indexToPlayer[index]
 
     fun togglePlayer(index: Int) {
@@ -474,17 +437,8 @@ class ProfileLayoutViewModel @Inject constructor(
 
     fun stopDetailSession() {
         indexToPlayer.values.forEach { player ->
-            resetPlayer(player)
-
-            if(!pool.contains(player)) {
-                pool.addLast(player)
-            }
+            player.pause()
         }
-
-        indexToPlayer.clear()
-        indexToPostId.clear()
-
-        focusedIndex = null
     }
 
     override fun onCleared() {

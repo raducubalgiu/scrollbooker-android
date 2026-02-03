@@ -61,7 +61,6 @@ import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.paging.LoadState
 import coil.compose.AsyncImage
 import com.example.scrollbooker.core.extensions.getOrNull
 import com.example.scrollbooker.core.util.Dimens.BasePadding
@@ -70,7 +69,6 @@ import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
 import com.example.scrollbooker.ui.profile.components.PostTabEnum
 import com.example.scrollbooker.ui.profile.components.ProfileLayoutViewModel
 import com.example.scrollbooker.ui.shared.posts.components.PostPlayerView
-import com.example.scrollbooker.ui.shared.posts.components.PostShimmer
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlayActionEnum
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheets
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent
@@ -83,7 +81,6 @@ import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.PhoneSh
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.ReviewsSheet
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 
 @OptIn(UnstableApi::class, ExperimentalMaterial3Api::class)
@@ -137,7 +134,6 @@ fun MyProfilePostDetailScreen(
         LaunchedEffect(pagerState) {
             snapshotFlow { pagerState.settledPage }
                 .distinctUntilChanged()
-                .drop(1)
                 .collectLatest { page ->
                     layoutViewModel.onPageSettled(page)
                     layoutViewModel.ensureWindow(
