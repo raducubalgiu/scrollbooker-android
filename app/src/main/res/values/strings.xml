@@ -344,6 +344,7 @@
     <string name="from5">din 5</string>
     <string name="noProductsSelected">Nici un produs selectat</string>
     <string name="chooseServices">Alege serviciile</string>
+    <string name="chooseService">Alege serviciul</string>
     <string name="verifyAvailability">Verifică disponibilitatea</string>
     <string name="totalPayment">Total de plată</string>
     <string name="activateLocation">Activează locația</string>

@@ -142,6 +142,11 @@ fun SearchRequestState.activeFiltersCount(): Int {
     ).count { it }
 }
 
+enum class ServiceStepEnum {
+    SERVICE_DOMAIN,
+    SERVICE
+}
+
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class SearchViewModel @Inject constructor(

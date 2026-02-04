@@ -19,8 +19,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.example.scrollbooker.ui.search.SearchViewModel
-import com.example.scrollbooker.ui.search.sheets.services.steps.ServicesDateTimeFilters
-import com.example.scrollbooker.ui.search.sheets.services.steps.ServicesMainFilters
+import com.example.scrollbooker.ui.search.sheets.services.steps.DateTimeStep
+import com.example.scrollbooker.ui.search.sheets.services.steps.MainFiltersStep
+import com.example.scrollbooker.ui.search.sheets.services.steps.ServiceStep
+import kotlin.toString
 
 @Composable
 fun SearchServicesSheet(
@@ -31,15 +33,19 @@ fun SearchServicesSheet(
     val requestState by viewModel.request.collectAsState()
     val state by viewModel.servicesSheetFilters.collectAsState()
 
-    var step by remember { mutableStateOf(ServicesSheetFiltersStepEnum.MAIN_FILTERS) }
-    val mainFiltersStep = ServicesSheetFiltersStepEnum.MAIN_FILTERS
-    val dateTimeStep = ServicesSheetFiltersStepEnum.DATE_TIME
+    val businessDomains by viewModel.businessDomains.collectAsState()
+    val serviceDomains by viewModel.serviceDomains.collectAsState()
+    val services by viewModel.services.collectAsState()
+    val serviceFilters by viewModel.filters.collectAsState()
+    val selectedFilters by viewModel.selectedFilters.collectAsState()
 
     val requestBusinessDomainId = requestState.filters.businessDomainId
 
     var selectedBusinessDomainId by rememberSaveable(requestBusinessDomainId) {
         mutableStateOf<Int?>(requestBusinessDomainId)
     }
+
+    var step by remember { mutableStateOf(ServicesSheetStep.MAIN_FILTERS) }
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -48,7 +54,7 @@ fun SearchServicesSheet(
         AnimatedContent(
             targetState = step,
             transitionSpec = {
-                if (initialState == mainFiltersStep && targetState == dateTimeStep) {
+                if (targetState != ServicesSheetStep.MAIN_FILTERS) {
                     slideInHorizontally(animationSpec = tween(250)) {
                         fullWidth -> fullWidth
                     } + fadeIn() togetherWith
@@ -69,26 +75,37 @@ fun SearchServicesSheet(
             label = "servicesSheetStep"
         ) { currentStep ->
             when (currentStep) {
-                ServicesSheetFiltersStepEnum.MAIN_FILTERS -> {
-                    ServicesMainFilters(
-                        viewModel = viewModel,
+                ServicesSheetStep.MAIN_FILTERS -> {
+                    MainFiltersStep(
                         state = state,
-                        requestState = requestState,
                         onOpenDate = {
-                            if(step == mainFiltersStep) step = dateTimeStep
-                            else step = mainFiltersStep
-
+                            if (step == ServicesSheetStep.MAIN_FILTERS) step = ServicesSheetStep.DATE_TIME
+                            else step = ServicesSheetStep.MAIN_FILTERS
                         },
                         onFilter = onFilter,
+                        onClear = {
+                            selectedBusinessDomainId = null
+                            viewModel.clearServicesFiltersSheet()
+                        },
                         onClose = onClose,
-                        onClear = { viewModel.clearServicesFiltersSheet() }
+                        businessDomains = businessDomains,
+                        serviceDomains = serviceDomains,
+                        selectedBusinessDomainId = selectedBusinessDomainId,
+                        onSetSelectedBusinessDomainId = {
+                            selectedBusinessDomainId = it
+                            viewModel.onSheetBusinessDomainSelected(it)
+                        },
+                        onSetServiceDomainId = {
+                            viewModel.setServiceDomainId(it)
+                            step = ServicesSheetStep.SERVICE
+                        }
                     )
                 }
 
-                ServicesSheetFiltersStepEnum.DATE_TIME -> {
-                    ServicesDateTimeFilters(
+                ServicesSheetStep.DATE_TIME -> {
+                    DateTimeStep(
                         state = state,
-                        onBack = { step = mainFiltersStep },
+                        onBack = { step = ServicesSheetStep.MAIN_FILTERS },
                         onConfirm = {
                             viewModel.setDateTime(
                                 startDate = it.startDate,
@@ -96,8 +113,23 @@ fun SearchServicesSheet(
                                 startTime = it.startTime,
                                 endTime = it.endTime
                             )
-                            step = mainFiltersStep
+                            step = ServicesSheetStep.MAIN_FILTERS
                         },
+                    )
+                }
+
+                ServicesSheetStep.SERVICE -> {
+                    ServiceStep(
+                        services = services,
+                        serviceFilters = serviceFilters,
+                        selectedFilters = selectedFilters,
+                        selectedOption = state.serviceId.toString(),
+                        onServiceChanged = { viewModel.setServiceId(it) },
+                        onSetSelectedFilter = { filterId, subFilterId ->
+                            viewModel.setSelectedFilter(filterId, subFilterId)
+                        },
+                        onBack = { step = ServicesSheetStep.MAIN_FILTERS },
+                        onConfirm = {}
                     )
                 }
             }

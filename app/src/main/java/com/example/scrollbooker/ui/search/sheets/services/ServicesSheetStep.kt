@@ -1,6 +1,7 @@
 package com.example.scrollbooker.ui.search.sheets.services
 
-enum class ServicesSheetFiltersStepEnum {
+enum class ServicesSheetStep {
     MAIN_FILTERS,
-    DATE_TIME
+    DATE_TIME,
+    SERVICE
 }

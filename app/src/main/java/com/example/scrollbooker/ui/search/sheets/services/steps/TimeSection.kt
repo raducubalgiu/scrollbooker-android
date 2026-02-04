@@ -45,7 +45,7 @@ enum class TimeIntervalPreset(
 }
 
 @Composable
-fun ServicesTimeSection(
+fun TimeSection(
     startTime: LocalTime?,
     endTime: LocalTime?,
     onTimeChange: (LocalTime?, LocalTime?) -> Unit

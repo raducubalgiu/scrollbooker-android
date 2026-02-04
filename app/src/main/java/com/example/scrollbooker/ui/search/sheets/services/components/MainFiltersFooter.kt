@@ -29,7 +29,7 @@ import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
-fun SearchServicesSheetFooter(
+fun MainFiltersFooter(
     isClearEnabled: Boolean,
     isConfirmEnabled: Boolean,
     onConfirm: () -> Unit,
@@ -73,7 +73,7 @@ private fun DateTimeButton(
     Surface(
         modifier = Modifier.padding(horizontal = BasePadding),
         onClick = onClick,
-        shape = ShapeDefaults.Medium,
+        shape = ShapeDefaults.ExtraLarge,
         tonalElevation = if (isActive) 1.dp else 0.dp,
         color = if (isActive) SurfaceBG.copy(alpha = 0.8f) else SurfaceBG
     ) {

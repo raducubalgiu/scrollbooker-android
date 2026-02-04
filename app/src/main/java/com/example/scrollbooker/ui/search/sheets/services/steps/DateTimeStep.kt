@@ -1,6 +1,5 @@
 package com.example.scrollbooker.ui.search.sheets.services.steps
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -13,7 +12,6 @@ import androidx.compose.material3.DateRangePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,7 +30,6 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.search.sheets.SearchSheetActions
 import com.example.scrollbooker.ui.search.sheets.services.SearchServicesFiltersSheetState
 import com.example.scrollbooker.ui.search.sheets.services.components.ServicesDateTimeDaySuggestions
-import com.example.scrollbooker.ui.search.sheets.services.hasDateAndTimeFilters
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
@@ -46,7 +43,7 @@ import toUtcEpochMillis
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ServicesDateTimeFilters(
+fun DateTimeStep(
     state: SearchServicesFiltersSheetState,
     onBack: () -> Unit,
     onConfirm: (SearchServicesFiltersSheetState) -> Unit,
@@ -137,7 +134,7 @@ fun ServicesDateTimeFilters(
                 isTomorrowSelected = isTomorrowSelected
             )
 
-            ServicesTimeSection(
+            TimeSection(
                 startTime = localState.startTime,
                 endTime = localState.endTime,
                 onTimeChange = { start, end ->
