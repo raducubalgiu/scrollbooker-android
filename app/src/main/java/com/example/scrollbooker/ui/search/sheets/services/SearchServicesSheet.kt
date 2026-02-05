@@ -20,11 +20,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.ui.search.SearchViewModel
 import com.example.scrollbooker.ui.search.sheets.services.steps.DateTimeStep
 import com.example.scrollbooker.ui.search.sheets.services.steps.MainFiltersStep
 import com.example.scrollbooker.ui.search.sheets.services.steps.ServiceStep
-import kotlin.toString
 
 @Composable
 fun SearchServicesSheet(
@@ -36,8 +36,8 @@ fun SearchServicesSheet(
     val state by viewModel.servicesSheetFilters.collectAsState()
 
     val businessDomains by viewModel.businessDomains.collectAsState()
-    val serviceDomains by viewModel.serviceDomains.collectAsState()
     val services by viewModel.services.collectAsState()
+
     val serviceFilters by viewModel.filters.collectAsState()
     val selectedFilters by viewModel.selectedFilters.collectAsState()
 
@@ -48,8 +48,16 @@ fun SearchServicesSheet(
     }
 
     var step by remember { mutableStateOf(ServicesSheetStep.MAIN_FILTERS) }
-
     val transitionSpec = remember { servicesSheetTransitionSpec() }
+
+    val allServices = (services as? FeatureState.Success)?.data
+    val selectedService = allServices?.firstOrNull() { it.id == state.serviceId }
+
+    val bDomains = (businessDomains as? FeatureState.Success)?.data
+    val selectedServiceDomain = bDomains
+            ?.firstOrNull { it.id == selectedBusinessDomainId }
+            ?.serviceDomains
+            ?.firstOrNull { it.id == state.serviceDomainId }
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -73,10 +81,13 @@ fun SearchServicesSheet(
                             selectedBusinessDomainId = null
                             viewModel.clearServicesFiltersSheet()
                         },
+                        onClearServiceId = {
+                            viewModel.clearServiceId()
+                        },
                         onClose = onClose,
                         businessDomains = businessDomains,
-                        serviceDomains = serviceDomains,
                         selectedBusinessDomainId = selectedBusinessDomainId,
+                        selectedService = selectedService,
                         onSetSelectedBusinessDomainId = {
                             selectedBusinessDomainId = it
                             viewModel.onSheetBusinessDomainSelected(it)
@@ -106,16 +117,20 @@ fun SearchServicesSheet(
 
                 ServicesSheetStep.SERVICE -> {
                     ServiceStep(
+                        viewModel = viewModel,
                         services = services,
                         serviceFilters = serviceFilters,
                         selectedFilters = selectedFilters,
-                        selectedOption = state.serviceId.toString(),
-                        onServiceChanged = { viewModel.setServiceId(it) },
+                        selectedServiceDomain = selectedServiceDomain,
                         onSetSelectedFilter = { filterId, subFilterId ->
                             viewModel.setSelectedFilter(filterId, subFilterId)
                         },
                         onBack = { step = ServicesSheetStep.MAIN_FILTERS },
-                        onConfirm = { step = ServicesSheetStep.MAIN_FILTERS }
+                        onConfirm = {
+                            viewModel.setServiceId(it)
+
+                            step = ServicesSheetStep.MAIN_FILTERS
+                        }
                     )
                 }
             }

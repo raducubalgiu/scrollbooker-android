@@ -10,11 +10,13 @@ import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.FitnessCenter
 import androidx.compose.material.icons.outlined.MedicalServices
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomain
 
 data class BusinessDomain(
     val id: Int,
     val name: String,
-    val shortName: String
+    val shortName: String,
+    val serviceDomains: List<ServiceDomain>
 )
 
 fun BusinessDomain.getIcon(): ImageVector? {

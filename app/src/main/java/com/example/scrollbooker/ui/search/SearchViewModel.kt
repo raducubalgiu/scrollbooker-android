@@ -267,28 +267,6 @@ class SearchViewModel @Inject constructor(
             }
             .cachedIn(viewModelScope)
 
-    val serviceDomains: StateFlow<FeatureState<List<ServiceDomain>>?> =
-        _servicesSheetFilters
-            .map { it.businessDomainId }
-            .filterNotNull()
-            .distinctUntilChanged()
-            .flatMapLatest { domainId ->
-                flow {
-                    emit(FeatureState.Loading)
-
-                    val result = withVisibleLoading {
-                        getAllServiceDomainsByBusinessDomainUseCase(domainId)
-                    }
-
-                    emit(result)
-                }
-            }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5000),
-                initialValue = null
-            )
-
     val services: StateFlow<FeatureState<List<Service>>?> =
         _servicesSheetFilters
             .map { it.serviceDomainId }
@@ -506,6 +484,13 @@ class SearchViewModel @Inject constructor(
     fun setServiceId(serviceId: Int?) {
         _servicesSheetFilters.update {
             it.copy(serviceId = serviceId,)
+        }
+        _selectedFilters.value = emptyMap()
+    }
+
+    fun clearServiceId() {
+        _servicesSheetFilters.update {
+            it.copy(serviceId = null)
         }
         _selectedFilters.value = emptyMap()
     }

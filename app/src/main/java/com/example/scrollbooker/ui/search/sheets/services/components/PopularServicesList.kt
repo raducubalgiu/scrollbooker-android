@@ -28,47 +28,61 @@ import coil.compose.AsyncImage
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
-import com.example.scrollbooker.ui.search.sheets.services.steps.Servicee
+import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.headlineSmall
 import com.example.scrollbooker.ui.theme.titleMedium
 
 val fakeServices = listOf(
-    Servicee(
+    Service(
         id = 1,
         name = "Tuns",
-        url = "https://images.unsplash.com/photo-1599351431408-433ef72fe40b?w=1200&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8aGFpcmN1dHxlbnwwfDB8MHx8fDI%3D"
+        displayName = "",
+        description = "",
+        businessDomainId = 1
     ),
-    Servicee(
+    Service(
         id = 2,
         name = "Masaj",
-        url = "https://images.unsplash.com/photo-1700522924565-9fad1c05469e?w=1200&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fG1hc3NhZ2V8ZW58MHx8MHx8fDI%3D"
+        displayName = "",
+        description = "",
+        businessDomainId = 1
     ),
-    Servicee(
+    Service(
         id = 3,
         name = "ITP",
-        url = ""
+        displayName = "",
+        description = "",
+        businessDomainId = 1
     ),
-    Servicee(
+    Service(
         id = 4,
         name = "Polish",
-        url = "https://images.unsplash.com/photo-1708805282695-ef186db20192?w=1200&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fHBvbGlzaCUyMGF1dG98ZW58MHx8MHx8fDI%3D"
+        displayName = "",
+        description = "",
+        businessDomainId = 1
     ),
-    Servicee(
+    Service(
         id = 5,
         name = "Psihoterapie",
-        url = ""
+        displayName = "",
+        description = "",
+        businessDomainId = 1
     ),
-    Servicee(
+    Service(
         id = 6,
         name = "Pensat",
-        url = ""
+        displayName = "",
+        description = "",
+        businessDomainId = 1
     ),
-    Servicee(
+    Service(
         id = 7,
         name = "Rinoplastie",
-        url = ""
+        displayName = "",
+        description = "",
+        businessDomainId = 1
     )
 )
 
@@ -105,7 +119,7 @@ fun PopularServicesList() {
                     ) {
                         AsyncImage(
                             modifier = Modifier.matchParentSize(),
-                            model = it.url,
+                            model = "",
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
                         )

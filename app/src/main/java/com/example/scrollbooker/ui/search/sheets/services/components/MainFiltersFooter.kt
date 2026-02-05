@@ -1,13 +1,20 @@
 package com.example.scrollbooker.ui.search.sheets.services.components
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -22,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
+import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
 import com.example.scrollbooker.ui.search.sheets.SearchSheetActions
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
@@ -30,10 +38,12 @@ import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun MainFiltersFooter(
+    selectedService: Service?,
     isClearEnabled: Boolean,
     isConfirmEnabled: Boolean,
     onConfirm: () -> Unit,
     onClear: () -> Unit,
+    onClearServiceId: () -> Unit,
     onOpenDate: () -> Unit,
     summary: String?,
     isActive: Boolean
@@ -44,6 +54,43 @@ fun MainFiltersFooter(
             color = Divider,
             thickness = 0.55.dp
         )
+
+        selectedService?.let {
+            Surface(
+                modifier = Modifier.padding(horizontal = BasePadding),
+                onClick = {},
+                shape = ShapeDefaults.ExtraLarge,
+                tonalElevation = if (isActive) 1.dp else 0.dp,
+                color = if (isActive) SurfaceBG.copy(alpha = 0.8f) else SurfaceBG
+            ) {
+                Row(
+                    modifier = Modifier
+                        .padding(
+                            horizontal = SpacingXL,
+                            vertical = BasePadding
+                        ),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = it.name,
+                        style = titleMedium,
+                        color = OnBackground
+                    )
+
+                    Spacer(Modifier.width(SpacingXL))
+
+                    Column(Modifier.clickable { onClearServiceId() }) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_close_circle_solid),
+                            contentDescription = null,
+                            tint = Color.Gray
+                        )
+                    }
+                }
+            }
+        }
+
+        Spacer(Modifier.height(BasePadding))
 
         DateTimeButton(
             title = if(isActive) summary.toString() else stringResource(R.string.dateAndHour),
