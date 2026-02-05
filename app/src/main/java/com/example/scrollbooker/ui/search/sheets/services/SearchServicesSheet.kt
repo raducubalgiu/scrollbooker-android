@@ -1,5 +1,7 @@
 package com.example.scrollbooker.ui.search.sheets.services
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -47,31 +49,15 @@ fun SearchServicesSheet(
 
     var step by remember { mutableStateOf(ServicesSheetStep.MAIN_FILTERS) }
 
+    val transitionSpec = remember { servicesSheetTransitionSpec() }
+
     Column(modifier = Modifier
         .fillMaxSize()
         .statusBarsPadding()
     ) {
         AnimatedContent(
             targetState = step,
-            transitionSpec = {
-                if (targetState != ServicesSheetStep.MAIN_FILTERS) {
-                    slideInHorizontally(animationSpec = tween(250)) {
-                        fullWidth -> fullWidth
-                    } + fadeIn() togetherWith
-                    slideOutHorizontally(animationSpec = tween(250)) {
-                        fullWidth -> -fullWidth
-                    } + fadeOut()
-                } else {
-                    slideInHorizontally(animationSpec = tween(250)) {
-                        fullWidth -> -fullWidth
-                    } + fadeIn() togetherWith
-                    slideOutHorizontally(animationSpec = tween(250)) {
-                        fullWidth -> fullWidth
-                    } + fadeOut()
-                }.using(
-                    SizeTransform(clip = false)
-                )
-            },
+            transitionSpec = transitionSpec,
             label = "servicesSheetStep"
         ) { currentStep ->
             when (currentStep) {
@@ -129,12 +115,34 @@ fun SearchServicesSheet(
                             viewModel.setSelectedFilter(filterId, subFilterId)
                         },
                         onBack = { step = ServicesSheetStep.MAIN_FILTERS },
-                        onConfirm = {}
+                        onConfirm = { step = ServicesSheetStep.MAIN_FILTERS }
                     )
                 }
             }
         }
     }
 }
+
+private fun servicesSheetTransitionSpec(
+    mainStep: ServicesSheetStep = ServicesSheetStep.MAIN_FILTERS,
+    clip: Boolean = false,
+): AnimatedContentTransitionScope<ServicesSheetStep>.() -> ContentTransform = {
+    val isForward = targetState != mainStep
+
+    val enter = if (isForward) {
+        slideInHorizontally(animationSpec = tween(250)) { fullWidth -> fullWidth }
+    } else {
+        slideInHorizontally(animationSpec = tween(250)) { fullWidth -> -fullWidth }
+    } + fadeIn(animationSpec = tween(250))
+
+    val exit = if (isForward) {
+        slideOutHorizontally(animationSpec = tween(250)) { fullWidth -> -fullWidth }
+    } else {
+        slideOutHorizontally(animationSpec = tween(250)) { fullWidth -> fullWidth }
+    } + fadeOut(animationSpec = tween(250))
+
+    enter togetherWith exit using SizeTransform(clip = clip)
+}
+
 
 

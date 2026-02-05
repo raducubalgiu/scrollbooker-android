@@ -274,17 +274,13 @@ class SearchViewModel @Inject constructor(
             .distinctUntilChanged()
             .flatMapLatest { domainId ->
                 flow {
-                    if (domainId == null) {
-                        emit(null)
-                    } else {
-                        emit(FeatureState.Loading)
+                    emit(FeatureState.Loading)
 
-                        val result = withVisibleLoading {
-                            getAllServiceDomainsByBusinessDomainUseCase(domainId)
-                        }
-
-                        emit(result)
+                    val result = withVisibleLoading {
+                        getAllServiceDomainsByBusinessDomainUseCase(domainId)
                     }
+
+                    emit(result)
                 }
             }
             .stateIn(
@@ -300,23 +296,19 @@ class SearchViewModel @Inject constructor(
             .distinctUntilChanged()
             .flatMapLatest { typeId ->
                 flow {
-                    if (typeId == null) {
-                        emit(null)
-                    } else {
-                        emit(FeatureState.Loading)
+                    emit(FeatureState.Loading)
 
-                        val result = withVisibleLoading {
-                            getServicesByServiceDomainUseCase(typeId)
-                        }
-
-                        val featureState: FeatureState<List<Service>> =
-                            result.fold(
-                                onSuccess = { s -> FeatureState.Success(s) },
-                                onFailure = { e -> FeatureState.Error(e) }
-                            )
-
-                        emit(featureState)
+                    val result = withVisibleLoading {
+                        getServicesByServiceDomainUseCase(typeId)
                     }
+
+                    val featureState: FeatureState<List<Service>> =
+                        result.fold(
+                            onSuccess = { s -> FeatureState.Success(s) },
+                            onFailure = { e -> FeatureState.Error(e) }
+                        )
+
+                    emit(featureState)
                 }
             }
             .stateIn(

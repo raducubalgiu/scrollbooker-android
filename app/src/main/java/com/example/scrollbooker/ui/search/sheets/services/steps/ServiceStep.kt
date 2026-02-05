@@ -10,11 +10,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,19 +24,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.buttons.MainButton
-import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
 import com.example.scrollbooker.components.core.iconButton.CustomIconButton
 import com.example.scrollbooker.components.core.inputs.InputSelect
 import com.example.scrollbooker.components.core.inputs.Option
 import com.example.scrollbooker.components.core.shimmer.rememberShimmerBrush
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.nomenclature.filter.domain.model.Filter
 import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
 import com.example.scrollbooker.ui.search.components.SearchAdvancedFilters
+import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
@@ -117,24 +120,45 @@ fun ServiceStep(
         }
 
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(BasePadding),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            MainButtonOutlined(
-                modifier = Modifier.weight(0.5f),
-                title = stringResource(R.string.cancel),
-                contentPadding = PaddingValues(BasePadding),
-                onClick = onBack
-            )
+            Column {
+                TextButton(
+                    onClick = {},
+                    enabled = true,
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = OnBackground,
+                    )
+                ) {
+                    Text(
+                        text = stringResource(R.string.delete),
+                        style = titleMedium,
+                    )
+                }
+            }
 
-            Spacer(Modifier.width(SpacingS))
-
-            MainButton(
-                modifier = Modifier.weight(0.5f),
-                title = stringResource(R.string.confirm),
-                onClick = onConfirm
-            )
+            Button(
+                contentPadding = PaddingValues(
+                    vertical = BasePadding,
+                    horizontal = SpacingXXL
+                ),
+                onClick = onConfirm,
+                enabled = true
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = stringResource(R.string.confirm),
+                        style = titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp
+                    )
+                }
+            }
         }
     }
 }

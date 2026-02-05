@@ -37,6 +37,7 @@ import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.headlineSmall
 import com.example.scrollbooker.ui.theme.titleMedium
+import timber.log.Timber
 
 @Composable
 fun ServiceDomainsList(
@@ -85,6 +86,8 @@ fun ServiceDomainsList(
                     horizontalArrangement = Arrangement.spacedBy(BasePadding),
                 ) {
                     items(domains.data) {
+                        Timber.d("SERVICE DOMAIN!!! $it")
+
                         Column {
                             Box(
                                 modifier = Modifier
@@ -95,16 +98,16 @@ fun ServiceDomainsList(
                                         onSetServiceDomainId(it.id)
                                     }
                             ) {
-                                AsyncImage(
-                                    modifier = Modifier.matchParentSize(),
-                                    model = "",
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Crop,
-                                )
-
                                 Box(modifier = Modifier
                                     .fillMaxSize()
                                     .background(SurfaceBG)
+                                )
+
+                                AsyncImage(
+                                    modifier = Modifier.matchParentSize(),
+                                    model = it.thumbnailUrl,
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop,
                                 )
                             }
 
