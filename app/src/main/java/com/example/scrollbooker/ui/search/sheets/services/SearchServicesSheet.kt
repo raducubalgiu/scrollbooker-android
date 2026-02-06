@@ -126,8 +126,10 @@ fun SearchServicesSheet(
                             viewModel.setSelectedFilter(filterId, subFilterId)
                         },
                         onBack = { step = ServicesSheetStep.MAIN_FILTERS },
-                        onConfirm = {
-                            viewModel.setServiceId(it)
+                        onConfirm = { serviceId ->
+                            serviceId?.let {
+                                viewModel.setServiceId(it)
+                            }
 
                             step = ServicesSheetStep.MAIN_FILTERS
                         }
