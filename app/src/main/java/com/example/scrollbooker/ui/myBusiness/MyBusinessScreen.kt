@@ -70,13 +70,6 @@ fun MyBusinessScreen(
             permission = PermissionEnum.MY_SERVICES_VIEW
         ),
         BusinessCard(
-            title = stringResource(R.string.classes),
-            description = stringResource(R.string.userClassesDetails),
-            icon = Icons.Outlined.ShoppingBag,
-            permission = PermissionEnum.MY_PRODUCTS_VIEW,
-            navigate = { myBusinessNavigate.toMyClasses() },
-        ),
-        BusinessCard(
             title = stringResource(R.string.products),
             description = stringResource(R.string.userProductsDetails),
             icon = Icons.Outlined.ShoppingBag,

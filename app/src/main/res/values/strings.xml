@@ -55,7 +55,6 @@
     <string name="add">Adaugă</string>
     <string name="added">Adăugat</string>
     <string name="products">Produse</string>
-    <string name="classes">Clase</string>
     <string name="addNewProduct">Adaugă un produs nou</string>
     <string name="myProducts">Produsele mele</string>
     <string name="myServices">Serviciile mele</string>
@@ -153,7 +152,6 @@
     <string name="businessLocationDetails">Detalii despre locația business-ului meu</string>
     <string name="userScheduleDetails">Detalii despre programul meu</string>
     <string name="userProductsDetails">Detalii despre produsele mele</string>
-    <string name="userClassesDetails">Detalii despre clasele mele</string>
     <string name="servicesDetails">Detalii despre serviciile mele</string>
     <string name="paymentMethods">Modalități de plată</string>
     <string name="paymentMethodsDetails">Alege valutele acceptate pentru plată</string>
