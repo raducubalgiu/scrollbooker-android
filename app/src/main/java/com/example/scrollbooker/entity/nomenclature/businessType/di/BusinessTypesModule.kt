@@ -4,6 +4,7 @@ import com.example.scrollbooker.core.util.Constants
 import com.example.scrollbooker.entity.nomenclature.businessType.data.remote.BusinessTypeApiService
 import com.example.scrollbooker.entity.nomenclature.businessType.data.repository.BusinessTypeRepositoryImpl
 import com.example.scrollbooker.entity.nomenclature.businessType.domain.repository.BusinessTypeRepository
+import com.example.scrollbooker.entity.nomenclature.businessType.domain.useCase.GetAllAvailableBusinessTypesUseCase
 import com.example.scrollbooker.entity.nomenclature.businessType.domain.useCase.GetAllBusinessTypesByBusinessDomainUseCase
 import com.example.scrollbooker.entity.nomenclature.businessType.domain.useCase.GetAllBusinessTypesUseCase
 import com.example.scrollbooker.entity.nomenclature.businessType.domain.useCase.GetAllPaginatedBusinessTypesUseCase
@@ -42,6 +43,14 @@ object BusinessTypesModule {
         repository: BusinessTypeRepository,
     ): GetAllBusinessTypesUseCase {
         return GetAllBusinessTypesUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetAllAvailableBusinessTypesUseCase(
+        repository: BusinessTypeRepository,
+    ): GetAllAvailableBusinessTypesUseCase {
+        return GetAllAvailableBusinessTypesUseCase(repository)
     }
 
     @Provides

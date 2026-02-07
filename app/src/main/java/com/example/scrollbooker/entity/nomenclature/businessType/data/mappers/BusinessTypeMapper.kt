@@ -8,6 +8,8 @@ fun BusinessTypeDto.toDomain(): BusinessType {
         id = id,
         name = name,
         businessDomainId = businessDomainId,
-        plural = plural
+        plural = plural,
+        url = url,
+        thumbnailUrl = thumbnailUrl
     )
 }

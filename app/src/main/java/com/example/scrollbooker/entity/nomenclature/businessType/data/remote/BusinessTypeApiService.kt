@@ -9,6 +9,9 @@ interface BusinessTypeApiService {
     @GET("/business-types")
     suspend fun getAllBusinessTypes(): List<BusinessTypeDto>
 
+    @GET("/business-types/available")
+    suspend fun getAllAvailableBusinessTypes(): List<BusinessTypeDto>
+
     @GET("/business-types")
     suspend fun getAllPaginatedBusinessTypes(
         @Query("page") page: Int,

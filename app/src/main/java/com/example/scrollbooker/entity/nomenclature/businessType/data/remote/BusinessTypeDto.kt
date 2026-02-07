@@ -8,5 +8,10 @@ data class BusinessTypeDto(
     val plural: String,
 
     @SerializedName("business_domain_id")
-    val businessDomainId: Int
+    val businessDomainId: Int,
+
+    val url: String?,
+
+    @SerializedName("thumbnail_url")
+    val thumbnailUrl: String?
 )

@@ -18,6 +18,10 @@ class BusinessTypeRepositoryImpl @Inject constructor(
         return apiService.getAllBusinessTypes().map { it.toDomain() }
     }
 
+    override suspend fun getAllAvailableBusinessTypes(): List<BusinessType> {
+        return apiService.getAllAvailableBusinessTypes().map { it.toDomain() }
+    }
+
     override suspend fun getBusinessTypesByBusinessDomain(businessDomainId: Int): List<BusinessType> {
         return apiService.getAllBusinessTypesByBusinessDomain(businessDomainId).map { it.toDomain() }
     }
