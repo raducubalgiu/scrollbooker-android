@@ -1,7 +1,15 @@
 package com.example.scrollbooker.entity.nomenclature.service.data.remote
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomain
 import com.google.gson.annotations.SerializedName
 
-data class ServiceWithEmployeesDto(
+data class ServiceDomainWithServicesDto(
+    @SerializedName("service_domain")
+    val serviceDomain: ServiceDomain,
+
+    val services: List<ServicesWithEmployeesDto>
+)
+
+data class ServicesWithEmployeesDto(
     val service: ServiceDto,
 
     @SerializedName("products_count")

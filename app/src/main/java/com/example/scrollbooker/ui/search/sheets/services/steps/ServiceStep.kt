@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -28,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -47,6 +50,8 @@ import com.example.scrollbooker.ui.search.SearchViewModel
 import com.example.scrollbooker.ui.search.components.SearchAdvancedFilters
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.SurfaceBG
+import com.example.scrollbooker.ui.theme.headlineMedium
+import com.example.scrollbooker.ui.theme.headlineSmall
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
@@ -78,9 +83,7 @@ fun ServiceStep(
         else -> emptyList()
     }
 
-    Column(modifier = Modifier
-        .padding(vertical = SpacingS)
-    ) {
+    Column(modifier = Modifier.padding(vertical = SpacingS)) {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -91,27 +94,40 @@ fun ServiceStep(
             )
 
             Text(
-                text = selectedServiceDomain?.name ?: "",
+                text = "Filtrare avansata",
                 style = titleMedium,
                 fontWeight = FontWeight.Bold
             )
         }
 
-        Box(modifier = Modifier
-            .padding(horizontal = BasePadding)
-            .fillMaxWidth()
-            .height(200.dp)
-            .clip(RoundedCornerShape(BasePadding))
-            .background(SurfaceBG),
-            contentAlignment = Alignment.Center
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            AsyncImage(
-                model = selectedServiceDomain?.thumbnailUrl,
-                contentDescription = "Selected image",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp),
-                contentScale = ContentScale.Crop
+            Box(modifier = Modifier
+                .padding(horizontal = BasePadding)
+                .size(130.dp)
+                .clip(CircleShape)
+                .background(SurfaceBG),
+                contentAlignment = Alignment.Center
+            ) {
+                AsyncImage(
+                    model = selectedServiceDomain?.thumbnailUrl,
+                    contentDescription = "Selected image",
+                    modifier = Modifier.matchParentSize(),
+                    contentScale = ContentScale.Crop
+                )
+            }
+
+            Spacer(Modifier.height(BasePadding))
+
+            Text(
+                text = selectedServiceDomain?.name ?: "",
+                style = headlineSmall,
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
             )
         }
 
@@ -119,7 +135,8 @@ fun ServiceStep(
 
         Column(modifier = Modifier
             .weight(1f)
-            .padding(horizontal = BasePadding)) {
+            .padding(horizontal = BasePadding)
+        ) {
             InputSelect(
                 options = servicesOptions,
                 selectedOption = localSelectedServiceId,
@@ -183,9 +200,7 @@ fun ServiceStep(
                     vertical = BasePadding,
                     horizontal = SpacingXXL
                 ),
-                onClick = {
-                    onConfirm(localSelectedServiceId.toInt())
-                },
+                onClick = { onConfirm(localSelectedServiceId.toIntOrNull()) },
                 enabled = true
             ) {
                 Row(

@@ -5,10 +5,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByUserIdAndServiceIdUseCase
-import com.example.scrollbooker.entity.nomenclature.service.domain.model.ServiceWithEmployees
+import com.example.scrollbooker.entity.nomenclature.service.domain.model.ServiceDomainWithServices
 import com.example.scrollbooker.entity.nomenclature.service.domain.useCase.GetServicesByUserIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -69,7 +68,7 @@ class UserProductsViewModel @Inject constructor(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val servicesState: StateFlow<FeatureState<List<ServiceWithEmployees>>> = userIdFlow
+    val serviceDomainWithServicesState: StateFlow<FeatureState<List<ServiceDomainWithServices>>> = userIdFlow
         .filterNotNull()
         .distinctUntilChanged()
         .flatMapLatest { userId ->
@@ -82,7 +81,7 @@ class UserProductsViewModel @Inject constructor(
                     result.fold(
                         onSuccess = { FeatureState.Success(it) },
                         onFailure = { e ->
-                            Timber.tag("Services").e("ERROR: on Fetching Services in MyProducts $e")
+                            Timber.tag("Services").e(e, "ERROR: on Fetching User ServiceDomain With Services")
                             FeatureState.Error()
                         }
                     )
