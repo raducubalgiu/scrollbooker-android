@@ -7,7 +7,7 @@ import java.math.BigDecimal
 data class ProductDto(
     val id: Int,
     val name: String,
-    val description: String,
+    val description: String?,
     val duration: Int,
     val price: BigDecimal,
 
@@ -30,6 +30,14 @@ data class ProductDto(
 
     @SerializedName("can_be_booked")
     val canBeBooked: Boolean,
+
+    val type: String,
+
+    @SerializedName("sessions_count")
+    val sessionsCount: Int?,
+
+    @SerializedName("validity_days")
+    val validityDays: Int?,
 
     val filters: List<ProductFilterDto>
 )

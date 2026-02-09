@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.core.enums.FilterTypeEnum
+import com.example.scrollbooker.core.enums.ProductTypeEnum
 import com.example.scrollbooker.core.extensions.formatDuration
 import com.example.scrollbooker.core.extensions.toTwoDecimals
 import com.example.scrollbooker.core.util.Dimens.SpacingS
@@ -38,7 +39,9 @@ fun ProductDetails(
     price: BigDecimal,
     priceWithDiscount: BigDecimal,
     discount: BigDecimal,
-    filters: List<ProductFilter>
+    filters: List<ProductFilter>,
+    type: ProductTypeEnum?,
+    sessionsCount: Int?
 ) {
     Column(modifier = modifier) {
         Text(
@@ -56,11 +59,21 @@ fun ProductDetails(
                 color = Color.Gray
             )
 
-            Text(
-                modifier = Modifier.padding(horizontal = 5.dp),
-                text = "\u2022",
-                color = Color.Gray
-            )
+            if(type == ProductTypeEnum.PACK && sessionsCount != null) {
+                Text(
+                    modifier = Modifier.padding(horizontal = 5.dp),
+                    text = "\u2022 $sessionsCount ședinte",
+                    color = Color.Gray
+                )
+            }
+
+            if(filters.isNotEmpty()) {
+                Text(
+                    modifier = Modifier.padding(horizontal = 5.dp),
+                    text = "\u2022",
+                    color = Color.Gray
+                )
+            }
 
             filters.sortedBy { it.id }.mapIndexed { i, filter ->
                 when(filter.type) {

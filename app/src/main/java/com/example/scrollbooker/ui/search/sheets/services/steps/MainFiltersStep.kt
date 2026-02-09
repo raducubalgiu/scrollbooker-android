@@ -16,10 +16,13 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
@@ -28,22 +31,26 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.BusinessDomain
+import com.example.scrollbooker.entity.nomenclature.businessType.domain.model.BusinessType
 import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
 import com.example.scrollbooker.ui.search.components.SearchBusinessDomainLabel
 import com.example.scrollbooker.ui.search.sheets.SearchSheetsHeader
@@ -61,6 +68,7 @@ import com.example.scrollbooker.ui.theme.bodySmall
 import com.example.scrollbooker.ui.theme.headlineLarge
 import com.example.scrollbooker.ui.theme.headlineSmall
 import com.example.scrollbooker.ui.theme.titleMedium
+import com.example.scrollbooker.ui.theme.titleSmall
 import kotlinx.coroutines.launch
 
 data class SearchRecent(
@@ -72,6 +80,7 @@ data class SearchRecent(
 @Composable
 fun MainFiltersStep(
     state: SearchServicesFiltersSheetState,
+    businessTypes: FeatureState<List<BusinessType>>,
     businessDomains: FeatureState<List<BusinessDomain>>,
     selectedBusinessDomainId: Int?,
     selectedService: Service?,
@@ -101,6 +110,11 @@ fun MainFiltersStep(
             description = "Barbati"
         ),
         SearchRecent(
+            id = 1,
+            name = "Consultatie veterinara",
+            description = "Caini \u2022 Mascul"
+        ),
+        SearchRecent(
             id = 2,
             name = "Vopsit",
             description = "Barbati"
@@ -109,7 +123,19 @@ fun MainFiltersStep(
             id = 3,
             name = "ITP",
             description = "Autoturisme"
+        ),
+        SearchRecent(
+            id = 3,
+            name = "Consultatie stomatologica",
+            description = "Adult"
         )
+    )
+
+    data class BType(
+        val id: Int,
+        val name: String,
+        val plural: String,
+        val url: String
     )
 
     Column(Modifier.fillMaxSize()) {
@@ -186,16 +212,22 @@ fun MainFiltersStep(
                             Column(modifier = Modifier.fillMaxSize()) {
                                 if(index == 0) {
                                     LazyVerticalGrid(
-                                        contentPadding = PaddingValues(BasePadding),
-                                        columns = GridCells.Fixed(3),
+                                        contentPadding = PaddingValues(bottom = BasePadding),
+                                        columns = GridCells.Fixed(4),
                                         verticalArrangement = Arrangement.spacedBy(BasePadding),
-                                        horizontalArrangement = Arrangement.spacedBy(BasePadding),
+                                        //horizontalArrangement = Arrangement.spacedBy(BasePadding),
                                     ) {
                                         item(span = { GridItemSpan(maxLineSpan) }) {
                                             Text(
+                                                modifier = Modifier.padding(
+                                                    top = BasePadding,
+                                                    start = BasePadding,
+                                                    end = BasePadding,
+                                                    bottom = SpacingM
+                                                ),
                                                 style = headlineSmall,
                                                 color = OnBackground,
-                                                fontSize = 20.sp,
+                                                fontSize = 18.sp,
                                                 fontWeight = FontWeight.Bold,
                                                 text = "Cautari recente"
                                             )
@@ -206,6 +238,9 @@ fun MainFiltersStep(
                                             span = { GridItemSpan(maxLineSpan) }
                                         ) { search ->
                                             Row(
+                                                modifier = Modifier.padding(
+                                                    horizontal = BasePadding
+                                                ),
                                                 verticalAlignment = Alignment.CenterVertically
                                             ) {
                                                 Icon(
@@ -228,21 +263,97 @@ fun MainFiltersStep(
                                                     )
                                                 }
                                             }
+                                        }
 
-                                            Spacer(Modifier.height(BasePadding))
+                                        when(val bTypes = businessTypes) {
+                                            is FeatureState.Success -> {
+                                                item(span = { GridItemSpan(maxLineSpan) }) {
+                                                    Text(
+                                                        modifier = Modifier.padding(
+                                                            top = BasePadding,
+                                                            start = BasePadding,
+                                                            end = BasePadding,
+                                                            bottom = SpacingM
+                                                        ),
+                                                        style = headlineSmall,
+                                                        color = OnBackground,
+                                                        fontSize = 18.sp,
+                                                        fontWeight = FontWeight.Bold,
+                                                        text = "Afaceri"
+                                                    )
+                                                }
+
+                                                item(span = { GridItemSpan(maxLineSpan) }) {
+                                                    LazyRow(
+                                                        contentPadding = PaddingValues(horizontal = BasePadding),
+                                                        horizontalArrangement = Arrangement.spacedBy(BasePadding)
+                                                    ) {
+                                                        this.items(bTypes.data) {
+                                                            Column {
+                                                                Box(modifier = Modifier
+                                                                    .height(140.dp)
+                                                                    .width(220.dp)
+                                                                    .clip(RoundedCornerShape(BasePadding))
+                                                                ) {
+                                                                    Box(modifier = Modifier
+                                                                        .fillMaxSize()
+                                                                        .background(SurfaceBG)
+                                                                    )
+
+                                                                    AsyncImage(
+                                                                        modifier = Modifier.matchParentSize(),
+                                                                        model = it.url,
+                                                                        contentDescription = null,
+                                                                        contentScale = ContentScale.Crop,
+                                                                    )
+
+                                                                    Box(
+                                                                        modifier = Modifier
+                                                                            .fillMaxSize()
+                                                                            .background(
+                                                                                Brush.verticalGradient(
+                                                                                    colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.7f))
+                                                                                )
+                                                                            )
+                                                                            .padding(BasePadding),
+                                                                        contentAlignment = Alignment.BottomStart
+                                                                    ) {
+                                                                        Text(
+                                                                            text = it.name,
+                                                                            style = titleMedium,
+                                                                            fontSize = 18.sp,
+                                                                            fontWeight = FontWeight.Bold,
+                                                                            maxLines = 2,
+                                                                            overflow = TextOverflow.Ellipsis,
+                                                                            color = Color.White
+                                                                        )
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else -> Unit
                                         }
 
                                         item(span = { GridItemSpan(maxLineSpan) }) {
                                             Text(
+                                                modifier = Modifier.padding(
+                                                    top = BasePadding,
+                                                    start = BasePadding,
+                                                    end = BasePadding,
+                                                    bottom = SpacingM
+                                                ),
                                                 style = headlineSmall,
                                                 color = OnBackground,
-                                                fontSize = 20.sp,
+                                                fontSize = 18.sp,
                                                 fontWeight = FontWeight.Bold,
                                                 text = "Servicii populare"
                                             )
                                         }
 
-                                        items(fakeServices) {
+                                        itemsIndexed(fakeServices) { index, s ->
                                             Column(
                                                 verticalArrangement = Arrangement.Center,
                                                 horizontalAlignment = Alignment.CenterHorizontally
@@ -267,12 +378,14 @@ fun MainFiltersStep(
                                                 Spacer(Modifier.height(SpacingS))
 
                                                 Text(
-                                                    text = it.name,
-                                                    style = titleMedium,
+                                                    text = s.name,
+                                                    style = titleSmall,
                                                     fontWeight = FontWeight.Bold,
                                                     textAlign = TextAlign.Center
                                                 )
                                             }
+
+                                            Spacer(Modifier.width(BasePadding))
                                         }
                                     }
                                 }

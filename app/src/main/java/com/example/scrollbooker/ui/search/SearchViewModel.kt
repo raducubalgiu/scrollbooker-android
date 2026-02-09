@@ -22,6 +22,7 @@ import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusine
 import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.BusinessDomain
 import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.useCase.GetAllBusinessDomainsUseCase
 import com.example.scrollbooker.entity.nomenclature.businessType.domain.model.BusinessType
+import com.example.scrollbooker.entity.nomenclature.businessType.domain.useCase.GetAllAvailableBusinessTypesUseCase
 import com.example.scrollbooker.entity.nomenclature.businessType.domain.useCase.GetAllBusinessTypesByBusinessDomainUseCase
 import com.example.scrollbooker.entity.nomenclature.filter.domain.model.Filter
 import com.example.scrollbooker.entity.nomenclature.filter.domain.model.SubFilter
@@ -153,6 +154,7 @@ class SearchViewModel @Inject constructor(
     private val getBusinessesMarkersUseCase: GetBusinessesMarkersUseCase,
     private val getBusinessesSheetUseCase: GetBusinessesSheetUseCase,
     private val getAllBusinessDomainsUseCase: GetAllBusinessDomainsUseCase,
+    private val getAllAvailableBusinessTypesUseCase: GetAllAvailableBusinessTypesUseCase,
     private val getAllBusinessTypesByBusinessDomainUseCase: GetAllBusinessTypesByBusinessDomainUseCase,
     private val getAllServiceDomainsByBusinessDomainUseCase: GetAllServiceDomainsByBusinessDomainUseCase,
     private val getServicesByServiceDomainUseCase: GetServicesByServiceDomainUseCase,
@@ -169,6 +171,9 @@ class SearchViewModel @Inject constructor(
         MutableStateFlow<FeatureState<List<BusinessDomain>>>(FeatureState.Loading)
     val businessDomains: StateFlow<FeatureState<List<BusinessDomain>>> =
         _businessDomains.asStateFlow()
+
+    private val _businessTypes = MutableStateFlow<FeatureState<List<BusinessType>>>(FeatureState.Loading)
+    val businessTypes: StateFlow<FeatureState<List<BusinessType>>> = _businessTypes.asStateFlow()
 
     private val _markersUiState = MutableStateFlow(MarkersUiState())
     val markersUiState: StateFlow<MarkersUiState> = _markersUiState.asStateFlow()
@@ -214,8 +219,23 @@ class SearchViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5_000)
         )
 
+    fun loadAllBusinessDomains() {
+        viewModelScope.launch {
+            _businessDomains.value = FeatureState.Loading
+            _businessDomains.value = withVisibleLoading { getAllBusinessDomainsUseCase() }
+        }
+    }
+
+    fun loadAllBusinessTypes() {
+        viewModelScope.launch {
+            _businessTypes.value = FeatureState.Loading
+            _businessTypes.value = getAllAvailableBusinessTypesUseCase()
+        }
+    }
+
     init {
         loadAllBusinessDomains()
+        loadAllBusinessTypes()
 
         sharedRequestFlow
             .flatMapLatest { req ->
@@ -342,13 +362,6 @@ class SearchViewModel @Inject constructor(
 
     fun clearBusinessOwner() {
         _selectedBusinessOwner.value = null
-    }
-
-    fun loadAllBusinessDomains() {
-        viewModelScope.launch {
-            _businessDomains.value = FeatureState.Loading
-            _businessDomains.value = withVisibleLoading { getAllBusinessDomainsUseCase() }
-        }
     }
 
     fun updateCamera(position: CameraPositionState) {

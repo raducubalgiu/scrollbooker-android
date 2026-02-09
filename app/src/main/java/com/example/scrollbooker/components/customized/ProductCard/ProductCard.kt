@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
 import com.example.scrollbooker.components.customized.Protected.Protected
@@ -52,7 +53,9 @@ fun ProductCard(
                     price = product.price,
                     priceWithDiscount = product.priceWithDiscount,
                     discount = product.discount,
-                    filters = product.filters
+                    filters = product.filters,
+                    type = product.type,
+                    sessionsCount = product.sessionsCount
                 )
 
                 Spacer(Modifier.width(SpacingS))
@@ -70,13 +73,15 @@ fun ProductCard(
                 }
             }
 
-            if(product.description.isNotEmpty()) {
+            if(product.description != null && product.description.isNotEmpty()) {
                 Spacer(Modifier.height(BasePadding))
 
                 Text(
                     text = product.description,
                     color = Color.Gray,
-                    style = bodySmall
+                    style = bodySmall,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
 
@@ -90,15 +95,15 @@ fun ProductCard(
                 )
             }
 
-            if(displayActions) {
-                Spacer(Modifier.height(BasePadding))
-
-                ProductCardActions(
-                    isLoadingDelete = isLoadingDelete,
-                    onNavigateToEdit = { onNavigateToEdit?.invoke(product.id) },
-                    onDeleteProduct = { onDeleteProduct?.invoke(product.id) }
-                )
-            }
+//            if(displayActions) {
+//                Spacer(Modifier.height(BasePadding))
+//
+//                ProductCardActions(
+//                    isLoadingDelete = isLoadingDelete,
+//                    onNavigateToEdit = { onNavigateToEdit?.invoke(product.id) },
+//                    onDeleteProduct = { onDeleteProduct?.invoke(product.id) }
+//                )
+//            }
         }
     }
 }

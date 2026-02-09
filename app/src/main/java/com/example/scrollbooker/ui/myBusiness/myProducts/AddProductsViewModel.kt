@@ -181,6 +181,18 @@ class AddProductsViewModel @Inject constructor(
         _productState.update { current -> current.copy(name = name) }
     }
 
+    fun setType(type: String) {
+        _productState.update { current -> current.copy(type = type) }
+    }
+
+    fun setSessionsCount(sessionsCount: String) {
+        _productState.update { current -> current.copy(sessionsCount = sessionsCount) }
+    }
+
+    fun setValidityDays(validityDays: String) {
+        _productState.update { current -> current.copy(validityDays = validityDays) }
+    }
+
     fun setDescription(description: String) {
         _productState.update { current -> current.copy(description = description) }
     }
@@ -266,6 +278,9 @@ class AddProductsViewModel @Inject constructor(
                         serviceId = state.serviceId.toInt(),
                         businessId = businessId,
                         currencyId = state.currencyId.toInt(),
+                        type = state.type,
+                        sessionsCount = state.sessionsCount.toIntOrNull(),
+                        validityDays = state.validityDays.toIntOrNull(),
                         canBeBooked = state.canBeBooked
                     ),
                     filters = filters

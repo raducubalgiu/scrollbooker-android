@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
+import com.example.scrollbooker.core.enums.ProductTypeEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
@@ -40,6 +41,9 @@ fun BusinessServicesSection() {
             businessId = 1,
             currencyId = 1,
             filters = emptyList(),
+            type = ProductTypeEnum.SINGLE,
+            sessionsCount = null,
+            validityDays = null,
             canBeBooked = true
         ),
         Product(
@@ -55,6 +59,9 @@ fun BusinessServicesSection() {
             businessId = 1,
             currencyId = 1,
             filters = emptyList(),
+            type = ProductTypeEnum.SINGLE,
+            sessionsCount = null,
+            validityDays = null,
             canBeBooked = true
         ),
         Product(
@@ -70,6 +77,9 @@ fun BusinessServicesSection() {
             businessId = 1,
             currencyId = 1,
             filters = emptyList(),
+            type = ProductTypeEnum.SINGLE,
+            sessionsCount = null,
+            validityDays = null,
             canBeBooked = true
         ),
         Product(
@@ -85,6 +95,9 @@ fun BusinessServicesSection() {
             businessId = 1,
             currencyId = 1,
             filters = emptyList(),
+            type = ProductTypeEnum.SINGLE,
+            sessionsCount = null,
+            validityDays = null,
             canBeBooked = true
         )
     )

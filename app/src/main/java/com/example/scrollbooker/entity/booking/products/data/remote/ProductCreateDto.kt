@@ -23,5 +23,13 @@ data class ProductCreateDto(
     val currencyId: Int,
 
     @SerializedName("can_be_booked")
-    val canBeBooked: Boolean
+    val canBeBooked: Boolean,
+
+    val type: String,
+
+    @SerializedName("sessions_count")
+    val sessionsCount: Int?,
+
+    @SerializedName("validity_days")
+    val validityDays: Int?,
 )

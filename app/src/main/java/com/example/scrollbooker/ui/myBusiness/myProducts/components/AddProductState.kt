@@ -27,7 +27,10 @@ data class AddProductState(
     val duration: String = "",
     val serviceId: String = "",
     val currencyId: String = "",
-    val canBeBooked: Boolean = true
+    val canBeBooked: Boolean = true,
+    val type: String = "",
+    val sessionsCount: String = "",
+    val validityDays: String = "",
 ) {
     fun validate(context: Context): AddProductValidation {
         val nameError = checkLength(context, name, minLength = 3, maxLength = 100)

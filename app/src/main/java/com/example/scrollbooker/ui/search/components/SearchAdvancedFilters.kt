@@ -46,7 +46,7 @@ fun SearchAdvancedFilters(
         ) {
             Column(Modifier.padding(16.dp)) {
                 Text(
-                    text = "Filtrare avansată",
+                    text = "Filtre",
                     style = titleMedium
                 )
 

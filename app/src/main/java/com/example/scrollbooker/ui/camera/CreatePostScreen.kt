@@ -46,7 +46,7 @@ fun CreatePostScreen(
                         viewModel.createPost(
                             description = description,
                             videoUri = uri,
-                            businessOrEmployeeId = 100,
+                            businessOrEmployeeId = 292,
                             isVideoReview = true
                         )
                     }

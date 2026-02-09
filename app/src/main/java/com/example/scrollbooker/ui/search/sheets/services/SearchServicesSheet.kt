@@ -32,6 +32,8 @@ fun SearchServicesSheet(
     onClose: () -> Unit,
     onFilter: (SearchServicesFiltersSheetState) -> Unit
 ) {
+    val businessTypes by viewModel.businessTypes.collectAsState()
+
     val requestState by viewModel.request.collectAsState()
     val state by viewModel.servicesSheetFilters.collectAsState()
 
@@ -72,6 +74,7 @@ fun SearchServicesSheet(
                 ServicesSheetStep.MAIN_FILTERS -> {
                     MainFiltersStep(
                         state = state,
+                        businessTypes = businessTypes,
                         onOpenDate = {
                             if (step == ServicesSheetStep.MAIN_FILTERS) step = ServicesSheetStep.DATE_TIME
                             else step = ServicesSheetStep.MAIN_FILTERS

@@ -14,6 +14,9 @@ fun ProductCreate.toDto(): ProductCreateDto {
         serviceId = serviceId,
         businessId = businessId,
         currencyId = currencyId,
+        type = type,
+        sessionsCount = sessionsCount,
+        validityDays = validityDays,
         canBeBooked = canBeBooked
     )
 }

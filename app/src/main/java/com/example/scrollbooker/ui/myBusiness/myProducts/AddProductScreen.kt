@@ -166,16 +166,60 @@ fun AddProductScreen(
 
                     Spacer(Modifier.height(BasePadding))
 
+                    InputSelect(
+                        label = "Tip",
+                        placeholder = "Alege tipul serviciului",
+                        options = listOf(
+                            Option(name = "Individual", value = "single"),
+                            Option(name = "Pachet de ședinte", value = "pack"),
+                            Option(name = "Abonament", value = "membership")
+                        ),
+                        selectedOption = productState.type,
+                        onValueChange = { it?.let { viewModel.setType(it) } },
+                        //isLoading = isLoadingCurrencies,
+                        //isEnabled = !isErrorCurrencies && !isLoadingCurrencies,
+                        //isError = showErrors && !isValidCurrencyId,
+                        //errorMessage = validation.currencyIdError.toString()
+                    )
+
+                    Spacer(Modifier.height(BasePadding))
+
+                    if(productState.type == "pack") {
+                        Input(
+                            label = "Numar sedinte",
+                            value = productState.sessionsCount,
+                            onValueChange = viewModel::setSessionsCount,
+                            //isError = showErrors && !isNameValid,
+                            //errorMessage = validation.nameError.toString(),
+                        )
+
+                        Spacer(Modifier.height(BasePadding))
+                    }
+
+                    if(productState.type != "single") {
+                        Input(
+                            label = "Valabilitate (numar zile)",
+                            value = productState.validityDays,
+                            onValueChange = viewModel::setValidityDays,
+                            //isError = showErrors && !isNameValid,
+                            //errorMessage = validation.nameError.toString(),
+                        )
+
+                        Spacer(Modifier.height(BasePadding))
+                    }
+
                     when(val filters = filtersState) {
                         is FeatureState.Loading -> FiltersSkeleton()
                         is FeatureState.Success -> {
-                            FiltersSection(
-                                isVisible = productState.serviceId.isNotEmpty(),
-                                filters = filters.data,
-                                selectedFilters = selectedFilters,
-                                isLoadingFilters = isLoadingFilters,
-                                actions = actions
-                            )
+                            if(filters.data.isNotEmpty()) {
+                                FiltersSection(
+                                    isVisible = productState.serviceId.isNotEmpty(),
+                                    filters = filters.data,
+                                    selectedFilters = selectedFilters,
+                                    isLoadingFilters = isLoadingFilters,
+                                    actions = actions
+                                )
+                            }
                         }
                         else -> Unit
                     }

@@ -116,7 +116,7 @@ fun MyProductsScreen(
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
-                                        text = service.name,
+                                        text = service.displayName,
                                         style = bodyLarge,
                                         fontSize = 16.sp,
                                         color = if (isSelected) OnSurfaceBG else Color.Gray,

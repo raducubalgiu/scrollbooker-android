@@ -11,5 +11,8 @@ data class ProductCreate(
     val serviceId: Int,
     val businessId: Int,
     val currencyId: Int,
+    val type: String,
+    val sessionsCount: Int?,
+    val validityDays: Int?,
     val canBeBooked: Boolean
 )

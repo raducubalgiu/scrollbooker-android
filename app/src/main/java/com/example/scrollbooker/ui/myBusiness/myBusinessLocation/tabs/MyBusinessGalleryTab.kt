@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
+import com.example.scrollbooker.core.enums.ProductTypeEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.entity.booking.appointment.domain.model.BusinessCoordinates
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMediaFile
@@ -70,6 +71,9 @@ fun MyBusinessGalleryTab(
                             businessId = 1,
                             currencyId = 1,
                             filters = emptyList(),
+                            type = ProductTypeEnum.SINGLE,
+                            sessionsCount = null,
+                            validityDays = null,
                             canBeBooked = true
                         ),
                         Product(
@@ -85,6 +89,9 @@ fun MyBusinessGalleryTab(
                             businessId = 1,
                             currencyId = 1,
                             filters = emptyList(),
+                            type = ProductTypeEnum.SINGLE,
+                            sessionsCount = null,
+                            validityDays = null,
                             canBeBooked = true
                         ),
                         Product(
@@ -100,6 +107,9 @@ fun MyBusinessGalleryTab(
                             businessId = 1,
                             currencyId = 1,
                             filters = emptyList(),
+                            type = ProductTypeEnum.SINGLE,
+                            sessionsCount = null,
+                            validityDays = null,
                             canBeBooked = true
                         )
                     ),
