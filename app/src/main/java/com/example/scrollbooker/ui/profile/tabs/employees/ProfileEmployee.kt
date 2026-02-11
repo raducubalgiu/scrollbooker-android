@@ -1,5 +1,6 @@
 package com.example.scrollbooker.ui.profile.tabs.employees
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -28,10 +29,13 @@ import com.example.scrollbooker.ui.theme.titleMedium
 @Composable
 fun ProfileEmployee(
     employee: Employee,
-    onNavigateToEmployeeProfile: (Int) -> Unit
+    onNavigateToEmployeeProfile: (Int) -> Unit,
+    onOpenServices: () -> Unit
 ) {
     ListItem(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = { onNavigateToEmployeeProfile(employee.id) }),
         headlineContent = {
             Text(
                 maxLines = 1,
@@ -67,8 +71,8 @@ fun ProfileEmployee(
         },
         trailingContent = {
             MainButtonOutlined(
-                title = stringResource(R.string.profile),
-                onClick = { onNavigateToEmployeeProfile(employee.id) }
+                title = stringResource(R.string.services),
+                onClick = onOpenServices
             )
         },
         leadingContent = {

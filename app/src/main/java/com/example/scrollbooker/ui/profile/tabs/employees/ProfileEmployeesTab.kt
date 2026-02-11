@@ -81,19 +81,22 @@ fun ProfileEmployeesTab(
                             employees[index]?.let { employee ->
                                 ProfileEmployee(
                                     employee = employee,
-                                    onNavigateToEmployeeProfile = onNavigateToEmployeeProfile
+                                    onNavigateToEmployeeProfile = onNavigateToEmployeeProfile,
+                                    onOpenServices = {}
                                 )
 
-                                HorizontalDivider(
-                                    modifier = Modifier.padding(
-                                        start = BasePadding,
-                                        end = BasePadding,
-                                        top = SpacingM,
-                                        bottom = SpacingXS
-                                    ),
-                                    color = Divider,
-                                    thickness = 0.55.dp
-                                )
+                                if(index < employees.itemCount - 1) {
+                                    HorizontalDivider(
+                                        modifier = Modifier.padding(
+                                            start = BasePadding,
+                                            end = BasePadding,
+                                            top = SpacingM,
+                                            bottom = SpacingXS
+                                        ),
+                                        color = Divider,
+                                        thickness = 0.55.dp
+                                    )
+                                }
                             }
                         }
 
