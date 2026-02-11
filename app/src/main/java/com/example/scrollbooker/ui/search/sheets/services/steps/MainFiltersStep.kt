@@ -165,7 +165,8 @@ fun MainFiltersStep(
                                 id = 0,
                                 name = stringResource(R.string.all),
                                 shortName = stringResource(R.string.all),
-                                serviceDomains = emptyList()
+                                serviceDomains = emptyList(),
+                                businessTypes = emptyList()
                             )
                         ) + bDomains.data
 

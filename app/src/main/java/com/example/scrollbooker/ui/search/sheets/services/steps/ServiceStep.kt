@@ -77,7 +77,7 @@ fun ServiceStep(
         is FeatureState.Success -> state.data.map { s ->
             Option(
                 value = s.id.toString(),
-                name = s.displayName
+                name = s.shortName
             )
         }
         else -> emptyList()

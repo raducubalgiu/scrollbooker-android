@@ -7,7 +7,7 @@ fun ServiceDto.toDomain(): Service {
     return Service(
         id = id,
         name = name,
-        displayName = displayName,
+        shortName = shortName,
         description = description,
         businessDomainId = businessDomainId
     )

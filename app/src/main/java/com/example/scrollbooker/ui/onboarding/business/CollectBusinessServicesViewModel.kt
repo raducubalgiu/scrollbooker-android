@@ -72,7 +72,7 @@ class CollectBusinessServicesViewModel @Inject constructor(
                         Service(
                             id = it.id,
                             name = it.name,
-                            displayName = it.displayName,
+                            shortName = it.shortName,
                             description = it.description,
                             businessDomainId = it.businessDomainId
                         )

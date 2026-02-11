@@ -89,7 +89,7 @@ fun AddProductScreen(
         is FeatureState.Success -> state.data.map { service ->
             Option(
                 value = service.id.toString(),
-                name = service.displayName
+                name = service.shortName
             )
         }
         else -> emptyList()

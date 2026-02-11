@@ -11,7 +11,7 @@ class GetAllBusinessDomainsUseCase(
 ) {
     suspend operator fun invoke(): FeatureState<List<BusinessDomain>> {
         return try {
-            val businessDomains = repository.getBusinessDomains()
+            val businessDomains = repository.getAllBusinessDomains()
             FeatureState.Success(businessDomains)
         } catch (e: Exception) {
             Timber.tag("Business Domains").e("ERROR: on Fetching Business Domains: $e")

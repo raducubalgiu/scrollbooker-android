@@ -33,7 +33,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -41,15 +40,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.inputs.InputCheckbox
-import com.example.scrollbooker.components.core.inputs.RoundCheckbox
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.BusinessDomainsWithBusinessTypes
+import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.BusinessDomain
 import com.example.scrollbooker.ui.theme.BackgroundDark
 
 @Composable
 fun BusinessDomainItem(
     selectedBusinessTypes: Set<Int>,
-    businessDomain: BusinessDomainsWithBusinessTypes,
+    businessDomain: BusinessDomain,
     onSetBusinessType: (Int) -> Unit
 ) {
     var isExpanded by rememberSaveable { mutableStateOf(false) }

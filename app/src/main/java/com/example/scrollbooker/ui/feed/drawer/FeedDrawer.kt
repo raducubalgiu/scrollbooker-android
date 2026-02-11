@@ -17,7 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.BusinessDomainsWithBusinessTypes
+import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.BusinessDomain
 import com.example.scrollbooker.ui.feed.FeedScreenViewModel
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
@@ -25,7 +25,7 @@ import com.example.scrollbooker.ui.feed.FeedScreenViewModel
 fun FeedDrawer(
     viewModel: FeedScreenViewModel,
     isDrawerOpen: Boolean,
-    businessDomainsState: FeatureState<List<BusinessDomainsWithBusinessTypes>>,
+    businessDomainsState: FeatureState<List<BusinessDomain>>,
     selectedFromVm: Set<Int>,
     onClose: () -> Unit
 ) {

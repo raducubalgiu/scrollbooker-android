@@ -3,18 +3,13 @@ package com.example.scrollbooker.entity.nomenclature.businessDomain.data.reposit
 import com.example.scrollbooker.entity.nomenclature.businessDomain.data.mappers.toDomain
 import com.example.scrollbooker.entity.nomenclature.businessDomain.data.remote.BusinessDomainApiService
 import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.BusinessDomain
-import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.BusinessDomainsWithBusinessTypes
 import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.repository.BusinessDomainRepository
 import javax.inject.Inject
 
 class BusinessDomainRepositoryImpl @Inject constructor(
     private val apiService: BusinessDomainApiService
 ): BusinessDomainRepository {
-    override suspend fun getBusinessDomains(): List<BusinessDomain> {
+    override suspend fun getAllBusinessDomains(): List<BusinessDomain> {
         return apiService.getAllBusinessDomains().map { it.toDomain() }
-    }
-
-    override suspend fun getAllBusinessDomainsWithBusinessTypes(): List<BusinessDomainsWithBusinessTypes> {
-        return apiService.getAllBusinessDomainsWithBusinessTypes().map { it.toDomain() }
     }
 }

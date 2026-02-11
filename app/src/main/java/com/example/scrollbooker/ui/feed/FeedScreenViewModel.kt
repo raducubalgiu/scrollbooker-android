@@ -17,8 +17,8 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.VideoPlayerCache
-import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.BusinessDomainsWithBusinessTypes
-import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.useCase.GetAllBusinessDomainsWithBusinessTypesUseCase
+import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.BusinessDomain
+import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.useCase.GetAllBusinessDomainsUseCase
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.social.post.domain.useCase.BookmarkPostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetExplorePostsUseCase
@@ -52,7 +52,7 @@ import kotlin.collections.component2
 @HiltViewModel
 class FeedScreenViewModel @Inject constructor(
     private val getFollowingPostsUseCase: GetFollowingPostsUseCase,
-    private val getAllBusinessDomainsWithBusinessTypesUseCase: GetAllBusinessDomainsWithBusinessTypesUseCase,
+    private val getAllBusinessDomainsUseCase: GetAllBusinessDomainsUseCase,
     private val getExplorePostsUseCase: GetExplorePostsUseCase,
     private val likePostUseCase: LikePostUseCase,
     private val unLikePostUseCase: UnLikePostUseCase,
@@ -61,11 +61,10 @@ class FeedScreenViewModel @Inject constructor(
     @ApplicationContext private val application: Context,
 ) : ViewModel() {
     // Drawer
-    val businessDomainsWithBusinessTypes: StateFlow<
-            FeatureState<List<BusinessDomainsWithBusinessTypes>>> =
+    val businessDomainsWithBusinessTypes: StateFlow<FeatureState<List<BusinessDomain>>> =
         flow {
             emit(FeatureState.Loading)
-            emit(getAllBusinessDomainsWithBusinessTypesUseCase())
+            emit(getAllBusinessDomainsUseCase())
         }.catch { e ->
             emit(FeatureState.Error(e))
         }.stateIn(

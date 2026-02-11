@@ -1,5 +1,6 @@
 package com.example.scrollbooker.entity.nomenclature.businessDomain.data.remote
 
+import com.example.scrollbooker.entity.nomenclature.businessType.data.remote.BusinessTypeDto
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.data.remote.ServiceDomainDto
 import com.google.gson.annotations.SerializedName
 
@@ -11,5 +12,8 @@ data class BusinessDomainDto(
     val shortName: String,
 
     @SerializedName("service_domains")
-    val serviceDomains: List<ServiceDomainDto> = emptyList()
+    val serviceDomains: List<ServiceDomainDto> = emptyList(),
+
+    @SerializedName("business_types")
+    val businessTypes: List<BusinessTypeDto> = emptyList()
 )

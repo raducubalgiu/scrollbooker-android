@@ -38,49 +38,49 @@ val fakeServices = listOf(
     Service(
         id = 1,
         name = "Tuns",
-        displayName = "",
+        shortName = "",
         description = "",
         businessDomainId = 1
     ),
     Service(
         id = 2,
         name = "Masaj",
-        displayName = "",
+        shortName = "",
         description = "",
         businessDomainId = 1
     ),
     Service(
         id = 3,
         name = "ITP",
-        displayName = "",
+        shortName = "",
         description = "",
         businessDomainId = 1
     ),
     Service(
         id = 4,
         name = "Polish",
-        displayName = "",
+        shortName = "",
         description = "",
         businessDomainId = 1
     ),
     Service(
         id = 5,
         name = "Psihoterapie",
-        displayName = "",
+        shortName = "",
         description = "",
         businessDomainId = 1
     ),
     Service(
         id = 6,
         name = "Pensat",
-        displayName = "",
+        shortName = "",
         description = "",
         businessDomainId = 1
     ),
     Service(
         id = 7,
         name = "Rinoplastie",
-        displayName = "",
+        shortName = "",
         description = "",
         businessDomainId = 1
     )
