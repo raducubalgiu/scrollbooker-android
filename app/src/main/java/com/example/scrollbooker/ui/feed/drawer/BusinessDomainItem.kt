@@ -74,9 +74,7 @@ fun BusinessDomainItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(
-                    BasePadding
-                ),
+                .padding(BasePadding),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {

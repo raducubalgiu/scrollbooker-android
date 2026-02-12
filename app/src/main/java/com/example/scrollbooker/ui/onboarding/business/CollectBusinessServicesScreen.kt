@@ -1,25 +1,29 @@
 package com.example.scrollbooker.ui.onboarding.business
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
+import com.example.scrollbooker.components.core.accordion.Accordion
 import com.example.scrollbooker.components.core.inputs.InputCheckbox
 import com.example.scrollbooker.components.core.layout.FormLayout
-import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.components.core.layout.LoadingScreen
+import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.ui.theme.Divider
 
 @Composable
@@ -50,20 +54,37 @@ fun CollectBusinessServicesScreen(
             is FeatureState.Error -> ErrorScreen()
             is FeatureState.Success -> {
                 LazyColumn {
-                    itemsIndexed(result.data) { index, service ->
-                        InputCheckbox(
-                            checked = service.id in selectedIds,
-                            onCheckedChange = { viewModel.toggleService(service.id) },
-                            headLine = service.name
-                        )
-                        if(index < result.data.lastIndex) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = SpacingXXL)
-                                    .height(0.55.dp)
-                                    .background(Divider.copy(alpha = 0.5f))
-                            )
+                    items(result.data) {
+                        var isExpanded by rememberSaveable { mutableStateOf(true) }
+
+                        Accordion(
+                            modifier = Modifier.padding(
+                                start = BasePadding,
+                                end = BasePadding,
+                                bottom = BasePadding
+                            ),
+                            title = it.name,
+                            isExpanded = isExpanded,
+                            onSetExpanded = { isExpanded = !isExpanded }
+                        ) {
+                            it.services.forEachIndexed { index, service ->
+                                InputCheckbox(
+                                    height = 60.dp,
+                                    checked = service.id in selectedIds,
+                                    onCheckedChange = { viewModel.toggleService(service.id) },
+                                    headLine = service.name
+                                )
+
+                                if(index < result.data.lastIndex) {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = SpacingXXL)
+                                            .height(0.55.dp)
+                                            .background(Divider.copy(alpha = 0.5f))
+                                    )
+                                }
+                            }
                         }
                     }
                 }

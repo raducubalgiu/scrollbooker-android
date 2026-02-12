@@ -13,12 +13,12 @@ import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMar
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfile
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessSheet
 import com.example.scrollbooker.entity.booking.business.domain.model.RecommendedBusiness
-import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomainWithServices
 import kotlinx.coroutines.flow.Flow
 
 interface BusinessRepository {
     suspend fun searchBusinessAddress(query: String): List<BusinessAddress>
-    suspend fun updateBusinessServices(serviceIds: List<Int>): List<Service>
+    suspend fun updateBusinessServices(serviceIds: List<Int>): List<ServiceDomainWithServices>
     suspend fun getBusiness(userId: Int): Business
     suspend fun getBusinessById(businessId: Int): Business
     suspend fun getBusinessProfileById(businessId: Int): BusinessProfile

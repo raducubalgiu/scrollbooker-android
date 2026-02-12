@@ -23,8 +23,8 @@ import com.example.scrollbooker.entity.booking.business.domain.model.BusinessPro
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessSheet
 import com.example.scrollbooker.entity.booking.business.domain.model.RecommendedBusiness
 import com.example.scrollbooker.entity.booking.business.domain.repository.BusinessRepository
-import com.example.scrollbooker.entity.nomenclature.service.data.mappers.toDomain
-import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.data.mappers.toDomain
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomainWithServices
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -97,7 +97,7 @@ class BusinessRepositoryImpl @Inject constructor(
         return apiService.searchBusinessAddress(query).map { it.toDomain() }
     }
 
-    override suspend fun updateBusinessServices(serviceIds: List<Int>): List<Service> {
+    override suspend fun updateBusinessServices(serviceIds: List<Int>): List<ServiceDomainWithServices> {
         val request = BusinessServicesUpdateRequest(serviceIds)
 
         return apiService.updateBusinessServices(request).map { it.toDomain() }

@@ -8,9 +8,8 @@ import com.example.scrollbooker.core.snackbar.UiText
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.business.domain.useCase.UpdateBusinessServicesUseCase
-import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
-import com.example.scrollbooker.entity.nomenclature.service.domain.useCase.GetServicesByBusinessTypeUseCase
-import com.example.scrollbooker.entity.nomenclature.service.domain.useCase.GetServicesByBusinessIdUseCase
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomainWithServices
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.useCase.GetAllServiceDomainsWithServicesByBusinessIdUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
@@ -28,12 +27,11 @@ import javax.inject.Inject
 @HiltViewModel
 class MyServicesViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
-    private val getServicesByBusinessIdUseCase: GetServicesByBusinessIdUseCase,
-    private val getServicesByBusinessTypeUseCase: GetServicesByBusinessTypeUseCase,
+    private val getAllServiceDomainsWithServicesByBusinessIdUseCase: GetAllServiceDomainsWithServicesByBusinessIdUseCase,
     private val updateBusinessServicesUseCase: UpdateBusinessServicesUseCase
 ): ViewModel() {
-    private val _state = MutableStateFlow<FeatureState<List<Service>>>(FeatureState.Loading)
-    val state: StateFlow<FeatureState<List<Service>>> = _state
+    private val _state = MutableStateFlow<FeatureState<List<ServiceDomainWithServices>>>(FeatureState.Loading)
+    val state: StateFlow<FeatureState<List<ServiceDomainWithServices>>> = _state
 
     private val _defaultSelectedServiceIds = MutableStateFlow<Set<Int>>(emptySet())
     val defaultSelectedServiceIds: StateFlow<Set<Int>> = _defaultSelectedServiceIds.asStateFlow()
@@ -58,42 +56,32 @@ class MyServicesViewModel @Inject constructor(
         viewModelScope.launch {
             _state.value = FeatureState.Loading
 
+            val businessId = authDataStore.getBusinessId().firstOrNull()
+
+            if(businessId == null) {
+                throw IllegalStateException("Business Id not found in data store")
+            }
+
             val result = withVisibleLoading {
-                val businessId = authDataStore.getBusinessId().firstOrNull()
-                val businessTypeId = authDataStore.getBusinessTypeId().firstOrNull()
+                getAllServiceDomainsWithServicesByBusinessIdUseCase(businessId)
+            }
 
-                if(businessId == null) {
-                    throw IllegalStateException("Business Id not found in data store")
-                }
+            if (result is FeatureState.Success) {
+                val data = result.data
 
-                if(businessTypeId == null) {
-                    throw IllegalStateException("BusinessType Id not found in data store")
-                }
+                _defaultSelectedServiceIds.value = data
+                    .asSequence()
+                    .flatMap { it.services.asSequence() }
+                    .filter { it.isSelected }
+                    .map { it.id }
+                    .toSet()
 
-                val user = getServicesByBusinessIdUseCase(businessId)
-                val all = getServicesByBusinessTypeUseCase(businessTypeId)
-
-                if(all.isSuccess && user.isSuccess) {
-                    val selectedIds = user.getOrThrow().map { it.id }.toSet()
-                    _selectedServiceIds.value = selectedIds
-                    _defaultSelectedServiceIds.value = selectedIds
-
-                    val combined = all.getOrThrow().map {
-                        Service(
-                            id = it.id,
-                            name = it.name,
-                            shortName = it.shortName,
-                            description = it.description,
-                            businessDomainId = it.businessDomainId
-                        )
-                    }
-
-                    return@withVisibleLoading FeatureState.Success(combined)
-                } else {
-                    val error = all.exceptionOrNull() ?: user.exceptionOrNull()
-                    Timber.tag("Services").e("ERROR: on Fetching Services $error")
-                    return@withVisibleLoading FeatureState.Error(error ?: Exception("Unexpected Error"))
-                }
+                _selectedServiceIds.value = data
+                    .asSequence()
+                    .flatMap { it.services.asSequence() }
+                    .filter { it.isSelected }
+                    .map { it.id }
+                    .toSet()
             }
 
             _state.value = result
@@ -106,7 +94,7 @@ class MyServicesViewModel @Inject constructor(
         }
     }
 
-    suspend fun updateBusinessServices(): List<Service>? {
+    suspend fun updateBusinessServices(): List<ServiceDomainWithServices>? {
         _isSaving.value = FeatureState.Loading
 
         val serviceIds = _selectedServiceIds.value.toList()
@@ -121,10 +109,19 @@ class MyServicesViewModel @Inject constructor(
             .onSuccess { updated ->
                 _isSaving.value = FeatureState.Success(Unit)
 
-                val selectedIds = updated.map { it.id }.toSet()
+                _defaultSelectedServiceIds.value = updated
+                    .asSequence()
+                    .flatMap { it.services.asSequence() }
+                    .filter { it.isSelected }
+                    .map { it.id }
+                    .toSet()
 
-                _defaultSelectedServiceIds.value = selectedIds
-                _selectedServiceIds.value = selectedIds
+                _selectedServiceIds.value = updated
+                    .asSequence()
+                    .flatMap { it.services.asSequence() }
+                    .filter { it.isSelected }
+                    .map { it.id }
+                    .toSet()
 
                 _events.tryEmit(
                     SnackBarUiEvent.Show(
