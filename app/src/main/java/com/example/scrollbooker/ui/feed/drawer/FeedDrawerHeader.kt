@@ -18,14 +18,14 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.ui.theme.headlineLarge
 import com.example.scrollbooker.ui.theme.headlineMedium
+import com.example.scrollbooker.ui.theme.titleLarge
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun FeedDrawerHeader() {
     Text(
         modifier = Modifier.padding(
-            top = SpacingXL,
-            bottom = SpacingM
+            top = SpacingXL
         ),
         style = headlineLarge,
         color = Color(0xFFE0E0E0),
@@ -33,12 +33,13 @@ fun FeedDrawerHeader() {
         text = "ScrollBooker"
     )
 
+    Spacer(Modifier.height(10.dp))
+
     Text(
         modifier = Modifier.padding(end = SpacingS),
-        style = headlineMedium,
-        fontSize = 26.sp,
-        color = Color(0xFFE0E0E0),
-        fontWeight = FontWeight.SemiBold,
+        style = titleLarge,
+        fontSize = 18.sp,
+        color = Color(0xFFAAAAAA),
         text = stringResource(R.string.chooseWhatDoYouWantToSeeInFeed)
     )
 

@@ -28,7 +28,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.SurfaceBG
@@ -40,6 +42,8 @@ fun Accordion(
     title: String,
     isExpanded: Boolean,
     onSetExpanded: () -> Unit,
+    containerColor: Color = SurfaceBG,
+    contentColor: Color = OnSurfaceBG,
     content: @Composable () -> Unit
 ) {
     val arrowRotation by animateFloatAsState(
@@ -47,7 +51,7 @@ fun Accordion(
         label = "accordion-arrow"
     )
     Surface(
-        color = SurfaceBG,
+        color = containerColor,
         modifier = modifier
             .clip(shape = ShapeDefaults.Medium)
             .clickable(
@@ -66,13 +70,16 @@ fun Accordion(
                     text = title,
                     style = bodyLarge,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.weight(1f)
+                    color = contentColor,
+                    modifier = Modifier.weight(1f),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowUp,
                     contentDescription = null,
                     modifier = Modifier.rotate(arrowRotation),
-                    tint = OnSurfaceBG
+                    tint = contentColor
                 )
             }
             AnimatedVisibility(
@@ -90,7 +97,7 @@ fun Accordion(
                     modifier = Modifier
                         .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
                         .background(
-                            color = SurfaceBG,
+                            color = containerColor,
                             shape = RoundedCornerShape(8.dp)
                         )
                 ) {

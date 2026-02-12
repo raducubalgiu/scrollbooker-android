@@ -34,6 +34,7 @@ fun InputCheckbox(
     onCheckedChange: () -> Unit,
     isEnabled: Boolean = true,
     headLine: String,
+    containerColor: Color = Background,
     contentColor: Color = OnBackground,
     height: Dp = 70.dp,
     paddingStart: Dp = SpacingXXL,
@@ -45,7 +46,7 @@ fun InputCheckbox(
         Modifier
             .fillMaxWidth()
             .height(height)
-            .background(Background)
+            .background(containerColor)
             .clickable { if(isEnabled) onCheckedChange() }
             .then(modifier),
         verticalAlignment = Alignment.CenterVertically,

@@ -35,7 +35,6 @@ fun FeedDrawerLayout(
     isOpen: Boolean,
     onOpenChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
-    drawerWidthFraction: Float = 0.9f,
     scrimColor: Color = Color.Black.copy(alpha = 0.7f),
     drawerContent: @Composable ColumnScope.() -> Unit,
 ) {
@@ -48,7 +47,7 @@ fun FeedDrawerLayout(
             .zIndex(15f)
     ) {
         val fullWidthPx = with(density) { maxWidth.toPx() }
-        val drawerWidthPx = fullWidthPx * drawerWidthFraction
+        val drawerWidthPx = fullWidthPx * 0.9f
         val closedOffsetX = -drawerWidthPx
 
         val offsetX = remember { Animatable(if (isOpen) 0f else closedOffsetX) }
