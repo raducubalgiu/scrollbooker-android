@@ -2,7 +2,6 @@ package com.example.scrollbooker.ui.search.sheets.services
 
 import android.os.Parcelable
 import com.example.scrollbooker.core.extensions.toPrettyTime
-import com.example.scrollbooker.ui.search.SearchFiltersState
 import kotlinx.parcelize.Parcelize
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
@@ -13,43 +12,12 @@ data class SearchServicesFiltersSheetState(
     val businessDomainId: Int? = null,
     val serviceDomainId: Int? = null,
     val serviceId: Int? = null,
+    val selectedFilters: Map<Int, Int> = emptyMap(),
     val startDate: LocalDate? = null,
     val endDate: LocalDate? = null,
     val startTime: LocalTime? = null,
     val endTime: LocalTime? = null
 ) : Parcelable
-
-fun SearchServicesFiltersSheetState.hasActiveFilters(): Boolean {
-    return serviceDomainId != null ||
-            serviceId != null ||
-            startDate != null ||
-            endDate != null ||
-            startTime != null ||
-            endTime != null
-}
-
-fun SearchServicesFiltersSheetState.hasDateAndTimeFilters(): Boolean {
-    return startDate != null ||
-            endDate != null ||
-            startTime != null ||
-            endTime != null
-}
-
-fun SearchServicesFiltersSheetState.applyOn(
-    base: SearchFiltersState
-): SearchFiltersState =
-    base.copy(
-        serviceDomainId = serviceDomainId,
-        serviceId = serviceId,
-        startDate = startDate,
-        endDate = endDate,
-        startTime = startTime,
-        endTime = endTime
-    )
-
-fun SearchServicesFiltersSheetState.hasChangesComparedTo(
-    base: SearchFiltersState
-): Boolean = this.applyOn(base) != base
 
 fun SearchServicesFiltersSheetState.dateTimeSummary(): String? {
     val hasDate = startDate != null || endDate != null

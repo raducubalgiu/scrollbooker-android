@@ -17,12 +17,10 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.itemsIndexed
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
@@ -31,14 +29,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -47,28 +43,23 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.BusinessDomain
-import com.example.scrollbooker.entity.nomenclature.businessType.domain.model.BusinessType
-import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
 import com.example.scrollbooker.entity.nomenclature.service.domain.model.ServiceWithFilters
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomain
 import com.example.scrollbooker.ui.search.components.SearchBusinessDomainLabel
 import com.example.scrollbooker.ui.search.sheets.SearchSheetsHeader
 import com.example.scrollbooker.ui.search.sheets.services.SearchServicesFiltersSheetState
 import com.example.scrollbooker.ui.search.sheets.services.components.MainFiltersFooter
-import com.example.scrollbooker.ui.search.sheets.services.components.PopularServicesList
 import com.example.scrollbooker.ui.search.sheets.services.components.ServiceDomainsList
 import com.example.scrollbooker.ui.search.sheets.services.components.fakeServices
 import com.example.scrollbooker.ui.search.sheets.services.dateTimeSummary
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.SurfaceBG
-import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.bodySmall
 import com.example.scrollbooker.ui.theme.headlineLarge
 import com.example.scrollbooker.ui.theme.headlineSmall
-import com.example.scrollbooker.ui.theme.titleMedium
 import com.example.scrollbooker.ui.theme.titleSmall
 import kotlinx.coroutines.launch
 
@@ -81,12 +72,11 @@ data class SearchRecent(
 @Composable
 fun MainFiltersStep(
     state: SearchServicesFiltersSheetState,
-    businessTypes: FeatureState<List<BusinessType>>,
     businessDomains: FeatureState<List<BusinessDomain>>,
     selectedBusinessDomainId: Int?,
-    selectedService: ServiceWithFilters?,
+    //selectedService: ServiceWithFilters?,
     onSetSelectedBusinessDomainId: (Int?) -> Unit,
-    onSetServiceDomainId: (Int) -> Unit,
+    onSetServiceDomain: (ServiceDomain) -> Unit,
 
     onOpenDate: () -> Unit,
     onFilter: (SearchServicesFiltersSheetState) -> Unit,
@@ -251,78 +241,6 @@ fun MainFiltersStep(
                                             }
                                         }
 
-                                        when(val bTypes = businessTypes) {
-                                            is FeatureState.Success -> {
-                                                item(span = { GridItemSpan(maxLineSpan) }) {
-                                                    Text(
-                                                        modifier = Modifier.padding(
-                                                            top = BasePadding,
-                                                            start = BasePadding,
-                                                            end = BasePadding,
-                                                            bottom = SpacingM
-                                                        ),
-                                                        style = headlineSmall,
-                                                        color = OnBackground,
-                                                        fontSize = 18.sp,
-                                                        fontWeight = FontWeight.Bold,
-                                                        text = "Afaceri"
-                                                    )
-                                                }
-
-                                                item(span = { GridItemSpan(maxLineSpan) }) {
-                                                    LazyRow(
-                                                        contentPadding = PaddingValues(horizontal = BasePadding),
-                                                        horizontalArrangement = Arrangement.spacedBy(BasePadding)
-                                                    ) {
-                                                        this.items(bTypes.data) {
-                                                            Column {
-                                                                Box(modifier = Modifier
-                                                                    .height(140.dp)
-                                                                    .width(220.dp)
-                                                                    .clip(RoundedCornerShape(BasePadding))
-                                                                ) {
-                                                                    Box(modifier = Modifier
-                                                                        .fillMaxSize()
-                                                                        .background(SurfaceBG)
-                                                                    )
-
-                                                                    AsyncImage(
-                                                                        modifier = Modifier.matchParentSize(),
-                                                                        model = it.url,
-                                                                        contentDescription = null,
-                                                                        contentScale = ContentScale.Crop,
-                                                                    )
-
-                                                                    Box(
-                                                                        modifier = Modifier
-                                                                            .fillMaxSize()
-                                                                            .background(
-                                                                                Brush.verticalGradient(
-                                                                                    colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.7f))
-                                                                                )
-                                                                            )
-                                                                            .padding(BasePadding),
-                                                                        contentAlignment = Alignment.BottomStart
-                                                                    ) {
-                                                                        Text(
-                                                                            text = it.name,
-                                                                            style = titleMedium,
-                                                                            fontSize = 18.sp,
-                                                                            fontWeight = FontWeight.Bold,
-                                                                            maxLines = 2,
-                                                                            overflow = TextOverflow.Ellipsis,
-                                                                            color = Color.White
-                                                                        )
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            else -> Unit
-                                        }
-
                                         item(span = { GridItemSpan(maxLineSpan) }) {
                                             Text(
                                                 modifier = Modifier.padding(
@@ -378,7 +296,7 @@ fun MainFiltersStep(
                                 else {
                                     ServiceDomainsList(
                                         serviceDomains = list[index].serviceDomains,
-                                        onSetServiceDomainId = onSetServiceDomainId
+                                        onSetServiceDomain = onSetServiceDomain
                                     )
                                 }
                             }
@@ -391,7 +309,7 @@ fun MainFiltersStep(
         MainFiltersFooter(
             isClearEnabled = true,
             isConfirmEnabled = true,
-            selectedService = selectedService,
+            //selectedService = selectedService,
             onConfirm = { onFilter(state) },
             onClear = onClear,
             onClearServiceId = onClearServiceId,

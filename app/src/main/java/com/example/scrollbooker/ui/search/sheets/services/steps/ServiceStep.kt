@@ -1,4 +1,5 @@
 package com.example.scrollbooker.ui.search.sheets.services.steps
+import android.os.Parcelable
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -17,56 +19,48 @@ import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.inputs.InputSelect
 import com.example.scrollbooker.components.core.inputs.Option
-import com.example.scrollbooker.core.enums.FilterTypeEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.entity.nomenclature.filter.domain.model.Filter
-import com.example.scrollbooker.entity.nomenclature.filter.domain.model.SubFilter
-import com.example.scrollbooker.entity.nomenclature.service.domain.model.ServiceWithFilters
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomain
 import com.example.scrollbooker.ui.search.SearchViewModel
 import com.example.scrollbooker.ui.search.components.SearchAdvancedFilters
 import com.example.scrollbooker.ui.search.sheets.SearchSheetActions
 import com.example.scrollbooker.ui.search.sheets.services.components.ServiceStepHeader
+import kotlinx.parcelize.Parcelize
+import kotlin.collections.plus
+
+@Parcelize
+data class ServiceStepState(
+    val serviceId: Int? = null,
+    val selectedFilters: Map<Int, Int> = emptyMap()
+): Parcelable
 
 @Composable
 fun ServiceStep(
+    serviceStepState: ServiceStepState,
     viewModel: SearchViewModel,
-    services: FeatureState<List<ServiceWithFilters>>,
-    selectedFilters: Map<Int, Int>,
-    selectedServiceDomain: ServiceDomain?,
-    selectedService: ServiceWithFilters?,
-    onSetSelectedFilter: (Int, Int) -> Unit,
     onBack: () -> Unit,
-    onConfirm: (Int?) -> Unit
+    onConfirm: (ServiceStepState) -> Unit
 ) {
-    var localSelectedServiceId by rememberSaveable {
-        mutableStateOf(if(selectedService?.id != null) selectedServiceDomain?.id else 0)
+    var state by rememberSaveable {
+        mutableStateOf(serviceStepState)
     }
 
-    LaunchedEffect(localSelectedServiceId) {
-        if(localSelectedServiceId.toString().isNotEmpty()) {
-            viewModel.setServiceId(localSelectedServiceId)
-        }
-    }
+    val selectedServiceDomain by viewModel.selectedServiceDomain.collectAsState()
+    val servicesState by viewModel.services.collectAsState()
 
-    val servicesOptions = when(val state = services) {
-        is FeatureState.Success -> buildList {
-            add(
-                Option(
-                    value = "0",
-                    name = "Toate Serviciile"
-                )
+    val services = (servicesState as? FeatureState.Success)?.data
+    val isLoadingServices = servicesState is FeatureState.Loading
+
+    val selectedService = services?.firstOrNull() { it.id == state.serviceId }
+
+    val servicesOptions = when(val state = servicesState) {
+        is FeatureState.Success -> state.data.map { s ->
+            Option(
+                value = s.id.toString(),
+                name = s.shortName
             )
-            state.data.map { s ->
-                add(
-                    Option(
-                        value = s.id.toString(),
-                        name = s.shortName
-                    )
-                )
-            }
         }
         else -> emptyList()
     }
@@ -75,7 +69,7 @@ fun ServiceStep(
         ServiceStepHeader(
             onBack = onBack,
             serviceDomainName = selectedServiceDomain?.name,
-            serviceDomainUrl = selectedServiceDomain?.thumbnailUrl
+            serviceDomainUrl = selectedServiceDomain?.url
         )
 
         Spacer(Modifier.height(BasePadding))
@@ -86,11 +80,11 @@ fun ServiceStep(
         ) {
             InputSelect(
                 options = servicesOptions,
-                selectedOption = localSelectedServiceId.toString(),
+                selectedOption = state.serviceId.toString(),
                 placeholder = stringResource(R.string.chooseService),
                 label = stringResource(R.string.service),
-                onValueChange = { localSelectedServiceId = it?.toInt() },
-                isLoading = services is FeatureState.Loading,
+                onValueChange = { state = state.copy(it?.toInt()) },
+                isLoading = isLoadingServices,
             )
 
             Spacer(Modifier.height(BasePadding))
@@ -102,33 +96,25 @@ fun ServiceStep(
             ) {
                 selectedService?.let {
                     SearchAdvancedFilters(
-                        selectedFilters = selectedFilters,
+                        selectedFilters = state.selectedFilters,
                         onSetSelectedFilter = { filterId, subFilterId ->
-                            onSetSelectedFilter(filterId, subFilterId)
-                        },
-                        filters = it.filters.map {
-                            Filter(
-                                id = it.id,
-                                name = it.name,
-                                singleSelect = false,
-                                type = FilterTypeEnum.OPTIONS,
-                                subFilters = it.subFilters.map { SubFilter(id = it.id, name = it.name) },
-                                unit = ""
+                            state = state.copy(
+                                selectedFilters = state.selectedFilters + (filterId to subFilterId)
                             )
-                        }
+                        },
+                        filters = it.filters
                     )
                 }
             }
         }
 
         SearchSheetActions(
-            onClear = { viewModel.clearServiceId() },
-            onConfirm = {
-                val selectedServiceId = if(localSelectedServiceId == 0) null else localSelectedServiceId
-                onConfirm(selectedServiceId)
+            onClear = {
+                //viewModel.clearServiceId()
             },
-            isConfirmEnabled = true,
-            isClearEnabled = true
+            onConfirm = { onConfirm(state) },
+            primaryActionText = R.string.confirm,
+            displayIcon = false
         )
     }
 }

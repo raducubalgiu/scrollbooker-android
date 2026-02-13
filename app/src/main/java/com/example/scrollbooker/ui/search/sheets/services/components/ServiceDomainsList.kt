@@ -23,8 +23,8 @@ import com.example.scrollbooker.ui.theme.headlineSmall
 
 @Composable
 fun ServiceDomainsList(
-    serviceDomains: List<ServiceDomain>?,
-    onSetServiceDomainId: (Int) -> Unit
+    serviceDomains: List<ServiceDomain>,
+    onSetServiceDomain: (ServiceDomain) -> Unit
 ) {
     Column {
         Spacer(Modifier.height(SpacingXL))
@@ -46,11 +46,11 @@ fun ServiceDomainsList(
             verticalArrangement = Arrangement.spacedBy(BasePadding),
             horizontalArrangement = Arrangement.spacedBy(BasePadding),
         ) {
-            items(serviceDomains.orEmpty()) {
+            items(serviceDomains) {
                 ServiceDomainCard(
                     name = it.name,
                     thumbnailUrl = it.thumbnailUrl,
-                    onClick = { onSetServiceDomainId(it.id) }
+                    onClick = { onSetServiceDomain(it) }
                 )
             }
         }

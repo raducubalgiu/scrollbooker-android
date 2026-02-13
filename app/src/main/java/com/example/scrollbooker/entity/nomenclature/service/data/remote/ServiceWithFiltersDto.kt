@@ -1,5 +1,6 @@
 package com.example.scrollbooker.entity.nomenclature.service.data.remote
 
+import com.example.scrollbooker.entity.nomenclature.filter.data.remote.FilterDto
 import com.google.gson.annotations.SerializedName
 
 data class ServiceWithFiltersDto(
@@ -12,18 +13,6 @@ data class ServiceWithFiltersDto(
 
     @SerializedName("business_domain_id")
     val businessDomainId: Int,
-    val filters: List<ServiceFilterDto>
-)
 
-data class ServiceFilterDto(
-    val id: Int,
-    val name: String,
-
-    @SerializedName("sub_filters")
-    val subFilters: List<ServiceFilterSubFilterDto>
-)
-
-data class ServiceFilterSubFilterDto(
-    val id: Int,
-    val name: String
+    val filters: List<FilterDto>
 )

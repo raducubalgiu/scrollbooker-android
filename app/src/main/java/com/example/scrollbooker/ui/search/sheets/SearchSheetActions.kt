@@ -33,8 +33,8 @@ import com.example.scrollbooker.ui.theme.titleMedium
 fun SearchSheetActions(
     onClear: () -> Unit,
     onConfirm: () -> Unit,
-    isClearEnabled: Boolean,
-    isConfirmEnabled: Boolean,
+    isClearEnabled: Boolean = true,
+    isConfirmEnabled: Boolean = true,
     displayIcon: Boolean = true,
     primaryActionText: Int = R.string.search
 ) {

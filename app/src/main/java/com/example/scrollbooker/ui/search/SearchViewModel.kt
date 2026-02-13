@@ -117,14 +117,14 @@ data class SearchRequestState(
             serviceDomainId = filters.serviceDomainId,
             serviceId = filters.serviceId,
             subFilterIds = filters.subFilterIds.toList(),
+            startDate = filters.startDate?.toIsoString(),
+            endDate = filters.endDate?.toIsoString(),
+            startTime = filters.startTime?.toPrettyTime(),
+            endTime = filters.endTime?.toPrettyTime(),
             userLocation = userLocation,
             maxPrice = filters.maxPrice,
             sort = filters.sort.raw,
             hasDiscount = filters.hasDiscount,
-            startDate = filters.startDate?.toIsoString(),
-            endDate = filters.endDate?.toIsoString(),
-            startTime = filters.startTime?.toPrettyTime(),
-            endTime = filters.endTime?.toPrettyTime()
         )
     }
 }
@@ -158,14 +158,12 @@ class SearchViewModel @Inject constructor(
     private val _request = MutableStateFlow(SearchRequestState())
     val request: StateFlow<SearchRequestState> = _request.asStateFlow()
 
-    private val _isMapMounted = MutableStateFlow<Boolean>(false)
-    val isMapMounted: StateFlow<Boolean> = _isMapMounted.asStateFlow()
-
     private val _businessDomains = MutableStateFlow<FeatureState<List<BusinessDomain>>>(FeatureState.Loading)
     val businessDomains: StateFlow<FeatureState<List<BusinessDomain>>> = _businessDomains.asStateFlow()
 
-    private val _businessTypes = MutableStateFlow<FeatureState<List<BusinessType>>>(FeatureState.Loading)
-    val businessTypes: StateFlow<FeatureState<List<BusinessType>>> = _businessTypes.asStateFlow()
+    // Map
+    private val _isMapMounted = MutableStateFlow<Boolean>(false)
+    val isMapMounted: StateFlow<Boolean> = _isMapMounted.asStateFlow()
 
     private val _markersUiState = MutableStateFlow(MarkersUiState())
     val markersUiState: StateFlow<MarkersUiState> = _markersUiState.asStateFlow()
@@ -190,14 +188,6 @@ class SearchViewModel @Inject constructor(
     private val _cameraPosition = MutableStateFlow<CameraPositionState>(CameraPositionState())
     val cameraPosition: StateFlow<CameraPositionState> = _cameraPosition.asStateFlow()
 
-    private val _servicesSheetFilters = MutableStateFlow(SearchServicesFiltersSheetState())
-    val servicesSheetFilters: StateFlow<SearchServicesFiltersSheetState> = _servicesSheetFilters.asStateFlow()
-
-    private val _selectedFilters = MutableStateFlow<Map<Int, Int>>(emptyMap())
-    val selectedFilters: StateFlow<Map<Int, Int>> = _selectedFilters.asStateFlow()
-
-    val selectedSubFilterIds: Set<Int> = _selectedFilters.value.values.toSet()
-
     private val rawRequestFlow: Flow<SearchBusinessRequest> =
         _request
             .mapNotNull { it.toRequest() }
@@ -217,16 +207,42 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun loadAllBusinessTypes() {
-        viewModelScope.launch {
-            _businessTypes.value = FeatureState.Loading
-            _businessTypes.value = getAllAvailableBusinessTypesUseCase()
-        }
+    private val _selectedServiceDomain = MutableStateFlow<ServiceDomain?>(null)
+    val selectedServiceDomain: StateFlow<ServiceDomain?> = _selectedServiceDomain.asStateFlow()
+
+    fun setSelectedServiceDomain(serviceDomain: ServiceDomain) {
+        _selectedServiceDomain.value = serviceDomain
     }
+
+    val services: StateFlow<FeatureState<List<ServiceWithFilters>>> =
+        _selectedServiceDomain
+            .filterNotNull()
+            .distinctUntilChanged()
+            .flatMapLatest { domain ->
+                flow {
+                    emit(FeatureState.Loading)
+
+                    val result = withVisibleLoading {
+                        getServicesByServiceDomainUseCase(domain.id)
+                    }
+
+                    val featureState: FeatureState<List<ServiceWithFilters>> =
+                        result.fold(
+                            onSuccess = { s -> FeatureState.Success(s) },
+                            onFailure = { e -> FeatureState.Error(e) }
+                        )
+
+                    emit(featureState)
+                }
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = FeatureState.Loading
+            )
 
     init {
         loadAllBusinessDomains()
-        loadAllBusinessTypes()
 
         sharedRequestFlow
             .flatMapLatest { req ->
@@ -277,40 +293,6 @@ class SearchViewModel @Inject constructor(
                 )
             }
             .cachedIn(viewModelScope)
-
-    val services: StateFlow<FeatureState<List<ServiceWithFilters>>> =
-        _servicesSheetFilters
-            .map { it.serviceDomainId }
-            .filterNotNull()
-            .distinctUntilChanged()
-            .flatMapLatest { domainId ->
-                flow {
-                    emit(FeatureState.Loading)
-
-                    val result = withVisibleLoading {
-                        getServicesByServiceDomainUseCase(domainId)
-                    }
-
-                    val featureState: FeatureState<List<ServiceWithFilters>> =
-                        result.fold(
-                            onSuccess = { s -> FeatureState.Success(s) },
-                            onFailure = { e -> FeatureState.Error(e) }
-                        )
-
-                    emit(featureState)
-                }
-            }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5000),
-                initialValue = FeatureState.Loading
-            )
-
-    fun setSelectedFilter(filterId: Int, subFilterId: Int) {
-        _selectedFilters.update { current ->
-            current + (filterId to subFilterId)
-        }
-    }
 
     fun setMapMounted() {
         if(!_isMapMounted.value) {
@@ -368,16 +350,9 @@ class SearchViewModel @Inject constructor(
                 )
             )
         }
-        _servicesSheetFilters.update { current ->
-            current.copy(
-                businessDomainId = domainId,
-                serviceDomainId = null,
-                serviceId = null
-            )
-        }
     }
 
-    // Filters Sheet Filters
+    // Filters Sheet
     fun setFiltersFromFiltersSheet(filtersSheet: SearchFiltersSheetState) {
         _request.update { current ->
             current.copy(
@@ -402,86 +377,20 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    // Services Sheet Filters
-    fun setFiltersFromServicesSheet(sheet: SearchServicesFiltersSheetState) {
+    // Services Sheet
+    fun setFiltersFromServicesSheet(servicesSheet: SearchServicesFiltersSheetState) {
         _request.update { current ->
             current.copy(
                 filters = current.filters.copy(
-                    businessDomainId = sheet.businessDomainId,
-                    serviceDomainId = sheet.serviceDomainId,
-                    serviceId = sheet.serviceId,
-                    subFilterIds = _selectedFilters.value.values.toSet(),
-                    startDate = sheet.startDate,
-                    endDate = sheet.endDate,
-                    startTime = sheet.startTime,
-                    endTime = sheet.endTime
+                    businessDomainId = servicesSheet.businessDomainId,
+                    serviceDomainId = servicesSheet.serviceDomainId,
+                    serviceId = servicesSheet.serviceId,
+                    subFilterIds = servicesSheet.selectedFilters.values.toSet(),
+                    startDate = servicesSheet.startDate,
+                    endDate = servicesSheet.endDate,
+                    startTime = servicesSheet.startTime,
+                    endTime = servicesSheet.endTime
                 )
-            )
-        }
-    }
-
-    fun clearServicesFiltersSheet() {
-        _servicesSheetFilters.update {
-            it.copy(
-                businessDomainId = null,
-                serviceDomainId = null,
-                serviceId = null,
-                startDate = null,
-                endDate = null,
-                startTime = null,
-                endTime = null
-            )
-        }
-        _selectedFilters.value = emptyMap()
-    }
-
-    fun onSheetBusinessDomainSelected(domainId: Int?) {
-        _servicesSheetFilters.update {
-            it.copy(
-                businessDomainId = domainId,
-                serviceDomainId = null,
-                serviceId = null,
-            )
-        }
-        _selectedFilters.value = emptyMap()
-    }
-
-    fun setServiceDomainId(serviceDomainId: Int?) {
-        _servicesSheetFilters.update {
-            it.copy(
-                serviceDomainId = serviceDomainId,
-                serviceId = null
-            )
-        }
-        _selectedFilters.value = emptyMap()
-    }
-
-    fun setServiceId(serviceId: Int?) {
-        _servicesSheetFilters.update {
-            it.copy(serviceId = serviceId,)
-        }
-        _selectedFilters.value = emptyMap()
-    }
-
-    fun clearServiceId() {
-        _servicesSheetFilters.update {
-            it.copy(serviceId = null)
-        }
-        _selectedFilters.value = emptyMap()
-    }
-
-    fun setDateTime(
-        startDate: LocalDate?,
-        endDate: LocalDate?,
-        startTime: LocalTime?,
-        endTime: LocalTime?
-    ) {
-        _servicesSheetFilters.update { current ->
-            current.copy(
-                startDate = startDate,
-                endDate = endDate,
-                startTime = startTime,
-                endTime = endTime
             )
         }
     }

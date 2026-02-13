@@ -33,7 +33,7 @@ import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun MainFiltersFooter(
-    selectedService: ServiceWithFilters?,
+    //selectedService: ServiceWithFilters?,
     isClearEnabled: Boolean,
     isConfirmEnabled: Boolean,
     onConfirm: () -> Unit,
@@ -50,40 +50,40 @@ fun MainFiltersFooter(
             thickness = 0.55.dp
         )
 
-        selectedService?.let {
-            Surface(
-                modifier = Modifier.padding(horizontal = BasePadding),
-                onClick = {},
-                shape = ShapeDefaults.ExtraLarge,
-                tonalElevation = if (isActive) 1.dp else 0.dp,
-                color = if (isActive) SurfaceBG.copy(alpha = 0.8f) else SurfaceBG
-            ) {
-                Row(
-                    modifier = Modifier
-                        .padding(
-                            horizontal = SpacingXL,
-                            vertical = BasePadding
-                        ),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = it.name,
-                        style = titleMedium,
-                        color = OnBackground
-                    )
-
-                    Spacer(Modifier.width(SpacingXL))
-
-                    Column(Modifier.clickable { onClearServiceId() }) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_close_circle_solid),
-                            contentDescription = null,
-                            tint = Color.Gray
-                        )
-                    }
-                }
-            }
-        }
+//        selectedService?.let {
+//            Surface(
+//                modifier = Modifier.padding(horizontal = BasePadding),
+//                onClick = {},
+//                shape = ShapeDefaults.ExtraLarge,
+//                tonalElevation = if (isActive) 1.dp else 0.dp,
+//                color = if (isActive) SurfaceBG.copy(alpha = 0.8f) else SurfaceBG
+//            ) {
+//                Row(
+//                    modifier = Modifier
+//                        .padding(
+//                            horizontal = SpacingXL,
+//                            vertical = BasePadding
+//                        ),
+//                    verticalAlignment = Alignment.CenterVertically
+//                ) {
+//                    Text(
+//                        text = it.name,
+//                        style = titleMedium,
+//                        color = OnBackground
+//                    )
+//
+//                    Spacer(Modifier.width(SpacingXL))
+//
+//                    Column(Modifier.clickable { onClearServiceId() }) {
+//                        Icon(
+//                            painter = painterResource(R.drawable.ic_close_circle_solid),
+//                            contentDescription = null,
+//                            tint = Color.Gray
+//                        )
+//                    }
+//                }
+//            }
+//        }
 
         Spacer(Modifier.height(BasePadding))
 

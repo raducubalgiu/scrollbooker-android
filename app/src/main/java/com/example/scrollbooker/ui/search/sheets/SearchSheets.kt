@@ -13,6 +13,7 @@ import com.example.scrollbooker.ui.search.SearchViewModel
 import com.example.scrollbooker.ui.search.sheets.filters.SearchFiltersSheet
 import com.example.scrollbooker.ui.search.sheets.services.SearchServicesSheet
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

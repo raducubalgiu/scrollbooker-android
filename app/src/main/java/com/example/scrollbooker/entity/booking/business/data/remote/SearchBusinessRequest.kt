@@ -15,7 +15,7 @@ data class SearchBusinessRequest(
     @SerializedName("business_domain_id")
     val businessDomainId: Int? = null,
 
-    @SerializedName("business_type_id")
+    @SerializedName("service_domain_id")
     val serviceDomainId: Int? = null,
 
     @SerializedName("service_id")
