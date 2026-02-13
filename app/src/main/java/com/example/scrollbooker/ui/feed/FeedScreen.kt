@@ -97,7 +97,6 @@ fun FeedScreen(
         FeedDrawerLayout(
             isOpen = isDrawerOpen,
             onOpenChange = { isDrawerOpen = it },
-            drawerWidthFraction = 0.8f,
             scrimColor = BackgroundDark.copy(alpha = 0.7f)
         ) {
             FeedDrawer(

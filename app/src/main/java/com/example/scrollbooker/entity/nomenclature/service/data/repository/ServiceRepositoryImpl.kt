@@ -13,10 +13,6 @@ class ServiceRepositoryImpl @Inject constructor(
         api.getServicesByBusinessId(businessId).map { it.toDomain() }
     }
 
-    override suspend fun getServicesByBusinessType(businessTypeId: Int): Result<List<Service>> = runCatching {
-        api.getServicesByBusinessTypeId(businessTypeId).map { it.toDomain() }
-    }
-
     override suspend fun getServicesByServiceDomain(serviceDomainId: Int): Result<List<Service>> = runCatching {
         api.getServicesByServiceDomainId(serviceDomainId).map { it.toDomain() }
     }

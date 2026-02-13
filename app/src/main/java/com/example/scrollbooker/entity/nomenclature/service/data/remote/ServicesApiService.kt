@@ -8,11 +8,6 @@ interface ServicesApiService {
         @Path("businessId") businessId: Int
     ): List<ServiceDto>
 
-    @GET("business-types/{businessTypeId}/services")
-    suspend fun getServicesByBusinessTypeId(
-        @Path("businessTypeId") businessTypeId: Int
-    ): List<ServiceDto>
-
     @GET("service-domains/{serviceDomainId}/services")
     suspend fun getServicesByServiceDomainId(
         @Path("serviceDomainId") serviceDomainId: Int

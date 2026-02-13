@@ -28,7 +28,6 @@ import com.example.scrollbooker.entity.nomenclature.filter.domain.model.Filter
 import com.example.scrollbooker.entity.nomenclature.filter.domain.model.SubFilter
 import com.example.scrollbooker.entity.nomenclature.filter.domain.useCase.GetFiltersByServiceUseCase
 import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
-import com.example.scrollbooker.entity.nomenclature.service.domain.useCase.GetServicesByBusinessTypeUseCase
 import com.example.scrollbooker.entity.nomenclature.service.domain.useCase.GetServicesByServiceDomainUseCase
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomain
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.useCase.GetAllServiceDomainsByBusinessDomainUseCase

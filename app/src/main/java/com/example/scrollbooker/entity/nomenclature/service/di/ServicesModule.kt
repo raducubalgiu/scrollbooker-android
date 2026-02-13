@@ -4,7 +4,6 @@ import com.example.scrollbooker.core.util.Constants
 import com.example.scrollbooker.entity.nomenclature.service.data.remote.ServicesApiService
 import com.example.scrollbooker.entity.nomenclature.service.data.repository.ServiceRepositoryImpl
 import com.example.scrollbooker.entity.nomenclature.service.domain.repository.ServiceRepository
-import com.example.scrollbooker.entity.nomenclature.service.domain.useCase.GetServicesByBusinessTypeUseCase
 import com.example.scrollbooker.entity.nomenclature.service.domain.useCase.GetServicesByBusinessIdUseCase
 import com.example.scrollbooker.entity.nomenclature.service.domain.useCase.GetServicesByServiceDomainUseCase
 import com.example.scrollbooker.entity.nomenclature.service.domain.useCase.GetServicesByUserIdUseCase
@@ -44,14 +43,6 @@ object ServicesModule {
         repository: ServiceRepository
     ): GetServicesByBusinessIdUseCase {
         return GetServicesByBusinessIdUseCase(repository)
-    }
-
-    @Provides
-    @Singleton
-    fun provideGetServicesByBusinessTypeIdUseCase(
-        repository: ServiceRepository,
-    ): GetServicesByBusinessTypeUseCase {
-        return GetServicesByBusinessTypeUseCase(repository)
     }
 
     @Provides
