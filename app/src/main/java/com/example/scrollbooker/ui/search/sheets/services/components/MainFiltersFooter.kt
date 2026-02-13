@@ -1,7 +1,4 @@
 package com.example.scrollbooker.ui.search.sheets.services.components
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,6 +27,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
+import com.example.scrollbooker.entity.nomenclature.service.domain.model.ServiceWithFilters
 import com.example.scrollbooker.ui.search.sheets.SearchSheetActions
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
@@ -38,7 +36,7 @@ import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun MainFiltersFooter(
-    selectedService: Service?,
+    selectedService: ServiceWithFilters?,
     isClearEnabled: Boolean,
     isConfirmEnabled: Boolean,
     onConfirm: () -> Unit,

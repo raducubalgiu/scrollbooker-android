@@ -25,6 +25,7 @@ import com.example.scrollbooker.ui.search.SearchViewModel
 import com.example.scrollbooker.ui.search.sheets.services.steps.DateTimeStep
 import com.example.scrollbooker.ui.search.sheets.services.steps.MainFiltersStep
 import com.example.scrollbooker.ui.search.sheets.services.steps.ServiceStep
+import timber.log.Timber
 
 @Composable
 fun SearchServicesSheet(
@@ -40,7 +41,6 @@ fun SearchServicesSheet(
     val businessDomains by viewModel.businessDomains.collectAsState()
     val services by viewModel.services.collectAsState()
 
-    val serviceFilters by viewModel.filters.collectAsState()
     val selectedFilters by viewModel.selectedFilters.collectAsState()
 
     val requestBusinessDomainId = requestState.filters.businessDomainId
@@ -84,9 +84,7 @@ fun SearchServicesSheet(
                             selectedBusinessDomainId = null
                             viewModel.clearServicesFiltersSheet()
                         },
-                        onClearServiceId = {
-                            viewModel.clearServiceId()
-                        },
+                        onClearServiceId = { viewModel.clearServiceId() },
                         onClose = onClose,
                         businessDomains = businessDomains,
                         selectedBusinessDomainId = selectedBusinessDomainId,
@@ -122,9 +120,9 @@ fun SearchServicesSheet(
                     ServiceStep(
                         viewModel = viewModel,
                         services = services,
-                        serviceFilters = serviceFilters,
                         selectedFilters = selectedFilters,
                         selectedServiceDomain = selectedServiceDomain,
+                        selectedService = selectedService,
                         onSetSelectedFilter = { filterId, subFilterId ->
                             viewModel.setSelectedFilter(filterId, subFilterId)
                         },

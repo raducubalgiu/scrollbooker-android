@@ -28,6 +28,7 @@ import com.example.scrollbooker.entity.nomenclature.filter.domain.model.Filter
 import com.example.scrollbooker.entity.nomenclature.filter.domain.model.SubFilter
 import com.example.scrollbooker.entity.nomenclature.filter.domain.useCase.GetFiltersByServiceUseCase
 import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
+import com.example.scrollbooker.entity.nomenclature.service.domain.model.ServiceWithFilters
 import com.example.scrollbooker.entity.nomenclature.service.domain.useCase.GetServicesByServiceDomainUseCase
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomain
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.useCase.GetAllServiceDomainsByBusinessDomainUseCase
@@ -166,10 +167,8 @@ class SearchViewModel @Inject constructor(
     private val _isMapMounted = MutableStateFlow<Boolean>(false)
     val isMapMounted: StateFlow<Boolean> = _isMapMounted.asStateFlow()
 
-    private val _businessDomains =
-        MutableStateFlow<FeatureState<List<BusinessDomain>>>(FeatureState.Loading)
-    val businessDomains: StateFlow<FeatureState<List<BusinessDomain>>> =
-        _businessDomains.asStateFlow()
+    private val _businessDomains = MutableStateFlow<FeatureState<List<BusinessDomain>>>(FeatureState.Loading)
+    val businessDomains: StateFlow<FeatureState<List<BusinessDomain>>> = _businessDomains.asStateFlow()
 
     private val _businessTypes = MutableStateFlow<FeatureState<List<BusinessType>>>(FeatureState.Loading)
     val businessTypes: StateFlow<FeatureState<List<BusinessType>>> = _businessTypes.asStateFlow()
@@ -198,8 +197,7 @@ class SearchViewModel @Inject constructor(
     val cameraPosition: StateFlow<CameraPositionState> = _cameraPosition.asStateFlow()
 
     private val _servicesSheetFilters = MutableStateFlow(SearchServicesFiltersSheetState())
-    val servicesSheetFilters: StateFlow<SearchServicesFiltersSheetState> =
-        _servicesSheetFilters.asStateFlow()
+    val servicesSheetFilters: StateFlow<SearchServicesFiltersSheetState> = _servicesSheetFilters.asStateFlow()
 
     private val _selectedFilters = MutableStateFlow<Map<Int, Int>>(emptyMap())
     val selectedFilters: StateFlow<Map<Int, Int>> = _selectedFilters.asStateFlow()
@@ -286,20 +284,23 @@ class SearchViewModel @Inject constructor(
             }
             .cachedIn(viewModelScope)
 
-    val services: StateFlow<FeatureState<List<Service>>?> =
+    val services: StateFlow<FeatureState<List<ServiceWithFilters>>> =
         _servicesSheetFilters
             .map { it.serviceDomainId }
             .filterNotNull()
             .distinctUntilChanged()
-            .flatMapLatest { typeId ->
+            .flatMapLatest { domainId ->
                 flow {
+                    Timber.d("EMIT!!!!")
                     emit(FeatureState.Loading)
 
                     val result = withVisibleLoading {
-                        getServicesByServiceDomainUseCase(typeId)
+                        getServicesByServiceDomainUseCase(domainId)
                     }
 
-                    val featureState: FeatureState<List<Service>> =
+                    Timber.d("RESULT!!! $result")
+
+                    val featureState: FeatureState<List<ServiceWithFilters>> =
                         result.fold(
                             onSuccess = { s -> FeatureState.Success(s) },
                             onFailure = { e -> FeatureState.Error(e) }
@@ -311,32 +312,7 @@ class SearchViewModel @Inject constructor(
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5000),
-                initialValue = null
-            )
-
-    val filters: StateFlow<FeatureState<List<Filter>>?> =
-        _servicesSheetFilters
-            .map { it.serviceId }
-            .distinctUntilChanged()
-            .flatMapLatest { serviceId ->
-                flow {
-                    if (serviceId == null) {
-                        emit(null)
-                    } else {
-                        emit(FeatureState.Loading)
-
-                        val result = withVisibleLoading {
-                            getFiltersByServiceUseCase(serviceId)
-                        }
-
-                        emit(result)
-                    }
-                }
-            }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5000),
-                initialValue = null
+                initialValue = FeatureState.Loading
             )
 
     fun setSelectedFilter(filterId: Int, subFilterId: Int) {
@@ -483,10 +459,10 @@ class SearchViewModel @Inject constructor(
         _selectedFilters.value = emptyMap()
     }
 
-    fun setServiceDomainId(typeId: Int?) {
+    fun setServiceDomainId(serviceDomainId: Int?) {
         _servicesSheetFilters.update {
             it.copy(
-                serviceDomainId = typeId,
+                serviceDomainId = serviceDomainId,
                 serviceId = null
             )
         }

@@ -11,7 +11,7 @@ interface ServicesApiService {
     @GET("service-domains/{serviceDomainId}/services")
     suspend fun getServicesByServiceDomainId(
         @Path("serviceDomainId") serviceDomainId: Int
-    ): List<ServiceDto>
+    ): List<ServiceWithFiltersDto>
 
     @GET("users/{userId}/services")
     suspend fun getServicesByUserId(

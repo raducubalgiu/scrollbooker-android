@@ -18,7 +18,7 @@ import com.example.scrollbooker.ui.theme.headlineSmall
 
 @Composable
 fun SearchSheetsHeader(
-    title: String,
+    title: String? = "",
     onClose: () -> Unit
 ) {
     Row(modifier = Modifier.fillMaxWidth(),
@@ -27,7 +27,7 @@ fun SearchSheetsHeader(
     ) {
         Text(
             modifier = Modifier.padding(start = BasePadding),
-            text = title,
+            text = title ?: "",
             style = headlineSmall,
             fontWeight = FontWeight.SemiBold
         )

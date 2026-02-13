@@ -52,6 +52,7 @@ import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.BusinessDomain
 import com.example.scrollbooker.entity.nomenclature.businessType.domain.model.BusinessType
 import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
+import com.example.scrollbooker.entity.nomenclature.service.domain.model.ServiceWithFilters
 import com.example.scrollbooker.ui.search.components.SearchBusinessDomainLabel
 import com.example.scrollbooker.ui.search.sheets.SearchSheetsHeader
 import com.example.scrollbooker.ui.search.sheets.services.SearchServicesFiltersSheetState
@@ -83,7 +84,7 @@ fun MainFiltersStep(
     businessTypes: FeatureState<List<BusinessType>>,
     businessDomains: FeatureState<List<BusinessDomain>>,
     selectedBusinessDomainId: Int?,
-    selectedService: Service?,
+    selectedService: ServiceWithFilters?,
     onSetSelectedBusinessDomainId: (Int?) -> Unit,
     onSetServiceDomainId: (Int) -> Unit,
 
@@ -96,12 +97,6 @@ fun MainFiltersStep(
     val scope = rememberCoroutineScope()
     val buttonSummary = state.dateTimeSummary()
     val isActive = buttonSummary != null
-
-//    val hasDomainChanged = selectedBusinessDomainId != requestBusinessDomainId
-//    val hasOtherFiltersChanged = state.hasChangesComparedTo(requestState.filters)
-
-//    val isClearEnabled = selectedBusinessDomainId != null || state.hasActiveFilters()
-//    val isConfirmEnabled = hasDomainChanged || hasOtherFiltersChanged
 
     val recentSearches = listOf(
         SearchRecent(
@@ -131,18 +126,8 @@ fun MainFiltersStep(
         )
     )
 
-    data class BType(
-        val id: Int,
-        val name: String,
-        val plural: String,
-        val url: String
-    )
-
     Column(Modifier.fillMaxSize()) {
-        SearchSheetsHeader(
-            title = "",
-            onClose = onClose
-        )
+        SearchSheetsHeader(onClose = onClose)
 
         Column(modifier = Modifier.weight(1f)) {
             Text(

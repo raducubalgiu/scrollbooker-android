@@ -1,4 +1,7 @@
 package com.example.scrollbooker.ui.search.sheets.services.steps
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -38,29 +40,30 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.iconButton.CustomIconButton
 import com.example.scrollbooker.components.core.inputs.InputSelect
 import com.example.scrollbooker.components.core.inputs.Option
-import com.example.scrollbooker.components.core.shimmer.rememberShimmerBrush
+import com.example.scrollbooker.components.core.layout.LoadingScreen
+import com.example.scrollbooker.core.enums.FilterTypeEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.nomenclature.filter.domain.model.Filter
-import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
+import com.example.scrollbooker.entity.nomenclature.filter.domain.model.SubFilter
+import com.example.scrollbooker.entity.nomenclature.service.domain.model.ServiceWithFilters
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomain
 import com.example.scrollbooker.ui.search.SearchViewModel
 import com.example.scrollbooker.ui.search.components.SearchAdvancedFilters
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.SurfaceBG
-import com.example.scrollbooker.ui.theme.headlineMedium
 import com.example.scrollbooker.ui.theme.headlineSmall
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun ServiceStep(
     viewModel: SearchViewModel,
-    services: FeatureState<List<Service>>?,
-    serviceFilters: FeatureState<List<Filter>>?,
+    services: FeatureState<List<ServiceWithFilters>>?,
     selectedFilters: Map<Int, Int>,
     selectedServiceDomain: ServiceDomain?,
+    selectedService: ServiceWithFilters?,
     onSetSelectedFilter: (Int, Int) -> Unit,
     onBack: () -> Unit,
     onConfirm: (Int?) -> Unit
@@ -147,30 +150,55 @@ fun ServiceStep(
 
             Spacer(Modifier.height(BasePadding))
 
-            when(val filters = serviceFilters) {
-                is FeatureState.Loading -> {
-                    repeat(3) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(52.dp)
-                                .clip(RoundedCornerShape(12.dp))
-                                .background(rememberShimmerBrush())
-                        )
-                        Spacer(Modifier.height(8.dp))
-                    }
-                }
-                is FeatureState.Success -> {
+            AnimatedVisibility(
+                visible = selectedService != null,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                selectedService?.let {
                     SearchAdvancedFilters(
                         selectedFilters = selectedFilters,
                         onSetSelectedFilter = { filterId, subFilterId ->
                             onSetSelectedFilter(filterId, subFilterId)
                         },
-                        filters = filters.data
+                        filters = it.filters.map {
+                            Filter(
+                                id = it.id,
+                                name = it.name,
+                                singleSelect = false,
+                                type = FilterTypeEnum.OPTIONS,
+                                subFilters = it.subFilters.map { SubFilter(id = it.id, name = it.name) },
+                                unit = ""
+                            )
+                        }
                     )
                 }
-                else -> Unit
             }
+
+//            when(val filters = serviceFilters) {
+//                is FeatureState.Loading -> {
+//                    repeat(3) {
+//                        Box(
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .height(52.dp)
+//                                .clip(RoundedCornerShape(12.dp))
+//                                .background(rememberShimmerBrush())
+//                        )
+//                        Spacer(Modifier.height(8.dp))
+//                    }
+//                }
+//                is FeatureState.Success -> {
+//                    SearchAdvancedFilters(
+//                        selectedFilters = selectedFilters,
+//                        onSetSelectedFilter = { filterId, subFilterId ->
+//                            onSetSelectedFilter(filterId, subFilterId)
+//                        },
+//                        filters = filters.data
+//                    )
+//                }
+//                else -> Unit
+//            }
         }
 
         Row(
