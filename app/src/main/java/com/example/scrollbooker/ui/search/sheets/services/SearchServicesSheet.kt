@@ -25,7 +25,6 @@ import com.example.scrollbooker.ui.search.SearchViewModel
 import com.example.scrollbooker.ui.search.sheets.services.steps.DateTimeStep
 import com.example.scrollbooker.ui.search.sheets.services.steps.MainFiltersStep
 import com.example.scrollbooker.ui.search.sheets.services.steps.ServiceStep
-import timber.log.Timber
 
 @Composable
 fun SearchServicesSheet(
@@ -33,21 +32,20 @@ fun SearchServicesSheet(
     onClose: () -> Unit,
     onFilter: (SearchServicesFiltersSheetState) -> Unit
 ) {
-    val businessTypes by viewModel.businessTypes.collectAsState()
-
     val requestState by viewModel.request.collectAsState()
-    val state by viewModel.servicesSheetFilters.collectAsState()
-
-    val businessDomains by viewModel.businessDomains.collectAsState()
-    val services by viewModel.services.collectAsState()
-
-    val selectedFilters by viewModel.selectedFilters.collectAsState()
 
     val requestBusinessDomainId = requestState.filters.businessDomainId
-
     var selectedBusinessDomainId by rememberSaveable(requestBusinessDomainId) {
         mutableStateOf<Int?>(requestBusinessDomainId)
     }
+
+    val state by viewModel.servicesSheetFilters.collectAsState()
+
+    val businessDomains by viewModel.businessDomains.collectAsState()
+    val businessTypes by viewModel.businessTypes.collectAsState()
+    val services by viewModel.services.collectAsState()
+
+    val selectedFilters by viewModel.selectedFilters.collectAsState()
 
     var step by remember { mutableStateOf(ServicesSheetStep.MAIN_FILTERS) }
     val transitionSpec = remember { servicesSheetTransitionSpec() }
@@ -120,18 +118,15 @@ fun SearchServicesSheet(
                     ServiceStep(
                         viewModel = viewModel,
                         services = services,
-                        selectedFilters = selectedFilters,
                         selectedServiceDomain = selectedServiceDomain,
                         selectedService = selectedService,
+                        selectedFilters = selectedFilters,
                         onSetSelectedFilter = { filterId, subFilterId ->
                             viewModel.setSelectedFilter(filterId, subFilterId)
                         },
                         onBack = { step = ServicesSheetStep.MAIN_FILTERS },
                         onConfirm = { serviceId ->
-                            serviceId?.let {
-                                viewModel.setServiceId(it)
-                            }
-
+                            serviceId?.let { viewModel.setServiceId(it) }
                             step = ServicesSheetStep.MAIN_FILTERS
                         }
                     )
@@ -148,16 +143,16 @@ private fun servicesSheetTransitionSpec(
     val isForward = targetState != mainStep
 
     val enter = if (isForward) {
-        slideInHorizontally(animationSpec = tween(250)) { fullWidth -> fullWidth }
+        slideInHorizontally { fullWidth -> fullWidth }
     } else {
-        slideInHorizontally(animationSpec = tween(250)) { fullWidth -> -fullWidth }
-    } + fadeIn(animationSpec = tween(250))
+        slideInHorizontally { fullWidth -> -fullWidth }
+    } + fadeIn()
 
     val exit = if (isForward) {
-        slideOutHorizontally(animationSpec = tween(250)) { fullWidth -> -fullWidth }
+        slideOutHorizontally { fullWidth -> -fullWidth }
     } else {
-        slideOutHorizontally(animationSpec = tween(250)) { fullWidth -> fullWidth }
-    } + fadeOut(animationSpec = tween(250))
+        slideOutHorizontally { fullWidth -> fullWidth }
+    } + fadeOut()
 
     enter togetherWith exit using SizeTransform(clip = clip)
 }

@@ -5,9 +5,6 @@ import android.app.Activity
 import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -91,7 +88,6 @@ fun SearchScreen(
     val markersUiState by viewModel.markersUiState.collectAsState()
 
     val state by viewModel.request.collectAsState()
-    val servicesSheetState by viewModel.servicesSheetFilters.collectAsState()
 
     val listState = rememberLazyListState()
 
@@ -231,20 +227,14 @@ fun SearchScreen(
             )
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
-                AnimatedVisibility(
-                    visible = servicesSheetState.serviceDomainId == null,
-                    enter = fadeIn(),
-                    exit = fadeOut()
-                ) {
-                    SearchBusinessDomainList(
-                        businessDomains = businessDomains,
-                        selectedBusinessDomain = state.filters.businessDomainId,
-                        onClick = {
-                            scope.launch { listState.scrollToItem(0) }
-                            viewModel.setBusinessDomain(it)
-                        }
-                    )
-                }
+                SearchBusinessDomainList(
+                    businessDomains = businessDomains,
+                    selectedBusinessDomain = state.filters.businessDomainId,
+                    onClick = {
+                        scope.launch { listState.scrollToItem(0) }
+                        viewModel.setBusinessDomain(it)
+                    }
+                )
 
                 if(markersUiState.isLoading) {
                     SearchMapLoading()

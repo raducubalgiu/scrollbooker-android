@@ -390,4 +390,5 @@
     <string name="scheduleSaved">Programul a fost salvat cu succes</string>
     <string name="servicesSaved">Serviciile au fost salvate cu succes</string>
     <string name="deletePost">Șterge postarea</string>
+    <string name="advancedFiltering">Filtrare avansată</string>
 </resources>
