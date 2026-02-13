@@ -93,9 +93,7 @@ data class SearchFiltersState(
     val subFilterIds: Set<Int> = emptySet(),
     val maxPrice: BigDecimal? = BigDecimal(1500),
     val sort: SearchSortEnum = SearchSortEnum.RECOMMENDED,
-    val isLastMinute: Boolean = false,
     val hasDiscount: Boolean = false,
-    val hasVideo: Boolean = false,
     val startDate: LocalDate? = null,
     val endDate: LocalDate? = null,
     val startTime: LocalTime? = null,
@@ -123,8 +121,6 @@ data class SearchRequestState(
             maxPrice = filters.maxPrice,
             sort = filters.sort.raw,
             hasDiscount = filters.hasDiscount,
-            isLastMinute = filters.isLastMinute,
-            hasVideo = filters.hasVideo,
             startDate = filters.startDate?.toIsoString(),
             endDate = filters.endDate?.toIsoString(),
             startTime = filters.startTime?.toPrettyTime(),
@@ -135,9 +131,7 @@ data class SearchRequestState(
 
 fun SearchRequestState.activeFiltersCount(): Int {
     return listOf(
-        filters.hasVideo,
         filters.hasDiscount,
-        filters.isLastMinute,
         filters.maxPrice != BigDecimal(1500),
         filters.sort != SearchSortEnum.RECOMMENDED
     ).count { it }
@@ -291,14 +285,11 @@ class SearchViewModel @Inject constructor(
             .distinctUntilChanged()
             .flatMapLatest { domainId ->
                 flow {
-                    Timber.d("EMIT!!!!")
                     emit(FeatureState.Loading)
 
                     val result = withVisibleLoading {
                         getServicesByServiceDomainUseCase(domainId)
                     }
-
-                    Timber.d("RESULT!!! $result")
 
                     val featureState: FeatureState<List<ServiceWithFilters>> =
                         result.fold(
@@ -393,9 +384,7 @@ class SearchViewModel @Inject constructor(
                 filters = current.filters.copy(
                     maxPrice = filtersSheet.maxPrice,
                     sort = filtersSheet.sort,
-                    hasDiscount = filtersSheet.hasDiscount,
-                    isLastMinute = filtersSheet.isLastMinute,
-                    hasVideo = filtersSheet.hasVideo
+                    hasDiscount = filtersSheet.hasDiscount
                 )
             )
         }
@@ -407,9 +396,7 @@ class SearchViewModel @Inject constructor(
                 filters = current.filters.copy(
                     maxPrice = BigDecimal(1500),
                     sort = SearchSortEnum.RECOMMENDED,
-                    hasDiscount = false,
-                    isLastMinute = false,
-                    hasVideo = false
+                    hasDiscount = false
                 )
             )
         }

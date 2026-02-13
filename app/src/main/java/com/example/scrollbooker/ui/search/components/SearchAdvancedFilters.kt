@@ -16,7 +16,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.inputs.InputSelect
 import com.example.scrollbooker.components.core.inputs.Option
 import com.example.scrollbooker.core.util.Dimens.BasePadding
@@ -46,7 +48,7 @@ fun SearchAdvancedFilters(
         ) {
             Column(Modifier.padding(16.dp)) {
                 Text(
-                    text = "Filtre",
+                    text = stringResource(R.string.filters),
                     style = titleMedium
                 )
 
@@ -62,6 +64,7 @@ fun SearchAdvancedFilters(
                         options = options,
                         selectedOption = selectedOption?.id?.toString() ?: "",
                         placeholder = filter.name,
+                        label = filter.name,
                         onValueChange = { subId -> subId?.toIntOrNull()?.let { onSetSelectedFilter(filter.id, it) } },
                         background = Background,
                         color = OnBackground

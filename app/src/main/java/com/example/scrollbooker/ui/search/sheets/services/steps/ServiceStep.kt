@@ -144,6 +144,7 @@ fun ServiceStep(
                 options = servicesOptions,
                 selectedOption = localSelectedServiceId,
                 placeholder = stringResource(R.string.chooseService),
+                label = stringResource(R.string.service),
                 onValueChange = { localSelectedServiceId = it.toString() },
                 isLoading = services is FeatureState.Loading,
             )
@@ -174,31 +175,6 @@ fun ServiceStep(
                     )
                 }
             }
-
-//            when(val filters = serviceFilters) {
-//                is FeatureState.Loading -> {
-//                    repeat(3) {
-//                        Box(
-//                            modifier = Modifier
-//                                .fillMaxWidth()
-//                                .height(52.dp)
-//                                .clip(RoundedCornerShape(12.dp))
-//                                .background(rememberShimmerBrush())
-//                        )
-//                        Spacer(Modifier.height(8.dp))
-//                    }
-//                }
-//                is FeatureState.Success -> {
-//                    SearchAdvancedFilters(
-//                        selectedFilters = selectedFilters,
-//                        onSetSelectedFilter = { filterId, subFilterId ->
-//                            onSetSelectedFilter(filterId, subFilterId)
-//                        },
-//                        filters = filters.data
-//                    )
-//                }
-//                else -> Unit
-//            }
         }
 
         Row(

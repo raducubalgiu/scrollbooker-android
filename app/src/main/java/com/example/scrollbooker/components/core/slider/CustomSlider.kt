@@ -22,6 +22,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.LastMinute
 import com.example.scrollbooker.ui.theme.Primary
 
 @Composable
@@ -42,7 +43,7 @@ fun CustomSlider(
         label = "sliderAnim"
     )
 
-    val activeColor = Primary
+    val activeColor = LastMinute
     val inactiveColor = Divider
 
     Box(

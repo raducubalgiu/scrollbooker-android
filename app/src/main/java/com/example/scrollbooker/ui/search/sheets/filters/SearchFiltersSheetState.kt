@@ -9,9 +9,7 @@ import java.math.BigDecimal
 data class SearchFiltersSheetState(
     val maxPrice: BigDecimal? = BigDecimal(1500),
     val sort: SearchSortEnum = SearchSortEnum.RECOMMENDED,
-    val hasVideo: Boolean = false,
-    val hasDiscount: Boolean = false,
-    val isLastMinute: Boolean = false
+    val hasDiscount: Boolean = false
 ) : Parcelable
 
 fun SearchFiltersSheetState.clear(
@@ -19,18 +17,14 @@ fun SearchFiltersSheetState.clear(
 ): SearchFiltersSheetState = copy(
     maxPrice = defaultMaxPrice,
     sort = SearchSortEnum.RECOMMENDED,
-    hasVideo = false,
     hasDiscount = false,
-    isLastMinute = false
 )
 
 fun SearchFiltersSheetState.applyOn(base: SearchFiltersState): SearchFiltersState =
     base.copy(
         maxPrice = maxPrice,
         sort = sort,
-        hasVideo = hasVideo,
         hasDiscount = hasDiscount,
-        isLastMinute = isLastMinute
     )
 
 fun SearchFiltersSheetState.hasChangesComparedTo(base: SearchFiltersState): Boolean =

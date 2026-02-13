@@ -35,12 +35,6 @@ data class SearchBusinessRequest(
     @SerializedName("has_discount")
     val hasDiscount: Boolean = false,
 
-    @SerializedName("is_last_minute")
-    val isLastMinute: Boolean = false,
-
-    @SerializedName("has_video")
-    val hasVideo: Boolean = false,
-
     @SerializedName("start_date")
     val startDate: String? = null,
 
