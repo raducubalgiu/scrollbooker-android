@@ -18,6 +18,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.core.enums.FilterTypeEnum
+import com.example.scrollbooker.core.enums.ProductTypeEnum
 import com.example.scrollbooker.core.extensions.formatDuration
 import com.example.scrollbooker.core.extensions.toTwoDecimals
 import com.example.scrollbooker.core.util.Dimens.BasePadding
@@ -26,6 +27,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
 import java.math.BigDecimal
@@ -84,24 +86,44 @@ fun SearchCardProductRow(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = product.duration.formatDuration(),
-                    style = bodyMedium,
+                    style = bodyLarge,
                     color = Color.Gray
                 )
-                Text(
-                    modifier = Modifier.padding(horizontal = 5.dp),
-                    text = "\u2022",
-                    color = Color.Gray
-                )
+
+                if(product.type == ProductTypeEnum.PACK && product.sessionsCount != null) {
+                    Text(
+                        modifier = Modifier.padding(horizontal = 5.dp),
+                        text = "\u2022 ${product.sessionsCount} ședinte",
+                        color = Color.Gray
+                    )
+                }
+
+                if(product.filters.isNotEmpty()) {
+                    Text(
+                        modifier = Modifier.padding(horizontal = 5.dp),
+                        text = "\u2022",
+                        color = Color.Gray
+                    )
+                }
+
                 product.filters.mapIndexed { i, filter ->
                     when(filter.type) {
                         FilterTypeEnum.OPTIONS -> {
-                            filter.subFilters.map { subFilter ->
+                            filter.subFilters.mapIndexed { subIndex, subFilter ->
                                 Text(
                                     text = subFilter.name,
                                     color = Color.Gray,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis
                                 )
+
+                                if(subIndex < filter.subFilters.size - 1) {
+                                    Text(
+                                        modifier = Modifier.padding(horizontal = 5.dp),
+                                        text = "&",
+                                        color = Color.Gray
+                                    )
+                                }
                             }
                         }
                         FilterTypeEnum.RANGE -> {
