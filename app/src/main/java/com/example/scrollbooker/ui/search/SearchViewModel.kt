@@ -90,7 +90,7 @@ data class SearchFiltersState(
     val businessDomainId: Int? = null,
     val serviceDomainId: Int? = null,
     val serviceId: Int? = null,
-    val subFilterIds: Set<Int> = emptySet(),
+    val selectedFilters: Map<Int, Int> = emptyMap(),
     val maxPrice: BigDecimal? = BigDecimal(1500),
     val sort: SearchSortEnum = SearchSortEnum.RECOMMENDED,
     val hasDiscount: Boolean = false,
@@ -116,7 +116,7 @@ data class SearchRequestState(
             businessDomainId = filters.businessDomainId,
             serviceDomainId = filters.serviceDomainId,
             serviceId = filters.serviceId,
-            subFilterIds = filters.subFilterIds.toList(),
+            subFilterIds = filters.selectedFilters.values.toList(),
             startDate = filters.startDate?.toIsoString(),
             endDate = filters.endDate?.toIsoString(),
             startTime = filters.startTime?.toPrettyTime(),
@@ -214,6 +214,10 @@ class SearchViewModel @Inject constructor(
         _selectedServiceDomain.value = serviceDomain
     }
 
+    fun clearSelectedServiceDomain() {
+        _selectedServiceDomain.value = null
+    }
+
     val services: StateFlow<FeatureState<List<ServiceWithFilters>>> =
         _selectedServiceDomain
             .filterNotNull()
@@ -237,7 +241,7 @@ class SearchViewModel @Inject constructor(
             }
             .stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5000),
+                started = SharingStarted.Eagerly,
                 initialValue = FeatureState.Loading
             )
 
@@ -346,7 +350,7 @@ class SearchViewModel @Inject constructor(
                     businessDomainId = domainId,
                     serviceDomainId = null,
                     serviceId = null,
-                    subFilterIds = emptySet()
+                    selectedFilters = emptyMap()
                 )
             )
         }
@@ -385,7 +389,7 @@ class SearchViewModel @Inject constructor(
                     businessDomainId = servicesSheet.businessDomainId,
                     serviceDomainId = servicesSheet.serviceDomainId,
                     serviceId = servicesSheet.serviceId,
-                    subFilterIds = servicesSheet.selectedFilters.values.toSet(),
+                    selectedFilters = servicesSheet.selectedFilters,
                     startDate = servicesSheet.startDate,
                     endDate = servicesSheet.endDate,
                     startTime = servicesSheet.startTime,

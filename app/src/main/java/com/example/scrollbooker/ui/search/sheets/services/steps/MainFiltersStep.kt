@@ -45,15 +45,11 @@ import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.BusinessDomain
-import com.example.scrollbooker.entity.nomenclature.service.domain.model.ServiceWithFilters
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomain
 import com.example.scrollbooker.ui.search.components.SearchBusinessDomainLabel
 import com.example.scrollbooker.ui.search.sheets.SearchSheetsHeader
-import com.example.scrollbooker.ui.search.sheets.services.SearchServicesFiltersSheetState
-import com.example.scrollbooker.ui.search.sheets.services.components.MainFiltersFooter
 import com.example.scrollbooker.ui.search.sheets.services.components.ServiceDomainsList
 import com.example.scrollbooker.ui.search.sheets.services.components.fakeServices
-import com.example.scrollbooker.ui.search.sheets.services.dateTimeSummary
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.SurfaceBG
@@ -71,22 +67,13 @@ data class SearchRecent(
 
 @Composable
 fun MainFiltersStep(
-    state: SearchServicesFiltersSheetState,
     businessDomains: FeatureState<List<BusinessDomain>>,
     selectedBusinessDomainId: Int?,
-    //selectedService: ServiceWithFilters?,
     onSetSelectedBusinessDomainId: (Int?) -> Unit,
     onSetServiceDomain: (ServiceDomain) -> Unit,
-
-    onOpenDate: () -> Unit,
-    onFilter: (SearchServicesFiltersSheetState) -> Unit,
     onClose: () -> Unit,
-    onClear: () -> Unit,
-    onClearServiceId: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
-    val buttonSummary = state.dateTimeSummary()
-    val isActive = buttonSummary != null
 
     val recentSearches = listOf(
         SearchRecent(
@@ -190,8 +177,7 @@ fun MainFiltersStep(
                                     LazyVerticalGrid(
                                         contentPadding = PaddingValues(bottom = BasePadding),
                                         columns = GridCells.Fixed(4),
-                                        verticalArrangement = Arrangement.spacedBy(BasePadding),
-                                        //horizontalArrangement = Arrangement.spacedBy(BasePadding),
+                                        verticalArrangement = Arrangement.spacedBy(BasePadding)
                                     ) {
                                         item(span = { GridItemSpan(maxLineSpan) }) {
                                             Text(
@@ -305,17 +291,5 @@ fun MainFiltersStep(
                 }
             }
         }
-
-        MainFiltersFooter(
-            isClearEnabled = true,
-            isConfirmEnabled = true,
-            //selectedService = selectedService,
-            onConfirm = { onFilter(state) },
-            onClear = onClear,
-            onClearServiceId = onClearServiceId,
-            onOpenDate = onOpenDate,
-            summary = buttonSummary,
-            isActive = isActive
-        )
     }
 }

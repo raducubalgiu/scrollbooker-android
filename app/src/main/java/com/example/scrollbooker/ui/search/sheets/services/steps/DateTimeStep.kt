@@ -1,4 +1,9 @@
 package com.example.scrollbooker.ui.search.sheets.services.steps
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -29,7 +34,10 @@ import com.example.scrollbooker.core.extensions.toUtcLocalDate
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.search.sheets.SearchSheetActions
 import com.example.scrollbooker.ui.search.sheets.services.SearchServicesFiltersSheetState
+import com.example.scrollbooker.ui.search.sheets.services.ServicesSheetStep
+import com.example.scrollbooker.ui.search.sheets.services.components.MainFiltersFooter
 import com.example.scrollbooker.ui.search.sheets.services.components.ServicesDateTimeDaySuggestions
+import com.example.scrollbooker.ui.search.sheets.services.dateTimeSummary
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
@@ -44,6 +52,7 @@ import toUtcEpochMillis
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DateTimeStep(
+    step: ServicesSheetStep,
     state: SearchServicesFiltersSheetState,
     onBack: () -> Unit,
     onConfirm: (SearchServicesFiltersSheetState) -> Unit,
@@ -146,36 +155,44 @@ fun DateTimeStep(
             )
         }
 
-        HorizontalDivider(
-            color = Divider,
-            thickness = 0.55.dp
-        )
-
-        SearchSheetActions(
-            onClear = {
-                dateRangePickerState.setSelection(null, null)
-                localState.copy(
-                    startDate = null,
-                    endDate = null,
-                    startTime = null,
-                    endTime = null
+        AnimatedContent(
+            targetState = step == ServicesSheetStep.DATE_TIME,
+            transitionSpec = { fadeIn(tween(100)) togetherWith fadeOut(tween(100)) },
+            label = "HeaderTransition"
+        ) { target ->
+            if(target) {
+                HorizontalDivider(
+                    color = Divider,
+                    thickness = 0.55.dp
                 )
-            },
-            onConfirm = {
-                val start = dateRangePickerState.selectedStartDateMillis?.toUtcLocalDate()
-                val end = dateRangePickerState.selectedEndDateMillis?.toUtcLocalDate()
 
-                onConfirm(
-                    localState.copy(
-                        startDate = start,
-                        endDate = end
-                    )
+                SearchSheetActions(
+                    onClear = {
+                        dateRangePickerState.setSelection(null, null)
+                        localState.copy(
+                            startDate = null,
+                            endDate = null,
+                            startTime = null,
+                            endTime = null
+                        )
+                    },
+                    onConfirm = {
+                        val start = dateRangePickerState.selectedStartDateMillis?.toUtcLocalDate()
+                        val end = dateRangePickerState.selectedEndDateMillis?.toUtcLocalDate()
+
+                        onConfirm(
+                            localState.copy(
+                                startDate = start,
+                                endDate = end
+                            )
+                        )
+                    },
+                    displayIcon = false,
+                    primaryActionText = R.string.confirm,
+                    isConfirmEnabled = true,
+                    isClearEnabled = isClearEnabled
                 )
-            },
-            displayIcon = false,
-            primaryActionText = R.string.confirm,
-            isConfirmEnabled = true,
-            isClearEnabled = isClearEnabled
-        )
+            }
+        }
     }
 }

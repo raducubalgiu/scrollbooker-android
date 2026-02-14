@@ -1,5 +1,4 @@
 package com.example.scrollbooker.ui.search.sheets.services.components
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
-import com.example.scrollbooker.entity.nomenclature.service.domain.model.ServiceWithFilters
 import com.example.scrollbooker.ui.search.sheets.SearchSheetActions
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
@@ -33,12 +31,10 @@ import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun MainFiltersFooter(
-    //selectedService: ServiceWithFilters?,
-    isClearEnabled: Boolean,
-    isConfirmEnabled: Boolean,
+    isClearEnabled: Boolean = true,
+    isConfirmEnabled: Boolean = true,
     onConfirm: () -> Unit,
     onClear: () -> Unit,
-    onClearServiceId: () -> Unit,
     onOpenDate: () -> Unit,
     summary: String?,
     isActive: Boolean
@@ -49,41 +45,6 @@ fun MainFiltersFooter(
             color = Divider,
             thickness = 0.55.dp
         )
-
-//        selectedService?.let {
-//            Surface(
-//                modifier = Modifier.padding(horizontal = BasePadding),
-//                onClick = {},
-//                shape = ShapeDefaults.ExtraLarge,
-//                tonalElevation = if (isActive) 1.dp else 0.dp,
-//                color = if (isActive) SurfaceBG.copy(alpha = 0.8f) else SurfaceBG
-//            ) {
-//                Row(
-//                    modifier = Modifier
-//                        .padding(
-//                            horizontal = SpacingXL,
-//                            vertical = BasePadding
-//                        ),
-//                    verticalAlignment = Alignment.CenterVertically
-//                ) {
-//                    Text(
-//                        text = it.name,
-//                        style = titleMedium,
-//                        color = OnBackground
-//                    )
-//
-//                    Spacer(Modifier.width(SpacingXL))
-//
-//                    Column(Modifier.clickable { onClearServiceId() }) {
-//                        Icon(
-//                            painter = painterResource(R.drawable.ic_close_circle_solid),
-//                            contentDescription = null,
-//                            tint = Color.Gray
-//                        )
-//                    }
-//                }
-//            }
-//        }
 
         Spacer(Modifier.height(BasePadding))
 

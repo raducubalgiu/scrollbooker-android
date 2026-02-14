@@ -135,25 +135,35 @@ fun InputSelect(
                         )
                     }
 
-                    if(
-                        selectedOption.isBlank() == true ||
-                        selectedOption == "null"
-                    ) {
-                        Text(
-                            text = placeholder,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            color = placeholderColor,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                    } else {
-                        Text(
-                            text = selected?.name ?: "",
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            color = color,
-                        )
+                    when {
+                        selectedOption.isBlank() == true || selectedOption == "null" -> {
+                            Text(
+                                text = placeholder,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                color = placeholderColor,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+                        selectedOption.isNotBlank() -> {
+                            Text(
+                                text = selected?.name ?: "",
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                color = color,
+                            )
+                        }
+                        else -> {
+                            Text(
+                                text = placeholder,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                color = placeholderColor,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
                     }
                 }
 
