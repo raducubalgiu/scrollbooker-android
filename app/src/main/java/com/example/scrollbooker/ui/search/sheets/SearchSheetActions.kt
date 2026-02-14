@@ -52,7 +52,7 @@ fun SearchSheetActions(
                 )
             ) {
                 Text(
-                    text = stringResource(R.string.delete),
+                    text = stringResource(R.string.deleteAll),
                     style = titleMedium,
                 )
             }

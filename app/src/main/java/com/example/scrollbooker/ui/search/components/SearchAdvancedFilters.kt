@@ -55,7 +55,13 @@ fun SearchAdvancedFilters(
                 Spacer(Modifier.height(BasePadding))
 
                 filters.forEachIndexed { index, filter ->
-                    val options = filter.subFilters.map { Option(value = it.id.toString(), name = it.name) }
+                    val options = filter.subFilters.map {
+                        Option(
+                            value = it.id.toString(),
+                            name = it.name,
+                            description = it.description
+                        )
+                    }
 
                     val selectedSubFilterId = selectedFilters[filter.id]
                     val selectedOption = filter.subFilters.find { it.id == selectedSubFilterId}
@@ -65,10 +71,13 @@ fun SearchAdvancedFilters(
                         selectedOption = selectedOption?.id?.toString() ?: "",
                         placeholder = filter.name,
                         label = filter.name,
-                        onValueChange = { subId -> subId?.toIntOrNull()?.let { onSetSelectedFilter(filter.id, it) } },
+                        onValueChange = { subId ->
+                            subId?.toIntOrNull()?.let { onSetSelectedFilter(filter.id, it) }
+                        },
                         background = Background,
                         color = OnBackground
                     )
+
                     Spacer(Modifier.height(8.dp))
                 }
             }

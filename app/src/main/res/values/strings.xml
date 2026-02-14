@@ -77,6 +77,7 @@
     <string name="chooseYourGender">Alege genul tău</string>
     <string name="genderLabelDescription">Ne ajută să îți oferim servicii relevante pentru tine</string>
     <string name="delete">Șterge</string>
+    <string name="deleteAll">Șterge tot</string>
     <string name="confirm">Confirmă</string>
     <string name="aboutYou">Despre tine</string>
     <string name="dontHaveAppointmentsYet">Nu ai nici o programare momentan</string>

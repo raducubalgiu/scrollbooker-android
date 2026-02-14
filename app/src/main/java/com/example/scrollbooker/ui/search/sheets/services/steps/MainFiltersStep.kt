@@ -200,9 +200,7 @@ fun MainFiltersStep(
                                             span = { GridItemSpan(maxLineSpan) }
                                         ) { search ->
                                             Row(
-                                                modifier = Modifier.padding(
-                                                    horizontal = BasePadding
-                                                ),
+                                                modifier = Modifier.padding(horizontal = BasePadding),
                                                 verticalAlignment = Alignment.CenterVertically
                                             ) {
                                                 Icon(

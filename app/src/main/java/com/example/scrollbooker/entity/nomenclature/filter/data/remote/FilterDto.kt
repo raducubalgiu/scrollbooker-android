@@ -19,5 +19,6 @@ data class FilterDto(
 
 data class SubFilterDto(
     val id: Int,
-    val name: String
+    val name: String,
+    val description: String?
 )

@@ -20,6 +20,7 @@ fun FilterDto.toDomain(): Filter {
 fun SubFilterDto.toDomain(): SubFilter {
     return SubFilter(
         id = id,
-        name = name
+        name = name,
+        description = description
     )
 }

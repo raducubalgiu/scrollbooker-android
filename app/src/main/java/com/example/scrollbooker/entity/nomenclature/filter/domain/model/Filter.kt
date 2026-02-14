@@ -13,5 +13,6 @@ data class Filter(
 
 data class SubFilter(
     val id: Int,
-    val name: String
+    val name: String,
+    val description: String?
 )

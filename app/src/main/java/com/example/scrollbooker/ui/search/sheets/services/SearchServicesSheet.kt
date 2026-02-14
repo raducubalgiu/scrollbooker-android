@@ -51,9 +51,31 @@ fun SearchServicesSheet(
         ))
     }
 
+    val isClearAllEnabled = listOf(
+        state.serviceDomainId,
+        state.serviceId,
+        state.startDate,
+        state.endDate,
+        state.startTime,
+        state.endTime
+    ).any { it != null }
+
+    val isConfirmEnabled = listOf<Boolean>(
+        state.businessDomainId != requestState.filters.businessDomainId,
+        state.serviceId != requestState.filters.serviceId,
+        state.selectedFilters != requestState.filters.selectedFilters,
+        state.startDate != requestState.filters.startDate,
+        state.endDate != requestState.filters.endDate,
+        state.startTime != requestState.filters.startTime,
+        state.endTime != requestState.filters.endTime
+    ).any { it == true }
+
     var step by remember {
         mutableStateOf(
-            if(state.serviceDomainId != null && selectedServiceDomain != null) ServicesSheetStep.SERVICE
+            if(
+                state.serviceDomainId != null &&
+                state.serviceDomainId == selectedServiceDomain?.id
+            ) ServicesSheetStep.SERVICE
             else ServicesSheetStep.MAIN_FILTERS
         )
     }
@@ -125,8 +147,21 @@ fun SearchServicesSheet(
                 }
 
                 MainFiltersFooter(
+                    isClearEnabled = isClearAllEnabled,
+                    isConfirmEnabled = isConfirmEnabled,
                     onConfirm = { onFilter(state) },
-                    onClear = { state = SearchServicesFiltersSheetState() },
+                    onClear = {
+                        state = state.copy(
+                            serviceDomainId = null,
+                            serviceId = null,
+                            selectedFilters = emptyMap(),
+                            startDate = null,
+                            endDate = null,
+                            startTime = null,
+                            endTime = null
+                        )
+                        step = ServicesSheetStep.MAIN_FILTERS
+                    },
                     onOpenDate = { if (step != ServicesSheetStep.DATE_TIME) step = ServicesSheetStep.DATE_TIME },
                     summary = state.dateTimeSummary(),
                     isActive = state.dateTimeSummary() != null
