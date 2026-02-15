@@ -26,6 +26,7 @@ import com.example.scrollbooker.components.customized.Picker.Picker
 import com.example.scrollbooker.components.customized.Picker.PickerState
 import com.example.scrollbooker.core.util.AppLocaleProvider
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.ui.search.sheets.SearchSheetActions
 import com.example.scrollbooker.ui.search.sheets.services.SearchServicesFiltersSheetState
 import com.example.scrollbooker.ui.search.sheets.services.components.ServicesDateTimeDaySuggestions
@@ -33,7 +34,6 @@ import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.headlineLarge
 import org.threeten.bp.LocalDate
-import toUtcEpochMillis
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,8 +54,8 @@ fun DateTimeStep(
     val tomorrow = remember { today.plusDays(1) }
 
     val selectedDate = pickerState.selectedDate
-    val isSelected = selectedDate == tomorrow
     val isTodaySelected = selectedDate == today
+    val isTomorrowSelected = selectedDate == tomorrow
 
     val isClearEnabled =
         selectedDate != null ||
@@ -92,16 +92,10 @@ fun DateTimeStep(
                     ServicesDateTimeDaySuggestions(
                         today = today,
                         tomorrow = tomorrow,
-                        onTodayClick = {
-                            val millis = today.toUtcEpochMillis()
-                            //dateRangePickerState.setSelection(millis, millis)
-                        },
-                        onTomorrowClick = {
-                            val millis = tomorrow.toUtcEpochMillis()
-                            //dateRangePickerState.setSelection(millis, millis)
-                        },
-                        isTodaySelected = true,
-                        isTomorrowSelected = false
+                        onTodayClick = {},
+                        onTomorrowClick = {},
+                        isTodaySelected = isTodaySelected,
+                        isTomorrowSelected = isTomorrowSelected
                     )
                 }
 
@@ -132,6 +126,10 @@ fun DateTimeStep(
                         }
                     )
                 }
+
+                item {
+                    Spacer(Modifier.height(SpacingXXL))
+                }
             }
         }
 
@@ -143,7 +141,12 @@ fun DateTimeStep(
 
             SearchSheetActions(
                 isClearEnabled = isClearEnabled,
-                onClear = {},
+                onClear = {
+                    localState = localState.copy(
+                        startTime = null,
+                        endTime = null
+                    )
+                },
                 onConfirm = {},
                 displayIcon = false,
                 primaryActionText = R.string.confirm
