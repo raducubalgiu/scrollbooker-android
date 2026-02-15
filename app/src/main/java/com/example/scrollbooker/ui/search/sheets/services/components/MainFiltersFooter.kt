@@ -18,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
@@ -49,7 +48,7 @@ fun MainFiltersFooter(
         Spacer(Modifier.height(BasePadding))
 
         DateTimeButton(
-            title = if(isActive) summary.toString() else stringResource(R.string.dateAndHour),
+            title = summary.toString(),
             icon = painterResource(R.drawable.ic_clock_outline),
             isActive = isActive,
             onClick = onOpenDate
@@ -107,11 +106,19 @@ private fun DateTimeButton(
 
             Spacer(Modifier.width(SpacingXL))
 
-            Icon(
-                imageVector = Icons.Default.KeyboardArrowDown,
-                contentDescription = null,
-                tint = Color.Gray
-            )
+            if(isActive) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_close_circle_solid),
+                    contentDescription = null,
+                    tint = Color.Gray
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Default.KeyboardArrowDown,
+                    contentDescription = null,
+                    tint = Color.Gray
+                )
+            }
         }
     }
 }

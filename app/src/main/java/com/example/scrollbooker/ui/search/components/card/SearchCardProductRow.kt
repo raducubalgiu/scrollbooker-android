@@ -1,5 +1,4 @@
 package com.example.scrollbooker.ui.search.components.card
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,18 +24,34 @@ import com.example.scrollbooker.core.extensions.toTwoDecimals
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
+import com.example.scrollbooker.ui.theme.bodySmall
 import com.example.scrollbooker.ui.theme.titleMedium
 import java.math.BigDecimal
+
+data class TimeSlot(
+    val id: Int,
+    val name: String,
+    val isLastMinute: Boolean
+)
 
 @Composable
 fun SearchCardProductRow(
     product: Product
 ) {
+    val timeSlots = listOf(
+        TimeSlot(id = 1, name = "09:00", isLastMinute = false),
+        TimeSlot(id = 1, name = "12:00", isLastMinute = true),
+        TimeSlot(id = 1, name = "13:00", isLastMinute = false),
+        TimeSlot(id = 1, name = "15:00", isLastMinute = false),
+        TimeSlot(id = 1, name = "17:00", isLastMinute = false)
+    )
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -85,7 +100,7 @@ fun SearchCardProductRow(
                 }
             }
 
-            Spacer(Modifier.height(SpacingS))
+            Spacer(Modifier.height(SpacingXS))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
@@ -157,17 +172,57 @@ fun SearchCardProductRow(
                 }
             }
         }
+    }
 
-//        Row(
-//            horizontalArrangement = Arrangement.SpaceBetween,
-//            verticalAlignment = Alignment.CenterVertically
-//        ) {
-//            Row(
-//                verticalAlignment = Alignment.CenterVertically,
-//                horizontalArrangement = Arrangement.SpaceBetween
+    if(product.description != null && product.description.isNotEmpty()) {
+        Spacer(Modifier.height(SpacingS))
+
+        Text(
+            text = product.description,
+            color = Color.Gray,
+            style = bodySmall,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
+
+//    LazyRow(
+//        contentPadding = PaddingValues(
+//            top = BasePadding
+//        )
+//    ) {
+//        itemsIndexed(timeSlots) { index, slot ->
+//            Column(
+//                modifier = Modifier
+//                    .clip(shape = ShapeDefaults.Medium)
+//                    .background(if(slot.isLastMinute) Color(0xFFb7faf8) else SurfaceBG)
+//                    .padding(vertical = SpacingS, horizontal = BasePadding)
 //            ) {
+//                Row(
+//                    verticalAlignment = Alignment.CenterVertically
+//                ) {
+//                    Text(
+//                        text = slot.name,
+//                        color = OnSurfaceBG,
+//                        fontWeight = FontWeight.SemiBold
+//                    )
 //
+//                    if(slot.isLastMinute) {
+//                        Spacer(Modifier.width(SpacingS))
+//
+//                        Text(
+//                            text = "(-10%)",
+//                            style = bodySmall,
+//                            fontWeight = FontWeight.SemiBold,
+//                            color = Error
+//                        )
+//                    }
+//                }
+//            }
+//
+//            if(index < timeSlots.size - 1) {
+//                Spacer(Modifier.width(SpacingS))
 //            }
 //        }
-    }
+//    }
 }

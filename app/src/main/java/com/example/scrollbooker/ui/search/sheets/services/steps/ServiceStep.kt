@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
@@ -17,36 +15,39 @@ import com.example.scrollbooker.components.core.inputs.Option
 import com.example.scrollbooker.core.enums.FilterTypeEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.ui.search.SearchViewModel
+import com.example.scrollbooker.entity.nomenclature.service.domain.model.ServiceWithFilters
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomain
 import com.example.scrollbooker.ui.search.components.SearchAdvancedFilters
 import com.example.scrollbooker.ui.search.sheets.services.components.ServiceStepHeader
 
 @Composable
 fun ServiceStep(
-    viewModel: SearchViewModel,
+    selectedServiceDomain: ServiceDomain?,
     selectedFilters: Map<Int, Int>,
     selectedServiceId: Int?,
+    services: List<ServiceWithFilters>?,
+    isLoadingServices: Boolean,
     onChangeFilter: (Int, Int) -> Unit,
     onChangeService: (String?) -> Unit,
     onBack: () -> Unit
 ) {
-    val selectedServiceDomain by viewModel.selectedServiceDomain.collectAsState()
-    val servicesState by viewModel.services.collectAsState()
-
-    val services = (servicesState as? FeatureState.Success)?.data
-    val isLoadingServices = servicesState is FeatureState.Loading
-
     val selectedService = services?.firstOrNull() { it.id == selectedServiceId }
 
-    val servicesOptions = when(val state = servicesState) {
-        is FeatureState.Success -> state.data.map { s ->
+    val options = buildList {
+        add(
             Option(
-                value = s.id.toString(),
-                name = s.shortName
+                value = "0",
+                name = "Toate serviciile"
+            )
+        )
+        services?.map {
+            add(
+                Option(
+                    value = it.id.toString(),
+                    name = it.name
+                )
             )
         }
-        else -> emptyList()
     }
 
     Column(modifier = Modifier.padding(vertical = SpacingS)) {
@@ -63,8 +64,8 @@ fun ServiceStep(
             .padding(horizontal = BasePadding)
         ) {
             InputSelect(
-                options = servicesOptions,
-                selectedOption = selectedServiceId.toString(),
+                options = if(services != null) options else emptyList(),
+                selectedOption = selectedServiceId?.toString() ?: "0",
                 placeholder = stringResource(R.string.chooseService),
                 label = stringResource(R.string.service),
                 onValueChange = { onChangeService(it) },

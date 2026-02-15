@@ -29,6 +29,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.core.util.generateTimeSlots
 import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.LastMinute
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.titleMedium
 import org.threeten.bp.LocalTime
@@ -65,12 +66,7 @@ fun TimeSection(
             text = stringResource(R.string.timeInterval),
             style = titleMedium,
             fontWeight = FontWeight.ExtraBold,
-            modifier = Modifier.padding(
-                top = BasePadding,
-                bottom = 8.dp,
-                start = BasePadding,
-                end = BasePadding
-            )
+            modifier = Modifier.padding(horizontal = BasePadding)
         )
 
         Spacer(Modifier.height(BasePadding))
@@ -166,7 +162,7 @@ private fun TimeIntervalCard(
             .widthIn(min = 130.dp)
             .border(
                 width = if(isSelected) 2.dp else 1.dp,
-                color = if(isSelected) Primary else Divider,
+                color = if(isSelected) LastMinute else Divider,
                 shape = ShapeDefaults.Medium
             )
             .clickable(

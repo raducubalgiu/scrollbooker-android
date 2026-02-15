@@ -1,7 +1,11 @@
 package com.example.scrollbooker.ui.search.sheets.services
 
 import android.os.Parcelable
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import com.example.scrollbooker.R
 import com.example.scrollbooker.core.extensions.toPrettyTime
+import com.example.scrollbooker.ui.search.SearchRequestState
 import kotlinx.parcelize.Parcelize
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
@@ -19,11 +23,35 @@ data class SearchServicesFiltersSheetState(
     val endTime: LocalTime? = null
 ) : Parcelable
 
-fun SearchServicesFiltersSheetState.dateTimeSummary(): String? {
+fun SearchServicesFiltersSheetState.isClearAllEnabled(): Boolean {
+    return listOf(
+        serviceDomainId,
+        serviceId,
+        startDate,
+        endDate,
+        startTime,
+        endTime
+    ).any { it != null }
+}
+
+fun SearchServicesFiltersSheetState.isConfirmEnabled(request: SearchRequestState): Boolean {
+    return listOf<Boolean>(
+        businessDomainId != request.filters.businessDomainId,
+        serviceId != request.filters.serviceId,
+        selectedFilters != request.filters.selectedFilters,
+        startDate != request.filters.startDate,
+        endDate != request.filters.endDate,
+        startTime != request.filters.startTime,
+        endTime != request.filters.endTime
+    ).any { it == true }
+}
+
+@Composable
+fun SearchServicesFiltersSheetState.dateTimeSummary(): String {
     val hasDate = startDate != null || endDate != null
     val hasTime = startTime != null || endTime != null
 
-    if (!hasDate && !hasTime) return null
+    if (!hasDate && !hasTime) return stringResource(R.string.anytimeAnyHour)
 
     val datePart = when {
         startDate != null && endDate != null && startDate == endDate -> startDate.toDayMonthShort()
@@ -40,6 +68,10 @@ fun SearchServicesFiltersSheetState.dateTimeSummary(): String? {
         datePart != null && timePart != null -> "$datePart • $timePart"
         datePart != null -> datePart
         timePart != null -> timePart
-        else -> null
+        else -> stringResource(R.string.anytimeAnyHour)
     }
+}
+
+fun SearchServicesFiltersSheetState.isDateActive(): Boolean {
+    return startDate != null || endDate != null || startTime != null || endTime != null
 }

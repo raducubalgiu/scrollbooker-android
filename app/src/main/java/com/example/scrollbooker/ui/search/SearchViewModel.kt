@@ -63,6 +63,7 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
+import toDayMonthShort
 import toIsoString
 import java.math.BigDecimal
 import javax.inject.Inject
@@ -135,6 +136,31 @@ fun SearchRequestState.activeFiltersCount(): Int {
         filters.maxPrice != BigDecimal(1500),
         filters.sort != SearchSortEnum.RECOMMENDED
     ).count { it }
+}
+
+fun SearchFiltersState.dateTimeSummary(): String {
+    val hasDate = startDate != null || endDate != null
+    val hasTime = startTime != null || endTime != null
+
+    if (!hasDate && !hasTime) return "Oricând la orice oră"
+
+    val datePart = when {
+        startDate != null && endDate != null && startDate == endDate -> startDate.toDayMonthShort()
+        startDate != null && endDate != null -> "${startDate.toDayMonthShort()} – ${endDate.toDayMonthShort()}"
+        else -> null
+    }
+
+    val timePart = when {
+        startTime != null && endTime != null -> "${startTime.toPrettyTime()} – ${endTime.toPrettyTime()}"
+        else -> null
+    }
+
+    return when {
+        datePart != null && timePart != null -> "$datePart • $timePart"
+        datePart != null -> datePart
+        timePart != null -> timePart
+        else -> "Oricând la orice oră"
+    }
 }
 
 enum class ServiceStepEnum {

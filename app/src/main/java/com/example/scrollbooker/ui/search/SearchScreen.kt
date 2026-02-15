@@ -1,10 +1,5 @@
 package com.example.scrollbooker.ui.search
 import BottomBar
-import android.Manifest
-import android.app.Activity
-import android.content.pm.PackageManager
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,7 +12,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -29,20 +23,15 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.sheet.Sheet
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.ui.LocalLocationController
-import com.example.scrollbooker.ui.LocationPermissionStatus
-import com.example.scrollbooker.ui.PrecisionMode
+import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.ui.search.components.SearchBusinessDomainList
 import com.example.scrollbooker.ui.search.components.SearchHeader
 import com.example.scrollbooker.ui.search.components.SearchList
@@ -51,7 +40,6 @@ import com.example.scrollbooker.ui.search.components.SearchMapLoading
 import com.example.scrollbooker.ui.search.components.SearchSheetHeader
 import com.example.scrollbooker.ui.search.sheets.SearchSheetActionEnum
 import com.example.scrollbooker.ui.search.sheets.SearchSheets
-import com.example.scrollbooker.ui.search.sheets.services.ServicesSheetStep
 import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheetUser
 import com.example.scrollbooker.ui.theme.Background
@@ -65,63 +53,31 @@ fun SearchScreen(
     isSearchTab: Boolean,
     onNavigateToBusinessProfile: (Int) -> Unit
 ) {
-    val isMapMounted by viewModel.isMapMounted.collectAsState()
+    val isMapMounted by viewModel.isMapMounted.collectAsStateWithLifecycle()
 
-    LaunchedEffect(isSearchTab) {
-        if(isSearchTab) {
+    LaunchedEffect(isSearchTab, isMapMounted) {
+        if(isSearchTab && !isMapMounted) {
             viewModel.setMapMounted()
         }
     }
 
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current
-    val activity = context as Activity
-
-    val locationController = LocalLocationController.current
-    val locationState by locationController.stateFlow.collectAsStateWithLifecycle()
-    val permissionStatus = locationState.permissionStatus
 
     val businessesSheet = viewModel.sheetPagingFlow.collectAsLazyPagingItems()
-    val businessesCount by viewModel.sheetTotalCount.collectAsState()
+    val businessesCount by viewModel.sheetTotalCount.collectAsStateWithLifecycle()
+    val markersUiState by viewModel.markersUiState.collectAsStateWithLifecycle()
+
     val businessesCountText = rememberLocationsCountText(businessesCount)
 
-    val businessDomains by viewModel.businessDomains.collectAsState()
-    val markersUiState by viewModel.markersUiState.collectAsState()
+    val requestState by viewModel.request.collectAsStateWithLifecycle()
+    val businessDomains by viewModel.businessDomains.collectAsStateWithLifecycle()
+    val selectedServiceDomain by viewModel.selectedServiceDomain.collectAsStateWithLifecycle()
+    val servicesState by viewModel.services.collectAsState()
 
-    val state by viewModel.request.collectAsState()
+    val services = (servicesState as? FeatureState.Success)?.data
+    val isLoadingServices = servicesState is FeatureState.Loading
 
     val listState = rememberLazyListState()
-
-    val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { granted ->
-        val canAskAgain = ActivityCompat.shouldShowRequestPermissionRationale(
-            activity,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        )
-
-        locationController.onPermissionResult(granted, canAskAgain)
-    }
-
-    LaunchedEffect(Unit) {
-        val isGranted = ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
-        locationController.syncInitialPermission(isGranted)
-    }
-
-    LaunchedEffect(permissionStatus) {
-        when(permissionStatus) {
-            LocationPermissionStatus.GRANTED -> locationController.startUpdates(PrecisionMode.BALANCED)
-            LocationPermissionStatus.DENIED_PERMANENTLY -> locationController.stopUpdates()
-            else -> Unit
-        }
-    }
-
-    DisposableEffect(Unit) {
-        onDispose { locationController.stopUpdates() }
-    }
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var sheetAction by rememberSaveable { mutableStateOf(SearchSheetActionEnum.NONE) }
@@ -137,8 +93,13 @@ fun SearchScreen(
     if(sheetState.isVisible) {
         key(sheetAction) {
             SearchSheets(
-                viewModel = viewModel,
                 sheetState = sheetState,
+                viewModel = viewModel,
+                requestState = requestState,
+                businessDomains = businessDomains,
+                selectedServiceDomain = selectedServiceDomain,
+                services = services,
+                isLoadingServices = isLoadingServices,
                 sheetAction = sheetAction,
                 onClose = {
                     scope.launch { listState.scrollToItem(0) }
@@ -198,9 +159,9 @@ fun SearchScreen(
         topBar = {
             SearchHeader(
                 modifier = Modifier.statusBarsPadding(),
-                activeFiltersCount = state.activeFiltersCount(),
+                activeFiltersCount = requestState.activeFiltersCount(),
                 headline = stringResource(R.string.allServices),
-                subHeadline = stringResource(R.string.anytimeAnyHour),
+                subHeadline = requestState.filters.dateTimeSummary(),
                 onClick = { openSheetWith(SearchSheetActionEnum.OPEN_SERVICES) },
                 onFilter = { openSheetWith(SearchSheetActionEnum.OPEN_FILTERS) }
             )
@@ -213,7 +174,7 @@ fun SearchScreen(
             SearchMap(
                 viewModel = viewModel,
                 markersUiState = markersUiState,
-                userLocation = locationState.lastAccurateLocation,
+                userLocation = null,
                 isMapLoading = isMapLoading,
                 onSheetExpand = { scope.launch { scaffoldState.bottomSheetState.expand() } },
                 paddingBottom = paddingBottom,
@@ -230,7 +191,7 @@ fun SearchScreen(
             Column(modifier = Modifier.fillMaxSize()) {
                 SearchBusinessDomainList(
                     businessDomains = businessDomains,
-                    selectedBusinessDomain = state.filters.businessDomainId,
+                    selectedBusinessDomain = requestState.filters.businessDomainId,
                     onClick = {
                         scope.launch { listState.scrollToItem(0) }
                         viewModel.setBusinessDomain(it)
@@ -273,3 +234,40 @@ fun SearchScreen(
         }
     }
 }
+
+//val locationController = LocalLocationController.current
+//val locationState by locationController.stateFlow.collectAsStateWithLifecycle()
+//val context = LocalContext.current
+//val activity = context as Activity
+//val permissionStatus = locationState.permissionStatus
+
+//val permissionLauncher = rememberLauncherForActivityResult(
+//    contract = ActivityResultContracts.RequestPermission()
+//) { granted ->
+//    val canAskAgain = ActivityCompat.shouldShowRequestPermissionRationale(
+//        activity,
+//        Manifest.permission.ACCESS_FINE_LOCATION
+//    )
+//
+//    locationController.onPermissionResult(granted, canAskAgain)
+//}
+//
+//LaunchedEffect(Unit) {
+//    val isGranted = ContextCompat.checkSelfPermission(
+//        context,
+//        Manifest.permission.ACCESS_FINE_LOCATION
+//    ) == PackageManager.PERMISSION_GRANTED
+//    locationController.syncInitialPermission(isGranted)
+//}
+//
+//LaunchedEffect(permissionStatus) {
+//    when(permissionStatus) {
+//        LocationPermissionStatus.GRANTED -> locationController.startUpdates(PrecisionMode.BALANCED)
+//        LocationPermissionStatus.DENIED_PERMANENTLY -> locationController.stopUpdates()
+//        else -> Unit
+//    }
+//}
+//
+//DisposableEffect(Unit) {
+//    onDispose { locationController.stopUpdates() }
+//}

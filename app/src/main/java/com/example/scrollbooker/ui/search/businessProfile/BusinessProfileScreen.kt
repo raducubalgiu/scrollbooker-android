@@ -32,6 +32,7 @@ import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.util.rememberFlingBehavior
 import com.example.scrollbooker.ui.search.businessProfile.components.BusinessProfileHeader
 import com.example.scrollbooker.ui.search.businessProfile.components.BusinessProfileSkeleton
 import com.example.scrollbooker.ui.search.businessProfile.components.BusinessProfileTabRow
@@ -147,6 +148,8 @@ fun BusinessProfileScreen(
                 label = "TabRowAlpha"
             )
 
+            val flingBehavior = rememberFlingBehavior()
+
             Box(modifier = Modifier
                 .fillMaxSize()
                 .background(Background)
@@ -162,7 +165,8 @@ fun BusinessProfileScreen(
 
                 LazyColumn(
                     state = lazyListState,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
+                    flingBehavior = flingBehavior
                 ) {
                     stickyHeader {
                         Spacer(Modifier

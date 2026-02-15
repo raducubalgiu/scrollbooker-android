@@ -2,25 +2,33 @@ package com.example.scrollbooker.ui.search.components.card
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
+import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessOwner
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessSheet
 import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.OnSurfaceBG
+import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable
 fun SearchCard(
@@ -68,7 +76,7 @@ fun SearchCard(
 
                 if(index < business.products.size - 1) {
                     HorizontalDivider(
-                        modifier = Modifier.padding(vertical = SpacingS),
+                        modifier = Modifier.padding(vertical = SpacingM),
                         color = Divider,
                         thickness = 0.55.dp
                     )
@@ -76,10 +84,15 @@ fun SearchCard(
             }
 
             if(showMoreProductsBtn) {
-                MainButtonOutlined(
+                MainButton(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = BasePadding),
+                    contentPadding = PaddingValues(BasePadding),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = SurfaceBG,
+                        contentColor = OnSurfaceBG
+                    ),
                     title = stringResource(R.string.seeAllServices),
                     onClick = { onOpenBookingsSheet(business.owner) }
                 )

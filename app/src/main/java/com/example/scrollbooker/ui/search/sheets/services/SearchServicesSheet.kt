@@ -1,74 +1,56 @@
 package com.example.scrollbooker.ui.search.sheets.services
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.ContentTransform
-import androidx.compose.animation.SizeTransform
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.BusinessDomain
+import com.example.scrollbooker.entity.nomenclature.service.domain.model.ServiceWithFilters
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomain
+import com.example.scrollbooker.ui.search.SearchRequestState
 import com.example.scrollbooker.ui.search.SearchViewModel
 import com.example.scrollbooker.ui.search.sheets.services.components.MainFiltersFooter
 import com.example.scrollbooker.ui.search.sheets.services.steps.DateTimeStep
 import com.example.scrollbooker.ui.search.sheets.services.steps.MainFiltersStep
 import com.example.scrollbooker.ui.search.sheets.services.steps.ServiceStep
+import com.example.scrollbooker.ui.search.sheets.services.steps.servicesSheetTransitionSpec
 import com.example.scrollbooker.ui.theme.Background
 
 @Composable
 fun SearchServicesSheet(
     viewModel: SearchViewModel,
+    requestState: SearchRequestState,
+    businessDomains: FeatureState<List<BusinessDomain>>,
+    selectedServiceDomain: ServiceDomain?,
+    services: List<ServiceWithFilters>?,
+    isLoadingServices: Boolean,
+
     onClose: () -> Unit,
     onFilter: (SearchServicesFiltersSheetState) -> Unit
 ) {
-    val requestState by viewModel.request.collectAsState()
-    val businessDomains by viewModel.businessDomains.collectAsState()
-    val selectedServiceDomain by viewModel.selectedServiceDomain.collectAsState()
-
     var state by rememberSaveable {
-        mutableStateOf(SearchServicesFiltersSheetState(
-            businessDomainId = requestState.filters.businessDomainId,
-            serviceDomainId = requestState.filters.serviceDomainId,
-            serviceId = requestState.filters.serviceId,
-            selectedFilters = requestState.filters.selectedFilters,
-            startDate = requestState.filters.startDate,
-            endDate = requestState.filters.endDate,
-            startTime = requestState.filters.startTime,
-            endTime = requestState.filters.endTime
-        ))
+        mutableStateOf(
+            SearchServicesFiltersSheetState(
+                businessDomainId = requestState.filters.businessDomainId,
+                serviceDomainId = requestState.filters.serviceDomainId,
+                serviceId = requestState.filters.serviceId,
+                selectedFilters = requestState.filters.selectedFilters,
+                startDate = requestState.filters.startDate,
+                endDate = requestState.filters.endDate,
+                startTime = requestState.filters.startTime,
+                endTime = requestState.filters.endTime
+            )
+        )
     }
-
-    val isClearAllEnabled = listOf(
-        state.serviceDomainId,
-        state.serviceId,
-        state.startDate,
-        state.endDate,
-        state.startTime,
-        state.endTime
-    ).any { it != null }
-
-    val isConfirmEnabled = listOf<Boolean>(
-        state.businessDomainId != requestState.filters.businessDomainId,
-        state.serviceId != requestState.filters.serviceId,
-        state.selectedFilters != requestState.filters.selectedFilters,
-        state.startDate != requestState.filters.startDate,
-        state.endDate != requestState.filters.endDate,
-        state.startTime != requestState.filters.startTime,
-        state.endTime != requestState.filters.endTime
-    ).any { it == true }
 
     var step by remember {
         mutableStateOf(
@@ -116,7 +98,9 @@ fun SearchServicesSheet(
 
                             ServicesSheetStep.SERVICE -> {
                                 ServiceStep(
-                                    viewModel = viewModel,
+                                    selectedServiceDomain = selectedServiceDomain,
+                                    services = services,
+                                    isLoadingServices = isLoadingServices,
                                     onBack = {
                                         state = state.copy(
                                             serviceDomainId = null,
@@ -128,8 +112,10 @@ fun SearchServicesSheet(
                                     selectedFilters = state.selectedFilters,
                                     selectedServiceId = state.serviceId,
                                     onChangeService = {
+                                        val newServiceId = if(it?.toInt() == 0) null else it?.toIntOrNull()
+
                                         state = state.copy(
-                                            serviceId = it?.toIntOrNull(),
+                                            serviceId = newServiceId,
                                             selectedFilters = emptyMap()
                                         )
                                     },
@@ -147,8 +133,8 @@ fun SearchServicesSheet(
                 }
 
                 MainFiltersFooter(
-                    isClearEnabled = isClearAllEnabled,
-                    isConfirmEnabled = isConfirmEnabled,
+                    isClearEnabled = state.isClearAllEnabled(),
+                    isConfirmEnabled = state.isConfirmEnabled(requestState),
                     onConfirm = { onFilter(state) },
                     onClear = {
                         state = state.copy(
@@ -164,7 +150,7 @@ fun SearchServicesSheet(
                     },
                     onOpenDate = { if (step != ServicesSheetStep.DATE_TIME) step = ServicesSheetStep.DATE_TIME },
                     summary = state.dateTimeSummary(),
-                    isActive = state.dateTimeSummary() != null
+                    isActive = state.isDateActive()
                 )
             }
 
@@ -177,7 +163,6 @@ fun SearchServicesSheet(
                     Box(Modifier.fillMaxSize().background(Background)) {
                         DateTimeStep(
                             state = state,
-                            step = step,
                             onBack = { step = ServicesSheetStep.MAIN_FILTERS },
                             onConfirm = {
                                 state = state.copy(
@@ -194,27 +179,6 @@ fun SearchServicesSheet(
             }
         }
     }
-}
-
-private fun servicesSheetTransitionSpec(
-    mainStep: ServicesSheetStep = ServicesSheetStep.MAIN_FILTERS,
-    clip: Boolean = false,
-): AnimatedContentTransitionScope<ServicesSheetStep>.() -> ContentTransform = {
-    val isForward = targetState != mainStep
-
-    val enter = if (isForward) {
-        slideInHorizontally { fullWidth -> fullWidth }
-    } else {
-        slideInHorizontally { fullWidth -> -fullWidth }
-    } + fadeIn()
-
-    val exit = if (isForward) {
-        slideOutHorizontally { fullWidth -> -fullWidth }
-    } else {
-        slideOutHorizontally { fullWidth -> fullWidth }
-    } + fadeOut()
-
-    enter togetherWith exit using SizeTransform(clip = clip)
 }
 
 
