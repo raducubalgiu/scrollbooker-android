@@ -18,7 +18,6 @@ data class SearchServicesFiltersSheetState(
     val serviceId: Int? = null,
     val selectedFilters: Map<Int, Int> = emptyMap(),
     val startDate: LocalDate? = null,
-    val endDate: LocalDate? = null,
     val startTime: LocalTime? = null,
     val endTime: LocalTime? = null
 ) : Parcelable
@@ -28,7 +27,6 @@ fun SearchServicesFiltersSheetState.isClearAllEnabled(): Boolean {
         serviceDomainId,
         serviceId,
         startDate,
-        endDate,
         startTime,
         endTime
     ).any { it != null }
@@ -40,7 +38,6 @@ fun SearchServicesFiltersSheetState.isConfirmEnabled(request: SearchRequestState
         serviceId != request.filters.serviceId,
         selectedFilters != request.filters.selectedFilters,
         startDate != request.filters.startDate,
-        endDate != request.filters.endDate,
         startTime != request.filters.startTime,
         endTime != request.filters.endTime
     ).any { it == true }
@@ -48,14 +45,13 @@ fun SearchServicesFiltersSheetState.isConfirmEnabled(request: SearchRequestState
 
 @Composable
 fun SearchServicesFiltersSheetState.dateTimeSummary(): String {
-    val hasDate = startDate != null || endDate != null
+    val hasDate = startDate != null
     val hasTime = startTime != null || endTime != null
 
     if (!hasDate && !hasTime) return stringResource(R.string.anytimeAnyHour)
 
     val datePart = when {
-        startDate != null && endDate != null && startDate == endDate -> startDate.toDayMonthShort()
-        startDate != null && endDate != null -> "${startDate.toDayMonthShort()} – ${endDate.toDayMonthShort()}"
+        startDate != null -> startDate.toDayMonthShort()
         else -> null
     }
 
@@ -73,5 +69,5 @@ fun SearchServicesFiltersSheetState.dateTimeSummary(): String {
 }
 
 fun SearchServicesFiltersSheetState.isDateActive(): Boolean {
-    return startDate != null || endDate != null || startTime != null || endTime != null
+    return startDate != null || startTime != null || endTime != null
 }

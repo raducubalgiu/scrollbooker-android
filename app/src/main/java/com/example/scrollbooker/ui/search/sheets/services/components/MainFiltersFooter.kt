@@ -1,4 +1,6 @@
 package com.example.scrollbooker.ui.search.sheets.services.components
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -35,6 +38,7 @@ fun MainFiltersFooter(
     onConfirm: () -> Unit,
     onClear: () -> Unit,
     onOpenDate: () -> Unit,
+    onClearDate: () -> Unit,
     summary: String?,
     isActive: Boolean
 ) {
@@ -51,7 +55,8 @@ fun MainFiltersFooter(
             title = summary.toString(),
             icon = painterResource(R.drawable.ic_clock_outline),
             isActive = isActive,
-            onClick = onOpenDate
+            onClick = onOpenDate,
+            onClearDate = onClearDate
         )
 
         Spacer(Modifier.width(BasePadding))
@@ -71,6 +76,7 @@ private fun DateTimeButton(
     icon: Painter? = null,
     isActive: Boolean = false,
     onClick: () -> Unit,
+    onClearDate: () -> Unit
 ) {
     Surface(
         modifier = Modifier.padding(horizontal = BasePadding),
@@ -107,11 +113,16 @@ private fun DateTimeButton(
             Spacer(Modifier.width(SpacingXL))
 
             if(isActive) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_close_circle_solid),
-                    contentDescription = null,
-                    tint = Color.Gray
-                )
+                Box(
+                    modifier = Modifier
+                        .clickable(onClick = onClearDate)
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_close_circle_solid),
+                        contentDescription = null,
+                        tint = Color.Gray
+                    )
+                }
             } else {
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowDown,

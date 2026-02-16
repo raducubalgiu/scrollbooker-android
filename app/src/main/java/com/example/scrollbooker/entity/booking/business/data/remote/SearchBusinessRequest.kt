@@ -38,9 +38,6 @@ data class SearchBusinessRequest(
     @SerializedName("start_date")
     val startDate: String? = null,
 
-    @SerializedName("end_date")
-    val endDate: String? = null,
-
     @SerializedName("start_time")
     val startTime: String? = null,
 

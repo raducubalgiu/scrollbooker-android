@@ -19,6 +19,7 @@ import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.S
 import com.example.scrollbooker.ui.search.SearchRequestState
 import com.example.scrollbooker.ui.search.SearchViewModel
 import com.example.scrollbooker.ui.search.sheets.services.components.MainFiltersFooter
+import com.example.scrollbooker.ui.search.sheets.services.steps.DateTimeState
 import com.example.scrollbooker.ui.search.sheets.services.steps.DateTimeStep
 import com.example.scrollbooker.ui.search.sheets.services.steps.MainFiltersStep
 import com.example.scrollbooker.ui.search.sheets.services.steps.ServiceStep
@@ -45,7 +46,6 @@ fun SearchServicesSheet(
                 serviceId = requestState.filters.serviceId,
                 selectedFilters = requestState.filters.selectedFilters,
                 startDate = requestState.filters.startDate,
-                endDate = requestState.filters.endDate,
                 startTime = requestState.filters.startTime,
                 endTime = requestState.filters.endTime
             )
@@ -135,20 +135,30 @@ fun SearchServicesSheet(
                 MainFiltersFooter(
                     isClearEnabled = state.isClearAllEnabled(),
                     isConfirmEnabled = state.isConfirmEnabled(requestState),
-                    onConfirm = { onFilter(state) },
+                    onConfirm = {
+                        onFilter(state)
+                    },
                     onClear = {
                         state = state.copy(
                             serviceDomainId = null,
                             serviceId = null,
                             selectedFilters = emptyMap(),
                             startDate = null,
-                            endDate = null,
                             startTime = null,
                             endTime = null
                         )
                         step = ServicesSheetStep.MAIN_FILTERS
                     },
-                    onOpenDate = { if (step != ServicesSheetStep.DATE_TIME) step = ServicesSheetStep.DATE_TIME },
+                    onOpenDate = {
+                        if (step != ServicesSheetStep.DATE_TIME) step = ServicesSheetStep.DATE_TIME
+                    },
+                    onClearDate = {
+                        state = state.copy(
+                            startDate = null,
+                            startTime = null,
+                            endTime = null
+                        )
+                    },
                     summary = state.dateTimeSummary(),
                     isActive = state.isDateActive()
                 )
@@ -162,12 +172,15 @@ fun SearchServicesSheet(
                 if(currentStep == ServicesSheetStep.DATE_TIME) {
                     Box(Modifier.fillMaxSize().background(Background)) {
                         DateTimeStep(
-                            state = state,
+                            state = DateTimeState(
+                                startTime = state.startTime,
+                                endTime = state.endTime,
+                                startDate = state.startDate
+                            ),
                             onBack = { step = ServicesSheetStep.MAIN_FILTERS },
                             onConfirm = {
                                 state = state.copy(
                                     startDate = it.startDate,
-                                    endDate = it.endDate,
                                     startTime = it.startTime,
                                     endTime = it.endTime
                                 )

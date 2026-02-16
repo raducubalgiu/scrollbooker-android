@@ -17,14 +17,10 @@ import org.threeten.bp.YearMonth
 import org.threeten.bp.format.TextStyle
 import java.util.Locale
 
-data class PickerState(
-    val selectedDate: LocalDate? = null
-)
-
 @Composable
 fun Picker(
     locale: Locale,
-    state: PickerState,
+    selectedDate: LocalDate? = null,
     monthsForwardLimit: Int = 6,
     onDateSelected: (LocalDate) -> Unit
 ) {
@@ -50,8 +46,7 @@ fun Picker(
             title = visibleMonth.month.getDisplayName(
                 TextStyle.FULL,
                 locale
-            ).replaceFirstChar { it.uppercase() } +
-                    " ${visibleMonth.year}",
+            ).replaceFirstChar { it.uppercase() } + " ${visibleMonth.year}",
             isBackEnabled = isBackEnabled,
             isNextEnabled = isNextEnabled,
             onBack = {
@@ -88,7 +83,7 @@ fun Picker(
                 month = month,
                 locale = locale,
                 today = today,
-                selectedDate = state.selectedDate,
+                selectedDate = selectedDate,
                 onDateSelected = onDateSelected
             )
         }

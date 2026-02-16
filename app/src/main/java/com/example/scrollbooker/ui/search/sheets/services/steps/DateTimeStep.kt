@@ -1,4 +1,5 @@
 package com.example.scrollbooker.ui.search.sheets.services.steps
+import android.os.Parcelable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,37 +24,40 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.iconButton.CustomIconButton
 import com.example.scrollbooker.components.customized.Picker.Picker
-import com.example.scrollbooker.components.customized.Picker.PickerState
 import com.example.scrollbooker.core.util.AppLocaleProvider
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.ui.search.sheets.SearchSheetActions
-import com.example.scrollbooker.ui.search.sheets.services.SearchServicesFiltersSheetState
 import com.example.scrollbooker.ui.search.sheets.services.components.ServicesDateTimeDaySuggestions
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.headlineLarge
+import kotlinx.parcelize.Parcelize
 import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalTime
+
+@Parcelize
+data class DateTimeState(
+    val startTime: LocalTime? = null,
+    val endTime: LocalTime? = null,
+    val startDate: LocalDate? = null
+): Parcelable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DateTimeStep(
-    state: SearchServicesFiltersSheetState,
+    state: DateTimeState,
     onBack: () -> Unit,
-    onConfirm: (SearchServicesFiltersSheetState) -> Unit,
+    onConfirm: (DateTimeState) -> Unit,
 ) {
     var localState by rememberSaveable {
         mutableStateOf(state)
     }
 
-    var pickerState by remember {
-        mutableStateOf(PickerState())
-    }
-
     val today = remember { LocalDate.now() }
     val tomorrow = remember { today.plusDays(1) }
 
-    val selectedDate = pickerState.selectedDate
+    val selectedDate = localState.startDate
     val isTodaySelected = selectedDate == today
     val isTomorrowSelected = selectedDate == tomorrow
 
@@ -92,8 +96,8 @@ fun DateTimeStep(
                     ServicesDateTimeDaySuggestions(
                         today = today,
                         tomorrow = tomorrow,
-                        onTodayClick = {},
-                        onTomorrowClick = {},
+                        onTodayClick = { localState = localState.copy(startDate = today) },
+                        onTomorrowClick = { localState = localState.copy(startDate = tomorrow) },
                         isTodaySelected = isTodaySelected,
                         isTomorrowSelected = isTomorrowSelected
                     )
@@ -106,10 +110,10 @@ fun DateTimeStep(
                 item {
                     Picker(
                         locale = AppLocaleProvider.current(),
-                        state = pickerState,
+                        selectedDate = localState.startDate,
                         monthsForwardLimit = 12,
                         onDateSelected = { date ->
-                            pickerState = pickerState.copy(selectedDate = date)
+                            localState = localState.copy(startDate = date)
                         }
                     )
                 }
@@ -143,11 +147,12 @@ fun DateTimeStep(
                 isClearEnabled = isClearEnabled,
                 onClear = {
                     localState = localState.copy(
+                        startDate = null,
                         startTime = null,
                         endTime = null
                     )
                 },
-                onConfirm = {},
+                onConfirm = { onConfirm(localState) },
                 displayIcon = false,
                 primaryActionText = R.string.confirm
             )

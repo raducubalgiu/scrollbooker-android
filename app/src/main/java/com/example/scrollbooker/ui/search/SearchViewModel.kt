@@ -96,7 +96,6 @@ data class SearchFiltersState(
     val sort: SearchSortEnum = SearchSortEnum.RECOMMENDED,
     val hasDiscount: Boolean = false,
     val startDate: LocalDate? = null,
-    val endDate: LocalDate? = null,
     val startTime: LocalTime? = null,
     val endTime: LocalTime? = null
 )
@@ -119,7 +118,6 @@ data class SearchRequestState(
             serviceId = filters.serviceId,
             subFilterIds = filters.selectedFilters.values.toList(),
             startDate = filters.startDate?.toIsoString(),
-            endDate = filters.endDate?.toIsoString(),
             startTime = filters.startTime?.toPrettyTime(),
             endTime = filters.endTime?.toPrettyTime(),
             userLocation = userLocation,
@@ -139,14 +137,13 @@ fun SearchRequestState.activeFiltersCount(): Int {
 }
 
 fun SearchFiltersState.dateTimeSummary(): String {
-    val hasDate = startDate != null || endDate != null
+    val hasDate = startDate != null
     val hasTime = startTime != null || endTime != null
 
     if (!hasDate && !hasTime) return "Oricând la orice oră"
 
     val datePart = when {
-        startDate != null && endDate != null && startDate == endDate -> startDate.toDayMonthShort()
-        startDate != null && endDate != null -> "${startDate.toDayMonthShort()} – ${endDate.toDayMonthShort()}"
+        startDate != null -> startDate.toDayMonthShort()
         else -> null
     }
 
@@ -417,7 +414,6 @@ class SearchViewModel @Inject constructor(
                     serviceId = servicesSheet.serviceId,
                     selectedFilters = servicesSheet.selectedFilters,
                     startDate = servicesSheet.startDate,
-                    endDate = servicesSheet.endDate,
                     startTime = servicesSheet.startTime,
                     endTime = servicesSheet.endTime
                 )
