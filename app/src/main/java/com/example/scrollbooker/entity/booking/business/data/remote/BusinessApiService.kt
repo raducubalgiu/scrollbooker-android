@@ -30,11 +30,6 @@ interface BusinessApiService {
         @Query("zoom") zoom: Int,
     ): Response<ResponseBody>
 
-    @GET("/businesses/{businessId}")
-    suspend fun getBusinessById(
-        @Path("businessId") businessId: Int
-    ): BusinessDto
-
     @GET("/businesses/{businessId}/profile")
     suspend fun getBusinessProfileById(
         @Path("businessId") businessId: Int

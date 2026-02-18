@@ -129,10 +129,6 @@ class BusinessRepositoryImpl @Inject constructor(
         return apiService.getBusinessByUserId(userId).toDomain()
     }
 
-    override suspend fun getBusinessById(businessId: Int): Business {
-        return apiService.getBusinessById(businessId).toDomain()
-    }
-
     override suspend fun getBusinessProfileById(businessId: Int): BusinessProfile {
         return apiService.getBusinessProfileById(businessId).toDomain()
     }
