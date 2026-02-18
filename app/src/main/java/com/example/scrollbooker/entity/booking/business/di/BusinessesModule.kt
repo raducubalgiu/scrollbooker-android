@@ -8,8 +8,8 @@ import com.example.scrollbooker.entity.booking.business.domain.repository.Busine
 import com.example.scrollbooker.entity.booking.business.domain.useCase.CreateBusinessUseCase
 import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessByIdUseCase
 import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessByUserUseCase
-import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessLocationUseCase
 import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessProfileUseCase
+import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessStaticMapUseCase
 import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessesMarkersUseCase
 import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessesSheetUseCase
 import com.example.scrollbooker.entity.booking.business.domain.useCase.SearchBusinessAddressUseCase
@@ -93,14 +93,6 @@ object BusinessModule {
 
     @Provides
     @Singleton
-    fun provideGetBusinessLocationUseCase(
-        repository: BusinessRepository,
-    ): GetBusinessLocationUseCase {
-        return GetBusinessLocationUseCase(repository)
-    }
-
-    @Provides
-    @Singleton
     fun provideUpdateBusinessHasEmployeesUseCase(
         repository: BusinessRepository,
     ): UpdateBusinessHasEmployeesUseCase {
@@ -137,5 +129,13 @@ object BusinessModule {
         repository: BusinessRepository,
     ): GetBusinessesSheetUseCase {
         return GetBusinessesSheetUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetBusinessesStaticMapUseCase(
+        repository: BusinessRepository,
+    ): GetBusinessStaticMapUseCase {
+        return GetBusinessStaticMapUseCase(repository)
     }
 }

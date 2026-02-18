@@ -15,7 +15,6 @@ import com.example.scrollbooker.components.customized.SchedulesSection
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
-import com.example.scrollbooker.ui.shared.location.LocationSection
 import com.example.scrollbooker.ui.theme.headlineSmall
 
 @Composable
@@ -53,11 +52,6 @@ fun BusinessAboutSection(
         SchedulesSection(
             modifier = Modifier.padding(horizontal = BasePadding),
             schedules = schedules
-        )
-
-        LocationSection(
-            modifier = Modifier.padding(horizontal = BasePadding),
-            showAddress = false
         )
 
         Spacer(Modifier.height(SpacingXL))

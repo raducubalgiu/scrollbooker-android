@@ -5,6 +5,8 @@ import com.example.scrollbooker.entity.nomenclature.service.data.remote.ServiceD
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.data.remote.ServiceDomainWithServicesDto
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
@@ -20,6 +22,13 @@ interface BusinessApiService {
     suspend fun searchBusinessAddress(
         @Query("query") query: String
     ): List<BusinessAddressDto>
+
+    @GET("/maps/static")
+    suspend fun getBusinessStaticMap(
+        @Query("center_lat") lat: Double,
+        @Query("center_lng") lng: Double,
+        @Query("zoom") zoom: Int,
+    ): Response<ResponseBody>
 
     @GET("/businesses/{businessId}")
     suspend fun getBusinessById(
@@ -42,13 +51,6 @@ interface BusinessApiService {
     suspend fun getBusinessByUserId(
         @Path("userId") userId: Int
     ): BusinessDto
-
-    @GET("/businesses/{businessId}/location")
-    suspend fun getBusinessLocation(
-        @Path("businessId") businessId: Int,
-        @Query("user_lat") userLat: Float?,
-        @Query("user_lng") userLng: Float?
-    ): BusinessLocationDto
 
     @PUT("/businesses/update-services")
     suspend fun updateBusinessServices(

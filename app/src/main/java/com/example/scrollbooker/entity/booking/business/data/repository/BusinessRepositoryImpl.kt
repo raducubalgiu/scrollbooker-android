@@ -17,7 +17,6 @@ import com.example.scrollbooker.entity.booking.business.data.remote.SearchBusine
 import com.example.scrollbooker.entity.booking.business.domain.model.Business
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessAddress
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessCreateResponse
-import com.example.scrollbooker.entity.booking.business.domain.model.BusinessLocation
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMarker
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfile
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessSheet
@@ -93,6 +92,29 @@ class BusinessRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getStaticMap(
+        lat: Double,
+        lng: Double,
+        zoom: Int
+    ): Result<ByteArray> {
+        return try {
+            val response = apiService.getBusinessStaticMap(lat, lng, zoom)
+
+            if (response.isSuccessful) {
+                val bytes = response.body()?.bytes()
+                if (bytes != null) {
+                    Result.success(bytes)
+                } else {
+                    Result.failure(Exception("Empty body"))
+                }
+            } else {
+                Result.failure(Exception("Error ${response.code()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     override suspend fun searchBusinessAddress(query: String): List<BusinessAddress> {
         return apiService.searchBusinessAddress(query).map { it.toDomain() }
     }
@@ -113,14 +135,6 @@ class BusinessRepositoryImpl @Inject constructor(
 
     override suspend fun getBusinessProfileById(businessId: Int): BusinessProfile {
         return apiService.getBusinessProfileById(businessId).toDomain()
-    }
-
-    override suspend fun getBusinessLocation(
-        businessId: Int,
-        userLat: Float?,
-        userLng: Float?
-    ): BusinessLocation {
-        return apiService.getBusinessLocation(businessId, userLat, userLng).toDomain()
     }
 
     override suspend fun getRecommendedBusinesses(lng: Float?, lat: Float?, timezone: String): List<RecommendedBusiness> {

@@ -8,7 +8,6 @@ import com.example.scrollbooker.entity.booking.business.data.remote.SearchBusine
 import com.example.scrollbooker.entity.booking.business.domain.model.Business
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessAddress
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessCreateResponse
-import com.example.scrollbooker.entity.booking.business.domain.model.BusinessLocation
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMarker
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfile
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessSheet
@@ -17,12 +16,17 @@ import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.S
 import kotlinx.coroutines.flow.Flow
 
 interface BusinessRepository {
+    suspend fun getStaticMap(
+        lat: Double,
+        lng: Double,
+        zoom: Int
+    ): Result<ByteArray>
+
     suspend fun searchBusinessAddress(query: String): List<BusinessAddress>
     suspend fun updateBusinessServices(serviceIds: List<Int>): List<ServiceDomainWithServices>
     suspend fun getBusiness(userId: Int): Business
     suspend fun getBusinessById(businessId: Int): Business
     suspend fun getBusinessProfileById(businessId: Int): BusinessProfile
-    suspend fun getBusinessLocation(businessId: Int, userLat: Float?, userLng: Float?): BusinessLocation
     suspend fun getRecommendedBusinesses(lng: Float?, lat: Float?, timezone: String): List<RecommendedBusiness>
     suspend fun updateBusinessHasEmployees(hasEmployees: Boolean): AuthState
     suspend fun createBusiness(
