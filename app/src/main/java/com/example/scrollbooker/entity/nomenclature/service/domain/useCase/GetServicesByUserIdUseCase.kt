@@ -6,7 +6,10 @@ import javax.inject.Inject
 class GetServicesByUserIdUseCase @Inject constructor(
     private val serviceRepository: ServiceRepository
 ) {
-    suspend operator fun invoke(userId: Int): Result<List<ServiceDomainWithServices>> {
-        return serviceRepository.getServicesByUserId(userId)
+    suspend operator fun invoke(
+        userId: Int,
+        onlyWithProducts: Boolean = true
+    ): Result<List<ServiceDomainWithServices>> {
+        return serviceRepository.getServicesByUserId(userId, onlyWithProducts)
     }
 }

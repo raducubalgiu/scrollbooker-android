@@ -1,4 +1,5 @@
 package com.example.scrollbooker.entity.nomenclature.service.data.remote
+import com.example.scrollbooker.entity.nomenclature.filter.data.remote.SubFilterDto
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomain
 import com.google.gson.annotations.SerializedName
 
@@ -11,6 +12,9 @@ data class ServiceDomainWithServicesDto(
 
 data class ServicesWithEmployeesDto(
     val service: ServiceDto,
+
+    @SerializedName("sub_filters")
+    val subFilters: List<SubFilterDto>,
 
     @SerializedName("products_count")
     val productsCount: Int,

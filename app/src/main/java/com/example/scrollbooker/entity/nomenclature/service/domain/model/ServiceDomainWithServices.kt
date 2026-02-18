@@ -1,4 +1,5 @@
 package com.example.scrollbooker.entity.nomenclature.service.domain.model
+import com.example.scrollbooker.entity.nomenclature.filter.domain.model.SubFilter
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomain
 
 data class ServiceDomainWithServices(
@@ -8,6 +9,7 @@ data class ServiceDomainWithServices(
 
 data class ServicesWithEmployees(
     val service: Service,
+    val subFilters: List<SubFilter>,
     val productsCount: Int,
     val employees: List<ServiceEmployee>
 )
