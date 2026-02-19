@@ -33,7 +33,7 @@ fun MyProductsScreen(
     onAddProduct: () -> Unit,
     onNavigateToEdit: (Int) -> Unit
 ) {
-    val servicesState by viewModel.servicesState.collectAsState()
+    val state by viewModel.serviceDomains.collectAsState()
 
     Layout(
         headerTitle = stringResource(R.string.myProducts),
@@ -48,11 +48,11 @@ fun MyProductsScreen(
         onBack = onBack,
         enablePaddingH = false
     ) {
-        when(servicesState) {
+        when(val sDomains = state) {
             is FeatureState.Loading -> LoadingScreen()
             is FeatureState.Error -> ErrorScreen()
             is FeatureState.Success -> {
-                val serviceDomains = (servicesState as FeatureState.Success).data
+                val serviceDomains = sDomains.data
 
                 val state by viewModel.state.collectAsState()
 

@@ -46,7 +46,7 @@ class MyProductsViewModel @Inject constructor(
         .shareIn(viewModelScope, SharingStarted.Eagerly, replay = 1)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val servicesState: StateFlow<FeatureState<List<ServiceDomainWithEmployeeServices>>> = userIdFlow
+    val serviceDomains: StateFlow<FeatureState<List<ServiceDomainWithEmployeeServices>>> = userIdFlow
         .filterNotNull()
         .distinctUntilChanged()
         .flatMapLatest { userId ->
