@@ -20,7 +20,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
-import com.example.scrollbooker.entity.nomenclature.service.domain.model.ServicesWithEmployees
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceWithEmployees
 import com.example.scrollbooker.ui.shared.products.components.ServiceTab
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
@@ -33,7 +33,7 @@ fun ServiceTabs(
     selectedProducts: Set<Product>,
     onSelect: (Product) -> Unit,
     userId: Int,
-    services: List<ServicesWithEmployees>
+    services: List<ServiceWithEmployees>
 ) {
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(initialPage = 0) { services.size }
@@ -67,13 +67,13 @@ fun ServiceTabs(
                 )
             }
         ) {
-            services.forEachIndexed { index, serv ->
+            services.forEachIndexed { index, service ->
                 val isSelected = selectedTabIndex == index
 
                 ServiceTab(
                     isSelected = isSelected,
-                    serviceName = serv.service.shortName,
-                    count = serv.productsCount,
+                    serviceName = service.shortName,
+                    count = service.productsCount,
                     onClick = {
                         scope.launch {
                             pagerState.animateScrollToPage(index)
@@ -90,7 +90,7 @@ fun ServiceTabs(
             pageSize = PageSize.Fill,
             key = { it }
         ) { page ->
-            val serviceId = services[page].service.id
+            val serviceId = services[page].id
             val employees = services[page].employees
 
             UserProductsServiceTab(

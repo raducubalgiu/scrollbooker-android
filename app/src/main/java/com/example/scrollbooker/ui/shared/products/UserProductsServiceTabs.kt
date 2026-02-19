@@ -65,14 +65,14 @@ fun UserProductsServiceTabs(
                             )
                         }
                     ) {
-                        data.forEachIndexed { index, sD ->
+                        data.forEachIndexed { index, serviceDomain ->
                             val isSelected = selectedTabIndex == index
 
                             FilterChip(
                                 selected = isSelected,
                                 onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
                                 label = {
-                                    Text(text = sD.serviceDomain.name)
+                                    Text(text = serviceDomain.name)
                                 },
                             )
                         }

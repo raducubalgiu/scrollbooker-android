@@ -23,7 +23,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.components.customized.LoadMoreSpinner
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.components.core.layout.LoadingScreen
-import com.example.scrollbooker.entity.nomenclature.service.domain.model.ServiceEmployee
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceEmployee
 import com.example.scrollbooker.ui.shared.products.components.EmployeesList
 import com.example.scrollbooker.ui.theme.Divider
 

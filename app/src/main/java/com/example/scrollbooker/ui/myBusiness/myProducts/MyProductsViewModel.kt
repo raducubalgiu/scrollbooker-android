@@ -5,8 +5,8 @@ import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.products.domain.useCase.DeleteProductUseCase
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByUserIdAndServiceIdUseCase
-import com.example.scrollbooker.entity.nomenclature.service.domain.model.ServiceDomainWithServices
-import com.example.scrollbooker.entity.nomenclature.service.domain.useCase.GetServicesByUserIdUseCase
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomainWithEmployeeServices
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.useCase.GetAllServiceDomainsWithServicesByUserIdUseCase
 
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,7 +33,7 @@ data class ServicesTabsState(
 @HiltViewModel
 class MyProductsViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
-    private val getServicesByUserIdUseCase: GetServicesByUserIdUseCase,
+    private val getAllServiceDomainsWithServicesByUserIdUseCase: GetAllServiceDomainsWithServicesByUserIdUseCase,
     private val getProductsByUserIdAndServiceIdUseCase: GetProductsByUserIdAndServiceIdUseCase,
     private val deleteProductUseCase: DeleteProductUseCase
 ): ViewModel() {
@@ -46,7 +46,7 @@ class MyProductsViewModel @Inject constructor(
         .shareIn(viewModelScope, SharingStarted.Eagerly, replay = 1)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val servicesState: StateFlow<FeatureState<List<ServiceDomainWithServices>>> = userIdFlow
+    val servicesState: StateFlow<FeatureState<List<ServiceDomainWithEmployeeServices>>> = userIdFlow
         .filterNotNull()
         .distinctUntilChanged()
         .flatMapLatest { userId ->
@@ -54,7 +54,7 @@ class MyProductsViewModel @Inject constructor(
                 emit(FeatureState.Loading)
 
                 val result = withVisibleLoading {
-                    getServicesByUserIdUseCase(userId, onlyWithProducts = false)
+                    getAllServiceDomainsWithServicesByUserIdUseCase(userId, onlyWithProducts = false)
                 }
 
                 emit(

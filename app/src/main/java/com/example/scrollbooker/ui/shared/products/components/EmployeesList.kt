@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.entity.nomenclature.service.domain.model.ServiceEmployee
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceEmployee
 import com.example.scrollbooker.ui.theme.Divider
 
 @SuppressLint("ConfigurationScreenWidthHeight")

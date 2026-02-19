@@ -7,8 +7,8 @@ import androidx.paging.cachedIn
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByUserIdAndServiceIdUseCase
-import com.example.scrollbooker.entity.nomenclature.service.domain.model.ServiceDomainWithServices
-import com.example.scrollbooker.entity.nomenclature.service.domain.useCase.GetServicesByUserIdUseCase
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomainWithEmployeeServices
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.useCase.GetAllServiceDomainsWithServicesByUserIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -27,7 +27,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UserProductsViewModel @Inject constructor(
-    private val getServicesByUserIdUseCase: GetServicesByUserIdUseCase,
+    private val getAllServiceDomainsWithServicesByUserIdUseCase: GetAllServiceDomainsWithServicesByUserIdUseCase,
     private val getProductsByUserIdAndServiceIdUseCase: GetProductsByUserIdAndServiceIdUseCase
 ): ViewModel() {
     private val userIdFlow = MutableStateFlow<Int?>(null)
@@ -68,14 +68,14 @@ class UserProductsViewModel @Inject constructor(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val serviceDomainWithServicesState: StateFlow<FeatureState<List<ServiceDomainWithServices>>> = userIdFlow
+    val serviceDomainWithServicesState: StateFlow<FeatureState<List<ServiceDomainWithEmployeeServices>>> = userIdFlow
         .filterNotNull()
         .distinctUntilChanged()
         .flatMapLatest { userId ->
             flow {
                 emit(FeatureState.Loading)
 
-                val result = getServicesByUserIdUseCase(userId)
+                val result = getAllServiceDomainsWithServicesByUserIdUseCase(userId)
 
                 emit(
                     result.fold(

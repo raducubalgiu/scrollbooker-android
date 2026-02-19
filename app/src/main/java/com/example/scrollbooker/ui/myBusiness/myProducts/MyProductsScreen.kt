@@ -52,7 +52,7 @@ fun MyProductsScreen(
             is FeatureState.Loading -> LoadingScreen()
             is FeatureState.Error -> ErrorScreen()
             is FeatureState.Success -> {
-                val services = (servicesState as FeatureState.Success).data
+                val serviceDomains = (servicesState as FeatureState.Success).data
 
                 val state by viewModel.state.collectAsState()
 
@@ -60,7 +60,7 @@ fun MyProductsScreen(
 
                 val domainPagerState = rememberPagerState(
                     initialPage = state.selectedDomainIndex,
-                    pageCount = { services.size }
+                    pageCount = { serviceDomains.size }
                 )
 
                 LaunchedEffect(domainPagerState.currentPage) {
@@ -74,7 +74,7 @@ fun MyProductsScreen(
                         selectedTabIndex = state.selectedDomainIndex,
                         edgePadding = BasePadding
                     ) {
-                        services.forEachIndexed { index, domain ->
+                        serviceDomains.forEachIndexed { index, domain ->
                             Tab(
                                 selected = state.selectedDomainIndex == index,
                                 onClick = {
@@ -83,7 +83,7 @@ fun MyProductsScreen(
                                     }
                                     viewModel.selectDomain(index)
                                 },
-                                text = { Text(domain.serviceDomain.name) }
+                                text = { Text(domain.name) }
                             )
                         }
                     }
@@ -93,7 +93,7 @@ fun MyProductsScreen(
                         modifier = Modifier.weight(1f)
                     ) { domainIndex ->
 
-                        val services = services[domainIndex].services
+                        val services = serviceDomains[domainIndex].services
 
                         val selectedServiceIndex =
                             viewModel.getSelectedService(domainIndex)
@@ -124,7 +124,7 @@ fun MyProductsScreen(
                                             }
                                             viewModel.selectService(domainIndex, index)
                                         },
-                                        text = { Text(service.service.name) }
+                                        text = { Text(service.name) }
                                     )
                                 }
                             }
@@ -140,7 +140,7 @@ fun MyProductsScreen(
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
-                                        text = service.service.name,
+                                        text = service.name,
                                         style = headlineMedium,
                                         fontWeight = FontWeight.SemiBold
                                     )

@@ -24,7 +24,6 @@ import com.example.scrollbooker.entity.booking.employee.domain.useCase.GetEmploy
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByUserIdAndServiceIdUseCase
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
 import com.example.scrollbooker.entity.booking.schedule.domain.useCase.GetSchedulesByUserIdUseCase
-import com.example.scrollbooker.entity.nomenclature.service.domain.useCase.GetServicesByUserIdUseCase
 import com.example.scrollbooker.entity.social.bookmark.domain.useCase.GetUserBookmarkedPostsUseCase
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.social.post.domain.useCase.BookmarkPostUseCase
@@ -74,7 +73,6 @@ data class SelectedPostUi(
 class ProfileLayoutViewModel @Inject constructor(
     private val getUserPostsUseCase: GetUserPostsUseCase,
     private val getUserBookmarkedPostsUseCase: GetUserBookmarkedPostsUseCase,
-    private val getServicesByUserIdUseCase: GetServicesByUserIdUseCase,
     private val getProductsByUserIdAndServiceIdUseCase: GetProductsByUserIdAndServiceIdUseCase,
     private val getEmployeesByOwnerUseCase: GetEmployeesByOwnerUseCase,
     private val getUserProfileAboutUseCase: GetUserProfileAboutUseCase,

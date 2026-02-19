@@ -11,7 +11,7 @@ class GetSelectedServiceDomainsWithServicesByBusinessIdUseCase(
 ) {
     suspend operator fun invoke(businessId: Int): FeatureState<List<SelectedServiceDomainsWithServices>> {
         return try {
-            val serviceDomains = repository.getServiceDomainsWithServicesByBusinessDomainId(businessId)
+            val serviceDomains = repository.getSelectedServiceDomainsWithServicesByBusinessDomainId(businessId)
             FeatureState.Success(serviceDomains)
         } catch (e: Exception) {
             Timber.tag("Service Domains").e(e, "ERROR: on Fetching ServiceDomains With Services By Business Id")
