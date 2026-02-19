@@ -52,7 +52,7 @@ fun MyBusinessScreen(
             title = "Subscription",
             description = stringResource(R.string.userScheduleDetails),
             icon = Icons.Outlined.Schedule,
-            permission = PermissionEnum.MY_SCHEDULES_VIEW,
+            permission = PermissionEnum.MY_SUBSCRIPTION_VIEW,
             navigate = { myBusinessNavigate.toMySubscription() },
         ),
         BusinessCard(
