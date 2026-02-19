@@ -8,8 +8,8 @@ import com.example.scrollbooker.core.snackbar.UiText
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.business.domain.useCase.UpdateBusinessServicesUseCase
-import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomainWithServices
-import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.useCase.GetAllServiceDomainsWithServicesByBusinessIdUseCase
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.SelectedServiceDomainsWithServices
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.useCase.GetSelectedServiceDomainsWithServicesByBusinessIdUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
@@ -23,15 +23,16 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.collections.asSequence
 
 @HiltViewModel
 class MyServicesViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
-    private val getAllServiceDomainsWithServicesByBusinessIdUseCase: GetAllServiceDomainsWithServicesByBusinessIdUseCase,
+    private val getSelectedServiceDomainsWithServicesByBusinessIdUseCase: GetSelectedServiceDomainsWithServicesByBusinessIdUseCase,
     private val updateBusinessServicesUseCase: UpdateBusinessServicesUseCase
 ): ViewModel() {
-    private val _state = MutableStateFlow<FeatureState<List<ServiceDomainWithServices>>>(FeatureState.Loading)
-    val state: StateFlow<FeatureState<List<ServiceDomainWithServices>>> = _state
+    private val _state = MutableStateFlow<FeatureState<List<SelectedServiceDomainsWithServices>>>(FeatureState.Loading)
+    val state: StateFlow<FeatureState<List<SelectedServiceDomainsWithServices>>> = _state
 
     private val _defaultSelectedServiceIds = MutableStateFlow<Set<Int>>(emptySet())
     val defaultSelectedServiceIds: StateFlow<Set<Int>> = _defaultSelectedServiceIds.asStateFlow()
@@ -63,7 +64,7 @@ class MyServicesViewModel @Inject constructor(
             }
 
             val result = withVisibleLoading {
-                getAllServiceDomainsWithServicesByBusinessIdUseCase(businessId)
+                getSelectedServiceDomainsWithServicesByBusinessIdUseCase(businessId)
             }
 
             if (result is FeatureState.Success) {
@@ -94,7 +95,7 @@ class MyServicesViewModel @Inject constructor(
         }
     }
 
-    suspend fun updateBusinessServices(): List<ServiceDomainWithServices>? {
+    suspend fun updateBusinessServices(): List<SelectedServiceDomainsWithServices>? {
         _isSaving.value = FeatureState.Loading
 
         val serviceIds = _selectedServiceIds.value.toList()

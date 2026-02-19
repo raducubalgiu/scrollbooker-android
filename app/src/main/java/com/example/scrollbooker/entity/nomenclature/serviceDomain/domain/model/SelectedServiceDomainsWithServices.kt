@@ -1,12 +1,12 @@
 package com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model
 
-data class ServiceDomainWithServices(
+data class SelectedServiceDomainsWithServices(
     val id: Int,
     val name: String,
-    val services: List<ServiceDomainService>
+    val services: List<SelectedService>
 )
 
-data class ServiceDomainService(
+data class SelectedService(
     val id: Int,
     val name: String,
     val shortName: String,

@@ -11,5 +11,5 @@ interface ServiceDomainApiService {
     @GET("/businesses/{businessId}/services-domains")
     suspend fun getAllServiceDomainsWithServicesByBusinessId(
         @Path("businessId") businessId: Int
-    ): List<ServiceDomainWithServicesDto>
+    ): List<SelectedServiceDomainsWithServicesDto>
 }

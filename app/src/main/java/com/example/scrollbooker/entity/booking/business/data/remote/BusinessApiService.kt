@@ -1,8 +1,7 @@
 package com.example.scrollbooker.entity.booking.business.data.remote
 import com.example.scrollbooker.core.util.PaginatedResponseDto
 import com.example.scrollbooker.entity.auth.data.remote.AuthStateDto
-import com.example.scrollbooker.entity.nomenclature.service.data.remote.ServiceDto
-import com.example.scrollbooker.entity.nomenclature.serviceDomain.data.remote.ServiceDomainWithServicesDto
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.data.remote.SelectedServiceDomainsWithServicesDto
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -50,7 +49,7 @@ interface BusinessApiService {
     @PUT("/businesses/update-services")
     suspend fun updateBusinessServices(
         @Body request: BusinessServicesUpdateRequest
-    ): List<ServiceDomainWithServicesDto>
+    ): List<SelectedServiceDomainsWithServicesDto>
 
     @PATCH("/businesses/update-has-employees")
     suspend fun updateBusinessHasEmployees(

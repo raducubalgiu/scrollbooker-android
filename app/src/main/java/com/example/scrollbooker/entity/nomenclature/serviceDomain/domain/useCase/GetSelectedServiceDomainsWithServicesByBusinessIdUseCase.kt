@@ -1,15 +1,15 @@
 package com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.useCase
 
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomainWithServices
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.SelectedServiceDomainsWithServices
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.repository.ServiceDomainRepository
 import timber.log.Timber
 import java.lang.Exception
 
-class GetAllServiceDomainsWithServicesByBusinessIdUseCase(
+class GetSelectedServiceDomainsWithServicesByBusinessIdUseCase(
     private val repository: ServiceDomainRepository
 ) {
-    suspend operator fun invoke(businessId: Int): FeatureState<List<ServiceDomainWithServices>> {
+    suspend operator fun invoke(businessId: Int): FeatureState<List<SelectedServiceDomainsWithServices>> {
         return try {
             val serviceDomains = repository.getServiceDomainsWithServicesByBusinessDomainId(businessId)
             FeatureState.Success(serviceDomains)

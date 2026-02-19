@@ -5,7 +5,7 @@ import com.example.scrollbooker.entity.nomenclature.serviceDomain.data.remote.Se
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.data.repository.ServiceDomainRepositoryImpl
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.repository.ServiceDomainRepository
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.useCase.GetAllServiceDomainsByBusinessDomainUseCase
-import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.useCase.GetAllServiceDomainsWithServicesByBusinessIdUseCase
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.useCase.GetSelectedServiceDomainsWithServicesByBusinessIdUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -48,7 +48,7 @@ object ServiceDomainModule {
     @Singleton
     fun provideGetAllServiceDomainsWithServicesByBusinessIdUseCase(
         repository: ServiceDomainRepository,
-    ): GetAllServiceDomainsWithServicesByBusinessIdUseCase {
-        return GetAllServiceDomainsWithServicesByBusinessIdUseCase(repository)
+    ): GetSelectedServiceDomainsWithServicesByBusinessIdUseCase {
+        return GetSelectedServiceDomainsWithServicesByBusinessIdUseCase(repository)
     }
 }

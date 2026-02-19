@@ -12,7 +12,7 @@ import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMar
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfile
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessSheet
 import com.example.scrollbooker.entity.booking.business.domain.model.RecommendedBusiness
-import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomainWithServices
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.SelectedServiceDomainsWithServices
 import kotlinx.coroutines.flow.Flow
 
 interface BusinessRepository {
@@ -23,7 +23,7 @@ interface BusinessRepository {
     ): Result<ByteArray>
 
     suspend fun searchBusinessAddress(query: String): List<BusinessAddress>
-    suspend fun updateBusinessServices(serviceIds: List<Int>): List<ServiceDomainWithServices>
+    suspend fun updateBusinessServices(serviceIds: List<Int>): List<SelectedServiceDomainsWithServices>
     suspend fun getBusiness(userId: Int): Business
     suspend fun getBusinessProfileById(businessId: Int): BusinessProfile
     suspend fun getRecommendedBusinesses(lng: Float?, lat: Float?, timezone: String): List<RecommendedBusiness>
