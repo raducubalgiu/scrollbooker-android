@@ -72,6 +72,8 @@ data class AppointmentBusiness(
     val mapUrl: String?
 )
 
+
+
 fun Appointment.getProductNames(): String =
     products.joinToString(", ") { it.name }
 

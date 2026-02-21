@@ -10,11 +10,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
-import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.core.extensions.isInRoute
-import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.entity.social.post.domain.model.Post
-import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
@@ -22,21 +18,16 @@ import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
-import com.example.scrollbooker.ui.LocalUserPermissions
-import com.example.scrollbooker.ui.profile.MyProfileScreen
-import com.example.scrollbooker.ui.profile.MyProfileViewModel
 import com.example.scrollbooker.ui.profile.ProfileViewModel
 import com.example.scrollbooker.ui.profile.UserProfileScreen
 import com.example.scrollbooker.ui.social.SocialScreen
 import com.example.scrollbooker.ui.social.SocialViewModel
 
 fun NavGraphBuilder.profileGraph(
-    navController: NavHostController,
-    myProfileData: FeatureState<UserProfile>,
-    myPosts: LazyPagingItems<Post>
+    navController: NavHostController
 ) {
     navigation(
-        route = MainRoute.MyProfileNavigator.route,
+        route = MainRoute.ProfileNavigator.route,
         startDestination = MainRoute.MyProfile.route,
         exitTransition = {
             if (targetState.isInRoute(MainRoute.MyProfilePostDetail.route)) {
@@ -55,23 +46,6 @@ fun NavGraphBuilder.profileGraph(
         enterTransition = { slideInFromRight() },
         popExitTransition = { slideOutToRight() }
     ) {
-        composable(MainRoute.MyProfile.route) { backStackEntry ->
-            val viewModel = hiltViewModel<MyProfileViewModel>(backStackEntry)
-            val permissionController = LocalUserPermissions.current
-
-            val profileNavigate = remember(navController) {
-                ProfileNavigator(navController)
-            }
-
-            MyProfileScreen(
-                viewModel = viewModel,
-                permissionController = permissionController,
-                myProfileData = myProfileData,
-                myPosts = myPosts,
-                profileNavigate = profileNavigate,
-            )
-        }
-
         composable("${MainRoute.UserProfile.route}/{userId}",
             arguments = listOf(navArgument("userId") { type = NavType.IntType })
         ) { backStackEntry ->

@@ -10,6 +10,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.example.scrollbooker.navigation.graphs.profileGraph
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.feed.FeedScreen
 import com.example.scrollbooker.ui.feed.searchResults.FeedSearchResultsScreen
@@ -20,16 +21,11 @@ import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
-import com.example.scrollbooker.ui.LocalMainNavController
 import com.example.scrollbooker.ui.feed.FeedScreenViewModel
 
 @Composable
 fun FeedNavHost(navController: NavHostController) {
-    val mainNavController = LocalMainNavController.current
-    val feedNavigate = remember(mainNavController, navController) {
-        FeedNavigator(mainNavController, navController)
-    }
-
+    val feedNavigate = remember(navController) { FeedNavigator(navController) }
     val feedViewModel: FeedScreenViewModel = hiltViewModel()
 
     NavHost(
@@ -98,10 +94,12 @@ fun FeedNavHost(navController: NavHostController) {
                     viewModel = feedSearchViewModel,
                     onBack = { navController.popBackStack() },
                     onNavigateUserProfile = {
-                        mainNavController.navigate("${MainRoute.UserProfile.route}/$it")
+                        navController.navigate("${MainRoute.UserProfile.route}/$it")
                     }
                 )
             }
         }
+
+        profileGraph(navController)
     }
 }

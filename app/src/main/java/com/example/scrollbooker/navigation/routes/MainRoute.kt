@@ -26,11 +26,11 @@ sealed class MainRoute(val route: String) {
     object AppointmentDetails: MainRoute(route = "appointmentDetails")
     object AppointmentCancel: MainRoute(route = "appointmentCancel")
 
-    object MyProfileNavigator: MainRoute(route = "myProfileNavigator")
+    object ProfileNavigator: MainRoute(route = "profileNavigator")
+
     object MyProfile: MainRoute(route = "myProfile")
     object MyProfilePostDetail: MainRoute(route = "myProfilePostDetail")
 
-    object UserProfileNavigator: MainRoute(route = "userProfileNavigator")
     object UserProfile: MainRoute(route = "userProfile")
     object UserProfilePostDetail: MainRoute(route = "userProfilePostDetail")
 
@@ -97,6 +97,4 @@ sealed class MainRoute(val route: String) {
     object ReportProblem: MainRoute(route = "reportProblem")
     object Support: MainRoute(route = "support")
     object TermsAndConditions: MainRoute(route = "termsAndConditions")
-
-    object GlobalRouteNavigator: MainRoute(route = "globalRouteNavigator")
 }

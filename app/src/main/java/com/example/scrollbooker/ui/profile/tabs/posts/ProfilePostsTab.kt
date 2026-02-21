@@ -35,12 +35,7 @@ fun ProfilePostsTab(
 
     when(refreshState) {
         is LoadState.Error -> ErrorScreen()
-        is LoadState.Loading -> {
-            LoadingScreen(
-                modifier = Modifier.padding(top = 50.dp),
-                arrangement = Arrangement.Top
-            )
-        }
+        is LoadState.Loading -> Unit
         is LoadState.NotLoading -> {
             Box(Modifier.fillMaxSize()) {
                 if(posts.itemCount == 0) {

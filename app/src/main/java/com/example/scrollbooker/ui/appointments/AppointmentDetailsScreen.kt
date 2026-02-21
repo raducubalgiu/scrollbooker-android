@@ -1,5 +1,8 @@
 package com.example.scrollbooker.ui.appointments
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -26,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -55,6 +59,7 @@ import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.titleMedium
 import kotlinx.coroutines.launch
+import androidx.core.net.toUri
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -75,6 +80,8 @@ fun AppointmentDetailsScreen(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val reviewSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val cancelReviewSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    val context = LocalContext.current
 
     val imageBitmap = viewModel.mapImage?.let {
         remember(it) { it.toImageBitmap() }
@@ -180,6 +187,17 @@ fun AppointmentDetailsScreen(
                 }
             }
         )
+    }
+
+    fun redirectToMaps() {
+        val lat = appointment?.business?.coordinates?.lat ?: return
+        val lng = appointment?.business?.coordinates?.lng ?: return
+        val fullName = appointment?.user?.fullName ?: ""
+
+        val uri = "geo:0,0?q=${lat},${lng}(${fullName})".toUri()
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+
+        context.startActivity(intent)
     }
 
     Scaffold(
@@ -291,6 +309,7 @@ fun AppointmentDetailsScreen(
                         .clip(shape = ShapeDefaults.Large)
                         .fillMaxWidth()
                         .height(220.dp)
+                        .clickable(onClick = { redirectToMaps() })
                 ) {
                     imageBitmap?.let {
                         Image(
@@ -306,7 +325,7 @@ fun AppointmentDetailsScreen(
 
                 MainButton(
                     title = stringResource(R.string.navigationDirections),
-                    onClick = {},
+                    onClick = { redirectToMaps() },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = SurfaceBG,
                         contentColor = OnSurfaceBG
