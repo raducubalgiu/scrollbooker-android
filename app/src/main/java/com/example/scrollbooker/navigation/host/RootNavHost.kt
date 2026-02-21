@@ -46,12 +46,16 @@ fun RootNavHost(
             navigation(
                 route = RootRoute.AUTH,
                 startDestination = AuthRoute.Login.route
-            ) { authGraph(authViewModel, rootNavController) }
+            ) {
+                authGraph(authViewModel, rootNavController)
+            }
 
             navigation(
                 route = RootRoute.ONBOARDING,
                 startDestination = onboardingStepKey
-            ) { onBoardingGraph(authViewModel, rootNavController) }
+            ) {
+                onBoardingGraph(authViewModel, rootNavController)
+            }
 
             mainGraph(
                 onLogout = {

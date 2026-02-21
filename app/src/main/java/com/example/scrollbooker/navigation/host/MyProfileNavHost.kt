@@ -17,7 +17,6 @@ import com.example.scrollbooker.navigation.graphs.settingsGraph
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromRight
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
-import com.example.scrollbooker.ui.LocalMainNavController
 import com.example.scrollbooker.ui.LocalUserPermissions
 import com.example.scrollbooker.ui.profile.MyProfilePostDetailScreen
 import com.example.scrollbooker.ui.profile.MyProfileScreen
@@ -31,6 +30,8 @@ import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
+import com.example.scrollbooker.ui.profile.ProfileViewModel
+import com.example.scrollbooker.ui.profile.UserProfileScreen
 import com.example.scrollbooker.ui.profile.components.ProfileLayoutViewModel
 import com.example.scrollbooker.ui.social.SocialScreen
 import com.example.scrollbooker.ui.social.SocialViewModel
@@ -44,7 +45,6 @@ fun MyProfileNavHost(
     navController: NavHostController,
     onLogout: () -> Unit
 ) {
-    val mainNavController = LocalMainNavController.current
     val posts = layoutViewModel.detailPostsFlow.collectAsLazyPagingItems()
 
     NavHost(
@@ -78,11 +78,8 @@ fun MyProfileNavHost(
             composable(MainRoute.MyProfile.route) {
                 val permissionController = LocalUserPermissions.current
 
-                val profileNavigate = remember(mainNavController, navController) {
-                    ProfileNavigator(
-                        rootNavController = mainNavController,
-                        navController = navController
-                    )
+                val profileNavigate = remember(navController) {
+                    ProfileNavigator(navController)
                 }
 
                 MyProfileScreen(
@@ -90,6 +87,30 @@ fun MyProfileNavHost(
                     permissionController = permissionController,
                     myProfileData = myProfileData,
                     myPosts = myPosts,
+                    profileNavigate = profileNavigate,
+                    onNavigateToSocial = { socialParams ->
+                        val ( tabIndex, userId, username, isBusinessOrEmployee ) = socialParams
+
+                        navController.navigate(
+                            "${MainRoute.Social.route}/${tabIndex}/${userId}/${username}/${isBusinessOrEmployee}"
+                        )
+                    }
+                )
+            }
+
+            composable("${MainRoute.UserProfile.route}/{userId}",
+                arguments = listOf(navArgument("userId") { type = NavType.IntType })
+            ) { backStackEntry ->
+                val viewModel = hiltViewModel<ProfileViewModel>(backStackEntry)
+
+                val profileNavigate = remember(navController) {
+                    ProfileNavigator(navController)
+                }
+
+                UserProfileScreen(
+                    layoutViewModel = layoutViewModel,
+                    viewModel = viewModel,
+                    onBack = { navController.popBackStack() },
                     profileNavigate = profileNavigate,
                     onNavigateToSocial = { socialParams ->
                         val ( tabIndex, userId, username, isBusinessOrEmployee ) = socialParams
@@ -113,7 +134,7 @@ fun MyProfileNavHost(
                     posts = posts,
                     onBack = { navController.popBackStack() },
                     onNavigateToUserProfile = {
-                        mainNavController.navigate("${MainRoute.UserProfile.route}/${it}")
+                        navController.navigate("${MainRoute.UserProfile.route}/${it}")
                     }
                 )
             }
@@ -147,7 +168,7 @@ fun MyProfileNavHost(
                 viewModal = viewModel,
                 socialParam = socialParams,
                 onBack = { navController.popBackStack() },
-                onNavigateUserProfile = { mainNavController.navigate("${MainRoute.UserProfile.route}/$it") }
+                onNavigateUserProfile = { navController.navigate("${MainRoute.UserProfile.route}/$it") }
             )
         }
     }

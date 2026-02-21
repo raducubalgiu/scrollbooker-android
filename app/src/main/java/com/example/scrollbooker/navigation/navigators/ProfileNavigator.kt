@@ -4,15 +4,14 @@ import androidx.navigation.NavHostController
 import com.example.scrollbooker.navigation.routes.MainRoute
 
 class ProfileNavigator (
-    private val rootNavController: NavHostController,
     private val navController: NavHostController
 ) {
     fun toCamera() {
-        rootNavController.navigate(MainRoute.Camera.route)
+        navController.navigate(MainRoute.Camera.route)
     }
 
     fun toUserProfile(ownerId: Int) {
-        rootNavController.navigate("${MainRoute.UserProfile.route}/${ownerId}")
+        navController.navigate("${MainRoute.UserProfile.route}/${ownerId}")
     }
 
     fun toPostDetail() {
@@ -20,7 +19,7 @@ class ProfileNavigator (
     }
 
     fun toUserPostDetail() {
-        rootNavController.navigate(MainRoute.UserProfilePostDetail.route)
+        navController.navigate(MainRoute.UserProfilePostDetail.route)
     }
 
     fun toMyCalendar() {
