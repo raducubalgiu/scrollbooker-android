@@ -1,7 +1,9 @@
 package com.example.scrollbooker.ui.myBusiness.myProducts
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ScrollableTabRow
@@ -20,20 +22,22 @@ import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.FeatureState
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontWeight
 import com.example.scrollbooker.components.core.headers.HeaderEdit
+import com.example.scrollbooker.components.customized.ProductCard.ProductCard
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.ui.theme.headlineMedium
+import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun MyProductsScreen(
     viewModel: MyProductsViewModel,
     onBack: () -> Unit,
-    onAddProduct: () -> Unit,
-    onNavigateToEdit: (Int) -> Unit
+    onAddProduct: () -> Unit
 ) {
-    val state by viewModel.serviceDomains.collectAsState()
+    val serviceDomains by viewModel.serviceDomains.collectAsState()
+    val products by viewModel.productSections.collectAsState()
+
+    val scope = rememberCoroutineScope()
 
     Layout(
         headerTitle = stringResource(R.string.myProducts),
@@ -48,39 +52,35 @@ fun MyProductsScreen(
         onBack = onBack,
         enablePaddingH = false
     ) {
-        when(val sDomains = state) {
+        when(val sDomains = serviceDomains) {
             is FeatureState.Loading -> LoadingScreen()
             is FeatureState.Error -> ErrorScreen()
             is FeatureState.Success -> {
                 val serviceDomains = sDomains.data
 
-                val state by viewModel.state.collectAsState()
-
-                val coroutineScope = rememberCoroutineScope()
+                val tabsState by viewModel.tabsState.collectAsState()
 
                 val domainPagerState = rememberPagerState(
-                    initialPage = state.selectedDomainIndex,
+                    initialPage = tabsState.selectedDomainIndex,
                     pageCount = { serviceDomains.size }
                 )
 
                 LaunchedEffect(domainPagerState.currentPage) {
-                    if (state.selectedDomainIndex != domainPagerState.currentPage) {
+                    if (tabsState.selectedDomainIndex != domainPagerState.currentPage) {
                         viewModel.selectDomain(domainPagerState.currentPage)
                     }
                 }
 
                 Column {
                     ScrollableTabRow(
-                        selectedTabIndex = state.selectedDomainIndex,
+                        selectedTabIndex = tabsState.selectedDomainIndex,
                         edgePadding = BasePadding
                     ) {
                         serviceDomains.forEachIndexed { index, domain ->
                             Tab(
-                                selected = state.selectedDomainIndex == index,
+                                selected = tabsState.selectedDomainIndex == index,
                                 onClick = {
-                                    coroutineScope.launch {
-                                        domainPagerState.animateScrollToPage(index)
-                                    }
+                                    scope.launch { domainPagerState.animateScrollToPage(index) }
                                     viewModel.selectDomain(index)
                                 },
                                 text = { Text(domain.name) }
@@ -119,33 +119,55 @@ fun MyProductsScreen(
                                     Tab(
                                         selected = servicePagerState.currentPage == index,
                                         onClick = {
-                                            coroutineScope.launch {
-                                                servicePagerState.animateScrollToPage(index)
-                                            }
+                                            scope.launch { servicePagerState.animateScrollToPage(index) }
                                             viewModel.selectService(domainIndex, index)
                                         },
                                         text = { Text(service.name) }
                                     )
                                 }
                             }
-                            HorizontalPager(
-                                state = servicePagerState,
-                                modifier = Modifier.fillMaxSize()
-                            ) { serviceIndex ->
 
-                                val service = services[serviceIndex]
+                    HorizontalPager(
+                        state = servicePagerState,
+                        modifier = Modifier.fillMaxSize()
+                    ) { serviceIndex ->
+                        when(val prod = products) {
+                            is FeatureState.Error -> ErrorScreen()
+                            is FeatureState.Loading -> LoadingScreen()
+                            is FeatureState.Success -> {
+                                if (prod.data.isEmpty()) {
+                                    ErrorScreen()
+                                } else {
+                                    LazyColumn(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .padding(horizontal = BasePadding)
+                                    ) {
+                                        items(prod.data) { section ->
+                                            Column(
+                                                modifier = Modifier.padding(vertical = BasePadding)
+                                            ) {
+                                                Text(
+                                                    text = section.subFilter?.name ?: "",
+                                                    style = titleMedium,
+                                                    fontWeight = FontWeight.SemiBold,
+                                                    modifier = Modifier.padding(bottom = BasePadding)
+                                                )
 
-                                Box(
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        text = service.name,
-                                        style = headlineMedium,
-                                        fontWeight = FontWeight.SemiBold
-                                    )
+                                                section.products.forEach { product ->
+                                                    ProductCard(
+                                                        product = product,
+                                                        isSelected = false,
+                                                        onSelect = {}
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
+                        }
+                    }
                         }
                     }
                 }

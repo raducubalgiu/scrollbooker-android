@@ -3,6 +3,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
+import com.example.scrollbooker.entity.booking.products.domain.model.ProductSection
 import com.example.scrollbooker.entity.booking.products.domain.useCase.DeleteProductUseCase
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByUserIdAndServiceIdUseCase
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomainWithEmployeeServices
@@ -37,18 +38,43 @@ class MyProductsViewModel @Inject constructor(
     private val getProductsByUserIdAndServiceIdUseCase: GetProductsByUserIdAndServiceIdUseCase,
     private val deleteProductUseCase: DeleteProductUseCase
 ): ViewModel() {
+    // Tabs
+    private val _tabsState = MutableStateFlow(ServicesTabsState())
+    val tabsState: StateFlow<ServicesTabsState> = _tabsState.asStateFlow()
+
+    fun selectDomain(index: Int) {
+        _tabsState.update {
+            it.copy(selectedDomainIndex = index)
+        }
+    }
+
+    fun selectService(domainIndex: Int, serviceIndex: Int) {
+        _tabsState.update {
+            it.copy(
+                selectedServicePerDomain =
+                    it.selectedServicePerDomain + (domainIndex to serviceIndex)
+            )
+        }
+    }
+
+    fun getSelectedService(domainIndex: Int): Int {
+        return _tabsState.value.selectedServicePerDomain[domainIndex] ?: 0
+    }
+
     private val _isSaving = MutableStateFlow<Boolean>(false)
     val isSaving: StateFlow<Boolean> = _isSaving
 
     private val userIdFlow = authDataStore.getUserId()
         .filterNotNull()
         .distinctUntilChanged()
-        .shareIn(viewModelScope, SharingStarted.Eagerly, replay = 1)
+        .shareIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            replay = 1
+        )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val serviceDomains: StateFlow<FeatureState<List<ServiceDomainWithEmployeeServices>>> = userIdFlow
-        .filterNotNull()
-        .distinctUntilChanged()
         .flatMapLatest { userId ->
             flow {
                 emit(FeatureState.Loading)
@@ -70,30 +96,29 @@ class MyProductsViewModel @Inject constructor(
         }
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.Lazily,
+            started = SharingStarted.Eagerly,
             initialValue = FeatureState.Loading
         )
 
-    // Tabs
-    private val _state = MutableStateFlow(ServicesTabsState())
-    val state: StateFlow<ServicesTabsState> = _state.asStateFlow()
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val productSections: StateFlow<FeatureState<List<ProductSection>>> = userIdFlow
+        .flatMapLatest { userId ->
+            flow {
+                emit(FeatureState.Loading)
 
-    fun selectDomain(index: Int) {
-        _state.update {
-            it.copy(selectedDomainIndex = index)
+                val result = withVisibleLoading {
+                    getProductsByUserIdAndServiceIdUseCase(
+                        userId = userId,
+                        serviceId = 95,
+                        employeeId = 12
+                    )
+                }
+                emit(result)
+            }
         }
-    }
-
-    fun selectService(domainIndex: Int, serviceIndex: Int) {
-        _state.update {
-            it.copy(
-                selectedServicePerDomain =
-                    it.selectedServicePerDomain + (domainIndex to serviceIndex)
-            )
-        }
-    }
-
-    fun getSelectedService(domainIndex: Int): Int {
-        return _state.value.selectedServicePerDomain[domainIndex] ?: 0
-    }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = FeatureState.Loading
+        )
 }

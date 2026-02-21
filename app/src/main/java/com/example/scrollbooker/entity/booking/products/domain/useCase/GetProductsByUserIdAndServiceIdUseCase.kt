@@ -1,14 +1,20 @@
 package com.example.scrollbooker.entity.booking.products.domain.useCase
-
-import androidx.paging.PagingData
-import com.example.scrollbooker.entity.booking.products.domain.model.Product
+import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.entity.booking.products.domain.model.ProductSection
 import com.example.scrollbooker.entity.booking.products.domain.repository.ProductRepository
-import kotlinx.coroutines.flow.Flow
+import timber.log.Timber
+import java.lang.Exception
 
 class GetProductsByUserIdAndServiceIdUseCase(
     private val repository: ProductRepository
 ) {
-    operator fun invoke(userId: Int, serviceId: Int, employeeId: Int?): Flow<PagingData<Product>> {
-        return repository.getUserProducts(userId, serviceId, employeeId)
+    suspend operator fun invoke(userId: Int, serviceId: Int, employeeId: Int?): FeatureState<List<ProductSection>> {
+        return try {
+            val response = repository.getUserProducts(userId, serviceId, employeeId)
+            FeatureState.Success(response)
+        } catch (e: Exception) {
+            Timber.tag("Products").e(e, "ERROR: on Fetching Products By User Id and Service Id")
+            FeatureState.Error(e)
+        }
     }
 }

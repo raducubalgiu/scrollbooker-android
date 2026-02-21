@@ -1,13 +1,11 @@
 package com.example.scrollbooker.entity.booking.products.domain.repository
-
-import androidx.paging.PagingData
 import com.example.scrollbooker.entity.booking.products.data.remote.AddProductFilterRequest
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.model.ProductCreate
-import kotlinx.coroutines.flow.Flow
+import com.example.scrollbooker.entity.booking.products.domain.model.ProductSection
 
 interface ProductRepository {
-    fun getUserProducts(userId: Int, serviceId: Int, employeeId: Int?): Flow<PagingData<Product>>
+    suspend fun getUserProducts(userId: Int, serviceId: Int, employeeId: Int?): List<ProductSection>
     suspend fun getProductsByAppointmentId(appointmentId: Int): List<Product>
     suspend fun getProductsByPostId(postId: Int): List<Product>
     suspend fun getProduct(productId: Int): Product

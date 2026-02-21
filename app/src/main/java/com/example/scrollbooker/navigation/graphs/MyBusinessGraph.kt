@@ -283,7 +283,7 @@ fun NavGraphBuilder.myBusinessGraph(
                 MyProductsScreen(
                     viewModel=viewModel,
                     onBack = { navController.popBackStack() },
-                    onNavigateToEdit = { navController.navigate("${MainRoute.EditProduct.route}/$it") },
+                    //onNavigateToEdit = { navController.navigate("${MainRoute.EditProduct.route}/$it") },
                     onAddProduct = { navController.navigate(MainRoute.AddProduct.route) }
                 )
             }

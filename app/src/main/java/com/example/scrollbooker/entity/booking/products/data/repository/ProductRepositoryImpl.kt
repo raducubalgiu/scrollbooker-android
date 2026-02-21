@@ -1,35 +1,24 @@
 package com.example.scrollbooker.entity.booking.products.data.repository
-
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
 import com.example.scrollbooker.entity.booking.products.data.mappers.toDomain
 import com.example.scrollbooker.entity.booking.products.data.mappers.toDto
 import com.example.scrollbooker.entity.booking.products.data.remote.AddProductFilterRequest
 import com.example.scrollbooker.entity.booking.products.data.remote.ProductCreateRequestDto
-import com.example.scrollbooker.entity.booking.products.data.remote.ProductPagingSource
 import com.example.scrollbooker.entity.booking.products.data.remote.ProductsApiService
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.model.ProductCreate
+import com.example.scrollbooker.entity.booking.products.domain.model.ProductSection
 import com.example.scrollbooker.entity.booking.products.domain.repository.ProductRepository
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class ProductRepositoryImpl @Inject constructor(
     private val api: ProductsApiService
 ): ProductRepository {
-    override fun getUserProducts(
+    override suspend fun getUserProducts(
         userId: Int,
         serviceId: Int,
         employeeId: Int?
-    ): Flow<PagingData<Product>> {
-        return Pager(
-            config = PagingConfig(
-                pageSize = 10,
-                prefetchDistance = 2
-            ),
-            pagingSourceFactory = { ProductPagingSource(api, userId, serviceId, employeeId) }
-        ).flow
+    ): List<ProductSection> {
+        return api.getProductsByUserIdAndServiceId(userId, serviceId, employeeId).map { it.toDomain() }
     }
 
     override suspend fun getProductsByAppointmentId(appointmentId: Int): List<Product> {

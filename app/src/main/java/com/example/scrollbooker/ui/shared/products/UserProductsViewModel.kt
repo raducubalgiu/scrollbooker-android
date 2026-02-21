@@ -94,12 +94,12 @@ class UserProductsViewModel @Inject constructor(
             initialValue = FeatureState.Loading
         )
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    fun loadProducts(serviceId: Int, userId: Int, employeeId: Int?): Flow<PagingData<Product>> {
-        return productsFlowCache.getOrPut(serviceId) {
-            getProductsByUserIdAndServiceIdUseCase(userId, serviceId, employeeId)
-                .cachedIn(viewModelScope)
-                .shareIn(viewModelScope, SharingStarted.Lazily, replay = 1)
-        }
-    }
+//    @OptIn(ExperimentalCoroutinesApi::class)
+//    fun loadProducts(serviceId: Int, userId: Int, employeeId: Int?): Flow<PagingData<Product>> {
+//        return productsFlowCache.getOrPut(serviceId) {
+//            getProductsByUserIdAndServiceIdUseCase(userId, serviceId, employeeId)
+//                .cachedIn(viewModelScope)
+//                .shareIn(viewModelScope, SharingStarted.Lazily, replay = 1)
+//        }
+//    }
 }
