@@ -21,7 +21,7 @@ fun EditFullNameScreen(
     viewModel: MyProfileViewModel,
     onBack: () -> Unit
 ) {
-    val userState by viewModel.userProfileState.collectAsState()
+    val userState by viewModel.profile.collectAsState()
     val user = (userState as? FeatureState.Success)?.data
 
     var newFullName by rememberSaveable { mutableStateOf(user?.fullName ?: "") }

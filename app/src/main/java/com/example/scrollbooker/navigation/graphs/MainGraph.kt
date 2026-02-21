@@ -37,7 +37,6 @@ import com.example.scrollbooker.ui.LocationController
 import com.example.scrollbooker.ui.LocationViewModel
 import com.example.scrollbooker.ui.UserPermissionsController
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
-import com.example.scrollbooker.ui.profile.components.ProfileLayoutViewModel
 import com.example.scrollbooker.ui.search.SearchScreen
 import com.example.scrollbooker.ui.search.SearchViewModel
 
@@ -91,11 +90,10 @@ fun NavGraphBuilder.mainGraph(onLogout: () -> Unit) {
 
             // My Profile View Model
             val myProfileViewModel: MyProfileViewModel = hiltViewModel()
-            val layoutViewModel: ProfileLayoutViewModel = hiltViewModel()
-            val searchViewModel: SearchViewModel = hiltViewModel()
+            val myProfileData by myProfileViewModel.profile.collectAsState()
+            val myPosts = myProfileViewModel.posts.collectAsLazyPagingItems()
 
-            val myProfileData by myProfileViewModel.userProfileState.collectAsState()
-            val myPosts = layoutViewModel.posts.collectAsLazyPagingItems()
+            val searchViewModel: SearchViewModel = hiltViewModel()
 
             val saveableStateHolder = rememberSaveableStateHolder()
             val navControllers = remember {
@@ -132,7 +130,7 @@ fun NavGraphBuilder.mainGraph(onLogout: () -> Unit) {
                             saveableStateHolder.SaveableStateProvider(currentTab.route) {
                                 when (currentTab) {
                                     is MainTab.Feed -> {
-                                        FeedNavHost(navController = navControllers[MainTab.Feed]!!)
+                                        FeedNavHost(navControllers[MainTab.Feed]!!)
                                     }
                                     is MainTab.Inbox -> {
                                         InboxNavHost(navControllers[MainTab.Inbox]!!)
@@ -148,7 +146,6 @@ fun NavGraphBuilder.mainGraph(onLogout: () -> Unit) {
                                         MyProfileNavHost(
                                             navController = navControllers[MainTab.Profile]!!,
                                             viewModel = myProfileViewModel,
-                                            layoutViewModel = layoutViewModel,
                                             myProfileData = myProfileData,
                                             myPosts = myPosts,
                                             onLogout = onLogout

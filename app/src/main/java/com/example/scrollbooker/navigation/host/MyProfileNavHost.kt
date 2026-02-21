@@ -1,12 +1,11 @@
 package com.example.scrollbooker.navigation.host
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigation
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
@@ -16,159 +15,40 @@ import com.example.scrollbooker.navigation.graphs.myBusinessGraph
 import com.example.scrollbooker.navigation.graphs.settingsGraph
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromRight
-import com.example.scrollbooker.navigation.navigators.ProfileNavigator
-import com.example.scrollbooker.ui.LocalUserPermissions
-import com.example.scrollbooker.ui.profile.MyProfilePostDetailScreen
-import com.example.scrollbooker.ui.profile.MyProfileScreen
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavType
-import androidx.navigation.navArgument
-import androidx.paging.compose.collectAsLazyPagingItems
-import com.example.scrollbooker.core.extensions.isInRoute
-import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
+import com.example.scrollbooker.navigation.graphs.profileGraph
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
-import com.example.scrollbooker.ui.profile.ProfileViewModel
-import com.example.scrollbooker.ui.profile.UserProfileScreen
-import com.example.scrollbooker.ui.profile.components.ProfileLayoutViewModel
-import com.example.scrollbooker.ui.social.SocialScreen
-import com.example.scrollbooker.ui.social.SocialViewModel
+import com.example.scrollbooker.ui.theme.Background
 
 @Composable
 fun MyProfileNavHost(
     viewModel: MyProfileViewModel,
-    layoutViewModel: ProfileLayoutViewModel,
     myProfileData: FeatureState<UserProfile>,
     myPosts: LazyPagingItems<Post>,
     navController: NavHostController,
     onLogout: () -> Unit
 ) {
-    val posts = layoutViewModel.detailPostsFlow.collectAsLazyPagingItems()
-
-    NavHost(
-        navController = navController,
-        startDestination = MainRoute.MyProfileNavigator.route,
-        enterTransition = { slideInFromRight() },
-        exitTransition = { slideOutToLeft() },
-        popEnterTransition = { slideInFromLeft() },
-        popExitTransition = { slideOutToRight() }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Background)
     ) {
-        navigation(
-            route = MainRoute.MyProfileNavigator.route,
-            startDestination = MainRoute.MyProfile.route,
-            exitTransition = {
-                if (targetState.isInRoute(MainRoute.MyProfilePostDetail.route)) {
-                    ExitTransition.None
-                } else {
-                    slideOutToLeft()
-                }
-            },
-            popEnterTransition = {
-                if (initialState.isInRoute(MainRoute.MyProfilePostDetail.route)) {
-                    EnterTransition.None
-                } else {
-                    slideInFromLeft()
-                }
-            },
+        NavHost(
+            navController = navController,
+            startDestination = MainRoute.MyProfileNavigator.route,
             enterTransition = { slideInFromRight() },
+            exitTransition = { slideOutToLeft() },
+            popEnterTransition = { slideInFromLeft() },
             popExitTransition = { slideOutToRight() }
         ) {
-            composable(MainRoute.MyProfile.route) {
-                val permissionController = LocalUserPermissions.current
-
-                val profileNavigate = remember(navController) {
-                    ProfileNavigator(navController)
-                }
-
-                MyProfileScreen(
-                    layoutViewModel = layoutViewModel,
-                    permissionController = permissionController,
-                    myProfileData = myProfileData,
-                    myPosts = myPosts,
-                    profileNavigate = profileNavigate,
-                    onNavigateToSocial = { socialParams ->
-                        val ( tabIndex, userId, username, isBusinessOrEmployee ) = socialParams
-
-                        navController.navigate(
-                            "${MainRoute.Social.route}/${tabIndex}/${userId}/${username}/${isBusinessOrEmployee}"
-                        )
-                    }
-                )
-            }
-
-            composable("${MainRoute.UserProfile.route}/{userId}",
-                arguments = listOf(navArgument("userId") { type = NavType.IntType })
-            ) { backStackEntry ->
-                val viewModel = hiltViewModel<ProfileViewModel>(backStackEntry)
-
-                val profileNavigate = remember(navController) {
-                    ProfileNavigator(navController)
-                }
-
-                UserProfileScreen(
-                    layoutViewModel = layoutViewModel,
-                    viewModel = viewModel,
-                    onBack = { navController.popBackStack() },
-                    profileNavigate = profileNavigate,
-                    onNavigateToSocial = { socialParams ->
-                        val ( tabIndex, userId, username, isBusinessOrEmployee ) = socialParams
-
-                        navController.navigate(
-                            "${MainRoute.Social.route}/${tabIndex}/${userId}/${username}/${isBusinessOrEmployee}"
-                        )
-                    }
-                )
-            }
-
-            composable(
-                route = MainRoute.MyProfilePostDetail.route,
-                enterTransition = { EnterTransition.None },
-                exitTransition = { ExitTransition.None },
-                popEnterTransition = { EnterTransition.None },
-                popExitTransition = { ExitTransition.None }
-            ) {
-                MyProfilePostDetailScreen(
-                    layoutViewModel = layoutViewModel,
-                    posts = posts,
-                    onBack = { navController.popBackStack() },
-                    onNavigateToUserProfile = {
-                        navController.navigate("${MainRoute.UserProfile.route}/${it}")
-                    }
-                )
-            }
-
+            profileGraph(navController, myProfileData, myPosts)
             editProfileGraph(navController, viewModel)
             myBusinessGraph(navController)
             settingsGraph(
                 navController = navController,
                 onLogout = onLogout
-            )
-        }
-
-        composable(
-            route = "${MainRoute.Social.route}/{tabIndex}/{userId}/{username}/{isBusinessOrEmployee}",
-            arguments = listOf(
-                navArgument("tabIndex") { type = NavType.IntType },
-                navArgument("userId") { type = NavType.IntType },
-                navArgument("username") { type = NavType.StringType },
-                navArgument("isBusinessOrEmployee") { type = NavType.BoolType }
-            )
-        ) { backStackEntry ->
-            val tabIndex = backStackEntry.arguments?.getInt("tabIndex") ?: return@composable
-            val userId = backStackEntry.arguments?.getInt("userId") ?: return@composable
-            val username = backStackEntry.arguments?.getString("username") ?: return@composable
-            val isBusinessOrEmployee = backStackEntry.arguments?.getBoolean("isBusinessOrEmployee") ?: return@composable
-
-            val viewModel = hiltViewModel<SocialViewModel>(backStackEntry)
-            val socialParams = NavigateSocialParam(tabIndex, userId, username, isBusinessOrEmployee)
-
-            SocialScreen(
-                viewModal = viewModel,
-                socialParam = socialParams,
-                onBack = { navController.popBackStack() },
-                onNavigateUserProfile = { navController.navigate("${MainRoute.UserProfile.route}/$it") }
             )
         }
     }

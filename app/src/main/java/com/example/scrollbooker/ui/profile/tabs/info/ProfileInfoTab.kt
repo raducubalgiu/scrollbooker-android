@@ -16,8 +16,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -26,8 +24,6 @@ import androidx.compose.ui.text.font.FontWeight
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.theme.titleLarge
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -42,16 +38,13 @@ import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.customized.SchedulesSection
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.core.util.rememberFlingBehavior
-import com.example.scrollbooker.ui.profile.components.ProfileLayoutViewModel
+import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfileAbout
 import timber.log.Timber
 
 @Composable
 fun ProfileInfoTab(
-    viewModel: ProfileLayoutViewModel
+    about: FeatureState<UserProfileAbout>
 ) {
-    val state by viewModel.about.collectAsState()
-
     val scrollState = rememberScrollState()
 
     Column(modifier = Modifier
@@ -59,7 +52,7 @@ fun ProfileInfoTab(
         .padding(horizontal = BasePadding)
         .verticalScroll(scrollState)
     ) {
-        when(val about = state) {
+        when(val aboutState = about) {
             is FeatureState.Error -> ErrorScreen()
             is FeatureState.Loading -> {
                 LoadingScreen(
@@ -68,7 +61,7 @@ fun ProfileInfoTab(
                 )
             }
             is FeatureState.Success -> {
-                val data = about.data
+                val data = aboutState.data
 
                 Text(
                     modifier = Modifier.padding(vertical = BasePadding),

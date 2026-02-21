@@ -38,7 +38,6 @@ import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.profile.components.sheets.UserScheduleSheet
 import com.example.scrollbooker.ui.profile.components.userInfo.ProfileShimmer
 import com.example.scrollbooker.ui.profile.components.userInfo.ProfileUserInfo
-import com.example.scrollbooker.ui.profile.tabs.ProfileHorizontalPager
 import com.example.scrollbooker.ui.profile.tabs.ProfileTab
 import com.example.scrollbooker.ui.profile.tabs.ProfileTabRow
 import kotlinx.coroutines.flow.collectLatest
@@ -61,113 +60,113 @@ fun ProfileLayout(
     isFollowEnabled: Boolean = false,
     onFollow: (() -> Unit)? = null
 ) {
-    val scope = rememberCoroutineScope()
-
-    var headerHeightPx by remember { mutableIntStateOf(0) }
-    var headerOffset by remember { mutableFloatStateOf(0f) }
-
-    val currentTab by layoutViewModel.currentTab.collectAsStateWithLifecycle()
-
-    val scheduleSheetState = rememberModalBottomSheetState()
-
-    val nestedScrollConnection = rememberCollapsingNestedScroll(
-        headerHeightPx = headerHeightPx,
-        headerOffset = headerOffset,
-        onHeaderOffsetChanged = { headerOffset = it }
-    )
-
-    if(scheduleSheetState.isVisible) {
-        UserScheduleSheet(
-            sheetState = scheduleSheetState,
-            layoutViewModel = layoutViewModel,
-        )
-    }
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding)
-    ) {
-        when (val profileData = profile) {
-            is FeatureState.Error -> ErrorScreen()
-            is FeatureState.Loading -> ProfileShimmer()
-            is FeatureState.Success -> {
-                val user = profileData.data
-
-                val tabs = remember(user.isBusinessOrEmployee, user.isOwnProfile) {
-                    ProfileTab.getTabs(user.isBusinessOrEmployee, user.isOwnProfile)
-                }
-
-                val pagerState = rememberPagerState(initialPage = currentTab) { tabs.size }
-
-                LaunchedEffect(pagerState) {
-                    snapshotFlow {
-                        pagerState.currentPage
-                    }
-                        .distinctUntilChanged()
-                        .collectLatest { page -> layoutViewModel.setCurrentTab(page) }
-                }
-
-                PullToRefreshBox(
-                    isRefreshing = false,
-                    onRefresh = {  }
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .nestedScroll(nestedScrollConnection)
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .graphicsLayer {
-                                    translationY = headerHeightPx + headerOffset
-                                }
-                        ) {
-                            ProfileTabRow(
-                                selectedTabIndex = pagerState.currentPage,
-                                onChangeTab = {
-                                    layoutViewModel.setCurrentTab(it)
-                                    scope.launch { pagerState.animateScrollToPage(it) }
-                                },
-                                tabs = tabs
-                            )
-
-                            ProfileHorizontalPager(
-                                layoutViewModel = layoutViewModel,
-                                pagerState = pagerState,
-                                profileNavigate = profileNavigate,
-                                tabs = tabs,
-                                onNavigateToPost = onNavigateToPost,
-                                posts = posts
-                            )
-                        }
-
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .offset { IntOffset(0, headerOffset.roundToInt()) }
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .onSizeChanged { size -> headerHeightPx = size.height }
-                            ) {
-                                ProfileUserInfo(
-                                    user = user,
-                                    isFollow = isFollow,
-                                    isFollowEnabled = isFollowEnabled,
-                                    onFollow = onFollow,
-                                    onNavigateToSocial = onNavigateToSocial,
-                                    onOpenScheduleSheet = { scope.launch { scheduleSheetState.show() } },
-                                    onNavigateToBusinessOwner = { it?.let { profileNavigate.toUserProfile(it) } },
-                                    onNavigateToEditProfile = { profileNavigate.toEditProfile() },
-                                    onNavigateToMyCalendar = { profileNavigate.toMyCalendar() },
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+//    val scope = rememberCoroutineScope()
+//
+//    var headerHeightPx by remember { mutableIntStateOf(0) }
+//    var headerOffset by remember { mutableFloatStateOf(0f) }
+//
+//    val currentTab by layoutViewModel.currentTab.collectAsStateWithLifecycle()
+//
+//    val scheduleSheetState = rememberModalBottomSheetState()
+//
+//    val nestedScrollConnection = rememberCollapsingNestedScroll(
+//        headerHeightPx = headerHeightPx,
+//        headerOffset = headerOffset,
+//        onHeaderOffsetChanged = { headerOffset = it }
+//    )
+//
+//    if(scheduleSheetState.isVisible) {
+//        UserScheduleSheet(
+//            sheetState = scheduleSheetState,
+//            layoutViewModel = layoutViewModel,
+//        )
+//    }
+//
+//    Box(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .padding(innerPadding)
+//    ) {
+//        when (val profileData = profile) {
+//            is FeatureState.Error -> ErrorScreen()
+//            is FeatureState.Loading -> ProfileShimmer()
+//            is FeatureState.Success -> {
+//                val user = profileData.data
+//
+//                val tabs = remember(user.isBusinessOrEmployee, user.isOwnProfile) {
+//                    ProfileTab.getTabs(user.isBusinessOrEmployee, user.isOwnProfile)
+//                }
+//
+//                val pagerState = rememberPagerState(initialPage = currentTab) { tabs.size }
+//
+//                LaunchedEffect(pagerState) {
+//                    snapshotFlow {
+//                        pagerState.currentPage
+//                    }
+//                        .distinctUntilChanged()
+//                        .collectLatest { page -> layoutViewModel.setCurrentTab(page) }
+//                }
+//
+//                PullToRefreshBox(
+//                    isRefreshing = false,
+//                    onRefresh = {  }
+//                ) {
+//                    Box(
+//                        modifier = Modifier
+//                            .fillMaxSize()
+//                            .nestedScroll(nestedScrollConnection)
+//                    ) {
+//                        Column(
+//                            modifier = Modifier
+//                                .graphicsLayer {
+//                                    translationY = headerHeightPx + headerOffset
+//                                }
+//                        ) {
+//                            ProfileTabRow(
+//                                selectedTabIndex = pagerState.currentPage,
+//                                onChangeTab = {
+//                                    layoutViewModel.setCurrentTab(it)
+//                                    scope.launch { pagerState.animateScrollToPage(it) }
+//                                },
+//                                tabs = tabs
+//                            )
+//
+//                            ProfileHorizontalPager(
+//                                layoutViewModel = layoutViewModel,
+//                                pagerState = pagerState,
+//                                profileNavigate = profileNavigate,
+//                                tabs = tabs,
+//                                onNavigateToPost = onNavigateToPost,
+//                                posts = posts
+//                            )
+//                        }
+//
+//                        Column(
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .offset { IntOffset(0, headerOffset.roundToInt()) }
+//                        ) {
+//                            Column(
+//                                modifier = Modifier
+//                                    .fillMaxWidth()
+//                                    .onSizeChanged { size -> headerHeightPx = size.height }
+//                            ) {
+//                                ProfileUserInfo(
+//                                    user = user,
+//                                    isFollow = isFollow,
+//                                    isFollowEnabled = isFollowEnabled,
+//                                    onFollow = onFollow,
+//                                    onNavigateToSocial = onNavigateToSocial,
+//                                    onOpenScheduleSheet = { scope.launch { scheduleSheetState.show() } },
+//                                    onNavigateToBusinessOwner = { it?.let { profileNavigate.toUserProfile(it) } },
+//                                    onNavigateToEditProfile = { profileNavigate.toEditProfile() },
+//                                    onNavigateToMyCalendar = { profileNavigate.toMyCalendar() },
+//                                )
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
 }

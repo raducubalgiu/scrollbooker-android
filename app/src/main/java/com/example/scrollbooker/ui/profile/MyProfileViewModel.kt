@@ -7,10 +7,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
+import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
+import com.example.scrollbooker.entity.booking.employee.domain.useCase.GetEmployeesByOwnerUseCase
+import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
+import com.example.scrollbooker.entity.booking.schedule.domain.useCase.GetSchedulesByUserIdUseCase
+import com.example.scrollbooker.entity.social.bookmark.domain.useCase.GetUserBookmarkedPostsUseCase
+import com.example.scrollbooker.entity.social.post.domain.model.Post
+import com.example.scrollbooker.entity.social.post.domain.useCase.GetUserPostsUseCase
 import com.example.scrollbooker.entity.user.userProfile.data.remote.toUserAvatarRequest
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
+import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfileAbout
+import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserProfileAboutUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserProfileUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateAvatarUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateBioUseCase
@@ -22,10 +33,18 @@ import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateWeb
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -40,12 +59,20 @@ class MyProfileViewModel @Inject constructor(
     private val updatePublicEmailUseCase: UpdatePublicEmailUseCase,
     private val updateAvatarUseCase: UpdateAvatarUseCase,
     private val getUserProfileUseCase: GetUserProfileUseCase,
+    private val getUserPostsUseCase: GetUserPostsUseCase,
+    private val getEmployeesByOwnerUseCase: GetEmployeesByOwnerUseCase,
+    private val getUserProfileAboutUseCase: GetUserProfileAboutUseCase,
+    private val getSchedulesByUserIdUseCase: GetSchedulesByUserIdUseCase,
+    private val getUserBookmarkedPostsUseCase: GetUserBookmarkedPostsUseCase,
     private val authDataStore: AuthDataStore,
     @ApplicationContext private val app: Context,
 ): ViewModel() {
-    private val _userProfileState =
+    private val _profile =
         MutableStateFlow<FeatureState<UserProfile>>(FeatureState.Loading)
-    val userProfileState: StateFlow<FeatureState<UserProfile>> = _userProfileState
+    val profile: StateFlow<FeatureState<UserProfile>> = _profile.asStateFlow()
+
+    private val _currentTab = MutableStateFlow<Int>(0)
+    val currentTab: StateFlow<Int> = _currentTab.asStateFlow()
 
     fun loadUserProfile() {
         viewModelScope.launch {
@@ -56,19 +83,68 @@ class MyProfileViewModel @Inject constructor(
                 throw IllegalStateException("User id not found in datastore")
             }
 
-            _userProfileState.value = FeatureState.Loading
+            _profile.value = FeatureState.Loading
 
             val response = withVisibleLoading {
                 getUserProfileUseCase(userId, lat = null, lng = null)
             }
 
-            _userProfileState.value = response
+            _profile.value = response
         }
     }
 
     init {
         loadUserProfile()
     }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val posts: Flow<PagingData<Post>> = authDataStore.getUserId()
+        .filterNotNull()
+        .flatMapLatest { userId -> getUserPostsUseCase(userId) }
+        .cachedIn(viewModelScope)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val employees: Flow<PagingData<Employee>> = authDataStore.getUserId()
+        .filterNotNull()
+        .flatMapLatest { userId -> getEmployeesByOwnerUseCase(userId) }
+        .cachedIn(viewModelScope)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val bookmarks: Flow<PagingData<Post>> = authDataStore.getUserId()
+        .filterNotNull()
+        .flatMapLatest { userId -> getUserBookmarkedPostsUseCase(userId) }
+        .cachedIn(viewModelScope)
+
+    val about: StateFlow<FeatureState<UserProfileAbout>> =
+        flow<FeatureState<UserProfileAbout>> {
+            emit(FeatureState.Loading)
+            emit(withVisibleLoading { getUserProfileAboutUseCase() })
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = FeatureState.Loading
+        )
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val schedules: StateFlow<FeatureState<List<Schedule>>> = authDataStore.getUserId()
+        .filterNotNull()
+        .distinctUntilChanged()
+        .flatMapLatest { userId ->
+            flow {
+                emit(FeatureState.Loading)
+
+                val result = withVisibleLoading {
+                    getSchedulesByUserIdUseCase(userId)
+                }
+
+                emit(result)
+            }
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = FeatureState.Loading
+        )
 
     // Edit
     private val _editState = MutableStateFlow<FeatureState<Unit>?>(null)
@@ -83,6 +159,10 @@ class MyProfileViewModel @Inject constructor(
 
     var isSaved by mutableStateOf(false)
 
+    fun setCurrentTab(index: Int) {
+        _currentTab.value = index
+    }
+
     fun updateFullName(newFullName: String) {
         viewModelScope.launch {
             _editState.value = FeatureState.Loading
@@ -93,10 +173,10 @@ class MyProfileViewModel @Inject constructor(
                 .onSuccess {
                     _editState.value = FeatureState.Success(Unit)
 
-                    val currentProfile = (_userProfileState.value as? FeatureState.Success)?.data
+                    val currentProfile = (_profile.value as? FeatureState.Success)?.data
                     if(currentProfile != null) {
                         val updatedProfile = currentProfile.copy(fullName = newFullName)
-                        _userProfileState.value = FeatureState.Success(updatedProfile)
+                        _profile.value = FeatureState.Success(updatedProfile)
                     }
                     isSaved = true
                 }
@@ -117,10 +197,10 @@ class MyProfileViewModel @Inject constructor(
                 .onSuccess {
                     _editState.value = FeatureState.Success(Unit)
 
-                    val currentProfile = (_userProfileState.value as? FeatureState.Success)?.data
+                    val currentProfile = (_profile.value as? FeatureState.Success)?.data
                     if(currentProfile != null) {
                         val updatedProfile = currentProfile.copy(username = newUsername)
-                        _userProfileState.value = FeatureState.Success(updatedProfile)
+                        _profile.value = FeatureState.Success(updatedProfile)
                     }
                     isSaved = true
                 }
@@ -141,11 +221,11 @@ class MyProfileViewModel @Inject constructor(
                 .onSuccess {
                     _editState.value = FeatureState.Success(Unit)
 
-                    val currentProfile = (_userProfileState.value as? FeatureState.Success)?.data
+                    val currentProfile = (_profile.value as? FeatureState.Success)?.data
 
                     if(currentProfile != null) {
                         val updatedProfile = currentProfile.copy(bio = newBio)
-                        _userProfileState.value = FeatureState.Success(updatedProfile)
+                        _profile.value = FeatureState.Success(updatedProfile)
                     }
                     isSaved = true
                 }
@@ -166,10 +246,10 @@ class MyProfileViewModel @Inject constructor(
                 .onSuccess {
                     _editState.value = FeatureState.Success(Unit)
 
-                    val currentProfile = (_userProfileState.value as? FeatureState.Success)?.data
+                    val currentProfile = (_profile.value as? FeatureState.Success)?.data
                     if(currentProfile != null) {
                         val updatedProfile = currentProfile.copy(gender = newGender)
-                        _userProfileState.value = FeatureState.Success(updatedProfile)
+                        _profile.value = FeatureState.Success(updatedProfile)
                     }
                     isSaved = true
                 }
@@ -190,10 +270,10 @@ class MyProfileViewModel @Inject constructor(
                 .onSuccess {
                     _editState.value = FeatureState.Success(Unit)
 
-                    val currentProfile = (_userProfileState.value as? FeatureState.Success)?.data
+                    val currentProfile = (_profile.value as? FeatureState.Success)?.data
                     if(currentProfile != null) {
                         val updatedProfile = currentProfile.copy(website = newWebsite)
-                        _userProfileState.value = FeatureState.Success(updatedProfile)
+                        _profile.value = FeatureState.Success(updatedProfile)
                     }
                     isSaved = true
                 }
@@ -214,10 +294,10 @@ class MyProfileViewModel @Inject constructor(
                 .onSuccess {
                     _editState.value = FeatureState.Success(Unit)
 
-                    val currentProfile = (_userProfileState.value as? FeatureState.Success)?.data
+                    val currentProfile = (_profile.value as? FeatureState.Success)?.data
                     if(currentProfile != null) {
                         val updatedProfile = currentProfile.copy(publicEmail = newPublicEmail)
-                        _userProfileState.value = FeatureState.Success(updatedProfile)
+                        _profile.value = FeatureState.Success(updatedProfile)
                     }
                     isSaved = true
                 }
@@ -244,11 +324,11 @@ class MyProfileViewModel @Inject constructor(
                 .onSuccess {
                     _editState.value = FeatureState.Success(Unit)
 
-                    val currentProfile = (_userProfileState.value as? FeatureState.Success)?.data
+                    val currentProfile = (_profile.value as? FeatureState.Success)?.data
 
                     if(currentProfile != null) {
                         val updatedProfile = currentProfile.copy(avatar = uri.toString())
-                        _userProfileState.value = FeatureState.Success(updatedProfile)
+                        _profile.value = FeatureState.Success(updatedProfile)
                     }
                     isSaved = true
                 }

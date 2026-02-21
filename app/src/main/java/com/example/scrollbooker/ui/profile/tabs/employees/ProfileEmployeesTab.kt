@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.ErrorScreen
@@ -30,17 +31,16 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.core.util.rememberFlingBehavior
+import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
 import com.example.scrollbooker.ui.profile.components.ProfileLayoutViewModel
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.titleLarge
 
 @Composable
 fun ProfileEmployeesTab(
-    viewModel: ProfileLayoutViewModel,
+    employees: LazyPagingItems<Employee>,
     onNavigateToEmployeeProfile: (Int) -> Unit
 ) {
-    val employees = viewModel.employees.collectAsLazyPagingItems()
-
     val refreshState = employees.loadState.refresh
     val appendState = employees.loadState.append
 
