@@ -231,6 +231,7 @@
     <string name="greaterThanValidationMessage">Acest câmp trebuie să fie mai mare ca %1$d</string>
     <string name="requiredValidationMessage">Acest câmp este obligatoriu</string>
     <string name="numericValueValidationMessage">Te rugăm să introduci o valoarea numerică validă</string>
+    <string name="pickCategory">Alege categoria</string>
     <string name="pickService">Alege un serviciu</string>
     <string name="pickCurrency">Alege moneda</string>
     <string name="social">Social</string>
@@ -392,4 +393,11 @@
     <string name="servicesSaved">Serviciile au fost salvate cu succes</string>
     <string name="deletePost">Șterge postarea</string>
     <string name="advancedFiltering">Filtrare avansată</string>
+    <string name="single">Individual</string>
+    <string name="pack">Pachet ședințe</string>
+    <string name="membership">Abonament</string>
+    <string name="productType">Tip Produs</string>
+    <string name="pickProductType">Alege Tipul Produsului</string>
+    <string name="sessionsCount">Număr ședințe</string>
+    <string name="validityDays">Valabilitate (număr zile)</string>
 </resources>

@@ -3,17 +3,11 @@ package com.example.scrollbooker.ui.myBusiness.myProducts
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.enums.FilterTypeEnum
-import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.enums.ProductTypeEnum
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.products.data.remote.AddProductFilterRequest
 import com.example.scrollbooker.entity.booking.products.domain.model.ProductCreate
 import com.example.scrollbooker.entity.booking.products.domain.useCase.CreateProductUseCase
-import com.example.scrollbooker.entity.nomenclature.currency.domain.model.Currency
-import com.example.scrollbooker.entity.nomenclature.currency.domain.useCase.GetUserCurrenciesUseCase
-import com.example.scrollbooker.entity.nomenclature.filter.domain.model.Filter
-import com.example.scrollbooker.entity.nomenclature.filter.domain.useCase.GetFiltersByServiceUseCase
-import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
-import com.example.scrollbooker.entity.nomenclature.service.domain.useCase.GetServicesByBusinessIdUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import com.example.scrollbooker.ui.myBusiness.myProducts.components.AddProductState
 import com.example.scrollbooker.ui.myBusiness.myProducts.components.calculatePriceWithDiscount
@@ -43,20 +37,8 @@ typealias SelectedFilters = Map<Int, FilterSelection>
 @HiltViewModel
 class AddProductsViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
-    private val getServicesByBusinessIdUseCase: GetServicesByBusinessIdUseCase,
-    private val getUserCurrenciesUseCase: GetUserCurrenciesUseCase,
-    private val getFiltersByServiceUseCase: GetFiltersByServiceUseCase,
     private val createProductUseCase: CreateProductUseCase,
 ): ViewModel() {
-    private val _servicesState = MutableStateFlow<FeatureState<List<Service>>>(FeatureState.Loading)
-    val servicesState: StateFlow<FeatureState<List<Service>>> = _servicesState
-
-    private val _currenciesState = MutableStateFlow<FeatureState<List<Currency>>>(FeatureState.Loading)
-    val currenciesState: StateFlow<FeatureState<List<Currency>>> = _currenciesState
-
-    private val _filtersState = MutableStateFlow<FeatureState<List<Filter>>?>(null)
-    val filtersState: StateFlow<FeatureState<List<Filter>>?> = _filtersState
-
     private val _productState = MutableStateFlow<AddProductState>(AddProductState())
     val productState: StateFlow<AddProductState> = _productState.asStateFlow()
 
@@ -65,62 +47,6 @@ class AddProductsViewModel @Inject constructor(
 
     private val _isSaving = MutableStateFlow<Boolean>(false)
     val isSaving: StateFlow<Boolean> = _isSaving
-
-    init {
-        loadServices()
-        loadCurrencies()
-    }
-
-    fun loadCurrencies() {
-        viewModelScope.launch {
-            _currenciesState.value = FeatureState.Loading
-
-            val result = withVisibleLoading {
-                val userId = authDataStore.getUserId().firstOrNull()
-                    ?: throw IllegalStateException("User Id not found in authDataStore")
-
-                getUserCurrenciesUseCase(userId)
-            }
-
-            result
-                .onSuccess { response ->
-                    _currenciesState.value = FeatureState.Success(response)
-                }
-                .onFailure { e ->
-                    Timber.tag("Currencies").e("ERROR: on Fetching Currencies in MyProducts $e")
-                    _currenciesState.value = FeatureState.Error()
-                }
-        }
-    }
-
-    fun loadServices() {
-        viewModelScope.launch {
-            _servicesState.value = FeatureState.Loading
-
-            val result = withVisibleLoading {
-                val businessId = authDataStore.getBusinessId().firstOrNull()
-                    ?: throw IllegalStateException("Business Id not found in authDataStore")
-
-                getServicesByBusinessIdUseCase(businessId)
-            }
-
-            result
-                .onSuccess { response ->
-                    _servicesState.value = FeatureState.Success(response)
-                }
-                .onFailure { e ->
-                    Timber.tag("Services").e("ERROR: on Fetching Services in MyProducts $e")
-                    _servicesState.value = FeatureState.Error()
-                }
-        }
-    }
-
-    fun loadFilters(serviceId: Int) {
-        viewModelScope.launch {
-            _filtersState.value = FeatureState.Loading
-            _filtersState.value = withVisibleLoading { getFiltersByServiceUseCase(serviceId) }
-        }
-    }
 
     fun setSingleOption(filterId: Int, subFilterId: Int?) {
         _selectedFilters.update { current ->
@@ -181,7 +107,7 @@ class AddProductsViewModel @Inject constructor(
         _productState.update { current -> current.copy(name = name) }
     }
 
-    fun setType(type: String) {
+    fun setType(type: ProductTypeEnum) {
         _productState.update { current -> current.copy(type = type) }
     }
 
@@ -209,8 +135,8 @@ class AddProductsViewModel @Inject constructor(
         _productState.update { current -> current.copy(discount = discount) }
     }
 
-    fun setCurrencyId(currencyId: String) {
-        _productState.update { current -> current.copy(currencyId = currencyId) }
+    fun setServiceDomainId(domainId: String) {
+        _productState.update { current -> current.copy(serviceDomainId = domainId) }
     }
 
     fun setServiceId(serviceId: String) {
@@ -266,6 +192,8 @@ class AddProductsViewModel @Inject constructor(
                     }
                 }
 
+            val productType = state.type?.key ?: return@launch
+
             val response = withVisibleLoading {
                 createProductUseCase(
                     productCreate = ProductCreate(
@@ -278,7 +206,7 @@ class AddProductsViewModel @Inject constructor(
                         serviceId = state.serviceId.toInt(),
                         businessId = businessId,
                         currencyId = state.currencyId.toInt(),
-                        type = state.type,
+                        type = productType,
                         sessionsCount = state.sessionsCount.toIntOrNull(),
                         validityDays = state.validityDays.toIntOrNull(),
                         canBeBooked = state.canBeBooked

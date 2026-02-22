@@ -297,6 +297,7 @@ fun NavGraphBuilder.myBusinessGraph(
                 val viewModel: AddProductsViewModel = hiltViewModel()
 
                 AddProductScreen(
+                    myProductsViewModel = myProductsViewModel,
                     viewModel = viewModel,
                     onBack = { navController.popBackStack() }
                 )

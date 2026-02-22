@@ -6,7 +6,7 @@ enum class ProductTypeEnum(val key: String) {
     MEMBERSHIP("membership");
 
     companion object {
-        fun fromKey(key: String): ProductTypeEnum? =
+        fun fromKey(key: String?): ProductTypeEnum? =
             ProductTypeEnum.entries.find { it.key == key }
 
         fun fromKeys(keys: List<String>): List<ProductTypeEnum> =

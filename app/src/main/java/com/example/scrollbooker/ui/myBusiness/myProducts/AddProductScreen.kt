@@ -44,13 +44,13 @@ import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.inputs.Input
 import com.example.scrollbooker.components.core.inputs.InputSelect
 import com.example.scrollbooker.components.core.inputs.Option
+import com.example.scrollbooker.core.enums.ProductTypeEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.ui.myBusiness.myProducts.components.AddProductValidation
 import com.example.scrollbooker.ui.myBusiness.myProducts.components.CanBeBookedSection
 import com.example.scrollbooker.ui.myBusiness.myProducts.components.FiltersActions
 import com.example.scrollbooker.ui.myBusiness.myProducts.components.FiltersSection
-import com.example.scrollbooker.ui.myBusiness.myProducts.components.FiltersSkeleton
 import com.example.scrollbooker.ui.myBusiness.myProducts.components.calculatePriceWithDiscount
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Primary
@@ -59,6 +59,7 @@ import com.example.scrollbooker.ui.theme.labelLarge
 
 @Composable
 fun AddProductScreen(
+    myProductsViewModel: MyProductsViewModel,
     viewModel: AddProductsViewModel,
     onBack: () -> Unit
 ) {
@@ -68,10 +69,7 @@ fun AddProductScreen(
 
     val actions = rememberFiltersSectionActions(viewModel)
 
-    val servicesState by viewModel.servicesState.collectAsState()
-    val currenciesState by viewModel.currenciesState.collectAsState()
-    val filtersState by viewModel.filtersState.collectAsState()
-
+    val serviceDomains by myProductsViewModel.serviceDomains.collectAsState()
     val productState by viewModel.productState.collectAsState()
     val selectedFilters by viewModel.selectedFilters.collectAsState()
     val isSaving by viewModel.isSaving.collectAsState()
@@ -85,24 +83,47 @@ fun AddProductScreen(
         }
     }
 
-    val servicesOptionList = when(val state = servicesState) {
-        is FeatureState.Success -> state.data.map { service ->
+    val serviceDomainsOptionsList = when(val state = serviceDomains) {
+        is FeatureState.Success -> state.data.map { domain ->
             Option(
-                value = service.id.toString(),
-                name = service.shortName
+                value = domain.id.toString(),
+                name = domain.name
             )
         }
         else -> emptyList()
     }
 
-    val currenciesOptionList = when(val state = currenciesState) {
-        is FeatureState.Success -> state.data.map { service ->
-            Option(
-                value = service.id.toString(),
-                name = service.name
-            )
+    val servicesOptionList = when(val state = serviceDomains) {
+        is FeatureState.Success -> {
+            val services = state.data.find { it.id.toString() == productState.serviceDomainId }?.services ?: emptyList()
+            services.map { service ->
+                Option(
+                    value = service.id.toString(),
+                    name = service.name
+                )
+            }
         }
         else -> emptyList()
+    }
+
+    val filters = when(val state = serviceDomains) {
+        is FeatureState.Success -> {
+            val services = state.data.find { it.id.toString() == productState.serviceDomainId }?.services ?: emptyList()
+            val filters = services.find { it.id.toString() == productState.serviceId }?.filters ?: emptyList()
+            FeatureState.Success(filters)
+        }
+        else -> FeatureState.Success(emptyList())
+    }
+
+    val productTypes: List<Option> = ProductTypeEnum.entries.map {
+        Option(
+            name = when(it) {
+                ProductTypeEnum.SINGLE -> context.getString(R.string.single)
+                ProductTypeEnum.PACK -> context.getString(R.string.pack)
+                ProductTypeEnum.MEMBERSHIP -> context.getString(R.string.membership)
+            },
+            value = it.key
+        )
     }
 
     var showErrors by rememberSaveable { mutableStateOf(false) }
@@ -113,23 +134,23 @@ fun AddProductScreen(
         }
     }
 
-    val isLoadingServices = servicesState is FeatureState.Loading
-    val isErrorServices = servicesState is FeatureState.Error
-
-    val isLoadingCurrencies = currenciesState is FeatureState.Loading
-    val isErrorCurrencies = currenciesState is FeatureState.Error
-
-    val isLoadingFilters = filtersState is FeatureState.Loading
+    val isLoadingServiceDomains = serviceDomains is FeatureState.Loading
+    val isErrorServiceDomains = serviceDomains is FeatureState.Error
 
     val isNameValid = validation.nameError.isNullOrBlank()
     val isDurationValid = validation.durationError.isNullOrBlank()
     val isPriceValid = validation.priceError.isNullOrBlank()
     val isDiscountValid = validation.discountError.isNullOrBlank()
+    val isValidServiceDomainId = validation.serviceDomainIdError.isNullOrBlank()
     val isValidServiceId = validation.serviceIdError.isNullOrBlank()
-    val isValidCurrencyId = validation.currencyIdError.isNullOrBlank()
 
     Scaffold(
-        topBar = { Header(onBack=onBack, title = stringResource(R.string.addNewProduct)) }
+        topBar = {
+            Header(
+                onBack=onBack,
+                title = stringResource(R.string.addNewProduct)
+            )
+        }
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -147,6 +168,22 @@ fun AddProductScreen(
                     .padding(horizontal = BasePadding)
                 ) {
                     InputSelect(
+                        label = stringResource(R.string.categories),
+                        placeholder = stringResource(R.string.pickCategory),
+                        options = serviceDomainsOptionsList,
+                        selectedOption = productState.serviceDomainId,
+                        onValueChange = { domainId ->
+                            domainId?.let { viewModel.setServiceDomainId(it) }
+                        },
+                        isLoading = isLoadingServiceDomains,
+                        isEnabled = !isErrorServiceDomains && !isLoadingServiceDomains,
+                        isError = showErrors && !isValidServiceDomainId,
+                        errorMessage = validation.serviceDomainIdError.toString()
+                    )
+
+                    Spacer(Modifier.height(BasePadding))
+
+                    InputSelect(
                         label = stringResource(R.string.service),
                         placeholder = stringResource(R.string.pickService),
                         options = servicesOptionList,
@@ -155,71 +192,55 @@ fun AddProductScreen(
                             serviceId?.let {
                                 viewModel.resetFilters()
                                 viewModel.setServiceId(it)
-                                viewModel.loadFilters(it.toInt())
                             }
                         },
-                        isLoading = isLoadingServices,
-                        isEnabled = !isErrorServices && !isLoadingServices,
                         isError = showErrors && !isValidServiceId,
                         errorMessage = validation.serviceIdError.toString()
                     )
 
                     Spacer(Modifier.height(BasePadding))
 
+                    if(productState.serviceId.isNotEmpty()) {
+                        FiltersSection(
+                            isVisible = productState.serviceId.isNotEmpty(),
+                            filters = filters.data,
+                            selectedFilters = selectedFilters,
+                            isLoadingFilters = false,
+                            actions = actions
+                        )
+                    }
+
                     InputSelect(
-                        label = "Tip",
-                        placeholder = "Alege tipul serviciului",
-                        options = listOf(
-                            Option(name = "Individual", value = "single"),
-                            Option(name = "Pachet de ședinte", value = "pack"),
-                            Option(name = "Abonament", value = "membership")
-                        ),
-                        selectedOption = productState.type,
-                        onValueChange = { it?.let { viewModel.setType(it) } },
-                        //isLoading = isLoadingCurrencies,
-                        //isEnabled = !isErrorCurrencies && !isLoadingCurrencies,
-                        //isError = showErrors && !isValidCurrencyId,
-                        //errorMessage = validation.currencyIdError.toString()
+                        label = stringResource(R.string.productType),
+                        placeholder = stringResource(R.string.pickProductType),
+                        options = productTypes,
+                        selectedOption = productState.type?.key.toString(),
+                        onValueChange = { key ->
+                            val type = ProductTypeEnum.entries.find { it.key == key }
+                            type?.let { viewModel.setType(it) }
+                        },
                     )
 
                     Spacer(Modifier.height(BasePadding))
 
-                    if(productState.type == "pack") {
-                        Input(
-                            label = "Numar sedinte",
-                            value = productState.sessionsCount,
-                            onValueChange = viewModel::setSessionsCount,
-                            //isError = showErrors && !isNameValid,
-                            //errorMessage = validation.nameError.toString(),
-                        )
+                    when(productState.type) {
+                        ProductTypeEnum.PACK -> {
+                            Input(
+                                label = stringResource(R.string.sessionsCount),
+                                value = productState.sessionsCount,
+                                onValueChange = viewModel::setSessionsCount,
+                            )
 
-                        Spacer(Modifier.height(BasePadding))
-                    }
+                            Spacer(Modifier.height(BasePadding))
+                        }
+                        ProductTypeEnum.MEMBERSHIP -> {
+                            Input(
+                                label = stringResource(R.string.validityDays),
+                                value = productState.validityDays,
+                                onValueChange = viewModel::setValidityDays,
+                            )
 
-                    if(productState.type != "single") {
-                        Input(
-                            label = "Valabilitate (numar zile)",
-                            value = productState.validityDays,
-                            onValueChange = viewModel::setValidityDays,
-                            //isError = showErrors && !isNameValid,
-                            //errorMessage = validation.nameError.toString(),
-                        )
-
-                        Spacer(Modifier.height(BasePadding))
-                    }
-
-                    when(val filters = filtersState) {
-                        is FeatureState.Loading -> FiltersSkeleton()
-                        is FeatureState.Success -> {
-                            if(filters.data.isNotEmpty()) {
-                                FiltersSection(
-                                    isVisible = productState.serviceId.isNotEmpty(),
-                                    filters = filters.data,
-                                    selectedFilters = selectedFilters,
-                                    isLoadingFilters = isLoadingFilters,
-                                    actions = actions
-                                )
-                            }
+                            Spacer(Modifier.height(BasePadding))
                         }
                         else -> Unit
                     }
@@ -263,13 +284,10 @@ fun AddProductScreen(
                     InputSelect(
                         label = stringResource(R.string.currency),
                         placeholder = stringResource(R.string.pickCurrency),
-                        options = currenciesOptionList,
-                        selectedOption = productState.currencyId,
-                        onValueChange = { it?.let { viewModel.setCurrencyId(it) } },
-                        isLoading = isLoadingCurrencies,
-                        isEnabled = !isErrorCurrencies && !isLoadingCurrencies,
-                        isError = showErrors && !isValidCurrencyId,
-                        errorMessage = validation.currencyIdError.toString()
+                        options = listOf(Option(name = "RON", value = "1")),
+                        selectedOption = "1",
+                        onValueChange = {},
+                        isEnabled = false
                     )
 
                     Spacer(Modifier.height(BasePadding))
