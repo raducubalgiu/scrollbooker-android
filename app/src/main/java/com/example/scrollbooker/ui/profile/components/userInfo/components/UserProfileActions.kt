@@ -2,6 +2,7 @@ package com.example.scrollbooker.ui.profile.components.userInfo.components
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
@@ -92,19 +93,6 @@ fun UserProfileActions(
                     }
                 }
             }
-        }
-
-        Spacer(Modifier.width(SpacingS))
-
-        ProfileActionButton(
-            modifier = Modifier.weight(1.5f),
-            onClick = {}
-        ) {
-            Icon(
-                modifier = Modifier.size(20.dp),
-                imageVector = Icons.Default.ArrowDropDown,
-                contentDescription = null
-            )
         }
     }
 }

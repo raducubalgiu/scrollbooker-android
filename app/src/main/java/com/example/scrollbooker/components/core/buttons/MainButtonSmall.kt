@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -30,18 +31,19 @@ fun MainButtonSmall(
     colors: ButtonColors = ButtonDefaults.buttonColors(
         containerColor = Primary,
         contentColor = OnPrimary
-    )
+    ),
+    shape: Shape = ShapeDefaults.ExtraSmall
 ) {
     Button(
         modifier = modifier
             .width(96.dp)
-            .height(32.dp),
+            .height(37.dp),
         onClick = onClick,
         contentPadding = PaddingValues(
             vertical = 6.dp,
             horizontal = 14.dp
         ),
-        shape = ShapeDefaults.ExtraSmall,
+        shape = shape,
         enabled = enabled,
         border = border,
         colors = colors

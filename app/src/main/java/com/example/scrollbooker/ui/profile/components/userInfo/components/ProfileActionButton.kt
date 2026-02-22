@@ -19,7 +19,7 @@ fun ProfileActionButton(
     onClick: () -> Unit,
     isEnabled: Boolean = true,
     height: Dp = 50.dp,
-    shape: Shape = ShapeDefaults.Small,
+    shape: Shape = ShapeDefaults.ExtraLarge,
     containerColor: Color = SurfaceBG,
     contentColor: Color = OnSurfaceBG,
     content: @Composable () -> Unit,
@@ -29,9 +29,7 @@ fun ProfileActionButton(
         onClick = onClick,
         enabled = isEnabled,
         shape = shape,
-        contentPadding = PaddingValues(
-            vertical = 14.dp
-        ),
+        contentPadding = PaddingValues(vertical = 14.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = containerColor,
             contentColor = contentColor
