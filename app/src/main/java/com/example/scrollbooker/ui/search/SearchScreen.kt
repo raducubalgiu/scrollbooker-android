@@ -1,5 +1,6 @@
 package com.example.scrollbooker.ui.search
 import BottomBar
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -43,6 +44,7 @@ import com.example.scrollbooker.ui.search.sheets.SearchSheets
 import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheetUser
 import com.example.scrollbooker.ui.theme.Background
+import com.example.scrollbooker.ui.theme.SurfaceBG
 import kotlinx.coroutines.launch
 import rememberLocationsCountText
 
@@ -53,6 +55,7 @@ fun SearchScreen(
     isSearchTab: Boolean,
     onNavigateToBusinessProfile: (Int) -> Unit
 ) {
+    val isSystemInDarkMode = isSystemInDarkTheme()
     val isMapMounted by viewModel.isMapMounted.collectAsStateWithLifecycle()
 
     LaunchedEffect(isSearchTab, isMapMounted) {
@@ -124,7 +127,6 @@ fun SearchScreen(
     val isRefreshing = refreshState is LoadState.Loading && businessesSheet.itemCount > 0
 
     val bookingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
     val selectedBusinessOwner by viewModel.selectedBusinessOwner.collectAsState()
 
     if(bookingsSheetState.isVisible) {
@@ -207,8 +209,8 @@ fun SearchScreen(
                 sheetPeekHeight = sheetHeaderDp,
                 scaffoldState = scaffoldState,
                 sheetDragHandle = {},
-                sheetContainerColor = Background,
                 sheetShadowElevation = 6.dp,
+                sheetContainerColor = Background,
                 containerColor = Background,
                 sheetContent = {
                     SearchSheetHeader(

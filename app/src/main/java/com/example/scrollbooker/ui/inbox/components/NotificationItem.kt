@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -75,7 +76,7 @@ fun NotificationItem(
                             contentColor = actionColor,
                             disabledContainerColor = Divider,
                             disabledContentColor = OnSurfaceBG
-                        )
+                        ),
                     )
                 }
             }

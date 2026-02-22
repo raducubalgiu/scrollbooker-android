@@ -2,6 +2,7 @@ package com.example.scrollbooker.ui.search.components.map
 
 import android.location.Location
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
@@ -50,6 +51,7 @@ fun SearchMap(
 ) {
     val density = LocalDensity.current
     val scope = rememberCoroutineScope()
+    val isSystemInDarkTheme = isSystemInDarkTheme()
 
     val markers = markersUiState.data?.results.orEmpty()
     val selectedMarkerId by viewModel.selectedMarkerId.collectAsStateWithLifecycle()
@@ -58,8 +60,14 @@ fun SearchMap(
         markers.firstOrNull() { it.id == selectedMarkerId }
     }
 
+    val style = if(isSystemInDarkTheme) {
+        "mapbox://styles/radubalgiu/cmly0owhe001n01sd1c5j1rrg"
+    } else {
+        "mapbox://styles/radubalgiu/cmip1r7g000pm01sca0vz7dxp"
+    }
+
     var mapStyle by rememberSaveable {
-        mutableStateOf("mapbox://styles/radubalgiu/cmip1r7g000pm01sca0vz7dxp")
+        mutableStateOf(style)
     }
 
     val cameraPosition by viewModel.cameraPosition.collectAsState()

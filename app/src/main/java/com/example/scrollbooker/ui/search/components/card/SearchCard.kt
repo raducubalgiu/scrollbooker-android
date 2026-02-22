@@ -84,15 +84,11 @@ fun SearchCard(
             }
 
             if(showMoreProductsBtn) {
-                MainButton(
+                MainButtonOutlined(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = BasePadding),
                     contentPadding = PaddingValues(BasePadding),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = SurfaceBG,
-                        contentColor = OnSurfaceBG
-                    ),
                     title = stringResource(R.string.seeAllServices),
                     onClick = { onOpenBookingsSheet(business.owner) }
                 )

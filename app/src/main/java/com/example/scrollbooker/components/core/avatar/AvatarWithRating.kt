@@ -3,6 +3,7 @@ package com.example.scrollbooker.components.core.avatar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,7 +27,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.extensions.toFixedDecimals
+import com.example.scrollbooker.ui.theme.Background
+import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
+import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyMedium
 
 @Composable
@@ -38,6 +43,8 @@ fun AvatarWithRating(
     elevation: Dp = 1.dp,
     onClick: () -> Unit
 ) {
+    val isSystemInDarkMode = isSystemInDarkTheme()
+
     Box(
         modifier = modifier
             .padding(bottom = 10.dp)
@@ -64,7 +71,7 @@ fun AvatarWithRating(
                     clip = false
                 )
                 .background(
-                    color = Color.White,
+                    color = if(isSystemInDarkMode) SurfaceBG else Background,
                     shape = RoundedCornerShape(15.dp)
                 )
                 .padding(horizontal = 8.dp, vertical = 6.dp)
@@ -78,7 +85,7 @@ fun AvatarWithRating(
             Spacer(Modifier.width(2.dp))
             Text(
                 text = rating.toFixedDecimals(1),
-                color = Color.Black,
+                color = if(isSystemInDarkMode) OnSurfaceBG else OnBackground,
                 fontWeight = FontWeight.ExtraBold,
                 style = bodyMedium
             )

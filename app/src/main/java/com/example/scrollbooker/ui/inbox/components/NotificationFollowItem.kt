@@ -18,6 +18,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
@@ -138,7 +139,8 @@ fun NotificationFollowItem(
                     colors = ButtonDefaults.buttonColors(
                         containerColor = if(isFollowed) Color.Transparent else Primary,
                         contentColor = if(isFollowed) OnBackground else OnPrimary
-                    )
+                    ),
+                    shape = ShapeDefaults.ExtraLarge
                 )
             },
             leadingContent = {

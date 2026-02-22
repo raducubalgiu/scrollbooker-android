@@ -3,6 +3,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -63,10 +64,10 @@ fun NotificationsList(
                         }
                         NotificationTypeEnum.EMPLOYMENT_REQUEST -> {
                             UserListItem(
-                                title = notification.sender.fullName ?: "",
+                                title = notification.sender.fullName,
                                 description = stringResource(R.string.sentYouAnEmploymentRequest),
                                 avatar = notification.sender.avatar ?: "",
-                                rating = 4.5f,
+                                rating = notification.sender.ratingsAverage,
                                 isEnabled = true,
                                 isBusinessOrEmployee = false,
                                 onNavigateUserProfile = { inboxNavigate.toUserProfile(notification.senderId) },
@@ -83,14 +84,15 @@ fun NotificationsList(
                                             contentColor = OnError,
                                             disabledContainerColor = Divider,
                                             disabledContentColor = OnSurfaceBG
-                                        )
+                                        ),
+                                        shape = ShapeDefaults.ExtraLarge
                                     )
                                 }
                             )
                         }
                         NotificationTypeEnum.EMPLOYMENT_REQUEST_ACCEPT -> {
                             UserListItem(
-                                title = notification.sender.fullName ?: "",
+                                title = notification.sender.fullName,
                                 description = stringResource(R.string.acceptedYourEmploymentRequest),
                                 avatar = notification.sender.avatar ?: "",
                                 rating = 4.5f,
@@ -101,7 +103,7 @@ fun NotificationsList(
                         }
                         NotificationTypeEnum.EMPLOYMENT_REQUEST_DENIED -> {
                             UserListItem(
-                                title = notification.sender.fullName ?: "",
+                                title = notification.sender.fullName,
                                 description = stringResource(R.string.deniedYourEmploymentRequest),
                                 avatar = notification.sender.avatar ?: "",
                                 rating = 4.5f,
