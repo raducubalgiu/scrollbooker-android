@@ -21,7 +21,7 @@ class NotificationPagingSource(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Notification> {
         val page = params.key ?: 1
-        val limit = 10
+        val limit = 20
 
         return try {
             val response = withVisibleLoading { api.getUserNotifications(page, limit) }
