@@ -18,7 +18,6 @@ import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
 import com.example.scrollbooker.ui.shared.reviews.ReviewsScreen
 import com.example.scrollbooker.ui.shared.reviews.ReviewsViewModel
-import com.example.scrollbooker.ui.social.tab.BookingsTab
 import com.example.scrollbooker.ui.social.tab.UserFollowersTab
 import com.example.scrollbooker.ui.social.tab.UserFollowingsTab
 
@@ -31,8 +30,8 @@ fun SocialScreen(
 ) {
     val scope = rememberCoroutineScope()
 
-    val tabs = remember(socialParam.isBusinessOrEmployee) {
-        SocialTab.getTabs(socialParam.isBusinessOrEmployee)
+    val tabs = remember {
+        SocialTab.getTabs()
     }
 
     val reviewsViewModel: ReviewsViewModel = hiltViewModel()
@@ -41,9 +40,16 @@ fun SocialScreen(
     val selectedTabIndex = pagerState.currentPage
 
     Scaffold(
-        topBar = { Header(title = socialParam.username, onBack = onBack) }
+        topBar = {
+            Header(
+                title = socialParam.username,
+                onBack = onBack
+            )
+        }
     ) { innerPadding ->
-        Column(Modifier.padding(top = innerPadding.calculateTopPadding())) {
+        Column(modifier = Modifier
+            .padding(top = innerPadding.calculateTopPadding())
+        ) {
             Tabs(
                 tabs = tabs.map { it.route },
                 selectedTabIndex = selectedTabIndex,
@@ -60,7 +66,6 @@ fun SocialScreen(
 
                 key(post) {
                     when(post) {
-                        SocialTab.Bookings -> BookingsTab()
                         SocialTab.Reviews -> ReviewsScreen(
                             userId = socialParam.userId,
                             viewModel = reviewsViewModel,

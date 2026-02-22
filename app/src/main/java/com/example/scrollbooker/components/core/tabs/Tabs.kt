@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
@@ -24,6 +25,7 @@ fun Tabs(
     onChangeTab: (Int) -> Unit
 ) {
     TabRow(
+        modifier = Modifier.zIndex(14f),
         containerColor = Background,
         contentColor = OnSurfaceBG,
         selectedTabIndex = selectedTabIndex,

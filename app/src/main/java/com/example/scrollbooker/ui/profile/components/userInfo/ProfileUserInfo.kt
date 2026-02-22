@@ -57,7 +57,8 @@ fun rememberIntentActions(user: UserProfile): List<IntentAction> {
                 icon = spec.icon,
                 title = spec.title,
                 value = spec.valueOf(user),
-                isBusinessOrEmployee = spec.onlyBusinessOrEmployee
+                isBusinessOrEmployee = spec.onlyBusinessOrEmployee,
+                actionType = spec.actionType
             )
         }
     }
@@ -97,7 +98,6 @@ fun ProfileUserInfo(
 
     ProfileCounters(
         counters = user.counters,
-        isBusinessOrEmployee = user.isBusinessOrEmployee,
         onNavigateToSocial = { onNavigateToSocial(
             NavigateSocialParam(
                 tabIndex = it,

@@ -1,5 +1,6 @@
 package com.example.scrollbooker.ui.profile.components.userInfo.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
@@ -19,9 +20,13 @@ import com.example.scrollbooker.ui.theme.Primary
 @Composable
 fun ProfileIntentActionButton(
     icon: Int,
-    title: Int
+    title: Int,
+    onClick: () -> Unit
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        modifier = Modifier.clickable { onClick() },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Icon(
             modifier = Modifier.size(20.dp),
             painter = painterResource(icon),

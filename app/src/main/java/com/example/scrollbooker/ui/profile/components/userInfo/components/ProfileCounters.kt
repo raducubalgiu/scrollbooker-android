@@ -17,7 +17,6 @@ import com.example.scrollbooker.entity.user.userProfile.domain.model.UserCounter
 @Composable
 fun ProfileCounters(
     counters: UserCounters,
-    isBusinessOrEmployee: Boolean,
     onNavigateToSocial: (tabIndex: Int) -> Unit
 ) {
     Row(modifier = Modifier
@@ -31,7 +30,7 @@ fun ProfileCounters(
     ) {
         CounterItem(
             counter = counters.ratingsCount,
-            label = if(!isBusinessOrEmployee) stringResource(R.string.bookings) else stringResource(R.string.reviews),
+            label = stringResource(R.string.reviews),
             onNavigate = { onNavigateToSocial(0) }
         )
         VerticalDivider()

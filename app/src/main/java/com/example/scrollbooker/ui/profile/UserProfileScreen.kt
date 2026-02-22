@@ -104,7 +104,7 @@ fun UserProfileScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
+                .padding(top = innerPadding.calculateTopPadding())
         ) {
             when (val profileData = profile) {
                 is FeatureState.Error -> ErrorScreen()
