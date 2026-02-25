@@ -47,7 +47,6 @@ fun ProductDetails(
         Text(
             text = name,
             style = titleMedium,
-            fontSize = 18.sp,
             color = OnBackground,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
@@ -75,7 +74,7 @@ fun ProductDetails(
                 )
             }
 
-            filters.sortedBy { it.id }.mapIndexed { i, filter ->
+            filters.mapIndexed { i, filter ->
                 when(filter.type) {
                     FilterTypeEnum.OPTIONS -> {
                         filter.subFilters.mapIndexed { subIndex, subFilter ->

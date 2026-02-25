@@ -51,5 +51,8 @@ data class ProductFilterDto(
     val type: String,
     val unit: String?,
     val minim: BigDecimal?,
-    val maxim: BigDecimal?
+    val maxim: BigDecimal?,
+
+    @SerializedName("display_as_tab")
+    val displayAsTab: Boolean
 )

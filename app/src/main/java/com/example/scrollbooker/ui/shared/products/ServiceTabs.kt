@@ -73,7 +73,6 @@ fun ServiceTabs(
                 ServiceTab(
                     isSelected = isSelected,
                     serviceName = service.shortName,
-                    count = service.productsCount,
                     onClick = {
                         scope.launch {
                             pagerState.animateScrollToPage(index)

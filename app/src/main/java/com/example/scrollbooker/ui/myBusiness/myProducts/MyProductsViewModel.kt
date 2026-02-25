@@ -22,13 +22,15 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import timber.log.Timber
 import javax.inject.Inject
 
 data class ServicesTabsState(
     val selectedDomainIndex: Int = 0,
-    val selectedServicePerDomain: Map<Int, Int> = emptyMap()
+    val selectedServicePerDomain: Map<Int, Int> = emptyMap(),
+    val selectedEmployeePerService: Map<String, Int> = emptyMap() // Key format: "domainIndex-serviceIndex"
 )
 
 @HiltViewModel
@@ -38,6 +40,9 @@ class MyProductsViewModel @Inject constructor(
     private val getProductsByUserIdAndServiceIdUseCase: GetProductsByUserIdAndServiceIdUseCase,
     private val deleteProductUseCase: DeleteProductUseCase
 ): ViewModel() {
+    // Cache pentru produse: (userId, serviceId, employeeId) -> FeatureState
+    private val productsCache = mutableMapOf<Triple<Int, Int, Int?>, FeatureState<List<ProductSection>>>()
+
     // Tabs
     private val _tabsState = MutableStateFlow(ServicesTabsState())
     val tabsState: StateFlow<ServicesTabsState> = _tabsState.asStateFlow()
@@ -57,8 +62,23 @@ class MyProductsViewModel @Inject constructor(
         }
     }
 
+    fun selectEmployee(domainIndex: Int, serviceIndex: Int, employeeId: Int) {
+        val key = "$domainIndex-$serviceIndex"
+        _tabsState.update {
+            it.copy(
+                selectedEmployeePerService =
+                    it.selectedEmployeePerService + (key to employeeId)
+            )
+        }
+    }
+
     fun getSelectedService(domainIndex: Int): Int {
         return _tabsState.value.selectedServicePerDomain[domainIndex] ?: 0
+    }
+
+    fun getSelectedEmployee(domainIndex: Int, serviceIndex: Int): Int? {
+        val key = "$domainIndex-$serviceIndex"
+        return _tabsState.value.selectedEmployeePerService[key]
     }
 
     private val _isSaving = MutableStateFlow<Boolean>(false)
@@ -101,19 +121,52 @@ class MyProductsViewModel @Inject constructor(
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val productSections: StateFlow<FeatureState<List<ProductSection>>> = userIdFlow
-        .flatMapLatest { userId ->
+    val productSections: StateFlow<FeatureState<List<ProductSection>>> = combine(
+        userIdFlow,
+        _tabsState,
+        serviceDomains
+    ) { userId, tabsState, serviceDomainState ->
+        // Extract current serviceId and employeeId based on tab selection
+        val (serviceId, employeeId) = extractServiceAndEmployeeIds(tabsState, serviceDomainState)
+        Triple(userId, serviceId, employeeId)
+    }
+        .distinctUntilChanged()
+        .flatMapLatest { (userId, serviceId, employeeId) ->
             flow {
-                emit(FeatureState.Loading)
-
-                val result = withVisibleLoading {
-                    getProductsByUserIdAndServiceIdUseCase(
-                        userId = userId,
-                        serviceId = 95,
-                        employeeId = 12
-                    )
+                // Only proceed if we have a valid serviceId
+                if (serviceId == null) {
+                    emit(FeatureState.Success(emptyList()))
+                    return@flow
                 }
-                emit(result)
+
+                // Check if we have cached data for this combination
+                val cacheKey = Triple(userId, serviceId, employeeId)
+                val cachedResult = productsCache[cacheKey]
+
+                if (cachedResult != null) {
+                    Timber.tag("ProductSections").d("Using cached data for userId=$userId, serviceId=$serviceId, employeeId=$employeeId")
+                    emit(cachedResult)
+                } else {
+                    // No cache, fetch from API
+                    emit(FeatureState.Loading)
+
+                    val result = withVisibleLoading {
+                        getProductsByUserIdAndServiceIdUseCase(
+                            userId = userId,
+                            serviceId = serviceId,
+                            employeeId = employeeId
+                        )
+                    }
+
+                    Timber.tag("ProductSections").d("Fetched products for userId=$userId, serviceId=$serviceId, employeeId=$employeeId")
+
+                    // Store in cache
+                    if (result is FeatureState.Success) {
+                        productsCache[cacheKey] = result
+                    }
+
+                    emit(result)
+                }
             }
         }
         .stateIn(
@@ -121,4 +174,36 @@ class MyProductsViewModel @Inject constructor(
             started = SharingStarted.Eagerly,
             initialValue = FeatureState.Loading
         )
+
+    private fun extractServiceAndEmployeeIds(
+        tabsState: ServicesTabsState,
+        serviceDomainState: FeatureState<List<ServiceDomainWithEmployeeServices>>
+    ): Pair<Int?, Int?> {
+        return if (serviceDomainState is FeatureState.Success) {
+            val domains = serviceDomainState.data
+            val selectedDomainIndex = tabsState.selectedDomainIndex
+
+            if (selectedDomainIndex < domains.size) {
+                val selectedDomain = domains[selectedDomainIndex]
+                val selectedServiceIndex = tabsState.selectedServicePerDomain[selectedDomainIndex] ?: 0
+
+                if (selectedServiceIndex < selectedDomain.services.size) {
+                    val service = selectedDomain.services[selectedServiceIndex]
+
+                    // Get selected employeeId for this service, or use first employee if available
+                    val key = "$selectedDomainIndex-$selectedServiceIndex"
+                    val employeeId = tabsState.selectedEmployeePerService[key]
+                        ?: service.employees.firstOrNull()?.id
+
+                    Pair(service.id, employeeId)
+                } else {
+                    Pair(null, null)
+                }
+            } else {
+                Pair(null, null)
+            }
+        } else {
+            Pair(null, null)
+        }
+    }
 }

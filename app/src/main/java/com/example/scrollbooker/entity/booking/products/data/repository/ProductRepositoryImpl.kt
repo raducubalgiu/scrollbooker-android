@@ -35,10 +35,12 @@ class ProductRepositoryImpl @Inject constructor(
 
     override suspend fun createProduct(
         productCreate: ProductCreate,
+        serviceDomainId: Int,
         filters: List<AddProductFilterRequest>
     ): Product {
         val request = ProductCreateRequestDto(
             product = productCreate.toDto(),
+            serviceDomainId = serviceDomainId,
             filters = filters
         )
         return api.createProduct(request).toDomain()

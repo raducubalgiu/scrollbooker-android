@@ -1,6 +1,7 @@
 package com.example.scrollbooker.components.customized.ProductCard
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
 import com.example.scrollbooker.components.customized.Protected.Protected
@@ -61,15 +63,13 @@ fun ProductCard(
                 Spacer(Modifier.width(SpacingS))
 
                 if(!displayActions && product.canBeBooked) {
-                    Protected(permission = PermissionEnum.BOOK_BUTTON_VIEW) {
-                        MainButtonOutlined(
-                            title = if(isSelected) stringResource(R.string.added) else stringResource(R.string.add),
-                            onClick = { onSelect(product) },
-                            trailingIcon = if(isSelected) Icons.Default.Check else Icons.Default.Add,
-                            trailingIconTint = Primary,
-                            showTrailingIcon = true
-                        )
-                    }
+                    MainButtonOutlined(
+                        title = if(isSelected) stringResource(R.string.added) else stringResource(R.string.add),
+                        onClick = { onSelect(product) },
+                        trailingIcon = if(isSelected) Icons.Default.Check else Icons.Default.Add,
+                        trailingIconTint = Primary,
+                        showTrailingIcon = true,
+                    )
                 }
             }
 

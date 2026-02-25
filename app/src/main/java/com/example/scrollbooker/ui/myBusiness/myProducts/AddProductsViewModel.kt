@@ -205,12 +205,13 @@ class AddProductsViewModel @Inject constructor(
                         duration = state.duration.toInt(),
                         serviceId = state.serviceId.toInt(),
                         businessId = businessId,
-                        currencyId = state.currencyId.toInt(),
+                        currencyId = 1,
                         type = productType,
                         sessionsCount = state.sessionsCount.toIntOrNull(),
                         validityDays = state.validityDays.toIntOrNull(),
                         canBeBooked = state.canBeBooked
                     ),
+                    serviceDomainId = state.serviceDomainId.toInt(),
                     filters = filters
                 )
             }

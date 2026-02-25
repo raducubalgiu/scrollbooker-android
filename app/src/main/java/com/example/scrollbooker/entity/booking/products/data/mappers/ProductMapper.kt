@@ -36,6 +36,7 @@ fun ProductFilterDto.toDomain(): ProductFilter {
         type = FilterTypeEnum.fromKey(type),
         unit = unit,
         minim = minim,
-        maxim = maxim
+        maxim = maxim,
+        displayAsTab = displayAsTab
     )
 }

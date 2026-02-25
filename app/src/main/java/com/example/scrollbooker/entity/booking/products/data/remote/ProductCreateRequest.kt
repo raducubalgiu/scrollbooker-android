@@ -7,6 +7,9 @@ data class ProductCreateRequestDto(
     @SerializedName("product")
     val product: ProductCreateDto,
 
+    @SerializedName("service_domain_id")
+    val serviceDomainId: Int,
+
     val filters: List<AddProductFilterRequest>
 )
 

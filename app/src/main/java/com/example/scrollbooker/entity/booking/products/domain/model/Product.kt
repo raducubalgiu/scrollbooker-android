@@ -31,5 +31,6 @@ data class ProductFilter(
     val type: FilterTypeEnum?,
     val unit: String?,
     val minim: BigDecimal?,
-    val maxim: BigDecimal?
+    val maxim: BigDecimal?,
+    val displayAsTab: Boolean
 )

@@ -10,8 +10,9 @@ class CreateProductUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(
         productCreate: ProductCreate,
+        serviceDomainId: Int,
         filters: List<AddProductFilterRequest>
     ): Result<Product> = runCatching {
-        repository.createProduct(productCreate, filters)
+        repository.createProduct(productCreate, serviceDomainId, filters)
     }
 }
