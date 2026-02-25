@@ -24,18 +24,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.LastMinute
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
-import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.labelLarge
-import com.mapbox.maps.extension.style.expressions.dsl.generated.color
 
 @Composable
 fun Input(
@@ -58,6 +56,7 @@ fun Input(
     leadingIcon: (@Composable () -> Unit)? = null,
     trailingIcon: (@Composable () -> Unit)? = null,
     maxLines: Int = 1,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
     colors: TextFieldColors = TextFieldDefaults.colors(
         focusedContainerColor = inputColor,
         unfocusedContainerColor = inputColor,
@@ -97,6 +96,7 @@ fun Input(
         shape = MaterialTheme.shapes.medium,
         colors = colors,
         isError = isError,
+        visualTransformation = visualTransformation,
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
         enabled = isEnabled,
