@@ -1,7 +1,5 @@
 package com.example.scrollbooker.ui.profile.tabs.info
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,7 +11,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,22 +20,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.ui.theme.titleLarge
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.request.CachePolicy
-import coil.request.ImageRequest
+import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.customized.SchedulesSection
+import com.example.scrollbooker.components.customized.SectionMap
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfileAbout
+import com.example.scrollbooker.ui.theme.titleMedium
 import timber.log.Timber
 
 @Composable
@@ -63,11 +54,14 @@ fun ProfileInfoTab(
             is FeatureState.Success -> {
                 val data = aboutState.data
 
+                Timber.d("DATA!!!: $data")
+
                 Text(
                     modifier = Modifier.padding(vertical = BasePadding),
                     text = stringResource(R.string.address),
                     fontWeight = FontWeight.SemiBold,
-                    style = titleLarge
+                    style = titleMedium,
+                    fontSize = 18.sp
                 )
 
                 Row(
@@ -81,40 +75,7 @@ fun ProfileInfoTab(
 
                     Spacer(Modifier.width(BasePadding))
 
-                    Text(text = data.address)
-                }
-
-                Box(modifier = Modifier
-                    .padding(top = BasePadding)
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .clip(shape = ShapeDefaults.ExtraLarge)
-                ) {
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data("")
-                            .diskCachePolicy(CachePolicy.ENABLED)
-                            .memoryCachePolicy(CachePolicy.ENABLED)
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = "Business Location Map",
-                        contentScale = ContentScale.Crop,
-                        onError = { Timber.tag("Business Map Error").e("ERROR: ${it.result.throwable.message}") },
-                        modifier = Modifier.fillMaxSize()
-                    )
-
-                    Box(modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            brush = Brush.verticalGradient(
-                                colors = listOf(
-                                    Color.Black.copy(alpha = 0.2f),
-                                    Color.Transparent,
-                                    Color.Black.copy(alpha = 0.4f)
-                                )
-                            )
-                        )
-                    )
+                    Text(text = data.location?.address ?: "")
                 }
 
                 Text(
@@ -123,8 +84,8 @@ fun ProfileInfoTab(
                         bottom = BasePadding
                     ),
                     text = stringResource(R.string.description),
-                    fontWeight = FontWeight.SemiBold,
-                    style = titleLarge
+                    style = titleMedium,
+                    fontSize = 18.sp
                 )
 
                 data.description?.let {
@@ -138,10 +99,23 @@ fun ProfileInfoTab(
                     ),
                     text = stringResource(R.string.schedule),
                     fontWeight = FontWeight.SemiBold,
-                    style = titleLarge
+                    style = titleMedium,
+                    fontSize = 18.sp
                 )
 
                 SchedulesSection(schedules = data.schedules)
+
+                data.location?.let { location ->
+                    location.mapUrl?.let {
+                        SectionMap(
+                            mapUrl = it,
+                            coordinates = location.coordinates,
+                            fullName = data.ownerFullName
+                        )
+                    }
+                }
+
+                Spacer(Modifier.height(SpacingXXL))
             }
         }
     }

@@ -109,11 +109,17 @@ class ProfileViewModel @Inject constructor(
         .flatMapLatest { userId -> getUserBookmarkedPostsUseCase(userId) }
         .cachedIn(viewModelScope)
 
-    val about: StateFlow<FeatureState<UserProfileAbout>> =
-        flow<FeatureState<UserProfileAbout>> {
-            emit(FeatureState.Loading)
-            emit(withVisibleLoading { getUserProfileAboutUseCase() })
-        }.stateIn(
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val about: StateFlow<FeatureState<UserProfileAbout>> = userId
+        .filterNotNull()
+        .distinctUntilChanged()
+        .flatMapLatest { userId ->
+            flow {
+                emit(FeatureState.Loading)
+                emit(withVisibleLoading { getUserProfileAboutUseCase(userId) })
+            }
+        }
+        .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
             initialValue = FeatureState.Loading

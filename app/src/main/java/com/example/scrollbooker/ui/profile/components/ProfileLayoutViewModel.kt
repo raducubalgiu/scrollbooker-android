@@ -1,7 +1,6 @@
 package com.example.scrollbooker.ui.profile.components
 
 import android.content.Context
-import androidx.annotation.OptIn
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
@@ -53,6 +52,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
+import kotlin.OptIn
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.plus
@@ -121,35 +121,41 @@ class ProfileLayoutViewModel @Inject constructor(
             .cachedIn(viewModelScope)
 
     // Tabs
-    @kotlin.OptIn(ExperimentalCoroutinesApi::class)
+    @OptIn(ExperimentalCoroutinesApi::class)
     val posts: Flow<PagingData<Post>> = userIdFlow
         .filterNotNull()
         .flatMapLatest { userId -> getUserPostsUseCase(userId) }
         .cachedIn(viewModelScope)
 
-    @kotlin.OptIn(ExperimentalCoroutinesApi::class)
+    @OptIn(ExperimentalCoroutinesApi::class)
     val employees: Flow<PagingData<Employee>> = userIdFlow
         .filterNotNull()
         .flatMapLatest { userId -> getEmployeesByOwnerUseCase(userId) }
         .cachedIn(viewModelScope)
 
-    @kotlin.OptIn(ExperimentalCoroutinesApi::class)
+    @OptIn(ExperimentalCoroutinesApi::class)
     val bookmarks: Flow<PagingData<Post>> = userIdFlow
         .filterNotNull()
         .flatMapLatest { userId -> getUserBookmarkedPostsUseCase(userId) }
         .cachedIn(viewModelScope)
 
-    val about: StateFlow<FeatureState<UserProfileAbout>> =
-        flow<FeatureState<UserProfileAbout>> {
-            emit(FeatureState.Loading)
-            emit(withVisibleLoading { getUserProfileAboutUseCase() })
-        }.stateIn(
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val about: StateFlow<FeatureState<UserProfileAbout>> = userIdFlow
+        .filterNotNull()
+        .distinctUntilChanged()
+        .flatMapLatest { userId ->
+            flow {
+                emit(FeatureState.Loading)
+                emit(withVisibleLoading { getUserProfileAboutUseCase(userId) })
+            }
+        }
+        .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Lazily,
             initialValue = FeatureState.Loading
         )
 
-    @kotlin.OptIn(ExperimentalCoroutinesApi::class)
+    @OptIn(ExperimentalCoroutinesApi::class)
     val schedules: StateFlow<FeatureState<List<Schedule>>> = userIdFlow
         .filterNotNull()
         .distinctUntilChanged()
@@ -273,6 +279,7 @@ class ProfileLayoutViewModel @Inject constructor(
         repeat(maxPlayers) { pool.add(createPlayer(app)) }
     }
 
+    @androidx.annotation.OptIn(UnstableApi::class)
     @OptIn(UnstableApi::class)
     private fun createLoadControl(): DefaultLoadControl {
         return DefaultLoadControl.Builder()
@@ -287,6 +294,7 @@ class ProfileLayoutViewModel @Inject constructor(
             .build()
     }
 
+    @androidx.annotation.OptIn(UnstableApi::class)
     @OptIn(UnstableApi::class)
     private fun createPlayer(context: Context): ExoPlayer {
         return ExoPlayer.Builder(context)

@@ -1,5 +1,6 @@
 package com.example.scrollbooker.entity.booking.business.data.mappers
 
+import com.example.scrollbooker.entity.booking.business.data.remote.BusinessLocationDto
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessProfileCountersDto
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessProfileDto
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessProfileEmployeeDto
@@ -7,6 +8,7 @@ import com.example.scrollbooker.entity.booking.business.data.remote.BusinessProf
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessProfileReviewDto
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessProfileReviewerDto
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessProfileReviewsDto
+import com.example.scrollbooker.entity.booking.business.domain.model.BusinessLocation
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfile
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileCounters
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileEmployee
@@ -26,7 +28,7 @@ fun BusinessProfileDto.toDomain(): BusinessProfile {
         openingHours = openingHours.toDomain(),
         mediaFiles = mediaFiles.map { it.toDomain() },
         businessPlan = businessPlan.toDomain(),
-        address = address,
+        location = location.toDomain(),
         distanceKm = distanceKm,
         description = description,
         products = products.map { it.toDomain() },
@@ -45,6 +47,14 @@ fun BusinessProfileOwnerDto.toDomain(): BusinessProfileOwner {
         avatar = avatar,
         counters = counters.toDomain(),
         isFollow = isFollow
+    )
+}
+
+fun BusinessLocationDto.toDomain(): BusinessLocation {
+    return BusinessLocation(
+        address = address,
+        coordinates = coordinates,
+        mapUrl = mapUrl
     )
 }
 

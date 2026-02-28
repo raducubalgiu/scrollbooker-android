@@ -1,4 +1,5 @@
 package com.example.scrollbooker.entity.booking.business.domain.model
+import com.example.scrollbooker.entity.booking.appointment.domain.model.BusinessCoordinates
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
 import com.example.scrollbooker.entity.social.post.domain.model.BusinessPlan
@@ -10,7 +11,7 @@ data class BusinessProfile(
     val openingHours: OpeningHours,
     val mediaFiles: List<BusinessMediaFile>,
     val businessPlan: BusinessPlan,
-    val address: String,
+    val location: BusinessLocation,
     val distanceKm: Float?,
     val description: String?,
     val products: List<Product>,
@@ -27,6 +28,12 @@ data class BusinessProfileOwner(
     val avatar: String?,
     val counters: BusinessProfileCounters,
     val isFollow: Boolean
+)
+
+data class BusinessLocation(
+    val address: String,
+    val coordinates: BusinessCoordinates,
+    val mapUrl: String?
 )
 
 data class BusinessProfileCounters(

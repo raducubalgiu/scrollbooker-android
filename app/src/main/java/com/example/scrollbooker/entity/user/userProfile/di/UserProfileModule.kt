@@ -55,10 +55,9 @@ object UserProfileModule {
     @Provides
     @Singleton
     fun provideGetUserProfileAboutUseCase(
-        repository: UserProfileRepository,
-        authDataStore: AuthDataStore
+        repository: UserProfileRepository
     ): GetUserProfileAboutUseCase {
-        return GetUserProfileAboutUseCase(repository, authDataStore)
+        return GetUserProfileAboutUseCase(repository)
     }
 
     @Provides

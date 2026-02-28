@@ -1,22 +1,15 @@
 package com.example.scrollbooker.ui.appointments
-import android.content.Intent
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -24,22 +17,15 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.sheet.Sheet
 import com.example.scrollbooker.core.enums.AppointmentStatusEnum
-import com.example.scrollbooker.core.extensions.toImageBitmap
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentWrittenReview
 import com.example.scrollbooker.ui.appointments.components.AppointmentDetailsActions
@@ -54,11 +40,9 @@ import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheetUser
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
-import com.example.scrollbooker.ui.theme.OnSurfaceBG
-import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.titleMedium
 import kotlinx.coroutines.launch
-import androidx.core.net.toUri
+import com.example.scrollbooker.components.customized.SectionMap
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -79,12 +63,6 @@ fun AppointmentDetailsScreen(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val reviewSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val cancelReviewSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
-    val context = LocalContext.current
-
-    val imageBitmap = viewModel.mapImage?.let {
-        remember(it) { it.toImageBitmap() }
-    }
 
     LaunchedEffect(Unit) {
         appointment?.business?.coordinates?.let {
@@ -188,17 +166,6 @@ fun AppointmentDetailsScreen(
         )
     }
 
-    fun redirectToMaps() {
-        val lat = appointment?.business?.coordinates?.lat ?: return
-        val lng = appointment?.business?.coordinates?.lng ?: return
-        val fullName = appointment?.user?.fullName ?: ""
-
-        val uri = "geo:0,0?q=${lat},${lng}(${fullName})".toUri()
-        val intent = Intent(Intent.ACTION_VIEW, uri)
-
-        context.startActivity(intent)
-    }
-
     Scaffold(
         topBar = { Header(onBack = onBack) },
         containerColor = Background
@@ -293,45 +260,25 @@ fun AppointmentDetailsScreen(
                 }
 
                 a.message?.let { AppointmentDetailsMessage(it) }
-            }
 
-            if(appointment?.isCustomer == true) {
-                Text(
-                    modifier = Modifier.padding(top = SpacingXL),
-                    text = stringResource(R.string.location),
-                    style = titleMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
+                if(a.isCustomer == true) {
+                    a.business.mapUrl?.let {
+                        Text(
+                            modifier = Modifier.padding(top = SpacingXL),
+                            text = stringResource(R.string.location),
+                            style = titleMedium,
+                            fontWeight = FontWeight.SemiBold
+                        )
 
-                Spacer(Modifier.height(BasePadding))
+                        Spacer(Modifier.height(BasePadding))
 
-                Box(
-                    modifier = Modifier
-                        .clip(shape = ShapeDefaults.Large)
-                        .fillMaxWidth()
-                        .height(220.dp)
-                        .clickable(onClick = { redirectToMaps() })
-                ) {
-                    imageBitmap?.let {
-                        Image(
-                            modifier = Modifier.matchParentSize(),
-                            bitmap = it,
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop
+                        SectionMap(
+                            mapUrl = it,
+                            coordinates = a.business.coordinates,
+                            fullName = a.user.fullName
                         )
                     }
                 }
-
-                Spacer(Modifier.height(SpacingM))
-
-                MainButton(
-                    title = stringResource(R.string.navigationDirections),
-                    onClick = { redirectToMaps() },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = SurfaceBG,
-                        contentColor = OnSurfaceBG
-                    )
-                )
             }
 
             Spacer(Modifier.height(BasePadding))

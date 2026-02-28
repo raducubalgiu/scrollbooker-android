@@ -1,4 +1,6 @@
 package com.example.scrollbooker.entity.booking.business.data.remote
+import com.example.scrollbooker.entity.booking.appointment.domain.model.BusinessCoordinates
+import com.example.scrollbooker.entity.booking.business.domain.model.BusinessLocation
 import com.example.scrollbooker.entity.booking.products.data.remote.ProductDto
 import com.example.scrollbooker.entity.booking.schedule.data.remote.ScheduleDto
 import com.example.scrollbooker.entity.social.post.data.remote.BusinessPlanDto
@@ -17,7 +19,7 @@ data class BusinessProfileDto(
     @SerializedName("business_plan")
     val businessPlan: BusinessPlanDto,
 
-    val address: String,
+    val location: BusinessLocationDto,
 
     @SerializedName("distance_km")
     val distanceKm: Float?,
@@ -42,6 +44,14 @@ data class BusinessProfileOwnerDto(
 
     @SerializedName("is_follow")
     val isFollow: Boolean
+)
+
+data class BusinessLocationDto(
+    val address: String,
+    val coordinates: BusinessCoordinates,
+
+    @SerializedName("map_url")
+    val mapUrl: String?
 )
 
 data class BusinessProfileCountersDto(

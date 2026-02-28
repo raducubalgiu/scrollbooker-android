@@ -1,5 +1,6 @@
 package com.example.scrollbooker.entity.user.userProfile.data.mappers
 
+import com.example.scrollbooker.entity.booking.business.data.mappers.toDomain
 import com.example.scrollbooker.entity.booking.schedule.data.mappers.toDomain
 import com.example.scrollbooker.entity.user.userProfile.data.remote.UserProfileAboutDto
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfileAbout
@@ -7,7 +8,8 @@ import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 fun UserProfileAboutDto.toDomain(): UserProfileAbout {
     return UserProfileAbout(
         description = description,
-        address = address,
-        schedules = schedules.map { it.toDomain() }
+        schedules = schedules.map { it.toDomain() },
+        location = location.toDomain(),
+        ownerFullName = ownerFullName
     )
 }

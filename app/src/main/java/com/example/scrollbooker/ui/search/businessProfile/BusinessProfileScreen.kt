@@ -199,7 +199,7 @@ fun BusinessProfileScreen(
                         BusinessSummarySection(
                             owner = profile.owner,
                             businessPlan = profile.businessPlan,
-                            address = profile.address,
+                            address = profile.location.address,
                             distance = profile.distanceKm,
                             openingHours = profile.openingHours,
                             onNavigateToOwnerProfile = onNavigateToUserProfile,
@@ -243,7 +243,9 @@ fun BusinessProfileScreen(
                     item(key = BusinessProfileSection.About.key) {
                         BusinessAboutSection(
                             description = profile.description ?: "",
-                            schedules = profile.schedules
+                            schedules = profile.schedules,
+                            location = profile.location,
+                            fullName = profile.owner.fullName
                         )
                     }
                 }
