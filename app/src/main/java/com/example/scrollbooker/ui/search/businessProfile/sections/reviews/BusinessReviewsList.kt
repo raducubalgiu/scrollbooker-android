@@ -90,7 +90,7 @@ fun BusinessReviewsList(
                 RatingsStars(
                     rating = r.rating.toFloat(),
                     maxRating = 5,
-                    starSize = 20.dp
+                    starSize = 18.dp
                 )
 
                 Text(

@@ -29,22 +29,28 @@ import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.ui.theme.headlineSmall
+import com.example.scrollbooker.ui.theme.titleLarge
 
 @Composable
 fun BusinessPostsSection(
     posts: List<Post>
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(vertical = BasePadding)
+    ) {
         Text(
             modifier = Modifier.padding(horizontal = BasePadding),
             text = stringResource(R.string.social),
-            style = headlineSmall,
+            style = titleLarge,
             fontWeight = FontWeight.SemiBold
         )
 
         Spacer(Modifier.height(SpacingXL))
 
-        LazyRow(contentPadding = PaddingValues(horizontal = BasePadding)) {
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = BasePadding)
+        ) {
             items(posts) {
                 Box(
                     modifier = Modifier

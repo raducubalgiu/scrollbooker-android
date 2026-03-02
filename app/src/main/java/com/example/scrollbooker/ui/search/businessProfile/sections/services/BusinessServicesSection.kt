@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
 import com.example.scrollbooker.core.enums.ProductTypeEnum
@@ -23,6 +24,7 @@ import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.ui.search.components.card.SearchCardProductRow
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.headlineSmall
+import com.example.scrollbooker.ui.theme.titleLarge
 import java.math.BigDecimal
 
 @Composable
@@ -105,11 +107,11 @@ fun BusinessServicesSection() {
     Column(modifier = Modifier.padding(BasePadding)) {
         Text(
             text = stringResource(R.string.services),
-            style = headlineSmall,
+            style = titleLarge,
             fontWeight = FontWeight.SemiBold
         )
 
-        Spacer(Modifier.height(SpacingXL))
+        Spacer(Modifier.height(BasePadding))
 
         products.forEachIndexed { index, prod ->
             SearchCardProductRow(product = prod)

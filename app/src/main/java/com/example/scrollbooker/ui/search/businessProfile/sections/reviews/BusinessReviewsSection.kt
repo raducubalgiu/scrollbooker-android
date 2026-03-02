@@ -17,6 +17,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileReviews
 import com.example.scrollbooker.ui.theme.headlineSmall
+import com.example.scrollbooker.ui.theme.titleLarge
 
 @Composable
 fun BusinessReviewsSection(
@@ -25,16 +26,18 @@ fun BusinessReviewsSection(
     ratingsCount: Int,
     onNavigateToReviewerProfile: (Int) -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(vertical = BasePadding)
+    ) {
         Text(
-            modifier = Modifier.padding(
-                horizontal = BasePadding,
-                vertical = SpacingXL
-            ),
+            modifier = Modifier.padding(horizontal = BasePadding),
             text = stringResource(R.string.reviews),
-            style = headlineSmall,
+            style = titleLarge,
             fontWeight = FontWeight.SemiBold
         )
+
+        Spacer(Modifier.height(BasePadding))
 
         BusinessReviewsSummary(
             ratingsAverage = ratingsAverage,

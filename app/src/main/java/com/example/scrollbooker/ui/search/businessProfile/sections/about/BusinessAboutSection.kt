@@ -19,6 +19,8 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessLocation
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
 import com.example.scrollbooker.ui.theme.headlineSmall
+import com.example.scrollbooker.ui.theme.titleLarge
+import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun BusinessAboutSection(
@@ -27,16 +29,18 @@ fun BusinessAboutSection(
     location: BusinessLocation,
     fullName: String
 ) {
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(vertical = BasePadding)
+    ) {
         Text(
-            modifier = Modifier.padding(
-                horizontal = BasePadding,
-                vertical = SpacingXL
-            ),
+            modifier = Modifier.padding(horizontal = BasePadding),
             text = stringResource(R.string.about),
-            style = headlineSmall,
+            style = titleLarge,
             fontWeight = FontWeight.SemiBold
         )
+
+        Spacer(Modifier.height(BasePadding))
 
         Text(
             modifier = Modifier.padding(horizontal = BasePadding),
@@ -48,7 +52,7 @@ fun BusinessAboutSection(
         Text(
             modifier = Modifier.padding(horizontal = BasePadding),
             text = stringResource(R.string.schedule),
-            style = headlineSmall,
+            style = titleLarge,
             fontWeight = FontWeight.SemiBold
         )
 

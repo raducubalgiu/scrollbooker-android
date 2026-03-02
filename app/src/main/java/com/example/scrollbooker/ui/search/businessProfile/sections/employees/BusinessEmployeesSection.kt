@@ -23,12 +23,12 @@ fun BusinessEmployeesSection(
     employees: List<BusinessProfileEmployee>,
     onNavigateToEmployeeProfile: (Int) -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(vertical = BasePadding)
+    ) {
         Text(
-            modifier = Modifier.padding(
-                horizontal = BasePadding,
-                vertical = SpacingXL
-            ),
+            modifier = Modifier.padding(horizontal = BasePadding),
             text = stringResource(R.string.team),
             style = headlineSmall,
             fontWeight = FontWeight.SemiBold
