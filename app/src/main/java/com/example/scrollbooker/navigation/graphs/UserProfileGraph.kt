@@ -64,16 +64,18 @@ fun NavGraphBuilder.userProfileGraph(
         }
 
         composable(
-            route = "${MainRoute.UserProfilePostDetail.route}/{postIndex}/{userId}",
+            route = "${MainRoute.UserProfilePostDetail.route}/{postTab}/{postIndex}/{userId}",
             enterTransition = { EnterTransition.None },
             exitTransition = { ExitTransition.None},
             popEnterTransition = { EnterTransition.None },
             popExitTransition = { ExitTransition.None },
             arguments = listOf(
+                navArgument("postTab") { type = NavType.StringType },
                 navArgument("postIndex") { type = NavType.IntType },
                 navArgument("userId") { type = NavType.IntType }
             ),
         ) { backStackEntry ->
+            val postTabKey = backStackEntry.arguments?.getString("postTab") ?: return@composable
             val postIndex = backStackEntry.arguments?.getInt("postIndex") ?: return@composable
             val userId = backStackEntry.arguments?.getInt("userId") ?: return@composable
 
@@ -87,6 +89,7 @@ fun NavGraphBuilder.userProfileGraph(
             }
 
             UserProfilePostDetailScreen(
+                postTabKey = postTabKey,
                 postIndex = postIndex,
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },

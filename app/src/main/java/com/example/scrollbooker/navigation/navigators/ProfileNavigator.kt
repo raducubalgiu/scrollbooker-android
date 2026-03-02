@@ -2,6 +2,7 @@ package com.example.scrollbooker.navigation.navigators
 
 import androidx.navigation.NavHostController
 import com.example.scrollbooker.navigation.routes.MainRoute
+import com.example.scrollbooker.ui.profile.PostTabEnum
 import com.example.scrollbooker.ui.profile.components.SelectedPostUi
 
 class ProfileNavigator (
@@ -25,8 +26,8 @@ class ProfileNavigator (
         }
     }
 
-    fun toUserPostDetail(selectedPostUi: SelectedPostUi, userId: Int) {
-        navController.navigate("${MainRoute.UserProfilePostDetail.route}/${selectedPostUi.index}/$userId") {
+    fun toUserPostDetail(postTab: PostTabEnum, selectedPostUi: SelectedPostUi, userId: Int) {
+        navController.navigate("${MainRoute.UserProfilePostDetail.route}/${postTab.key}/${selectedPostUi.index}/$userId") {
             launchSingleTop = true
         }
     }

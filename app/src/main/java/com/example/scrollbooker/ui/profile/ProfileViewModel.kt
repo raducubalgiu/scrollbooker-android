@@ -36,7 +36,6 @@ import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserPr
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserProfileUseCase
 import com.example.scrollbooker.entity.user.userSocial.domain.useCase.FollowUserUseCase
 import com.example.scrollbooker.entity.user.userSocial.domain.useCase.UnfollowUserUseCase
-import com.example.scrollbooker.ui.profile.components.PostTabEnum
 import com.example.scrollbooker.ui.shared.posts.PostActionUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

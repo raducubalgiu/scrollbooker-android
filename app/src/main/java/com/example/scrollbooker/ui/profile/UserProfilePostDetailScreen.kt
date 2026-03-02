@@ -49,27 +49,29 @@ import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverl
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
-import timber.log.Timber
 
 @Composable
 fun UserProfilePostDetailScreen(
+    postTabKey: String,
     postIndex: Int,
     viewModel: ProfileViewModel,
     onBack: () -> Unit,
     profileNavigate: ProfileNavigator
 ) {
     val scope = rememberCoroutineScope()
+    val postTab = PostTabEnum.fromKey(postTabKey)
 
-//    val title: String = when(selectedPost?.tab) {
-//        PostTabEnum.MY_POSTS -> stringResource(R.string.posts)
-//        PostTabEnum.BOOKMARKS -> stringResource(R.string.bookmarks)
-//        null -> ""
-//    }
+    val title: String = when(postTab) {
+        PostTabEnum.POSTS -> stringResource(R.string.posts)
+        PostTabEnum.BOOKMARKS -> stringResource(R.string.bookmarks)
+        null -> ""
+    }
 
-    val posts = viewModel.posts.collectAsLazyPagingItems()
-
-    Timber.tag("Posts!!").d("POST INDEX!!! $postIndex")
-    Timber.tag("Posts!!").d("POSTS!!! ${posts.itemCount}")
+    val posts = when(postTab) {
+        PostTabEnum.POSTS -> viewModel.posts.collectAsLazyPagingItems()
+        PostTabEnum.BOOKMARKS -> viewModel.bookmarks.collectAsLazyPagingItems()
+        null -> error("Invalid post tab key")
+    }
 
     key(postIndex) {
         val pagerState = rememberPagerState(
@@ -116,7 +118,7 @@ fun UserProfilePostDetailScreen(
                 Header(
                     modifier = Modifier.zIndex(14f),
                     onBack = onBack,
-                    title = "",
+                    title = title,
                     icon = Icons.Default.Close,
                     iconSize = 30.dp,
                     withBackground = false

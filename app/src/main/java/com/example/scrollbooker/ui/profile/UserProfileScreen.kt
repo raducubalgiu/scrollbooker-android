@@ -162,7 +162,7 @@ fun UserProfileScreen(
                                                         getPost = { i -> if(i == it.index) it.post else null }
                                                     )
 
-                                                    profileNavigate.toUserPostDetail(it, it.post.user.id)
+                                                    profileNavigate.toUserPostDetail(PostTabEnum.POSTS, it, it.post.user.id)
                                                 }
                                             )
                                         }
