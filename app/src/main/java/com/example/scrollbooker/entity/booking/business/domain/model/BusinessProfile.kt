@@ -3,6 +3,7 @@ import com.example.scrollbooker.entity.booking.appointment.domain.model.Business
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
 import com.example.scrollbooker.entity.social.post.domain.model.BusinessPlan
+import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.user.userProfile.domain.model.OpeningHours
 import org.threeten.bp.ZonedDateTime
 
@@ -17,7 +18,8 @@ data class BusinessProfile(
     val products: List<Product>,
     val employees: List<BusinessProfileEmployee>,
     val schedules: List<Schedule>,
-    val reviews: BusinessProfileReviews
+    val reviews: BusinessProfileReviews,
+    val posts: List<Post>
 )
 
 data class BusinessProfileOwner(

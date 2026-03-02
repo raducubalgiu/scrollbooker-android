@@ -4,6 +4,7 @@ import com.example.scrollbooker.entity.booking.business.domain.model.BusinessLoc
 import com.example.scrollbooker.entity.booking.products.data.remote.ProductDto
 import com.example.scrollbooker.entity.booking.schedule.data.remote.ScheduleDto
 import com.example.scrollbooker.entity.social.post.data.remote.BusinessPlanDto
+import com.example.scrollbooker.entity.social.post.data.remote.PostDto
 import com.example.scrollbooker.entity.user.userProfile.data.remote.OpeningHoursDto
 import com.google.gson.annotations.SerializedName
 
@@ -29,7 +30,8 @@ data class BusinessProfileDto(
     val products: List<ProductDto>,
     val employees: List<BusinessProfileEmployeeDto>,
     val schedules: List<ScheduleDto>,
-    val reviews: BusinessProfileReviewsDto
+    val reviews: BusinessProfileReviewsDto,
+    val posts: List<PostDto>
 )
 
 data class BusinessProfileOwnerDto(

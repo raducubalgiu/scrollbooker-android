@@ -1,6 +1,7 @@
 package com.example.scrollbooker.ui.search.businessProfile.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -87,8 +88,8 @@ fun BusinessProfileHeader(
 
         AnimatedVisibility(
             visible = imageAlpha == 0f,
-            enter = fadeIn(tween(250)),
-            exit = fadeOut(tween(250))
+            enter = fadeIn(),
+            exit = fadeOut(animationSpec = tween(0))
         ) {
             Text(
                 text = fullName,

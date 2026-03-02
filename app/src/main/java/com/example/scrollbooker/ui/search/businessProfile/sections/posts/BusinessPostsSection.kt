@@ -2,6 +2,7 @@ package com.example.scrollbooker.ui.search.businessProfile.sections.posts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,10 +27,13 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
+import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.ui.theme.headlineSmall
 
 @Composable
-fun BusinessPostsSection() {
+fun BusinessPostsSection(
+    posts: List<Post>
+) {
     Column(modifier = Modifier.fillMaxSize()) {
         Text(
             modifier = Modifier.padding(horizontal = BasePadding),
@@ -39,10 +44,8 @@ fun BusinessPostsSection() {
 
         Spacer(Modifier.height(SpacingXL))
 
-        LazyRow {
-            item { Spacer(Modifier.width(BasePadding)) }
-
-            items(10) {
+        LazyRow(contentPadding = PaddingValues(horizontal = BasePadding)) {
+            items(posts) {
                 Box(
                     modifier = Modifier
                         .height(185.dp)
@@ -59,7 +62,7 @@ fun BusinessPostsSection() {
                         )
                 ) {
                     AsyncImage(
-                        model = "",
+                        model = it.mediaFiles.first().thumbnailUrl,
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize()
@@ -68,8 +71,6 @@ fun BusinessPostsSection() {
 
                 Spacer(Modifier.width(SpacingM))
             }
-
-            item { Spacer(Modifier.width(BasePadding)) }
         }
     }
 }

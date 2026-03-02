@@ -1,4 +1,5 @@
 package com.example.scrollbooker.components.core.layout
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -20,6 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.bodyLarge
 
 @Composable
@@ -28,7 +30,7 @@ fun ErrorScreen(
     arrangement: Arrangement.Vertical = Arrangement.Center
 ) {
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize().background(Background),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = arrangement
     ) {

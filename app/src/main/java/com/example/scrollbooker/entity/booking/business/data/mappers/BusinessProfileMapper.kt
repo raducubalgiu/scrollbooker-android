@@ -34,7 +34,8 @@ fun BusinessProfileDto.toDomain(): BusinessProfile {
         products = products.map { it.toDomain() },
         employees = employees.map { it.toDomain() },
         schedules = schedules.map { it.toDomain() },
-        reviews = reviews.toDomain()
+        reviews = reviews.toDomain(),
+        posts = posts.map { it.toDomain() }
     )
 }
 
