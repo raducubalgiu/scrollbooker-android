@@ -2,6 +2,7 @@ package com.example.scrollbooker.navigation.navigators
 
 import androidx.navigation.NavHostController
 import com.example.scrollbooker.navigation.routes.MainRoute
+import com.example.scrollbooker.ui.profile.components.SelectedPostUi
 
 class ProfileNavigator (
     private val navController: NavHostController
@@ -24,8 +25,8 @@ class ProfileNavigator (
         }
     }
 
-    fun toUserPostDetail() {
-        navController.navigate(MainRoute.UserProfilePostDetail.route) {
+    fun toUserPostDetail(selectedPostUi: SelectedPostUi, userId: Int) {
+        navController.navigate("${MainRoute.UserProfilePostDetail.route}/${selectedPostUi.index}/$userId") {
             launchSingleTop = true
         }
     }

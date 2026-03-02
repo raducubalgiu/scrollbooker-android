@@ -19,16 +19,17 @@ import com.example.scrollbooker.navigation.transition.slideInFromRight
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.ui.profile.ProfileViewModel
+import com.example.scrollbooker.ui.profile.UserProfilePostDetailScreen
 import com.example.scrollbooker.ui.profile.UserProfileScreen
 import com.example.scrollbooker.ui.social.SocialScreen
 import com.example.scrollbooker.ui.social.SocialViewModel
 
-fun NavGraphBuilder.profileGraph(
+fun NavGraphBuilder.userProfileGraph(
     navController: NavHostController
 ) {
     navigation(
         route = MainRoute.ProfileNavigator.route,
-        startDestination = MainRoute.MyProfile.route,
+        startDestination = "${MainRoute.UserProfile.route}/{userId}",
         exitTransition = {
             if (targetState.isInRoute(MainRoute.MyProfilePostDetail.route)) {
                 ExitTransition.None
@@ -62,22 +63,36 @@ fun NavGraphBuilder.profileGraph(
             )
         }
 
-//        composable(
-//            route = MainRoute.MyProfilePostDetail.route,
-//            enterTransition = { EnterTransition.None },
-//            exitTransition = { ExitTransition.None },
-//            popEnterTransition = { EnterTransition.None },
-//            popExitTransition = { ExitTransition.None }
-//        ) {
-//            MyProfilePostDetailScreen(
-//                layoutViewModel = layoutViewModel,
-//                posts = posts,
-//                onBack = { navController.popBackStack() },
-//                onNavigateToUserProfile = {
-//                    navController.navigate("${MainRoute.UserProfile.route}/${it}")
-//                }
-//            )
-//        }
+        composable(
+            route = "${MainRoute.UserProfilePostDetail.route}/{postIndex}/{userId}",
+            enterTransition = { EnterTransition.None },
+            exitTransition = { ExitTransition.None},
+            popEnterTransition = { EnterTransition.None },
+            popExitTransition = { ExitTransition.None },
+            arguments = listOf(
+                navArgument("postIndex") { type = NavType.IntType },
+                navArgument("userId") { type = NavType.IntType }
+            ),
+        ) { backStackEntry ->
+            val postIndex = backStackEntry.arguments?.getInt("postIndex") ?: return@composable
+            val userId = backStackEntry.arguments?.getInt("userId") ?: return@composable
+
+            val parentBackStackEntry = remember(backStackEntry) {
+                navController.getBackStackEntry("${MainRoute.UserProfile.route}/$userId")
+            }
+            val viewModel = hiltViewModel<ProfileViewModel>(parentBackStackEntry)
+
+            val profileNavigate = remember(navController) {
+                ProfileNavigator(navController)
+            }
+
+            UserProfilePostDetailScreen(
+                postIndex = postIndex,
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() },
+                profileNavigate = profileNavigate,
+            )
+        }
 
         composable(
             route = "${MainRoute.Social.route}/{tabIndex}/{userId}/{username}/{isBusinessOrEmployee}",

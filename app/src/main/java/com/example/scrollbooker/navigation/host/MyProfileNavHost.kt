@@ -19,7 +19,7 @@ import com.example.scrollbooker.navigation.graphs.settingsGraph
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromRight
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
-import com.example.scrollbooker.navigation.graphs.profileGraph
+import com.example.scrollbooker.navigation.graphs.userProfileGraph
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
@@ -66,7 +66,7 @@ fun MyProfileNavHost(
                 )
             }
 
-            profileGraph(navController)
+            userProfileGraph(navController)
             editProfileGraph(navController, viewModel)
             myBusinessGraph(navController)
             settingsGraph(

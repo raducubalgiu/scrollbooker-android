@@ -40,8 +40,6 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.rememberCollapsingNestedScroll
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
-import com.example.scrollbooker.ui.profile.components.ProfileLayoutViewModel
-import com.example.scrollbooker.ui.profile.components.SelectedPostUi
 import com.example.scrollbooker.ui.profile.components.userInfo.ProfileShimmer
 import com.example.scrollbooker.ui.profile.components.userInfo.ProfileUserInfo
 import com.example.scrollbooker.ui.profile.tabs.ProfileTab
@@ -155,7 +153,17 @@ fun UserProfileScreen(
                                         ProfileTab.Posts -> {
                                             ProfilePostsTab(
                                                 posts = posts,
-                                                onNavigateToPost = {}
+                                                onNavigateToPost = {
+                                                    viewModel.onPageSettled(it.index)
+                                                    viewModel.seekToZero(it.index)
+
+                                                    viewModel.ensureImmediate(
+                                                        centerIndex = it.index,
+                                                        getPost = { i -> if(i == it.index) it.post else null }
+                                                    )
+
+                                                    profileNavigate.toUserPostDetail(it, it.post.user.id)
+                                                }
                                             )
                                         }
 
@@ -230,21 +238,4 @@ fun UserProfileScreen(
             }
         }
     }
-}
-
-private fun navigateToPost(
-    viewModel: ProfileLayoutViewModel,
-    profileNavigate: ProfileNavigator,
-    postUi: SelectedPostUi
-) {
-    viewModel.onPageSettled(postUi.index)
-    viewModel.seekToZero(postUi.index)
-
-    viewModel.ensureImmediate(
-        centerIndex = postUi.index,
-        getPost = { i -> if(i == postUi.index) postUi.post else null }
-    )
-
-    viewModel.setSelectedPost(postUi)
-    profileNavigate.toUserPostDetail()
 }

@@ -10,7 +10,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.example.scrollbooker.navigation.graphs.profileGraph
+import com.example.scrollbooker.navigation.graphs.userProfileGraph
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.feed.FeedScreen
 import com.example.scrollbooker.ui.feed.searchResults.FeedSearchResultsScreen
@@ -38,6 +38,8 @@ fun FeedNavHost(navController: NavHostController) {
     ) {
         composable(
             route = MainRoute.Feed.route,
+            popEnterTransition = { EnterTransition.None },
+            popExitTransition = { ExitTransition.None }
         ) { backStackEntry ->
             FeedScreen(
                 feedViewModel = feedViewModel,
@@ -96,6 +98,6 @@ fun FeedNavHost(navController: NavHostController) {
             }
         }
 
-        profileGraph(navController)
+        userProfileGraph(navController)
     }
 }
