@@ -11,9 +11,6 @@ import androidx.navigation.compose.navigation
 import com.example.scrollbooker.R
 import com.example.scrollbooker.navigation.routes.OnboardingRoute
 import com.example.scrollbooker.ui.auth.AuthViewModel
-import com.example.scrollbooker.ui.myBusiness.myBusinessLocation.MyBusinessLocationViewModel
-import com.example.scrollbooker.ui.onboarding.business.CollectBusinessCurrenciesScreen
-import com.example.scrollbooker.ui.onboarding.business.CollectBusinessCurrenciesViewModel
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessDetailsScreen
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessGalleryPreviewScreen
 import com.example.scrollbooker.ui.onboarding.business.CollectBusinessGalleryScreen
@@ -237,21 +234,6 @@ fun NavGraphBuilder.onBoardingGraph(
             onNext = {
                 navController.currentBackStackEntry?.lifecycleScope?.launch {
                     val authState = viewModel.updateHasEmployees()
-
-                    authState.onSuccess { authViewModel.updateAuthState(it) }
-                }
-            }
-        )
-    }
-
-    composable(OnboardingRoute.CollectBusinessCurrencies.route) { backStackEntry ->
-        val viewModel: CollectBusinessCurrenciesViewModel = hiltViewModel(backStackEntry)
-
-        CollectBusinessCurrenciesScreen(
-            viewModel = viewModel,
-            onNext = {
-                navController.currentBackStackEntry?.lifecycleScope?.launch {
-                    val authState = viewModel.collectBusinessCurrencies()
 
                     authState.onSuccess { authViewModel.updateAuthState(it) }
                 }

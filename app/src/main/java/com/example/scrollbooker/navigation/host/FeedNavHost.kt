@@ -38,6 +38,7 @@ fun FeedNavHost(navController: NavHostController) {
     ) {
         composable(
             route = MainRoute.Feed.route,
+            exitTransition = { ExitTransition.None },
             popEnterTransition = { EnterTransition.None },
             popExitTransition = { ExitTransition.None }
         ) { backStackEntry ->
