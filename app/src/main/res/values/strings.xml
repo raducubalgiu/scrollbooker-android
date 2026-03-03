@@ -400,4 +400,5 @@
     <string name="pickProductType">Alege Tipul Produsului</string>
     <string name="sessionsCount">Număr ședințe</string>
     <string name="validityDays">Valabilitate (număr zile)</string>
+    <string name="youDoNotHavePermissionToEditProducts">Nu ai permisiunea de a edita produsele. Doar Managerul sau Ownerul pot face modificări.</string>
 </resources>

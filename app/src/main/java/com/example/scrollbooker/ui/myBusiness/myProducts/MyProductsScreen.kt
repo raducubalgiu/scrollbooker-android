@@ -59,7 +59,6 @@ fun MyProductsScreen(
     val products by viewModel.productSections.collectAsState()
 
     val scope = rememberCoroutineScope()
-
     val isEditable = (serviceDomains as? FeatureState.Success)?.data?.isEditable == true
 
     Layout(
@@ -99,7 +98,7 @@ fun MyProductsScreen(
                     if(!isEditable) {
                         Text(
                             modifier = Modifier.padding(horizontal = BasePadding),
-                            text = "Nu ai permisiunea de a edita produsele. Doar Managerul sau Ownerul pot face modificari.",
+                            text = stringResource(R.string.youDoNotHavePermissionToEditProducts),
                             color = Error,
                             style = bodySmall
                         )
@@ -263,10 +262,10 @@ fun MyProductsScreen(
                                                         section.products.forEachIndexed { index, product ->
                                                             ProductCard(
                                                                 product = product,
-                                                                isSelected = false,
                                                                 displayEditableActions = true,
                                                                 isEditable = isEditable,
-                                                                onSelect = {}
+                                                                onNavigateToEdit = {},
+                                                                onDeleteProduct = {}
                                                             )
 
                                                             if(index < section.products.size - 1) {

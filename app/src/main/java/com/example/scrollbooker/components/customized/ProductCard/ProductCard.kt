@@ -16,10 +16,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
+import com.example.scrollbooker.components.core.menu.Menu
+import com.example.scrollbooker.components.core.menu.MenuItemData
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
@@ -32,11 +35,11 @@ fun ProductCard(
     product: Product,
     displayEditableActions: Boolean = false,
     isEditable: Boolean = false,
-    isSelected: Boolean = true,
+    isSelected: Boolean = false,
     isLoadingDelete: Boolean = false,
+    onSelect: ((Product) -> Unit)? = null,
     onNavigateToEdit: ((Int) -> Unit)? = null,
     onDeleteProduct: ((productId: Int) -> Unit)? = null,
-    onSelect: (Product) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.padding(BasePadding)) {
@@ -59,14 +62,36 @@ fun ProductCard(
 
                 Spacer(Modifier.width(SpacingS))
 
-                if(!displayEditableActions && product.canBeBooked) {
-                    MainButtonOutlined(
-                        title = if(isSelected) stringResource(R.string.added) else stringResource(R.string.add),
-                        onClick = { onSelect(product) },
-                        trailingIcon = if(isSelected) Icons.Default.Check else Icons.Default.Add,
-                        trailingIconTint = Primary,
-                        showTrailingIcon = true,
-                    )
+                when {
+                    !displayEditableActions && product.canBeBooked -> {
+                        MainButtonOutlined(
+                            title = if(isSelected) stringResource(R.string.added) else stringResource(R.string.add),
+                            onClick = { onSelect?.invoke(product) },
+                            trailingIcon = if(isSelected) Icons.Default.Check else Icons.Default.Add,
+                            trailingIconTint = Primary,
+                            showTrailingIcon = true,
+                        )
+                    }
+
+                    isEditable && displayEditableActions -> {
+                        Menu(
+                            items = listOf(
+                                MenuItemData(
+                                    text = stringResource(R.string.edit),
+                                    leadingIcon = painterResource(R.drawable.ic_edit_outline),
+                                    onClick = { onNavigateToEdit?.invoke(product.id) },
+                                ),
+                                MenuItemData(
+                                    text = stringResource(R.string.delete),
+                                    color = Error,
+                                    leadingIcon = painterResource(R.drawable.ic_delete_outline),
+                                    enabled = !isLoadingDelete,
+                                    isLoading = isLoadingDelete,
+                                    onClick = { onDeleteProduct?.invoke(product.id) },
+                                )
+                            )
+                        )
+                    }
                 }
             }
 
@@ -89,16 +114,6 @@ fun ProductCard(
                     text = "Acest serviciu poate fi rezervat doar in urma unei discutii telefonice",
                     color = Error,
                     style = bodySmall
-                )
-            }
-
-            if(isEditable && displayEditableActions) {
-                Spacer(Modifier.height(BasePadding))
-
-                ProductCardActions(
-                    isLoadingDelete = isLoadingDelete,
-                    onNavigateToEdit = { onNavigateToEdit?.invoke(product.id) },
-                    onDeleteProduct = { onDeleteProduct?.invoke(product.id) }
                 )
             }
         }

@@ -35,12 +35,11 @@ data class ServicesTabsState(
 
 @HiltViewModel
 class MyProductsViewModel @Inject constructor(
-    private val authDataStore: AuthDataStore,
     private val getAllServiceDomainsWithServicesByUserIdUseCase: GetAllServiceDomainsWithServicesByUserIdUseCase,
     private val getProductsByUserIdAndServiceIdUseCase: GetProductsByUserIdAndServiceIdUseCase,
-    private val deleteProductUseCase: DeleteProductUseCase
+    private val deleteProductUseCase: DeleteProductUseCase,
+    private val authDataStore: AuthDataStore,
 ): ViewModel() {
-    // Cache pentru produse: (userId, serviceId, employeeId) -> FeatureState
     private val productsCache = mutableMapOf<Triple<Int, Int, Int?>, FeatureState<List<ProductSection>>>()
 
     // Tabs
@@ -126,7 +125,6 @@ class MyProductsViewModel @Inject constructor(
         _tabsState,
         serviceDomains
     ) { userId, tabsState, serviceDomainState ->
-        // Extract current serviceId and employeeId based on tab selection
         val (serviceId, employeeId) = extractServiceAndEmployeeIds(tabsState, serviceDomainState)
         ProductSectionsRequestContext(
             userId = userId,
@@ -142,7 +140,6 @@ class MyProductsViewModel @Inject constructor(
                 val serviceId = context.serviceId
                 val employeeId = context.employeeId
 
-                // If there is no valid service yet, mirror serviceDomains state to avoid empty-state flicker.
                 if (serviceId == null) {
                     when (context.serviceDomainState) {
                         is FeatureState.Loading -> emit(FeatureState.Loading)
@@ -152,7 +149,6 @@ class MyProductsViewModel @Inject constructor(
                     return@flow
                 }
 
-                // Check if we have cached data for this combination
                 val cacheKey = Triple(userId, serviceId, employeeId)
                 val cachedResult = productsCache[cacheKey]
 
@@ -160,7 +156,6 @@ class MyProductsViewModel @Inject constructor(
                     Timber.tag("ProductSections").d("Using cached data for userId=$userId, serviceId=$serviceId, employeeId=$employeeId")
                     emit(cachedResult)
                 } else {
-                    // No cache, fetch from API
                     emit(FeatureState.Loading)
 
                     val result = withVisibleLoading {
@@ -173,7 +168,6 @@ class MyProductsViewModel @Inject constructor(
 
                     Timber.tag("ProductSections").d("Fetched products for userId=$userId, serviceId=$serviceId, employeeId=$employeeId")
 
-                    // Store in cache
                     if (result is FeatureState.Success) {
                         productsCache[cacheKey] = result
                     }
@@ -210,7 +204,6 @@ class MyProductsViewModel @Inject constructor(
                 if (selectedServiceIndex < selectedDomain.services.size) {
                     val service = selectedDomain.services[selectedServiceIndex]
 
-                    // Get selected employeeId for this service, or use first employee if available
                     val key = "$selectedDomainIndex-$selectedServiceIndex"
                     val employeeId = tabsState.selectedEmployeePerService[key]
                         ?: service.employees.firstOrNull()?.id
