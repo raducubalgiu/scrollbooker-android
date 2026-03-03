@@ -10,6 +10,7 @@ import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
 import androidx.compose.runtime.getValue
+import com.example.scrollbooker.navigation.graphs.userProfileGraph
 import com.example.scrollbooker.ui.LocalMainNavController
 
 @SuppressLint("UnrememberedGetBackStackEntry")
@@ -35,5 +36,7 @@ fun AppointmentsNavHost(navController: NavHostController) {
             navController = navController,
             appointmentCreated = appointmentCreated
         )
+
+        userProfileGraph(navController)
     }
 }
