@@ -8,9 +8,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import com.example.scrollbooker.navigation.LocalTabsController
-import com.example.scrollbooker.navigation.TabsController
-import com.example.scrollbooker.navigation.TabsViewModel
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.routes.RootRoute
 import com.example.scrollbooker.ui.BottomBarController
@@ -42,22 +39,17 @@ fun NavGraphBuilder.mainGraph(onLogout: () -> Unit) {
         startDestination = MainRoute.Shell.route
     ) {
         composable(route = MainRoute.Shell.route) {
-            val tabsViewModel: TabsViewModel = hiltViewModel()
             val mainUiViewModel: MainUIViewModel = hiltViewModel()
 
             val permissions by mainUiViewModel.permissions.collectAsStateWithLifecycle()
-
-            val tabsController = remember(tabsViewModel) {
-                TabsController(
-                    currentTab = tabsViewModel.currentTab,
-                    setTab = tabsViewModel::setTab
-                )
-            }
+            val currentTab by mainUiViewModel.currentTab.collectAsState()
 
             val bottomBarController = remember(mainUiViewModel) {
                 BottomBarController(
                     appointments = mainUiViewModel.appointments,
                     notifications = mainUiViewModel.notifications,
+                    currentTab = mainUiViewModel.currentTab,
+                    setTab = mainUiViewModel::setTab,
                     incAppointments = mainUiViewModel::incAppointmentsNumber,
                     decAppointments = mainUiViewModel::decAppointmentsNumber,
                     setAppointments = mainUiViewModel::setAppointments,
@@ -68,9 +60,6 @@ fun NavGraphBuilder.mainGraph(onLogout: () -> Unit) {
             val permissionsController = remember(permissions) {
                 UserPermissionsController(permissions)
             }
-
-            val mainNavController = rememberNavController()
-            val currentTab by tabsController.currentTab.collectAsState()
 
             // My Profile View Model
             val myProfileViewModel: MyProfileViewModel = hiltViewModel()
@@ -91,12 +80,11 @@ fun NavGraphBuilder.mainGraph(onLogout: () -> Unit) {
             val searchNavHostController = navControllers[MainTab.Search]!!
 
             CompositionLocalProvider(
-                LocalTabsController provides tabsController,
                 LocalBottomBarController provides bottomBarController,
                 LocalUserPermissions provides permissionsController
             ) {
                 NavHost(
-                    navController = mainNavController,
+                    navController = rememberNavController(),
                     startDestination = MainRoute.Tabs.route
                 ) {
                     composable(MainRoute.Tabs.route) {

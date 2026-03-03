@@ -1,8 +1,10 @@
 package com.example.scrollbooker.ui
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.GetUserAppointmentsNumberUseCase
 import com.example.scrollbooker.entity.user.notification.domain.useCase.GetUserNotificationsNumberUseCase
+import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,10 +19,24 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainUIViewModel @Inject constructor(
-    private val authDataStore: AuthDataStore,
     private val getUserNotificationsNumberUseCase: GetUserNotificationsNumberUseCase,
     private val getUserAppointmentsNumberUseCase: GetUserAppointmentsNumberUseCase,
+    private val savedStateHandle: SavedStateHandle,
+    private val authDataStore: AuthDataStore,
 ): ViewModel() {
+    private companion object { const val KEY_TAB = "current_tab" }
+
+    private val _currentTab = MutableStateFlow(
+        MainTab.fromRoute(savedStateHandle.get<String>(KEY_TAB))
+    )
+    val currentTab: StateFlow<MainTab> = _currentTab.asStateFlow()
+
+    fun setTab(tab: MainTab) {
+        if (_currentTab.value == tab) return
+        _currentTab.value = tab
+        savedStateHandle[KEY_TAB] = tab.route
+    }
+
     private val _appointments = MutableStateFlow<Int>(0)
     val appointments: StateFlow<Int> = _appointments.asStateFlow()
 

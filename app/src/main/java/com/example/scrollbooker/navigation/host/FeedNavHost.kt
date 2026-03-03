@@ -25,7 +25,9 @@ import com.example.scrollbooker.ui.feed.FeedScreenViewModel
 
 @Composable
 fun FeedNavHost(navController: NavHostController) {
-    val feedNavigate = remember(navController) { FeedNavigator(navController) }
+    val feedNavigate = remember(navController) {
+        FeedNavigator(navController)
+    }
     val feedViewModel: FeedScreenViewModel = hiltViewModel()
 
     NavHost(
@@ -71,6 +73,7 @@ fun FeedNavHost(navController: NavHostController) {
                     userSearch = userSearch,
                     onBack = { navController.popBackStack() },
                     onGoToSearch = { navController.navigate(MainRoute.FeedSearchResults.route) },
+                    onNavigateToUserProfile = { navController.navigate("${MainRoute.UserProfile.route}/$it") },
                     onCreateUserSearch = { feedSearchViewModel.createSearch(keyword = it) },
                     onDeleteRecentlySearch = { feedSearchViewModel.deleteUserSearch(searchId = it) }
                 )

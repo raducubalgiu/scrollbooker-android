@@ -55,7 +55,6 @@ fun SearchScreen(
     isSearchTab: Boolean,
     onNavigateToBusinessProfile: (Int) -> Unit
 ) {
-    val isSystemInDarkMode = isSystemInDarkTheme()
     val isMapMounted by viewModel.isMapMounted.collectAsStateWithLifecycle()
 
     LaunchedEffect(isSearchTab, isMapMounted) {

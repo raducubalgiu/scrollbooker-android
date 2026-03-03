@@ -17,8 +17,6 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.search.domain.model.UserSearch
-import com.example.scrollbooker.navigation.routes.MainRoute
-import com.example.scrollbooker.ui.LocalMainNavController
 import com.example.scrollbooker.ui.feed.components.search.FeedSearchList
 import com.example.scrollbooker.ui.feed.components.search.FeedRecentlySearchList
 import com.example.scrollbooker.ui.feed.components.search.FeedSearchHeader
@@ -29,12 +27,11 @@ fun FeedSearchScreen(
     viewModel: FeedSearchViewModel,
     userSearch: FeatureState<UserSearch>,
     onBack: () -> Unit,
+    onNavigateToUserProfile: (Int) -> Unit,
     onGoToSearch: () -> Unit,
     onCreateUserSearch: (String) -> Unit,
     onDeleteRecentlySearch: (Int) -> Unit
 ) {
-    val mainNavController = LocalMainNavController.current
-
     val currentSearch by viewModel.currentSearch.collectAsState()
     val searchState by viewModel.searchState.collectAsState()
     val display by viewModel.display.collectAsState()
@@ -49,11 +46,6 @@ fun FeedSearchScreen(
             focusRequester.requestFocus()
             keyboardController?.show()
         }
-    }
-
-    fun handleNavigateToUserProfile(userId: Int) {
-        keyboardController?.hide()
-        mainNavController.navigate("${MainRoute.UserProfile.route}/$userId")
     }
 
     fun handleSearch(keyword: String) {
@@ -88,14 +80,20 @@ fun FeedSearchScreen(
                         userSearch = userSearch,
                         onDeleteRecentlySearch = onDeleteRecentlySearch,
                         onClick = { handleSearch(it) },
-                        onNavigateToUserProfile = { handleNavigateToUserProfile(it) }
+                        onNavigateToUserProfile = {
+                            keyboardController?.hide()
+                            onNavigateToUserProfile(it)
+                        }
                     )
                 } else {
                     FeedSearchList(
                         query = currentSearch,
                         searchState = searchState,
                         handleSearch = { handleSearch(it) },
-                        onNavigateToUserProfile = { handleNavigateToUserProfile(it) }
+                        onNavigateToUserProfile = {
+                            keyboardController?.hide()
+                            onNavigateToUserProfile(it)
+                        }
                     )
                 }
             }

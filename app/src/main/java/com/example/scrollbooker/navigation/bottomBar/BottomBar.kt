@@ -11,7 +11,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.scrollbooker.navigation.LocalTabsController
 import com.example.scrollbooker.navigation.bottomBar.BottomBarItem
 import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.ui.theme.Background
@@ -22,13 +21,11 @@ import com.example.scrollbooker.ui.LocalBottomBarController
 
 @Composable
 fun BottomBar() {
-    val tabs = LocalTabsController.current
-    val currentTab by tabs.currentTab.collectAsState()
+    val controller = LocalBottomBarController.current
 
-    val bottom = LocalBottomBarController.current
-
-    val appointmentsNumber by bottom.appointments.collectAsState()
-    val notificationsNumber by bottom.notifications.collectAsState()
+    val currentTab by controller.currentTab.collectAsState()
+    val appointmentsNumber by controller.appointments.collectAsState()
+    val notificationsNumber by controller.notifications.collectAsState()
 
     val allTabs = MainTab.allTabs
     val isFeedTab = currentTab == MainTab.Feed
@@ -52,7 +49,7 @@ fun BottomBar() {
                         appointmentsNumber = appointmentsNumber,
                         notificationsNumber = notificationsNumber,
                         modifier = Modifier.then(Modifier.weight(1f)),
-                        onNavigate = { tabs.setTab(tab) },
+                        onNavigate = { controller.setTab(tab) },
                         isSelected = currentTab == tab,
                         isFeedTab = isFeedTab,
                         tab = tab
