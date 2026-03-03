@@ -1,4 +1,6 @@
 package com.example.scrollbooker.navigation.graphs
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
@@ -6,6 +8,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import com.example.scrollbooker.core.extensions.isInRoute
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
@@ -46,7 +49,25 @@ fun NavGraphBuilder.appointmentsGraph(
             )
         }
 
-        composable(route = MainRoute.AppointmentDetails.route) { backStackEntry ->
+        composable(
+            route = MainRoute.AppointmentDetails.route,
+            exitTransition = {
+                if (targetState.isInRoute(MainRoute.Camera.route)) {
+                    ExitTransition.None
+                } else {
+                    slideOutToLeft()
+                }
+            },
+            popEnterTransition = {
+                if (initialState.isInRoute(MainRoute.Camera.route)) {
+                    EnterTransition.None
+                } else {
+                    slideInFromLeft()
+                }
+            },
+            enterTransition = { slideInFromRight() },
+            popExitTransition = { slideOutToRight() }
+        ) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(MainRoute.AppointmentsNavigator.route)
             }

@@ -38,6 +38,7 @@ fun NavGraphBuilder.myProfileGraph(
     navigation(
         route = MainRoute.MyProfileNavigator.route,
         startDestination = MainRoute.MyProfile.route,
+        enterTransition = { slideInFromRight() },
         exitTransition = {
             if (targetState.isInRoute(MainRoute.MyProfilePostDetail.route)) {
                 ExitTransition.None
@@ -52,7 +53,6 @@ fun NavGraphBuilder.myProfileGraph(
                 slideInFromLeft()
             }
         },
-        enterTransition = { slideInFromRight() },
         popExitTransition = { slideOutToRight() }
     ) {
         composable(MainRoute.MyProfile.route) { backStackEntry ->

@@ -14,6 +14,7 @@ import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
+import com.example.scrollbooker.navigation.graphs.cameraGraph
 import com.example.scrollbooker.navigation.graphs.editProfileGraph
 import com.example.scrollbooker.navigation.graphs.myBusinessGraph
 import com.example.scrollbooker.navigation.graphs.myProfileGraph
@@ -59,6 +60,7 @@ fun MyProfileNavHost(
                 navController = navController,
                 onLogout = onLogout
             )
+            cameraGraph(navController)
 
             composable(
                 route = "${MainRoute.Social.route}/{tabIndex}/{userId}/{username}/{isBusinessOrEmployee}",
