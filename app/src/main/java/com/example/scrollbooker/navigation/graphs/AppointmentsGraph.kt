@@ -1,6 +1,4 @@
 package com.example.scrollbooker.navigation.graphs
-
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
@@ -23,8 +21,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 fun NavGraphBuilder.appointmentsGraph(
-    navController: NavHostController,
-    appointmentCreated: Boolean
+    navController: NavHostController
 ) {
     navigation(
         route = MainRoute.AppointmentsNavigator.route,
@@ -40,13 +37,6 @@ fun NavGraphBuilder.appointmentsGraph(
             }
 
             val viewModel = hiltViewModel<AppointmentsViewModel>(parentEntry)
-
-            LaunchedEffect(appointmentCreated) {
-                if(appointmentCreated) {
-                    viewModel.refreshAppointments()
-                    parentEntry.savedStateHandle["APPOINTMENT_CREATED"] = false
-                }
-            }
 
             AppointmentsScreen(
                 viewModel = viewModel,

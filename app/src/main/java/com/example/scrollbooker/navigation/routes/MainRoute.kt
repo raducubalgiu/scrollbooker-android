@@ -28,6 +28,7 @@ sealed class MainRoute(val route: String) {
 
     object ProfileNavigator: MainRoute(route = "profileNavigator")
 
+    object MyProfileNavigator: MainRoute(route = "myProfileNavigator")
     object MyProfile: MainRoute(route = "myProfile")
     object MyProfilePostDetail: MainRoute(route = "myProfilePostDetail")
 
