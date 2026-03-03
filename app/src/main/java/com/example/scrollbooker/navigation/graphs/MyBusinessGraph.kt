@@ -191,7 +191,6 @@ fun NavGraphBuilder.myBusinessGraph(
                     viewModel = viewModel,
                     onBack = { navController.popBackStack() },
                     onNext = {
-
                         navController.currentBackStackEntry?.lifecycleScope?.launch {
                             val result = viewModel.createEmploymentRequest()
                             result
@@ -271,8 +270,8 @@ fun NavGraphBuilder.myBusinessGraph(
                 MyProductsScreen(
                     viewModel=viewModel,
                     onBack = { navController.popBackStack() },
-                    //onNavigateToEdit = { navController.navigate("${MainRoute.EditProduct.route}/$it") },
-                    onAddProduct = { navController.navigate(MainRoute.AddProduct.route) }
+                    onNavigateEditProduct = { navController.navigate("${MainRoute.EditProduct.route}/$it") },
+                    onNavigateAddProduct = { navController.navigate(MainRoute.AddProduct.route) }
                 )
             }
 

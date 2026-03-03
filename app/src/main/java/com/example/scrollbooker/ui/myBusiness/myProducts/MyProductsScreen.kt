@@ -53,7 +53,8 @@ import com.example.scrollbooker.ui.theme.headlineSmall
 fun MyProductsScreen(
     viewModel: MyProductsViewModel,
     onBack: () -> Unit,
-    onAddProduct: () -> Unit
+    onNavigateAddProduct: () -> Unit,
+    onNavigateEditProduct: (Int) -> Unit
 ) {
     val serviceDomains by viewModel.serviceDomains.collectAsState()
     val products by viewModel.productSections.collectAsState()
@@ -66,7 +67,7 @@ fun MyProductsScreen(
         header = {
             HeaderEdit(
                 title = stringResource(R.string.myProducts),
-                onAction = onAddProduct,
+                onAction = onNavigateAddProduct,
                 actionTitle = stringResource(R.string.add),
                 onBack = onBack,
                 isEnabled = isEditable
@@ -264,7 +265,7 @@ fun MyProductsScreen(
                                                                 product = product,
                                                                 displayEditableActions = true,
                                                                 isEditable = isEditable,
-                                                                onNavigateToEdit = {},
+                                                                onNavigateToEdit = onNavigateEditProduct,
                                                                 onDeleteProduct = {}
                                                             )
 
