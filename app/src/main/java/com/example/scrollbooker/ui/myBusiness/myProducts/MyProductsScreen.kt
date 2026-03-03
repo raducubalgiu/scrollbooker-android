@@ -67,7 +67,7 @@ fun MyProductsScreen(
         header = {
             HeaderEdit(
                 title = stringResource(R.string.myProducts),
-                onAction = onNavigateAddProduct,
+                onAction = { onNavigateAddProduct() },
                 actionTitle = stringResource(R.string.add),
                 onBack = onBack,
                 isEnabled = isEditable

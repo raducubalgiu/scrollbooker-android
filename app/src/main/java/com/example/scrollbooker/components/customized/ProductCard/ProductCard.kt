@@ -1,4 +1,5 @@
 package com.example.scrollbooker.components.customized.ProductCard
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -41,7 +42,10 @@ fun ProductCard(
     onNavigateToEdit: ((Int) -> Unit)? = null,
     onDeleteProduct: ((productId: Int) -> Unit)? = null,
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .clickable {}
+    ) {
         Column(modifier = Modifier.padding(BasePadding)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),

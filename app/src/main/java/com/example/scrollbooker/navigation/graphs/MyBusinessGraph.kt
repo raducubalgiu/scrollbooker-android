@@ -271,11 +271,26 @@ fun NavGraphBuilder.myBusinessGraph(
                     viewModel=viewModel,
                     onBack = { navController.popBackStack() },
                     onNavigateEditProduct = { navController.navigate("${MainRoute.EditProduct.route}/$it") },
-                    onNavigateAddProduct = { navController.navigate(MainRoute.AddProduct.route) }
+                    onNavigateAddProduct = {
+                        val serviceDomainId = viewModel.getCurrentServiceDomainId()
+                        val serviceId = viewModel.getCurrentServiceId()
+
+                        if (serviceDomainId != null && serviceId != null) {
+                            navController.navigate(
+                                "${MainRoute.AddProduct.route}/$serviceDomainId/$serviceId"
+                            )
+                        }
+                    }
                 )
             }
 
-            composable(route = MainRoute.AddProduct.route) { backStackEntry ->
+            composable(
+                route = "${MainRoute.AddProduct.route}/{serviceDomainId}/{serviceId}",
+                arguments = listOf(
+                    navArgument("serviceDomainId") { type = NavType.IntType },
+                    navArgument("serviceId") { type = NavType.IntType }
+                )
+            ) { backStackEntry ->
                 val parentEntry = remember(backStackEntry) {
                     navController.getBackStackEntry(MainRoute.MyProductsNavigator.route)
                 }

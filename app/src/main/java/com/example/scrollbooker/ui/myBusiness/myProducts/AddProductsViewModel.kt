@@ -1,5 +1,6 @@
 package com.example.scrollbooker.ui.myBusiness.myProducts
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.enums.FilterTypeEnum
@@ -38,8 +39,17 @@ typealias SelectedFilters = Map<Int, FilterSelection>
 class AddProductsViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
     private val createProductUseCase: CreateProductUseCase,
+    savedStateHandle: SavedStateHandle
 ): ViewModel() {
-    private val _productState = MutableStateFlow<AddProductState>(AddProductState())
+    private val serviceDomainId: StateFlow<Int?> = savedStateHandle.getStateFlow("serviceDomainId", null)
+    private val serviceId: StateFlow<Int?> = savedStateHandle.getStateFlow("serviceId", null)
+
+    private val _productState = MutableStateFlow<AddProductState>(
+        AddProductState(
+            serviceDomainId = serviceDomainId.value?.toString().orEmpty(),
+            serviceId = serviceId.value?.toString().orEmpty()
+        )
+    )
     val productState: StateFlow<AddProductState> = _productState.asStateFlow()
 
     private val _selectedFilters = MutableStateFlow<SelectedFilters>(emptyMap())

@@ -30,7 +30,7 @@ import javax.inject.Inject
 data class ServicesTabsState(
     val selectedDomainIndex: Int = 0,
     val selectedServicePerDomain: Map<Int, Int> = emptyMap(),
-    val selectedEmployeePerService: Map<String, Int> = emptyMap() // Key format: "domainIndex-serviceIndex"
+    val selectedEmployeePerService: Map<String, Int> = emptyMap()
 )
 
 @HiltViewModel
@@ -78,6 +78,41 @@ class MyProductsViewModel @Inject constructor(
     fun getSelectedEmployee(domainIndex: Int, serviceIndex: Int): Int? {
         val key = "$domainIndex-$serviceIndex"
         return _tabsState.value.selectedEmployeePerService[key]
+    }
+
+    fun getCurrentServiceDomainId(): Int? {
+        val serviceDomainState = serviceDomains.value
+        if (serviceDomainState is FeatureState.Success) {
+            val domains = serviceDomainState.data.serviceDomains
+            val selectedDomainIndex = _tabsState.value.selectedDomainIndex
+
+            return if (selectedDomainIndex < domains.size) {
+                domains[selectedDomainIndex].id
+            } else {
+                null
+            }
+        }
+        return null
+    }
+
+    fun getCurrentServiceId(): Int? {
+        val serviceDomainState = serviceDomains.value
+        if (serviceDomainState is FeatureState.Success) {
+            val domains = serviceDomainState.data.serviceDomains
+            val selectedDomainIndex = _tabsState.value.selectedDomainIndex
+
+            if (selectedDomainIndex < domains.size) {
+                val selectedDomain = domains[selectedDomainIndex]
+                val selectedServiceIndex = _tabsState.value.selectedServicePerDomain[selectedDomainIndex] ?: 0
+
+                return if (selectedServiceIndex < selectedDomain.services.size) {
+                    selectedDomain.services[selectedServiceIndex].id
+                } else {
+                    null
+                }
+            }
+        }
+        return null
     }
 
     private val _isSaving = MutableStateFlow<Boolean>(false)

@@ -167,21 +167,23 @@ fun AddProductScreen(
                     .verticalScroll(scrollState)
                     .padding(horizontal = BasePadding)
                 ) {
-                    InputSelect(
-                        label = stringResource(R.string.categories),
-                        placeholder = stringResource(R.string.pickCategory),
-                        options = serviceDomainsOptionsList,
-                        selectedOption = productState.serviceDomainId,
-                        onValueChange = { domainId ->
-                            domainId?.let { viewModel.setServiceDomainId(it) }
-                        },
-                        isLoading = isLoadingServiceDomains,
-                        isEnabled = !isErrorServiceDomains && !isLoadingServiceDomains,
-                        isError = showErrors && !isValidServiceDomainId,
-                        errorMessage = validation.serviceDomainIdError.toString()
-                    )
+                    if(serviceDomainsOptionsList.size > 1) {
+                        InputSelect(
+                            label = stringResource(R.string.categories),
+                            placeholder = stringResource(R.string.pickCategory),
+                            options = serviceDomainsOptionsList,
+                            selectedOption = productState.serviceDomainId,
+                            onValueChange = { domainId ->
+                                domainId?.let { viewModel.setServiceDomainId(it) }
+                            },
+                            isLoading = isLoadingServiceDomains,
+                            isEnabled = !isErrorServiceDomains && !isLoadingServiceDomains,
+                            isError = showErrors && !isValidServiceDomainId,
+                            errorMessage = validation.serviceDomainIdError.toString()
+                        )
 
-                    Spacer(Modifier.height(BasePadding))
+                        Spacer(Modifier.height(BasePadding))
+                    }
 
                     InputSelect(
                         label = stringResource(R.string.service),
