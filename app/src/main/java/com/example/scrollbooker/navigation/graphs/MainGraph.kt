@@ -30,7 +30,6 @@ import com.example.scrollbooker.navigation.host.FeedNavHost
 import com.example.scrollbooker.navigation.host.InboxNavHost
 import com.example.scrollbooker.navigation.host.MyProfileNavHost
 import com.example.scrollbooker.navigation.host.SearchNavHost
-import com.example.scrollbooker.ui.LocalMainNavController
 import com.example.scrollbooker.ui.LocalUserPermissions
 import com.example.scrollbooker.ui.UserPermissionsController
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
@@ -92,7 +91,6 @@ fun NavGraphBuilder.mainGraph(onLogout: () -> Unit) {
             val searchNavHostController = navControllers[MainTab.Search]!!
 
             CompositionLocalProvider(
-                LocalMainNavController provides mainNavController,
                 LocalTabsController provides tabsController,
                 LocalBottomBarController provides bottomBarController,
                 LocalUserPermissions provides permissionsController
