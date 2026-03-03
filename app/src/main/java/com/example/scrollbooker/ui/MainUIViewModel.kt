@@ -30,9 +30,6 @@ class MainUIViewModel @Inject constructor(
     private val _permissions = MutableStateFlow<Set<String>>(emptySet())
     val permissions: StateFlow<Set<String>> = _permissions.asStateFlow()
 
-    private val _hasEmployees = MutableStateFlow<Boolean>(false)
-    val hasEmployees: StateFlow<Boolean> = _hasEmployees
-
     init {
         loadAppointmentsNumber()
         loadNotificationsNumber()
@@ -41,11 +38,6 @@ class MainUIViewModel @Inject constructor(
             .map { it.toSet() }
             .distinctUntilChanged()
             .onEach { _permissions.value = it }
-            .launchIn(viewModelScope)
-
-        authDataStore.getHasEmployees()
-            .distinctUntilChanged()
-            .onEach { _hasEmployees.value = it }
             .launchIn(viewModelScope)
     }
 

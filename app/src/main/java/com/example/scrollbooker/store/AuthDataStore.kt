@@ -1,7 +1,6 @@
 package com.example.scrollbooker.store
 
 import android.content.Context
-import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
@@ -30,7 +29,6 @@ class AuthDataStore(private val context: Context) {
         val FULLNAME = stringPreferencesKey("fullName")
         val BUSINESS_ID = intPreferencesKey("businessId")
         val BUSINESS_TYPE_ID = intPreferencesKey("businessTypeId")
-        val HAS_EMPLOYEES = booleanPreferencesKey("hasEmployees")
     }
 
     // Store Entire Session
@@ -42,7 +40,6 @@ class AuthDataStore(private val context: Context) {
         fullName: String,
         businessId: Int?,
         businessTypeId: Int?,
-        hasEmployees: Boolean,
         permissions: List<String>,
     ) {
         context.dataStore.edit { prefs ->
@@ -53,7 +50,6 @@ class AuthDataStore(private val context: Context) {
             prefs[FULLNAME] = fullName
             prefs[BUSINESS_ID] = businessId ?: prefs.remove(BUSINESS_ID)
             prefs[BUSINESS_TYPE_ID] = businessTypeId ?: prefs.remove(BUSINESS_TYPE_ID)
-            prefs[HAS_EMPLOYEES] = hasEmployees
             prefs[PERMISSIONS] = permissions.toSet()
         }
     }
@@ -92,7 +88,6 @@ class AuthDataStore(private val context: Context) {
     fun getUserId(): Flow<Int?> = context.dataStore.data.map { it[USER_ID] }
     fun getBusinessId(): Flow<Int?> = context.dataStore.data.map { it[BUSINESS_ID] }
     fun getBusinessTypeId(): Flow<Int?> = context.dataStore.data.map { it[BUSINESS_TYPE_ID] }
-    fun getHasEmployees(): Flow<Boolean> = context.dataStore.data.map { it[HAS_EMPLOYEES] == true }
     fun getUserPermissions(): Flow<List<String>> = context.dataStore.data
         .map { prefs -> prefs[PERMISSIONS]?.toList() ?: emptyList() }
 

@@ -4,12 +4,11 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import com.example.scrollbooker.core.enums.PermissionEnum
 
 data class UserPermissionsController(
-    val values: Set<String>,
-    val hasEmployees: Boolean
+    val values: Set<String>
 ) {
     fun hasPermission(code: PermissionEnum) = values.contains(code.key)
 }
 
 val LocalUserPermissions = staticCompositionLocalOf {
-    UserPermissionsController(emptySet(), false)
+    UserPermissionsController(emptySet())
 }

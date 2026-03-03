@@ -4,7 +4,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ShapeDefaults
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -17,6 +16,7 @@ import com.example.scrollbooker.components.core.buttons.MainButtonSmall
 import com.example.scrollbooker.components.customized.UserListItem
 import com.example.scrollbooker.core.enums.NotificationTypeEnum
 import com.example.scrollbooker.components.customized.LoadMoreSpinner
+import com.example.scrollbooker.components.customized.Refresh
 import com.example.scrollbooker.entity.user.notification.domain.model.Notification
 import com.example.scrollbooker.navigation.navigators.InboxNavigator
 import com.example.scrollbooker.ui.inbox.InboxViewModel
@@ -38,16 +38,14 @@ fun NotificationsList(
 
     val appendState = notifications.loadState.append
 
-    PullToRefreshBox(
+    Refresh(
         isRefreshing = notifications.loadState.refresh is LoadState.Loading,
         onRefresh = { viewModel.refreshNotifications() }
     ) {
         LazyColumn(Modifier.fillMaxSize()) {
-            items(
-                count = notifications.itemCount,
-                key = { index -> notifications[index]?.id ?: index }
-            ) { index ->
+            items(notifications.itemCount) { index ->
                 val notification = notifications[index]
+
                 notification?.let { notification ->
                     val isLocked = isFollowSaving.contains(notification.sender.id)
 

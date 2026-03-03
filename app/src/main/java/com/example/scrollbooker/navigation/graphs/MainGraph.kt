@@ -30,11 +30,8 @@ import com.example.scrollbooker.navigation.host.FeedNavHost
 import com.example.scrollbooker.navigation.host.InboxNavHost
 import com.example.scrollbooker.navigation.host.MyProfileNavHost
 import com.example.scrollbooker.navigation.host.SearchNavHost
-import com.example.scrollbooker.ui.LocalLocationController
 import com.example.scrollbooker.ui.LocalMainNavController
 import com.example.scrollbooker.ui.LocalUserPermissions
-import com.example.scrollbooker.ui.LocationController
-import com.example.scrollbooker.ui.LocationViewModel
 import com.example.scrollbooker.ui.UserPermissionsController
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
 import com.example.scrollbooker.ui.search.SearchScreen
@@ -48,10 +45,8 @@ fun NavGraphBuilder.mainGraph(onLogout: () -> Unit) {
         composable(route = MainRoute.Shell.route) {
             val tabsViewModel: TabsViewModel = hiltViewModel()
             val mainUiViewModel: MainUIViewModel = hiltViewModel()
-            val locationViewModel: LocationViewModel = hiltViewModel()
 
             val permissions by mainUiViewModel.permissions.collectAsStateWithLifecycle()
-            val hasEmployees by mainUiViewModel.hasEmployees.collectAsStateWithLifecycle()
 
             val tabsController = remember(tabsViewModel) {
                 TabsController(
@@ -71,18 +66,8 @@ fun NavGraphBuilder.mainGraph(onLogout: () -> Unit) {
                 )
             }
 
-            val permissionsController = remember(permissions, hasEmployees) {
-                UserPermissionsController(permissions, hasEmployees)
-            }
-
-            val locationController = remember(locationViewModel) {
-                LocationController(
-                    stateFlow = locationViewModel.state,
-                    startUpdates = locationViewModel::startLocationUpdates,
-                    stopUpdates = locationViewModel::stopLocationUpdates,
-                    onPermissionResult = locationViewModel::onPermissionResult,
-                    syncInitialPermission = locationViewModel::syncInitialPermission
-                )
+            val permissionsController = remember(permissions) {
+                UserPermissionsController(permissions)
             }
 
             val mainNavController = rememberNavController()
@@ -110,8 +95,7 @@ fun NavGraphBuilder.mainGraph(onLogout: () -> Unit) {
                 LocalMainNavController provides mainNavController,
                 LocalTabsController provides tabsController,
                 LocalBottomBarController provides bottomBarController,
-                LocalUserPermissions provides permissionsController,
-                LocalLocationController provides locationController
+                LocalUserPermissions provides permissionsController
             ) {
                 NavHost(
                     navController = mainNavController,

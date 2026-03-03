@@ -31,7 +31,9 @@ fun InboxScreen(
     val isInitialLoading = refreshState is LoadState.Loading && notifications.itemCount == 0
 
     Scaffold(
-        topBar = { Header(title = stringResource(id = R.string.inbox)) },
+        topBar = {
+            Header(title = stringResource(id = R.string.inbox))
+        },
         bottomBar = { BottomBar() }
     ) { innerPadding ->
         Box(modifier = Modifier
