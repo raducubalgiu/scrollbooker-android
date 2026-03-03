@@ -35,71 +35,71 @@ fun ServiceTabs(
     userId: Int,
     services: List<ServiceWithEmployees>
 ) {
-    val scope = rememberCoroutineScope()
-    val pagerState = rememberPagerState(initialPage = 0) { services.size }
-    val selectedTabIndex = pagerState.currentPage
-
-    LaunchedEffect(userId) {
-        viewModel.setUserId(userId)
-    }
-
-    Column(modifier = Modifier.fillMaxSize()) {
-        if(services.isEmpty()) {
-            EmptyScreen(
-                modifier = Modifier.padding(top = 30.dp),
-                arrangement = Arrangement.Top,
-                message = stringResource(R.string.noServicesFound),
-                icon = painterResource(R.drawable.ic_shopping_outline)
-            )
-        }
-
-        ScrollableTabRow(
-            containerColor = Background,
-            contentColor = OnSurfaceBG,
-            edgePadding = BasePadding,
-            selectedTabIndex = pagerState.currentPage,
-            indicator = {},
-            divider = {
-                HorizontalDivider(
-                    modifier = Modifier.padding(top = 5.dp),
-                    color = Divider,
-                    thickness = 0.55.dp
-                )
-            }
-        ) {
-            services.forEachIndexed { index, service ->
-                val isSelected = selectedTabIndex == index
-
-                ServiceTab(
-                    isSelected = isSelected,
-                    serviceName = service.shortName,
-                    onClick = {
-                        scope.launch {
-                            pagerState.animateScrollToPage(index)
-                        }
-                    }
-                )
-            }
-        }
-
-        HorizontalPager(
-            state = pagerState,
-            beyondViewportPageCount = 0,
-            modifier = Modifier.fillMaxSize(),
-            pageSize = PageSize.Fill,
-            key = { it }
-        ) { page ->
-            val serviceId = services[page].id
-            val employees = services[page].employees
-
-            UserProductsServiceTab(
-                viewModel = viewModel,
-                selectedProducts = selectedProducts,
-                employees = employees,
-                userId = userId,
-                serviceId = serviceId,
-                onSelect = onSelect
-            )
-        }
-    }
+//    val scope = rememberCoroutineScope()
+//    val pagerState = rememberPagerState(initialPage = 0) { services.size }
+//    val selectedTabIndex = pagerState.currentPage
+//
+//    LaunchedEffect(userId) {
+//        viewModel.setUserId(userId)
+//    }
+//
+//    Column(modifier = Modifier.fillMaxSize()) {
+//        if(services.isEmpty()) {
+//            EmptyScreen(
+//                modifier = Modifier.padding(top = 30.dp),
+//                arrangement = Arrangement.Top,
+//                message = stringResource(R.string.noServicesFound),
+//                icon = painterResource(R.drawable.ic_shopping_outline)
+//            )
+//        }
+//
+//        ScrollableTabRow(
+//            containerColor = Background,
+//            contentColor = OnSurfaceBG,
+//            edgePadding = BasePadding,
+//            selectedTabIndex = pagerState.currentPage,
+//            indicator = {},
+//            divider = {
+//                HorizontalDivider(
+//                    modifier = Modifier.padding(top = 5.dp),
+//                    color = Divider,
+//                    thickness = 0.55.dp
+//                )
+//            }
+//        ) {
+//            services.forEachIndexed { index, service ->
+//                val isSelected = selectedTabIndex == index
+//
+//                ServiceTab(
+//                    isSelected = isSelected,
+//                    serviceName = service.shortName,
+//                    onClick = {
+//                        scope.launch {
+//                            pagerState.animateScrollToPage(index)
+//                        }
+//                    }
+//                )
+//            }
+//        }
+//
+//        HorizontalPager(
+//            state = pagerState,
+//            beyondViewportPageCount = 0,
+//            modifier = Modifier.fillMaxSize(),
+//            pageSize = PageSize.Fill,
+//            key = { it }
+//        ) { page ->
+//            val serviceId = services[page].id
+//            val employees = services[page].employees
+//
+//            UserProductsServiceTab(
+//                viewModel = viewModel,
+//                selectedProducts = selectedProducts,
+//                employees = employees,
+//                userId = userId,
+//                serviceId = serviceId,
+//                onSelect = onSelect
+//            )
+//        }
+//    }
 }

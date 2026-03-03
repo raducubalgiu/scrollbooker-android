@@ -2,6 +2,7 @@ package com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.reposi
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.SelectedServiceDomainsWithServices
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomain
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomainWithEmployeeServices
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomainWithEmployeeServicesResponse
 
 interface ServiceDomainRepository {
     suspend fun getServiceDomainsByBusinessDomain(businessDomainId: Int): List<ServiceDomain>
@@ -10,5 +11,5 @@ interface ServiceDomainRepository {
         userId: Int,
         onlyWithProducts: Boolean,
         onlyWithFilters: Boolean
-    ): Result<List<ServiceDomainWithEmployeeServices>>
+    ): Result<ServiceDomainWithEmployeeServicesResponse>
 }

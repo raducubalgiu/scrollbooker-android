@@ -29,64 +29,64 @@ fun UserProductsServiceTabs(
     userId: Int,
     onSelect: (Product) -> Unit
 ) {
-    val servicesDomainWithServices by viewModel.serviceDomainWithServicesState.collectAsState()
-    val scope = rememberCoroutineScope()
-
-    Column(modifier = Modifier.fillMaxSize()) {
-        when(val sDomainServices = servicesDomainWithServices) {
-            is FeatureState.Loading -> Unit
-            is FeatureState.Error -> ErrorScreen()
-            is FeatureState.Success -> {
-                val data = sDomainServices.data
-
-                if(data.size == 1) {
-                    ServiceTabs(
-                        services = data.first().services,
-                        viewModel = viewModel,
-                        selectedProducts = selectedProducts,
-                        onSelect = onSelect,
-                        userId = userId
-                    )
-                } else {
-                    val pagerState = rememberPagerState(initialPage = 0) { data.size }
-                    val selectedTabIndex = pagerState.currentPage
-
-                    ScrollableTabRow(
-                        containerColor = Background,
-                        contentColor = OnSurfaceBG,
-                        edgePadding = BasePadding,
-                        selectedTabIndex = pagerState.currentPage,
-                        indicator = {},
-                        divider = {
-                            HorizontalDivider(
-                                modifier = Modifier.padding(top = 5.dp),
-                                color = Divider,
-                                thickness = 0.55.dp
-                            )
-                        }
-                    ) {
-                        data.forEachIndexed { index, serviceDomain ->
-                            val isSelected = selectedTabIndex == index
-
-                            FilterChip(
-                                selected = isSelected,
-                                onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
-                                label = {
-                                    Text(text = serviceDomain.name)
-                                },
-                            )
-                        }
-                    }
-
-                    ServiceTabs(
-                        services = data.first().services,
-                        viewModel = viewModel,
-                        selectedProducts = selectedProducts,
-                        onSelect = onSelect,
-                        userId = userId
-                    )
-                }
-            }
-        }
-    }
+//    val servicesDomainWithServices by viewModel.serviceDomainWithServicesState.collectAsState()
+//    val scope = rememberCoroutineScope()
+//
+//    Column(modifier = Modifier.fillMaxSize()) {
+//        when(val sDomainServices = servicesDomainWithServices) {
+//            is FeatureState.Loading -> Unit
+//            is FeatureState.Error -> ErrorScreen()
+//            is FeatureState.Success -> {
+//                val data = sDomainServices.data
+//
+//                if(data.size == 1) {
+//                    ServiceTabs(
+//                        services = data.first().services,
+//                        viewModel = viewModel,
+//                        selectedProducts = selectedProducts,
+//                        onSelect = onSelect,
+//                        userId = userId
+//                    )
+//                } else {
+//                    val pagerState = rememberPagerState(initialPage = 0) { data.size }
+//                    val selectedTabIndex = pagerState.currentPage
+//
+//                    ScrollableTabRow(
+//                        containerColor = Background,
+//                        contentColor = OnSurfaceBG,
+//                        edgePadding = BasePadding,
+//                        selectedTabIndex = pagerState.currentPage,
+//                        indicator = {},
+//                        divider = {
+//                            HorizontalDivider(
+//                                modifier = Modifier.padding(top = 5.dp),
+//                                color = Divider,
+//                                thickness = 0.55.dp
+//                            )
+//                        }
+//                    ) {
+//                        data.forEachIndexed { index, serviceDomain ->
+//                            val isSelected = selectedTabIndex == index
+//
+//                            FilterChip(
+//                                selected = isSelected,
+//                                onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
+//                                label = {
+//                                    Text(text = serviceDomain.name)
+//                                },
+//                            )
+//                        }
+//                    }
+//
+//                    ServiceTabs(
+//                        services = data.first().services,
+//                        viewModel = viewModel,
+//                        selectedProducts = selectedProducts,
+//                        onSelect = onSelect,
+//                        userId = userId
+//                    )
+//                }
+//            }
+//        }
+//    }
 }

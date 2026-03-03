@@ -84,7 +84,7 @@ fun AddProductScreen(
     }
 
     val serviceDomainsOptionsList = when(val state = serviceDomains) {
-        is FeatureState.Success -> state.data.map { domain ->
+        is FeatureState.Success -> state.data.serviceDomains.map { domain ->
             Option(
                 value = domain.id.toString(),
                 name = domain.name
@@ -95,7 +95,7 @@ fun AddProductScreen(
 
     val servicesOptionList = when(val state = serviceDomains) {
         is FeatureState.Success -> {
-            val services = state.data.find { it.id.toString() == productState.serviceDomainId }?.services ?: emptyList()
+            val services = state.data.serviceDomains.find { it.id.toString() == productState.serviceDomainId }?.services ?: emptyList()
             services.map { service ->
                 Option(
                     value = service.id.toString(),
@@ -108,7 +108,7 @@ fun AddProductScreen(
 
     val filters = when(val state = serviceDomains) {
         is FeatureState.Success -> {
-            val services = state.data.find { it.id.toString() == productState.serviceDomainId }?.services ?: emptyList()
+            val services = state.data.serviceDomains.find { it.id.toString() == productState.serviceDomainId }?.services ?: emptyList()
             val filters = services.find { it.id.toString() == productState.serviceId }?.filters ?: emptyList()
             FeatureState.Success(filters)
         }

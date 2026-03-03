@@ -30,76 +30,76 @@ class UserProductsViewModel @Inject constructor(
     private val getAllServiceDomainsWithServicesByUserIdUseCase: GetAllServiceDomainsWithServicesByUserIdUseCase,
     private val getProductsByUserIdAndServiceIdUseCase: GetProductsByUserIdAndServiceIdUseCase
 ): ViewModel() {
-    private val userIdFlow = MutableStateFlow<Int?>(null)
-    private val productsFlowCache = mutableMapOf<Int, Flow<PagingData<Product>>>()
-
-    private val _selectedProducts = MutableStateFlow<Set<Product>>(emptySet())
-    val selectedProducts: StateFlow<Set<Product>> = _selectedProducts.asStateFlow()
-
-    fun setUserId(userId: Int) {
-        if(userIdFlow.value != userId) {
-            userIdFlow.value = userId
-        }
-    }
-
-    fun clearProducts() {
-        _selectedProducts.value = emptySet()
-    }
-
-    fun setMultipleProducts(products: List<Product>) {
-        _selectedProducts.value = products.toSet()
-    }
-
-    fun toggleProductId(product: Product) {
-        val productsSet = _selectedProducts.value.toMutableSet()
-
-        if(product in productsSet) {
-            productsSet.remove(product)
-        } else {
-            productsSet.add(product)
-        }
-
-        _selectedProducts.value = productsSet
-    }
-
-    fun reset() {
-        userIdFlow.value = null
-        _selectedProducts.value = emptySet()
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val serviceDomainWithServicesState: StateFlow<FeatureState<List<ServiceDomainWithEmployeeServices>>> = userIdFlow
-        .filterNotNull()
-        .distinctUntilChanged()
-        .flatMapLatest { userId ->
-            flow {
-                emit(FeatureState.Loading)
-
-                val result = getAllServiceDomainsWithServicesByUserIdUseCase(userId)
-
-                emit(
-                    result.fold(
-                        onSuccess = { FeatureState.Success(it) },
-                        onFailure = { e ->
-                            Timber.tag("Services").e(e, "ERROR: on Fetching User ServiceDomain With Services")
-                            FeatureState.Error()
-                        }
-                    )
-                )
-            }
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Lazily,
-            initialValue = FeatureState.Loading
-        )
-
-//    @OptIn(ExperimentalCoroutinesApi::class)
-//    fun loadProducts(serviceId: Int, userId: Int, employeeId: Int?): Flow<PagingData<Product>> {
-//        return productsFlowCache.getOrPut(serviceId) {
-//            getProductsByUserIdAndServiceIdUseCase(userId, serviceId, employeeId)
-//                .cachedIn(viewModelScope)
-//                .shareIn(viewModelScope, SharingStarted.Lazily, replay = 1)
+//    private val userIdFlow = MutableStateFlow<Int?>(null)
+//    private val productsFlowCache = mutableMapOf<Int, Flow<PagingData<Product>>>()
+//
+//    private val _selectedProducts = MutableStateFlow<Set<Product>>(emptySet())
+//    val selectedProducts: StateFlow<Set<Product>> = _selectedProducts.asStateFlow()
+//
+//    fun setUserId(userId: Int) {
+//        if(userIdFlow.value != userId) {
+//            userIdFlow.value = userId
 //        }
 //    }
+//
+//    fun clearProducts() {
+//        _selectedProducts.value = emptySet()
+//    }
+//
+//    fun setMultipleProducts(products: List<Product>) {
+//        _selectedProducts.value = products.toSet()
+//    }
+//
+//    fun toggleProductId(product: Product) {
+//        val productsSet = _selectedProducts.value.toMutableSet()
+//
+//        if(product in productsSet) {
+//            productsSet.remove(product)
+//        } else {
+//            productsSet.add(product)
+//        }
+//
+//        _selectedProducts.value = productsSet
+//    }
+//
+//    fun reset() {
+//        userIdFlow.value = null
+//        _selectedProducts.value = emptySet()
+//    }
+//
+//    @OptIn(ExperimentalCoroutinesApi::class)
+//    val serviceDomainWithServicesState: StateFlow<FeatureState<List<ServiceDomainWithEmployeeServices>>> = userIdFlow
+//        .filterNotNull()
+//        .distinctUntilChanged()
+//        .flatMapLatest { userId ->
+//            flow {
+//                emit(FeatureState.Loading)
+//
+//                val result = getAllServiceDomainsWithServicesByUserIdUseCase(userId)
+//
+//                emit(
+//                    result.fold(
+//                        onSuccess = { FeatureState.Success(it) },
+//                        onFailure = { e ->
+//                            Timber.tag("Services").e(e, "ERROR: on Fetching User ServiceDomain With Services")
+//                            FeatureState.Error()
+//                        }
+//                    )
+//                )
+//            }
+//        }
+//        .stateIn(
+//            scope = viewModelScope,
+//            started = SharingStarted.Lazily,
+//            initialValue = FeatureState.Loading
+//        )
+//
+////    @OptIn(ExperimentalCoroutinesApi::class)
+////    fun loadProducts(serviceId: Int, userId: Int, employeeId: Int?): Flow<PagingData<Product>> {
+////        return productsFlowCache.getOrPut(serviceId) {
+////            getProductsByUserIdAndServiceIdUseCase(userId, serviceId, employeeId)
+////                .cachedIn(viewModelScope)
+////                .shareIn(viewModelScope, SharingStarted.Lazily, replay = 1)
+////        }
+////    }
 }

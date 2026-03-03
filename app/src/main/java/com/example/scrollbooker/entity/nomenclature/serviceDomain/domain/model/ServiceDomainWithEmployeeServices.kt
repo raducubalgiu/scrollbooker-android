@@ -2,6 +2,11 @@ package com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model
 
 import com.example.scrollbooker.entity.nomenclature.filter.domain.model.Filter
 
+data class ServiceDomainWithEmployeeServicesResponse(
+    val isEditable: Boolean,
+    val serviceDomains: List<ServiceDomainWithEmployeeServices>
+)
+
 data class ServiceDomainWithEmployeeServices(
     val id: Int,
     val name: String,

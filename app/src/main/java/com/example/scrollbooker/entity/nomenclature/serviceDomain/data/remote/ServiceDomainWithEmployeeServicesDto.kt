@@ -1,7 +1,16 @@
 package com.example.scrollbooker.entity.nomenclature.serviceDomain.data.remote
 
 import com.example.scrollbooker.entity.nomenclature.filter.data.remote.FilterDto
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomainWithEmployeeServices
 import com.google.gson.annotations.SerializedName
+
+data class ServiceDomainWithEmployeeServicesResponseDto(
+    @SerializedName("is_editable")
+    val isEditable: Boolean,
+
+    @SerializedName("service_domains")
+    val serviceDomains: List<ServiceDomainWithEmployeeServicesDto>
+)
 
 data class ServiceDomainWithEmployeeServicesDto(
     val id: Int,

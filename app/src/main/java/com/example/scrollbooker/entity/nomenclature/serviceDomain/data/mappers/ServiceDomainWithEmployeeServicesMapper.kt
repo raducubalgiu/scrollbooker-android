@@ -2,11 +2,20 @@ package com.example.scrollbooker.entity.nomenclature.serviceDomain.data.mappers
 
 import com.example.scrollbooker.entity.nomenclature.filter.data.mapper.toDomain
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.data.remote.ServiceDomainWithEmployeeServicesDto
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.data.remote.ServiceDomainWithEmployeeServicesResponseDto
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.data.remote.ServiceEmployeeDto
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.data.remote.ServiceWithEmployeesDto
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomainWithEmployeeServices
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomainWithEmployeeServicesResponse
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceEmployee
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceWithEmployees
+
+fun ServiceDomainWithEmployeeServicesResponseDto.toDomain(): ServiceDomainWithEmployeeServicesResponse {
+    return ServiceDomainWithEmployeeServicesResponse(
+        isEditable = isEditable,
+        serviceDomains = serviceDomains.map { it.toDomain() }
+    )
+}
 
 fun ServiceDomainWithEmployeeServicesDto.toDomain(): ServiceDomainWithEmployeeServices {
     return ServiceDomainWithEmployeeServices(

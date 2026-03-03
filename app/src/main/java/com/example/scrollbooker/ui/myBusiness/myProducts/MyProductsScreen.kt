@@ -1,6 +1,8 @@
 package com.example.scrollbooker.ui.myBusiness.myProducts
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -38,11 +40,13 @@ import com.example.scrollbooker.ui.shared.products.components.EmployeesList
 import com.example.scrollbooker.ui.shared.products.components.ServiceTab
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
+import com.example.scrollbooker.ui.theme.bodySmall
 import com.example.scrollbooker.ui.theme.headlineSmall
 
 @Composable
@@ -56,6 +60,8 @@ fun MyProductsScreen(
 
     val scope = rememberCoroutineScope()
 
+    val isEditable = (serviceDomains as? FeatureState.Success)?.data?.isEditable == true
+
     Layout(
         headerTitle = stringResource(R.string.myProducts),
         header = {
@@ -63,7 +69,8 @@ fun MyProductsScreen(
                 title = stringResource(R.string.myProducts),
                 onAction = onAddProduct,
                 actionTitle = stringResource(R.string.add),
-                onBack = onBack
+                onBack = onBack,
+                isEnabled = isEditable
             )
         },
         onBack = onBack,
@@ -79,7 +86,7 @@ fun MyProductsScreen(
 
                 val domainPagerState = rememberPagerState(
                     initialPage = tabsState.selectedDomainIndex,
-                    pageCount = { serviceDomains.size }
+                    pageCount = { serviceDomains.serviceDomains.size }
                 )
 
                 LaunchedEffect(domainPagerState.currentPage) {
@@ -89,7 +96,18 @@ fun MyProductsScreen(
                 }
 
                 Column {
-                    if(serviceDomains.size > 1) {
+                    if(!isEditable) {
+                        Text(
+                            modifier = Modifier.padding(horizontal = BasePadding),
+                            text = "Nu ai permisiunea de a edita produsele. Doar Managerul sau Ownerul pot face modificari.",
+                            color = Error,
+                            style = bodySmall
+                        )
+
+                        Spacer(Modifier.height(BasePadding))
+                    }
+
+                    if(serviceDomains.serviceDomains.size > 1) {
                         ScrollableTabRow(
                             selectedTabIndex = tabsState.selectedDomainIndex,
                             edgePadding = BasePadding,
@@ -104,7 +122,7 @@ fun MyProductsScreen(
                                 )
                             }
                         ) {
-                            serviceDomains.forEachIndexed { index, domain ->
+                            serviceDomains.serviceDomains.forEachIndexed { index, domain ->
                                 val isSelected = tabsState.selectedDomainIndex == index
 
                                 Button(
@@ -135,7 +153,7 @@ fun MyProductsScreen(
                         modifier = Modifier.weight(1f)
                     ) { domainIndex ->
 
-                        val services = serviceDomains[domainIndex].services
+                        val services = serviceDomains.serviceDomains[domainIndex].services
 
                         val selectedServiceIndex =
                             viewModel.getSelectedService(domainIndex)
@@ -199,7 +217,7 @@ fun MyProductsScreen(
                                                 modifier = Modifier.fillMaxSize()
                                             ) {
                                                 item {
-                                                    val employees = serviceDomains[domainIndex]
+                                                    val employees = serviceDomains.serviceDomains[domainIndex]
                                                         .services[serviceIndex]
                                                         .employees
 
@@ -246,6 +264,8 @@ fun MyProductsScreen(
                                                             ProductCard(
                                                                 product = product,
                                                                 isSelected = false,
+                                                                displayEditableActions = true,
+                                                                isEditable = isEditable,
                                                                 onSelect = {}
                                                             )
 

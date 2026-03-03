@@ -41,80 +41,80 @@ fun ProductsTab(
     userId: Int,
     onNext: () -> Unit
 ) {
-    val pagerState = rememberPagerState(initialPage = initialIndex) { 2 }
-    val scope = rememberCoroutineScope()
-
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.SpaceBetween
-    ) {
-        Column(Modifier.weight(1f)) {
-            if(initialIndex == 0) {
-                Box(Modifier.padding(BasePadding)) {
-                    SegmentedButtons(
-                        tabs = listOf(
-                            "Ca data trecuta",
-                            stringResource(R.string.allServices)
-                        ),
-                        selectedIndex = pagerState.currentPage,
-                        onClick = {
-                            productsViewModel.clearProducts()
-                            scope.launch { pagerState.animateScrollToPage(it) }
-                        }
-                    )
-                }
-            }
-
-            HorizontalPager(
-                state = pagerState,
-                userScrollEnabled = false,
-                beyondViewportPageCount = 0
-            ) { page ->
-                when(page) {
-                    0 -> Column(Modifier.fillMaxSize()) {
-                        if (initialIndex == 1) return@HorizontalPager
-                        val products = appointmentProducts ?: postProducts
-
-                        when(products) {
-                            is FeatureState.Error -> ErrorScreen()
-                            is FeatureState.Loading -> LoadingScreen()
-                            is FeatureState.Success -> {
-                                val products = products.data
-
-                                LaunchedEffect(products) {
-                                    productsViewModel.setMultipleProducts(products)
-                                }
-
-                                LazyColumn(Modifier.weight(1f)) {
-                                    items(products) {
-                                        ProductCard(
-                                            product = it,
-                                            isSelected = it in selectedProducts,
-                                            onSelect = onSelect
-                                        )
-                                    }
-                                }
-                            }
-                            null -> Unit
-                        }
-                    }
-                    1 -> {
-                        UserProductsServiceTabs(
-                            viewModel = productsViewModel,
-                            selectedProducts = selectedProducts,
-                            userId = userId,
-                            onSelect = onSelect
-                        )
-                    }
-                }
-            }
-        }
-
-        BookingsSheetFooter(
-            selectedProducts = selectedProducts,
-            totalPrice = totalPrice,
-            totalDuration = totalDuration,
-            onNext = onNext
-        )
-    }
+//    val pagerState = rememberPagerState(initialPage = initialIndex) { 2 }
+//    val scope = rememberCoroutineScope()
+//
+//    Column(
+//        modifier = Modifier.fillMaxSize(),
+//        verticalArrangement = Arrangement.SpaceBetween
+//    ) {
+//        Column(Modifier.weight(1f)) {
+//            if(initialIndex == 0) {
+//                Box(Modifier.padding(BasePadding)) {
+//                    SegmentedButtons(
+//                        tabs = listOf(
+//                            "Ca data trecuta",
+//                            stringResource(R.string.allServices)
+//                        ),
+//                        selectedIndex = pagerState.currentPage,
+//                        onClick = {
+//                            productsViewModel.clearProducts()
+//                            scope.launch { pagerState.animateScrollToPage(it) }
+//                        }
+//                    )
+//                }
+//            }
+//
+//            HorizontalPager(
+//                state = pagerState,
+//                userScrollEnabled = false,
+//                beyondViewportPageCount = 0
+//            ) { page ->
+//                when(page) {
+//                    0 -> Column(Modifier.fillMaxSize()) {
+//                        if (initialIndex == 1) return@HorizontalPager
+//                        val products = appointmentProducts ?: postProducts
+//
+//                        when(products) {
+//                            is FeatureState.Error -> ErrorScreen()
+//                            is FeatureState.Loading -> LoadingScreen()
+//                            is FeatureState.Success -> {
+//                                val products = products.data
+//
+//                                LaunchedEffect(products) {
+//                                    productsViewModel.setMultipleProducts(products)
+//                                }
+//
+//                                LazyColumn(Modifier.weight(1f)) {
+//                                    items(products) {
+//                                        ProductCard(
+//                                            product = it,
+//                                            isSelected = it in selectedProducts,
+//                                            onSelect = onSelect
+//                                        )
+//                                    }
+//                                }
+//                            }
+//                            null -> Unit
+//                        }
+//                    }
+//                    1 -> {
+//                        UserProductsServiceTabs(
+//                            viewModel = productsViewModel,
+//                            selectedProducts = selectedProducts,
+//                            userId = userId,
+//                            onSelect = onSelect
+//                        )
+//                    }
+//                }
+//            }
+//        }
+//
+//        BookingsSheetFooter(
+//            selectedProducts = selectedProducts,
+//            totalPrice = totalPrice,
+//            totalDuration = totalDuration,
+//            onNext = onNext
+//        )
+//    }
 }

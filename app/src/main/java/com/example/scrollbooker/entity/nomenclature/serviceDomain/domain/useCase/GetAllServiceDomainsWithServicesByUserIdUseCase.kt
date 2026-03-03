@@ -1,6 +1,5 @@
 package com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.useCase
-
-import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomainWithEmployeeServices
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomainWithEmployeeServicesResponse
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.repository.ServiceDomainRepository
 import javax.inject.Inject
 
@@ -11,7 +10,7 @@ class GetAllServiceDomainsWithServicesByUserIdUseCase @Inject constructor(
         userId: Int,
         onlyWithProducts: Boolean = true,
         withFilters: Boolean = true
-    ): Result<List<ServiceDomainWithEmployeeServices>> {
+    ): Result<ServiceDomainWithEmployeeServicesResponse> {
         return repository.getServiceDomainsWithServicesByUserId(userId, onlyWithProducts, withFilters)
     }
 }

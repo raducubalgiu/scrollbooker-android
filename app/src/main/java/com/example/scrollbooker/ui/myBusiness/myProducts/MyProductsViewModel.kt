@@ -6,7 +6,7 @@ import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.products.domain.model.ProductSection
 import com.example.scrollbooker.entity.booking.products.domain.useCase.DeleteProductUseCase
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByUserIdAndServiceIdUseCase
-import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomainWithEmployeeServices
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomainWithEmployeeServicesResponse
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.useCase.GetAllServiceDomainsWithServicesByUserIdUseCase
 
 import com.example.scrollbooker.store.AuthDataStore
@@ -94,7 +94,7 @@ class MyProductsViewModel @Inject constructor(
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val serviceDomains: StateFlow<FeatureState<List<ServiceDomainWithEmployeeServices>>> = userIdFlow
+    val serviceDomains: StateFlow<FeatureState<ServiceDomainWithEmployeeServicesResponse>> = userIdFlow
         .flatMapLatest { userId ->
             flow {
                 emit(FeatureState.Loading)
@@ -128,14 +128,27 @@ class MyProductsViewModel @Inject constructor(
     ) { userId, tabsState, serviceDomainState ->
         // Extract current serviceId and employeeId based on tab selection
         val (serviceId, employeeId) = extractServiceAndEmployeeIds(tabsState, serviceDomainState)
-        Triple(userId, serviceId, employeeId)
+        ProductSectionsRequestContext(
+            userId = userId,
+            serviceId = serviceId,
+            employeeId = employeeId,
+            serviceDomainState = serviceDomainState
+        )
     }
         .distinctUntilChanged()
-        .flatMapLatest { (userId, serviceId, employeeId) ->
+        .flatMapLatest { context ->
             flow {
-                // Only proceed if we have a valid serviceId
+                val userId = context.userId
+                val serviceId = context.serviceId
+                val employeeId = context.employeeId
+
+                // If there is no valid service yet, mirror serviceDomains state to avoid empty-state flicker.
                 if (serviceId == null) {
-                    emit(FeatureState.Success(emptyList()))
+                    when (context.serviceDomainState) {
+                        is FeatureState.Loading -> emit(FeatureState.Loading)
+                        is FeatureState.Error -> emit(FeatureState.Error())
+                        is FeatureState.Success -> emit(FeatureState.Success(emptyList()))
+                    }
                     return@flow
                 }
 
@@ -175,12 +188,19 @@ class MyProductsViewModel @Inject constructor(
             initialValue = FeatureState.Loading
         )
 
+    private data class ProductSectionsRequestContext(
+        val userId: Int,
+        val serviceId: Int?,
+        val employeeId: Int?,
+        val serviceDomainState: FeatureState<ServiceDomainWithEmployeeServicesResponse>
+    )
+
     private fun extractServiceAndEmployeeIds(
         tabsState: ServicesTabsState,
-        serviceDomainState: FeatureState<List<ServiceDomainWithEmployeeServices>>
+        serviceDomainState: FeatureState<ServiceDomainWithEmployeeServicesResponse>
     ): Pair<Int?, Int?> {
         return if (serviceDomainState is FeatureState.Success) {
-            val domains = serviceDomainState.data
+            val domains = serviceDomainState.data.serviceDomains
             val selectedDomainIndex = tabsState.selectedDomainIndex
 
             if (selectedDomainIndex < domains.size) {

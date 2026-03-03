@@ -19,5 +19,5 @@ interface ServiceDomainApiService {
         @Path("userId") userId: Int,
         @Query("only_with_products") onlyWithProducts: Boolean,
         @Query("with_filters") withFilters: Boolean
-    ): List<ServiceDomainWithEmployeeServicesDto>
+    ): ServiceDomainWithEmployeeServicesResponseDto
 }

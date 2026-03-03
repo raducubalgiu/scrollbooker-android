@@ -1,7 +1,6 @@
 package com.example.scrollbooker.components.customized.ProductCard
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,11 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
-import com.example.scrollbooker.components.customized.Protected.Protected
-import com.example.scrollbooker.core.enums.PermissionEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
@@ -34,11 +30,12 @@ import com.example.scrollbooker.ui.theme.bodySmall
 @Composable
 fun ProductCard(
     product: Product,
-    displayActions: Boolean = false,
+    displayEditableActions: Boolean = false,
+    isEditable: Boolean = false,
+    isSelected: Boolean = true,
     isLoadingDelete: Boolean = false,
     onNavigateToEdit: ((Int) -> Unit)? = null,
     onDeleteProduct: ((productId: Int) -> Unit)? = null,
-    isSelected: Boolean = true,
     onSelect: (Product) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
@@ -62,7 +59,7 @@ fun ProductCard(
 
                 Spacer(Modifier.width(SpacingS))
 
-                if(!displayActions && product.canBeBooked) {
+                if(!displayEditableActions && product.canBeBooked) {
                     MainButtonOutlined(
                         title = if(isSelected) stringResource(R.string.added) else stringResource(R.string.add),
                         onClick = { onSelect(product) },
@@ -95,15 +92,15 @@ fun ProductCard(
                 )
             }
 
-//            if(displayActions) {
-//                Spacer(Modifier.height(BasePadding))
-//
-//                ProductCardActions(
-//                    isLoadingDelete = isLoadingDelete,
-//                    onNavigateToEdit = { onNavigateToEdit?.invoke(product.id) },
-//                    onDeleteProduct = { onDeleteProduct?.invoke(product.id) }
-//                )
-//            }
+            if(isEditable && displayEditableActions) {
+                Spacer(Modifier.height(BasePadding))
+
+                ProductCardActions(
+                    isLoadingDelete = isLoadingDelete,
+                    onNavigateToEdit = { onNavigateToEdit?.invoke(product.id) },
+                    onDeleteProduct = { onDeleteProduct?.invoke(product.id) }
+                )
+            }
         }
     }
 }
