@@ -202,7 +202,7 @@ fun AddProductScreen(
 
                     Spacer(Modifier.height(BasePadding))
 
-                    if(productState.serviceId.isNotEmpty()) {
+                    if(productState.serviceId.isNotEmpty() && filters.data.isNotEmpty()) {
                         FiltersSection(
                             isVisible = productState.serviceId.isNotEmpty(),
                             filters = filters.data,

@@ -54,7 +54,7 @@ fun MyProductsScreen(
     viewModel: MyProductsViewModel,
     onBack: () -> Unit,
     onNavigateAddProduct: () -> Unit,
-    onNavigateEditProduct: (Int) -> Unit
+    onNavigateEditProduct: (Int, Int) -> Unit
 ) {
     val serviceDomains by viewModel.serviceDomains.collectAsState()
     val products by viewModel.productSections.collectAsState()
@@ -261,11 +261,15 @@ fun MyProductsScreen(
                                                         }
 
                                                         section.products.forEachIndexed { index, product ->
+                                                            val serviceDomainId = serviceDomains.serviceDomains[domainIndex].id
+
                                                             ProductCard(
                                                                 product = product,
                                                                 displayEditableActions = true,
                                                                 isEditable = isEditable,
-                                                                onNavigateToEdit = onNavigateEditProduct,
+                                                                onNavigateToEdit = {
+                                                                    onNavigateEditProduct(serviceDomainId ,it)
+                                                                },
                                                                 onDeleteProduct = {}
                                                             )
 

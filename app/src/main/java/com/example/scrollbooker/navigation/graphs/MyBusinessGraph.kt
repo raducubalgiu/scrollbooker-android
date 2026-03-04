@@ -32,6 +32,7 @@ import com.example.scrollbooker.ui.myBusiness.myEmploymentRequests.EmploymentSel
 import com.example.scrollbooker.ui.myBusiness.myProducts.AddProductScreen
 import com.example.scrollbooker.ui.myBusiness.myProducts.AddProductsViewModel
 import com.example.scrollbooker.ui.myBusiness.myProducts.EditProductScreen
+import com.example.scrollbooker.ui.myBusiness.myProducts.EditProductsViewModel
 import com.example.scrollbooker.ui.myBusiness.myProducts.MyProductsScreen
 import com.example.scrollbooker.ui.myBusiness.myProducts.MyProductsViewModel
 import com.example.scrollbooker.ui.myBusiness.mySchedules.MySchedulesScreen
@@ -270,7 +271,9 @@ fun NavGraphBuilder.myBusinessGraph(
                 MyProductsScreen(
                     viewModel=viewModel,
                     onBack = { navController.popBackStack() },
-                    onNavigateEditProduct = { navController.navigate("${MainRoute.EditProduct.route}/$it") },
+                    onNavigateEditProduct = { serviceDomainId, productId ->
+                        navController.navigate("${MainRoute.EditProduct.route}/$serviceDomainId/$productId")
+                    },
                     onNavigateAddProduct = {
                         val serviceDomainId = viewModel.getCurrentServiceDomainId()
                         val serviceId = viewModel.getCurrentServiceId()
@@ -306,21 +309,22 @@ fun NavGraphBuilder.myBusinessGraph(
             }
 
             composable(
-                route = "${MainRoute.EditProduct.route}/{productId}",
-                arguments = listOf(navArgument("productId") { type = NavType.IntType })
+                route = "${MainRoute.EditProduct.route}/{serviceDomainId}/{productId}",
+                arguments = listOf(
+                    navArgument("serviceDomainId") { type = NavType.IntType },
+                    navArgument("productId") { type = NavType.IntType }
+                )
             ) { backStackEntry ->
-                val productId = backStackEntry.arguments?.getInt("productId") ?:
-                    throw IllegalStateException("Product Id not found in route arguments")
-
                 val parentEntry = remember(backStackEntry) {
                     navController.getBackStackEntry(MainRoute.MyProductsNavigator.route)
                 }
 
-                val viewModel = hiltViewModel<MyProductsViewModel>(parentEntry)
+                val myProductsViewModel: MyProductsViewModel = hiltViewModel(parentEntry)
+                val viewModel: EditProductsViewModel = hiltViewModel()
 
                 EditProductScreen(
+                    myProductsViewModel = myProductsViewModel,
                     viewModel = viewModel,
-                    productId = productId,
                     onBack = { navController.popBackStack() }
                 )
             }
