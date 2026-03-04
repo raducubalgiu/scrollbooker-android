@@ -163,6 +163,7 @@ fun BusinessProfileScreen(
                 LazyColumn(
                     state = lazyListState,
                     modifier = Modifier.fillMaxSize(),
+                    overscrollEffect = null
                 ) {
                     stickyHeader {
                         Spacer(Modifier

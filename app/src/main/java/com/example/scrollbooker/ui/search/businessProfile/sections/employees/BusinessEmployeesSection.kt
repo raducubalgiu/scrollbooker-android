@@ -3,6 +3,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
@@ -16,6 +17,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileEmployee
+import com.example.scrollbooker.ui.shared.products.components.EmployeeTab
 import com.example.scrollbooker.ui.theme.headlineSmall
 
 @Composable
@@ -34,18 +36,18 @@ fun BusinessEmployeesSection(
             fontWeight = FontWeight.SemiBold
         )
 
+        Spacer(Modifier.height(BasePadding))
+
         LazyRow(
             contentPadding = PaddingValues(horizontal = BasePadding)
         ) {
             itemsIndexed(employees) { index, employee ->
-                BusinessEmployeeItem(
+                EmployeeTab(
+                    isSelected = false,
+                    avatar = employee.avatar,
                     fullName = employee.fullName,
-                    profession = employee.profession,
-                    avatar = employee.avatar ?: "",
                     ratingsAverage = employee.ratingsAverage,
-                    onNavigateToUserProfile = {
-                        onNavigateToEmployeeProfile(employee.id)
-                    }
+                    onSelectedEmployee = {}
                 )
 
                 if(index < employees.size - 1 ) {
