@@ -9,6 +9,7 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -19,7 +20,7 @@ import com.example.scrollbooker.ui.theme.OnSurfaceBG
 
 @Composable
 fun Tabs(
-    tabs: List<String>,
+    tabs: List<TabUI>,
     selectedTabIndex: Int,
     indicatorPadding: Dp = 0.dp,
     onChangeTab: (Int) -> Unit
@@ -43,12 +44,12 @@ fun Tabs(
         },
         divider = { HorizontalDivider(color = Divider, thickness = 0.55.dp) },
     ) {
-        tabs.forEachIndexed { index, title ->
+        tabs.forEachIndexed { index, tab ->
             val isSelected = selectedTabIndex == index
 
             StyledTab(
                 onClick = { onChangeTab(index) },
-                title = title,
+                title = stringResource(tab.title),
                 isSelected = isSelected
             )
         }

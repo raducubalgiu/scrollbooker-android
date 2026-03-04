@@ -28,8 +28,20 @@ class UserSocialPagingSource(
 
         return try {
             val response = when(type) {
-                UserSocialEnum.FOLLOWERS -> withVisibleLoading { api.getUserFollowers(userId, page, limit) }
-                UserSocialEnum.FOLLOWINGS -> withVisibleLoading { api.getUserFollowings(userId, page, limit) }
+                UserSocialEnum.FOLLOWERS -> {
+                    if(page == 1) {
+                         withVisibleLoading { api.getUserFollowers(userId, page, limit) }
+                    } else {
+                         api.getUserFollowers(userId, page, limit)
+                    }
+                }
+                UserSocialEnum.FOLLOWINGS -> {
+                    if(page == 1) {
+                        withVisibleLoading { api.getUserFollowings(userId, page, limit) }
+                    } else {
+                        api.getUserFollowings(userId, page, limit)
+                    }
+                }
             }
 
             val userSocials = response.results.map { it.toDomain() }
