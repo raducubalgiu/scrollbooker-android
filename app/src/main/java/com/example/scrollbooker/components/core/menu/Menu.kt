@@ -72,7 +72,11 @@ fun Menu(
                         }
                     },
                     enabled = it.enabled,
-                    onClick = it.onClick
+                    onClick = {
+                        expanded = false
+
+                        it.onClick()
+                    }
                 )
             }
         }

@@ -2,12 +2,9 @@
 
 package com.example.scrollbooker.ui.profile
 import androidx.annotation.OptIn
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.core.spring
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,7 +14,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.PagerDefaults
 import androidx.compose.foundation.pager.PagerSnapDistance
@@ -26,117 +22,72 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.media3.common.util.UnstableApi
-import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.headers.Header
-import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlay
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.media3.common.Player
-import androidx.media3.exoplayer.ExoPlayer
+import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import com.example.scrollbooker.core.extensions.getOrNull
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
-import com.example.scrollbooker.ui.profile.components.PostTabEnum
-import com.example.scrollbooker.ui.profile.components.ProfileLayoutViewModel
-import com.example.scrollbooker.ui.shared.posts.components.PostPlayerView
-import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlayActionEnum
-import com.example.scrollbooker.ui.shared.posts.sheets.PostSheets
-import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent
-import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.BookingsSheet
-import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.CommentsSheet
-import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.LocationSheet
-import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.MoreOptionsSheet
-import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.None
-import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.PhoneSheet
-import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.ReviewsSheet
+import com.example.scrollbooker.navigation.navigators.ProfileNavigator
+import com.example.scrollbooker.ui.shared.player.PostPlayerWithThumbnail
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.launch
 
 @OptIn(UnstableApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun MyProfilePostDetailScreen(
-    layoutViewModel: ProfileLayoutViewModel,
-    posts: LazyPagingItems<Post>,
+    postTabKey: String,
+    postIndex: Int,
+    viewModel: MyProfileViewModel,
     onBack: () -> Unit,
-    onNavigateToUserProfile: (Int) -> Unit
+    profileNavigate: ProfileNavigator
 ) {
-    val scope = rememberCoroutineScope()
-    val selectedPost by layoutViewModel.selectedPost.collectAsState()
-    val startIndex = selectedPost?.index ?: 0
+    val postTab = PostTabEnum.fromKey(postTabKey)
 
-    val title: String = when(selectedPost?.tab) {
-        PostTabEnum.MY_POSTS -> stringResource(R.string.posts)
+    val title: String = when(postTab) {
+        PostTabEnum.POSTS -> stringResource(R.string.posts)
         PostTabEnum.BOOKMARKS -> stringResource(R.string.bookmarks)
         null -> ""
     }
 
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    var sheetContent by remember { mutableStateOf<PostSheetsContent>(None) }
-
-    if(sheetState.isVisible) {
-        key(sheetContent) {
-            PostSheets(
-                sheetState = sheetState,
-                sheetContent = sheetContent,
-                onClose = {
-                    scope.launch {
-                        sheetState.hide()
-                        sheetContent = None
-                    }
-                },
-            )
-        }
+    val posts = when(postTab) {
+        PostTabEnum.POSTS -> viewModel.posts.collectAsLazyPagingItems()
+        PostTabEnum.BOOKMARKS -> viewModel.bookmarks.collectAsLazyPagingItems()
+        null -> error("Invalid post tab key")
     }
 
-    fun handleOpenSheet(targetSheet: PostSheetsContent) {
-        scope.launch {
-            sheetState.show()
-            sheetContent = targetSheet
-        }
-    }
-
-    key(startIndex) {
+    key(postIndex) {
         val pagerState = rememberPagerState(
-            initialPage = startIndex
+            initialPage = postIndex
         ) { posts.itemCount }
 
         LaunchedEffect(pagerState) {
             snapshotFlow { pagerState.settledPage }
                 .distinctUntilChanged()
                 .collectLatest { page ->
-                    layoutViewModel.onPageSettled(page)
-                    layoutViewModel.ensureWindow(
+                    viewModel.onPageSettled(page)
+                    viewModel.ensureWindow(
                         centerIndex = page,
                         getPost = { idx -> posts.getOrNull(idx) }
                     )
@@ -157,7 +108,7 @@ fun MyProfilePostDetailScreen(
             snapAnimationSpec = snapSpec
         )
 
-        val currentOnReleasePlayer by rememberUpdatedState(layoutViewModel::stopDetailSession)
+        val currentOnReleasePlayer by rememberUpdatedState(viewModel::stopDetailSession)
 
         LifecycleStartEffect(true) {
             onStopOrDispose {
@@ -193,9 +144,9 @@ fun MyProfilePostDetailScreen(
                     modifier = Modifier.weight(1f),
                 ) { page ->
                     val post = posts.getOrNull(page) ?: return@VerticalPager
-                    val player = layoutViewModel.getPlayerForIndex(page)
+                    val player = viewModel.getPlayerForIndex(page)
 
-                    val postActionState by layoutViewModel
+                    val postActionState by viewModel
                         .observePostUi(post.id)
                         .collectAsStateWithLifecycle()
 
@@ -211,7 +162,7 @@ fun MyProfilePostDetailScreen(
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null,
-                            onClick = { layoutViewModel.togglePlayer(page) }
+                            onClick = { viewModel.togglePlayer(page) }
                         )
                     ) {
                         if(player != null) {
@@ -232,22 +183,10 @@ fun MyProfilePostDetailScreen(
                             post = postUi,
                             isSavingLike = postActionState.isSavingLike,
                             isSavingBookmark = postActionState.isSavingBookmark,
-                            onAction = { action ->
-                                selectedPost?.let { post ->
-                                    handlePostAction(
-                                        feedViewModel = layoutViewModel,
-                                        action = action,
-                                        handleOpenSheet = { handleOpenSheet(it) },
-                                        post = post.post
-                                    )
-                                }
-                            },
+                            onAction = { action -> },
                             onNavigateToUserProfile = {
-                                if(it == post.user.id) {
-                                    onBack()
-                                } else {
-                                    onNavigateToUserProfile(it)
-                                }
+                                if(it == post.user.id) onBack()
+                                else profileNavigate.toUserProfile(it)
                             }
                         )
                     }
@@ -260,16 +199,7 @@ fun MyProfilePostDetailScreen(
                             horizontal = BasePadding
                         ),
                     contentPadding = PaddingValues(14.dp),
-                    onClick = {
-                        selectedPost?.let { post ->
-                            handlePostAction(
-                                feedViewModel = layoutViewModel,
-                                action = PostOverlayActionEnum.OPEN_BOOKINGS,
-                                handleOpenSheet = { handleOpenSheet(it) },
-                                post = post.post
-                            )
-                        }
-                    },
+                    onClick = {},
                     title = stringResource(R.string.bookNow),
                 )
             }
@@ -277,74 +207,23 @@ fun MyProfilePostDetailScreen(
     }
 }
 
-private fun handlePostAction(
-    feedViewModel: ProfileLayoutViewModel,
-    action: PostOverlayActionEnum,
-    handleOpenSheet: (PostSheetsContent) -> Unit,
-    post: Post
-) {
-    when(action) {
-        PostOverlayActionEnum.OPEN_BOOKINGS -> handleOpenSheet(BookingsSheet(post.user))
-        PostOverlayActionEnum.OPEN_REVIEWS -> {
-            val id = if(post.isVideoReview) post.businessOwner.id else post.user.id
-            handleOpenSheet(ReviewsSheet(id))
-        }
-        PostOverlayActionEnum.OPEN_COMMENTS -> handleOpenSheet(CommentsSheet(post.id))
-        PostOverlayActionEnum.OPEN_LOCATION -> handleOpenSheet(LocationSheet(post.businessId))
-        PostOverlayActionEnum.OPEN_MORE_OPTIONS -> handleOpenSheet(MoreOptionsSheet(post.user.id, post.isOwnPost))
-        PostOverlayActionEnum.OPEN_PHONE -> handleOpenSheet(PhoneSheet(0.7f))
-        PostOverlayActionEnum.LIKE -> feedViewModel.toggleLike(post)
-        PostOverlayActionEnum.BOOKMARK -> feedViewModel.toggleBookmark(post)
-    }
-}
-
-@Composable
-fun PostPlayerWithThumbnail(
-    player: ExoPlayer,
-    thumbnailUrl: String,
-    showPlayIcon: Boolean = false
-) {
-    var isRenderedFirstFrame by remember { mutableStateOf(false) }
-
-    DisposableEffect(player) {
-        val listener = object : Player.Listener {
-            override fun onRenderedFirstFrame() {
-                isRenderedFirstFrame = true
-            }
-        }
-        player.addListener(listener)
-        onDispose { player.removeListener(listener) }
-    }
-
-    Box(Modifier.fillMaxSize()) {
-        PostPlayerView(player)
-
-        if(!isRenderedFirstFrame) {
-            AsyncImage(
-                modifier = Modifier.fillMaxSize(),
-                model = thumbnailUrl,
-                contentDescription = null,
-                contentScale = ContentScale.Crop
-            )
-        }
-
-        AnimatedVisibility(
-            visible = showPlayIcon,
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .zIndex(20f),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    modifier = Modifier.size(75.dp),
-                    painter = painterResource(R.drawable.ic_play_solid),
-                    contentDescription = null,
-                    tint = Color.White.copy(0.5f)
-                )
-            }
-        }
-    }
-}
+//private fun handlePostAction(
+//    feedViewModel: ProfileLayoutViewModel,
+//    action: PostOverlayActionEnum,
+//    handleOpenSheet: (PostSheetsContent) -> Unit,
+//    post: Post
+//) {
+//    when(action) {
+//        PostOverlayActionEnum.OPEN_BOOKINGS -> handleOpenSheet(BookingsSheet(post.user))
+//        PostOverlayActionEnum.OPEN_REVIEWS -> {
+//            val id = if(post.isVideoReview) post.businessOwner.id else post.user.id
+//            handleOpenSheet(ReviewsSheet(id))
+//        }
+//        PostOverlayActionEnum.OPEN_COMMENTS -> handleOpenSheet(CommentsSheet(post.id))
+//        PostOverlayActionEnum.OPEN_LOCATION -> handleOpenSheet(LocationSheet(post.businessId))
+//        PostOverlayActionEnum.OPEN_MORE_OPTIONS -> handleOpenSheet(MoreOptionsSheet(post.user.id, post.isOwnPost))
+//        PostOverlayActionEnum.OPEN_PHONE -> handleOpenSheet(PhoneSheet(0.7f))
+//        PostOverlayActionEnum.LIKE -> feedViewModel.toggleLike(post)
+//        PostOverlayActionEnum.BOOKMARK -> feedViewModel.toggleBookmark(post)
+//    }
+//}

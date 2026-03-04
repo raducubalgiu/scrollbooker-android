@@ -39,7 +39,7 @@ import com.example.scrollbooker.core.extensions.getOrNull
 import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.ui.feed.FeedScreenViewModel
-import com.example.scrollbooker.ui.profile.PostPlayerWithThumbnail
+import com.example.scrollbooker.ui.shared.player.PostPlayerWithThumbnail
 import com.example.scrollbooker.ui.shared.posts.components.PostShimmer
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlay
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlayActionEnum

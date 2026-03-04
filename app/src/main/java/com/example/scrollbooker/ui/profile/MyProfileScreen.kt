@@ -171,7 +171,17 @@ fun MyProfileScreen(
                                         ProfileTab.Posts -> {
                                             ProfilePostsTab(
                                                 posts = myPosts,
-                                                onNavigateToPost = {}
+                                                onNavigateToPost = {
+                                                    viewModel.onPageSettled(it.index)
+                                                    viewModel.seekToZero(it.index)
+
+                                                    viewModel.ensureImmediate(
+                                                        centerIndex = it.index,
+                                                        getPost = { i -> if(i == it.index) it.post else null }
+                                                    )
+
+                                                    profileNavigate.toUserPostDetail(PostTabEnum.POSTS, it, it.post.user.id)
+                                                }
                                             )
                                         }
 
@@ -273,21 +283,4 @@ private fun MyProfileHeader(
             }
         }
     )
-}
-
-private fun navigateToPost(
-    viewModel: ProfileLayoutViewModel,
-    profileNavigate: ProfileNavigator,
-    postUi: SelectedPostUi
-) {
-    viewModel.onPageSettled(postUi.index)
-    viewModel.seekToZero(postUi.index)
-
-    viewModel.ensureImmediate(
-        centerIndex = postUi.index,
-        getPost = { i -> if(i == postUi.index) postUi.post else null }
-    )
-
-    viewModel.setSelectedPost(postUi)
-    profileNavigate.toPostDetail()
 }

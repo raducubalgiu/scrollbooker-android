@@ -29,10 +29,6 @@ fun NavGraphBuilder.editProfileGraph(
     navigation(
         route = MainRoute.EditProfileNavigator.route,
         startDestination = MainRoute.EditProfile.route,
-        enterTransition = { slideInFromRight() },
-        exitTransition = { slideOutToLeft() },
-        popEnterTransition = { slideInFromLeft() },
-        popExitTransition = { slideOutToRight() }
     ) {
         composable(route = MainRoute.EditProfile.route) {
             val editProfileNavigate = remember(navController) {

@@ -9,13 +9,12 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.components.customized.LoadMoreSpinner
+import com.example.scrollbooker.components.customized.Refresh
 import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -30,7 +29,7 @@ fun UserSocialList(
 ) {
     val appendState = users.loadState.append
 
-    PullToRefreshBox(
+    Refresh(
         isRefreshing = users.loadState.refresh is LoadState.Loading,
         onRefresh = onRefresh
     ) {
@@ -50,10 +49,8 @@ fun UserSocialList(
             }
 
             item {
-                when(appendState) {
-                    is LoadState.Error -> Text("A aparut o eroare")
-                    is LoadState.Loading -> LoadMoreSpinner()
-                    is LoadState.NotLoading -> Unit
+                if(appendState is LoadState.Loading) {
+                    LoadMoreSpinner()
                 }
             }
 

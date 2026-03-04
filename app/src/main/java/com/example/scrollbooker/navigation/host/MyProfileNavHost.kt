@@ -54,6 +54,7 @@ fun MyProfileNavHost(
         ) {
             myProfileGraph(navController, myProfileData, myPosts)
             userProfileGraph(navController)
+
             editProfileGraph(navController, viewModel)
             myBusinessGraph(navController)
             settingsGraph(

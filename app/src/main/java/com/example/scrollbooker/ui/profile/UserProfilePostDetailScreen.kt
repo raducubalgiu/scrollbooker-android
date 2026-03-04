@@ -25,7 +25,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
@@ -45,6 +44,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
+import com.example.scrollbooker.ui.shared.player.PostPlayerWithThumbnail
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlay
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import kotlinx.coroutines.flow.collectLatest
@@ -58,7 +58,6 @@ fun UserProfilePostDetailScreen(
     onBack: () -> Unit,
     profileNavigate: ProfileNavigator
 ) {
-    val scope = rememberCoroutineScope()
     val postTab = PostTabEnum.fromKey(postTabKey)
 
     val title: String = when(postTab) {
