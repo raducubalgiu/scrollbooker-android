@@ -93,7 +93,9 @@ fun InputSelect(
             .fillMaxWidth()
             .clip(shape = ShapeDefaults.Medium)
             .background(background)
-            .clickable { expanded = true }
+            .clickable {
+                expanded = true
+            }
     ) {
         Box(modifier = modifier
             .onGloballyPositioned { coordinates ->

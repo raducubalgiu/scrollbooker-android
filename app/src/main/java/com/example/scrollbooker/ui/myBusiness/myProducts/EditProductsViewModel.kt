@@ -204,4 +204,8 @@ class EditProductsViewModel @Inject constructor(
     fun setCanBeBooked(can: Boolean) {
         _productState.update { current -> current.copy(canBeBooked = can) }
     }
+
+    fun editProduct() {
+
+    }
 }
