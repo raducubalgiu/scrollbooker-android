@@ -216,7 +216,7 @@ class AddProductsViewModel @Inject constructor(
                     _isSaving.value = false
                 }
                 .onFailure { e ->
-                    Timber.tag("Create Product").e("ERROR: on Creating Product in MyProducts $e")
+                    Timber.tag("Create Product").e(e, "ERROR: on Creating Product")
                     _isSaving.value = false
                 }
         }
