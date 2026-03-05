@@ -18,9 +18,6 @@ class EditProfileNavigator (
     fun toEditGender() {
         navController.navigate(MainRoute.EditGender.route)
     }
-    fun toEditProfession() {
-        navController.navigate(MainRoute.EditProfession.route)
-    }
     fun toEditPublicEmail() {
         navController.navigate(MainRoute.EditPublicEmail.route)
     }

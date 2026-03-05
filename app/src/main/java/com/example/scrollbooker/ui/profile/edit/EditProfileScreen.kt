@@ -80,11 +80,6 @@ fun EditProfileScreen(
             value = user?.dateOfBirth ?: "",
             navigate = { editProfileNavigate.toEditGender() }
         ),
-        EditProfileAction(
-            title = stringResource(R.string.profession),
-            value = user?.profession ?: "",
-            navigate = { editProfileNavigate.toEditProfession() }
-        )
     )
 
     val actionsList = listOf<EditProfileAction>(

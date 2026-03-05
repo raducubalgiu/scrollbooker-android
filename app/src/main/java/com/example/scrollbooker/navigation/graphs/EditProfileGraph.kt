@@ -7,16 +7,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.example.scrollbooker.navigation.navigators.EditProfileNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
-import com.example.scrollbooker.navigation.transition.slideInFromLeft
-import com.example.scrollbooker.navigation.transition.slideInFromRight
-import com.example.scrollbooker.navigation.transition.slideOutToLeft
-import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
 import com.example.scrollbooker.ui.profile.edit.EditAvatarCropScreen
 import com.example.scrollbooker.ui.profile.edit.EditBioScreen
 import com.example.scrollbooker.ui.profile.edit.EditFullNameScreen
 import com.example.scrollbooker.ui.profile.edit.EditGenderScreen
-import com.example.scrollbooker.ui.profile.edit.EditProfessionScreen
 import com.example.scrollbooker.ui.profile.edit.EditProfileScreen
 import com.example.scrollbooker.ui.profile.edit.EditPublicEmailScreen
 import com.example.scrollbooker.ui.profile.edit.EditUsernameScreen
@@ -61,13 +56,6 @@ fun NavGraphBuilder.editProfileGraph(
         composable(route = MainRoute.EditUsername.route) {
             EditUsernameScreen(
                 viewModel = viewModel,
-                onBack = { navController.popBackStack() }
-            )
-        }
-
-        composable(route = MainRoute.EditProfession.route) {
-            EditProfessionScreen(
-                viewModel=viewModel,
                 onBack = { navController.popBackStack() }
             )
         }
