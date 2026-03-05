@@ -3,6 +3,7 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -31,6 +32,12 @@ interface ProductsApiService {
 
     @POST("products")
     suspend fun createProduct(
+        @Body request: ProductCreateRequestDto
+    ): ProductDto
+
+    @PUT("products/{productId}")
+    suspend fun updateProduct(
+        @Path("productId") productId: Int,
         @Body request: ProductCreateRequestDto
     ): ProductDto
 

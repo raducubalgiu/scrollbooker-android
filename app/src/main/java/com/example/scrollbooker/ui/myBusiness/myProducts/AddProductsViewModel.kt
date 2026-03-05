@@ -98,10 +98,6 @@ class AddProductsViewModel @Inject constructor(
         }
     }
 
-    fun resetFilters() {
-        _selectedFilters.value = emptyMap()
-    }
-
     fun setName(name: String) {
         _productState.update { current -> current.copy(name = name) }
     }

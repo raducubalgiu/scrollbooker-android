@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.shareIn
@@ -252,6 +253,27 @@ class MyProductsViewModel @Inject constructor(
             }
         } else {
             Pair(null, null)
+        }
+    }
+
+    fun deleteProduct(productId: Int) {
+        viewModelScope.launch {
+            _isSaving.value = true
+
+            val result = withVisibleLoading {
+                deleteProductUseCase(productId)
+            }
+
+            result
+                .onSuccess {
+                    productsCache.clear()
+                    Timber.tag("Delete Product").d("Product deleted successfully: $productId")
+                    _isSaving.value = false
+                }
+                .onFailure { e ->
+                    Timber.tag("Delete Product").e("ERROR: on Deleting Product $productId - ${e.message}")
+                    _isSaving.value = false
+                }
         }
     }
 }

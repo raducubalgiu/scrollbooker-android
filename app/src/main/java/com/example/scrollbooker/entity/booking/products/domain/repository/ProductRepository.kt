@@ -9,6 +9,16 @@ interface ProductRepository {
     suspend fun getProductsByAppointmentId(appointmentId: Int): List<Product>
     suspend fun getProductsByPostId(postId: Int): List<Product>
     suspend fun getProduct(productId: Int): Product
-    suspend fun createProduct(productCreate: ProductCreate, serviceDomainId: Int, filters: List<AddProductFilterRequest>): Product
+    suspend fun createProduct(
+        productCreate: ProductCreate,
+        serviceDomainId: Int,
+        filters: List<AddProductFilterRequest>
+    ): Product
+    suspend fun updateProduct(
+        productCreate: ProductCreate,
+        serviceDomainId: Int,
+        filters: List<AddProductFilterRequest>,
+        productId: Int
+    ): Product
     suspend fun deleteProduct(productId: Int)
 }

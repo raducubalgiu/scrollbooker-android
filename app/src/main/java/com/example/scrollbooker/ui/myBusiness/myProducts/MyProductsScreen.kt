@@ -267,10 +267,8 @@ fun MyProductsScreen(
                                                                 product = product,
                                                                 displayEditableActions = true,
                                                                 isEditable = isEditable,
-                                                                onNavigateToEdit = {
-                                                                    onNavigateEditProduct(serviceDomainId ,it)
-                                                                },
-                                                                onDeleteProduct = {}
+                                                                onNavigateToEdit = { onNavigateEditProduct(serviceDomainId ,it) },
+                                                                onDeleteProduct = { viewModel.deleteProduct(it) }
                                                             )
 
                                                             if(index < section.products.size - 1) {

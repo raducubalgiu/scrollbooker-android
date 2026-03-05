@@ -3,15 +3,22 @@ package com.example.scrollbooker.ui.myBusiness.myProducts
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.scrollbooker.core.enums.FilterTypeEnum
 import com.example.scrollbooker.core.enums.ProductTypeEnum
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
+import com.example.scrollbooker.entity.booking.products.data.remote.AddProductFilterRequest
+import com.example.scrollbooker.entity.booking.products.domain.model.ProductCreate
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductByIdUseCase
+import com.example.scrollbooker.entity.booking.products.domain.useCase.UpdateProductUseCase
+import com.example.scrollbooker.store.AuthDataStore
 import com.example.scrollbooker.ui.myBusiness.myProducts.components.AddProductState
+import com.example.scrollbooker.ui.myBusiness.myProducts.components.calculatePriceWithDiscount
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -22,6 +29,8 @@ import kotlin.collections.plus
 @HiltViewModel
 class EditProductsViewModel @Inject constructor(
     private val getProductByIdUseCase: GetProductByIdUseCase,
+    private val updateProductUseCase: UpdateProductUseCase,
+    private val authDataStore: AuthDataStore,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
     private val serviceDomainId: StateFlow<Int?> = savedStateHandle.getStateFlow("serviceDomainId", null)
@@ -157,10 +166,6 @@ class EditProductsViewModel @Inject constructor(
         }
     }
 
-    fun resetFilters() {
-        _selectedFilters.value = emptyMap()
-    }
-
     fun setName(name: String) {
         _productState.update { current -> current.copy(name = name) }
     }
@@ -206,6 +211,85 @@ class EditProductsViewModel @Inject constructor(
     }
 
     fun editProduct() {
+        viewModelScope.launch {
+            _isSaving.value = true
 
+            val id = productId.value ?: return@launch
+
+            val state = _productState.value
+            val businessId = authDataStore.getBusinessId().firstOrNull()
+
+            if(businessId == null) {
+                throw kotlin.IllegalStateException("Business Id not found in Auth Data Store")
+            }
+
+            val priceWithDiscount = calculatePriceWithDiscount(state.price, state.discount)
+                .toPlainString()
+
+            val filters: List<AddProductFilterRequest> =
+                _selectedFilters.value.entries.mapNotNull { (filterId, selection) ->
+                    when (selection) {
+                        is FilterSelection.Options -> {
+                            if (selection.ids.isEmpty()) return@mapNotNull null
+
+                            AddProductFilterRequest(
+                                filterId = filterId,
+                                subFilterIds = selection.ids.toList(),
+                                type = FilterTypeEnum.OPTIONS.key,
+                                minim = null,
+                                maxim = null,
+                                isNotApplicable = false
+                            )
+                        }
+
+                        is FilterSelection.Range -> {
+                            if (selection.minim == null && selection.maxim == null) return@mapNotNull null
+
+                            AddProductFilterRequest(
+                                filterId = filterId,
+                                subFilterIds = emptyList(),
+                                type = FilterTypeEnum.RANGE.key,
+                                minim = selection.minim,
+                                maxim = selection.maxim,
+                                isNotApplicable = selection.isNotApplicable
+                            )
+                        }
+                    }
+                }
+
+            val productType = state.type?.key ?: return@launch
+
+            val response = withVisibleLoading {
+                updateProductUseCase(
+                    productCreate = ProductCreate(
+                        name = state.name,
+                        description = state.description,
+                        price = state.price.toBigDecimal(),
+                        priceWithDiscount = priceWithDiscount.toBigDecimal(),
+                        discount = state.discount.toBigDecimal(),
+                        duration = state.duration.toInt(),
+                        serviceId = state.serviceId.toInt(),
+                        businessId = businessId,
+                        currencyId = 1,
+                        type = productType,
+                        sessionsCount = state.sessionsCount.toIntOrNull(),
+                        validityDays = state.validityDays.toIntOrNull(),
+                        canBeBooked = state.canBeBooked
+                    ),
+                    serviceDomainId = state.serviceDomainId.toInt(),
+                    filters = filters,
+                    productId = id
+                )
+            }
+
+            response
+                .onSuccess { response ->
+                    _isSaving.value = false
+                }
+                .onFailure { e ->
+                    Timber.tag("Create Product").e("ERROR: on Creating Product in MyProducts $e")
+                    _isSaving.value = false
+                }
+        }
     }
 }
