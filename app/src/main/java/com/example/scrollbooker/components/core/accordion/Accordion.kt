@@ -29,23 +29,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
+import com.example.scrollbooker.ui.theme.bodySmall
 
 @Composable
 fun Accordion(
     modifier: Modifier = Modifier,
     title: String,
+    description: String? = null,
     isExpanded: Boolean,
     onSetExpanded: () -> Unit,
     containerColor: Color = SurfaceBG,
     contentColor: Color = OnSurfaceBG,
     titleContainerColor: Color = Color.Transparent,
-    content: @Composable () -> Unit
+    shape: Shape = RectangleShape,
+    content: @Composable () -> Unit,
 ) {
     val arrowRotation by animateFloatAsState(
         targetValue = if (isExpanded) 180f else 0f,
@@ -53,6 +58,7 @@ fun Accordion(
     )
     Surface(
         color = containerColor,
+        shape = shape,
         modifier = modifier
             .clip(shape = ShapeDefaults.Medium)
             .clickable(
@@ -62,29 +68,40 @@ fun Accordion(
             )
     ) {
         Column {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier
-                    .background(titleContainerColor)
-                    .padding(horizontal = 20.dp, vertical = 16.dp)
+            Column(modifier = Modifier
+                .background(titleContainerColor)
+                .padding(horizontal = 20.dp, vertical = 16.dp)
             ) {
-                Text(
-                    text = title,
-                    style = bodyLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = contentColor,
-                    modifier = Modifier.weight(1f),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowUp,
-                    contentDescription = null,
-                    modifier = Modifier.rotate(arrowRotation),
-                    tint = contentColor
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    Text(
+                        text = title,
+                        style = bodyLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = contentColor,
+                        modifier = Modifier.weight(1f),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Icon(
+                        imageVector = Icons.Default.KeyboardArrowUp,
+                        contentDescription = null,
+                        modifier = Modifier.rotate(arrowRotation),
+                        tint = contentColor
+                    )
+                }
+
+                description?.let {
+                    Text(
+                        text = it,
+                        style = bodySmall,
+                        color = Color.Gray
+                    )
+                }
             }
+
             AnimatedVisibility(
                 visible = isExpanded,
                 enter = expandVertically(

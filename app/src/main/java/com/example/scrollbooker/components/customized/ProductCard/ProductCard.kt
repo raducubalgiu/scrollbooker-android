@@ -1,5 +1,4 @@
 package com.example.scrollbooker.components.customized.ProductCard
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,31 +12,20 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
-import com.example.scrollbooker.components.core.menu.Menu
-import com.example.scrollbooker.components.core.menu.MenuItemData
 import com.example.scrollbooker.core.enums.ProductTypeEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.ui.theme.Error
-import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodySmall
 import com.example.scrollbooker.ui.theme.labelSmall
@@ -118,75 +106,6 @@ fun ProductCard(
                     style = bodySmall
                 )
             }
-        }
-    }
-}
-
-@Composable
-private fun ProductCardActions(
-    product: Product,
-    displayEditableActions: Boolean,
-    isEditable: Boolean,
-    isSelected: Boolean,
-    isLoadingDelete: Boolean,
-    onSelect: ((Product) -> Unit)?,
-    onNavigateToEdit: ((Int) -> Unit)?,
-    onDeleteProduct: ((Int) -> Unit)?,
-) {
-    val showAddSingleButton =
-        !displayEditableActions &&
-                product.canBeBooked &&
-                product.type == ProductTypeEnum.SINGLE
-
-    val showBuyPackButton =
-        !displayEditableActions &&
-                product.canBeBooked &&
-                product.type != ProductTypeEnum.SINGLE
-
-    val showEditableMenu = isEditable && displayEditableActions
-
-    when {
-        showAddSingleButton -> {
-            MainButtonOutlined(
-                title = if (isSelected) stringResource(R.string.added) else stringResource(R.string.add),
-                onClick = { onSelect?.invoke(product) },
-                trailingIcon = if (isSelected) Icons.Default.Check else Icons.Default.Add,
-                trailingIconTint = Primary,
-                showTrailingIcon = true,
-            )
-        }
-
-        showBuyPackButton -> {
-            MainButtonOutlined(
-                title = stringResource(R.string.buy),
-                onClick = { onSelect?.invoke(product) },
-                colors = ButtonDefaults.outlinedButtonColors(
-                    containerColor = Primary,
-                    contentColor = OnPrimary
-                ),
-                border = BorderStroke(1.dp, Primary),
-                showTrailingIcon = false,
-            )
-        }
-
-        showEditableMenu -> {
-            Menu(
-                items = listOf(
-                    MenuItemData(
-                        text = stringResource(R.string.edit),
-                        leadingIcon = painterResource(R.drawable.ic_edit_outline),
-                        onClick = { onNavigateToEdit?.invoke(product.id) },
-                    ),
-                    MenuItemData(
-                        text = stringResource(R.string.delete),
-                        color = Error,
-                        leadingIcon = painterResource(R.drawable.ic_delete_outline),
-                        enabled = !isLoadingDelete,
-                        isLoading = isLoadingDelete,
-                        onClick = { onDeleteProduct?.invoke(product.id) },
-                    )
-                )
-            )
         }
     }
 }

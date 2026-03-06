@@ -1,6 +1,5 @@
 package com.example.scrollbooker.ui.myBusiness.myProducts
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -50,7 +49,6 @@ import com.example.scrollbooker.components.core.accordion.Accordion
 import com.example.scrollbooker.components.core.headers.HeaderEdit
 import com.example.scrollbooker.components.customized.ProductCard.ProductCard
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.ui.shared.products.components.EmployeesList
 import com.example.scrollbooker.ui.shared.products.components.ServiceTab
 import com.example.scrollbooker.ui.theme.Background
@@ -61,7 +59,6 @@ import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
-import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.bodySmall
 
 @Composable
@@ -443,10 +440,12 @@ private fun LazyItemScope.ProductSectionItem(
     if (hasSubFilterName) {
         Accordion(
             title = section.subFilter?.name ?: "",
+            description = section.subFilter?.description,
             isExpanded = isExpanded,
             onSetExpanded = { isExpanded = !isExpanded },
             containerColor = Color.Transparent,
-            titleContainerColor = SurfaceBG
+            titleContainerColor = SurfaceBG,
+            shape = ShapeDefaults.Large
         ) {
             ProductSectionContent(
                 section = section,
@@ -473,19 +472,6 @@ private fun ProductSectionContent(
     onDeleteProduct: (Int) -> Unit
 ) {
     Column {
-        section.subFilter?.description?.let { description ->
-            Text(
-                text = description,
-                style = bodyMedium,
-                color = Color.Gray,
-                modifier = Modifier.padding(
-                    start = BasePadding,
-                    end = BasePadding,
-                    bottom = 8.dp
-                )
-            )
-        }
-
         section.products.forEachIndexed { index, product ->
             key(product.id) {
                 ProductCard(

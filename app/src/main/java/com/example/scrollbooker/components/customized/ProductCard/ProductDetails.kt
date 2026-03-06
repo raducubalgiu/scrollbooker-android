@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,10 +15,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.core.enums.FilterTypeEnum
-import com.example.scrollbooker.core.enums.ProductTypeEnum
 import com.example.scrollbooker.core.extensions.formatDuration
 import com.example.scrollbooker.core.extensions.toTwoDecimals
 import com.example.scrollbooker.core.util.Dimens.SpacingS
@@ -41,14 +38,16 @@ fun ProductDetails(
     discount: BigDecimal,
     filters: List<ProductFilter>
 ) {
+    val filteredFilters = filters.filter { !it.displayAsTab }
+
     val filtersText = buildString {
         append(duration.formatDuration())
 
-        if(filters.isNotEmpty()) {
+        if(filteredFilters.isNotEmpty()) {
             append(" \u2022 ")
         }
 
-        filters.forEachIndexed { i, filter ->
+        filteredFilters.forEachIndexed { i, filter ->
             when(filter.type) {
                 FilterTypeEnum.OPTIONS -> {
                     filter.subFilters.forEachIndexed { subIndex, subFilter ->
@@ -69,7 +68,7 @@ fun ProductDetails(
                 null -> Unit
             }
 
-            if(i < filters.size - 1) {
+            if(i < filteredFilters.size - 1) {
                 append(" \u2022 ")
             }
         }
