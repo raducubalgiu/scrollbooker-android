@@ -44,6 +44,7 @@ fun Accordion(
     onSetExpanded: () -> Unit,
     containerColor: Color = SurfaceBG,
     contentColor: Color = OnSurfaceBG,
+    titleContainerColor: Color = Color.Transparent,
     content: @Composable () -> Unit
 ) {
     val arrowRotation by animateFloatAsState(
@@ -64,7 +65,9 @@ fun Accordion(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp)
+                modifier = Modifier
+                    .background(titleContainerColor)
+                    .padding(horizontal = 20.dp, vertical = 16.dp)
             ) {
                 Text(
                     text = title,

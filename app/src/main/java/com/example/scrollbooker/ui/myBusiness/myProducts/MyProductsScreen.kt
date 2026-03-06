@@ -29,10 +29,15 @@ import com.example.scrollbooker.components.core.layout.MessageScreen
 import com.example.scrollbooker.core.util.FeatureState
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.scrollbooker.components.core.accordion.Accordion
 import com.example.scrollbooker.components.core.headers.HeaderEdit
 import com.example.scrollbooker.components.customized.ProductCard.ProductCard
 import com.example.scrollbooker.core.util.Dimens.BasePadding
@@ -44,6 +49,7 @@ import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
+import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.bodySmall
@@ -150,9 +156,9 @@ fun MyProductsScreen(
 
                     HorizontalPager(
                         state = domainPagerState,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        userScrollEnabled = false
                     ) { domainIndex ->
-
                         val services = serviceDomains.serviceDomains[domainIndex].services
 
                         val selectedServiceIndex =
@@ -232,21 +238,53 @@ fun MyProductsScreen(
                                                 }
 
                                                 items(prod.data) { section ->
-                                                    Column {
-                                                        if(section.subFilter != null) {
-                                                            Text(
-                                                                text = section.subFilter.name,
-                                                                style = headlineSmall,
-                                                                fontSize = 22.sp,
-                                                                fontWeight = FontWeight.Bold,
-                                                                modifier = Modifier.padding(
-                                                                    top = BasePadding,
-                                                                    start = BasePadding,
-                                                                    end = BasePadding,
-                                                                )
-                                                            )
+                                                    var isExpanded by remember { mutableStateOf(true) }
 
-                                                            section.subFilter.description?.let {
+                                                    if(section.subFilter?.name?.isNotEmpty() == true) {
+                                                        Accordion(
+                                                            title = section.subFilter.name,
+                                                            isExpanded = isExpanded,
+                                                            onSetExpanded = { isExpanded = !isExpanded },
+                                                            containerColor = Color.Transparent,
+                                                            titleContainerColor = SurfaceBG
+                                                        ) {
+                                                            Column {
+                                                                section.subFilter.description?.let {
+                                                                    Text(
+                                                                        text = it,
+                                                                        style = bodyMedium,
+                                                                        color = Color.Gray,
+                                                                        modifier = Modifier.padding(
+                                                                            start = BasePadding,
+                                                                            end = BasePadding,
+                                                                            bottom = 8.dp
+                                                                        )
+                                                                    )
+                                                                }
+
+                                                                section.products.forEachIndexed { index, product ->
+                                                                    val serviceDomainId = serviceDomains.serviceDomains[domainIndex].id
+
+                                                                    ProductCard(
+                                                                        product = product,
+                                                                        displayEditableActions = true,
+                                                                        isEditable = isEditable,
+                                                                        onNavigateToEdit = { onNavigateEditProduct(serviceDomainId ,it) },
+                                                                        onDeleteProduct = { viewModel.deleteProduct(it) }
+                                                                    )
+
+                                                                    if(index < section.products.size - 1) {
+                                                                        HorizontalDivider(
+                                                                            color = Divider,
+                                                                            thickness = 0.6.dp
+                                                                        )
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    } else {
+                                                        Column {
+                                                            section.subFilter?.description?.let {
                                                                 Text(
                                                                     text = it,
                                                                     style = bodyMedium,
@@ -258,24 +296,24 @@ fun MyProductsScreen(
                                                                     )
                                                                 )
                                                             }
-                                                        }
 
-                                                        section.products.forEachIndexed { index, product ->
-                                                            val serviceDomainId = serviceDomains.serviceDomains[domainIndex].id
+                                                            section.products.forEachIndexed { index, product ->
+                                                                val serviceDomainId = serviceDomains.serviceDomains[domainIndex].id
 
-                                                            ProductCard(
-                                                                product = product,
-                                                                displayEditableActions = true,
-                                                                isEditable = isEditable,
-                                                                onNavigateToEdit = { onNavigateEditProduct(serviceDomainId ,it) },
-                                                                onDeleteProduct = { viewModel.deleteProduct(it) }
-                                                            )
-
-                                                            if(index < section.products.size - 1) {
-                                                                HorizontalDivider(
-                                                                    color = Divider,
-                                                                    thickness = 0.6.dp
+                                                                ProductCard(
+                                                                    product = product,
+                                                                    displayEditableActions = true,
+                                                                    isEditable = isEditable,
+                                                                    onNavigateToEdit = { onNavigateEditProduct(serviceDomainId ,it) },
+                                                                    onDeleteProduct = { viewModel.deleteProduct(it) }
                                                                 )
+
+                                                                if(index < section.products.size - 1) {
+                                                                    HorizontalDivider(
+                                                                        color = Divider,
+                                                                        thickness = 0.6.dp
+                                                                    )
+                                                                }
                                                             }
                                                         }
                                                     }

@@ -46,7 +46,15 @@ fun BusinessPostsSection(
             fontWeight = FontWeight.SemiBold
         )
 
-        Spacer(Modifier.height(SpacingXL))
+        Spacer(Modifier.height(BasePadding))
+
+        if(posts.isEmpty()) {
+            Text(
+                modifier = Modifier.padding(start = BasePadding),
+                text = stringResource(R.string.notFoundPosts)
+            )
+        }
+        return@Column
 
         LazyRow(
             contentPadding = PaddingValues(horizontal = BasePadding)

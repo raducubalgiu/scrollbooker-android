@@ -43,7 +43,7 @@ fun BusinessEmployeesSection(
         ) {
             itemsIndexed(employees) { index, employee ->
                 EmployeeTab(
-                    isSelected = false,
+                    isSelected = true,
                     avatar = employee.avatar,
                     fullName = employee.fullName,
                     ratingsAverage = employee.ratingsAverage,

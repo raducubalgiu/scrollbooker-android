@@ -1,6 +1,8 @@
 package com.example.scrollbooker.components.customized.ProductCard
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
@@ -19,17 +22,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
 import com.example.scrollbooker.components.core.menu.Menu
 import com.example.scrollbooker.components.core.menu.MenuItemData
+import com.example.scrollbooker.core.enums.ProductTypeEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodySmall
+import com.example.scrollbooker.ui.theme.labelSmall
 
 @Composable
 fun ProductCard(
@@ -47,6 +55,28 @@ fun ProductCard(
         .clickable {}
     ) {
         Column(modifier = Modifier.padding(BasePadding)) {
+            if(product.filters.isNotEmpty() && product.type == ProductTypeEnum.PACK && product.sessionsCount != null) {
+                Box(
+                    modifier = Modifier
+                        .background(
+                            color = Primary.copy(alpha = 0.12f),
+                            shape = RoundedCornerShape(6.dp)
+                        )
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Pachet - ${product.sessionsCount} ședințe",
+                        style = labelSmall,
+                        color = Primary,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+
+                Spacer(Modifier.height(BasePadding))
+            }
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
@@ -59,9 +89,7 @@ fun ProductCard(
                     price = product.price,
                     priceWithDiscount = product.priceWithDiscount,
                     discount = product.discount,
-                    filters = product.filters,
-                    type = product.type,
-                    sessionsCount = product.sessionsCount
+                    filters = product.filters
                 )
 
                 Spacer(Modifier.width(SpacingS))

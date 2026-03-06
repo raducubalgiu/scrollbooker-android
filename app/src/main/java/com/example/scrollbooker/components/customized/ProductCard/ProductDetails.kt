@@ -39,10 +39,42 @@ fun ProductDetails(
     price: BigDecimal,
     priceWithDiscount: BigDecimal,
     discount: BigDecimal,
-    filters: List<ProductFilter>,
-    type: ProductTypeEnum?,
-    sessionsCount: Int?
+    filters: List<ProductFilter>
 ) {
+    val filtersText = buildString {
+        append(duration.formatDuration())
+
+        if(filters.isNotEmpty()) {
+            append(" \u2022 ")
+        }
+
+        filters.forEachIndexed { i, filter ->
+            when(filter.type) {
+                FilterTypeEnum.OPTIONS -> {
+                    filter.subFilters.forEachIndexed { subIndex, subFilter ->
+                        append(subFilter.name)
+                        if(subIndex < filter.subFilters.size - 1) {
+                            append(" & ")
+                        }
+                    }
+                }
+                FilterTypeEnum.RANGE -> {
+                    val text = when {
+                        filter.minim != null && filter.maxim == null -> "> ${filter.minim}"
+                        filter.minim == null && filter.maxim != null -> "< ${filter.maxim}"
+                        else -> "${filter.minim} - ${filter.maxim}"
+                    }
+                    append("$text ${filter.unit}")
+                }
+                null -> Unit
+            }
+
+            if(i < filters.size - 1) {
+                append(" \u2022 ")
+            }
+        }
+    }
+
     Column(modifier = modifier) {
         Text(
             text = name,
@@ -51,75 +83,14 @@ fun ProductDetails(
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = duration.formatDuration(),
-                style = bodyLarge,
-                color = Color.Gray
-            )
 
-            if(type == ProductTypeEnum.PACK && sessionsCount != null) {
-                Text(
-                    modifier = Modifier.padding(horizontal = 5.dp),
-                    text = "\u2022 $sessionsCount ședinte",
-                    color = Color.Gray
-                )
-            }
-
-            if(filters.isNotEmpty()) {
-                Text(
-                    modifier = Modifier.padding(horizontal = 5.dp),
-                    text = "\u2022",
-                    color = Color.Gray
-                )
-            }
-
-            filters.mapIndexed { i, filter ->
-                when(filter.type) {
-                    FilterTypeEnum.OPTIONS -> {
-                        filter.subFilters.mapIndexed { subIndex, subFilter ->
-                            Text(
-                                text = subFilter.name,
-                                color = Color.Gray,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-
-                            if(subIndex < filter.subFilters.size - 1) {
-                                Text(
-                                    modifier = Modifier.padding(horizontal = 5.dp),
-                                    text = "&",
-                                    color = Color.Gray
-                                )
-                            }
-                        }
-                    }
-                    FilterTypeEnum.RANGE -> {
-                        val text = when {
-                            filter.minim != null && filter.maxim == null -> "> ${filter.minim}"
-                            filter.minim == null && filter.maxim != null -> "< ${filter.maxim}"
-                            else -> "${filter.minim} - ${filter.maxim}"
-                        }
-
-                        Text(
-                            text = "$text ${filter.unit}",
-                            color = Color.Gray,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
-                    null -> Unit
-                }
-
-                if(i < filters.size - 1) {
-                    Text(
-                        modifier = Modifier.padding(horizontal = 5.dp),
-                        text = "\u2022",
-                        color = Color.Gray
-                    )
-                }
-            }
-        }
+        Text(
+            text = filtersText,
+            style = bodyLarge,
+            color = Color.Gray,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
 
         Spacer(Modifier.height(SpacingS))
 
