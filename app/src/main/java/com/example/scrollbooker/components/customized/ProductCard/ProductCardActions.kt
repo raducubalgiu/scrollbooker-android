@@ -13,6 +13,8 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
 import com.example.scrollbooker.components.core.menu.Menu
 import com.example.scrollbooker.components.core.menu.MenuItemData
+import com.example.scrollbooker.components.customized.Protected.Protected
+import com.example.scrollbooker.core.enums.PermissionEnum
 import com.example.scrollbooker.core.enums.ProductTypeEnum
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.ui.theme.Error
@@ -44,26 +46,30 @@ fun ProductCardActions(
 
     when {
         showAddSingleButton -> {
-            MainButtonOutlined(
-                title = if (isSelected) stringResource(R.string.added) else stringResource(R.string.add),
-                onClick = { onSelect?.invoke(product) },
-                trailingIcon = if (isSelected) Icons.Default.Check else Icons.Default.Add,
-                trailingIconTint = Primary,
-                showTrailingIcon = true,
-            )
+            Protected(permission = PermissionEnum.BOOK_BUTTON_VIEW) {
+                MainButtonOutlined(
+                    title = if (isSelected) stringResource(R.string.added) else stringResource(R.string.add),
+                    onClick = { onSelect?.invoke(product) },
+                    trailingIcon = if (isSelected) Icons.Default.Check else Icons.Default.Add,
+                    trailingIconTint = Primary,
+                    showTrailingIcon = true,
+                )
+            }
         }
 
         showBuyPackButton -> {
-            MainButtonOutlined(
-                title = stringResource(R.string.buy),
-                onClick = { onSelect?.invoke(product) },
-                colors = ButtonDefaults.outlinedButtonColors(
-                    containerColor = Primary,
-                    contentColor = OnPrimary
-                ),
-                border = BorderStroke(1.dp, Primary),
-                showTrailingIcon = false,
-            )
+            Protected(permission = PermissionEnum.BOOK_BUTTON_VIEW) {
+                MainButtonOutlined(
+                    title = stringResource(R.string.buy),
+                    onClick = { onSelect?.invoke(product) },
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        containerColor = Primary,
+                        contentColor = OnPrimary
+                    ),
+                    border = BorderStroke(1.dp, Primary),
+                    showTrailingIcon = false,
+                )
+            }
         }
 
         showEditableMenu -> {

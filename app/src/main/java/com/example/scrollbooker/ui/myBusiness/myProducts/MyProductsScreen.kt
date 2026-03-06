@@ -476,7 +476,7 @@ private fun ProductSectionContent(
             key(product.id) {
                 ProductCard(
                     product = product,
-                    displayEditableActions = false,
+                    displayEditableActions = true,
                     isEditable = isEditable,
                     onNavigateToEdit = onNavigateToEdit,
                     onDeleteProduct = onDeleteProduct
