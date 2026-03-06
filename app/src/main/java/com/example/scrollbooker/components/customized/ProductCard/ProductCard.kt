@@ -1,4 +1,5 @@
 package com.example.scrollbooker.components.customized.ProductCard
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -35,6 +37,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.ui.theme.Error
+import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodySmall
 import com.example.scrollbooker.ui.theme.labelSmall
@@ -55,27 +58,15 @@ fun ProductCard(
         .clickable {}
     ) {
         Column(modifier = Modifier.padding(BasePadding)) {
-            if(product.filters.isNotEmpty() && product.type == ProductTypeEnum.PACK && product.sessionsCount != null) {
-                Box(
-                    modifier = Modifier
-                        .background(
-                            color = Primary.copy(alpha = 0.12f),
-                            shape = RoundedCornerShape(6.dp)
-                        )
-                        .padding(horizontal = 8.dp, vertical = 4.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "Pachet - ${product.sessionsCount} ședințe",
-                        style = labelSmall,
-                        color = Primary,
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
-
+            if (
+                product.filters.isNotEmpty() &&
+                product.type == ProductTypeEnum.PACK &&
+                product.sessionsCount != null
+            ) {
+                ProductPackageBadge(sessionsCount = product.sessionsCount)
                 Spacer(Modifier.height(BasePadding))
             }
+
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -94,37 +85,16 @@ fun ProductCard(
 
                 Spacer(Modifier.width(SpacingS))
 
-                when {
-                    !displayEditableActions && product.canBeBooked -> {
-                        MainButtonOutlined(
-                            title = if(isSelected) stringResource(R.string.added) else stringResource(R.string.add),
-                            onClick = { onSelect?.invoke(product) },
-                            trailingIcon = if(isSelected) Icons.Default.Check else Icons.Default.Add,
-                            trailingIconTint = Primary,
-                            showTrailingIcon = true,
-                        )
-                    }
-
-                    isEditable && displayEditableActions -> {
-                        Menu(
-                            items = listOf(
-                                MenuItemData(
-                                    text = stringResource(R.string.edit),
-                                    leadingIcon = painterResource(R.drawable.ic_edit_outline),
-                                    onClick = { onNavigateToEdit?.invoke(product.id) },
-                                ),
-                                MenuItemData(
-                                    text = stringResource(R.string.delete),
-                                    color = Error,
-                                    leadingIcon = painterResource(R.drawable.ic_delete_outline),
-                                    enabled = !isLoadingDelete,
-                                    isLoading = isLoadingDelete,
-                                    onClick = { onDeleteProduct?.invoke(product.id) },
-                                )
-                            )
-                        )
-                    }
-                }
+                ProductCardActions(
+                    product = product,
+                    displayEditableActions = displayEditableActions,
+                    isEditable = isEditable,
+                    isSelected = isSelected,
+                    isLoadingDelete = isLoadingDelete,
+                    onSelect = onSelect,
+                    onNavigateToEdit = onNavigateToEdit,
+                    onDeleteProduct = onDeleteProduct
+                )
             }
 
             if(product.description != null && product.description.isNotEmpty()) {
@@ -149,5 +119,97 @@ fun ProductCard(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun ProductCardActions(
+    product: Product,
+    displayEditableActions: Boolean,
+    isEditable: Boolean,
+    isSelected: Boolean,
+    isLoadingDelete: Boolean,
+    onSelect: ((Product) -> Unit)?,
+    onNavigateToEdit: ((Int) -> Unit)?,
+    onDeleteProduct: ((Int) -> Unit)?,
+) {
+    val showAddSingleButton =
+        !displayEditableActions &&
+                product.canBeBooked &&
+                product.type == ProductTypeEnum.SINGLE
+
+    val showBuyPackButton =
+        !displayEditableActions &&
+                product.canBeBooked &&
+                product.type != ProductTypeEnum.SINGLE
+
+    val showEditableMenu = isEditable && displayEditableActions
+
+    when {
+        showAddSingleButton -> {
+            MainButtonOutlined(
+                title = if (isSelected) stringResource(R.string.added) else stringResource(R.string.add),
+                onClick = { onSelect?.invoke(product) },
+                trailingIcon = if (isSelected) Icons.Default.Check else Icons.Default.Add,
+                trailingIconTint = Primary,
+                showTrailingIcon = true,
+            )
+        }
+
+        showBuyPackButton -> {
+            MainButtonOutlined(
+                title = stringResource(R.string.buy),
+                onClick = { onSelect?.invoke(product) },
+                colors = ButtonDefaults.outlinedButtonColors(
+                    containerColor = Primary,
+                    contentColor = OnPrimary
+                ),
+                border = BorderStroke(1.dp, Primary),
+                showTrailingIcon = false,
+            )
+        }
+
+        showEditableMenu -> {
+            Menu(
+                items = listOf(
+                    MenuItemData(
+                        text = stringResource(R.string.edit),
+                        leadingIcon = painterResource(R.drawable.ic_edit_outline),
+                        onClick = { onNavigateToEdit?.invoke(product.id) },
+                    ),
+                    MenuItemData(
+                        text = stringResource(R.string.delete),
+                        color = Error,
+                        leadingIcon = painterResource(R.drawable.ic_delete_outline),
+                        enabled = !isLoadingDelete,
+                        isLoading = isLoadingDelete,
+                        onClick = { onDeleteProduct?.invoke(product.id) },
+                    )
+                )
+            )
+        }
+    }
+}
+
+@Composable
+private fun ProductPackageBadge(sessionsCount: Int?) {
+    if (sessionsCount == null) return
+
+    Box(
+        modifier = Modifier
+            .background(
+                color = Primary.copy(alpha = 0.12f),
+                shape = RoundedCornerShape(6.dp)
+            )
+            .padding(horizontal = 8.dp, vertical = 4.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "Pachet - $sessionsCount ședințe",
+            style = labelSmall,
+            color = Primary,
+            fontSize = 11.sp,
+            fontWeight = FontWeight.SemiBold
+        )
     }
 }
