@@ -13,8 +13,10 @@ import com.example.scrollbooker.store.AuthDataStore
 import com.example.scrollbooker.ui.myBusiness.myProducts.components.AddProductState
 import com.example.scrollbooker.ui.myBusiness.myProducts.components.calculatePriceWithDiscount
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
@@ -46,6 +48,9 @@ class AddProductsViewModel @Inject constructor(
 
     private val _isSaving = MutableStateFlow<Boolean>(false)
     val isSaving: StateFlow<Boolean> = _isSaving
+
+    private val _createSuccessEvent = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+    val createSuccessEvent = _createSuccessEvent.asSharedFlow()
 
     fun setSingleOption(filterId: Int, subFilterId: Int?) {
         _selectedFilters.update { current ->
@@ -214,6 +219,7 @@ class AddProductsViewModel @Inject constructor(
             response
                 .onSuccess { response ->
                     _isSaving.value = false
+                    _createSuccessEvent.tryEmit(Unit)
                 }
                 .onFailure { e ->
                     Timber.tag("Create Product").e(e, "ERROR: on Creating Product")

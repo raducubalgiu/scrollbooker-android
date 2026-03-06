@@ -25,8 +25,14 @@ import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.take
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.collections.get
 
 data class ServicesTabsState(
     val selectedDomainIndex: Int = 0,
@@ -42,6 +48,7 @@ class MyProductsViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
 ): ViewModel() {
     private val productsCache = mutableMapOf<Triple<Int, Int, Int?>, FeatureState<List<ProductSection>>>()
+    private val refreshRequests = MutableSharedFlow<Triple<Int, Int, Int?>>(extraBufferCapacity = 32)
 
     // Tabs
     private val _tabsState = MutableStateFlow(ServicesTabsState())
@@ -156,74 +163,96 @@ class MyProductsViewModel @Inject constructor(
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val productSections: StateFlow<FeatureState<List<ProductSection>>> = combine(
-        userIdFlow,
-        _tabsState,
-        serviceDomains
-    ) { userId, tabsState, serviceDomainState ->
-        val (serviceId, employeeId) = extractServiceAndEmployeeIds(tabsState, serviceDomainState)
-        ProductSectionsRequestContext(
-            userId = userId,
-            serviceId = serviceId,
-            employeeId = employeeId,
-            serviceDomainState = serviceDomainState
-        )
-    }
-        .distinctUntilChanged()
-        .flatMapLatest { context ->
-            flow {
-                val userId = context.userId
-                val serviceId = context.serviceId
-                val employeeId = context.employeeId
+    val productSections: StateFlow<FeatureState<List<ProductSection>>> = run {
+        val contextFlow = combine(
+            userIdFlow,
+            _tabsState,
+            serviceDomains
+        ) { userId, tabsState, serviceDomainState ->
+            val (serviceId, employeeId) = extractServiceAndEmployeeIds(tabsState, serviceDomainState)
+            ProductSectionsRequestContext(
+                userId = userId,
+                serviceId = serviceId,
+                employeeId = employeeId,
+                serviceDomainState = serviceDomainState,
+                forceRefresh = false
+            )
+        }
+            .distinctUntilChanged()
+            .shareIn(
+                scope = viewModelScope,
+                started = SharingStarted.Eagerly,
+                replay = 1
+            )
 
-                if (serviceId == null) {
-                    when (context.serviceDomainState) {
-                        is FeatureState.Loading -> emit(FeatureState.Loading)
-                        is FeatureState.Error -> emit(FeatureState.Error())
-                        is FeatureState.Success -> emit(FeatureState.Success(emptyList()))
-                    }
-                    return@flow
+        kotlinx.coroutines.flow.merge(
+            contextFlow,
+            refreshRequests
+                .flatMapLatest { refreshKey ->
+                    contextFlow
+                        .filter { it.cacheKey == refreshKey }
+                        .take(1)
+                        .map { it.copy(forceRefresh = true) }
                 }
+        )
+            .flatMapLatest { context ->
+                flow {
+                    val userId = context.userId
+                    val serviceId = context.serviceId
+                    val employeeId = context.employeeId
+                    val forceRefresh = context.forceRefresh
 
-                val cacheKey = Triple(userId, serviceId, employeeId)
-                val cachedResult = productsCache[cacheKey]
-
-                if (cachedResult != null) {
-                    Timber.tag("ProductSections").d("Using cached data for userId=$userId, serviceId=$serviceId, employeeId=$employeeId")
-                    emit(cachedResult)
-                } else {
-                    emit(FeatureState.Loading)
-
-                    val result = withVisibleLoading {
-                        getProductsByUserIdAndServiceIdUseCase(
-                            userId = userId,
-                            serviceId = serviceId,
-                            employeeId = employeeId
-                        )
+                    if (serviceId == null) {
+                        when (context.serviceDomainState) {
+                            is FeatureState.Loading -> emit(FeatureState.Loading)
+                            is FeatureState.Error -> emit(FeatureState.Error())
+                            is FeatureState.Success -> emit(FeatureState.Success(emptyList()))
+                        }
+                        return@flow
                     }
 
-                    Timber.tag("ProductSections").d("Fetched products for userId=$userId, serviceId=$serviceId, employeeId=$employeeId")
+                    val cacheKey = Triple(userId, serviceId, employeeId)
+                    val cachedResult = productsCache[cacheKey]
 
-                    if (result is FeatureState.Success) {
-                        productsCache[cacheKey] = result
+                    if (cachedResult != null && !forceRefresh) {
+                        emit(cachedResult)
+                    } else {
+                        emit(FeatureState.Loading)
+
+                        val result = withVisibleLoading {
+                            getProductsByUserIdAndServiceIdUseCase(
+                                userId = userId,
+                                serviceId = serviceId,
+                                employeeId = employeeId
+                            )
+                        }
+
+                        if (result is FeatureState.Success) {
+                            productsCache[cacheKey] = result
+                        }
+
+                        emit(result)
                     }
-
-                    emit(result)
                 }
             }
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Eagerly,
-            initialValue = FeatureState.Loading
-        )
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.Eagerly,
+                initialValue = FeatureState.Loading
+            )
+    }
+
 
     private data class ProductSectionsRequestContext(
         val userId: Int,
         val serviceId: Int?,
         val employeeId: Int?,
-        val serviceDomainState: FeatureState<ServiceDomainWithEmployeeServicesResponse>
-    )
+        val serviceDomainState: FeatureState<ServiceDomainWithEmployeeServicesResponse>,
+        val forceRefresh: Boolean = false
+    ) {
+        val cacheKey: Triple<Int, Int, Int?>?
+            get() = serviceId?.let { Triple(userId, it, employeeId) }
+    }
 
     private fun extractServiceAndEmployeeIds(
         tabsState: ServicesTabsState,
@@ -268,6 +297,8 @@ class MyProductsViewModel @Inject constructor(
                 .onSuccess {
                     productsCache.clear()
                     Timber.tag("Delete Product").d("Product deleted successfully: $productId")
+
+                    refreshCurrentProductSections()
                     _isSaving.value = false
                 }
                 .onFailure { e ->
@@ -275,5 +306,21 @@ class MyProductsViewModel @Inject constructor(
                     _isSaving.value = false
                 }
         }
+    }
+
+    fun refreshCurrentProductSections() {
+        val serviceDomainState = serviceDomains.value
+        val userId = userIdFlow.replayCache.firstOrNull() ?: return
+
+        val (serviceId, employeeId) = extractServiceAndEmployeeIds(
+            tabsState = _tabsState.value,
+            serviceDomainState = serviceDomainState
+        )
+
+        if (serviceId == null) return
+
+        val key = Triple(userId, serviceId, employeeId)
+        productsCache.remove(key)
+        refreshRequests.tryEmit(key)
     }
 }

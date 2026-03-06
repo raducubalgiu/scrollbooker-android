@@ -10,6 +10,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -56,6 +57,13 @@ fun AddProductScreen(
         derivedStateOf {
             if(!showErrors) AddProductValidation(isValid = true)
             else productState.validate(context)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.createSuccessEvent.collect {
+            myProductsViewModel.refreshCurrentProductSections()
+            onBack()
         }
     }
 

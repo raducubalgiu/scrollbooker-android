@@ -11,6 +11,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -62,6 +63,13 @@ fun EditProductScreen(
         derivedStateOf {
             if(!showErrors) AddProductValidation(isValid = true)
             else productState.validate(context)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.editSuccessEvent.collect {
+            myProductsViewModel.refreshCurrentProductSections()
+            onBack()
         }
     }
 
