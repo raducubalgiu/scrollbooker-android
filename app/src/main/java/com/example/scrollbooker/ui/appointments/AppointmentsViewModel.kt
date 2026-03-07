@@ -1,7 +1,4 @@
 package com.example.scrollbooker.ui.appointments
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -13,7 +10,6 @@ import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointm
 import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentWrittenReview
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.DeleteAppointmentUseCase
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.GetUserAppointmentsUseCase
-import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessStaticMapUseCase
 import com.example.scrollbooker.entity.booking.review.data.remote.ReviewCreateRequest
 import com.example.scrollbooker.entity.booking.review.domain.useCase.CreateWrittenReviewUseCase
 import com.example.scrollbooker.entity.booking.review.domain.useCase.DeleteWrittenReviewUseCase
@@ -43,8 +39,7 @@ class AppointmentsViewModel @Inject constructor(
     private val deleteAppointmentUseCase: DeleteAppointmentUseCase,
     private val createWrittenReviewUseCase: CreateWrittenReviewUseCase,
     private val updateWrittenReviewUseCase: UpdateWrittenReviewUseCase,
-    private val deleteWrittenReviewUseCase: DeleteWrittenReviewUseCase,
-    private val getBusinessStaticMapUseCase: GetBusinessStaticMapUseCase
+    private val deleteWrittenReviewUseCase: DeleteWrittenReviewUseCase
 ): ViewModel() {
     private val _asCustomer = MutableStateFlow<Boolean?>(null)
 
@@ -249,17 +244,5 @@ class AppointmentsViewModel @Inject constructor(
 
     fun consumeDeleteReviewState() {
         _deleteReviewState.value = null
-    }
-
-    var mapImage by mutableStateOf<ByteArray?>(null)
-        private set
-
-    fun loadMap(lat: Double, lng: Double) {
-        viewModelScope.launch {
-            val result = getBusinessStaticMapUseCase(lat, lng)
-            result.onSuccess {
-                mapImage = it
-            }
-        }
     }
 }

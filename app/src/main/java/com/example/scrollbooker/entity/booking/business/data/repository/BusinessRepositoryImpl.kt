@@ -92,29 +92,6 @@ class BusinessRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getStaticMap(
-        lat: Double,
-        lng: Double,
-        zoom: Int
-    ): Result<ByteArray> {
-        return try {
-            val response = apiService.getBusinessStaticMap(lat, lng, zoom)
-
-            if (response.isSuccessful) {
-                val bytes = response.body()?.bytes()
-                if (bytes != null) {
-                    Result.success(bytes)
-                } else {
-                    Result.failure(Exception("Empty body"))
-                }
-            } else {
-                Result.failure(Exception("Error ${response.code()}"))
-            }
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-
     override suspend fun searchBusinessAddress(query: String): List<BusinessAddress> {
         return apiService.searchBusinessAddress(query).map { it.toDomain() }
     }

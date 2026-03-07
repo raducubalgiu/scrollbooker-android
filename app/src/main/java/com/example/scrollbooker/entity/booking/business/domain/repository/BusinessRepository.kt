@@ -16,12 +16,6 @@ import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.S
 import kotlinx.coroutines.flow.Flow
 
 interface BusinessRepository {
-    suspend fun getStaticMap(
-        lat: Double,
-        lng: Double,
-        zoom: Int
-    ): Result<ByteArray>
-
     suspend fun searchBusinessAddress(query: String): List<BusinessAddress>
     suspend fun updateBusinessServices(serviceIds: List<Int>): List<SelectedServiceDomainsWithServices>
     suspend fun getBusiness(userId: Int): Business
