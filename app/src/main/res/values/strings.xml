@@ -402,4 +402,9 @@
     <string name="sessionsCount">Număr ședințe</string>
     <string name="validityDays">Valabilitate (număr zile)</string>
     <string name="youDoNotHavePermissionToEditProducts">Nu ai permisiunea de a edita produsele. Doar Managerul sau Ownerul pot face modificări.</string>
+    <string name="cameraIsDeactivated">Camera este inactivă</string>
+    <string name="forTheMomentCameraIsDeactivatedChooseFromGallery">Pentru moment camera este inactivă și nu se poate filma. Poți filma cu camera telefonului si ulterior poți uploada videoclipul alegându-l din galerie</string>
+    <string name="openSettings">Deschide Setări</string>
+    <string name="someVideosMightNotAppear">Unele videoclipuri s-ar putea să nu apară</string>
+    <string name="someVideosMightNotAppearLimitedAccess">Ai selectat permisiune cu acces limitat. Numai videoclipurile pe care le-ai selectat sunt vizibile.</string>
 </resources>

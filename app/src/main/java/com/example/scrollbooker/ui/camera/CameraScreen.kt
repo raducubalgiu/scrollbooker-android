@@ -1,5 +1,8 @@
 package com.example.scrollbooker.ui.camera
+import android.Manifest
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
@@ -7,30 +10,15 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import com.example.scrollbooker.components.core.iconButton.CustomIconButton
+import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import com.example.scrollbooker.ui.camera.components.CameraActions
-import com.example.scrollbooker.R
-import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.core.util.Dimens.SpacingXL
-import com.example.scrollbooker.entity.permission.domain.model.MediaLibraryAccess
-import com.example.scrollbooker.ui.LocalAppPermissions
+import com.example.scrollbooker.ui.camera.components.CameraContent
 import com.example.scrollbooker.ui.theme.BackgroundDark
-import com.example.scrollbooker.ui.theme.headlineMedium
-import androidx.paging.compose.collectAsLazyPagingItems
 
 @Composable
 fun CameraScreen(
@@ -38,16 +26,38 @@ fun CameraScreen(
     onNavigateToCameraGallery: () -> Unit,
     onBack: () -> Unit
 ) {
-    val perms = LocalAppPermissions.current
-    val state by perms.state.collectAsState()
-
     val context = LocalContext.current
+
+    var permissionState by remember { mutableStateOf(MediaPermissionState.CHECKING) }
+    var mediaThumbUri by remember { mutableStateOf<String?>(null) }
 
     val requestPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
-    ) { _ ->
-        perms.markMediaRequested()
-        perms.refreshMedia()
+    ) { grants ->
+        val newState = evaluateMediaPermissionState(context, grants)
+        permissionState = newState
+
+        if (newState == MediaPermissionState.GRANTED || newState == MediaPermissionState.PARTIAL) {
+            viewModel.loadMediaThumb()
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        permissionState = checkMediaPermissionState(context)
+
+        if (permissionState == MediaPermissionState.GRANTED || permissionState == MediaPermissionState.PARTIAL) {
+            viewModel.loadMediaThumb()
+        }
+    }
+
+    val thumbState by viewModel.mediaThumbUri.collectAsState()
+    LaunchedEffect(thumbState) {
+        mediaThumbUri = thumbState
+    }
+
+    fun requestMediaPermissions() {
+        val permissions = getMediaPermissions()
+        requestPermissionLauncher.launch(permissions)
     }
 
     fun openAppSettings() {
@@ -58,91 +68,156 @@ fun CameraScreen(
         context.startActivity(intent)
     }
 
-    fun requestMediaPermissions() {
-        perms.markMediaRequested()
 
-        val permissions = when {
-            Build.VERSION.SDK_INT >= 34 -> arrayOf(
-                android.Manifest.permission.READ_MEDIA_VIDEO,
-                android.Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
-            )
-            Build.VERSION.SDK_INT >= 33 -> arrayOf(
-                android.Manifest.permission.READ_MEDIA_VIDEO
-            )
-            else -> arrayOf(
-                android.Manifest.permission.READ_EXTERNAL_STORAGE
-            )
-        }
-
-        requestPermissionLauncher.launch(permissions)
-    }
-
-    val canOpenLibrary = state.mediaAccess != MediaLibraryAccess.NONE
-    val showSettingsCta = state.mediaAccess == MediaLibraryAccess.NONE && state.mediaRequestOnce
+    val canOpenLibrary = permissionState == MediaPermissionState.GRANTED ||
+                         permissionState == MediaPermissionState.PARTIAL
+    val showSettingsCta = permissionState == MediaPermissionState.DENIED_PERMANENTLY
 
     Scaffold(
         containerColor = BackgroundDark
     ) { innerPadding ->
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .background(BackgroundDark)
-            .padding(innerPadding)
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(BackgroundDark)
+                .padding(innerPadding)
         ) {
-            Column {
-                CustomIconButton(
-                    imageVector = Icons.Default.Close,
-                    boxSize = 60.dp,
-                    iconSize = 30.dp,
-                    tint = Color.White,
-                    onClick = onBack
-                )
-
-                Column(
-                    modifier = Modifier
-                        .padding(top = 100.dp)
-                        .padding(horizontal = SpacingXL),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Icon(
-                        modifier = Modifier.size(50.dp),
-                        painter = painterResource(R.drawable.ic_video_slash_outline),
-                        contentDescription = null,
-                        tint = Color.White
-                    )
-
-                    Spacer(Modifier.height(BasePadding))
-
-                    Text(
-                        text = "Camera este inactivă",
-                        color = Color.White,
-                        style = headlineMedium,
-                        fontWeight = FontWeight.SemiBold
-                    )
-
-                    Spacer(Modifier.height(SpacingS))
-
-                    Text(
-                        text = "Pentru moment camera este inactivă și nu se poate filma. Poți filma cu camera telefonului si ulterior poți uploada videoclipul alegându-l din galerie",
-                        color = Color.Gray,
-                        textAlign = TextAlign.Center
-                    )
-
-
-                }
-            }
+            CameraContent(
+                onBack = onBack,
+                showSettingsCta = showSettingsCta,
+                openAppSettings = { openAppSettings() }
+            )
 
             CameraActions(
-                mediaThumbUri = state.mediaThumbUri,
+                mediaThumbUri = mediaThumbUri?.toUri(),
                 onMediaThumbClick = {
-                    if(canOpenLibrary) onNavigateToCameraGallery()
-                    else requestMediaPermissions()
+                    when {
+                        canOpenLibrary -> onNavigateToCameraGallery()
+                        showSettingsCta -> openAppSettings()
+                        else -> requestMediaPermissions()
+                    }
                 },
-                onSwitchCamera = {  },
+                onSwitchCamera = { },
                 isRecording = false,
-                onRecord = {  },
-                onLongPressRecord = {},
+                onRecord = { },
+                onLongPressRecord = { }
             )
+        }
+    }
+}
+
+private fun getMediaPermissions(): Array<String> {
+    return when {
+        Build.VERSION.SDK_INT >= 34 -> arrayOf(
+            Manifest.permission.READ_MEDIA_VIDEO,
+            Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
+        )
+        Build.VERSION.SDK_INT >= 33 -> arrayOf(
+            Manifest.permission.READ_MEDIA_VIDEO
+        )
+        else -> arrayOf(
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        )
+    }
+}
+
+private fun checkMediaPermissionState(context: Context): MediaPermissionState {
+    return when {
+        Build.VERSION.SDK_INT >= 34 -> {
+            val fullAccess = ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.READ_MEDIA_VIDEO
+            ) == PackageManager.PERMISSION_GRANTED
+
+            val partialAccess = ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
+            ) == PackageManager.PERMISSION_GRANTED
+
+            when {
+                fullAccess -> MediaPermissionState.GRANTED
+                partialAccess -> MediaPermissionState.PARTIAL
+                else -> MediaPermissionState.DENIED
+            }
+        }
+        Build.VERSION.SDK_INT >= 33 -> {
+            if (ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.READ_MEDIA_VIDEO
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                MediaPermissionState.GRANTED
+            } else {
+                MediaPermissionState.DENIED
+            }
+        }
+        else -> {
+            if (ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                MediaPermissionState.GRANTED
+            } else {
+                MediaPermissionState.DENIED
+            }
+        }
+    }
+}
+
+private fun evaluateMediaPermissionState(
+    context: Context,
+    grants: Map<String, Boolean>
+): MediaPermissionState {
+    return when {
+        Build.VERSION.SDK_INT >= 34 -> {
+            val fullGranted = grants[Manifest.permission.READ_MEDIA_VIDEO] == true
+            val partialGranted = grants[Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED] == true
+
+            when {
+                fullGranted -> MediaPermissionState.GRANTED
+                partialGranted -> MediaPermissionState.PARTIAL
+                grants.values.any { it == false } -> {
+                    val canShowRationale =
+                        (context as? android.app.Activity)?.shouldShowRequestPermissionRationale(
+                            Manifest.permission.READ_MEDIA_VIDEO
+                        ) ?: false
+
+                    if (canShowRationale) MediaPermissionState.DENIED
+                    else MediaPermissionState.DENIED_PERMANENTLY
+                }
+                else -> MediaPermissionState.DENIED
+            }
+        }
+        Build.VERSION.SDK_INT >= 33 -> {
+            val granted = grants[Manifest.permission.READ_MEDIA_VIDEO] == true
+
+            if (granted) {
+                MediaPermissionState.GRANTED
+            } else {
+                val canShowRationale =
+                    (context as? android.app.Activity)?.shouldShowRequestPermissionRationale(
+                        Manifest.permission.READ_MEDIA_VIDEO
+                    ) ?: false
+
+                if (canShowRationale) MediaPermissionState.DENIED
+                else MediaPermissionState.DENIED_PERMANENTLY
+            }
+        }
+        else -> {
+            val granted = grants[Manifest.permission.READ_EXTERNAL_STORAGE] == true
+
+            if (granted) {
+                MediaPermissionState.GRANTED
+            } else {
+                val canShowRationale =
+                    (context as? android.app.Activity)?.shouldShowRequestPermissionRationale(
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                    ) ?: false
+
+                if (canShowRationale) MediaPermissionState.DENIED
+                else MediaPermissionState.DENIED_PERMANENTLY
+            }
         }
     }
 }

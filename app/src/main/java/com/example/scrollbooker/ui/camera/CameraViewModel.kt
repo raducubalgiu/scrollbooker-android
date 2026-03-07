@@ -13,6 +13,7 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.example.scrollbooker.core.extensions.uriToCacheFile
+import com.example.scrollbooker.entity.permission.domain.repository.PermissionRepository
 import com.example.scrollbooker.entity.social.cloudflare.domain.useCase.CreatePostWithCloudflareUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -31,6 +32,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CameraViewModel @Inject constructor(
     private val createPostWithCloudflareUseCase: CreatePostWithCloudflareUseCase,
+    private val permissionRepository: PermissionRepository,
     @ApplicationContext private val context: Context
 ): ViewModel() {
     private val _isSaving = MutableStateFlow<Boolean>(false)
@@ -39,8 +41,18 @@ class CameraViewModel @Inject constructor(
     private val _description = MutableStateFlow<String>("")
     val description: StateFlow<String> = _description.asStateFlow()
 
+    private val _mediaThumbUri = MutableStateFlow<String?>(null)
+    val mediaThumbUri: StateFlow<String?> = _mediaThumbUri.asStateFlow()
+
     fun setDescription(desc: String) {
         _description.value = desc
+    }
+
+    fun loadMediaThumb() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val uri = permissionRepository.getLatestVideoThumbUriOrNull()
+            _mediaThumbUri.value = uri?.toString()
+        }
     }
 
     // Video Player
