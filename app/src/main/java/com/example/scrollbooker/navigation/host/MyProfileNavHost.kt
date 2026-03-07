@@ -24,6 +24,8 @@ import com.example.scrollbooker.navigation.transition.slideInFromRight
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
 import com.example.scrollbooker.navigation.graphs.userProfileGraph
 import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
@@ -47,10 +49,34 @@ fun MyProfileNavHost(
         NavHost(
             navController = navController,
             startDestination = MainRoute.MyProfileNavigator.route,
-            enterTransition = { slideInFromRight() },
-            exitTransition = { slideOutToLeft() },
-            popEnterTransition = { slideInFromLeft() },
-            popExitTransition = { slideOutToRight() }
+            enterTransition = {
+                if (targetState.destination.route?.startsWith(MainRoute.Camera.route) == true) {
+                    EnterTransition.None
+                } else {
+                    slideInFromRight()
+                }
+            },
+            exitTransition = {
+                if (targetState.destination.route?.startsWith(MainRoute.Camera.route) == true) {
+                    ExitTransition.None
+                } else {
+                    slideOutToLeft()
+                }
+            },
+            popEnterTransition = {
+                if (initialState.destination.route?.startsWith(MainRoute.Camera.route) == true) {
+                    EnterTransition.None
+                } else {
+                    slideInFromLeft()
+                }
+            },
+            popExitTransition = {
+                if (initialState.destination.route?.startsWith(MainRoute.Camera.route) == true) {
+                    ExitTransition.None
+                } else {
+                    slideOutToRight()
+                }
+            }
         ) {
             myProfileGraph(navController, myProfileData, myPosts)
             userProfileGraph(navController)
