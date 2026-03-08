@@ -20,8 +20,8 @@ class ProfileNavigator (
         }
     }
 
-    fun toMyPostDetail(postTab: PostTabEnum, selectedPostUi: SelectedPostUi, userId: Int) {
-        navController.navigate("${MainRoute.MyProfilePostDetail.route}/${postTab.key}/${selectedPostUi.index}/$userId") {
+    fun toMyPostDetail(postTab: PostTabEnum, selectedPostUi: SelectedPostUi) {
+        navController.navigate("${MainRoute.MyProfilePostDetail.route}/${postTab.key}/${selectedPostUi.index}") {
             launchSingleTop = true
         }
     }

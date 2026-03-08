@@ -180,7 +180,7 @@ fun MyProfileScreen(
                                                         getPost = { i -> if(i == it.index) it.post else null }
                                                     )
 
-                                                    profileNavigate.toUserPostDetail(PostTabEnum.POSTS, it, it.post.user.id)
+                                                    profileNavigate.toMyPostDetail(PostTabEnum.POSTS, it)
                                                 }
                                             )
                                         }
@@ -215,7 +215,17 @@ fun MyProfileScreen(
 
                                             ProfileBookmarksTab(
                                                 posts = bookmarks,
-                                                onNavigateToPost = {}
+                                                onNavigateToPost = {
+                                                    viewModel.onPageSettled(it.index)
+                                                    viewModel.seekToZero(it.index)
+
+                                                    viewModel.ensureImmediate(
+                                                        centerIndex = it.index,
+                                                        getPost = { i -> if(i == it.index) it.post else null }
+                                                    )
+
+                                                    profileNavigate.toMyPostDetail(PostTabEnum.BOOKMARKS, it)
+                                                }
                                             )
                                         }
 

@@ -184,10 +184,7 @@ fun MyProfilePostDetailScreen(
                             isSavingLike = postActionState.isSavingLike,
                             isSavingBookmark = postActionState.isSavingBookmark,
                             onAction = { action -> },
-                            onNavigateToUserProfile = {
-                                if(it == post.user.id) onBack()
-                                else profileNavigate.toUserProfile(it)
-                            }
+                            onNavigateToUserProfile = { profileNavigate.toUserProfile(it) }
                         )
                     }
                 }

@@ -70,7 +70,6 @@ fun SearchScreen(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
-    // Location state management
     var hasLocationPermission by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(
@@ -92,7 +91,6 @@ fun SearchScreen(
         }
     }
 
-    // FusedLocationProviderClient for getting user location
     val fusedLocationClient = remember {
         LocationServices.getFusedLocationProviderClient(context)
     }
@@ -120,20 +118,18 @@ fun SearchScreen(
         }
     }
 
-    // Request location permission and start updates when screen is active
     LaunchedEffect(isSearchTab) {
         Timber.tag("SearchScreen").d("LaunchedEffect triggered: isSearchTab=$isSearchTab, hasPermission=$hasLocationPermission")
 
         if (isSearchTab) {
             if (hasLocationPermission) {
-                // Permission already granted, start location updates
                 try {
                     val locationRequest = LocationRequest.Builder(
                         Priority.PRIORITY_BALANCED_POWER_ACCURACY,
-                        30000L // 30 seconds
+                        30000L
                     ).apply {
-                        setMinUpdateIntervalMillis(15000L) // 15 seconds minimum
-                        setMaxUpdateDelayMillis(60000L) // 1 minute max delay
+                        setMinUpdateIntervalMillis(15000L)
+                        setMaxUpdateDelayMillis(60000L)
                     }.build()
 
                     fusedLocationClient.requestLocationUpdates(
@@ -144,7 +140,6 @@ fun SearchScreen(
 
                     Timber.tag("SearchScreen").d("Location updates requested successfully")
 
-                    // Also get last known location immediately
                     fusedLocationClient.lastLocation.addOnSuccessListener { location ->
                         location?.let {
                             val coordinates = BusinessCoordinates(
@@ -164,14 +159,12 @@ fun SearchScreen(
                     Timber.tag("SearchScreen").e(e, "Security exception when requesting location")
                 }
             } else {
-                // Request permission
                 Timber.tag("SearchScreen").d("Requesting location permission...")
                 locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
             }
         }
     }
 
-    // Stop location updates when leaving screen
     DisposableEffect(Unit) {
         onDispose {
             fusedLocationClient.removeLocationUpdates(locationCallback)
