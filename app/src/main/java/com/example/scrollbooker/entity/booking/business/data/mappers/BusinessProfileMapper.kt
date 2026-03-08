@@ -54,6 +54,7 @@ fun BusinessProfileOwnerDto.toDomain(): BusinessProfileOwner {
 fun BusinessLocationDto.toDomain(): BusinessLocation {
     return BusinessLocation(
         address = address,
+        formattedAddress = formattedAddress,
         coordinates = coordinates,
         mapUrl = mapUrl
     )

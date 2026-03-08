@@ -113,7 +113,8 @@ fun MyBusinessGalleryTab(
                             canBeBooked = true
                         )
                     ),
-                    id = 1
+                    id = 1,
+                    distance = null,
                 ),
                 onNavigateToBusinessProfile = { businessId -> {} },
                 onOpenBookingsSheet = {},

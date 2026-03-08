@@ -50,6 +50,10 @@ data class BusinessProfileOwnerDto(
 
 data class BusinessLocationDto(
     val address: String,
+
+    @SerializedName("formatted_address")
+    val formattedAddress: String,
+
     val coordinates: BusinessCoordinates,
 
     @SerializedName("map_url")

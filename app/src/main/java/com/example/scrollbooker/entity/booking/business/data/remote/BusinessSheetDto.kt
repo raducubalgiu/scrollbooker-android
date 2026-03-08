@@ -25,4 +25,6 @@ data class BusinessSheetDto(
     val mediaFiles: List<BusinessMediaFileDto>,
 
     val products: List<ProductDto>,
+
+    val distance: Float?
 )

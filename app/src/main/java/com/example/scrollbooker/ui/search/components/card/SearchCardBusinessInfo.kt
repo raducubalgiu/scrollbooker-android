@@ -33,7 +33,7 @@ fun SearchCardBusinessInfo(
     ratingsCount: Int,
     profession: String,
     address: String,
-    distance: String?
+    distance: Float?
 ) {
     Column(modifier = modifier) {
         Row(
@@ -78,20 +78,20 @@ fun SearchCardBusinessInfo(
         Spacer(Modifier.height(SpacingS))
 
         Row(verticalAlignment = Alignment.CenterVertically) {
-            distance?.let { d ->
+            distance?.let {
                 Text(
-                    text = d,
+                    text = "$it km",
                     color = Color.Gray,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-            }
 
-            Text(
-                modifier = Modifier.padding(horizontal = 5.dp),
-                text = "\u2022",
-                color = Color.Gray
-            )
+                Text(
+                    modifier = Modifier.padding(horizontal = 5.dp),
+                    text = "\u2022",
+                    color = Color.Gray
+                )
+            }
 
             Text(
                 modifier = Modifier.fillMaxWidth(fraction = 0.8f),

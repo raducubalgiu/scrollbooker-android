@@ -13,6 +13,7 @@ fun BusinessSheetDto.toDomain(): BusinessSheet {
         coordinates = coordinates,
         hasVideo = hasVideo,
         mediaFiles = mediaFiles.map { it.toDomain() },
-        products = products.map { it.toDomain() }
+        products = products.map { it.toDomain() },
+        distance = distance
     )
 }

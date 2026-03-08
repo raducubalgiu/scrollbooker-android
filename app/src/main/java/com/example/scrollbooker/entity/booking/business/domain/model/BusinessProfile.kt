@@ -34,6 +34,7 @@ data class BusinessProfileOwner(
 
 data class BusinessLocation(
     val address: String,
+    val formattedAddress: String,
     val coordinates: BusinessCoordinates,
     val mapUrl: String?
 )

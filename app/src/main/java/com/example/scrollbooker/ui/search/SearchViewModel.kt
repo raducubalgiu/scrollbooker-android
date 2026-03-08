@@ -103,10 +103,9 @@ data class SearchFiltersState(
 data class SearchRequestState(
     val bBox: BusinessBoundingBox? = null,
     val zoom: Float = 12f,
-    val userLocation: BusinessCoordinates? = null,
     val filters: SearchFiltersState = SearchFiltersState()
 ) {
-    fun toRequest(): SearchBusinessRequest? {
+    fun toRequest(userLocation: BusinessCoordinates? = null): SearchBusinessRequest? {
         val box = bBox ?: return null
 
         return SearchBusinessRequest(
@@ -160,23 +159,13 @@ fun SearchFiltersState.dateTimeSummary(): String {
     }
 }
 
-enum class ServiceStepEnum {
-    SERVICE_DOMAIN,
-    SERVICE
-}
-
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val getBusinessesMarkersUseCase: GetBusinessesMarkersUseCase,
     private val getBusinessesSheetUseCase: GetBusinessesSheetUseCase,
     private val getAllBusinessDomainsUseCase: GetAllBusinessDomainsUseCase,
-    private val getAllAvailableBusinessTypesUseCase: GetAllAvailableBusinessTypesUseCase,
-    private val getAllBusinessTypesByBusinessDomainUseCase: GetAllBusinessTypesByBusinessDomainUseCase,
-    private val getAllServiceDomainsByBusinessDomainUseCase: GetAllServiceDomainsByBusinessDomainUseCase,
-    private val getServicesByServiceDomainUseCase: GetServicesByServiceDomainUseCase,
-    private val getFiltersByServiceUseCase: GetFiltersByServiceUseCase,
-    private val getBusinessProfileUseCase: GetBusinessProfileUseCase
+    private val getServicesByServiceDomainUseCase: GetServicesByServiceDomainUseCase
 ): ViewModel() {
     private val _request = MutableStateFlow(SearchRequestState())
     val request: StateFlow<SearchRequestState> = _request.asStateFlow()
@@ -208,14 +197,25 @@ class SearchViewModel @Inject constructor(
     private val _isStyleLoaded = MutableStateFlow<Boolean>(false)
     val isStyleLoaded: StateFlow<Boolean> = _isStyleLoaded.asStateFlow()
 
+    private val _userLocation = MutableStateFlow<BusinessCoordinates?>(null)
+
     private val _cameraPosition = MutableStateFlow<CameraPositionState>(CameraPositionState())
     val cameraPosition: StateFlow<CameraPositionState> = _cameraPosition.asStateFlow()
 
     private val rawRequestFlow: Flow<SearchBusinessRequest> =
-        _request
-            .mapNotNull { it.toRequest() }
+        combine(
+            _request,
+            _userLocation
+        ) { request, location ->
+            Timber.tag("SearchViewModel").d("Combining request with location: location=$location")
+            request.toRequest(userLocation = location)
+        }
+            .filterNotNull()
             .debounce(100L)
             .distinctUntilChanged()
+            .onEach { req ->
+                Timber.tag("SearchViewModel").d("Final request: userLocation=${req.userLocation}")
+            }
 
     private val sharedRequestFlow = rawRequestFlow
         .shareIn(
@@ -235,10 +235,6 @@ class SearchViewModel @Inject constructor(
 
     fun setSelectedServiceDomain(serviceDomain: ServiceDomain) {
         _selectedServiceDomain.value = serviceDomain
-    }
-
-    fun clearSelectedServiceDomain() {
-        _selectedServiceDomain.value = null
     }
 
     val services: StateFlow<FeatureState<List<ServiceWithFilters>>> =
@@ -364,6 +360,11 @@ class SearchViewModel @Inject constructor(
 
     fun setStyleLoaded(isLoaded: Boolean) {
         _isStyleLoaded.value = isLoaded
+    }
+
+    fun setUserLocation(coordinates: BusinessCoordinates?) {
+        _userLocation.value = coordinates
+        Timber.tag("SearchViewModel").d("User location set: lat=${coordinates?.lat}, lng=${coordinates?.lng}")
     }
 
     fun setBusinessDomain(domainId: Int?) {

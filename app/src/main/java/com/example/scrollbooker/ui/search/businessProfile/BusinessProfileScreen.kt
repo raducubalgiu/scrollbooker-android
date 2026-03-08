@@ -197,6 +197,7 @@ fun BusinessProfileScreen(
                             owner = profile.owner,
                             businessPlan = profile.businessPlan,
                             address = profile.location.address,
+                            formattedAddress = profile.location.formattedAddress,
                             distance = profile.distanceKm,
                             openingHours = profile.openingHours,
                             onNavigateToOwnerProfile = onNavigateToUserProfile,

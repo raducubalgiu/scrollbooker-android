@@ -65,7 +65,7 @@ fun SearchCard(
             ratingsCount = business.owner.ratingsCount,
             profession = business.owner.profession,
             address = business.address,
-            distance = "4.5km"
+            distance = business.distance
         )
 
         Spacer(Modifier.height(BasePadding))

@@ -1,6 +1,9 @@
 package com.example.scrollbooker.ui.search
 import BottomBar
-import androidx.compose.foundation.isSystemInDarkTheme
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,6 +16,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -24,8 +28,10 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -33,6 +39,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.sheet.Sheet
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.entity.booking.appointment.domain.model.BusinessCoordinates
 import com.example.scrollbooker.ui.search.components.SearchBusinessDomainList
 import com.example.scrollbooker.ui.search.components.SearchHeader
 import com.example.scrollbooker.ui.search.components.SearchList
@@ -44,9 +51,14 @@ import com.example.scrollbooker.ui.search.sheets.SearchSheets
 import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheetUser
 import com.example.scrollbooker.ui.theme.Background
-import com.example.scrollbooker.ui.theme.SurfaceBG
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import kotlinx.coroutines.launch
 import rememberLocationsCountText
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,6 +67,118 @@ fun SearchScreen(
     isSearchTab: Boolean,
     onNavigateToBusinessProfile: (Int) -> Unit
 ) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
+    // Location state management
+    var hasLocationPermission by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        )
+    }
+
+    val locationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        hasLocationPermission = granted
+
+        if (granted) {
+            Timber.tag("SearchScreen").d("Location permission granted, starting location updates")
+        } else {
+            Timber.tag("SearchScreen").d("Location permission denied")
+        }
+    }
+
+    // FusedLocationProviderClient for getting user location
+    val fusedLocationClient = remember {
+        LocationServices.getFusedLocationProviderClient(context)
+    }
+
+    val locationCallback = remember {
+        object : LocationCallback() {
+            override fun onLocationResult(result: LocationResult) {
+                result.lastLocation?.let { location ->
+                    val lat = location.latitude
+                    val lng = location.longitude
+
+                    if (isLikelyDevLocation(lat, lng)) {
+                        Timber.tag("SearchScreen").w("Ignoring likely dev/mock location from updates: lat=$lat, lng=$lng")
+                        viewModel.setUserLocation(null)
+                        return@let
+                    }
+
+                    val coordinates = BusinessCoordinates(
+                        lat = lat.toFloat(),
+                        lng = lng.toFloat()
+                    )
+                    viewModel.setUserLocation(coordinates)
+                }
+            }
+        }
+    }
+
+    // Request location permission and start updates when screen is active
+    LaunchedEffect(isSearchTab) {
+        Timber.tag("SearchScreen").d("LaunchedEffect triggered: isSearchTab=$isSearchTab, hasPermission=$hasLocationPermission")
+
+        if (isSearchTab) {
+            if (hasLocationPermission) {
+                // Permission already granted, start location updates
+                try {
+                    val locationRequest = LocationRequest.Builder(
+                        Priority.PRIORITY_BALANCED_POWER_ACCURACY,
+                        30000L // 30 seconds
+                    ).apply {
+                        setMinUpdateIntervalMillis(15000L) // 15 seconds minimum
+                        setMaxUpdateDelayMillis(60000L) // 1 minute max delay
+                    }.build()
+
+                    fusedLocationClient.requestLocationUpdates(
+                        locationRequest,
+                        locationCallback,
+                        context.mainLooper
+                    )
+
+                    Timber.tag("SearchScreen").d("Location updates requested successfully")
+
+                    // Also get last known location immediately
+                    fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                        location?.let {
+                            val coordinates = BusinessCoordinates(
+                                lat = it.latitude.toFloat(),
+                                lng = it.longitude.toFloat()
+                            )
+                            viewModel.setUserLocation(coordinates)
+                            Timber.tag("SearchScreen").d("Last known location set immediately: lat=${it.latitude}, lng=${it.longitude}")
+                        } ?: run {
+                            Timber.tag("SearchScreen").w("Last known location is null")
+                        }
+                    }.addOnFailureListener { e ->
+                        Timber.tag("SearchScreen").e(e, "Failed to get last known location")
+                    }
+
+                } catch (e: SecurityException) {
+                    Timber.tag("SearchScreen").e(e, "Security exception when requesting location")
+                }
+            } else {
+                // Request permission
+                Timber.tag("SearchScreen").d("Requesting location permission...")
+                locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            }
+        }
+    }
+
+    // Stop location updates when leaving screen
+    DisposableEffect(Unit) {
+        onDispose {
+            fusedLocationClient.removeLocationUpdates(locationCallback)
+            Timber.tag("SearchScreen").d("Location updates stopped")
+        }
+    }
+
     val isMapMounted by viewModel.isMapMounted.collectAsStateWithLifecycle()
 
     LaunchedEffect(isSearchTab, isMapMounted) {
@@ -63,7 +187,6 @@ fun SearchScreen(
         }
     }
 
-    val scope = rememberCoroutineScope()
 
     val businessesSheet = viewModel.sheetPagingFlow.collectAsLazyPagingItems()
     val businessesCount by viewModel.sheetTotalCount.collectAsStateWithLifecycle()
@@ -236,39 +359,7 @@ fun SearchScreen(
     }
 }
 
-//val locationController = LocalLocationController.current
-//val locationState by locationController.stateFlow.collectAsStateWithLifecycle()
-//val context = LocalContext.current
-//val activity = context as Activity
-//val permissionStatus = locationState.permissionStatus
-
-//val permissionLauncher = rememberLauncherForActivityResult(
-//    contract = ActivityResultContracts.RequestPermission()
-//) { granted ->
-//    val canAskAgain = ActivityCompat.shouldShowRequestPermissionRationale(
-//        activity,
-//        Manifest.permission.ACCESS_FINE_LOCATION
-//    )
-//
-//    locationController.onPermissionResult(granted, canAskAgain)
-//}
-//
-//LaunchedEffect(Unit) {
-//    val isGranted = ContextCompat.checkSelfPermission(
-//        context,
-//        Manifest.permission.ACCESS_FINE_LOCATION
-//    ) == PackageManager.PERMISSION_GRANTED
-//    locationController.syncInitialPermission(isGranted)
-//}
-//
-//LaunchedEffect(permissionStatus) {
-//    when(permissionStatus) {
-//        LocationPermissionStatus.GRANTED -> locationController.startUpdates(PrecisionMode.BALANCED)
-//        LocationPermissionStatus.DENIED_PERMANENTLY -> locationController.stopUpdates()
-//        else -> Unit
-//    }
-//}
-//
-//DisposableEffect(Unit) {
-//    onDispose { locationController.stopUpdates() }
-//}
+private fun isLikelyDevLocation(lat: Double, lng: Double): Boolean {
+    val isGoogleplexArea = lat in 37.40..37.45 && lng in -122.10..-122.00
+    return isGoogleplexArea
+}

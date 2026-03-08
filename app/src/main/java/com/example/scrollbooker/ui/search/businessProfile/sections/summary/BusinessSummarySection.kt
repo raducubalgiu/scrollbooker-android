@@ -24,6 +24,7 @@ fun BusinessSummarySection(
     distance: Float?,
     businessPlan: BusinessPlan,
     address: String,
+    formattedAddress: String,
     openingHours: OpeningHours,
     isFollow: Boolean?,
     isFollowEnabled: Boolean,
@@ -67,7 +68,7 @@ fun BusinessSummarySection(
         BusinessSummaryDetails(
             distance = distance,
             fullName = owner.fullName,
-            address = address,
+            address = formattedAddress,
             openingHours = openingHours
         )
     }

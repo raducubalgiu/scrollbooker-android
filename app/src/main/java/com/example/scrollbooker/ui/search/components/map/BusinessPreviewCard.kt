@@ -78,7 +78,7 @@ fun BusinessPreviewCard(
                             ratingsCount = it.owner.ratingsCount,
                             profession = it.owner.profession,
                             address = it.address,
-                            distance = "4.5km"
+                            distance = null
                         )
                     }
                 }

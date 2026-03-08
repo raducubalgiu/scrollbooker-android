@@ -12,4 +12,5 @@ data class BusinessSheet(
     val hasVideo: Boolean,
     val mediaFiles: List<BusinessMediaFile>,
     val products: List<Product>,
+    val distance: Float?
 )
