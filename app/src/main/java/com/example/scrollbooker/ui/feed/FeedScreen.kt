@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -23,11 +24,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.scrollbooker.components.core.sheet.Sheet
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.ui.feed.components.FeedTabs
 import com.example.scrollbooker.ui.feed.drawer.FeedDrawer
 import com.example.scrollbooker.ui.feed.drawer.FeedDrawerLayout
+import com.example.scrollbooker.ui.shared.booking.BookingSheet
 import com.example.scrollbooker.ui.shared.posts.PostVerticalPager
 import com.example.scrollbooker.ui.shared.posts.components.PostBottomBar
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlayActionEnum
@@ -79,6 +82,18 @@ fun FeedScreen(
                     }
                 },
             )
+        }
+    }
+
+    val bookingSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    if(bookingSheetState.isVisible) {
+        Sheet(
+            modifier = Modifier.statusBarsPadding(),
+            sheetState = bookingSheetState,
+            onClose = { scope.launch { bookingSheetState.hide() } }
+        ) {
+            BookingSheet()
         }
     }
 
@@ -137,12 +152,19 @@ fun FeedScreen(
                             posts = posts,
                             isDrawerOpen = isDrawerOpen,
                             onAction = { action, post ->
-                                handlePostAction(
-                                    feedViewModel = feedViewModel,
-                                    action = action,
-                                    handleOpenSheet = { handleOpenSheet(it) },
-                                    post = post
-                                )
+                                when(action) {
+                                    PostOverlayActionEnum.OPEN_BOOKINGS -> scope.launch { bookingSheetState.show() }
+                                    PostOverlayActionEnum.OPEN_REVIEWS -> {
+                                        val id = if(post.isVideoReview) post.businessOwner.id else post.user.id
+                                        handleOpenSheet(ReviewsSheet(id))
+                                    }
+                                    PostOverlayActionEnum.OPEN_COMMENTS -> handleOpenSheet(CommentsSheet(post.id))
+                                    PostOverlayActionEnum.OPEN_LOCATION -> handleOpenSheet(LocationSheet(post.businessId))
+                                    PostOverlayActionEnum.OPEN_MORE_OPTIONS -> handleOpenSheet(MoreOptionsSheet(post.user.id, post.isOwnPost))
+                                    PostOverlayActionEnum.OPEN_PHONE -> handleOpenSheet(PhoneSheet(0.7f))
+                                    PostOverlayActionEnum.LIKE -> feedViewModel.toggleLike(post)
+                                    PostOverlayActionEnum.BOOKMARK -> feedViewModel.toggleBookmark(post)
+                                }
                             },
                             showBottomBar = showBottomBar,
                             onNavigateToUserProfile = { feedNavigate.toUserProfile(it) }
