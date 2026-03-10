@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
@@ -60,7 +59,7 @@ fun SchedulesSection(
         }
     }
 
-    schedules.forEach { (_, dayOfWeek, startTime, endTime) ->
+    schedules.forEachIndexed { index, (_, dayOfWeek, startTime, endTime) ->
         val text = if (startTime.isNullOrBlank()) stringResource(R.string.closed)
         else "${formatTime(startTime)} - ${formatTime(endTime)}"
 
@@ -75,8 +74,7 @@ fun SchedulesSection(
 
         Row(
             modifier = modifier
-                .fillMaxWidth()
-                .padding(bottom = SpacingXL),
+                .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -103,6 +101,10 @@ fun SchedulesSection(
                 color = OnBackground,
                 fontWeight = if(isToday) FontWeight.ExtraBold else FontWeight.Normal,
             )
+        }
+
+        if(index < schedules.size - 1) {
+            Spacer(Modifier.height(SpacingXL))
         }
     }
 }

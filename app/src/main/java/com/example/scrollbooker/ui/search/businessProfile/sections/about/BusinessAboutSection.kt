@@ -1,6 +1,4 @@
 package com.example.scrollbooker.ui.search.businessProfile.sections.about
-
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,9 +16,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessLocation
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
-import com.example.scrollbooker.ui.theme.headlineSmall
 import com.example.scrollbooker.ui.theme.titleLarge
-import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun BusinessAboutSection(
@@ -62,6 +58,8 @@ fun BusinessAboutSection(
             modifier = Modifier.padding(horizontal = BasePadding),
             schedules = schedules
         )
+
+        Spacer(Modifier.height(BasePadding))
 
         location.mapUrl?.let {
             SectionMap(
