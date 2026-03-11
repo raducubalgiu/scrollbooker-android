@@ -6,7 +6,7 @@ import com.example.scrollbooker.entity.search.data.repository.SearchRepositoryIm
 import com.example.scrollbooker.entity.search.domain.repository.SearchRepository
 import com.example.scrollbooker.entity.search.domain.useCase.CreateUserSearchUseCase
 import com.example.scrollbooker.entity.search.domain.useCase.DeleteUserSearchUseCase
-import com.example.scrollbooker.entity.search.domain.useCase.GetUserSearchUseCase
+import com.example.scrollbooker.entity.search.domain.useCase.GetRecentlySearchUseCase
 import com.example.scrollbooker.entity.search.domain.useCase.SearchPaginatedUsersUseCase
 import com.example.scrollbooker.entity.search.domain.useCase.SearchUseCase
 import dagger.Module
@@ -58,8 +58,8 @@ object SearchModule {
     @Singleton
     fun provideGetUserSearchUseCase(
         repository: SearchRepository
-    ): GetUserSearchUseCase {
-        return GetUserSearchUseCase(repository)
+    ): GetRecentlySearchUseCase {
+        return GetRecentlySearchUseCase(repository)
     }
 
     @Provides

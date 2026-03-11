@@ -20,7 +20,6 @@ import com.example.scrollbooker.entity.booking.business.domain.model.BusinessCre
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMarker
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfile
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessSheet
-import com.example.scrollbooker.entity.booking.business.domain.model.RecommendedBusiness
 import com.example.scrollbooker.entity.booking.business.domain.repository.BusinessRepository
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.data.mappers.toDomain
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.SelectedServiceDomainsWithServices
@@ -110,10 +109,6 @@ class BusinessRepositoryImpl @Inject constructor(
 
     override suspend fun getBusinessProfileById(businessId: Int): BusinessProfile {
         return apiService.getBusinessProfileById(businessId).toDomain()
-    }
-
-    override suspend fun getRecommendedBusinesses(lng: Float?, lat: Float?, timezone: String): List<RecommendedBusiness> {
-        return apiService.getRecommendedBusinesses(lng, lat, timezone).map { it.toDomain() }
     }
 
     override suspend fun updateBusinessHasEmployees(hasEmployees: Boolean): AuthState {

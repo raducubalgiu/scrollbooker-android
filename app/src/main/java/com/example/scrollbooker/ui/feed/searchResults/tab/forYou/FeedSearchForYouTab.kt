@@ -21,10 +21,7 @@ import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
-import com.example.scrollbooker.entity.booking.business.domain.model.RecommendedBusiness
-import com.example.scrollbooker.entity.booking.business.domain.model.RecommendedBusinessUser
 import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
-import com.example.scrollbooker.ui.feed.components.search.FeedSearchRecommendedBusiness
 import com.example.scrollbooker.ui.social.components.UserSocialItem
 import com.example.scrollbooker.ui.theme.titleMedium
 import kotlinx.coroutines.delay
@@ -51,38 +48,6 @@ fun FeedSearchForYouTab(modifier: Modifier = Modifier) {
                 style = titleMedium,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 18.sp
-            )
-
-            FeedSearchRecommendedBusiness(
-                recommendedBusiness = RecommendedBusiness(
-                    user = RecommendedBusinessUser(
-                        id = 0,
-                        fullName = "Frizeria Figaro",
-                        username = "frizeria_figaro",
-                        avatar = null,
-                        profession = "Frizerie",
-                        ratingsAverage = 4.8f
-                    ),
-                    distance = 1.2f,
-                    isOpen = true
-                ),
-                onNavigateToUserProfile = {}
-            )
-
-            FeedSearchRecommendedBusiness(
-                recommendedBusiness = RecommendedBusiness(
-                    user = RecommendedBusinessUser(
-                        id = 0,
-                        fullName = "Frizeria Busuresti",
-                        username = "frizeria_bucuresti",
-                        avatar = null,
-                        profession = "Frizerie",
-                        ratingsAverage = 4.2f,
-                    ),
-                    distance = 2.3f,
-                    isOpen = true
-                ),
-                onNavigateToUserProfile = {}
             )
 
             MainButtonOutlined(

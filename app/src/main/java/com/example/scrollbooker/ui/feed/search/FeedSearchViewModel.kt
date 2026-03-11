@@ -4,11 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
+import com.example.scrollbooker.entity.search.domain.model.RecentlySearch
 import com.example.scrollbooker.entity.search.domain.model.Search
-import com.example.scrollbooker.entity.search.domain.model.UserSearch
 import com.example.scrollbooker.entity.search.domain.useCase.CreateUserSearchUseCase
 import com.example.scrollbooker.entity.search.domain.useCase.DeleteUserSearchUseCase
-import com.example.scrollbooker.entity.search.domain.useCase.GetUserSearchUseCase
+import com.example.scrollbooker.entity.search.domain.useCase.GetRecentlySearchUseCase
 import com.example.scrollbooker.entity.search.domain.useCase.SearchUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -32,7 +32,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FeedSearchViewModel @Inject constructor(
     private val searchUseCase: SearchUseCase,
-    private val getUserSearchUseCase: GetUserSearchUseCase,
+    private val getRecentlySearchUseCase: GetRecentlySearchUseCase,
     private val createUserSearchUseCase: CreateUserSearchUseCase,
     private val deleteUserSearchUseCase: DeleteUserSearchUseCase,
 ): ViewModel() {
@@ -45,13 +45,13 @@ class FeedSearchViewModel @Inject constructor(
     private val _display = MutableStateFlow<Boolean>(false)
     val display: StateFlow<Boolean> = _display.asStateFlow()
 
+    private val _userSearch = MutableStateFlow<FeatureState<List<RecentlySearch>>>(FeatureState.Loading)
+    val userSearch: StateFlow<FeatureState<List<RecentlySearch>>> = _userSearch.asStateFlow()
+
     fun setDisplay() {
         if(_display.value) return
         _display.value = true
     }
-
-    private val lat = 44.450507f
-    private val lng = 25.99f
 
     init {
         _currentSearch
@@ -69,12 +69,16 @@ class FeedSearchViewModel @Inject constructor(
             .filter { it.length >= 2 }
             .mapLatest { query ->
                 withVisibleLoading {
-                    searchUseCase(query, lat, lng)
+                    searchUseCase(query)
                 }
             }
             .onEach { result -> _searchState.value = result }
             .catch { e -> _searchState.value = FeatureState.Error(e) }
             .launchIn(viewModelScope)
+
+        viewModelScope.launch {
+            loadUserSearch()
+        }
     }
 
     fun handleSearch(query: String) {
@@ -86,16 +90,10 @@ class FeedSearchViewModel @Inject constructor(
         _searchState.value = null
     }
 
-    private val _userSearch = MutableStateFlow<FeatureState<UserSearch>>(FeatureState.Loading)
-    val userSearch: StateFlow<FeatureState<UserSearch>> = _userSearch
 
     private suspend fun loadUserSearch() {
         _userSearch.value = FeatureState.Loading
-        _userSearch.value = getUserSearchUseCase(
-            lng = 44.45050f,
-            lat = 25.993102f,
-            timezone = "Europe/Bucharest"
-        )
+        _userSearch.value = getRecentlySearchUseCase()
     }
 
     fun createSearch(keyword: String) {
@@ -104,21 +102,18 @@ class FeedSearchViewModel @Inject constructor(
 
             response
                 .onFailure { e ->
-                    Timber.tag("Search").e("ERROR: on Creating User Search $e")
+                    Timber.tag("Search").e(e, "ERROR: on Creating User Search")
                 }
                 .onSuccess { newEntry ->
                     val current = _userSearch.value
+
                     if(current is FeatureState.Success) {
                         val updatedRecentlySearch = buildList {
                             add(newEntry)
-                            addAll(current.data.recentlySearch)
+                            addAll(current.data)
                         }.take(20)
 
-                        val updatedUserSearch = current.data.copy(
-                            recentlySearch = updatedRecentlySearch
-                        )
-
-                        _userSearch.value = FeatureState.Success(updatedUserSearch)
+                        _userSearch.value = FeatureState.Success(updatedRecentlySearch)
                     }
                 }
         }
@@ -130,25 +125,18 @@ class FeedSearchViewModel @Inject constructor(
 
             response
                 .onFailure { e ->
-                    Timber.tag("Search").e("ERROR: on Deleting User Search $e")
+                    Timber.tag("Search").e(e, "ERROR: on Deleting User Search")
                 }
                 .onSuccess {
                     val current = _userSearch.value
+
                     if(current is FeatureState.Success) {
-                        val updatedRecentlySearch = current.data.recentlySearch
+                        val updatedRecentlySearch = current.data
                             .filterNot { it.id == searchId }
 
-                        val updatedUserSearch = current.data.copy(
-                            recentlySearch = updatedRecentlySearch
-                        )
-
-                        _userSearch.value = FeatureState.Success(updatedUserSearch)
+                        _userSearch.value = FeatureState.Success(updatedRecentlySearch)
                     }
                 }
         }
-    }
-
-    init {
-        viewModelScope.launch { loadUserSearch() }
     }
 }

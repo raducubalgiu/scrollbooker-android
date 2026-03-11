@@ -11,9 +11,7 @@ import retrofit2.http.Query
 interface SearchApiService {
     @GET("search")
     suspend fun search(
-        @Query("query") query: String,
-        @Query("lng") lng: Float?,
-        @Query("lat") lat: Float?
+        @Query("query") query: String
     ): List<SearchDto>
 
     @GET("search/users")
@@ -30,11 +28,7 @@ interface SearchApiService {
     ): PaginatedResponseDto<UserSocialDto>
 
     @GET("search/user-history")
-    suspend fun getUserSearch(
-        @Query("lng") lng: Float?,
-        @Query("lat") limit: Float?,
-        @Query("timezone") timezone: String
-    ): UserSearchDto
+    suspend fun getRecentlySearch(): List<RecentlySearchDto>
 
     @POST("search/user-history")
     suspend fun createUserSearch(

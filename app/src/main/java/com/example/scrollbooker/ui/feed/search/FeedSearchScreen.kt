@@ -16,7 +16,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.entity.search.domain.model.UserSearch
+import com.example.scrollbooker.entity.search.domain.model.RecentlySearch
 import com.example.scrollbooker.ui.feed.components.search.FeedSearchList
 import com.example.scrollbooker.ui.feed.components.search.FeedRecentlySearchList
 import com.example.scrollbooker.ui.feed.components.search.FeedSearchHeader
@@ -25,7 +25,7 @@ import com.example.scrollbooker.ui.theme.Background
 @Composable
 fun FeedSearchScreen(
     viewModel: FeedSearchViewModel,
-    userSearch: FeatureState<UserSearch>,
+    userSearch: FeatureState<List<RecentlySearch>>,
     onBack: () -> Unit,
     onNavigateToUserProfile: (Int) -> Unit,
     onGoToSearch: () -> Unit,
@@ -79,11 +79,7 @@ fun FeedSearchScreen(
                     FeedRecentlySearchList(
                         userSearch = userSearch,
                         onDeleteRecentlySearch = onDeleteRecentlySearch,
-                        onClick = { handleSearch(it) },
-                        onNavigateToUserProfile = {
-                            keyboardController?.hide()
-                            onNavigateToUserProfile(it)
-                        }
+                        onClick = { handleSearch(it) }
                     )
                 } else {
                     FeedSearchList(

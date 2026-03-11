@@ -9,7 +9,6 @@ import com.example.scrollbooker.entity.search.data.remote.SearchUsersPagingSourc
 import com.example.scrollbooker.entity.search.data.remote.UserSearchCreateRequest
 import com.example.scrollbooker.entity.search.domain.model.RecentlySearch
 import com.example.scrollbooker.entity.search.domain.model.Search
-import com.example.scrollbooker.entity.search.domain.model.UserSearch
 import com.example.scrollbooker.entity.search.domain.repository.SearchRepository
 import com.example.scrollbooker.entity.user.userSocial.data.mappers.toDomain
 import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
@@ -19,8 +18,8 @@ import javax.inject.Inject
 class SearchRepositoryImpl @Inject constructor(
     private val apiService: SearchApiService
 ): SearchRepository {
-    override suspend fun search(query: String, lat: Float?, lng: Float?): List<Search> {
-        return apiService.search(query, lng, lat).map { it.toDomain() }
+    override suspend fun search(query: String): List<Search> {
+        return apiService.search(query).map { it.toDomain() }
     }
 
     override suspend fun searchUsers(
@@ -30,12 +29,8 @@ class SearchRepositoryImpl @Inject constructor(
         return apiService.searchUsers(query, roleClient).map { it.toDomain() }
     }
 
-    override suspend fun getUserSearch(
-        lng: Float?,
-        lat: Float?,
-        timezone: String
-    ): UserSearch {
-        return apiService.getUserSearch(lng, lat, timezone).toDomain()
+    override suspend fun getRecentlySearch(): List<RecentlySearch> {
+        return apiService.getRecentlySearch().map { it.toDomain() }
     }
 
     override suspend fun createUserSearch(keyword: String): RecentlySearch {
