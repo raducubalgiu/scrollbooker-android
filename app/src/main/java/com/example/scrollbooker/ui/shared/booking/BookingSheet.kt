@@ -14,6 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.tabs.TabUI
+import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomainWithEmployeeServicesResponse
+import com.example.scrollbooker.ui.myBusiness.myProducts.ServicesTabsState
 import com.example.scrollbooker.ui.shared.booking.steps.BookingCalendarStep
 import com.example.scrollbooker.ui.shared.booking.steps.BookingConfirmationStep
 import com.example.scrollbooker.ui.shared.booking.steps.BookingProductsStep
@@ -42,7 +45,10 @@ sealed class BookingTab(
 }
 
 @Composable
-fun BookingSheet() {
+fun BookingSheet(
+    serviceDomains: FeatureState<ServiceDomainWithEmployeeServicesResponse>,
+    tabsState: ServicesTabsState
+) {
     val scope = rememberCoroutineScope()
 
     val tabs = remember { BookingTab.getTabs() }
@@ -68,7 +74,16 @@ fun BookingSheet() {
 
                 key(step) {
                     when(step) {
-                        BookingTab.Products -> BookingProductsStep()
+                        BookingTab.Products -> {
+                            BookingProductsStep(
+                                serviceDomains = serviceDomains,
+                                tabsState = tabsState,
+                                products = TODO(),
+                                onSelectDomain = TODO(),
+                                onSelectService = TODO(),
+                                onSelectEmployee = TODO()
+                            )
+                        }
                         BookingTab.Calendar -> BookingCalendarStep()
                         BookingTab.Specialists -> BookingSpecialistStep()
                         BookingTab.Confirmation -> BookingConfirmationStep()

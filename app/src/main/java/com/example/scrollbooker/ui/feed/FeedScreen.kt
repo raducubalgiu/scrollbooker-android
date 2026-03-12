@@ -93,7 +93,7 @@ fun FeedScreen(
             sheetState = bookingSheetState,
             onClose = { scope.launch { bookingSheetState.hide() } }
         ) {
-            BookingSheet()
+//            BookingSheet()
         }
     }
 

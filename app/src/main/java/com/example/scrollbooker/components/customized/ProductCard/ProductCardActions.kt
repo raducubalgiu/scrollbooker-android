@@ -29,8 +29,8 @@ fun ProductCardActions(
     isSelected: Boolean,
     isLoadingDelete: Boolean,
     onSelect: ((Product) -> Unit)?,
-    onNavigateToEdit: ((Int) -> Unit)?,
-    onDeleteProduct: ((Int) -> Unit)?,
+    onNavigateToEdit: ((Int) -> Unit)? = null,
+    onDeleteProduct: ((Int) -> Unit)? = null,
 ) {
     val showAddSingleButton =
         !displayEditableActions &&

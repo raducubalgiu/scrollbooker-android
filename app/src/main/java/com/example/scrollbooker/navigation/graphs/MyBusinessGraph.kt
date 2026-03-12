@@ -269,7 +269,7 @@ fun NavGraphBuilder.myBusinessGraph(
                 val viewModel: MyProductsViewModel = hiltViewModel(parentEntry)
 
                 MyProductsScreen(
-                    viewModel=viewModel,
+                    viewModel = viewModel,
                     onBack = { navController.popBackStack() },
                     onNavigateEditProduct = { serviceDomainId, productId ->
                         navController.navigate("${MainRoute.EditProduct.route}/$serviceDomainId/$productId")
@@ -283,7 +283,7 @@ fun NavGraphBuilder.myBusinessGraph(
                                 "${MainRoute.AddProduct.route}/$serviceDomainId/$serviceId"
                             )
                         }
-                    }
+                    },
                 )
             }
 

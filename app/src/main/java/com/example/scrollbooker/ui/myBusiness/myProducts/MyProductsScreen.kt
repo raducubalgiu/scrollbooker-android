@@ -15,6 +15,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.ShapeDefaults
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -101,8 +102,11 @@ fun MyProductsScreen(
                     products = products,
                     tabsState = tabsState,
                     isEditable = isEditable,
-                    viewModel = viewModel,
-                    onNavigateEditProduct = onNavigateEditProduct
+                    onNavigateEditProduct = onNavigateEditProduct,
+                    onSelectDomain = viewModel::selectDomain,
+                    onSelectService = viewModel::selectService,
+                    onSelectEmployee = viewModel::selectEmployee,
+                    onDeleteProduct = viewModel::deleteProduct
                 )
             }
         }
@@ -110,13 +114,16 @@ fun MyProductsScreen(
 }
 
 @Composable
-private fun MyProductsContent(
+fun MyProductsContent(
     serviceDomains: ServiceDomainWithEmployeeServicesResponse,
     products: FeatureState<List<ProductSection>>,
     tabsState: ServicesTabsState,
-    isEditable: Boolean,
-    viewModel: MyProductsViewModel,
-    onNavigateEditProduct: (Int, Int) -> Unit
+    isEditable: Boolean = false,
+    onSelectDomain: (Int) -> Unit,
+    onSelectService: (Int, Int) -> Unit,
+    onSelectEmployee: (domainIndex: Int, serviceIndex: Int, employeeId: Int) -> Unit,
+    onNavigateEditProduct: ((Int, Int) -> Unit)? = null,
+    onDeleteProduct: ((productId: Int) -> Unit)? = null,
 ) {
     val scope = rememberCoroutineScope()
 
@@ -130,7 +137,7 @@ private fun MyProductsContent(
 
     LaunchedEffect(domainPagerState.currentPage) {
         if (tabsState.selectedDomainIndex != domainPagerState.currentPage) {
-            viewModel.selectDomain(domainPagerState.currentPage)
+            onSelectDomain(domainPagerState.currentPage)
         }
     }
 
@@ -145,7 +152,7 @@ private fun MyProductsContent(
                 selectedDomainIndex = tabsState.selectedDomainIndex,
                 scope = scope,
                 domainPagerState = domainPagerState,
-                onSelectDomain = viewModel::selectDomain
+                onSelectDomain = onSelectDomain
             )
         }
 
@@ -162,8 +169,10 @@ private fun MyProductsContent(
                 tabsState = tabsState,
                 isEditable = isEditable,
                 scope = scope,
-                viewModel = viewModel,
-                onNavigateEditProduct = onNavigateEditProduct
+                onNavigateEditProduct = onNavigateEditProduct,
+                onSelectService = onSelectService,
+                onSelectEmployee = onSelectEmployee,
+                onDeleteProduct = onDeleteProduct
             )
         }
     }
@@ -240,8 +249,10 @@ private fun DomainPage(
     tabsState: ServicesTabsState,
     isEditable: Boolean,
     scope: CoroutineScope,
-    viewModel: MyProductsViewModel,
-    onNavigateEditProduct: (Int, Int) -> Unit
+    onSelectService: (Int, Int) -> Unit,
+    onSelectEmployee: (domainIndex: Int, serviceIndex: Int, employeeId: Int) -> Unit,
+    onNavigateEditProduct: ((Int, Int) -> Unit)? = null,
+    onDeleteProduct: ((productId: Int) -> Unit)? = null,
 ) {
     val services = remember(domainIndex, domains) {
         domains.getOrNull(domainIndex)?.services ?: emptyList()
@@ -257,7 +268,7 @@ private fun DomainPage(
     )
 
     LaunchedEffect(servicePagerState.currentPage) {
-        viewModel.selectService(domainIndex, servicePagerState.currentPage)
+        onSelectService(domainIndex, servicePagerState.currentPage)
     }
 
     Column {
@@ -266,8 +277,8 @@ private fun DomainPage(
             selectedServiceIndex = servicePagerState.currentPage,
             scope = scope,
             servicePagerState = servicePagerState,
-            onSelectService = remember(domainIndex, viewModel) {
-                { index -> viewModel.selectService(domainIndex, index) }
+            onSelectService = remember(domainIndex, onSelectService) {
+                { index -> onSelectService(domainIndex, index) }
             }
         )
 
@@ -282,8 +293,9 @@ private fun DomainPage(
                 domains = domains,
                 products = products,
                 isEditable = isEditable,
-                viewModel = viewModel,
-                onNavigateEditProduct = onNavigateEditProduct
+                onNavigateEditProduct = onNavigateEditProduct,
+                onSelectEmployee = onSelectEmployee,
+                onDeleteProduct = onDeleteProduct
             )
         }
     }
@@ -337,8 +349,9 @@ private fun ServicePage(
     domains: List<ServiceDomainWithEmployeeServices>,
     products: FeatureState<List<ProductSection>>,
     isEditable: Boolean,
-    viewModel: MyProductsViewModel,
-    onNavigateEditProduct: (Int, Int) -> Unit
+    onSelectEmployee: (domainIndex: Int, serviceIndex: Int, employeeId: Int) -> Unit,
+    onNavigateEditProduct: ((Int, Int) -> Unit)? = null,
+    onDeleteProduct: ((productId: Int) -> Unit)? = null,
 ) {
     when (products) {
         is FeatureState.Error -> ErrorScreen()
@@ -356,8 +369,9 @@ private fun ServicePage(
                     domains = domains,
                     productSections = products.data,
                     isEditable = isEditable,
-                    viewModel = viewModel,
-                    onNavigateEditProduct = onNavigateEditProduct
+                    onNavigateEditProduct = onNavigateEditProduct,
+                    onSelectEmployee = onSelectEmployee,
+                    onDeleteProduct = onDeleteProduct
                 )
             }
         }
@@ -371,8 +385,9 @@ private fun ProductsList(
     domains: List<ServiceDomainWithEmployeeServices>,
     productSections: List<ProductSection>,
     isEditable: Boolean,
-    viewModel: MyProductsViewModel,
-    onNavigateEditProduct: (Int, Int) -> Unit
+    onSelectEmployee: (domainIndex: Int, serviceIndex: Int, employeeId: Int) -> Unit,
+    onNavigateEditProduct: ((Int, Int) -> Unit)? = null,
+    onDeleteProduct: ((productId: Int) -> Unit)? = null,
 ) {
     val employees = remember(domainIndex, serviceIndex, domains) {
         domains.getOrNull(domainIndex)
@@ -384,18 +399,22 @@ private fun ProductsList(
         domains.getOrNull(domainIndex)?.id ?: 0
     }
 
-    val onSelectEmployee = remember(domainIndex, serviceIndex, viewModel) {
+    val handleSelectEmployee = remember(domainIndex, serviceIndex, onSelectEmployee) {
         { employeeId: Int ->
-            viewModel.selectEmployee(domainIndex, serviceIndex, employeeId)
+            onSelectEmployee(domainIndex, serviceIndex, employeeId)
         }
     }
 
-    val onNavigateToEditMemoized = remember(serviceDomainId, onNavigateEditProduct) {
-        { productId: Int -> onNavigateEditProduct(serviceDomainId, productId) }
+    val onNavigateToEditMemoized: ((Int) -> Unit)? = remember(serviceDomainId, onNavigateEditProduct) {
+        onNavigateEditProduct?.let { edit ->
+            { productId: Int -> edit(serviceDomainId, productId) }
+        }
     }
 
-    val onDeleteProduct = remember(viewModel) {
-        { productId: Int -> viewModel.deleteProduct(productId) }
+    val onDeleteProductMemoized: ((Int) -> Unit)? = remember(onDeleteProduct) {
+        onDeleteProduct?.let { delete ->
+            { productId: Int -> delete(productId) }
+        }
     }
 
     LazyColumn(
@@ -405,7 +424,7 @@ private fun ProductsList(
             item(key = "employees_list") {
                 EmployeesList(
                     employees = employees,
-                    onSetEmployee = onSelectEmployee
+                    onSetEmployee = handleSelectEmployee
                 )
             }
         }
@@ -418,7 +437,7 @@ private fun ProductsList(
                 section = section,
                 isEditable = isEditable,
                 onNavigateToEdit = onNavigateToEditMemoized,
-                onDeleteProduct = onDeleteProduct
+                onDeleteProduct = onDeleteProductMemoized
             )
         }
     }
@@ -428,8 +447,8 @@ private fun ProductsList(
 private fun LazyItemScope.ProductSectionItem(
     section: ProductSection,
     isEditable: Boolean,
-    onNavigateToEdit: (Int) -> Unit,
-    onDeleteProduct: (Int) -> Unit
+    onNavigateToEdit: ((Int) -> Unit)? = null,
+    onDeleteProduct: ((productId: Int) -> Unit)? = null,
 ) {
     var isExpanded by remember { mutableStateOf(true) }
 
@@ -468,8 +487,8 @@ private fun LazyItemScope.ProductSectionItem(
 private fun ProductSectionContent(
     section: ProductSection,
     isEditable: Boolean,
-    onNavigateToEdit: (Int) -> Unit,
-    onDeleteProduct: (Int) -> Unit
+    onNavigateToEdit: ((Int) -> Unit)? = null,
+    onDeleteProduct: ((productId: Int) -> Unit)? = null,
 ) {
     Column {
         section.products.forEachIndexed { index, product ->
