@@ -20,9 +20,6 @@ data class BusinessMarkerDto(
     @SerializedName("has_video")
     val hasVideo: Boolean,
 
-    @SerializedName("media_preview")
-    val mediaPreview: BusinessMediaFileDto?,
-
     @SerializedName("media_files")
     val mediaFiles: List<BusinessMediaFileDto?>,
 )

@@ -117,13 +117,8 @@ class BusinessRepositoryImpl @Inject constructor(
         return apiService.updateBusinessHasEmployees(request).toDomain()
     }
 
-    override suspend fun getBusinessesMarkers(request: SearchBusinessRequest): PaginatedResponseDto<BusinessMarker> {
-        val response = apiService.getBusinessesMarkers(request)
-
-        return PaginatedResponseDto<BusinessMarker>(
-            count = response.count,
-            results = response.results.map { it.toDomain() }
-        )
+    override suspend fun getBusinessesMarkers(request: SearchBusinessRequest): List<BusinessMarker> {
+        return apiService.getBusinessesMarkers(request).map { it.toDomain() }
     }
 
     override fun getBusinessesSheet(

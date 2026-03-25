@@ -60,7 +60,7 @@ interface BusinessApiService {
     @POST("/businesses/markers")
     suspend fun getBusinessesMarkers(
         @Body request: SearchBusinessRequest
-    ): PaginatedResponseDto<BusinessMarkerDto>
+    ): List<BusinessMarkerDto>
 
     @POST("businesses/locations")
     suspend fun getBusinessesSheet(

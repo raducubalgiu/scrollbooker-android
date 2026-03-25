@@ -33,7 +33,7 @@ interface BusinessRepository {
         photos: List<Uri?>
     )
 
-    suspend fun getBusinessesMarkers(request: SearchBusinessRequest): PaginatedResponseDto<BusinessMarker>
+    suspend fun getBusinessesMarkers(request: SearchBusinessRequest): List<BusinessMarker>
     fun getBusinessesSheet(
         request: SearchBusinessRequest,
         onTotalCountChanged: (Int) -> Unit

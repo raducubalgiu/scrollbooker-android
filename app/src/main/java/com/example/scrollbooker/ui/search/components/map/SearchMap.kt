@@ -53,7 +53,7 @@ fun SearchMap(
     val scope = rememberCoroutineScope()
     val isSystemInDarkTheme = isSystemInDarkTheme()
 
-    val markers = markersUiState.data?.results.orEmpty()
+    val markers = markersUiState.data.orEmpty()
     val selectedMarkerId by viewModel.selectedMarkerId.collectAsStateWithLifecycle()
 
     val selectedMarker = remember(markers, selectedMarkerId) {

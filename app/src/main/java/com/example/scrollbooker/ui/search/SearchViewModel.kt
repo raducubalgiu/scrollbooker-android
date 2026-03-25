@@ -77,7 +77,7 @@ data class CameraPositionState(
 )
 
 data class MarkersUiState(
-    val data: PaginatedResponseDto<BusinessMarker>? = null,
+    val data: List<BusinessMarker>? = null,
     val isLoading: Boolean = false,
     val error: Throwable? = null
 )
