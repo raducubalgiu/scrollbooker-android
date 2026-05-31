@@ -26,7 +26,7 @@ class BusinessProfileViewModel @Inject constructor(
     private val followUserUseCase: FollowUserUseCase,
     private val unfollowUserUseCase: UnfollowUserUseCase,
 ): ViewModel() {
-    private val businessId: Int = checkNotNull(savedStateHandle[MainRoute.BusinessProfile.ARG_BUSINESS_ID])
+    private val businessOwnerUsername: String = checkNotNull(savedStateHandle[MainRoute.BusinessProfile.ARG_BUSINESS_OWNER_USERNAME])
 
     private val _isFollowState = MutableStateFlow<Boolean?>(null)
     val isFollowState: StateFlow<Boolean?> = _isFollowState.asStateFlow()
@@ -41,7 +41,7 @@ class BusinessProfileViewModel @Inject constructor(
         viewModelScope.launch {
             _businessProfileState.value = FeatureState.Loading
 
-            val response = withVisibleLoading { getBusinessProfileUseCase(businessId) }
+            val response = withVisibleLoading { getBusinessProfileUseCase(businessOwnerUsername) }
 
             if(response is FeatureState.Success) {
                 val businessProfile = response.data

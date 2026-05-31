@@ -167,7 +167,7 @@ fun FeedScreen(
                                 }
                             },
                             showBottomBar = showBottomBar,
-                            onNavigateToUserProfile = { feedNavigate.toUserProfile(it) }
+                            onNavigateToUserProfile = { userId, username -> feedNavigate.toUserProfile(userId, username) }
                         )
                     }
                 }

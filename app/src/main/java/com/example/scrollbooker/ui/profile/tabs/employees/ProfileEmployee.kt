@@ -29,13 +29,13 @@ import com.example.scrollbooker.ui.theme.titleMedium
 @Composable
 fun ProfileEmployee(
     employee: Employee,
-    onNavigateToEmployeeProfile: (Int) -> Unit,
+    onNavigateToEmployeeProfile: (userId: Int, username: String) -> Unit,
     onOpenServices: () -> Unit
 ) {
     ListItem(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = { onNavigateToEmployeeProfile(employee.id) }),
+            .clickable(onClick = { onNavigateToEmployeeProfile(employee.id, employee.username) }),
         headlineContent = {
             Text(
                 maxLines = 1,
@@ -80,7 +80,7 @@ fun ProfileEmployee(
                 url = employee.avatar ?: "",
                 rating = employee.ratingsAverage,
                 size = 60.dp,
-                onClick = { onNavigateToEmployeeProfile(employee.id) }
+                onClick = { onNavigateToEmployeeProfile(employee.id, employee.username) }
             )
         },
         colors = ListItemDefaults.colors(

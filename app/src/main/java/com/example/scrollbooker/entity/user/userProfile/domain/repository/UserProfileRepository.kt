@@ -6,7 +6,7 @@ import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfileAbout
 
 interface UserProfileRepository {
-    suspend fun getUserProfile(userId: Int, lat: Float?, lng: Float?): UserProfile
+    suspend fun getUserProfile(username: String, lat: Float?, lng: Float?): UserProfile
     suspend fun updateFullName(fullName: String)
 
     suspend fun updateUsername(username: String)

@@ -12,8 +12,8 @@ class FeedNavigator (
         }
     }
 
-    fun toUserProfile(userId: Int) {
-        navController.navigate("${MainRoute.UserProfile.route}/${userId}") {
+    fun toUserProfile(userId: Int, username: String) {
+        navController.navigate("${MainRoute.UserProfile.route}/${userId}/${username}") {
             launchSingleTop = true
         }
     }

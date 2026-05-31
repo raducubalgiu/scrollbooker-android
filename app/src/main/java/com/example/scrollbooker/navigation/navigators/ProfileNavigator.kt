@@ -14,8 +14,8 @@ class ProfileNavigator (
         }
     }
 
-    fun toUserProfile(ownerId: Int) {
-        navController.navigate("${MainRoute.UserProfile.route}/${ownerId}") {
+    fun toUserProfile(ownerId: Int, username: String) {
+        navController.navigate("${MainRoute.UserProfile.route}/${ownerId}/${username}") {
             launchSingleTop = true
         }
     }

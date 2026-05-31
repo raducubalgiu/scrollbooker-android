@@ -10,6 +10,8 @@ data class UserInfoDto(
     @SerializedName("business_id")
     val businessId: Int,
 
+    val avatar: String?,
+
     @SerializedName("business_type_id")
     val businessTypeId: Int,
 

@@ -11,7 +11,7 @@ data class BusinessDto(
     @SerializedName("owner_id")
     val ownerId: Int,
 
-    val description: String,
+    val description: String?,
 
     val timezone: String,
 

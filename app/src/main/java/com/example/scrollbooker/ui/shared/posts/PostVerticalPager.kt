@@ -53,7 +53,7 @@ fun PostVerticalPager(
     isDrawerOpen: Boolean,
     onAction: (PostOverlayActionEnum, Post) -> Unit,
     showBottomBar: Boolean,
-    onNavigateToUserProfile: (Int) -> Unit
+    onNavigateToUserProfile: (userId: Int, username: String) -> Unit
 ) {
     val userPausedSet by feedViewModel.userPausedPostIds.collectAsStateWithLifecycle()
 

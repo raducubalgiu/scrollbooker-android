@@ -9,9 +9,9 @@ import javax.inject.Inject
 class GetBusinessProfileUseCase @Inject constructor(
     private val repository: BusinessRepository
 ) {
-    suspend operator fun invoke(businessId: Int): FeatureState<BusinessProfile> {
+    suspend operator fun invoke(ownerUsername: String): FeatureState<BusinessProfile> {
         try {
-            val response = repository.getBusinessProfileById(businessId)
+            val response = repository.getBusinessProfileByOwnerUsername(ownerUsername)
             return FeatureState.Success(response)
 
         } catch (e: Exception) {

@@ -188,7 +188,7 @@ fun UserProfileScreen(
 
                                             ProfileEmployeesTab(
                                                 employees = employees,
-                                                onNavigateToEmployeeProfile = { profileNavigate.toUserProfile(it) },
+                                                onNavigateToEmployeeProfile = { userId, username -> profileNavigate.toUserProfile(userId, username) },
                                             )
                                         }
 
@@ -226,7 +226,11 @@ fun UserProfileScreen(
                                         onFollow = { viewModel.follow() },
                                         onOpenScheduleSheet = { scope.launch { scheduleSheetState.show() } },
                                         onNavigateToSocial = { profileNavigate.toSocial(it) },
-                                        onNavigateToBusinessOwner = { it?.let { profileNavigate.toUserProfile(it) } },
+                                        onNavigateToBusinessOwner = { userId, username -> {
+                                            if(userId != null && username != null) {
+                                                profileNavigate.toUserProfile(userId, username)
+                                            }
+                                        } },
                                         onNavigateToEditProfile = { profileNavigate.toEditProfile() },
                                         onNavigateToMyCalendar = { profileNavigate.toMyCalendar() },
                                     )

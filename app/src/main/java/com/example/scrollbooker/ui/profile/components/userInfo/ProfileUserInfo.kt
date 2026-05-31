@@ -82,7 +82,7 @@ fun ProfileUserInfo(
     isFollowEnabled: Boolean,
     onFollow: (() -> Unit)? = null,
     onOpenScheduleSheet: () -> Unit,
-    onNavigateToBusinessOwner: (Int?) -> Unit,
+    onNavigateToBusinessOwner: (userId: Int?, username: String?) -> Unit,
     onNavigateToSocial: (NavigateSocialParam) -> Unit,
     onNavigateToEditProfile: () -> Unit,
     onNavigateToMyCalendar: () -> Unit
@@ -209,7 +209,7 @@ fun ProfileUserInfo(
                 businessOwnerFullName = user.businessOwner?.fullName,
                 onNavigateToBusinessOwner = {
                     if (user.businessOwner?.id != null) {
-                        onNavigateToBusinessOwner(user.businessOwner.id)
+                        onNavigateToBusinessOwner(user.businessOwner.id, user.businessOwner.username)
                     }
                 }
             )

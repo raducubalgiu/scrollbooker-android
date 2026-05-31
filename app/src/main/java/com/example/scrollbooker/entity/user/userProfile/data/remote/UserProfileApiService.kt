@@ -11,9 +11,9 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface UserProfileApiService {
-    @GET("users/{userId}/user-profile")
+    @GET("users/{username}/user-profile")
     suspend fun getUserProfile(
-        @Path("userId") userId: Int,
+        @Path("username") username: String,
         @Query("lat") lat: Float?,
         @Query("lng") lng: Float?
     ): UserProfileDto

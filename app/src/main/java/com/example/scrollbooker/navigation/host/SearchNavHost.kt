@@ -39,7 +39,7 @@ fun SearchNavHost(
         composable(
             route = MainRoute.BusinessProfile.route,
             arguments = listOf(
-                navArgument(MainRoute.BusinessProfile.ARG_BUSINESS_ID) { type = NavType.IntType }
+                navArgument(MainRoute.BusinessProfile.ARG_BUSINESS_OWNER_USERNAME) { type = NavType.StringType }
             ),
         ) {
             val viewModel: BusinessProfileViewModel = hiltViewModel()

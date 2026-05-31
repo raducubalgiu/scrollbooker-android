@@ -86,6 +86,7 @@ class AuthDataStore(private val context: Context) {
 
     fun getRefreshToken(): Flow<String?> = context.dataStore.data.map { it[REFRESH_TOKEN] }
     fun getUserId(): Flow<Int?> = context.dataStore.data.map { it[USER_ID] }
+    fun getUserUsername(): Flow<String?> = context.dataStore.data.map { it[USERNAME] }
     fun getBusinessId(): Flow<Int?> = context.dataStore.data.map { it[BUSINESS_ID] }
     fun getBusinessTypeId(): Flow<Int?> = context.dataStore.data.map { it[BUSINESS_TYPE_ID] }
     fun getUserPermissions(): Flow<List<String>> = context.dataStore.data

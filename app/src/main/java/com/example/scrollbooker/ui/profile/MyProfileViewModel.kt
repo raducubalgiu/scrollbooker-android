@@ -104,17 +104,17 @@ class MyProfileViewModel @Inject constructor(
 
     fun loadUserProfile() {
         viewModelScope.launch {
-            val userId = authDataStore.getUserId().firstOrNull()
+            val username = authDataStore.getUserUsername().firstOrNull()
 
-            if(userId == null) {
-                Timber.Forest.tag("Refetch UserProfile").e("ERROR: on Refetching User Profile. User Id not found ")
-                throw IllegalStateException("User id not found in datastore")
+            if(username == null) {
+                Timber.Forest.tag("Refetch UserProfile").e("ERROR: on Refetching User Profile. Username not found ")
+                throw IllegalStateException("Username id not found in datastore")
             }
 
             _profile.value = FeatureState.Loading
 
             val response = withVisibleLoading {
-                getUserProfileUseCase(userId, lat = null, lng = null)
+                getUserProfileUseCase(username, lat = null, lng = null)
             }
 
             _profile.value = response

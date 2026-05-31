@@ -4,6 +4,7 @@ data class UserInfo(
     val id: Int,
     val username: String,
     val fullname: String,
+    val avatar: String?,
     val businessId: Int,
     val businessTypeId: Int,
     val hasEmployees: Boolean,

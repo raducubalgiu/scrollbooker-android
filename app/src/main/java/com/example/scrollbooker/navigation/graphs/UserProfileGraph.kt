@@ -25,14 +25,17 @@ fun NavGraphBuilder.userProfileGraph(
 ) {
     navigation(
         route = MainRoute.ProfileNavigator.route,
-        startDestination = "${MainRoute.UserProfile.route}/{userId}",
+        startDestination = "${MainRoute.UserProfile.route}/{userId}/{username}",
         enterTransition = { slideInFromRight() },
         exitTransition = { slideOutToLeft() },
         popEnterTransition = { slideInFromLeft() },
         popExitTransition = { slideOutToRight() }
     ) {
-        composable("${MainRoute.UserProfile.route}/{userId}",
-            arguments = listOf(navArgument("userId") { type = NavType.IntType })
+        composable("${MainRoute.UserProfile.route}/{userId}/{username}",
+            arguments = listOf(
+                navArgument("userId") { type = NavType.IntType },
+                navArgument("username") { type = NavType.StringType }
+            )
         ) { backStackEntry ->
             val viewModel = hiltViewModel<ProfileViewModel>(backStackEntry)
 

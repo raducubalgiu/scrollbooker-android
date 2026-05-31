@@ -83,6 +83,7 @@ class ProfileViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
     private val userId: StateFlow<Int?> = savedStateHandle.getStateFlow("userId", null)
+    private val username: StateFlow<String?> = savedStateHandle.getStateFlow("username", null)
 
     private val _currentTab = MutableStateFlow<Int>(0)
     val currentTab: StateFlow<Int> = _currentTab.asStateFlow()
@@ -97,12 +98,12 @@ class ProfileViewModel @Inject constructor(
     val isSaving: StateFlow<Boolean> = _isSaving.asStateFlow()
 
     init {
-        userId.filterNotNull()
-            .onEach { id -> loadUserProfile(id) }
+        username.filterNotNull()
+            .onEach { username -> loadUserProfile(username) }
             .launchIn(viewModelScope)
     }
 
-    fun loadUserProfile(userId: Int) {
+    fun loadUserProfile(username: String) {
         viewModelScope.launch {
             _profile.value = FeatureState.Loading
 
@@ -110,7 +111,7 @@ class ProfileViewModel @Inject constructor(
             val lng = 25.989074f
 
             val response = withVisibleLoading {
-                getUserProfileUseCase(userId, lat, lng)
+                getUserProfileUseCase(username, lat, lng)
             }
 
             if(response is FeatureState.Success) {

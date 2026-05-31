@@ -39,7 +39,7 @@ import com.example.scrollbooker.ui.theme.titleLarge
 @Composable
 fun ProfileEmployeesTab(
     employees: LazyPagingItems<Employee>,
-    onNavigateToEmployeeProfile: (Int) -> Unit
+    onNavigateToEmployeeProfile: (userId: Int, username: String) -> Unit
 ) {
     val refreshState = employees.loadState.refresh
     val appendState = employees.loadState.append

@@ -8,34 +8,27 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
-import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessOwner
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessSheet
 import com.example.scrollbooker.ui.theme.Divider
-import com.example.scrollbooker.ui.theme.OnSurfaceBG
-import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable
 fun SearchCard(
     modifier: Modifier = Modifier,
     business: BusinessSheet,
     showMoreProductsBtn: Boolean = true,
-    onNavigateToBusinessProfile: (Int) -> Unit,
+    onNavigateToBusinessProfile: (String) -> Unit,
     onOpenBookingsSheet: (BusinessOwner) -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -46,9 +39,7 @@ fun SearchCard(
             .clip(RoundedCornerShape(12.dp))
             .padding(horizontal = BasePadding)
             .clickable(
-                onClick = {
-                    onNavigateToBusinessProfile(business.id)
-                },
+                onClick = { onNavigateToBusinessProfile(business.owner.username) },
                 interactionSource = interactionSource,
                 indication = null
             )

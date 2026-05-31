@@ -127,6 +127,19 @@ fun NavGraphBuilder.onBoardingGraph(
             )
         }
 
+        composable(route = OnboardingRoute.CollectBusinessGallery.route) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(OnboardingRoute.CollectBusiness.route)
+            }
+            val viewModel: CollectBusinessViewModel = hiltViewModel(parentEntry)
+
+            CollectBusinessGalleryScreen(
+                viewModel = viewModel,
+                onBack = {},
+                onNext = { navController.navigate(OnboardingRoute.CollectBusinessDetails.route) },
+            )
+        }
+
         composable(route = OnboardingRoute.CollectBusinessDetails.route) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(OnboardingRoute.CollectBusiness.route)

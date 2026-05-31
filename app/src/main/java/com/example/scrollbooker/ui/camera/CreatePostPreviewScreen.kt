@@ -261,7 +261,7 @@ fun CreatePostPreviewScreen(
                     onAction = {},
                     showBottomBar = false,
                     onShowBottomBar = {},
-                    onNavigateToUserProfile = {}
+                    onNavigateToUserProfile = { _, _ -> {} }
                 )
             }
         }

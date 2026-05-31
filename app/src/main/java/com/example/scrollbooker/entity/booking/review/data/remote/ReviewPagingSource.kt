@@ -2,6 +2,7 @@ package com.example.scrollbooker.entity.booking.review.data.remote
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.review.data.mappers.toDomain
 import com.example.scrollbooker.entity.booking.review.domain.model.Review
 import kotlinx.coroutines.delay
@@ -26,13 +27,14 @@ class ReviewPagingSource(
         val limit = 10
 
         return try {
-            delay(500)
-            val response = api.getReviews(
-                userId,
-                page,
-                limit,
-                ratings = ratings?.toList()
-            )
+            val response = withVisibleLoading {
+                api.getReviews(
+                    userId,
+                    page,
+                    limit,
+                    ratings = ratings?.toList()
+                )
+            }
             val reviews = response.results.map { it.toDomain() }
 
             val totalLoaded = (page - 1) * limit + response.results.size

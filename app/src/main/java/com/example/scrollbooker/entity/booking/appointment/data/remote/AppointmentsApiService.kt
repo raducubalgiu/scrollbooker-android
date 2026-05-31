@@ -9,7 +9,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface AppointmentsApiService {
-    @GET("appointments")
+    @GET("appointments/me")
     suspend fun getUserAppointments(
         @Query("page") page: Int,
         @Query("limit") limit: Int,

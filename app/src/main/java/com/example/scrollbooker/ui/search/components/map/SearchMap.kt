@@ -46,7 +46,7 @@ fun SearchMap(
     userLocation: GeoPoint?,
     isMapLoading: Boolean,
     onSheetExpand: () -> Unit,
-    onNavigateToBusinessProfile: (Int) -> Unit,
+    onNavigateToBusinessProfile: (String) -> Unit,
     paddingBottom: Dp
 ) {
     val density = LocalDensity.current
@@ -63,7 +63,7 @@ fun SearchMap(
     val style = if(isSystemInDarkTheme) {
         "mapbox://styles/radubalgiu/cmly0owhe001n01sd1c5j1rrg"
     } else {
-        "mapbox://styles/radubalgiu/cmip1r7g000pm01sca0vz7dxp"
+        "mapbox://styles/radubalgiu/cmnk8wlmw00b901sag9c0disv"
     }
 
     var mapStyle by rememberSaveable {

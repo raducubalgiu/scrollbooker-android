@@ -50,7 +50,7 @@ fun PostOverlayUser(
     user: PostUser,
     businessOwner: PostBusinessOwner,
     isVideoReview: Boolean,
-    onNavigateToUser: (Int) -> Unit,
+    onNavigateToUser: (userId: Int, username: String) -> Unit,
     onOpenPhone: () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -115,7 +115,7 @@ fun PostOverlayUser(
         modifier = Modifier
             .padding(vertical = SpacingS)
             .clickable(
-                onClick = { onNavigateToUser(user.id) },
+                onClick = { onNavigateToUser(user.id, user.username) },
                 interactionSource = interactionSource,
                 indication = null
             ),
@@ -154,7 +154,7 @@ fun PostOverlayUser(
             enableOpacity = enableOpacity,
             fullName = businessOwner.fullName,
             avatar = businessOwner.avatar,
-            onNavigateToUser = { onNavigateToUser(businessOwner.id) }
+            onNavigateToUser = {  }
         )
     }
 }

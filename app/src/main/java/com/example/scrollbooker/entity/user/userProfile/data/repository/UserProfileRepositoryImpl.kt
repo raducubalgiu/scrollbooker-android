@@ -24,8 +24,8 @@ import javax.inject.Inject
 class UserProfileRepositoryImpl @Inject constructor(
     private val apiService: UserProfileApiService
 ): UserProfileRepository {
-    override suspend fun getUserProfile(userId: Int, lat: Float?, lng: Float?): UserProfile {
-        return apiService.getUserProfile(userId, lat, lng).toDomain()
+    override suspend fun getUserProfile(username: String, lat: Float?, lng: Float?): UserProfile {
+        return apiService.getUserProfile(username, lat, lng).toDomain()
     }
 
     override suspend fun updateFullName(fullName: String) {

@@ -65,7 +65,7 @@ import timber.log.Timber
 fun SearchScreen(
     viewModel: SearchViewModel,
     isSearchTab: Boolean,
-    onNavigateToBusinessProfile: (Int) -> Unit
+    onNavigateToBusinessProfile: (String) -> Unit
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()

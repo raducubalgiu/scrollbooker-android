@@ -18,7 +18,7 @@ interface BusinessRepository {
     suspend fun searchBusinessAddress(query: String): List<BusinessAddress>
     suspend fun updateBusinessServices(serviceIds: List<Int>): List<SelectedServiceDomainsWithServices>
     suspend fun getBusiness(userId: Int): Business
-    suspend fun getBusinessProfileById(businessId: Int): BusinessProfile
+    suspend fun getBusinessProfileByOwnerUsername(ownerUsername: String): BusinessProfile
     suspend fun updateBusinessHasEmployees(hasEmployees: Boolean): AuthState
     suspend fun createBusiness(
         description: String?,

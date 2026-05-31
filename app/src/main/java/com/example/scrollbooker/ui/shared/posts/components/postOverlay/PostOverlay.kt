@@ -34,7 +34,7 @@ fun PostOverlay(
     enableOpacity: Boolean = false,
     showBottomBar: Boolean = false,
     onShowBottomBar: (() -> Unit)? = null,
-    onNavigateToUserProfile: (Int) -> Unit,
+    onNavigateToUserProfile: (userId: Int, username: String) -> Unit,
 ) {
     val isVideoReview = post.isVideoReview
 
@@ -94,7 +94,7 @@ fun PostOverlay(
                 onAction = onAction,
                 showBottomBar = showBottomBar,
                 onShowBottomBar = onShowBottomBar,
-                onNavigateToUser = { onNavigateToUserProfile(post.user.id) },
+                onNavigateToUser = { onNavigateToUserProfile(post.user.id, post.user.username) },
             )
         }
     }

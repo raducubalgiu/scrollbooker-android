@@ -53,8 +53,6 @@ import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.UserPermissionsController
-import com.example.scrollbooker.ui.profile.components.ProfileLayoutViewModel
-import com.example.scrollbooker.ui.profile.components.SelectedPostUi
 import com.example.scrollbooker.ui.profile.components.sheets.ProfileMenuSheet
 import com.example.scrollbooker.ui.profile.components.userInfo.ProfileShimmer
 import com.example.scrollbooker.ui.profile.components.userInfo.ProfileUserInfo
@@ -206,7 +204,7 @@ fun MyProfileScreen(
 
                                             ProfileEmployeesTab(
                                                 employees = employees,
-                                                onNavigateToEmployeeProfile = { profileNavigate.toUserProfile(it) },
+                                                onNavigateToEmployeeProfile = { userId, username -> profileNavigate.toUserProfile(userId, username) },
                                             )
                                         }
 
@@ -253,7 +251,11 @@ fun MyProfileScreen(
                                         isFollowEnabled = false,
                                         onOpenScheduleSheet = { scope.launch { scheduleSheetState.show() } },
                                         onNavigateToSocial = { profileNavigate.toSocial(it) },
-                                        onNavigateToBusinessOwner = { it?.let { profileNavigate.toUserProfile(it) } },
+                                        onNavigateToBusinessOwner = { userId, username -> {
+                                            if(userId != null && username != null) {
+                                                profileNavigate.toUserProfile(userId, username)
+                                            }
+                                        } },
                                         onNavigateToEditProfile = { profileNavigate.toEditProfile() },
                                         onNavigateToMyCalendar = { profileNavigate.toMyCalendar() },
                                     )
