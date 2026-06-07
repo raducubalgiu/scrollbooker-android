@@ -252,8 +252,6 @@ fun CreatePostPreviewScreen(
                     isSavingLike = false,
                     isSavingBookmark = false,
                     onAction = {},
-                    showBottomBar = false,
-                    onShowBottomBar = {},
                     onNavigateToUserProfile = { _, _ -> {} }
                 )
             }

@@ -1,21 +1,12 @@
 package com.example.scrollbooker.ui.shared.posts.components.postOverlay
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardDoubleArrowUp
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
@@ -39,15 +30,8 @@ fun PostOverlayActions(
     counters: PostCounters,
     userActions: UserPostActions,
     onAction: (PostOverlayActionEnum) -> Unit,
-    showBottomBar: Boolean,
-    onShowBottomBar: (() -> Unit)? = null,
     onNavigateToUser: () -> Unit,
 ) {
-    val rotation by animateFloatAsState(
-        targetValue = if(showBottomBar) 180f else 0f,
-        label = "ArrowRotation"
-    )
-
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -114,23 +98,6 @@ fun PostOverlayActions(
             tint = Color.White.withAlpha(enableOpacity),
             onClick = { onAction(PostOverlayActionEnum.OPEN_MORE_OPTIONS) }
         )
-
-        onShowBottomBar?.let {
-            IconButton(
-                modifier = Modifier.padding(top = SpacingS),
-                onClick = onShowBottomBar,
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = Color.Black.copy(alpha = if(enableOpacity) 0.2f else 0.5f),
-                    contentColor = Color.White.withAlpha(enableOpacity)
-                )
-            ) {
-                Icon(
-                    modifier = Modifier.rotate(rotation),
-                    imageVector = Icons.Default.KeyboardDoubleArrowUp,
-                    contentDescription = null
-                )
-            }
-        }
 
         Spacer(Modifier.height(SpacingS))
     }

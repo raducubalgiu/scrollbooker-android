@@ -80,11 +80,6 @@ class FeedScreenViewModel @Inject constructor(
         _selectedBusinessTypes.value = businessTypes
     }
 
-    private val _showBottomBar = MutableStateFlow<Boolean>(true)
-    val showBottomBar: StateFlow<Boolean> = _showBottomBar.asStateFlow()
-
-    fun toggleBottomBar() { _showBottomBar.value = !_showBottomBar.value }
-
     @kotlin.OptIn(ExperimentalCoroutinesApi::class)
     val explorePosts: Flow<PagingData<Post>> = selectedBusinessTypes
         .map { it.toList() }
@@ -94,14 +89,6 @@ class FeedScreenViewModel @Inject constructor(
     val followingPosts: Flow<PagingData<Post>> =
         getFollowingPostsUseCase()
         .cachedIn(viewModelScope)
-
-    private val _currentByTab = MutableStateFlow<Map<Int, Post?>>(emptyMap())
-    val currentByTab: StateFlow<Map<Int, Post?>> = _currentByTab.asStateFlow()
-
-    fun currentPost(tab: Int): StateFlow<Post?> =
-        currentByTab
-            .map { it[tab] }
-            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
     // Post Action
     private val _postUi = MutableStateFlow<Map<Int, PostActionUiState>>(emptyMap())

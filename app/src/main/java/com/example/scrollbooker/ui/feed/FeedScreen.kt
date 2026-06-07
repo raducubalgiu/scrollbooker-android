@@ -1,4 +1,5 @@
 package com.example.scrollbooker.ui.feed
+import BottomBar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,7 +11,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -24,17 +24,14 @@ import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.components.core.sheet.Sheet
-import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.ui.feed.components.FeedTabs
 import com.example.scrollbooker.ui.feed.drawer.FeedDrawer
 import com.example.scrollbooker.ui.feed.drawer.FeedDrawerLayout
 import com.example.scrollbooker.ui.shared.posts.PostVerticalPager
-import com.example.scrollbooker.ui.shared.posts.components.PostBottomBar
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlayActionEnum
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheets
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent
-import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.BookingsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.CommentsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.LocationSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.MoreOptionsSheet
@@ -54,13 +51,9 @@ fun FeedScreen(
 
     val businessDomainsState by feedViewModel.businessDomainsWithBusinessTypes.collectAsStateWithLifecycle()
     val selectedFromVm by feedViewModel.selectedBusinessTypes.collectAsStateWithLifecycle()
-    val showBottomBar by feedViewModel.showBottomBar.collectAsStateWithLifecycle()
 
     val horizontalPagerState = rememberPagerState { 2 }
     val scope = rememberCoroutineScope()
-
-    val currentTab by remember { derivedStateOf { horizontalPagerState.currentPage } }
-    val currentPost by feedViewModel.currentPost(currentTab).collectAsStateWithLifecycle()
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var sheetContent by remember { mutableStateOf<PostSheetsContent>(None) }
@@ -162,7 +155,6 @@ fun FeedScreen(
                                     PostOverlayActionEnum.BOOKMARK -> feedViewModel.toggleBookmark(post)
                                 }
                             },
-                            showBottomBar = showBottomBar,
                             onNavigateToUserProfile = { userId, username -> feedNavigate.toUserProfile(userId, username) }
                         )
                     }
@@ -173,42 +165,9 @@ fun FeedScreen(
                 .height(90.dp)
                 .zIndex(14f)
             ) {
-                PostBottomBar(
-                    onAction = { action ->
-                        currentPost?.let { post ->
-                            handlePostAction(
-                                feedViewModel = feedViewModel,
-                                action = action,
-                                handleOpenSheet = { handleOpenSheet(it) },
-                                post = post
-                            )
-                        }
-                    },
-                    showBottomBar = showBottomBar,
-                    currentPost = currentPost
-                )
+                BottomBar()
             }
         }
-    }
-}
-
-private fun handlePostAction(
-    feedViewModel: FeedScreenViewModel,
-    action: PostOverlayActionEnum,
-    handleOpenSheet: (PostSheetsContent) -> Unit,
-    post: Post
-) {
-    when(action) {
-        PostOverlayActionEnum.OPEN_BOOKINGS -> handleOpenSheet(BookingsSheet(post.user))
-        PostOverlayActionEnum.OPEN_REVIEWS -> {
-            val id = if(post.isVideoReview) post.businessOwner.id else post.user.id
-            handleOpenSheet(ReviewsSheet(id))
-        }
-        PostOverlayActionEnum.OPEN_COMMENTS -> handleOpenSheet(CommentsSheet(post.id))
-        PostOverlayActionEnum.OPEN_LOCATION -> handleOpenSheet(LocationSheet(post.businessId))
-        PostOverlayActionEnum.OPEN_MORE_OPTIONS -> handleOpenSheet(MoreOptionsSheet(post.user.id, post.isOwnPost))
-        PostOverlayActionEnum.LIKE -> feedViewModel.toggleLike(post)
-        PostOverlayActionEnum.BOOKMARK -> feedViewModel.toggleBookmark(post)
     }
 }
 

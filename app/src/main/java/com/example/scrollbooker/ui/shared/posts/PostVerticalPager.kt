@@ -52,7 +52,6 @@ fun PostVerticalPager(
     posts: LazyPagingItems<Post>,
     isDrawerOpen: Boolean,
     onAction: (PostOverlayActionEnum, Post) -> Unit,
-    showBottomBar: Boolean,
     onNavigateToUserProfile: (userId: Int, username: String) -> Unit
 ) {
     val userPausedSet by feedViewModel.userPausedPostIds.collectAsStateWithLifecycle()
@@ -175,8 +174,6 @@ fun PostVerticalPager(
                             isSavingBookmark = postActionState.isSavingBookmark,
                             onAction = { onAction(it, post) },
                             enableOpacity = false,
-                            showBottomBar = showBottomBar,
-                            onShowBottomBar = { feedViewModel.toggleBottomBar() },
                             onNavigateToUserProfile = onNavigateToUserProfile
                         )
                     }
