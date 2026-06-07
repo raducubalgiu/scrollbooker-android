@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.example.scrollbooker.navigation.graphs.appointmentsGraph
 import com.example.scrollbooker.navigation.graphs.userProfileGraph
 import com.example.scrollbooker.navigation.navigators.InboxNavigator
 import com.example.scrollbooker.navigation.navigators.NavigateSocialParam

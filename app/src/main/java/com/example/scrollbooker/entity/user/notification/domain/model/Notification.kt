@@ -1,4 +1,7 @@
 package com.example.scrollbooker.entity.user.notification.domain.model
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import com.example.scrollbooker.R
 import com.example.scrollbooker.core.enums.NotificationTypeEnum
 import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
 
@@ -97,3 +100,33 @@ data class BusinessValidationNotificationData(
     val isApproved: Boolean,
     val reason: String?
 ) : NotificationData
+
+@Composable
+fun Notification.resolveDescription(): String {
+    return when (val data = this.data) {
+        is FollowNotificationData -> stringResource(R.string.notification_started_following_you)
+        is LikePostNotificationData -> {
+            if (data.totalCount > 1) stringResource(R.string.notification_like_multiple, data.totalCount - 1)
+            else stringResource(R.string.notification_like_single)
+        }
+        is CommentPostNotificationData -> stringResource(R.string.notification_comment_post)
+        is RepostNotificationData -> stringResource(R.string.notification_repost)
+        is MentionPostNotificationData -> stringResource(R.string.notification_mention_post)
+        is AppointmentBookedNotificationData -> stringResource(R.string.notification_appointment_booked, data.startDate)
+        is AppointmentCanceledNotificationData -> {
+            if (data.canceledReason.isNotBlank()) stringResource(R.string.notification_appointment_canceled_with_reason, data.canceledReason)
+            else stringResource(R.string.notification_appointment_canceled)
+        }
+        is AppointmentRescheduledNotificationData -> stringResource(R.string.notification_appointment_rescheduled, data.newStartDate)
+        is AppointmentReminderNotificationData -> stringResource(R.string.notification_appointment_reminder)
+        is AppointmentReviewedNotificationData -> stringResource(R.string.notification_appointment_reviewed, data.rating.toInt())
+        is EmploymentRequestNotificationData -> stringResource(R.string.notification_employment_request, data.professionName)
+        is EmploymentRequestAcceptedNotificationData -> stringResource(R.string.notification_employment_accepted)
+        is EmploymentRequestDeniedNotificationData -> stringResource(R.string.notification_employment_denied)
+        is BusinessValidationNotificationData -> {
+            if (data.isApproved) stringResource(R.string.notification_business_validation_approved)
+            else stringResource(R.string.notification_business_validation_rejected, data.reason ?: stringResource(R.string.notification_reason_not_specified))
+        }
+        else -> ""
+    }
+}

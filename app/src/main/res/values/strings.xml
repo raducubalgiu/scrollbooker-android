@@ -409,4 +409,32 @@
     <string name="someVideosMightNotAppear">Unele videoclipuri s-ar putea să nu apară</string>
     <string name="someVideosMightNotAppearLimitedAccess">Ai selectat permisiune cu acces limitat. Numai videoclipurile pe care le-ai selectat sunt vizibile.</string>
     <string name="searchUsersBusinessesSpecialists">Caută utilizatori, afaceri, specialiști</string>
+    <string name="check">Verifică</string>
+
+    <!-- Follow & Social Notifications -->
+    <string name="notification_started_following_you">a început să te urmărească</string>
+    <string name="notification_like_single">a apreciat postarea ta</string>
+    <string name="notification_like_multiple">a apreciat postarea ta și încă %1$d persoane</string>
+    <string name="notification_comment_post">a lăsat un comentariu la postarea ta</string>
+    <string name="notification_repost">a distribuit postarea ta</string>
+    <string name="notification_mention_post">te-a menționat într-o postare</string>
+
+    <!-- Appointment Notifications -->
+    <string name="notification_appointment_booked">A efectuat o programare pentru data de %1$s</string>
+    <string name="notification_appointment_canceled">a anulat programarea.</string>
+    <string name="notification_appointment_canceled_with_reason">a anulat programarea. Motiv: %1$s</string>
+    <string name="notification_appointment_rescheduled">Programarea a fost replanificată pe %1$s</string>
+    <string name="notification_appointment_reminder">Memento: Ai o programare stabilită în curând.</string>
+    <string name="notification_appointment_reviewed">A lăsat o recenzie de %1$d stele pentru programarea finalizată.</string>
+
+    <!-- Employment Notifications -->
+    <string name="notification_employment_request">Ai primit o cerere de angajare pentru rolul de %1$s.</string>
+    <string name="notification_employee_default_role">Angajat</string>
+    <string name="notification_employment_accepted">a acceptat cererea ta de angajare.</string>
+    <string name="notification_employment_denied">a respins cererea ta de angajare.</string>
+
+    <!-- Business Validation Notifications -->
+    <string name="notification_business_validation_approved">Afacerea ta a fost validată cu succes de administratori.</string>
+    <string name="notification_business_validation_rejected">Afacerea ta a fost respinsă. Motiv: %1$s</string>
+    <string name="notification_reason_not_specified">Nespecificat</string>
 </resources>

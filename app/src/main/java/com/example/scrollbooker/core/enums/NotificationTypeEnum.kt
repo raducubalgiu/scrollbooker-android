@@ -12,7 +12,7 @@ enum class NotificationTypeEnum(val key: String) {
     APPOINTMENT_REMINDER("appointment_reminder"),
     APPOINTMENT_REVIEWED("appointment_reviewed"),
     EMPLOYMENT_REQUEST("employment_request"),
-    EMPLOYMENT_REQUEST_ACCEPT("employment_request_accept"),
+    EMPLOYMENT_REQUEST_ACCEPTED("employment_request_accepted"),
     EMPLOYMENT_REQUEST_DENIED("employment_request_denied"),
     BUSINESS_VALIDATION("business_validation"),
     UNKNOWN("UNKNOWN");

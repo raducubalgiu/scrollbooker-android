@@ -33,7 +33,9 @@ fun NavGraphBuilder.appointmentsGraph(
         popEnterTransition = { slideInFromLeft() },
         popExitTransition = { slideOutToRight() }
     ) {
-        composable(route = MainRoute.Appointments.route) { backStackEntry ->
+        composable(
+            route = MainRoute.Appointments.route
+        ) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(MainRoute.AppointmentsNavigator.route)
             }
@@ -81,7 +83,9 @@ fun NavGraphBuilder.appointmentsGraph(
             )
         }
 
-        composable(route = MainRoute.AppointmentCancel.route) { backStackEntry ->
+        composable(
+            route = MainRoute.AppointmentCancel.route
+        ) { backStackEntry ->
             val bottom = LocalBottomBarController.current
 
             val parentEntry = remember(backStackEntry) {
