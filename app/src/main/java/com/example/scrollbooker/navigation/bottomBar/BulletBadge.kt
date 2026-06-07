@@ -1,4 +1,4 @@
-package com.example.scrollbooker.components.core.badge
+package com.example.scrollbooker.navigation.bottomBar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

@@ -17,8 +17,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.scrollbooker.components.core.badge.BulletBadge
-import com.example.scrollbooker.components.core.badge.CustomBadge
 import com.example.scrollbooker.navigation.bottomBar.MainTab.Appointments
 import com.example.scrollbooker.navigation.bottomBar.MainTab.Inbox
 import com.example.scrollbooker.ui.theme.OnBackground
@@ -62,7 +60,7 @@ fun BottomBarItem(
                     }
                     Appointments.route -> {
                         if(appointmentsNumber > 0) {
-                            CustomBadge(content = appointmentsNumber)
+                            AppointmentsBadge(content = appointmentsNumber)
                         }
                     }
                 }

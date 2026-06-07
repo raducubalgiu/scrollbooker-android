@@ -1,4 +1,4 @@
-package com.example.scrollbooker.components.core.badge
+package com.example.scrollbooker.navigation.bottomBar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -16,7 +16,7 @@ import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnError
 
 @Composable
-fun CustomBadge(
+fun AppointmentsBadge(
     modifier: Modifier = Modifier,
     content: Int,
     containerColor: Color = Error,
@@ -33,7 +33,7 @@ fun CustomBadge(
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = content.toString(),
+            text = if(content > 99) "99+" else content.toString(),
             color = contentColor,
             fontSize = 13.sp,
             maxLines = 1,
