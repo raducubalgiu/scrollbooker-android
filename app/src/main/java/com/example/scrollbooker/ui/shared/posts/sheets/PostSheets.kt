@@ -7,12 +7,9 @@ import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheet
-import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheetUser
 import com.example.scrollbooker.ui.shared.posts.sheets.comments.CommentsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.linkedProducts.LinkedProductsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.moreOptions.MoreOptionsSheet
-import com.example.scrollbooker.ui.shared.posts.sheets.location.LocationSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.reviews.ReviewsSheet
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
@@ -47,11 +44,6 @@ fun PostSheets(
                 CommentsSheet(
                     postId = content.postId,
                     isSheetVisible = sheetState.isVisible,
-                    onClose = onClose
-                )
-            }
-            is PostSheetsContent.LocationSheet -> {
-                LocationSheet(
                     onClose = onClose
                 )
             }

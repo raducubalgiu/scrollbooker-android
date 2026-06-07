@@ -33,7 +33,6 @@ import com.example.scrollbooker.ui.shared.posts.sheets.PostSheets
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.CommentsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.LinkedProductsSheet
-import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.LocationSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.MoreOptionsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.None
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.ReviewsSheet
@@ -133,7 +132,6 @@ fun FeedScreen(
                                 when(action) {
                                     PostOverlayActionEnum.OPEN_LINKED_PRODUCTS -> handleOpenSheet(LinkedProductsSheet(post.id))
                                     PostOverlayActionEnum.OPEN_COMMENTS -> handleOpenSheet(CommentsSheet(post.id))
-                                    PostOverlayActionEnum.OPEN_LOCATION -> handleOpenSheet(LocationSheet(post.businessId))
                                     PostOverlayActionEnum.OPEN_MORE_OPTIONS -> handleOpenSheet(MoreOptionsSheet(post.user.id, post.isOwnPost))
                                     PostOverlayActionEnum.LIKE -> feedViewModel.toggleLike(post)
                                     PostOverlayActionEnum.BOOKMARK -> feedViewModel.toggleBookmark(post)
