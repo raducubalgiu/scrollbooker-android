@@ -29,7 +29,7 @@ import com.example.scrollbooker.core.extensions.toFixedDecimals
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
-import com.example.scrollbooker.ui.theme.Primary
+import com.example.scrollbooker.ui.theme.Rating
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyMedium
 
@@ -78,7 +78,7 @@ fun AvatarWithRating(
             Icon(
                 painter = painterResource(R.drawable.ic_star_solid),
                 contentDescription = "Rating",
-                tint = Primary,
+                tint = Rating,
                 modifier = Modifier.size(16.dp)
             )
             Spacer(Modifier.width(2.dp))

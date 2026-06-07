@@ -47,6 +47,7 @@ import com.example.scrollbooker.ui.profile.components.userInfo.components.Profil
 import com.example.scrollbooker.ui.profile.components.userInfo.components.UserProfileActions
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
+import com.example.scrollbooker.ui.theme.Rating
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
@@ -156,7 +157,7 @@ fun ProfileUserInfo(
                         Icon(
                             painter = painterResource(R.drawable.ic_star_solid),
                             contentDescription = null,
-                            tint = Primary
+                            tint = Rating
                         )
                         Spacer(Modifier.width(5.dp))
                         Text(

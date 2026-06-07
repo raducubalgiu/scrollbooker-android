@@ -55,6 +55,7 @@ data class ExtendedColors(
     val divider: Color,
     val lastMinute: Color,
     val backgroundDark: Color,
+    val rating: Color,
     val beauty: Color,
     val auto: Color,
     val medical: Color
@@ -64,6 +65,7 @@ private val LightExtendedColors = ExtendedColors(
     divider = Color(0xFFCCCCCC),
     lastMinute = Color(0xFF06B0CA),
     backgroundDark = Color(0xFF000000),
+    rating = Color(0xFFFAAF00),
     beauty = Color(0xFF7A2E3A),
     auto = Color(0xFF3A86FF),
     medical = Color(0xFF36CFC9)
@@ -72,6 +74,7 @@ private val DarkExtendedColor = ExtendedColors(
     divider = Color(0xFF3A3A3A),
     lastMinute = Color(0xFF06B0CA),
     backgroundDark = Color(0xFF000000),
+    rating = Color(0xFFFAAF00),
     beauty = Color(0xFF9B4A55),
     auto = Color(0xFF6FA8FF),
     medical = Color(0xFF5EDAD5)
@@ -82,6 +85,7 @@ val LocalExtendedColors = staticCompositionLocalOf {
         divider = Color.Gray,
         lastMinute = Color(0xFF06B0CA),
         backgroundDark = Color(0xFF000000),
+        rating = Color(0xFFFAAF00),
         beauty = Color(0xFFFF6F00),
         auto = Color(0xFF3A86FF),
         medical = Color(0xFF36CFC9)
