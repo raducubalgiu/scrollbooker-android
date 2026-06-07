@@ -408,4 +408,5 @@
     <string name="openSettings">Deschide Setări</string>
     <string name="someVideosMightNotAppear">Unele videoclipuri s-ar putea să nu apară</string>
     <string name="someVideosMightNotAppearLimitedAccess">Ai selectat permisiune cu acces limitat. Numai videoclipurile pe care le-ai selectat sunt vizibile.</string>
+    <string name="searchUsersBusinessesSpecialists">Caută utilizatori, afaceri, specialiști</string>
 </resources>

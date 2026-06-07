@@ -1,5 +1,6 @@
 package com.example.scrollbooker.components.core.inputs
 
+import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -54,7 +55,8 @@ fun SearchBarSmall(
     onClick: (() -> Unit)? = null,
     enabled: Boolean = true,
     readOnly: Boolean = false,
-    displaySearchButton: Boolean = true
+    displaySearchButton: Boolean = true,
+    @StringRes placeholderRes: Int? = null
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     BasicTextField(
@@ -108,7 +110,7 @@ fun SearchBarSmall(
                 ) {
                     if(value.isEmpty()) {
                         Text(
-                            text = stringResource(R.string.search),
+                            text = stringResource(id = placeholderRes ?: R.string.search),
                             color = Color.Gray,
                             fontSize = 14.sp
                         )

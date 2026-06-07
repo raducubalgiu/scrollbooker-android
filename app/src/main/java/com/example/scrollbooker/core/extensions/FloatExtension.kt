@@ -19,3 +19,9 @@ fun Float.toFixedDecimals(decimals: Int = 2): String {
     val scaled = BigDecimal(this.toString()).setScale(decimals, RoundingMode.HALF_UP)
     return scaled.toPlainString()
 }
+
+fun Float.formatRating(): String {
+    val formattedWithDot = this.toFixedDecimals(decimals = 1)
+
+    return formattedWithDot.replace('.', ',')
+}

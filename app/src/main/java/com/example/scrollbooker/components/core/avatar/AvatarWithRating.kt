@@ -24,7 +24,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
+import com.example.scrollbooker.core.extensions.formatRating
 import com.example.scrollbooker.core.extensions.toFixedDecimals
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
@@ -79,14 +81,15 @@ fun AvatarWithRating(
                 painter = painterResource(R.drawable.ic_star_solid),
                 contentDescription = "Rating",
                 tint = Rating,
-                modifier = Modifier.size(16.dp)
+                modifier = Modifier.size(17.dp)
             )
             Spacer(Modifier.width(2.dp))
             Text(
-                text = rating.toFixedDecimals(1),
+                text = rating.formatRating(),
                 color = if(isSystemInDarkMode) OnSurfaceBG else OnBackground,
                 fontWeight = FontWeight.ExtraBold,
-                style = bodyMedium
+                style = bodyMedium,
+                fontSize = 16.sp
             )
         }
     }

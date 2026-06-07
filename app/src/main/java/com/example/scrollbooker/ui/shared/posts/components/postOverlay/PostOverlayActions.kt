@@ -39,7 +39,7 @@ fun PostOverlayActions(
         if(isVideoReview) {
             Avatar(
                 url = user.avatar ?: "",
-                size = 55.dp,
+                size = 60.dp,
                 onClick = onNavigateToUser
             )
         } else {
