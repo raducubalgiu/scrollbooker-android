@@ -5,6 +5,7 @@ data class SearchUser(
     val username: String,
     val fullName: String,
     val avatar: String?,
+    val profession: String,
     val ratingsAverage: Float,
     val isBusinessOrEmployee: Boolean
 )

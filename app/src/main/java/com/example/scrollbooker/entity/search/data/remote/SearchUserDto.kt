@@ -9,6 +9,7 @@ data class SearchUserDto(
     @SerializedName("fullname")
     val fullName: String,
     val avatar: String?,
+    val profession: String,
 
     @SerializedName("ratings_average")
     val ratingsAverage: Float,

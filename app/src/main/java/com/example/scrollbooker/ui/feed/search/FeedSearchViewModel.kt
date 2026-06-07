@@ -56,6 +56,10 @@ class FeedSearchViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
+    fun clearSearch() {
+        _currentSearch.value = ""
+    }
+
     fun handleSearch(query: String) {
         _currentSearch.value = query
     }

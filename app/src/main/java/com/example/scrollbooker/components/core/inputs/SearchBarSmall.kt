@@ -53,7 +53,8 @@ fun SearchBarSmall(
     onClearInput: () -> Unit,
     onClick: (() -> Unit)? = null,
     enabled: Boolean = true,
-    readOnly: Boolean = false
+    readOnly: Boolean = false,
+    displaySearchButton: Boolean = true
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     BasicTextField(
@@ -135,7 +136,7 @@ fun SearchBarSmall(
         }
     )
 
-    if(!readOnly) {
+    if(!readOnly && displaySearchButton) {
         TextButton(
             enabled = value.isNotEmpty(),
             onClick = { onSearch() }

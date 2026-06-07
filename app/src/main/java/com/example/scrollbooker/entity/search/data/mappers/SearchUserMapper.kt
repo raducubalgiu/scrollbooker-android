@@ -9,6 +9,7 @@ fun SearchUserDto.toDomain(): SearchUser {
         username = username,
         fullName = fullName,
         avatar = avatar,
+        profession = profession,
         ratingsAverage = ratingsAverage,
         isBusinessOrEmployee = isBusinessOrEmployee
     )

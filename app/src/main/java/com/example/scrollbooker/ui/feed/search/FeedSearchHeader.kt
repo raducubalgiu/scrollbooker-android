@@ -21,6 +21,7 @@ fun FeedSearchHeader(
     modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
+    onClearInput: () -> Unit,
     readOnly: Boolean = false,
     onClick: (() -> Unit)? = null,
     onBack: () -> Unit
@@ -52,7 +53,8 @@ fun FeedSearchHeader(
             onValueChange = onValueChange,
             onSearch = {},
             readOnly = readOnly,
-            onClearInput = {},
+            displaySearchButton = false,
+            onClearInput = onClearInput,
             onClick = onClick,
             modifier = Modifier
                 .weight(1f)

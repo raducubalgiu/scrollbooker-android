@@ -98,7 +98,8 @@ fun UserSocialItem(
                     url = userSocial.avatar ?: "",
                     rating = userSocial.ratingsAverage,
                     size = 60.dp,
-                    onClick = {}
+                    onClick = {},
+                    elevation = 2.dp
                 )
             } else {
                 Avatar(
