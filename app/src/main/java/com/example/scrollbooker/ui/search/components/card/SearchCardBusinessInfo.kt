@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
+import com.example.scrollbooker.core.extensions.formatRating
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.ui.theme.Rating
@@ -58,8 +59,8 @@ fun SearchCardBusinessInfo(
                 )
 
                 Text(
-                    text = "$ratingsAverage",
-                    fontWeight = FontWeight.SemiBold
+                    text = ratingsAverage.formatRating(),
+                    fontWeight = FontWeight.Bold
                 )
 
                 Text(
