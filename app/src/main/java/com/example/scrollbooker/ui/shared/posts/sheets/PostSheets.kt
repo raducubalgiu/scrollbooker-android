@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheetUser
 import com.example.scrollbooker.ui.shared.posts.sheets.comments.CommentsSheet
+import com.example.scrollbooker.ui.shared.posts.sheets.linkedProducts.LinkedProductsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.moreOptions.MoreOptionsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.location.LocationSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.reviews.ReviewsSheet
@@ -60,22 +61,10 @@ fun PostSheets(
                     isOwnPost = content.isOwnPost
                 )
             }
-            is PostSheetsContent.BookingsSheet -> {
-                val user = content.user
-
-                BookingsSheet(
-                    initialIndex = if(content.postId != null) 0 else 1,
-                    postId = content.postId,
-                    user = BookingsSheetUser(
-                        id = user.id,
-                        username = user.username,
-                        fullName = user.fullName,
-                        avatar = user.avatar,
-                        profession = user.profession,
-                        ratingsCount = user.ratingsCount,
-                        ratingsAverage = user.ratingsAverage
-                    ),
-                    onClose = onClose
+            is PostSheetsContent.LinkedProductsSheet -> {
+                LinkedProductsSheet(
+                    onClose = onClose,
+                    postId = content.postId
                 )
             }
             is PostSheetsContent.None -> Unit

@@ -1,6 +1,4 @@
 package com.example.scrollbooker.entity.social.post.domain.model
-import com.example.scrollbooker.R
-import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlayActionEnum
 import java.math.BigDecimal
 
 data class Post(
@@ -106,15 +104,3 @@ data class LastMinute(
     val hasFixedSlots: Boolean,
     val fixedSlots: List<FixedSlots>
 )
-
-fun Post.ctaAction(): PostOverlayActionEnum = when {
-    isVideoReview -> PostOverlayActionEnum.OPEN_BOOKINGS
-    //product != null -> PostOverlayActionEnum.OPEN_BOOKINGS
-    else -> PostOverlayActionEnum.OPEN_BOOKINGS
-}
-
-fun Post.ctaTitle(): Int = when {
-    isVideoReview -> R.string.bookYours
-    //product != null -> R.string.bookThisService
-    else -> R.string.bookNow
-}

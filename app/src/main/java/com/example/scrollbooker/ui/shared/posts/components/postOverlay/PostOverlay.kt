@@ -82,7 +82,7 @@ fun PostOverlay(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = BasePadding),
-                        onClick = {},
+                        onClick = { onAction(PostOverlayActionEnum.OPEN_LINKED_PRODUCTS) },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Primary,
                             contentColor = OnPrimary
