@@ -6,9 +6,9 @@ import com.example.scrollbooker.entity.booking.products.data.repository.ProductR
 import com.example.scrollbooker.entity.booking.products.domain.repository.ProductRepository
 import com.example.scrollbooker.entity.booking.products.domain.useCase.CreateProductUseCase
 import com.example.scrollbooker.entity.booking.products.domain.useCase.DeleteProductUseCase
+import com.example.scrollbooker.entity.booking.products.domain.useCase.GetPostLinkedProductsUseCase
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductByIdUseCase
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByAppointmentIdUseCase
-import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByPostIdUseCase
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByUserIdAndServiceIdUseCase
 import com.example.scrollbooker.entity.booking.products.domain.useCase.UpdateProductUseCase
 import dagger.Module
@@ -90,9 +90,9 @@ object ProductsModule {
 
     @Provides
     @Singleton
-    fun provideGetProductsByPostIdUseCase(
+    fun provideGetPostLinkedProductsUseCase(
         repository: ProductRepository,
-    ): GetProductsByPostIdUseCase {
-        return GetProductsByPostIdUseCase(repository)
+    ): GetPostLinkedProductsUseCase {
+        return GetPostLinkedProductsUseCase(repository)
     }
 }

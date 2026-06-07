@@ -7,7 +7,7 @@ import com.example.scrollbooker.entity.booking.products.domain.model.ProductSect
 interface ProductRepository {
     suspend fun getUserProducts(userId: Int, serviceId: Int, employeeId: Int?): List<ProductSection>
     suspend fun getProductsByAppointmentId(appointmentId: Int): List<Product>
-    suspend fun getProductsByPostId(postId: Int): List<Product>
+    suspend fun getPostLinkedProducts(postId: Int): List<Product>
     suspend fun getProduct(productId: Int): Product
     suspend fun createProduct(
         productCreate: ProductCreate,

@@ -21,7 +21,7 @@ interface ProductsApiService {
     ): List<ProductDto>
 
     @GET("posts/{postId}/products")
-    suspend fun getProductsByPostId(
+    suspend fun getPostLinkedProducts(
         @Path("postId") postId: Int
     ): List<ProductDto>
 

@@ -6,15 +6,15 @@ import com.example.scrollbooker.entity.booking.products.domain.repository.Produc
 import timber.log.Timber
 import java.lang.Exception
 
-class GetProductsByPostIdUseCase(
+class GetPostLinkedProductsUseCase(
     private val repository: ProductRepository
 ) {
     suspend operator fun invoke(postId: Int): FeatureState<List<Product>> {
         return try {
-            val response = repository.getProductsByPostId(postId)
+            val response = repository.getPostLinkedProducts(postId)
             FeatureState.Success(response)
         } catch (e: Exception) {
-            Timber.tag("Products").e("ERROR: on Fetching Products By Post Id: $e")
+            Timber.tag("Products").e(e, "ERROR: on Fetching Post Linked Products")
             FeatureState.Error(e)
         }
     }
