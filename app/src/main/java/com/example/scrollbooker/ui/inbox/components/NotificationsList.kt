@@ -35,7 +35,6 @@ fun NotificationsList(
 ) {
     val followState by viewModel.followState.collectAsState()
     val isFollowSaving by viewModel.isFollowSaving.collectAsState()
-
     val appendState = notifications.loadState.append
 
     Refresh(
@@ -46,73 +45,18 @@ fun NotificationsList(
             items(notifications.itemCount) { index ->
                 val notification = notifications[index]
 
-                notification?.let { notification ->
-                    val isLocked = isFollowSaving.contains(notification.sender.id)
+                notification?.let { notif ->
+                    val senderId = notif.sender.id
+                    val isLocked = isFollowSaving.contains(senderId)
 
-                    when(notification.type) {
-                        NotificationTypeEnum.FOLLOW -> {
-                            NotificationFollowItem(
-                                modifier = Modifier.animateItem(),
-                                isFollow = followState[notification.sender.id],
-                                notification = notification,
-                                enabled = !isLocked,
-                                onFollow = { isFollowed -> onFollow(isFollowed, notification.sender.id) },
-                                onNavigateUserProfile = { inboxNavigate.toUserProfile(it) }
-                            )
-                        }
-                        NotificationTypeEnum.EMPLOYMENT_REQUEST -> {
-                            UserListItem(
-                                title = notification.sender.fullName,
-                                description = stringResource(R.string.sentYouAnEmploymentRequest),
-                                avatar = notification.sender.avatar ?: "",
-                                rating = notification.sender.ratingsAverage,
-                                isEnabled = true,
-                                isBusinessOrEmployee = false,
-                                onNavigateUserProfile = { inboxNavigate.toUserProfile(notification.senderId) },
-                                trailingContent = {
-                                    MainButtonSmall(
-                                        title = stringResource(R.string.seeMore),
-                                        onClick = {
-                                            notification.data?.employmentRequestId?.let { empId ->
-                                                inboxNavigate.toEmploymentRespond(empId)
-                                            }
-                                        },
-                                        colors = ButtonColors(
-                                            containerColor = Error,
-                                            contentColor = OnError,
-                                            disabledContainerColor = Divider,
-                                            disabledContentColor = OnSurfaceBG
-                                        ),
-                                        shape = ShapeDefaults.ExtraLarge
-                                    )
-                                }
-                            )
-                        }
-                        NotificationTypeEnum.EMPLOYMENT_REQUEST_ACCEPT -> {
-                            UserListItem(
-                                title = notification.sender.fullName,
-                                description = stringResource(R.string.acceptedYourEmploymentRequest),
-                                avatar = notification.sender.avatar ?: "",
-                                rating = 4.5f,
-                                isEnabled = true,
-                                isBusinessOrEmployee = false,
-                                onNavigateUserProfile = { inboxNavigate.toUserProfile(notification.senderId) },
-                            )
-                        }
-                        NotificationTypeEnum.EMPLOYMENT_REQUEST_DENIED -> {
-                            UserListItem(
-                                title = notification.sender.fullName,
-                                description = stringResource(R.string.deniedYourEmploymentRequest),
-                                avatar = notification.sender.avatar ?: "",
-                                rating = 4.5f,
-                                isEnabled = true,
-                                isBusinessOrEmployee = false,
-                                onNavigateUserProfile = { inboxNavigate.toUserProfile(notification.senderId) },
-                            )
-                        }
-
-                        NotificationTypeEnum.UNKNOWN -> Unit
-                    }
+                    NotificationItem(
+                        modifier = Modifier.animateItem(),
+                        notification = notif,
+                        isLocked = isLocked,
+                        isFollowed = followState[senderId],
+                        onFollow = { isFollowed -> onFollow(isFollowed, senderId) },
+                        inboxNavigate = inboxNavigate
+                    )
                 }
             }
 
