@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -30,7 +29,6 @@ import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.ui.feed.components.FeedTabs
 import com.example.scrollbooker.ui.feed.drawer.FeedDrawer
 import com.example.scrollbooker.ui.feed.drawer.FeedDrawerLayout
-import com.example.scrollbooker.ui.shared.booking.BookingSheet
 import com.example.scrollbooker.ui.shared.posts.PostVerticalPager
 import com.example.scrollbooker.ui.shared.posts.components.PostBottomBar
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlayActionEnum
@@ -41,7 +39,6 @@ import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.Comment
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.LocationSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.MoreOptionsSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.None
-import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.PhoneSheet
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.ReviewsSheet
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import kotlinx.coroutines.launch
@@ -161,7 +158,6 @@ fun FeedScreen(
                                     PostOverlayActionEnum.OPEN_COMMENTS -> handleOpenSheet(CommentsSheet(post.id))
                                     PostOverlayActionEnum.OPEN_LOCATION -> handleOpenSheet(LocationSheet(post.businessId))
                                     PostOverlayActionEnum.OPEN_MORE_OPTIONS -> handleOpenSheet(MoreOptionsSheet(post.user.id, post.isOwnPost))
-                                    PostOverlayActionEnum.OPEN_PHONE -> handleOpenSheet(PhoneSheet(0.7f))
                                     PostOverlayActionEnum.LIKE -> feedViewModel.toggleLike(post)
                                     PostOverlayActionEnum.BOOKMARK -> feedViewModel.toggleBookmark(post)
                                 }
@@ -211,7 +207,6 @@ private fun handlePostAction(
         PostOverlayActionEnum.OPEN_COMMENTS -> handleOpenSheet(CommentsSheet(post.id))
         PostOverlayActionEnum.OPEN_LOCATION -> handleOpenSheet(LocationSheet(post.businessId))
         PostOverlayActionEnum.OPEN_MORE_OPTIONS -> handleOpenSheet(MoreOptionsSheet(post.user.id, post.isOwnPost))
-        PostOverlayActionEnum.OPEN_PHONE -> handleOpenSheet(PhoneSheet(0.7f))
         PostOverlayActionEnum.LIKE -> feedViewModel.toggleLike(post)
         PostOverlayActionEnum.BOOKMARK -> feedViewModel.toggleBookmark(post)
     }

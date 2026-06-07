@@ -15,26 +15,16 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
-import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.entity.search.domain.model.RecentlySearch
-import com.example.scrollbooker.ui.feed.components.search.FeedSearchList
-import com.example.scrollbooker.ui.feed.components.search.FeedRecentlySearchList
-import com.example.scrollbooker.ui.feed.components.search.FeedSearchHeader
 import com.example.scrollbooker.ui.theme.Background
 
 @Composable
 fun FeedSearchScreen(
     viewModel: FeedSearchViewModel,
-    userSearch: FeatureState<List<RecentlySearch>>,
     onBack: () -> Unit,
     onNavigateToUserProfile: (Int) -> Unit,
-    onGoToSearch: () -> Unit,
-    onCreateUserSearch: (String) -> Unit,
-    onDeleteRecentlySearch: (Int) -> Unit
 ) {
     val currentSearch by viewModel.currentSearch.collectAsState()
     val searchState by viewModel.searchState.collectAsState()
-    val display by viewModel.display.collectAsState()
 
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -42,16 +32,9 @@ fun FeedSearchScreen(
 
     LaunchedEffect(Unit) {
         lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-            viewModel.setDisplay()
             focusRequester.requestFocus()
             keyboardController?.show()
         }
-    }
-
-    fun handleSearch(keyword: String) {
-        keyboardController?.hide()
-        onCreateUserSearch(keyword)
-        onGoToSearch()
     }
 
     Column(
@@ -64,35 +47,11 @@ fun FeedSearchScreen(
             value = currentSearch,
             modifier = Modifier.focusRequester(focusRequester),
             onValueChange = viewModel::handleSearch,
-            onSearch = { handleSearch(keyword = currentSearch) },
-            onClearInput = viewModel::clearSearch,
             onClick = { keyboardController?.show() },
             onBack = {
                 keyboardController?.hide()
                 onBack()
             },
         )
-
-        if(display) {
-            Column(Modifier.fillMaxSize()) {
-                if(currentSearch.isEmpty()) {
-                    FeedRecentlySearchList(
-                        userSearch = userSearch,
-                        onDeleteRecentlySearch = onDeleteRecentlySearch,
-                        onClick = { handleSearch(it) }
-                    )
-                } else {
-                    FeedSearchList(
-                        query = currentSearch,
-                        searchState = searchState,
-                        handleSearch = { handleSearch(it) },
-                        onNavigateToUserProfile = {
-                            keyboardController?.hide()
-                            onNavigateToUserProfile(it)
-                        }
-                    )
-                }
-            }
-        }
     }
 }

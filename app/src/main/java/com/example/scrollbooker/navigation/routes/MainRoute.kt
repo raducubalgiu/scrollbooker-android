@@ -5,10 +5,7 @@ sealed class MainRoute(val route: String) {
     object Tabs: MainRoute(route = "tabs")
 
     object Feed: MainRoute(route = "feed")
-
-    object FeedSearchNavigator: MainRoute(route = "feedSearchNavigator")
     object FeedSearch: MainRoute(route = "feedSearch")
-    object FeedSearchResults: MainRoute(route = "feedSearchResults")
 
     object InboxNavigator: MainRoute(route = "inboxNavigator")
     object Inbox: MainRoute(route = "inbox")

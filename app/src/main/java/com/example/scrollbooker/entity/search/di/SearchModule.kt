@@ -4,11 +4,6 @@ import com.example.scrollbooker.core.util.Constants
 import com.example.scrollbooker.entity.search.data.remote.SearchApiService
 import com.example.scrollbooker.entity.search.data.repository.SearchRepositoryImpl
 import com.example.scrollbooker.entity.search.domain.repository.SearchRepository
-import com.example.scrollbooker.entity.search.domain.useCase.CreateUserSearchUseCase
-import com.example.scrollbooker.entity.search.domain.useCase.DeleteUserSearchUseCase
-import com.example.scrollbooker.entity.search.domain.useCase.GetRecentlySearchUseCase
-import com.example.scrollbooker.entity.search.domain.useCase.SearchPaginatedUsersUseCase
-import com.example.scrollbooker.entity.search.domain.useCase.SearchUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -36,45 +31,5 @@ object SearchModule {
     @Singleton
     fun provideSearchRepository(apiService: SearchApiService): SearchRepository {
         return SearchRepositoryImpl(apiService)
-    }
-
-    @Provides
-    @Singleton
-    fun provideSearchUseCase(
-        repository: SearchRepository
-    ): SearchUseCase {
-        return SearchUseCase(repository)
-    }
-
-    @Provides
-    @Singleton
-    fun provideSearchPaginatedUsersUseCase(
-        repository: SearchRepository
-    ): SearchPaginatedUsersUseCase {
-        return SearchPaginatedUsersUseCase(repository)
-    }
-
-    @Provides
-    @Singleton
-    fun provideGetUserSearchUseCase(
-        repository: SearchRepository
-    ): GetRecentlySearchUseCase {
-        return GetRecentlySearchUseCase(repository)
-    }
-
-    @Provides
-    @Singleton
-    fun provideCreateUserSearchUseCase(
-        repository: SearchRepository
-    ): CreateUserSearchUseCase {
-        return CreateUserSearchUseCase(repository)
-    }
-
-    @Provides
-    @Singleton
-    fun provideDeleteUserSearchUseCase(
-        repository: SearchRepository
-    ): DeleteUserSearchUseCase {
-        return DeleteUserSearchUseCase(repository)
     }
 }

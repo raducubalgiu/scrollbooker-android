@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.feed.components.search
+package com.example.scrollbooker.ui.feed.components
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween

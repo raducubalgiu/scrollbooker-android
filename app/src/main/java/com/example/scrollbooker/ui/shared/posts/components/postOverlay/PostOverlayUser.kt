@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Repeat
@@ -22,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -46,12 +44,10 @@ import com.example.scrollbooker.ui.theme.bodyMedium
 @Composable
 fun PostOverlayUser(
     enableOpacity: Boolean = false,
-    showPhone: Boolean,
     user: PostUser,
     businessOwner: PostBusinessOwner,
     isVideoReview: Boolean,
-    onNavigateToUser: (userId: Int, username: String) -> Unit,
-    onOpenPhone: () -> Unit
+    onNavigateToUser: (userId: Int, username: String) -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isBusiness = user.id == businessOwner.id
@@ -75,38 +71,6 @@ fun PostOverlayUser(
                     fontWeight = FontWeight.SemiBold,
                     color = Color.White
                 )
-            }
-        }
-
-        showPhone -> {
-            Button(
-                onClick = onOpenPhone,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White.copy(alpha = 0.1f),
-                    contentColor = OnBackground
-                ),
-                contentPadding = PaddingValues(
-                    vertical = 10.dp,
-                    horizontal = BasePadding
-                )
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        modifier = Modifier.size(17.dp),
-                        painter = painterResource(R.drawable.ic_call_outline),
-                        contentDescription = null,
-                        tint = Color.White
-                    )
-
-                    Spacer(Modifier.width(SpacingS))
-
-                    Text(
-                        text = stringResource(R.string.call),
-                        style = bodyLarge,
-                        fontWeight = FontWeight.SemiBold,
-                        color = Color.White
-                    )
-                }
             }
         }
     }

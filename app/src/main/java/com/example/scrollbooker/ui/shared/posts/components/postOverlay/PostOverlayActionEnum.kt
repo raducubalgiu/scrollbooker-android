@@ -6,7 +6,6 @@ enum class PostOverlayActionEnum {
     OPEN_COMMENTS,
     OPEN_LOCATION,
     OPEN_MORE_OPTIONS,
-    OPEN_PHONE,
     LIKE,
     BOOKMARK,
 }

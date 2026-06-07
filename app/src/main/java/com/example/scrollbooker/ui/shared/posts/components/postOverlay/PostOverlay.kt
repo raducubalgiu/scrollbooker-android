@@ -21,7 +21,6 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.social.post.domain.model.ctaAction
 import com.example.scrollbooker.entity.social.post.domain.model.ctaTitle
-import com.example.scrollbooker.entity.social.post.domain.model.showPhone
 import com.example.scrollbooker.ui.shared.posts.components.PostActionButtonSmall
 
 @Composable
@@ -58,12 +57,10 @@ fun PostOverlay(
 
                 PostOverlayUser(
                     enableOpacity = enableOpacity,
-                    showPhone = post.showPhone(),
                     user = post.user,
                     businessOwner = post.businessOwner,
                     isVideoReview = isVideoReview,
                     onNavigateToUser = onNavigateToUserProfile,
-                    onOpenPhone = { onAction(PostOverlayActionEnum.OPEN_PHONE) }
                 )
 
                 Spacer(Modifier.height(SpacingS))

@@ -27,7 +27,6 @@ import androidx.compose.ui.zIndex
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.icon.ShadowedIcon
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.ui.feed.components.search.FeedTab
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Primary
 
