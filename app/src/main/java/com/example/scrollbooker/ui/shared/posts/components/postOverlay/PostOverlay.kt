@@ -41,6 +41,7 @@ fun PostOverlay(
 
     enableOpacity: Boolean = false,
     onNavigateToUserProfile: (userId: Int, username: String) -> Unit,
+    showBookButton: Boolean = true
 ) {
     val isVideoReview = post.isVideoReview
 
@@ -76,25 +77,27 @@ fun PostOverlay(
                     ?.takeIf { it.isNotBlank() }
                     ?.let { PostOverlayDescription(it) }
 
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = BasePadding),
-                    onClick = {},
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Primary,
-                        contentColor = OnPrimary
-                    ),
-                    contentPadding = PaddingValues(vertical = 12.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.bookNow),
-                        style = bodyLarge,
-                        fontWeight = FontWeight.SemiBold,
-                        color = OnPrimary,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                if(showBookButton) {
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = BasePadding),
+                        onClick = {},
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Primary,
+                            contentColor = OnPrimary
+                        ),
+                        contentPadding = PaddingValues(vertical = 12.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.bookNow),
+                            style = bodyLarge,
+                            fontWeight = FontWeight.SemiBold,
+                            color = OnPrimary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                 }
             }
 

@@ -216,7 +216,8 @@ class CalendarViewModel @Inject constructor(
         val appointment = AppointmentScrollBookerCreate(
             startDate = startDate,
             endDate = endDate,
-            userId = selectedProduct.data.userId,
+            //userId = selectedProduct.data.userId,
+            userId = 1,
             currencyId = selectedProduct.data.currencyId,
             productIds = emptyList(),
         )
@@ -235,5 +236,6 @@ class CalendarViewModel @Inject constructor(
             }
 
         return result
+
     }
 }

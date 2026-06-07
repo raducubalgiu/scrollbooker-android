@@ -45,7 +45,7 @@ class BusinessSheetPagingSource(
                 nextKey = if(isLastPage) null else page + 1,
             )
         } catch (e: Exception) {
-            Timber.tag("Businesses").e("ERROR: on Loading Businesses Sheet $e")
+            Timber.tag("Businesses").e(e, "ERROR: on Loading Businesses Sheet")
             e.printStackTrace()
             LoadResult.Error(throwable = e)
         }

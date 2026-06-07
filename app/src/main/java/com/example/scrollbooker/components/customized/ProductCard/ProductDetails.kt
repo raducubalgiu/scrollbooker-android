@@ -47,31 +47,31 @@ fun ProductDetails(
             append(" \u2022 ")
         }
 
-        filteredFilters.forEachIndexed { i, filter ->
-            when(filter.type) {
-                FilterTypeEnum.OPTIONS -> {
-                    filter.subFilters.forEachIndexed { subIndex, subFilter ->
-                        append(subFilter.name)
-                        if(subIndex < filter.subFilters.size - 1) {
-                            append(" & ")
-                        }
-                    }
-                }
-                FilterTypeEnum.RANGE -> {
-                    val text = when {
-                        filter.minim != null && filter.maxim == null -> "> ${filter.minim}"
-                        filter.minim == null && filter.maxim != null -> "< ${filter.maxim}"
-                        else -> "${filter.minim} - ${filter.maxim}"
-                    }
-                    append("$text ${filter.unit}")
-                }
-                null -> Unit
-            }
-
-            if(i < filteredFilters.size - 1) {
-                append(" \u2022 ")
-            }
-        }
+//        filteredFilters.forEachIndexed { i, filter ->
+//            when(filter.type) {
+//                FilterTypeEnum.OPTIONS -> {
+//                    filter.subFilters.forEachIndexed { subIndex, subFilter ->
+//                        append(subFilter.name)
+//                        if(subIndex < filter.subFilters.size - 1) {
+//                            append(" & ")
+//                        }
+//                    }
+//                }
+//                FilterTypeEnum.RANGE -> {
+//                    val text = when {
+//                        filter.minim != null && filter.maxim == null -> "> ${filter.minim}"
+//                        filter.minim == null && filter.maxim != null -> "< ${filter.maxim}"
+//                        else -> "${filter.minim} - ${filter.maxim}"
+//                    }
+//                    append("$text ${filter.unit}")
+//                }
+//                null -> Unit
+//            }
+//
+//            if(i < filteredFilters.size - 1) {
+//                append(" \u2022 ")
+//            }
+//        }
     }
 
     Column(modifier = modifier) {

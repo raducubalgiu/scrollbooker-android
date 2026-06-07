@@ -131,13 +131,13 @@ fun ConfirmTab(
             )
 
             products.forEachIndexed { index, prod ->
-                AppointmentProductPrice(
-                    name = prod.name,
-                    price = prod.price,
-                    priceWithDiscount = prod.priceWithDiscount,
-                    discount = prod.discount,
-                    currencyName = "RON"
-                )
+//                AppointmentProductPrice(
+//                    name = prod.name,
+//                    price = prod.price,
+//                    priceWithDiscount = prod.priceWithDiscount,
+//                    discount = prod.discount,
+//                    currencyName = "RON"
+//                )
 
                 if(index < products.size - 1) {
                     HorizontalDivider(

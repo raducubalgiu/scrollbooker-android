@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
-import com.example.scrollbooker.ui.theme.Primary
+import com.example.scrollbooker.ui.theme.Rating
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.titleMedium
 
@@ -54,7 +54,7 @@ fun SearchCardBusinessInfo(
                 Icon(
                     painter = painterResource(R.drawable.ic_star_solid),
                     contentDescription = null,
-                    tint = Primary
+                    tint = Rating
                 )
 
                 Text(

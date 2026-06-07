@@ -61,7 +61,7 @@ fun MyProfilePostDetailScreen(
     postIndex: Int,
     viewModel: MyProfileViewModel,
     onBack: () -> Unit,
-    profileNavigate: ProfileNavigator
+    profileNavigate: ProfileNavigator,
 ) {
     val postTab = PostTabEnum.fromKey(postTabKey)
 
@@ -184,7 +184,8 @@ fun MyProfilePostDetailScreen(
                             isSavingLike = postActionState.isSavingLike,
                             isSavingBookmark = postActionState.isSavingBookmark,
                             onAction = { action -> },
-                            onNavigateToUserProfile = { userId, username -> profileNavigate.toUserProfile(userId, username) }
+                            onNavigateToUserProfile = { userId, username -> profileNavigate.toUserProfile(userId, username) },
+                            showBookButton = false
                         )
                     }
                 }
@@ -195,7 +196,7 @@ fun MyProfilePostDetailScreen(
                             vertical = SpacingS,
                             horizontal = BasePadding
                         ),
-                    contentPadding = PaddingValues(14.dp),
+                    contentPadding = PaddingValues(12.dp),
                     onClick = {},
                     title = stringResource(R.string.bookNow),
                 )

@@ -59,31 +59,18 @@ fun SearchCard(
             distance = business.distance
         )
 
-        Spacer(Modifier.height(BasePadding))
+        Spacer(Modifier.height(SpacingM))
 
         Column(modifier = Modifier.padding(vertical = 8.dp)) {
             business.products.forEachIndexed { index, prod ->
                 SearchCardProductRow(product = prod)
 
-                if(index < business.products.size - 1) {
-                    HorizontalDivider(
-                        modifier = Modifier.padding(vertical = SpacingM),
-                        color = Divider,
-                        thickness = 0.55.dp
-                    )
+                if (index < business.products.size - 1) {
+                    Spacer(Modifier.height(SpacingM))
                 }
             }
-
-            if(showMoreProductsBtn) {
-                MainButtonOutlined(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = BasePadding),
-                    contentPadding = PaddingValues(BasePadding),
-                    title = stringResource(R.string.seeAllServices),
-                    onClick = { onOpenBookingsSheet(business.owner) }
-                )
-            }
         }
+
+        Spacer(Modifier.height(BasePadding))
     }
 }

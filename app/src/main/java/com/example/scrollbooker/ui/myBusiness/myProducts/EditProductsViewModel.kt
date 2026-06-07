@@ -71,42 +71,42 @@ class EditProductsViewModel @Inject constructor(
                 is FeatureState.Success -> {
                     val product = result.data
 
-                    _productState.update { current ->
-                        current.copy(
-                            name = product.name,
-                            description = product.description.orEmpty(),
-                            price = product.price.toPlainString(),
-                            priceWithDiscount = product.priceWithDiscount.toPlainString(),
-                            discount = product.discount.toPlainString(),
-                            duration = product.duration.toString(),
-                            serviceId = product.serviceId.toString(),
-                            canBeBooked = product.canBeBooked,
-                            type = product.type,
-                            sessionsCount = product.sessionsCount?.toString().orEmpty(),
-                            validityDays = product.validityDays?.toString().orEmpty()
-                        )
-                    }
-
-                    // Map product filters to selectedFilters
-                    product.filters.forEach { filter ->
-                        when {
-                            filter.type?.key == "options" && filter.subFilters.isNotEmpty() -> {
-                                val subFilterIds = filter.subFilters.map { it.id }.toSet()
-                                _selectedFilters.update { current ->
-                                    current + (filter.id to FilterSelection.Options(subFilterIds))
-                                }
-                            }
-                            filter.type?.key == "range" -> {
-                                _selectedFilters.update { current ->
-                                    current + (filter.id to FilterSelection.Range(
-                                        minim = filter.minim,
-                                        maxim = filter.maxim,
-                                        isNotApplicable = false
-                                    ))
-                                }
-                            }
-                        }
-                    }
+//                    _productState.update { current ->
+//                        current.copy(
+//                            name = product.name,
+//                            description = product.description.orEmpty(),
+//                            price = product.price.toPlainString(),
+//                            priceWithDiscount = product.priceWithDiscount.toPlainString(),
+//                            discount = product.discount.toPlainString(),
+//                            duration = product.duration.toString(),
+//                            serviceId = product.serviceId.toString(),
+//                            canBeBooked = product.canBeBooked,
+//                            type = product.type,
+//                            sessionsCount = product.sessionsCount?.toString().orEmpty(),
+//                            validityDays = product.validityDays?.toString().orEmpty()
+//                        )
+//                    }
+//
+//                    // Map product filters to selectedFilters
+//                    product.filters.forEach { filter ->
+//                        when {
+//                            filter.type?.key == "options" && filter.subFilters.isNotEmpty() -> {
+//                                val subFilterIds = filter.subFilters.map { it.id }.toSet()
+//                                _selectedFilters.update { current ->
+//                                    current + (filter.id to FilterSelection.Options(subFilterIds))
+//                                }
+//                            }
+//                            filter.type?.key == "range" -> {
+//                                _selectedFilters.update { current ->
+//                                    current + (filter.id to FilterSelection.Range(
+//                                        minim = filter.minim,
+//                                        maxim = filter.maxim,
+//                                        isNotApplicable = false
+//                                    ))
+//                                }
+//                            }
+//                        }
+//                    }
 
                     _loadingState.value = FeatureState.Success(Unit)
                 }

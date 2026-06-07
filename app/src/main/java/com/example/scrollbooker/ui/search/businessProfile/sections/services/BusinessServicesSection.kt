@@ -29,80 +29,81 @@ import java.math.BigDecimal
 
 @Composable
 fun BusinessServicesSection() {
-    val products = listOf(
-        Product(
-            id = 1,
-            name = "Tuns clasic",
-            description = "defe",
-            duration = 30,
-            price = BigDecimal("50"),
-            priceWithDiscount = BigDecimal("50"),
-            discount = BigDecimal("0"),
-            userId = 2,
-            serviceId = 2,
-            businessId = 1,
-            currencyId = 1,
-            filters = emptyList(),
-            type = ProductTypeEnum.SINGLE,
-            sessionsCount = null,
-            validityDays = null,
-            canBeBooked = true
-        ),
-        Product(
-            id = 2,
-            name = "Skin fade (zero in laterale)",
-            description = "defe",
-            duration = 30,
-            price = BigDecimal("60"),
-            priceWithDiscount = BigDecimal("60"),
-            discount = BigDecimal("0"),
-            userId = 2,
-            serviceId = 2,
-            businessId = 1,
-            currencyId = 1,
-            filters = emptyList(),
-            type = ProductTypeEnum.SINGLE,
-            sessionsCount = null,
-            validityDays = null,
-            canBeBooked = true
-        ),
-        Product(
-            id = 3,
-            name = "Tuns Barba",
-            description = "defe",
-            duration = 20,
-            price = BigDecimal("45"),
-            priceWithDiscount = BigDecimal("45"),
-            discount = BigDecimal("0"),
-            userId = 2,
-            serviceId = 2,
-            businessId = 1,
-            currencyId = 1,
-            filters = emptyList(),
-            type = ProductTypeEnum.SINGLE,
-            sessionsCount = null,
-            validityDays = null,
-            canBeBooked = true
-        ),
-        Product(
-            id = 4,
-            name = "Pachet Premium",
-            description = "defe",
-            duration = 50,
-            price = BigDecimal("100"),
-            priceWithDiscount = BigDecimal("100"),
-            discount = BigDecimal("0"),
-            userId = 2,
-            serviceId = 2,
-            businessId = 1,
-            currencyId = 1,
-            filters = emptyList(),
-            type = ProductTypeEnum.SINGLE,
-            sessionsCount = null,
-            validityDays = null,
-            canBeBooked = true
-        )
-    )
+//    val products = listOf(
+//        Product(
+//            id = 1,
+//            name = "Tuns clasic",
+//            description = "defe",
+//            duration = 30,
+//            price = BigDecimal("50"),
+//            priceWithDiscount = BigDecimal("50"),
+//            discount = BigDecimal("0"),
+//            userId = 2,
+//            serviceId = 2,
+//            businessId = 1,
+//            currencyId = 1,
+//            filters = emptyList(),
+//            type = ProductTypeEnum.SINGLE,
+//            sessionsCount = null,
+//            validityDays = null,
+//            canBeBooked = true
+//        ),
+//        Product(
+//            id = 2,
+//            name = "Skin fade (zero in laterale)",
+//            description = "defe",
+//            duration = 30,
+//            price = BigDecimal("60"),
+//            priceWithDiscount = BigDecimal("60"),
+//            discount = BigDecimal("0"),
+//            userId = 2,
+//            serviceId = 2,
+//            businessId = 1,
+//            currencyId = 1,
+//            filters = emptyList(),
+//            type = ProductTypeEnum.SINGLE,
+//            sessionsCount = null,
+//            validityDays = null,
+//            canBeBooked = true
+//        ),
+//        Product(
+//            id = 3,
+//            name = "Tuns Barba",
+//            description = "defe",
+//            duration = 20,
+//            price = BigDecimal("45"),
+//            priceWithDiscount = BigDecimal("45"),
+//            discount = BigDecimal("0"),
+//            userId = 2,
+//            serviceId = 2,
+//            businessId = 1,
+//            currencyId = 1,
+//            filters = emptyList(),
+//            type = ProductTypeEnum.SINGLE,
+//            sessionsCount = null,
+//            validityDays = null,
+//            canBeBooked = true
+//        ),
+//        Product(
+//            id = 4,
+//            name = "Pachet Premium",
+//            description = "defe",
+//            duration = 50,
+//            price = BigDecimal("100"),
+//            priceWithDiscount = BigDecimal("100"),
+//            discount = BigDecimal("0"),
+//            userId = 2,
+//            serviceId = 2,
+//            businessId = 1,
+//            currencyId = 1,
+//            filters = emptyList(),
+//            type = ProductTypeEnum.SINGLE,
+//            sessionsCount = null,
+//            validityDays = null,
+//            canBeBooked = true
+//        )
+//    )
+    
 
     Column(modifier = Modifier.padding(BasePadding)) {
         Text(
@@ -113,17 +114,17 @@ fun BusinessServicesSection() {
 
         Spacer(Modifier.height(BasePadding))
 
-        products.forEachIndexed { index, prod ->
-            SearchCardProductRow(product = prod)
-
-            if(index < products.size - 1) {
-                HorizontalDivider(
-                    modifier = Modifier.padding(vertical = SpacingS),
-                    color = Divider,
-                    thickness = 0.55.dp
-                )
-            }
-        }
+//        products.forEachIndexed { index, prod ->
+//            SearchCardProductRow(product = prod)
+//
+//            if(index < products.size - 1) {
+//                HorizontalDivider(
+//                    modifier = Modifier.padding(vertical = SpacingS),
+//                    color = Divider,
+//                    thickness = 0.55.dp
+//                )
+//            }
+//        }
 
         MainButtonOutlined(
             modifier = Modifier

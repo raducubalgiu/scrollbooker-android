@@ -61,15 +61,15 @@ fun ProductCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                ProductDetails(
-                    modifier = Modifier.weight(1f),
-                    name = product.name,
-                    duration = product.duration,
-                    price = product.price,
-                    priceWithDiscount = product.priceWithDiscount,
-                    discount = product.discount,
-                    filters = product.filters
-                )
+//                ProductDetails(
+//                    modifier = Modifier.weight(1f),
+//                    name = product.name,
+//                    duration = product.duration,
+//                    price = product.price,
+//                    priceWithDiscount = product.priceWithDiscount,
+//                    discount = product.discount,
+//                    filters = product.filters
+//                )
 
                 Spacer(Modifier.width(SpacingS))
 

@@ -8,22 +8,15 @@ data class ProductDto(
     val id: Int,
     val name: String,
     val description: String?,
-    val duration: Int,
-    val price: BigDecimal,
-
-    @SerializedName("price_with_discount")
-    val priceWithDiscount: BigDecimal,
-
-    val discount: BigDecimal,
-
-    @SerializedName("user_id")
-    val userId: Int,
 
     @SerializedName("service_id")
     val serviceId: Int,
 
     @SerializedName("business_id")
     val businessId: Int,
+
+    @SerializedName("business_owner_id")
+    val businessOwnerId: Int,
 
     @SerializedName("currency_id")
     val currencyId: Int,
@@ -39,7 +32,69 @@ data class ProductDto(
     @SerializedName("validity_days")
     val validityDays: Int?,
 
-    val filters: List<ProductFilterDto>
+    @SerializedName("has_different_prices")
+    val hasDifferentPrices: Boolean,
+
+    @SerializedName("starting_offering")
+    val startingOffering: StartingOfferingDto,
+
+    val variants: List<ProductVariantDto>,
+
+    val filters: List<ProductFilterDto>,
+)
+
+data class ProductVariantDto(
+    val id: Int,
+    val name: String,
+    val duration: Int,
+
+    @SerializedName("starting_offering")
+    val startingOffering: StartingOfferingDto,
+
+    @SerializedName("has_different_prices")
+    val hasDifferentPrices: Boolean,
+
+    val offerings: List<ProductOfferingDto>
+)
+
+data class StartingOfferingDto(
+    val id: Int,
+
+    @SerializedName("variant_id")
+    val variantId: Int,
+
+    @SerializedName("variant_name")
+    val variantName: String?,
+
+    val duration: Int,
+
+    @SerializedName("user_id")
+    val userId: Int,
+
+    val price: BigDecimal,
+    val discount: BigDecimal,
+
+    @SerializedName("price_with_discount")
+    val priceWithDiscount: BigDecimal
+)
+
+data class ProductOfferingDto(
+    val id: Int,
+
+    val user: ProductOfferingUserDto,
+    val price: BigDecimal,
+    val discount: BigDecimal,
+
+    @SerializedName("price_with_discount")
+    val priceWithDiscount: BigDecimal
+)
+
+data class ProductOfferingUserDto(
+    val id: Int,
+    val username: String,
+    val fullname: String,
+    val profession: String,
+    val avatar: String?
 )
 
 data class ProductFilterDto(
