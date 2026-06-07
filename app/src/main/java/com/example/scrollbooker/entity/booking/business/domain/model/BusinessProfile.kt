@@ -2,7 +2,6 @@ package com.example.scrollbooker.entity.booking.business.domain.model
 import com.example.scrollbooker.entity.booking.appointment.domain.model.BusinessCoordinates
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
-import com.example.scrollbooker.entity.social.post.domain.model.BusinessPlan
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.user.userProfile.domain.model.OpeningHours
 import org.threeten.bp.ZonedDateTime
@@ -11,7 +10,6 @@ data class BusinessProfile(
     val owner: BusinessProfileOwner,
     val openingHours: OpeningHours,
     val mediaFiles: List<BusinessMediaFile>,
-    val businessPlan: BusinessPlan,
     val location: BusinessLocation,
     val distanceKm: Float?,
     val description: String?,

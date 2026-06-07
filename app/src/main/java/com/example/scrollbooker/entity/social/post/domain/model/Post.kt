@@ -1,6 +1,5 @@
 package com.example.scrollbooker.entity.social.post.domain.model
 import com.example.scrollbooker.R
-import com.example.scrollbooker.core.enums.BusinessPlanEnum
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlayActionEnum
 import java.math.BigDecimal
 
@@ -11,7 +10,6 @@ data class Post(
     val businessOwner: PostBusinessOwner,
     val employee: PostEmployee?,
     val userActions: UserPostActions,
-    val plan: BusinessPlan,
     val mediaFiles: List<PostMediaFile>,
     val counters: PostCounters,
     val hashtags: List<Hashtag>,
@@ -22,11 +20,6 @@ data class Post(
     val businessId: Int?,
     val lastMinute: LastMinute,
     val createdAt: String
-)
-
-data class BusinessPlan(
-    val id: Int,
-    val name: BusinessPlanEnum?
 )
 
 data class PostUser(
@@ -113,8 +106,6 @@ data class LastMinute(
     val hasFixedSlots: Boolean,
     val fixedSlots: List<FixedSlots>
 )
-
-fun Post.showPhone(): Boolean = plan.name == BusinessPlanEnum.STANDARD
 
 fun Post.ctaAction(): PostOverlayActionEnum = when {
     isVideoReview -> PostOverlayActionEnum.OPEN_BOOKINGS

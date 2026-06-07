@@ -1,6 +1,4 @@
 package com.example.scrollbooker.entity.social.post.data.mappers
-import com.example.scrollbooker.core.enums.BusinessPlanEnum
-import com.example.scrollbooker.entity.social.post.data.remote.BusinessPlanDto
 import com.example.scrollbooker.entity.social.post.data.remote.FixedSlotsDto
 import com.example.scrollbooker.entity.social.post.data.remote.HashtagDto
 import com.example.scrollbooker.entity.social.post.data.remote.LastMinuteDto
@@ -13,7 +11,6 @@ import com.example.scrollbooker.entity.social.post.data.remote.PostProductCurren
 import com.example.scrollbooker.entity.social.post.data.remote.PostProductDto
 import com.example.scrollbooker.entity.social.post.data.remote.PostUserDto
 import com.example.scrollbooker.entity.social.post.data.remote.UserPostActionsDto
-import com.example.scrollbooker.entity.social.post.domain.model.BusinessPlan
 import com.example.scrollbooker.entity.social.post.domain.model.FixedSlots
 import com.example.scrollbooker.entity.social.post.domain.model.Hashtag
 import com.example.scrollbooker.entity.social.post.domain.model.LastMinute
@@ -35,7 +32,6 @@ fun PostDto.toDomain(): Post {
         user = user.toDomain(),
         businessOwner = businessOwner.toDomain(),
         employee = employee?.toDomain(),
-        plan = plan.toDomain(),
         userActions = userActions.toDomain(),
         mediaFiles = mediaFiles.map { it.toDomain() },
         counters = counters.toDomain(),
@@ -47,13 +43,6 @@ fun PostDto.toDomain(): Post {
         businessId = businessId,
         lastMinute = lastMinute.toDomain(),
         createdAt = createdAt,
-    )
-}
-
-fun BusinessPlanDto.toDomain(): BusinessPlan {
-    return BusinessPlan(
-        id = id,
-        name = BusinessPlanEnum.fromKey(name)
     )
 }
 

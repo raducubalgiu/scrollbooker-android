@@ -31,7 +31,6 @@ fun UserProfileDto.toDomain(): UserProfile {
         openingHours = openingHours.toDomain(),
         isFollow = isFollow,
         businessOwner = businessOwner?.toDomain(),
-        businessPlan = businessPlan?.toDomain(),
         isOwnProfile = isOwnProfile,
         isBusinessOrEmployee = isBusinessOrEmployee,
         distanceKm = distanceKm,

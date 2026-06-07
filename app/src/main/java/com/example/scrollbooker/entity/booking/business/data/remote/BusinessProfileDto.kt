@@ -1,9 +1,7 @@
 package com.example.scrollbooker.entity.booking.business.data.remote
 import com.example.scrollbooker.entity.booking.appointment.domain.model.BusinessCoordinates
-import com.example.scrollbooker.entity.booking.business.domain.model.BusinessLocation
 import com.example.scrollbooker.entity.booking.products.data.remote.ProductDto
 import com.example.scrollbooker.entity.booking.schedule.data.remote.ScheduleDto
-import com.example.scrollbooker.entity.social.post.data.remote.BusinessPlanDto
 import com.example.scrollbooker.entity.social.post.data.remote.PostDto
 import com.example.scrollbooker.entity.user.userProfile.data.remote.OpeningHoursDto
 import com.google.gson.annotations.SerializedName
@@ -16,9 +14,6 @@ data class BusinessProfileDto(
 
     @SerializedName("media_files")
     val mediaFiles: List<BusinessMediaFileDto>,
-
-    @SerializedName("business_plan")
-    val businessPlan: BusinessPlanDto,
 
     val location: BusinessLocationDto,
 

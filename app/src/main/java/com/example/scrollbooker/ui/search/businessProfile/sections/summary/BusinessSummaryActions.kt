@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.runtime.Composable
@@ -19,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
 import com.example.scrollbooker.components.core.divider.VerticalDivider
-import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileCounters
 import com.example.scrollbooker.ui.profile.components.userInfo.components.CounterItem
@@ -31,7 +29,6 @@ import com.example.scrollbooker.ui.theme.Primary
 @Composable
 fun BusinessSummaryActions(
     counters: BusinessProfileCounters,
-    hasPhone: Boolean,
     isFollow: Boolean?,
     isFollowEnabled: Boolean,
     onFollow: () -> Unit,
@@ -73,22 +70,6 @@ fun BusinessSummaryActions(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            if(hasPhone) {
-                MainButtonOutlined(
-                    modifier = Modifier.weight(0.5f),
-                    title = stringResource(R.string.call),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Primary,
-                        contentColor = OnPrimary,
-                    ),
-                    border = BorderStroke(1.dp, Primary),
-                    shape = ShapeDefaults.ExtraLarge,
-                    onClick = {}
-                )
-
-                Spacer(Modifier.width(SpacingS))
-            }
-
             isFollow?.let {
                 MainButtonOutlined(
                     modifier = Modifier.weight(0.5f),
@@ -97,18 +78,15 @@ fun BusinessSummaryActions(
                     shape = ShapeDefaults.ExtraLarge,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = when {
-                            hasPhone -> Color.Transparent
                             it -> Color.Transparent
                             else -> Primary
                         },
                         contentColor = when {
-                            hasPhone -> OnBackground
                             it -> OnBackground
                             else -> OnPrimary
                         }
                     ),
                     border = BorderStroke(1.dp, when {
-                        hasPhone -> Divider
                         it -> Divider
                         else -> Primary
                     }),

@@ -27,7 +27,6 @@ fun BusinessProfileDto.toDomain(): BusinessProfile {
         owner = owner.toDomain(),
         openingHours = openingHours.toDomain(),
         mediaFiles = mediaFiles.map { it.toDomain() },
-        businessPlan = businessPlan.toDomain(),
         location = location.toDomain(),
         distanceKm = distanceKm,
         description = description,

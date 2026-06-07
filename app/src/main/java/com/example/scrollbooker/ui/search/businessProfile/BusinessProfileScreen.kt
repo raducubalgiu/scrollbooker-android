@@ -195,7 +195,6 @@ fun BusinessProfileScreen(
                     item(key = BusinessProfileSection.Summary.key) {
                         BusinessSummarySection(
                             owner = profile.owner,
-                            businessPlan = profile.businessPlan,
                             address = profile.location.address,
                             formattedAddress = profile.location.formattedAddress,
                             distance = profile.distanceKm,

@@ -1,5 +1,4 @@
 package com.example.scrollbooker.entity.user.userProfile.domain.model
-import com.example.scrollbooker.entity.social.post.domain.model.BusinessPlan
 import java.math.BigDecimal
 
 data class UserProfile(
@@ -22,7 +21,6 @@ data class UserProfile(
     val openingHours: OpeningHours,
     val isFollow: Boolean,
     val businessOwner: BusinessOwner?,
-    val businessPlan: BusinessPlan?,
     val isOwnProfile: Boolean,
     val isBusinessOrEmployee: Boolean,
     val distanceKm: Float?,

@@ -11,18 +11,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.avatar.AvatarWithRating
-import com.example.scrollbooker.core.enums.BusinessPlanEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileOwner
-import com.example.scrollbooker.entity.social.post.domain.model.BusinessPlan
 import com.example.scrollbooker.entity.user.userProfile.domain.model.OpeningHours
 
 @Composable
 fun BusinessSummarySection(
     owner: BusinessProfileOwner,
     distance: Float?,
-    businessPlan: BusinessPlan,
     address: String,
     formattedAddress: String,
     openingHours: OpeningHours,
@@ -33,8 +30,6 @@ fun BusinessSummarySection(
     onFlyToReviewsSection: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val hasPhone = businessPlan.name == BusinessPlanEnum.STANDARD
-
     Column(modifier = modifier
         .fillMaxWidth()
         .padding(horizontal = BasePadding)
@@ -57,7 +52,6 @@ fun BusinessSummarySection(
 
             BusinessSummaryActions(
                 counters = owner.counters,
-                hasPhone = hasPhone,
                 isFollow = isFollow,
                 isFollowEnabled = isFollowEnabled,
                 onFollow = onFollow,

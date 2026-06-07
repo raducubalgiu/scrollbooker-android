@@ -49,17 +49,14 @@ import coil.request.ImageRequest
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.iconButton.CustomIconButton
-import com.example.scrollbooker.core.enums.BusinessPlanEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
-import com.example.scrollbooker.entity.social.post.domain.model.BusinessPlan
 import com.example.scrollbooker.entity.social.post.domain.model.LastMinute
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.social.post.domain.model.PostBusinessOwner
 import com.example.scrollbooker.entity.social.post.domain.model.PostCounters
 import com.example.scrollbooker.entity.social.post.domain.model.PostUser
 import com.example.scrollbooker.entity.social.post.domain.model.UserPostActions
-import com.example.scrollbooker.ui.shared.posts.PostActionUiState
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlay
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import com.example.scrollbooker.ui.theme.titleMedium
@@ -249,10 +246,6 @@ fun CreatePostPreviewScreen(
                             lastMinuteEnd = null,
                             hasFixedSlots = false,
                             fixedSlots = emptyList()
-                        ),
-                        plan = BusinessPlan(
-                            id = 1,
-                            name = BusinessPlanEnum.STANDARD
                         ),
                         createdAt = ""
                     ),
