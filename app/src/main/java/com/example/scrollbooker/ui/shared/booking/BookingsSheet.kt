@@ -1,28 +1,6 @@
-package com.example.scrollbooker.ui.shared.posts.sheets.bookings
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.pager.VerticalPager
-import androidx.compose.foundation.pager.rememberPagerState
+package com.example.scrollbooker.ui.shared.booking
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.scrollbooker.ui.shared.calendar.CalendarViewModel
-import com.example.scrollbooker.ui.shared.posts.sheets.bookings.components.BookingSheetHeader
-import com.example.scrollbooker.ui.shared.posts.sheets.bookings.tabs.CalendarTab
-import com.example.scrollbooker.ui.shared.posts.sheets.bookings.tabs.ConfirmTab
-import com.example.scrollbooker.ui.shared.posts.sheets.bookings.tabs.products.ProductsTab
-import com.example.scrollbooker.ui.shared.products.UserProductsViewModel
-import kotlinx.coroutines.launch
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.res.stringResource
-import com.example.scrollbooker.R
-import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentScrollBookerCreate
 
 data class BookingsSheetUser(
     val id: Int,

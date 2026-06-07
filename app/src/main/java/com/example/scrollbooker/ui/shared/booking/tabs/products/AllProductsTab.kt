@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.posts.sheets.bookings.tabs.products
+package com.example.scrollbooker.ui.shared.booking.tabs.products
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

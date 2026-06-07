@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.posts.sheets.bookings.tabs
+package com.example.scrollbooker.ui.shared.booking.tabs
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,8 +34,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
-import com.example.scrollbooker.ui.appointments.components.AppointmentProductPrice
-import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheetUser
+import com.example.scrollbooker.ui.shared.booking.BookingsSheetUser
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodySmall

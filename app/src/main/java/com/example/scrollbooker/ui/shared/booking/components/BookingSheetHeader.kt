@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.posts.sheets.bookings.components
+package com.example.scrollbooker.ui.shared.booking.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

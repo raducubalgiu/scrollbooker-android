@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.posts.sheets.bookings.tabs
+package com.example.scrollbooker.ui.shared.booking.tabs
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.scrollbooker.entity.booking.calendar.domain.model.Slot

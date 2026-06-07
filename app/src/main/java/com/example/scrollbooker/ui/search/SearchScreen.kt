@@ -48,8 +48,8 @@ import com.example.scrollbooker.ui.search.components.SearchMapLoading
 import com.example.scrollbooker.ui.search.components.SearchSheetHeader
 import com.example.scrollbooker.ui.search.sheets.SearchSheetActionEnum
 import com.example.scrollbooker.ui.search.sheets.SearchSheets
-import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheet
-import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheetUser
+import com.example.scrollbooker.ui.shared.booking.BookingsSheet
+import com.example.scrollbooker.ui.shared.booking.BookingsSheetUser
 import com.example.scrollbooker.ui.theme.Background
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest

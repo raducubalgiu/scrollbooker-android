@@ -21,7 +21,7 @@ import com.example.scrollbooker.ui.shared.booking.steps.BookingCalendarStep
 import com.example.scrollbooker.ui.shared.booking.steps.BookingConfirmationStep
 import com.example.scrollbooker.ui.shared.booking.steps.BookingProductsStep
 import com.example.scrollbooker.ui.shared.booking.steps.BookingSpecialistStep
-import com.example.scrollbooker.ui.shared.posts.sheets.bookings.components.BookingSheetHeader
+import com.example.scrollbooker.ui.shared.booking.components.BookingSheetHeader
 
 sealed class BookingTab(
     override val route: String,

@@ -35,8 +35,8 @@ import com.example.scrollbooker.ui.appointments.components.ReviewCTA
 import com.example.scrollbooker.ui.appointments.components.VideoReviewCTA
 import com.example.scrollbooker.ui.appointments.sheets.AddReviewSheet
 import com.example.scrollbooker.ui.appointments.sheets.CancelReviewSheet
-import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheet
-import com.example.scrollbooker.ui.shared.posts.sheets.bookings.BookingsSheetUser
+import com.example.scrollbooker.ui.shared.booking.BookingsSheet
+import com.example.scrollbooker.ui.shared.booking.BookingsSheetUser
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.titleMedium
