@@ -13,8 +13,8 @@ import com.example.scrollbooker.entity.nomenclature.consent.domain.model.Consent
 import com.example.scrollbooker.entity.nomenclature.consent.domain.useCase.GetConsentsByNameUseCase
 import com.example.scrollbooker.entity.nomenclature.profession.domain.model.Profession
 import com.example.scrollbooker.entity.nomenclature.profession.domain.useCase.GetProfessionsByBusinessTypeUseCase
+import com.example.scrollbooker.entity.search.domain.model.SearchUser
 import com.example.scrollbooker.entity.search.domain.useCase.SearchUsersUseCase
-import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -49,11 +49,11 @@ class EmploymentRequestsViewModel @Inject constructor(
         MutableStateFlow<FeatureState<List<EmploymentRequest>>>(FeatureState.Loading)
     val employmentRequests: StateFlow<FeatureState<List<EmploymentRequest>>> = _employmentRequests
 
-    private val _searchUsersClientsState = MutableStateFlow<FeatureState<List<UserSocial>>?>(null)
-    val searchUsersClientsState: StateFlow<FeatureState<List<UserSocial>>?> = _searchUsersClientsState
+    private val _searchUsersClientsState = MutableStateFlow<FeatureState<List<SearchUser>>?>(null)
+    val searchUsersClientsState: StateFlow<FeatureState<List<SearchUser>>?> = _searchUsersClientsState
 
-    private val _selectedEmployee = MutableStateFlow<UserSocial?>(null)
-    val selectedEmployee: StateFlow<UserSocial?> = _selectedEmployee
+    private val _selectedEmployee = MutableStateFlow<SearchUser?>(null)
+    val selectedEmployee: StateFlow<SearchUser?> = _selectedEmployee
 
     private val _currentQuery = MutableStateFlow("")
     val currentQuery: StateFlow<String> = _currentQuery
@@ -79,7 +79,7 @@ class EmploymentRequestsViewModel @Inject constructor(
         loadConsent()
     }
 
-    fun setSelectedEmployee(employee: UserSocial) {
+    fun setSelectedEmployee(employee: SearchUser) {
         _selectedEmployee.value = employee
     }
 
@@ -141,7 +141,7 @@ class EmploymentRequestsViewModel @Inject constructor(
             }
             .filter { it.length >= 2 }
             .mapLatest { query ->
-                withVisibleLoading { searchUsersUseCase(query) }
+                withVisibleLoading { searchUsersUseCase(query, roleClient = true) }
             }
             .onEach { result -> _searchUsersClientsState.value = result }
             .catch { e -> _searchUsersClientsState.value = FeatureState.Error(e) }

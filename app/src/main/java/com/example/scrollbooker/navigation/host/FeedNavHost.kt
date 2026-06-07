@@ -63,7 +63,9 @@ fun FeedNavHost(navController: NavHostController) {
             FeedSearchScreen(
                 viewModel = feedSearchViewModel,
                 onBack = { navController.popBackStack() },
-                onNavigateToUserProfile = { navController.navigate("${MainRoute.UserProfile.route}/$it") },
+                onNavigateToUserProfile = { id, username ->
+                    feedNavigate.toUserProfile(id, username)
+                },
             )
         }
 

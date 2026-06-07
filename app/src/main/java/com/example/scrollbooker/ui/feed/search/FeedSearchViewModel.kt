@@ -4,14 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
+import com.example.scrollbooker.entity.search.domain.model.SearchUser
 import com.example.scrollbooker.entity.search.domain.useCase.SearchUsersUseCase
-import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -30,8 +29,8 @@ class FeedSearchViewModel @Inject constructor(
     private val _currentSearch = MutableStateFlow<String>("")
     val currentSearch: StateFlow<String> = _currentSearch
 
-    private val _searchState = MutableStateFlow<FeatureState<List<UserSocial>>?>(null)
-    val searchState: StateFlow<FeatureState<List<UserSocial>>?> = _searchState
+    private val _searchState = MutableStateFlow<FeatureState<List<SearchUser>>?>(null)
+    val searchState: StateFlow<FeatureState<List<SearchUser>>?> = _searchState
 
     init {
         _currentSearch
@@ -49,7 +48,7 @@ class FeedSearchViewModel @Inject constructor(
             .filter { it.length >= 2 }
             .mapLatest { query ->
                 withVisibleLoading {
-                    searchUsersUseCase(query)
+                    searchUsersUseCase(query, roleClient = null)
                 }
             }
             .onEach { result -> _searchState.value = result }
