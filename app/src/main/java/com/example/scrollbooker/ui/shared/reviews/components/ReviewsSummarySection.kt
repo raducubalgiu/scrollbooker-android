@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.customized.RatingsStars
+import com.example.scrollbooker.core.extensions.formatRating
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
@@ -52,7 +53,7 @@ fun ReviewsSummarySection(
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = summary.ratingsAverage.toString(),
+                    text = summary.ratingsAverage.formatRating(),
                     style = headlineMedium,
                     fontWeight = FontWeight.SemiBold
                 )

@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.R
+import com.example.scrollbooker.ui.theme.Rating
 
 @Composable
 fun RatingsStars(
@@ -22,7 +23,7 @@ fun RatingsStars(
     modifier: Modifier = Modifier,
     maxRating: Int = 5,
     starSize: Dp = 24.dp,
-    tint: Color = Primary
+    tint: Color = Rating
 ) {
     Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
         for (i in 1..maxRating) {
