@@ -87,7 +87,7 @@ fun ProfileUserInfo(
     onNavigateToSocial: (NavigateSocialParam) -> Unit,
     onNavigateToEditProfile: () -> Unit,
     onNavigateToMyCalendar: () -> Unit,
-    onNavigateToBooking: () -> Unit
+    onNavigateToBooking: (businessId: Int, employeeId: Int?) -> Unit
 ) {
     val isBusinessOrEmployee = user.isBusinessOrEmployee
     val isOpenNow = user.openingHours.openNow
@@ -125,7 +125,7 @@ fun ProfileUserInfo(
                     Box(modifier = Modifier
                         .size(25.dp)
                         .clip(CircleShape)
-                        .background(if(isOpenNow) Color.Green else Color(0xFFCCCCCC))
+                        .background(if (isOpenNow) Color.Green else Color(0xFFCCCCCC))
                         .border(3.dp, Color.White, CircleShape)
                     )
                 }
@@ -200,7 +200,12 @@ fun ProfileUserInfo(
                 isFollow = isFollow,
                 isFollowEnabled = isFollowEnabled,
                 onFollow = onFollow,
-                onNavigateToBooking = onNavigateToBooking
+                onNavigateToBooking = {
+                    val resolvedBusinessId = user.businessId ?: return@UserProfileActions
+                    val employeeId = if(user.id == user.businessOwner?.id) null else user.id
+
+                    onNavigateToBooking(resolvedBusinessId, employeeId)
+                }
             )
         }
     }

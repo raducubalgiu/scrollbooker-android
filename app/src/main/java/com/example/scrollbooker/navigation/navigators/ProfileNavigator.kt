@@ -67,8 +67,14 @@ class ProfileNavigator (
         }
     }
 
-    fun toBooking() {
-        navController.navigate(MainRoute.BookingServices.route)  {
+    fun toBooking(businessId: Int, employeeId: Int?) {
+        val route = if (employeeId != null) {
+            "bookingNavigator/$businessId?employeeId=$employeeId"
+        } else {
+            "bookingNavigator/$businessId"
+        }
+
+        navController.navigate(route) {
             launchSingleTop = true
         }
     }

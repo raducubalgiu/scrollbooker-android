@@ -8,6 +8,13 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ProductsApiService {
+    @GET("businesses/{businessId}/products")
+    suspend fun getProductsByBusinessIdAndEmployeeId(
+        @Path("businessId") businessId: Int,
+        @Query("employee_id") employeeId: Int?,
+        @Query("only_services_with_products") onlyServicesWithProducts: Boolean
+    ): List<BusinessServicesWithProductsDto>
+
     @GET("appointments/{appointmentId}/products")
     suspend fun getProductsByAppointmentId(
         @Path("appointmentId") appointmentId: Int

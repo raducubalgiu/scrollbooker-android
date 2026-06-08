@@ -3,8 +3,10 @@ import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import androidx.navigation.navArgument
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
@@ -22,6 +24,16 @@ fun NavGraphBuilder.bookingGraph(
     navigation(
         route = MainRoute.BookingNavigator.route,
         startDestination = MainRoute.BookingServices.route,
+        arguments = listOf(
+            navArgument("businessId") {
+                type = NavType.IntType
+                nullable = false
+            },
+            navArgument("employeeId") {
+                type = NavType.IntType
+                defaultValue = -1
+            }
+        ),
         enterTransition = { slideInFromRight() },
         exitTransition = { slideOutToLeft() },
         popEnterTransition = { slideInFromLeft() },

@@ -226,12 +226,17 @@ fun UserProfileScreen(
                                         onFollow = { viewModel.follow() },
                                         onOpenScheduleSheet = { scope.launch { scheduleSheetState.show() } },
                                         onNavigateToSocial = { profileNavigate.toSocial(it) },
-                                        onNavigateToBusinessOwner = { userId, username -> {
+                                        onNavigateToBusinessOwner = { userId, username ->
                                             profileNavigate.toUserProfile(userId, username)
-                                        } },
+                                        },
                                         onNavigateToEditProfile = { profileNavigate.toEditProfile() },
                                         onNavigateToMyCalendar = { profileNavigate.toMyCalendar() },
-                                        onNavigateToBooking = { profileNavigate.toBooking() }
+                                        onNavigateToBooking = { businessId, employeeId ->
+                                            profileNavigate.toBooking(
+                                                businessId = businessId,
+                                                employeeId = employeeId
+                                            )
+                                        }
                                     )
                                 }
                             }

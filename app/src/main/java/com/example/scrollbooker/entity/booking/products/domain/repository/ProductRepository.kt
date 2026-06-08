@@ -1,9 +1,15 @@
 package com.example.scrollbooker.entity.booking.products.domain.repository
 import com.example.scrollbooker.entity.booking.products.data.remote.AddProductFilterRequest
+import com.example.scrollbooker.entity.booking.products.domain.model.BusinessServicesWithProducts
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.model.ProductCreate
 
 interface ProductRepository {
+    suspend fun getProductsByBusinessIdAndEmployeeId(
+        businessId: Int,
+        employeeId: Int?,
+        onlyServicesWithProducts: Boolean
+    ): List<BusinessServicesWithProducts>
     suspend fun getProductsByAppointmentId(appointmentId: Int): List<Product>
     suspend fun getPostLinkedProducts(postId: Int): List<Product>
     suspend fun getProduct(productId: Int): Product

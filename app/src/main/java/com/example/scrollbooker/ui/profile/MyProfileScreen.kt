@@ -256,7 +256,9 @@ fun MyProfileScreen(
                                         },
                                         onNavigateToEditProfile = { profileNavigate.toEditProfile() },
                                         onNavigateToMyCalendar = { profileNavigate.toMyCalendar() },
-                                        onNavigateToBooking = {}
+                                        onNavigateToBooking = { businessId, employeeId ->
+                                            profileNavigate.toBooking(businessId, employeeId)
+                                        },
                                     )
                                 }
                             }

@@ -18,7 +18,9 @@ sealed class MainRoute(val route: String) {
         fun createRoute(businessOwnerUsername: String) = "businessProfile/$businessOwnerUsername"
     }
 
-    object BookingNavigator: MainRoute(route = "bookingNavigator")
+    object BookingNavigator : MainRoute(
+        route = "bookingNavigator/{businessId}?employeeId={employeeId}"
+    )
     object BookingServices: MainRoute(route = "bookingServices")
     object BookingSpecialists: MainRoute(route = "bookingSpecialists")
     object BookingDateTime: MainRoute(route = "bookingDateTime")
