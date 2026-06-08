@@ -71,15 +71,10 @@ class AppointmentsViewModel @Inject constructor(
     }
 
     init {
-        loadAppointments(null)
+        loadAppointments()
     }
 
-    fun loadAppointments(asCustomer: Boolean?) {
-        _asCustomer.value = asCustomer
-        _reload.tryEmit(Unit)
-    }
-
-    fun refreshAppointments() {
+    fun loadAppointments() {
         _reload.tryEmit(Unit)
     }
 
