@@ -306,30 +306,7 @@ fun SearchScreen(
                         listState = listState,
                         businessesSheet = businessesSheet,
                         onNavigateToBusinessProfile = { searchNavigate.toBusinessProfile(it) },
-                        onSelectProduct = { product ->
-                            val uniqueUserIds = product.variants
-                                .flatMap { it.offerings }
-                                .map { it.user.id }
-                                .distinct()
-
-                            val employeeId = when {
-                                uniqueUserIds.size == 1 -> {
-                                    val singleUserId = uniqueUserIds.first()
-                                    if (singleUserId == product.businessOwnerId) {
-                                        null
-                                    } else {
-                                        singleUserId
-                                    }
-                                }
-                                else -> null
-                            }
-
-                            searchNavigate.toBooking(
-                                businessId = product.businessId,
-                                employeeId = employeeId,
-                                selectedProductId = product.id
-                            )
-                        }
+                        onSelectProduct = { searchNavigate.toBooking(it) }
                     )
                 }
             ) {}

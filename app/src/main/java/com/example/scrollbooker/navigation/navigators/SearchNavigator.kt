@@ -1,6 +1,7 @@
 package com.example.scrollbooker.navigation.navigators
 
 import androidx.navigation.NavHostController
+import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.navigation.routes.MainRoute
 
 class SearchNavigator (
@@ -18,8 +19,25 @@ class SearchNavigator (
         }
     }
 
-    fun toBooking(businessId: Int, employeeId: Int?, selectedProductId: Int?) {
-        var route = "bookingNavigator/$businessId"
+    fun toBooking(product: Product) {
+        val uniqueUserIds = product.variants
+            .flatMap { it.offerings }
+            .map { it.user.id }
+            .distinct()
+
+        val employeeId = when {
+            uniqueUserIds.size == 1 -> {
+                val singleUserId = uniqueUserIds.first()
+                if (singleUserId == product.businessOwnerId) {
+                    null
+                } else {
+                    singleUserId
+                }
+            }
+            else -> null
+        }
+
+        var route = "bookingNavigator/${product.businessId}"
 
         val queryParams = mutableListOf<String>()
 
@@ -27,9 +45,7 @@ class SearchNavigator (
             queryParams.add("employeeId=$employeeId")
         }
 
-        if (selectedProductId != null) {
-            queryParams.add("selectedProductId=$selectedProductId")
-        }
+        queryParams.add("selectedProductId=${product.id}")
 
         if (queryParams.isNotEmpty()) {
             route += "?" + queryParams.joinToString("&")
