@@ -39,16 +39,16 @@ import com.example.scrollbooker.ui.profile.components.userInfo.components.INTENT
 import com.example.scrollbooker.ui.profile.components.userInfo.components.IntentAction
 import com.example.scrollbooker.ui.profile.components.userInfo.components.MyProfileActions
 import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileBio
-import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileBusinessEmployee
+import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileBusinessOwner
 import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileCounters
 import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileIntentActionsList
 import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileLocationDistance
 import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileOpeningHours
 import com.example.scrollbooker.ui.profile.components.userInfo.components.UserProfileActions
 import com.example.scrollbooker.ui.theme.OnBackground
-import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.Rating
 import com.example.scrollbooker.ui.theme.titleMedium
+import timber.log.Timber
 
 @Composable
 fun rememberIntentActions(user: UserProfile): List<IntentAction> {
@@ -83,7 +83,7 @@ fun ProfileUserInfo(
     isFollowEnabled: Boolean,
     onFollow: (() -> Unit)? = null,
     onOpenScheduleSheet: () -> Unit,
-    onNavigateToBusinessOwner: (userId: Int?, username: String?) -> Unit,
+    onNavigateToBusinessOwner: (userId: Int, username: String) -> Unit,
     onNavigateToSocial: (NavigateSocialParam) -> Unit,
     onNavigateToEditProfile: () -> Unit,
     onNavigateToMyCalendar: () -> Unit
@@ -204,14 +204,12 @@ fun ProfileUserInfo(
     }
 
     if(isBusinessOrEmployee) {
-        if(user.id != user.businessOwner?.id) {
-            ProfileBusinessEmployee(
-                businessOwnerAvatar = user.businessOwner?.avatar,
-                businessOwnerFullName = user.businessOwner?.fullName,
+        if(user.id != user.businessOwner?.id && user.businessOwner != null) {
+            ProfileBusinessOwner(
+                businessOwnerAvatar = user.businessOwner.avatar,
+                businessOwnerFullName = user.businessOwner.fullName,
                 onNavigateToBusinessOwner = {
-                    if (user.businessOwner?.id != null) {
-                        onNavigateToBusinessOwner(user.businessOwner.id, user.businessOwner.username)
-                    }
+                    onNavigateToBusinessOwner(user.businessOwner.id, user.businessOwner.username)
                 }
             )
         }

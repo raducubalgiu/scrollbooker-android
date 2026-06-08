@@ -81,8 +81,7 @@ fun ProfileEmployeesTab(
                             employees[index]?.let { employee ->
                                 ProfileEmployee(
                                     employee = employee,
-                                    onNavigateToEmployeeProfile = onNavigateToEmployeeProfile,
-                                    onOpenServices = {}
+                                    onNavigateToEmployeeProfile = onNavigateToEmployeeProfile
                                 )
 
                                 if(index < employees.itemCount - 1) {

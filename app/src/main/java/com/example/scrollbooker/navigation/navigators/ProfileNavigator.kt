@@ -4,6 +4,7 @@ import androidx.navigation.NavHostController
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.profile.PostTabEnum
 import com.example.scrollbooker.ui.profile.components.SelectedPostUi
+import timber.log.Timber
 
 class ProfileNavigator (
     private val navController: NavHostController
@@ -14,8 +15,8 @@ class ProfileNavigator (
         }
     }
 
-    fun toUserProfile(ownerId: Int, username: String) {
-        navController.navigate("${MainRoute.UserProfile.route}/${ownerId}/${username}") {
+    fun toUserProfile(userId: Int, username: String) {
+        navController.navigate("${MainRoute.UserProfile.route}/${userId}/${username}") {
             launchSingleTop = true
         }
     }

@@ -25,7 +25,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.ui.theme.OnBackground
 
 @Composable
-fun ProfileBusinessEmployee(
+fun ProfileBusinessOwner(
     businessOwnerAvatar: String?,
     businessOwnerFullName: String?,
     onNavigateToBusinessOwner: () -> Unit
@@ -36,7 +36,7 @@ fun ProfileBusinessEmployee(
         .fillMaxWidth()
         .padding(top = BasePadding)
         .clickable(
-            onClick = { onNavigateToBusinessOwner() },
+            onClick = onNavigateToBusinessOwner,
             interactionSource = interactionSource,
             indication = null
         ),

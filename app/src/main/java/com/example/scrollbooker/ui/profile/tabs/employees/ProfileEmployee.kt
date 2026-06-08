@@ -1,28 +1,25 @@
 package com.example.scrollbooker.ui.profile.tabs.employees
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.AvatarWithRating
-import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
+import com.example.scrollbooker.components.core.buttons.MainButtonSmall
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
-import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
 
@@ -30,7 +27,6 @@ import com.example.scrollbooker.ui.theme.titleMedium
 fun ProfileEmployee(
     employee: Employee,
     onNavigateToEmployeeProfile: (userId: Int, username: String) -> Unit,
-    onOpenServices: () -> Unit
 ) {
     ListItem(
         modifier = Modifier
@@ -47,32 +43,18 @@ fun ProfileEmployee(
             )
         },
         supportingContent = {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    style = bodyMedium,
-                    text = employee.job
-                )
-                Text(
-                    modifier = Modifier.padding(horizontal = 5.dp),
-                    text = "\u2022",
-                    color = Color.Gray
-                )
-                Text(
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    style = bodyMedium,
-                    color = Primary,
-                    fontWeight = FontWeight.Bold,
-                    text = "${employee.productsCount} ${stringResource(R.string.services)}"
-                )
-            }
+            Text(
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = bodyMedium,
+                text = "${employee.job} • ${employee.productsCount} ${stringResource(R.string.services)}"
+            )
         },
         trailingContent = {
-            MainButtonOutlined(
-                title = stringResource(R.string.services),
-                onClick = onOpenServices
+            MainButtonSmall(
+                modifier = Modifier.clip(shape = ShapeDefaults.ExtraLarge),
+                title = stringResource(R.string.pick),
+                onClick = {}
             )
         },
         leadingContent = {
