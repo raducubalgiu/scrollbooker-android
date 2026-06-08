@@ -66,7 +66,6 @@ fun PostOverlay(
                 PostOverlayUser(
                     enableOpacity = enableOpacity,
                     user = post.user,
-                    businessOwner = post.businessOwner,
                     isVideoReview = isVideoReview,
                     onNavigateToUser = onNavigateToUserProfile,
                 )
@@ -76,6 +75,7 @@ fun PostOverlay(
                 post.description
                     ?.takeIf { it.isNotBlank() }
                     ?.let { PostOverlayDescription(it) }
+                    ?: PostOverlayDescription("...")
 
                 if(showBookButton) {
                     Button(

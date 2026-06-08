@@ -7,12 +7,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -28,29 +24,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.core.extensions.withAlpha
-import com.example.scrollbooker.core.util.Dimens.AvatarSizeXXS
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.entity.social.post.domain.model.PostBusinessOwner
 import com.example.scrollbooker.entity.social.post.domain.model.PostUser
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge
-import com.example.scrollbooker.ui.theme.bodyMedium
 
 @Composable
 fun PostOverlayUser(
     enableOpacity: Boolean = false,
     user: PostUser,
-    businessOwner: PostBusinessOwner,
     isVideoReview: Boolean,
     onNavigateToUser: (userId: Int, username: String) -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-    val isBusiness = user.id == businessOwner.id
 
     when {
         isVideoReview -> {
@@ -112,15 +102,6 @@ fun PostOverlayUser(
 
         Spacer(Modifier.height(SpacingM))
     }
-
-    if(!isBusiness) {
-        PostBusiness(
-            enableOpacity = enableOpacity,
-            fullName = businessOwner.fullName,
-            avatar = businessOwner.avatar,
-            onNavigateToUser = {  }
-        )
-    }
 }
 
 @Composable
@@ -147,48 +128,4 @@ private fun SecondaryText(
         color = color,
         fontStyle = fontStyle
     )
-}
-
-@Composable
-fun PostBusiness(
-    enableOpacity: Boolean = false,
-    fullName: String,
-    avatar: String?,
-    onNavigateToUser: () -> Unit
-) {
-    val interactionSource = remember { MutableInteractionSource() }
-
-    Row(
-        modifier = Modifier.clickable(
-            interactionSource = interactionSource,
-            indication = null,
-            onClick = onNavigateToUser
-        ),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = Icons.Default.Repeat,
-            contentDescription = "Repeat Icon",
-            tint = Primary.withAlpha(enableOpacity)
-        )
-
-        Spacer(Modifier.width(SpacingM))
-
-        Avatar(
-            url = avatar ?: "",
-            size = AvatarSizeXXS
-        )
-
-        Spacer(Modifier.width(SpacingM))
-
-        Text(
-            text = fullName,
-            style = bodyMedium,
-            fontWeight = FontWeight.SemiBold,
-            color = Color.White.withAlpha(enableOpacity),
-            fontSize = 16.sp
-        )
-    }
-
-    Spacer(Modifier.height(SpacingS))
 }
