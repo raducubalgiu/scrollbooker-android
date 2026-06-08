@@ -58,7 +58,7 @@ fun UserProfileActions(
                     .weight(5f)
                     .border(
                         width = 1.dp,
-                        color = if(isFollow) Divider else OnSurfaceBG,
+                        color = if(isFollow) Divider else SurfaceBG,
                         shape = ShapeDefaults.ExtraLarge
                     ),
                 containerColor = if(isFollow) Color.Transparent else SurfaceBG,
