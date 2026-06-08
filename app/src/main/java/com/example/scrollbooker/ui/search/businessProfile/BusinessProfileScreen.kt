@@ -200,13 +200,14 @@ fun BusinessProfileScreen(
                             formattedAddress = profile.location.formattedAddress,
                             distance = profile.distanceKm,
                             openingHours = profile.openingHours,
-                            onNavigateToOwnerProfile = { username ->
-                                searchNavigate.toBusinessProfile(username)
-                            },
+                            onNavigateToOwnerProfile = { searchNavigate.toBusinessProfile(it) },
                             onFlyToReviewsSection = {},
                             isFollow = isFollow,
                             isFollowEnabled = !isSaving,
                             onFollow = { viewModel.follow() },
+                            onNavigateToBooking = {
+                                searchNavigate.toBookingFromProfile(profile.id, null)
+                            },
                             modifier = Modifier.padding(
                                 top = imageHeight - overlayHeight,
                                 bottom = BasePadding
@@ -219,7 +220,7 @@ fun BusinessProfileScreen(
                     }
 
                     item(key = BusinessProfileSection.Social.key) {
-                        BusinessPostsSection(posts= profile.posts)
+                        BusinessPostsSection(posts= emptyList())
                     }
 
                     if(employees.isNotEmpty()) {

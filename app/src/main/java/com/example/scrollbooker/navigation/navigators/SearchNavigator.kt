@@ -19,7 +19,25 @@ class SearchNavigator (
         }
     }
 
-    fun toBooking(product: Product) {
+    fun toBookingFromProfile(businessId: Int, employeeId: Int?) {
+        var route = "bookingNavigator/$businessId"
+
+        val queryParams = mutableListOf<String>()
+
+        if (employeeId != null) {
+            queryParams.add("employeeId=$employeeId")
+        }
+
+        if (queryParams.isNotEmpty()) {
+            route += "?" + queryParams.joinToString("&")
+        }
+
+        navController.navigate(route) {
+            launchSingleTop = true
+        }
+    }
+
+    fun toBookingFromProduct(product: Product) {
         val uniqueUserIds = product.variants
             .flatMap { it.offerings }
             .map { it.user.id }

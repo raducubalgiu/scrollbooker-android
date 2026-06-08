@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -106,7 +107,7 @@ fun BusinessProfileHeader(
                 .background(Background)
         ) {
             Icon(
-                painter = painterResource(R.drawable.ic_star_outline),
+                imageVector = Icons.Default.IosShare,
                 contentDescription = null
             )
         }

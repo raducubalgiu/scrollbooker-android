@@ -24,17 +24,17 @@ import org.threeten.bp.ZonedDateTime
 
 fun BusinessProfileDto.toDomain(): BusinessProfile {
     return BusinessProfile(
+        id = id,
         owner = owner.toDomain(),
         openingHours = openingHours.toDomain(),
         mediaFiles = mediaFiles.map { it.toDomain() },
         location = location.toDomain(),
         distanceKm = distanceKm,
         description = description,
-        products = products.map { it.toDomain() },
         employees = employees.map { it.toDomain() },
         schedules = schedules.map { it.toDomain() },
         reviews = reviews.toDomain(),
-        posts = posts.map { it.toDomain() }
+        //posts = posts.map { it.toDomain() }
     )
 }
 

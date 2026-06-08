@@ -28,6 +28,7 @@ fun BusinessSummarySection(
     onFollow: () -> Unit,
     onNavigateToOwnerProfile: (String) -> Unit,
     onFlyToReviewsSection: () -> Unit,
+    onNavigateToBooking: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier
@@ -55,7 +56,8 @@ fun BusinessSummarySection(
                 isFollow = isFollow,
                 isFollowEnabled = isFollowEnabled,
                 onFollow = onFollow,
-                onFlyToReviewsSection = onFlyToReviewsSection
+                onFlyToReviewsSection = onFlyToReviewsSection,
+                onNavigateToBooking = onNavigateToBooking
             )
         }
 

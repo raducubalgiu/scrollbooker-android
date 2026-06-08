@@ -7,17 +7,17 @@ import com.example.scrollbooker.entity.user.userProfile.domain.model.OpeningHour
 import org.threeten.bp.ZonedDateTime
 
 data class BusinessProfile(
+    val id: Int,
     val owner: BusinessProfileOwner,
     val openingHours: OpeningHours,
     val mediaFiles: List<BusinessMediaFile>,
     val location: BusinessLocation,
     val distanceKm: Float?,
     val description: String?,
-    val products: List<Product>,
     val employees: List<BusinessProfileEmployee>,
     val schedules: List<Schedule>,
     val reviews: BusinessProfileReviews,
-    val posts: List<Post>
+    //val posts: List<Post>
 )
 
 data class BusinessProfileOwner(
