@@ -36,10 +36,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.sheet.Sheet
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.appointment.domain.model.BusinessCoordinates
+import com.example.scrollbooker.navigation.navigators.SearchNavigator
 import com.example.scrollbooker.ui.search.components.SearchBusinessDomainList
 import com.example.scrollbooker.ui.search.components.SearchHeader
 import com.example.scrollbooker.ui.search.components.SearchList
@@ -48,8 +48,6 @@ import com.example.scrollbooker.ui.search.components.SearchMapLoading
 import com.example.scrollbooker.ui.search.components.SearchSheetHeader
 import com.example.scrollbooker.ui.search.sheets.SearchSheetActionEnum
 import com.example.scrollbooker.ui.search.sheets.SearchSheets
-import com.example.scrollbooker.ui.shared.booking.BookingsSheet
-import com.example.scrollbooker.ui.shared.booking.BookingsSheetUser
 import com.example.scrollbooker.ui.theme.Background
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -65,7 +63,7 @@ import timber.log.Timber
 fun SearchScreen(
     viewModel: SearchViewModel,
     isSearchTab: Boolean,
-    onNavigateToBusinessProfile: (String) -> Unit
+    searchNavigate: SearchNavigator,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -241,37 +239,6 @@ fun SearchScreen(
     val isInitialLoading = refreshState is LoadState.Loading && businessesSheet.itemCount == 0
     val isRefreshing = refreshState is LoadState.Loading && businessesSheet.itemCount > 0
 
-    val bookingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val selectedBusinessOwner by viewModel.selectedBusinessOwner.collectAsState()
-
-    if(bookingsSheetState.isVisible) {
-        selectedBusinessOwner?.let { owner ->
-            Sheet(
-                modifier = Modifier.statusBarsPadding(),
-                sheetState = bookingsSheetState,
-                onClose = {
-                    scope.launch {
-                        viewModel.clearBusinessOwner()
-                        bookingsSheetState.hide()
-                    }
-                }
-            ) {
-                BookingsSheet(
-                    user = BookingsSheetUser(
-                        id = owner.id,
-                        username = owner.username,
-                        fullName = owner.fullName,
-                        avatar = owner.avatar,
-                        profession = owner.profession,
-                        ratingsCount = owner.ratingsCount,
-                        ratingsAverage = owner.ratingsAverage
-                    ),
-                    onClose = { scope.launch { bookingsSheetState.hide() } }
-                )
-            }
-        }
-    }
-
     Scaffold(
         topBar = {
             SearchHeader(
@@ -295,7 +262,7 @@ fun SearchScreen(
                 isMapLoading = isMapLoading,
                 onSheetExpand = { scope.launch { scaffoldState.bottomSheetState.expand() } },
                 paddingBottom = paddingBottom,
-                onNavigateToBusinessProfile = onNavigateToBusinessProfile
+                onNavigateToBusinessProfile = { searchNavigate.toBusinessProfile(it) }
             )
         }
 
@@ -338,13 +305,7 @@ fun SearchScreen(
                         appendState = appendState,
                         listState = listState,
                         businessesSheet = businessesSheet,
-                        onNavigateToBusinessProfile = onNavigateToBusinessProfile,
-                        onOpenBookingsSheet = {
-                            scope.launch {
-                                viewModel.setBusinessOwner(it)
-                                bookingsSheetState.show()
-                            }
-                        }
+                        onNavigateToBusinessProfile = { searchNavigate.toBusinessProfile(it) },
                     )
                 }
             ) {}

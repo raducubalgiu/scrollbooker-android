@@ -45,7 +45,7 @@ fun ProductCard(
         .fillMaxSize()
         .clickable {}
     ) {
-        Column(modifier = Modifier.padding(BasePadding)) {
+        Column {
             if (
                 product.filters.isNotEmpty() &&
                 product.type == ProductTypeEnum.PACK &&
@@ -55,21 +55,20 @@ fun ProductCard(
                 Spacer(Modifier.height(BasePadding))
             }
 
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-//                ProductDetails(
-//                    modifier = Modifier.weight(1f),
-//                    name = product.name,
-//                    duration = product.duration,
-//                    price = product.price,
-//                    priceWithDiscount = product.priceWithDiscount,
-//                    discount = product.discount,
-//                    filters = product.filters
-//                )
+                ProductDetails(
+                    modifier = Modifier.weight(1f),
+                    name = product.name,
+                    duration = product.startingOffering.duration,
+                    price = product.startingOffering.price,
+                    priceWithDiscount = product.startingOffering.priceWithDiscount,
+                    discount = product.startingOffering.discount,
+                    filters = product.filters
+                )
 
                 Spacer(Modifier.width(SpacingS))
 

@@ -39,7 +39,7 @@ import com.example.scrollbooker.ui.theme.titleMedium
 @Composable
 fun BusinessReviewsList(
     reviews: List<BusinessProfileReview>,
-    onNavigateToReviewerProfile: (Int) -> Unit
+    onNavigateToReviewerProfile: (userId: Int, username: String) -> Unit
 ) {
     reviews.forEachIndexed { index, r ->
         Column(
@@ -54,7 +54,7 @@ fun BusinessReviewsList(
                 Avatar(
                     url = r.reviewer.avatar ?: "",
                     size = AvatarSizeM,
-                    onClick = { onNavigateToReviewerProfile(r.reviewer.id) }
+                    onClick = { onNavigateToReviewerProfile(r.reviewer.id, r.reviewer.username) }
                 )
 
                 Spacer(Modifier.width(BasePadding))

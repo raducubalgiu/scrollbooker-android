@@ -24,7 +24,7 @@ fun BusinessReviewsSection(
     reviews: BusinessProfileReviews,
     ratingsAverage: Float,
     ratingsCount: Int,
-    onNavigateToReviewerProfile: (Int) -> Unit
+    onNavigateToReviewerProfile: (userId: Int, username: String) -> Unit
 ) {
     Column(modifier = Modifier
         .fillMaxWidth()

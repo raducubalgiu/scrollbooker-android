@@ -32,6 +32,10 @@ fun NavGraphBuilder.bookingGraph(
             navArgument("employeeId") {
                 type = NavType.IntType
                 defaultValue = -1
+            },
+            navArgument("selectedProductId") {
+                type = NavType.IntType
+                defaultValue = -1
             }
         ),
         enterTransition = { slideInFromRight() },

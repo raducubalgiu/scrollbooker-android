@@ -21,8 +21,7 @@ fun SearchList(
     appendState: LoadState,
     listState: LazyListState,
     businessesSheet: LazyPagingItems<BusinessSheet>,
-    onNavigateToBusinessProfile: (String) -> Unit,
-    onOpenBookingsSheet: (BusinessOwner) -> Unit
+    onNavigateToBusinessProfile: (String) -> Unit
 ) {
     val isAppending = appendState is LoadState.Loading
 
@@ -39,8 +38,7 @@ fun SearchList(
                 businessesSheet[index]?.let { business ->
                     SearchCard(
                         business = business,
-                        onNavigateToBusinessProfile = onNavigateToBusinessProfile,
-                        onOpenBookingsSheet = onOpenBookingsSheet
+                        onNavigateToBusinessProfile = onNavigateToBusinessProfile
                     )
                 }
             }

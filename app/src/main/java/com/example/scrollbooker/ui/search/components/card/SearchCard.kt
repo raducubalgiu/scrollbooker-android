@@ -27,9 +27,7 @@ import com.example.scrollbooker.ui.theme.Divider
 fun SearchCard(
     modifier: Modifier = Modifier,
     business: BusinessSheet,
-    showMoreProductsBtn: Boolean = true,
     onNavigateToBusinessProfile: (String) -> Unit,
-    onOpenBookingsSheet: (BusinessOwner) -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -63,7 +61,12 @@ fun SearchCard(
 
         Column(modifier = Modifier.padding(vertical = 8.dp)) {
             business.products.forEachIndexed { index, prod ->
-                SearchCardProductRow(product = prod)
+                SearchCardProductRow(
+                    product = prod,
+                    onSelectProduct = {
+
+                    }
+                )
 
                 if (index < business.products.size - 1) {
                     Spacer(Modifier.height(SpacingM))

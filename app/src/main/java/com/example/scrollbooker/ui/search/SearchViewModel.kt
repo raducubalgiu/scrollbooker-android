@@ -180,9 +180,6 @@ class SearchViewModel @Inject constructor(
     private val _markersUiState = MutableStateFlow(MarkersUiState())
     val markersUiState: StateFlow<MarkersUiState> = _markersUiState.asStateFlow()
 
-    private val _selectedBusinessOwner = MutableStateFlow<BusinessOwner?>(null)
-    val selectedBusinessOwner: StateFlow<BusinessOwner?> = _selectedBusinessOwner.asStateFlow()
-
     private val _selectedMarkerId = MutableStateFlow<Int?>(null)
     val selectedMarkerId: StateFlow<Int?> = _selectedMarkerId.asStateFlow()
 
@@ -325,14 +322,6 @@ class SearchViewModel @Inject constructor(
 
     fun setSelectedMarkerId(markerId: Int?) {
         _selectedMarkerId.value = markerId
-    }
-
-    fun setBusinessOwner(businessOwner: BusinessOwner) {
-        _selectedBusinessOwner.value = businessOwner
-    }
-
-    fun clearBusinessOwner() {
-        _selectedBusinessOwner.value = null
     }
 
     fun updateCamera(position: CameraPositionState) {

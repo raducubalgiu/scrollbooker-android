@@ -32,6 +32,7 @@ import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.navigation.navigators.SearchNavigator
 import com.example.scrollbooker.ui.search.businessProfile.components.BusinessProfileHeader
 import com.example.scrollbooker.ui.search.businessProfile.components.BusinessProfileSkeleton
 import com.example.scrollbooker.ui.search.businessProfile.components.BusinessProfileTabRow
@@ -48,7 +49,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun BusinessProfileScreen(
     viewModel: BusinessProfileViewModel,
-    onNavigateToUserProfile: (Int) -> Unit,
+    searchNavigate: SearchNavigator,
     onBack: () -> Unit
 ) {
     val state by viewModel.businessProfileState.collectAsState()
@@ -199,7 +200,9 @@ fun BusinessProfileScreen(
                             formattedAddress = profile.location.formattedAddress,
                             distance = profile.distanceKm,
                             openingHours = profile.openingHours,
-                            onNavigateToOwnerProfile = onNavigateToUserProfile,
+                            onNavigateToOwnerProfile = { username ->
+                                searchNavigate.toBusinessProfile(username)
+                            },
                             onFlyToReviewsSection = {},
                             isFollow = isFollow,
                             isFollowEnabled = !isSaving,
@@ -223,7 +226,9 @@ fun BusinessProfileScreen(
                         item(key = BusinessProfileSection.Employees.key) {
                             BusinessEmployeesSection(
                                 employees = employees,
-                                onNavigateToEmployeeProfile = onNavigateToUserProfile
+                                onNavigateToEmployeeProfile = { userId, username ->
+                                    searchNavigate.toUserProfile(userId, username)
+                                }
                             )
                         }
                     }
@@ -233,7 +238,9 @@ fun BusinessProfileScreen(
                             reviews = profile.reviews,
                             ratingsAverage = profile.owner.counters.ratingsAverage,
                             ratingsCount = profile.owner.counters.ratingsCount,
-                            onNavigateToReviewerProfile = onNavigateToUserProfile
+                            onNavigateToReviewerProfile = { userId, username ->
+                                searchNavigate.toUserProfile(userId, username)
+                            }
                         )
                     }
 

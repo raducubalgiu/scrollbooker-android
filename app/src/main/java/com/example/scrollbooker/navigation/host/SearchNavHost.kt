@@ -2,6 +2,7 @@ package com.example.scrollbooker.navigation.host
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -10,7 +11,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.scrollbooker.navigation.graphs.userProfileGraph
+import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
+import com.example.scrollbooker.navigation.navigators.SearchNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
@@ -42,14 +45,16 @@ fun SearchNavHost(
                 navArgument(MainRoute.BusinessProfile.ARG_BUSINESS_OWNER_USERNAME) { type = NavType.StringType }
             ),
         ) {
+            val searchNavigate = remember(navController) {
+                SearchNavigator(navController)
+            }
+
             val viewModel: BusinessProfileViewModel = hiltViewModel()
 
             BusinessProfileScreen(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
-                onNavigateToUserProfile = {
-                    navController.navigate("${MainRoute.UserProfile.route}/$it")
-                }
+                searchNavigate = searchNavigate
             )
         }
 

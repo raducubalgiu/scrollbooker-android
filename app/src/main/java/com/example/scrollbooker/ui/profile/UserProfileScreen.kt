@@ -234,7 +234,8 @@ fun UserProfileScreen(
                                         onNavigateToBooking = { businessId, employeeId ->
                                             profileNavigate.toBooking(
                                                 businessId = businessId,
-                                                employeeId = employeeId
+                                                employeeId = employeeId,
+                                                null
                                             )
                                         }
                                     )

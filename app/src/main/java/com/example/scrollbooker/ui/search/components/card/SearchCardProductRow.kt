@@ -1,5 +1,6 @@
 package com.example.scrollbooker.ui.search.components.card
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -39,7 +40,8 @@ import java.math.BigDecimal
 @Composable
 fun SearchCardProductRow(
     modifier: Modifier = Modifier,
-    product: Product
+    product: Product,
+    onSelectProduct: (productId: Int) -> Unit
 ) {
     val startingOffering = product.startingOffering
 
@@ -49,6 +51,7 @@ fun SearchCardProductRow(
             .clip(shape = ShapeDefaults.Medium)
             .background(SurfaceBG)
             .padding(SpacingM)
+            .clickable { onSelectProduct(product.id) },
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),

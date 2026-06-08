@@ -26,7 +26,7 @@ fun BusinessSummarySection(
     isFollow: Boolean?,
     isFollowEnabled: Boolean,
     onFollow: () -> Unit,
-    onNavigateToOwnerProfile: (Int) -> Unit,
+    onNavigateToOwnerProfile: (String) -> Unit,
     onFlyToReviewsSection: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -45,7 +45,7 @@ fun BusinessSummarySection(
                 url = owner.avatar ?: "",
                 rating = owner.counters.ratingsAverage,
                 elevation = 2.dp,
-                onClick = { onNavigateToOwnerProfile(owner.id) }
+                onClick = { onNavigateToOwnerProfile(owner.username) }
             )
 
             Spacer(Modifier.width(BasePadding))

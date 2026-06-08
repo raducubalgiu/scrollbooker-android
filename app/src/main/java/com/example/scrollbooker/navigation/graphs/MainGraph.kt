@@ -27,6 +27,7 @@ import com.example.scrollbooker.navigation.host.FeedNavHost
 import com.example.scrollbooker.navigation.host.InboxNavHost
 import com.example.scrollbooker.navigation.host.MyProfileNavHost
 import com.example.scrollbooker.navigation.host.SearchNavHost
+import com.example.scrollbooker.navigation.navigators.SearchNavigator
 import com.example.scrollbooker.ui.LocalUserPermissions
 import com.example.scrollbooker.ui.UserPermissionsController
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
@@ -77,8 +78,6 @@ fun NavGraphBuilder.mainGraph(onLogout: () -> Unit) {
                 }
             }
 
-            val searchNavHostController = navControllers[MainTab.Search]!!
-
             CompositionLocalProvider(
                 LocalBottomBarController provides bottomBarController,
                 LocalUserPermissions provides permissionsController
@@ -89,12 +88,16 @@ fun NavGraphBuilder.mainGraph(onLogout: () -> Unit) {
                 ) {
                     composable(MainRoute.Tabs.route) {
                         Box(modifier = Modifier.fillMaxSize()) {
+                            val searchNavHostController = navControllers[MainTab.Search]!!
+
+                            val searchNavigate = remember(searchNavHostController) {
+                                SearchNavigator(searchNavHostController)
+                            }
+
                             SearchScreen(
                                 viewModel = searchViewModel,
                                 isSearchTab = currentTab is MainTab.Search,
-                                onNavigateToBusinessProfile = {
-                                    searchNavHostController.navigate(MainRoute.BusinessProfile.createRoute(it))
-                                }
+                                searchNavigate = searchNavigate,
                             )
 
                             saveableStateHolder.SaveableStateProvider(currentTab.route) {

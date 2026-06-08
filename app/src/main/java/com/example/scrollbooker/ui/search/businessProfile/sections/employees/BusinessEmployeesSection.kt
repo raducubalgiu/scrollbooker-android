@@ -23,7 +23,7 @@ import com.example.scrollbooker.ui.theme.headlineSmall
 @Composable
 fun BusinessEmployeesSection(
     employees: List<BusinessProfileEmployee>,
-    onNavigateToEmployeeProfile: (Int) -> Unit
+    onNavigateToEmployeeProfile: (userId: Int, username: String) -> Unit
 ) {
     Column(modifier = Modifier
         .fillMaxWidth()
@@ -47,7 +47,9 @@ fun BusinessEmployeesSection(
                     avatar = employee.avatar,
                     fullName = employee.fullName,
                     ratingsAverage = employee.ratingsAverage,
-                    onSelectedEmployee = {}
+                    onSelectedEmployee = {
+                        onNavigateToEmployeeProfile(employee.id, employee.username)
+                    }
                 )
 
                 if(index < employees.size - 1 ) {

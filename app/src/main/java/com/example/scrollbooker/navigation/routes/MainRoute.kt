@@ -19,7 +19,7 @@ sealed class MainRoute(val route: String) {
     }
 
     object BookingNavigator : MainRoute(
-        route = "bookingNavigator/{businessId}?employeeId={employeeId}"
+        route = "bookingNavigator/{businessId}?employeeId={employeeId}&selectedProductId={selectedProductId}"
     )
     object BookingServices: MainRoute(route = "bookingServices")
     object BookingSpecialists: MainRoute(route = "bookingSpecialists")
