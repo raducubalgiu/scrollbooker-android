@@ -21,6 +21,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessOwner
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessSheet
+import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.ui.theme.Divider
 
 @Composable
@@ -28,6 +29,7 @@ fun SearchCard(
     modifier: Modifier = Modifier,
     business: BusinessSheet,
     onNavigateToBusinessProfile: (String) -> Unit,
+    onSelectProduct: (product: Product) -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -63,9 +65,7 @@ fun SearchCard(
             business.products.forEachIndexed { index, prod ->
                 SearchCardProductRow(
                     product = prod,
-                    onSelectProduct = {
-
-                    }
+                    onSelectProduct = onSelectProduct
                 )
 
                 if (index < business.products.size - 1) {

@@ -47,14 +47,14 @@ fun PostPlayerWithThumbnail(
     Box(Modifier.fillMaxSize()) {
         PostPlayerView(player)
 
-        if(!isRenderedFirstFrame) {
-            AsyncImage(
-                modifier = Modifier.fillMaxSize(),
-                model = thumbnailUrl,
-                contentDescription = null,
-                contentScale = ContentScale.Crop
-            )
-        }
+//        if(!isRenderedFirstFrame) {
+//            AsyncImage(
+//                modifier = Modifier.fillMaxSize(),
+//                model = thumbnailUrl,
+//                contentDescription = null,
+//                contentScale = ContentScale.Crop
+//            )
+//        }
 
         AnimatedVisibility(
             visible = showPlayIcon,

@@ -117,7 +117,8 @@ fun MyBusinessGalleryTab(
                     id = 1,
                     distance = null,
                 ),
-                onNavigateToBusinessProfile = { businessId -> {} }
+                onNavigateToBusinessProfile = { businessId -> {} },
+                onSelectProduct = { product -> {}}
             )
         }
 

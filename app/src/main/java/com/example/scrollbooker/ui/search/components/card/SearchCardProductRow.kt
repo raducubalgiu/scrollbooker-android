@@ -41,7 +41,7 @@ import java.math.BigDecimal
 fun SearchCardProductRow(
     modifier: Modifier = Modifier,
     product: Product,
-    onSelectProduct: (productId: Int) -> Unit
+    onSelectProduct: (product: Product) -> Unit
 ) {
     val startingOffering = product.startingOffering
 
@@ -49,9 +49,9 @@ fun SearchCardProductRow(
         modifier = modifier
             .fillMaxWidth()
             .clip(shape = ShapeDefaults.Medium)
+            .clickable { onSelectProduct(product) }
             .background(SurfaceBG)
             .padding(SpacingM)
-            .clickable { onSelectProduct(product.id) },
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
