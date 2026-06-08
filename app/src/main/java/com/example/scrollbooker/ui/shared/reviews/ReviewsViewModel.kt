@@ -46,7 +46,7 @@ class ReviewsViewModel @Inject constructor(
     private val unlikeReviewUseCase: UnlikeWrittenReviewUseCase,
     private val authDataStore: AuthDataStore
 ): ViewModel() {
-    enum class ReviewsTab { WRITTEN, VIDEO }
+    enum class ReviewsTab { ALL, VIDEO }
 
     private val _userId = MutableStateFlow<Int?>(null)
     val userId: StateFlow<Int?> = _userId.asStateFlow()
@@ -54,11 +54,11 @@ class ReviewsViewModel @Inject constructor(
     private val _selectedRatings = MutableStateFlow<Set<Int>>(emptySet())
     val selectedRatings: StateFlow<Set<Int>> = _selectedRatings.asStateFlow()
 
-    private val _currentTab = MutableStateFlow(ReviewsTab.WRITTEN)
+    private val _currentTab = MutableStateFlow(ReviewsTab.ALL)
 
     private val _appliedRatingsByTab =
         MutableStateFlow(mapOf(
-            ReviewsTab.WRITTEN to emptySet<Int>(),
+            ReviewsTab.ALL to emptySet<Int>(),
             ReviewsTab.VIDEO to emptySet<Int>()
         ))
 
@@ -113,7 +113,7 @@ class ReviewsViewModel @Inject constructor(
     val writeReviews: Flow<PagingData<Review>> =
         combine(
             userId.filterNotNull(),
-            _appliedRatingsByTab.map { it[ReviewsTab.WRITTEN] ?: emptySet<Int>() }.distinctUntilChanged()
+            _appliedRatingsByTab.map { it[ReviewsTab.ALL] ?: emptySet<Int>() }.distinctUntilChanged()
         ) { uid, ratingsSet -> uid to ratingsSet }
             .flatMapLatest { (uid, ratingsSet) ->
                 getReviewsUseCase(

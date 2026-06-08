@@ -8,16 +8,17 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -40,18 +41,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.components.customized.RatingsStars
+import com.example.scrollbooker.core.util.Dimens.AvatarSizeM
 import com.example.scrollbooker.core.util.Dimens.AvatarSizeXXS
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.entity.booking.review.data.remote.ReviewLabel
 import com.example.scrollbooker.entity.booking.review.domain.model.Review
 import com.example.scrollbooker.ui.shared.reviews.ReviewActionUiState
 import com.example.scrollbooker.ui.theme.Error
-import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
+import com.example.scrollbooker.ui.theme.bodyMedium
+import com.example.scrollbooker.ui.theme.bodySmall
 import com.example.scrollbooker.ui.theme.titleMedium
 import org.threeten.bp.OffsetDateTime
 import org.threeten.bp.format.DateTimeFormatter
@@ -64,10 +66,11 @@ fun ReviewCard(
     onLike: () -> Unit
 ) {
     var scale by remember { mutableFloatStateOf(1f) }
-    val createdAt = "${
+
+    val createdAt = remember(review.createdAt) {
         OffsetDateTime.parse(review.createdAt, DateTimeFormatter.ISO_OFFSET_DATE_TIME)
-            .format(DateTimeFormatter.ofPattern("dd MM yyyy, HH:mm"))
-    }"
+            .format(DateTimeFormatter.ofPattern("dd.MM.yyyy • HH:mm"))
+    }
 
     val animatedScale by animateFloatAsState(
         targetValue = scale,
@@ -75,98 +78,129 @@ fun ReviewCard(
         label = "iconScale"
     )
 
-    Column(modifier = Modifier
-        .padding(BasePadding)
-        .clip(ShapeDefaults.Medium)
-        .background(SurfaceBG)
-        .clickable { onNavigateToReviewDetail() }
-    ) {
-        Column(modifier = Modifier.fillMaxSize().padding(SpacingM)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Avatar(url = review.customer.avatar ?: "")
-                Spacer(Modifier.width(SpacingM))
-                Column {
-                    Text(
-                        text = review.customer.fullName,
-                        style = bodyLarge,
-                        fontWeight = FontWeight.SemiBold
+
+    Column(Modifier.padding(horizontal = BasePadding, vertical = BasePadding)) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onNavigateToReviewDetail() },
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Avatar(
+                url = review.customer.avatar ?: "",
+                size = AvatarSizeM
+            )
+
+            Spacer(modifier = Modifier.width(SpacingM))
+
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = SpacingXS)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column {
+                        Text(
+                            text = review.customer.fullName,
+                            style = bodyLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = createdAt,
+                            style = bodyMedium,
+                            color = Color.Gray
+                        )
+                    }
+
+                    RatingsStars(
+                        starSize = 16.dp,
+                        rating = review.rating.toFloat()
                     )
-                    Text(
-                        color = Color.Gray,
-                        text = createdAt
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(SpacingM))
+
+        Text(
+            modifier = Modifier,
+            text = stringResource(id = ReviewLabel.fromValue(review.rating).labelRes),
+            style = titleMedium,
+            fontWeight = FontWeight.SemiBold
+        )
+
+        Spacer(modifier = Modifier.height(SpacingM))
+
+        if (review.review.isNotEmpty()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(ShapeDefaults.Medium)
+            ) {
+                Text(
+                    text = review.review,
+                    style = bodyLarge
+                )
+            }
+        } else Text(
+            text = "...",
+            style = bodyLarge
+        )
+
+        Spacer(modifier = Modifier.height(SpacingM))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.End
+        ) {
+            Box(modifier = Modifier.height(AvatarSizeXXS)) {
+                if (reviewUi.isLikedByProductOwner) {
+                    Avatar(
+                        url = review.productBusinessOwner.avatar ?: "",
+                        size = AvatarSizeXXS
                     )
                 }
             }
 
-            Text(
-                modifier = Modifier.padding(top = BasePadding),
-                text = stringResource(id = ReviewLabel.fromValue(review.rating).labelRes),
-                style = titleMedium,
-                fontWeight = FontWeight.SemiBold
-            )
+            Spacer(Modifier.width(SpacingS))
 
-            RatingsStars(
-                starSize = 20.dp,
-                modifier = Modifier.padding(
-                    vertical = SpacingS
+            Row(
+                modifier = Modifier.clickable(
+                    onClick = onLike,
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
                 ),
-                rating = review.rating.toFloat()
-            )
-
-            if(review.review.isNotEmpty() == true) {
-                Text(text = review.review)
-
-                Row(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = SpacingXL),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.End
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                AnimatedVisibility(
+                    visible = reviewUi.likeCount > 0,
+                    enter = fadeIn() + scaleIn(),
+                    exit = fadeOut() + scaleOut()
                 ) {
-                    Row(
-                        horizontalArrangement = Arrangement.Start,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        if(reviewUi.isLikedByProductOwner) {
-                            Avatar(
-                                url = review.productBusinessOwner.avatar ?: "",
-                                size = AvatarSizeXXS
-                            )
-                            Spacer(Modifier.width(BasePadding))
-                        }
-
-                        Row(
-                            modifier = Modifier.clickable(
-                                onClick = onLike,
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null
-                            ),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            AnimatedVisibility(
-                                visible = reviewUi.likeCount > 0,
-                                enter = fadeIn() + scaleIn(),
-                                exit = fadeOut() + scaleOut()
-                            ) {
-                                Text(
-                                    text = "${reviewUi.likeCount}",
-                                    style = bodyLarge,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = if(reviewUi.isLiked) Error else Color.Gray
-                                )
-                            }
-
-                            Spacer(Modifier.width(SpacingXS))
-
-                            Icon(
-                                modifier = Modifier.scale(animatedScale),
-                                imageVector = if(reviewUi.isLiked) Icons.Default.Favorite
-                                              else Icons.Default.FavoriteBorder,
-                                contentDescription = null,
-                                tint = if(reviewUi.isLiked) Error else Color.Gray
-                            )
-                        }
-                    }
+                    Text(
+                        text = "${reviewUi.likeCount}",
+                        style = bodySmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = if (reviewUi.isLiked) Error else Color.Gray
+                    )
                 }
+
+                Spacer(Modifier.width(SpacingXS))
+
+                Icon(
+                    modifier = Modifier
+                        .size(18.dp)
+                        .scale(animatedScale),
+                    imageVector = if (reviewUi.isLiked) Icons.Default.Favorite
+                    else Icons.Default.FavoriteBorder,
+                    contentDescription = null,
+                    tint = if (reviewUi.isLiked) Error else Color.Gray
+                )
             }
         }
     }

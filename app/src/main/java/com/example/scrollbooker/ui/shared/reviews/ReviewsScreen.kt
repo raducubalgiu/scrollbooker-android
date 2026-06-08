@@ -50,13 +50,13 @@ fun ReviewsScreen(
     onNavigateToReviewDetail: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
-    val tabs = listOf(stringResource(R.string.written), stringResource(R.string.video))
+    val tabs = listOf(stringResource(R.string.all), stringResource(R.string.video))
     val pagerState = rememberPagerState { 2 }
 
     LaunchedEffect(userId) {
         viewModel.setUserId(userId)
         viewModel.clearRatings()
-        viewModel.setTab(ReviewsViewModel.ReviewsTab.WRITTEN)
+        viewModel.setTab(ReviewsViewModel.ReviewsTab.ALL)
         pagerState.scrollToPage(0)
     }
 
@@ -79,7 +79,7 @@ fun ReviewsScreen(
         snapshotFlow { pagerState.currentPage }
             .collectLatest { page ->
                 viewModel.setTab(
-                    if(page == 0) ReviewsViewModel.ReviewsTab.WRITTEN
+                    if(page == 0) ReviewsViewModel.ReviewsTab.ALL
                     else ReviewsViewModel.ReviewsTab.VIDEO
                 )
             }
@@ -121,7 +121,7 @@ fun ReviewsScreen(
                                     pagerState.animateScrollToPage(it)
                                     delay(200)
                                     viewModel.setTab(
-                                        if(pagerState.settledPage == 0) ReviewsViewModel.ReviewsTab.WRITTEN
+                                        if(pagerState.settledPage == 0) ReviewsViewModel.ReviewsTab.ALL
                                         else ReviewsViewModel.ReviewsTab.VIDEO
                                     )
                                 }
