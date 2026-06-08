@@ -227,12 +227,11 @@ fun UserProfileScreen(
                                         onOpenScheduleSheet = { scope.launch { scheduleSheetState.show() } },
                                         onNavigateToSocial = { profileNavigate.toSocial(it) },
                                         onNavigateToBusinessOwner = { userId, username -> {
-                                            if(userId != null && username != null) {
-                                                profileNavigate.toUserProfile(userId, username)
-                                            }
+                                            profileNavigate.toUserProfile(userId, username)
                                         } },
                                         onNavigateToEditProfile = { profileNavigate.toEditProfile() },
                                         onNavigateToMyCalendar = { profileNavigate.toMyCalendar() },
+                                        onNavigateToBooking = { profileNavigate.toBooking() }
                                     )
                                 }
                             }

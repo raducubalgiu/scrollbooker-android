@@ -33,7 +33,8 @@ fun UserProfileActions(
     isBusinessOrEmployee: Boolean,
     isFollow: Boolean?,
     isFollowEnabled: Boolean,
-    onFollow: (() -> Unit)? = null
+    onFollow: (() -> Unit)? = null,
+    onNavigateToBooking: () -> Unit
 ) {
     Row(modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
@@ -43,7 +44,7 @@ fun UserProfileActions(
                 modifier = Modifier.weight(5f),
                 containerColor = Primary,
                 contentColor = OnPrimary,
-                onClick = {  }
+                onClick = onNavigateToBooking
             ) {
                 Text(
                     text = stringResource(R.string.book),

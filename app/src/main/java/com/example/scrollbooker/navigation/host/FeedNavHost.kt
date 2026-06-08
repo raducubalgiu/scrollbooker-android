@@ -9,6 +9,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.scrollbooker.navigation.graphs.bookingGraph
 import com.example.scrollbooker.navigation.graphs.userProfileGraph
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.feed.FeedScreen
@@ -70,6 +71,7 @@ fun FeedNavHost(navController: NavHostController) {
         }
 
         userProfileGraph(navController)
+        bookingGraph(navController)
 
         composable(
             route = "${MainRoute.Social.route}/{tabIndex}/{userId}/{username}/{isBusinessOrEmployee}",

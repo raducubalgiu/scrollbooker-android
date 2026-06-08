@@ -66,4 +66,10 @@ class ProfileNavigator (
             launchSingleTop = true
         }
     }
+
+    fun toBooking() {
+        navController.navigate(MainRoute.BookingServices.route)  {
+            launchSingleTop = true
+        }
+    }
 }

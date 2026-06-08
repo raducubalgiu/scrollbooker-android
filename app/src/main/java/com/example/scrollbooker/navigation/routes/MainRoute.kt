@@ -18,6 +18,12 @@ sealed class MainRoute(val route: String) {
         fun createRoute(businessOwnerUsername: String) = "businessProfile/$businessOwnerUsername"
     }
 
+    object BookingNavigator: MainRoute(route = "bookingNavigator")
+    object BookingServices: MainRoute(route = "bookingServices")
+    object BookingSpecialists: MainRoute(route = "bookingSpecialists")
+    object BookingDateTime: MainRoute(route = "bookingDateTime")
+    object BookingConfirmation: MainRoute(route = "bookingConfirmation")
+
     object AppointmentsNavigator: MainRoute(route = "appointmentsNavigator")
     object Appointments: MainRoute(route = "appointments")
     object AppointmentDetails: MainRoute(route = "appointmentDetails")
