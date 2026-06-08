@@ -20,7 +20,6 @@ import com.example.scrollbooker.core.util.VideoPlayerCache
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
 import com.example.scrollbooker.entity.booking.employee.domain.useCase.GetEmployeesByOwnerUseCase
-import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByUserIdAndServiceIdUseCase
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
 import com.example.scrollbooker.entity.booking.schedule.domain.useCase.GetSchedulesByUserIdUseCase
 import com.example.scrollbooker.entity.social.bookmark.domain.useCase.GetUserBookmarkedPostsUseCase
@@ -73,7 +72,6 @@ data class SelectedPostUi(
 class ProfileLayoutViewModel @Inject constructor(
     private val getUserPostsUseCase: GetUserPostsUseCase,
     private val getUserBookmarkedPostsUseCase: GetUserBookmarkedPostsUseCase,
-    private val getProductsByUserIdAndServiceIdUseCase: GetProductsByUserIdAndServiceIdUseCase,
     private val getEmployeesByOwnerUseCase: GetEmployeesByOwnerUseCase,
     private val getUserProfileAboutUseCase: GetUserProfileAboutUseCase,
     private val getSchedulesByUserIdUseCase: GetSchedulesByUserIdUseCase,

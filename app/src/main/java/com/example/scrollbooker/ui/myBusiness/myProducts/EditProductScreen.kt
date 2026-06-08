@@ -49,7 +49,7 @@ fun EditProductScreen(
     val focusManager = LocalFocusManager.current
     val scrollState = rememberScrollState()
 
-    val serviceDomains by myProductsViewModel.serviceDomains.collectAsState()
+    //val serviceDomains by myProductsViewModel.serviceDomains.collectAsState()
     val productState by viewModel.productState.collectAsState()
     val selectedFilters by viewModel.selectedFilters.collectAsState()
     val isSaving by viewModel.isSaving.collectAsState()
@@ -66,12 +66,12 @@ fun EditProductScreen(
         }
     }
 
-    LaunchedEffect(Unit) {
-        viewModel.editSuccessEvent.collect {
-            myProductsViewModel.refreshCurrentProductSections()
-            onBack()
-        }
-    }
+//    LaunchedEffect(Unit) {
+//        viewModel.editSuccessEvent.collect {
+//            myProductsViewModel.refreshCurrentProductSections()
+//            onBack()
+//        }
+//    }
 
     Scaffold(
         topBar = {
@@ -100,17 +100,17 @@ fun EditProductScreen(
                             .verticalScroll(scrollState)
                             .padding(horizontal = BasePadding)
                         ) {
-                            ProductInputs(
-                                state = ProductInputsState(
-                                    showErrors = showErrors,
-                                    validation = validation,
-                                    filtersActions = filtersActions,
-                                    productState = productState,
-                                    serviceDomains = serviceDomains,
-                                    selectedFilters = selectedFilters
-                                ),
-                                actions = productInputsActions,
-                            )
+//                            ProductInputs(
+//                                state = ProductInputsState(
+//                                    showErrors = showErrors,
+//                                    validation = validation,
+//                                    filtersActions = filtersActions,
+//                                    productState = productState,
+//                                    serviceDomains = serviceDomains,
+//                                    selectedFilters = selectedFilters
+//                                ),
+//                                actions = productInputsActions,
+//                            )
                         }
 
                         Column {

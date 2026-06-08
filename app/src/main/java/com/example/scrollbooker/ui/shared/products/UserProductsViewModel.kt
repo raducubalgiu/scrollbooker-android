@@ -6,7 +6,6 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
-import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByUserIdAndServiceIdUseCase
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomainWithEmployeeServices
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.useCase.GetAllServiceDomainsWithServicesByUserIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,8 +26,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UserProductsViewModel @Inject constructor(
-    private val getAllServiceDomainsWithServicesByUserIdUseCase: GetAllServiceDomainsWithServicesByUserIdUseCase,
-    private val getProductsByUserIdAndServiceIdUseCase: GetProductsByUserIdAndServiceIdUseCase
+    private val getAllServiceDomainsWithServicesByUserIdUseCase: GetAllServiceDomainsWithServicesByUserIdUseCase
 ): ViewModel() {
 //    private val userIdFlow = MutableStateFlow<Int?>(null)
 //    private val productsFlowCache = mutableMapOf<Int, Flow<PagingData<Product>>>()

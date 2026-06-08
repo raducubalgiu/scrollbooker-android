@@ -6,21 +6,12 @@ import com.example.scrollbooker.entity.booking.products.data.remote.ProductCreat
 import com.example.scrollbooker.entity.booking.products.data.remote.ProductsApiService
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.model.ProductCreate
-import com.example.scrollbooker.entity.booking.products.domain.model.ProductSection
 import com.example.scrollbooker.entity.booking.products.domain.repository.ProductRepository
 import javax.inject.Inject
 
 class ProductRepositoryImpl @Inject constructor(
     private val api: ProductsApiService
 ): ProductRepository {
-    override suspend fun getUserProducts(
-        userId: Int,
-        serviceId: Int,
-        employeeId: Int?
-    ): List<ProductSection> {
-        return api.getProductsByUserIdAndServiceId(userId, serviceId, employeeId).map { it.toDomain() }
-    }
-
     override suspend fun getProductsByAppointmentId(appointmentId: Int): List<Product> {
         return api.getProductsByAppointmentId(appointmentId).map { it.toDomain() }
     }

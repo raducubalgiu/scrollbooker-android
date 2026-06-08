@@ -264,14 +264,7 @@ fun NavGraphBuilder.myBusinessGraph(
                         navController.navigate("${MainRoute.EditProduct.route}/$serviceDomainId/$productId")
                     },
                     onNavigateAddProduct = {
-                        val serviceDomainId = viewModel.getCurrentServiceDomainId()
-                        val serviceId = viewModel.getCurrentServiceId()
 
-                        if (serviceDomainId != null && serviceId != null) {
-                            navController.navigate(
-                                "${MainRoute.AddProduct.route}/$serviceDomainId/$serviceId"
-                            )
-                        }
                     },
                 )
             }

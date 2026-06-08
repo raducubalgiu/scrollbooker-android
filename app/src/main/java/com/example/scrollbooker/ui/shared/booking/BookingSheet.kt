@@ -19,7 +19,6 @@ import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.S
 import com.example.scrollbooker.ui.myBusiness.myProducts.ServicesTabsState
 import com.example.scrollbooker.ui.shared.booking.steps.BookingCalendarStep
 import com.example.scrollbooker.ui.shared.booking.steps.BookingConfirmationStep
-import com.example.scrollbooker.ui.shared.booking.steps.BookingProductsStep
 import com.example.scrollbooker.ui.shared.booking.steps.BookingSpecialistStep
 import com.example.scrollbooker.ui.shared.booking.components.BookingSheetHeader
 
@@ -75,14 +74,14 @@ fun BookingSheet(
                 key(step) {
                     when(step) {
                         BookingTab.Products -> {
-                            BookingProductsStep(
-                                serviceDomains = serviceDomains,
-                                tabsState = tabsState,
-                                products = TODO(),
-                                onSelectDomain = TODO(),
-                                onSelectService = TODO(),
-                                onSelectEmployee = TODO()
-                            )
+//                            BookingProductsStep(
+//                                serviceDomains = serviceDomains,
+//                                tabsState = tabsState,
+//                                products = TODO(),
+//                                onSelectDomain = TODO(),
+//                                onSelectService = TODO(),
+//                                onSelectEmployee = TODO()
+//                            )
                         }
                         BookingTab.Calendar -> BookingCalendarStep()
                         BookingTab.Specialists -> BookingSpecialistStep()
