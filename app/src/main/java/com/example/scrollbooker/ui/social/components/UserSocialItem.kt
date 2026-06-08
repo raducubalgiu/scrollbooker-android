@@ -40,7 +40,7 @@ fun UserSocialItem(
     userSocial: UserSocial,
     enabled: Boolean,
     onFollow: (Boolean) -> Unit,
-    onNavigateUserProfile: (Int) -> Unit
+    onNavigateUserProfile: (userId: Int, username: String) -> Unit
 ) {
     val isFollowed = isFollowedOverrides ?: userSocial.isFollow
     val isBusinessOrEmployee = userSocial.isBusinessOrEmployee
@@ -53,7 +53,7 @@ fun UserSocialItem(
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
-                onClick = { onNavigateUserProfile(userSocial.id) }
+                onClick = { onNavigateUserProfile(userSocial.id, userSocial.username) }
             )
             .then(modifier),
         headlineContent = {

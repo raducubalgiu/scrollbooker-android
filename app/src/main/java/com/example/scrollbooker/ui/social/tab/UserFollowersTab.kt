@@ -17,7 +17,7 @@ import com.example.scrollbooker.ui.social.components.UserSocialList
 @Composable
 fun UserFollowersTab(
     viewModel: SocialViewModel,
-    onNavigateUserProfile: (Int) -> Unit
+    onNavigateUserProfile: (userId: Int, username: String) -> Unit
 ) {
     val userFollowers = viewModel.userFollowers.collectAsLazyPagingItems()
     val refreshState = userFollowers.loadState.refresh

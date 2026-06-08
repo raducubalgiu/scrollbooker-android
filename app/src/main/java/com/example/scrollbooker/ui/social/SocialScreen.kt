@@ -26,7 +26,7 @@ fun SocialScreen(
     viewModal: SocialViewModel,
     socialParam: NavigateSocialParam,
     onBack: () -> Unit,
-    onNavigateUserProfile: (Int) -> Unit
+    onNavigateUserProfile: (userId: Int, username: String) -> Unit
 ) {
     val scope = rememberCoroutineScope()
 

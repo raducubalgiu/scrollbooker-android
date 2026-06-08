@@ -25,7 +25,7 @@ fun UserSocialList(
     followedOverrides: Map<Int, Boolean>,
     followRequestLocks: Set<Int>,
     onFollow: (Boolean, Int) -> Unit,
-    onNavigateUserProfile: (Int) -> Unit
+    onNavigateUserProfile: (userId: Int, username: String) -> Unit
 ) {
     val appendState = users.loadState.append
 

@@ -1,4 +1,7 @@
 package com.example.scrollbooker.ui.shared.reviews
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -94,6 +97,8 @@ fun ReviewsScreen(
         onHeaderOffsetChanged = { headerOffset = it }
     )
 
+    val headerScrollableState = rememberScrollableState { 0f }
+
     when(summaryState) {
         is FeatureState.Error -> ErrorScreen()
         is FeatureState.Loading -> LoadingScreen()
@@ -149,6 +154,10 @@ fun ReviewsScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .offset { IntOffset(0, headerOffset.roundToInt()) }
+                            .scrollable(
+                                state = headerScrollableState,
+                                orientation = Orientation.Vertical
+                            )
                     ) {
                         Column(
                             modifier = Modifier

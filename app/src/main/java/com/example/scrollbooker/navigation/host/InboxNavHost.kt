@@ -139,8 +139,8 @@ fun InboxNavHost(navController: NavHostController) {
                 viewModal = viewModel,
                 socialParam = socialParams,
                 onBack = { navController.popBackStack() },
-                onNavigateUserProfile = {
-                    navController.navigate("${MainRoute.UserProfile.route}/$it") {
+                onNavigateUserProfile = { userId, username ->
+                    navController.navigate("${MainRoute.UserProfile.route}/$userId/${username}") {
                         launchSingleTop = true
                     }
                 }
