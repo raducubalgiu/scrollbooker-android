@@ -100,5 +100,5 @@ data class UserCountersDto(
     val ratingsCount: Int,
 
     @SerializedName("ratings_average")
-    val ratingsAverage: BigDecimal
+    val ratingsAverage: Float
 )

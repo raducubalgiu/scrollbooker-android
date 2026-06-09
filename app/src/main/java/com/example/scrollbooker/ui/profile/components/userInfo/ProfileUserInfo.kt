@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.Avatar
+import com.example.scrollbooker.core.extensions.formatRating
 import com.example.scrollbooker.core.extensions.toFixedDecimals
 import com.example.scrollbooker.core.util.Dimens.AvatarSizeXL
 import com.example.scrollbooker.core.util.Dimens.BasePadding
@@ -50,31 +51,33 @@ import com.example.scrollbooker.ui.theme.Rating
 import com.example.scrollbooker.ui.theme.titleMedium
 import timber.log.Timber
 
-@Composable
-fun rememberIntentActions(user: UserProfile): List<IntentAction> {
-    return remember(user) {
-        INTENT_ACTION_SPECS.map { spec ->
-            IntentAction(
-                icon = spec.icon,
-                title = spec.title,
-                value = spec.valueOf(user),
-                isBusinessOrEmployee = spec.onlyBusinessOrEmployee,
-                actionType = spec.actionType
-            )
-        }
-    }
-}
+// V2 - Intent Actions logic will be added in next iterations, for now it's hidden in the code
 
-fun filterIntentActions(
-    actions: List<IntentAction>,
-    isBusinessOrEmployee: Boolean
-): List<IntentAction> {
-        return if (!isBusinessOrEmployee) {
-        actions.filter { it.value.isNotEmpty() && !it.isBusinessOrEmployee }
-    } else {
-        actions.filter { it.value.isNotEmpty() }
-    }
-}
+//@Composable
+//fun rememberIntentActions(user: UserProfile): List<IntentAction> {
+//    return remember(user) {
+//        INTENT_ACTION_SPECS.map { spec ->
+//            IntentAction(
+//                icon = spec.icon,
+//                title = spec.title,
+//                value = spec.valueOf(user),
+//                isBusinessOrEmployee = spec.onlyBusinessOrEmployee,
+//                actionType = spec.actionType
+//            )
+//        }
+//    }
+//}
+//
+//fun filterIntentActions(
+//    actions: List<IntentAction>,
+//    isBusinessOrEmployee: Boolean
+//): List<IntentAction> {
+//        return if (!isBusinessOrEmployee) {
+//        actions.filter { it.value.isNotEmpty() && !it.isBusinessOrEmployee }
+//    } else {
+//        actions.filter { it.value.isNotEmpty() }
+//    }
+//}
 
 @Composable
 fun ProfileUserInfo(
@@ -92,11 +95,11 @@ fun ProfileUserInfo(
     val isBusinessOrEmployee = user.isBusinessOrEmployee
     val isOpenNow = user.openingHours.openNow
 
-    val intentActions = rememberIntentActions(user)
-
-    val filteredIntentList = remember(user, intentActions) {
-        filterIntentActions(intentActions, user.isBusinessOrEmployee)
-    }
+//    val intentActions = rememberIntentActions(user)
+//
+//    val filteredIntentList = remember(user, intentActions) {
+//        filterIntentActions(intentActions, user.isBusinessOrEmployee)
+//    }
 
     ProfileCounters(
         counters = user.counters,
@@ -162,7 +165,7 @@ fun ProfileUserInfo(
                         )
                         Spacer(Modifier.width(5.dp))
                         Text(
-                            text = user.counters.ratingsAverage.toFixedDecimals(1),
+                            text = user.counters.ratingsAverage.formatRating(),
                             style = titleMedium,
                             fontSize = 19.sp,
                             fontWeight = FontWeight.Bold,
@@ -221,11 +224,11 @@ fun ProfileUserInfo(
             )
         }
 
-        Spacer(Modifier.height(SpacingM))
+//        Spacer(Modifier.height(SpacingM))
 
-        ProfileIntentActionsList(
-            intentList = filteredIntentList
-        )
+//        ProfileIntentActionsList(
+//            intentList = filteredIntentList
+//        )
 
         if(!user.isOwnProfile && user.distanceKm != null) {
             ProfileLocationDistance(distance = user.distanceKm)

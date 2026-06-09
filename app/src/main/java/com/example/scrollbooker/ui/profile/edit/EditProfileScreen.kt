@@ -82,37 +82,39 @@ fun EditProfileScreen(
         ),
     )
 
-    val actionsList = listOf<EditProfileAction>(
-        EditProfileAction(
-            title = stringResource(R.string.email),
-            value = user?.publicEmail ?: "",
-            hasPermission = user?.isBusinessOrEmployee == true,
-            navigate = { editProfileNavigate.toEditPublicEmail() }
-        ),
-        EditProfileAction(
-            title = stringResource(R.string.website),
-            value = user?.website ?: "",
-            hasPermission = user?.isBusinessOrEmployee == true,
-            navigate = { editProfileNavigate.toEditWebsite() }
-        ),
-        EditProfileAction(
-            title = stringResource(R.string.instagram),
-            value = user?.instagram ?: "",
-            navigate = {  }
-        ),
-        EditProfileAction(
-            title = stringResource(R.string.youtube),
-            value = user?.youtube ?: "",
-            navigate = {  }
-        ),
-        EditProfileAction(
-            title = stringResource(R.string.tikTok),
-            value = user?.tikTok ?: "",
-            navigate = {  }
-        ),
-    )
+// V2 - Intent Actions logic will be added in next iterations, for now it's hidden in the code
 
-    val actions = actionsList.filter { it.hasPermission }
+//    val actionsList = listOf<EditProfileAction>(
+//        EditProfileAction(
+//            title = stringResource(R.string.email),
+//            value = user?.publicEmail ?: "",
+//            hasPermission = user?.isBusinessOrEmployee == true,
+//            navigate = { editProfileNavigate.toEditPublicEmail() }
+//        ),
+//        EditProfileAction(
+//            title = stringResource(R.string.website),
+//            value = user?.website ?: "",
+//            hasPermission = user?.isBusinessOrEmployee == true,
+//            navigate = { editProfileNavigate.toEditWebsite() }
+//        ),
+//        EditProfileAction(
+//            title = stringResource(R.string.instagram),
+//            value = user?.instagram ?: "",
+//            navigate = {  }
+//        ),
+//        EditProfileAction(
+//            title = stringResource(R.string.youtube),
+//            value = user?.youtube ?: "",
+//            navigate = {  }
+//        ),
+//        EditProfileAction(
+//            title = stringResource(R.string.tikTok),
+//            value = user?.tikTok ?: "",
+//            navigate = {  }
+//        ),
+//    )
+
+//    val actions = actionsList.filter { it.hasPermission }
 
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -181,19 +183,19 @@ fun EditProfileScreen(
 
             Spacer(Modifier.height(BasePadding))
 
-            EditProfileSectionTitle(title = stringResource(R.string.buttonActionInProfile))
+//            EditProfileSectionTitle(title = stringResource(R.string.buttonActionInProfile))
 
-            actions.forEachIndexed { index, about ->
-                ItemListInfo(
-                    headLine = about.title,
-                    supportingText = about.value,
-                    onClick = about.navigate
-                )
-
-                if(index <= aboutList.size) {
-                    Spacer(Modifier.padding(vertical = SpacingXXS))
-                }
-            }
+//            actions.forEachIndexed { index, about ->
+//                ItemListInfo(
+//                    headLine = about.title,
+//                    supportingText = about.value,
+//                    onClick = about.navigate
+//                )
+//
+//                if(index <= aboutList.size) {
+//                    Spacer(Modifier.padding(vertical = SpacingXXS))
+//                }
+//            }
         }
     }
 }

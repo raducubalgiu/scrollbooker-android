@@ -30,12 +30,14 @@ fun ChoosePhotoSheet(
                 displayRightIcon = false,
                 onClick = onPickImage
             )
-            ItemList(
-                headLine = stringResource(id = R.string.photoShoot),
-                leftIcon = painterResource(R.drawable.ic_camera_outline),
-                displayRightIcon = false,
-                onClick = {}
-            )
+
+            // V2 - Photo shoot option will be added in next iterations, for now it's hidden in the code
+//            ItemList(
+//                headLine = stringResource(id = R.string.photoShoot),
+//                leftIcon = painterResource(R.drawable.ic_camera_outline),
+//                displayRightIcon = false,
+//                onClick = {}
+//            )
         }
     }
 }

@@ -26,7 +26,7 @@ import com.example.scrollbooker.ui.theme.titleMedium
 @Composable
 fun ProfileEmployee(
     employee: Employee,
-    onNavigateToEmployeeProfile: (userId: Int, username: String) -> Unit,
+    onNavigateToEmployeeProfile: (userId: Int, username: String) -> Unit
 ) {
     ListItem(
         modifier = Modifier

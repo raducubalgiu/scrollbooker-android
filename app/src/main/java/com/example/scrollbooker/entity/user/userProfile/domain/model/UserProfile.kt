@@ -48,5 +48,5 @@ data class UserCounters(
     val productsCount: Int,
     val postsCount: Int,
     val ratingsCount: Int,
-    val ratingsAverage: BigDecimal
+    val ratingsAverage: Float
 )

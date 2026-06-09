@@ -122,14 +122,14 @@ fun FeedSearchScreen(
                                     AvatarWithRating(
                                         url = user.avatar ?: "",
                                         rating = user.ratingsAverage,
-                                        size = 60.dp,
+                                        size = 55.dp,
                                         elevation = 2.dp,
                                         onClick = {}
                                     )
                                 } else {
                                     Avatar(
                                         url = user.avatar ?: "",
-                                        size = 60.dp
+                                        size = 55.dp
                                     )
                                 }
                             },

@@ -48,13 +48,6 @@ fun MyBusinessScreen(
             navigate = { myBusinessNavigate.toMyBusinessLocation() },
         ),
         BusinessCard(
-            title = "Subscription",
-            description = stringResource(R.string.userScheduleDetails),
-            icon = Icons.Outlined.Schedule,
-            permission = PermissionEnum.MY_SUBSCRIPTION_VIEW,
-            navigate = { myBusinessNavigate.toMySubscription() },
-        ),
-        BusinessCard(
             title = stringResource(R.string.scheduleShort),
             description = stringResource(R.string.userScheduleDetails),
             icon = Icons.Outlined.Schedule,
