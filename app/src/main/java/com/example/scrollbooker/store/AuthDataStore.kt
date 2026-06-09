@@ -53,11 +53,12 @@ class AuthDataStore(private val context: Context) {
             prefs[USER_ID] = userId
             prefs[USERNAME] = username
             prefs[FULLNAME] = fullName
-            prefs[BUSINESS_ID] = businessId ?: prefs.remove(BUSINESS_ID)
-            prefs[BUSINESS_OWNER_ID] = businessOwnerId ?: prefs.remove(BUSINESS_OWNER_ID)
-            prefs[BUSINESS_TYPE_ID] = businessTypeId ?: prefs.remove(BUSINESS_TYPE_ID)
             prefs[HAS_EMPLOYEES] = hasEmployees
             prefs[PERMISSIONS] = permissions.toSet()
+
+            if (businessId != null) prefs[BUSINESS_ID] = businessId else prefs.remove(BUSINESS_ID)
+            if (businessOwnerId != null) prefs[BUSINESS_OWNER_ID] = businessOwnerId else prefs.remove(BUSINESS_OWNER_ID)
+            if (businessTypeId != null) prefs[BUSINESS_TYPE_ID] = businessTypeId else prefs.remove(BUSINESS_TYPE_ID)
         }
     }
 
@@ -71,12 +72,22 @@ class AuthDataStore(private val context: Context) {
         }
     }
 
-    suspend fun setBusinessId(businessId: Int) {
-        context.dataStore.edit { prefs -> prefs[BUSINESS_ID] = businessId }
+    suspend fun setBusinessId(businessId: Int?) {
+        context.dataStore.edit { prefs ->
+            if (businessId != null) prefs[BUSINESS_ID] = businessId else prefs.remove(BUSINESS_ID)
+        }
     }
 
-    suspend fun setBusinessOwnerId(businessOwnerId: Int) {
-        context.dataStore.edit { prefs -> prefs[BUSINESS_OWNER_ID] = businessOwnerId }
+    suspend fun setBusinessOwnerId(businessOwnerId: Int?) {
+        context.dataStore.edit { prefs ->
+            if (businessOwnerId != null) prefs[BUSINESS_OWNER_ID] = businessOwnerId else prefs.remove(BUSINESS_OWNER_ID)
+        }
+    }
+
+    suspend fun setBusinessTypeId(businessTypeId: Int?) {
+        context.dataStore.edit { prefs ->
+            if (businessTypeId != null) prefs[BUSINESS_TYPE_ID] = businessTypeId else prefs.remove(BUSINESS_TYPE_ID)
+        }
     }
 
     suspend fun setHasEmployees(hasEmployees: Boolean) {
