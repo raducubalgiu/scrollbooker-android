@@ -26,15 +26,17 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.customized.SchedulesSection
 import com.example.scrollbooker.components.customized.SectionMap
+import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfileAbout
 import com.example.scrollbooker.ui.theme.titleMedium
-import timber.log.Timber
 
 @Composable
 fun ProfileInfoTab(
-    about: FeatureState<UserProfileAbout>
+    isEmployee: Boolean,
+    about: FeatureState<UserProfileAbout>,
+    onNavigateToUserProfile: (userId: Int, username: String) -> Unit
 ) {
     val scrollState = rememberScrollState()
 
@@ -54,7 +56,12 @@ fun ProfileInfoTab(
             is FeatureState.Success -> {
                 val data = aboutState.data
 
-                Timber.d("DATA!!!: $data")
+                if(isEmployee) {
+                    ProfileInfoOwnerSection(
+                        owner = about.data.owner,
+                        onNavigateToUserProfile = onNavigateToUserProfile
+                    )
+                }
 
                 Text(
                     modifier = Modifier.padding(vertical = BasePadding),
@@ -75,7 +82,7 @@ fun ProfileInfoTab(
 
                     Spacer(Modifier.width(BasePadding))
 
-                    Text(text = data.location?.address ?: "")
+                    Text(text = data.location.address)
                 }
 
                 Text(
@@ -92,30 +99,46 @@ fun ProfileInfoTab(
                     Text(text = it)
                 }
 
+                Spacer(Modifier.height(BasePadding))
+
+                data.location.let { location ->
+                    location.mapUrl?.let {
+                        SectionMap(
+                            mapUrl = it,
+                            coordinates = location.coordinates,
+                            fullName = data.owner.fullName,
+                            displayDirectionsButton = false
+                        )
+                    }
+                }
+
+                Spacer(Modifier.height(SpacingXL))
+
                 Text(
-                    modifier = Modifier.padding(
-                        top = SpacingXXL,
-                        bottom = BasePadding
-                    ),
                     text = stringResource(R.string.schedule),
                     fontWeight = FontWeight.SemiBold,
                     style = titleMedium,
                     fontSize = 18.sp
                 )
 
+                Spacer(Modifier.height(BasePadding))
+
                 SchedulesSection(schedules = data.schedules)
 
-                data.location?.let { location ->
-                    location.mapUrl?.let {
-                        SectionMap(
-                            mapUrl = it,
-                            coordinates = location.coordinates,
-                            fullName = data.ownerFullName
-                        )
-                    }
-                }
+                Spacer(Modifier.height(SpacingXL))
 
-                Spacer(Modifier.height(SpacingXXL))
+                Text(
+                    text = stringResource(R.string.photoGallery),
+                    fontWeight = FontWeight.SemiBold,
+                    style = titleMedium,
+                    fontSize = 18.sp
+                )
+
+                Spacer(Modifier.height(BasePadding))
+
+                BusinessMediaGallery(mediaFiles = about.data.businessMedia)
+
+                Spacer(Modifier.height(BasePadding))
             }
         }
     }

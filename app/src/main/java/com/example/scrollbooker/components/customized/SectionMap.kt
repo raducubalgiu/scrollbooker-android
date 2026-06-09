@@ -37,7 +37,8 @@ fun SectionMap(
     modifier: Modifier = Modifier,
     mapUrl: String,
     coordinates: BusinessCoordinates,
-    fullName: String
+    fullName: String,
+    displayDirectionsButton: Boolean = true
 ) {
     val context = LocalContext.current
 
@@ -53,7 +54,6 @@ fun SectionMap(
 
     Column(modifier) {
         Box(modifier = Modifier
-            .padding(top = BasePadding)
             .fillMaxWidth()
             .height(220.dp)
             .clip(shape = ShapeDefaults.Large)
@@ -74,15 +74,17 @@ fun SectionMap(
             )
         }
 
-        Spacer(Modifier.height(SpacingM))
+        if(displayDirectionsButton) {
+            Spacer(Modifier.height(SpacingM))
 
-        MainButton(
-            title = stringResource(R.string.navigationDirections),
-            onClick = { redirectToMaps() },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = SurfaceBG,
-                contentColor = OnSurfaceBG
+            MainButton(
+                title = stringResource(R.string.navigationDirections),
+                onClick = { redirectToMaps() },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = SurfaceBG,
+                    contentColor = OnSurfaceBG
+                )
             )
-        )
+        }
     }
 }

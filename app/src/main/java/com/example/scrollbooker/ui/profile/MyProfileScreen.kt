@@ -231,7 +231,13 @@ fun MyProfileScreen(
 
                                         ProfileTab.Info -> {
                                             val about by viewModel.about.collectAsStateWithLifecycle()
-                                            ProfileInfoTab(about = about)
+                                            ProfileInfoTab(
+                                                isEmployee = isEmployee,
+                                                about = about,
+                                                onNavigateToUserProfile = { userId, username ->
+                                                    profileNavigate.toUserProfile(userId, username)
+                                                },
+                                            )
                                         }
                                     }
                                 }
