@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.myBusiness.myBusinessLocation
+package com.example.scrollbooker.ui.myBusiness.myBusinessDetails
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult

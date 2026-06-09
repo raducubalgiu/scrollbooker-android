@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.myBusiness.myEmploymentRequests
+package com.example.scrollbooker.ui.myBusiness.myEmployees.tabs.employmentRequestsTab
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -28,11 +28,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
+import com.example.scrollbooker.ui.myBusiness.myEmployees.MyEmployeesViewModel
 import com.example.scrollbooker.ui.theme.bodyLarge
 
 @Composable
 fun EmploymentAcceptTermsScreen(
-    viewModel: EmploymentRequestsViewModel,
+    viewModel: MyEmployeesViewModel,
     onBack: () -> Unit,
     onNext: () -> Unit
 ) {

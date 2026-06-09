@@ -28,6 +28,7 @@ class AuthDataStore(private val context: Context) {
         val USERNAME = stringPreferencesKey("username")
         val FULLNAME = stringPreferencesKey("fullName")
         val BUSINESS_ID = intPreferencesKey("businessId")
+        val BUSINESS_OWNER_ID = intPreferencesKey("businessOwnerId")
         val BUSINESS_TYPE_ID = intPreferencesKey("businessTypeId")
     }
 
@@ -39,6 +40,7 @@ class AuthDataStore(private val context: Context) {
         username: String,
         fullName: String,
         businessId: Int?,
+        businessOwnerId: Int?,
         businessTypeId: Int?,
         permissions: List<String>,
     ) {
@@ -49,6 +51,7 @@ class AuthDataStore(private val context: Context) {
             prefs[USERNAME] = username
             prefs[FULLNAME] = fullName
             prefs[BUSINESS_ID] = businessId ?: prefs.remove(BUSINESS_ID)
+            prefs[BUSINESS_OWNER_ID] = businessOwnerId ?: prefs.remove(BUSINESS_OWNER_ID)
             prefs[BUSINESS_TYPE_ID] = businessTypeId ?: prefs.remove(BUSINESS_TYPE_ID)
             prefs[PERMISSIONS] = permissions.toSet()
         }
@@ -66,6 +69,10 @@ class AuthDataStore(private val context: Context) {
 
     suspend fun setBusinessId(businessId: Int) {
         context.dataStore.edit { prefs -> prefs[BUSINESS_ID] = businessId }
+    }
+
+    suspend fun setBusinessOwnerId(businessOwnerId: Int) {
+        context.dataStore.edit { prefs -> prefs[BUSINESS_OWNER_ID] = businessOwnerId }
     }
 
     suspend fun setBusinessTypeId(businessTypeId: Int) {
@@ -88,6 +95,7 @@ class AuthDataStore(private val context: Context) {
     fun getUserId(): Flow<Int?> = context.dataStore.data.map { it[USER_ID] }
     fun getUserUsername(): Flow<String?> = context.dataStore.data.map { it[USERNAME] }
     fun getBusinessId(): Flow<Int?> = context.dataStore.data.map { it[BUSINESS_ID] }
+    fun getBusinessOwnerId(): Flow<Int?> = context.dataStore.data.map { it[BUSINESS_OWNER_ID] }
     fun getBusinessTypeId(): Flow<Int?> = context.dataStore.data.map { it[BUSINESS_TYPE_ID] }
     fun getUserPermissions(): Flow<List<String>> = context.dataStore.data
         .map { prefs -> prefs[PERMISSIONS]?.toList() ?: emptyList() }

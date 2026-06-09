@@ -10,7 +10,6 @@ import androidx.compose.material.icons.outlined.Book
 import androidx.compose.material.icons.outlined.CalendarToday
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.PeopleOutline
-import androidx.compose.material.icons.outlined.Repeat
 import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material.icons.outlined.ShoppingBag
 import androidx.compose.runtime.Composable
@@ -41,8 +40,8 @@ fun MyBusinessScreen(
 ) {
     val pages = listOf(
         BusinessCard(
-            title = stringResource(R.string.location),
-            description = stringResource(R.string.businessLocationDetails),
+            title = stringResource(R.string.businessDetails),
+            description = stringResource(R.string.businessDetailsDescription),
             icon = Icons.Outlined.LocationOn,
             permission = PermissionEnum.MY_BUSINESS_LOCATION_VIEW,
             navigate = { myBusinessNavigate.toMyBusinessLocation() },
@@ -55,40 +54,33 @@ fun MyBusinessScreen(
             navigate = { myBusinessNavigate.toMySchedules() },
         ),
         BusinessCard(
-            title = stringResource(R.string.services),
-            description = stringResource(R.string.servicesDetails),
+            title = stringResource(R.string.categories),
+            description = stringResource(R.string.categoryservicesDetails),
             icon = Icons.Outlined.Book,
             navigate = { myBusinessNavigate.toMyServices() },
             permission = PermissionEnum.MY_SERVICES_VIEW
         ),
         BusinessCard(
-            title = stringResource(R.string.products),
-            description = stringResource(R.string.userProductsDetails),
+            title = stringResource(R.string.services),
+            description = stringResource(R.string.servicesDetails),
             icon = Icons.Outlined.ShoppingBag,
             permission = PermissionEnum.MY_PRODUCTS_VIEW,
             navigate = { myBusinessNavigate.toMyProducts() },
         ),
         BusinessCard(
             title = stringResource(R.string.calendar),
-            description = stringResource(R.string.servicesDetails),
+            description = stringResource(R.string.calendarDetails),
             icon = Icons.Outlined.CalendarToday,
             navigate = { myBusinessNavigate.toMyCalendar() },
             permission = PermissionEnum.MY_CALENDAR_VIEW,
         ),
         BusinessCard(
             title = stringResource(R.string.employees),
-            description = stringResource(R.string.servicesDetails),
+            description = stringResource(R.string.employeesAndEmploymentRequestsDetails),
             icon = Icons.Outlined.PeopleOutline,
             navigate = { myBusinessNavigate.toMyEmployees() },
             permission = PermissionEnum.MY_EMPLOYEES_VIEW
         ),
-        BusinessCard(
-            title = stringResource(R.string.employmentRequests),
-            description = stringResource(R.string.servicesDetails),
-            icon = Icons.Outlined.Repeat,
-            navigate = { myBusinessNavigate.toMyEmploymentRequests() },
-            permission = PermissionEnum.MY_EMPLOYMENT_REQUESTS_VIEW
-        )
     )
 
     Layout(

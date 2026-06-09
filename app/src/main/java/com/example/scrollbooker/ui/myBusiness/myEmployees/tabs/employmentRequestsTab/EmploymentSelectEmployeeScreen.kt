@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.myBusiness.myEmploymentRequests
+package com.example.scrollbooker.ui.myBusiness.myEmployees.tabs.employmentRequestsTab
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -39,12 +39,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.ui.myBusiness.myEmployees.MyEmployeesViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun EmploymentSelectEmployeeScreen(
-    viewModel: EmploymentRequestsViewModel,
+    viewModel: MyEmployeesViewModel,
     onBack: () -> Unit,
     onNext: () -> Unit
 ) {
@@ -145,11 +146,11 @@ fun EmploymentSelectEmployeeScreen(
                     val users = (usersState as FeatureState.Success).data
 
                     LazyColumn(Modifier.weight(1f)) {
-                        items(users) { user ->
+                        items(users) {
                             InputRadio(
-                                selected = user.id == selectedEmployee?.id,
-                                onSelect = { viewModel.setSelectedEmployee(user) },
-                                headLine = user.fullName,
+                                selected = it.id == selectedEmployee?.id,
+                                onSelect = { viewModel.setSelectedEmployee(it) },
+                                headLine = it.fullName,
                             )
                         }
 

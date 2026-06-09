@@ -11,6 +11,7 @@ fun UserInfoDto.toDomain(): UserInfo {
         fullname = fullname,
         avatar = avatar,
         businessId = businessId,
+        businessOwnerId = businessOwnerId,
         businessTypeId = businessTypeId,
         hasEmployees = hasEmployees,
         isValidated = isValidated,

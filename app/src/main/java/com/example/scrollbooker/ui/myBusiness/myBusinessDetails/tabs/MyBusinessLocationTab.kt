@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.myBusiness.myBusinessLocation.tabs
+package com.example.scrollbooker.ui.myBusiness.myBusinessDetails.tabs
 
 import androidx.annotation.StringRes
 import com.example.scrollbooker.R

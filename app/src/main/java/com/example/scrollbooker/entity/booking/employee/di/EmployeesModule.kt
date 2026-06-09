@@ -5,8 +5,6 @@ import com.example.scrollbooker.entity.booking.employee.data.remote.EmployeesApi
 import com.example.scrollbooker.entity.booking.employee.data.repository.EmployeesRepositoryImpl
 import com.example.scrollbooker.entity.booking.employee.domain.repository.EmployeesRepository
 import com.example.scrollbooker.entity.booking.employee.domain.useCase.GetEmployeesByOwnerUseCase
-import com.example.scrollbooker.entity.booking.employee.domain.useCase.GetEmployeesUseCase
-import com.example.scrollbooker.store.AuthDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -34,15 +32,6 @@ object EmployeesModule {
     @Singleton
     fun provideEmployeesRepository(apiService: EmployeesApiService): EmployeesRepository {
         return EmployeesRepositoryImpl(apiService)
-    }
-
-    @Provides
-    @Singleton
-    fun provideGetEmployeesUseCase(
-        authDataStore: AuthDataStore,
-        repository: EmployeesRepository,
-    ): GetEmployeesUseCase {
-        return GetEmployeesUseCase(authDataStore, repository)
     }
 
     @Provides

@@ -6,6 +6,7 @@ data class UserInfo(
     val fullname: String,
     val avatar: String?,
     val businessId: Int,
+    val businessOwnerId: Int?,
     val businessTypeId: Int,
     val hasEmployees: Boolean,
     val isValidated: Boolean,

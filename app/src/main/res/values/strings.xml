@@ -18,6 +18,7 @@
     <string name="omit">Omite</string>
     <string name="nextStep">Pasul următor</string>
     <string name="location">Locație</string>
+    <string name="businessDetails">Detalii business</string>
     <string name="addYourBusinessLocation">Adaugă adresa locației unde vei primi clienții </string>
     <string name="services">Servicii</string>
     <string name="addYourBusinessServices">Adaugă serviciile pe care le desfășori la locație</string>
@@ -151,10 +152,12 @@
     <string name="notFoundWrittenReviews">Nu au fost găsite recenzii scrise</string>
     <string name="notFoundVideoReviews">Nu au fost găsite recenzii video</string>
     <string name="notFoundBookings">Nu au fist găsite rezervări</string>
-    <string name="businessLocationDetails">Detalii despre locația business-ului meu</string>
+    <string name="businessDetailsDescription">Detalii despre afacerea mea</string>
     <string name="userScheduleDetails">Detalii despre programul meu</string>
-    <string name="userProductsDetails">Detalii despre produsele mele</string>
+    <string name="categoryservicesDetails">Detalii despre categoriile mele de servicii</string>
     <string name="servicesDetails">Detalii despre serviciile mele</string>
+    <string name="calendarDetails">Calendarul meu de programări</string>
+    <string name="employeesAndEmploymentRequestsDetails">Angajați și cereri de angajare</string>
     <string name="paymentMethods">Modalități de plată</string>
     <string name="paymentMethodsDetails">Alege valutele acceptate pentru plată</string>
     <string name="collectBusinessTypeHeadline">Ce business ai?</string>

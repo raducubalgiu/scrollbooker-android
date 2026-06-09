@@ -1,10 +1,14 @@
-package com.example.scrollbooker.ui.myBusiness.myEmploymentRequests
+package com.example.scrollbooker.ui.myBusiness.myEmployees
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.scrollbooker.core.enums.ConsentEnum
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
+import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
+import com.example.scrollbooker.entity.booking.employee.domain.useCase.GetEmployeesByOwnerUseCase
 import com.example.scrollbooker.entity.booking.employmentRequest.domain.model.EmploymentRequest
 import com.example.scrollbooker.entity.booking.employmentRequest.domain.model.EmploymentRequestCreate
 import com.example.scrollbooker.entity.booking.employmentRequest.domain.useCase.CreateEmploymentRequestUseCase
@@ -19,6 +23,7 @@ import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -27,6 +32,8 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
@@ -37,14 +44,26 @@ import javax.inject.Inject
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 @HiltViewModel
-class EmploymentRequestsViewModel @Inject constructor(
+class MyEmployeesViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
+    private val getEmployeesByOwnerUseCase: GetEmployeesByOwnerUseCase,
     private val getEmploymentRequestsUseCase: GetEmploymentRequestsUseCase,
     private val searchUsersUseCase: SearchUsersUseCase,
     private val getProfessionsByBusinessTypeUseCase: GetProfessionsByBusinessTypeUseCase,
     private val getConsentsByNameUseCase: GetConsentsByNameUseCase,
     private val createEmploymentRequestUseCase: CreateEmploymentRequestUseCase,
 ): ViewModel() {
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val employees: Flow<PagingData<Employee>> = authDataStore.getBusinessOwnerId()
+        .flatMapLatest { ownerId ->
+            if (ownerId != null) {
+                getEmployeesByOwnerUseCase(ownerId)
+            } else {
+                flowOf(PagingData.empty())
+            }
+        }
+        .cachedIn(viewModelScope)
+
     private val _employmentRequests =
         MutableStateFlow<FeatureState<List<EmploymentRequest>>>(FeatureState.Loading)
     val employmentRequests: StateFlow<FeatureState<List<EmploymentRequest>>> = _employmentRequests

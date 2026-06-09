@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.myBusiness.myEmploymentRequests.components
+package com.example.scrollbooker.ui.myBusiness.myEmployees.tabs.employmentRequestsTab
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

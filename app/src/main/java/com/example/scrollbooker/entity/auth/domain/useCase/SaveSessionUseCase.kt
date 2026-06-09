@@ -33,6 +33,7 @@ class SaveSessionUseCase @Inject constructor(
                 username = userInfo.username,
                 fullName = userInfo.fullname,
                 businessId = userInfo.businessId,
+                businessOwnerId = userInfo.businessOwnerId,
                 businessTypeId = userInfo.businessTypeId,
                 permissions = userPermissions
             )

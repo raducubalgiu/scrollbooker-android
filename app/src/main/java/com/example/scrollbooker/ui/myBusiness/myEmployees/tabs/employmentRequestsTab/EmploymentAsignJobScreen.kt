@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.myBusiness.myEmploymentRequests
+package com.example.scrollbooker.ui.myBusiness.myEmployees.tabs.employmentRequestsTab
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,11 +17,12 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.ui.myBusiness.myEmployees.MyEmployeesViewModel
 import com.example.scrollbooker.ui.theme.Divider
 
 @Composable
 fun EmploymentAssignJobScreen(
-    viewModel: EmploymentRequestsViewModel,
+    viewModel: MyEmployeesViewModel,
     onBack: () -> Unit,
     onNext: () -> Unit
 ) {

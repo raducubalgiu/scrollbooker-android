@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.myBusiness.myBusinessLocation.tabs
+package com.example.scrollbooker.ui.myBusiness.myBusinessDetails.tabs
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,16 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
-import com.example.scrollbooker.core.enums.ProductTypeEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.entity.booking.appointment.domain.model.BusinessCoordinates
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMediaFile
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessOwner
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessSheet
-import com.example.scrollbooker.entity.booking.products.domain.model.Product
-import com.example.scrollbooker.entity.nomenclature.filter.domain.model.SubFilter
 import com.example.scrollbooker.ui.search.components.card.SearchCard
-import java.math.BigDecimal
 
 @Composable
 fun MyBusinessGalleryTab(
