@@ -18,13 +18,19 @@ class EditProfileNavigator (
     fun toEditGender() {
         navController.navigate(MainRoute.EditGender.route)
     }
-    fun toEditPublicEmail() {
-        navController.navigate(MainRoute.EditPublicEmail.route)
-    }
-    fun toEditWebsite() {
-        navController.navigate(MainRoute.EditWebsite.route)
+    fun toEditBirthdate() {
+        navController.navigate(MainRoute.EditBirthDate.route)
     }
     fun toEditAvatarCropScreen() {
         navController.navigate(MainRoute.EditAvatarCropScreen.route)
     }
+
+// V2 - Will be added in next iterations, for now it's hidden in the code
+
+//    fun toEditPublicEmail() {
+//        navController.navigate(MainRoute.EditPublicEmail.route)
+//    }
+//    fun toEditWebsite() {
+//        navController.navigate(MainRoute.EditWebsite.route)
+//    }
 }

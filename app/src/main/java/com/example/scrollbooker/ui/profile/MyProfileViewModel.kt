@@ -22,6 +22,7 @@ import androidx.paging.cachedIn
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.VideoPlayerCache
 import com.example.scrollbooker.core.util.withVisibleLoading
+import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
 import com.example.scrollbooker.entity.booking.employee.domain.useCase.GetEmployeesByOwnerUseCase
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
@@ -40,6 +41,7 @@ import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserPr
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserProfileUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateAvatarUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateBioUseCase
+import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateBirthDateUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateFullNameUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateGenderUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdatePublicEmailUseCase
@@ -55,6 +57,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull
@@ -66,6 +69,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import org.threeten.bp.LocalDate
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.collections.component1
@@ -79,6 +83,7 @@ class MyProfileViewModel @Inject constructor(
     private val updateUsernameUseCase: UpdateUsernameUseCase,
     private val updateBioUseCase: UpdateBioUseCase,
     private val updateGenderUseCase: UpdateGenderUseCase,
+    private val updateBirthDateUseCase: UpdateBirthDateUseCase,
     private val updateWebsiteUseCase: UpdateWebsiteUseCase,
     private val updatePublicEmailUseCase: UpdatePublicEmailUseCase,
     private val updateAvatarUseCase: UpdateAvatarUseCase,
@@ -187,6 +192,20 @@ class MyProfileViewModel @Inject constructor(
     private val _photoUri = MutableStateFlow<Uri?>(null)
     val photoUri: StateFlow<Uri?> = _photoUri.asStateFlow()
 
+    val selectedDay = MutableStateFlow<String?>(null)
+    val selectedMonth = MutableStateFlow<String?>(null)
+    val selectedYear = MutableStateFlow<String?>(null)
+
+    val isBirthDateValid: StateFlow<Boolean> = combine(
+        selectedDay, selectedMonth, selectedYear
+    ) { day, month, year ->
+        !day.isNullOrBlank() && !month.isNullOrBlank() && !year.isNullOrBlank()
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5_000),
+        false
+    )
+
     fun setPhoto(uri: Uri) {
         _photoUri.value = uri
     }
@@ -195,6 +214,18 @@ class MyProfileViewModel @Inject constructor(
 
     fun setCurrentTab(index: Int) {
         _currentTab.value = index
+    }
+
+    fun setSelectedDay(newDay: String?) {
+        selectedDay.value = newDay
+    }
+
+    fun setSelectedMonth(newMonth: String?) {
+        selectedMonth.value = newMonth
+    }
+
+    fun setSelectedYear(newYear: String?) {
+        selectedYear.value = newYear
     }
 
     fun updateFullName(newFullName: String) {
@@ -290,6 +321,30 @@ class MyProfileViewModel @Inject constructor(
                 .onFailure { error ->
                     Timber.Forest.tag("EditProfile").e(error, "ERROR: on Edit Gender User Data")
                     _editState.value = FeatureState.Error(error = null)
+                }
+        }
+    }
+
+    fun updateBirthDate(birthDate: String) {
+        viewModelScope.launch {
+            _editState.value = FeatureState.Success(Unit)
+
+            val result = withVisibleLoading { updateBirthDateUseCase(birthdate = birthDate) }
+
+            result
+                .onSuccess {
+                    _editState.value = FeatureState.Success(Unit)
+
+                    val currentProfile = (_profile.value as? FeatureState.Success)?.data
+                    if(currentProfile != null) {
+                        val updatedProfile = currentProfile.copy(birthDate = birthDate)
+                        _profile.value = FeatureState.Success(updatedProfile)
+                    }
+                    isSaved = true
+                }
+                .onFailure { e ->
+                    _editState.value = FeatureState.Success(Unit)
+                    Timber.tag("Update birthdate").e("ERROR: on updating Birthdate $e")
                 }
         }
     }

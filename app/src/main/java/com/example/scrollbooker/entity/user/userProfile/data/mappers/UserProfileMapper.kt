@@ -17,6 +17,7 @@ fun UserProfileDto.toDomain(): UserProfile {
         fullName = fullName,
         avatar = avatar,
         gender = gender,
+        birthDate = birthDate,
         bio = bio,
         dateOfBirth = dateOfBirth,
         website = website,

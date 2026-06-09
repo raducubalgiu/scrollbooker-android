@@ -47,6 +47,7 @@ sealed class MainRoute(val route: String) {
     object EditUsername: MainRoute(route = "editUsername")
     object EditBio: MainRoute(route = "editBio")
     object EditGender: MainRoute(route = "editGender")
+    object EditBirthDate: MainRoute(route = "editBirthDate")
     object EditWebsite: MainRoute(route = "website")
     object EditPublicEmail: MainRoute(route = "publicEmail")
 

@@ -16,6 +16,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,10 +26,12 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.components.core.list.ItemListInfo
 import com.example.scrollbooker.core.enums.GenderTypeEnum
+import com.example.scrollbooker.core.enums.PermissionEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.navigation.navigators.EditProfileNavigator
+import com.example.scrollbooker.ui.LocalUserPermissions
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
 import com.example.scrollbooker.ui.profile.edit.components.ChoosePhotoSheet
 import com.example.scrollbooker.ui.profile.edit.components.EditProfileAvatar
@@ -38,7 +41,8 @@ import kotlinx.coroutines.launch
 data class EditProfileAction(
     val title: String,
     val value: String,
-    val hasPermission: Boolean = true,
+    val permission: PermissionEnum = PermissionEnum.NO_PROTECTION,
+    val extraPermission: Boolean = true,
     val navigate: () -> Unit
 )
 
@@ -54,7 +58,9 @@ fun EditProfileScreen(
     val user = (userState as? FeatureState.Success)?.data
     val verticalScroll = rememberScrollState()
 
-    val aboutList = listOf<EditProfileAction>(
+    val permissionController = LocalUserPermissions.current
+
+    val aboutListRaw = listOf<EditProfileAction>(
         EditProfileAction(
             title = stringResource(R.string.name),
             value = user?.fullName ?: "",
@@ -73,28 +79,39 @@ fun EditProfileScreen(
         EditProfileAction(
             title = stringResource(R.string.gender),
             value = GenderTypeEnum.fromKey(user?.gender)?.getLabel() ?: "",
-            navigate = { editProfileNavigate.toEditGender() }
+            navigate = { editProfileNavigate.toEditGender() },
+            permission = PermissionEnum.GENDER_EDIT
         ),
         EditProfileAction(
             title = stringResource(R.string.dateOfBirth),
             value = user?.dateOfBirth ?: "",
-            navigate = { editProfileNavigate.toEditGender() }
+            navigate = { editProfileNavigate.toEditBirthdate() },
+            permission = PermissionEnum.BIRTHDATE_EDIT
         ),
     )
 
-// V2 - Intent Actions logic will be added in next iterations, for now it's hidden in the code
+    val aboutList = remember(aboutListRaw, permissionController.values) {
+        aboutListRaw.filter { action ->
+            val hasSystemPermission = action.permission == PermissionEnum.NO_PROTECTION ||
+                    permissionController.hasPermission(action.permission)
 
-//    val actionsList = listOf<EditProfileAction>(
+            hasSystemPermission && action.extraPermission
+        }
+    }
+
+// V2 - Will be implemented in next iterations, for now it's hidden in the code
+//    val actionsListRaw = listOf<EditProfileAction>(
 //        EditProfileAction(
 //            title = stringResource(R.string.email),
 //            value = user?.publicEmail ?: "",
-//            hasPermission = user?.isBusinessOrEmployee == true,
+//            permission = PermissionEnum.NO_PROTECTION,
+//            extraPermission = user?.isBusinessOrEmployee == true,
 //            navigate = { editProfileNavigate.toEditPublicEmail() }
 //        ),
 //        EditProfileAction(
 //            title = stringResource(R.string.website),
 //            value = user?.website ?: "",
-//            hasPermission = user?.isBusinessOrEmployee == true,
+//            extraPermission = user?.isBusinessOrEmployee == true,
 //            navigate = { editProfileNavigate.toEditWebsite() }
 //        ),
 //        EditProfileAction(
@@ -113,8 +130,15 @@ fun EditProfileScreen(
 //            navigate = {  }
 //        ),
 //    )
-
-//    val actions = actionsList.filter { it.hasPermission }
+//
+//    val actions = remember(actionsListRaw, permissionController.values) {
+//        actionsListRaw.filter { action ->
+//            val hasSystemPermission = action.permission == PermissionEnum.NO_PROTECTION ||
+//                    permissionController.hasPermission(action.permission)
+//
+//            hasSystemPermission && action.extraPermission
+//        }
+//    }
 
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -167,33 +191,37 @@ fun EditProfileScreen(
                 onClick = { scope.launch { sheetState.show() } }
             )
 
-            EditProfileSectionTitle(title = stringResource(R.string.aboutYou))
+            if (aboutList.isNotEmpty()) {
+                EditProfileSectionTitle(title = stringResource(R.string.aboutYou))
 
-            aboutList.forEachIndexed { index, about ->
-                ItemListInfo(
-                    headLine = about.title,
-                    supportingText = about.value,
-                    onClick = about.navigate
-                )
+                aboutList.forEachIndexed { index, about ->
+                    ItemListInfo(
+                        headLine = about.title,
+                        supportingText = about.value,
+                        onClick = about.navigate
+                    )
 
-                if(index <= aboutList.size) {
-                    Spacer(Modifier.padding(vertical = SpacingXXS))
+                    if(index < aboutList.size - 1) {
+                        Spacer(Modifier.padding(vertical = SpacingXXS))
+                    }
                 }
             }
 
             Spacer(Modifier.height(BasePadding))
 
-//            EditProfileSectionTitle(title = stringResource(R.string.buttonActionInProfile))
-
-//            actions.forEachIndexed { index, about ->
-//                ItemListInfo(
-//                    headLine = about.title,
-//                    supportingText = about.value,
-//                    onClick = about.navigate
-//                )
+//            if (actions.isNotEmpty()) {
+//                EditProfileSectionTitle(title = stringResource(R.string.buttonActionInProfile))
 //
-//                if(index <= aboutList.size) {
-//                    Spacer(Modifier.padding(vertical = SpacingXXS))
+//                actions.forEachIndexed { index, about ->
+//                    ItemListInfo(
+//                        headLine = about.title,
+//                        supportingText = about.value,
+//                        onClick = about.navigate
+//                    )
+//
+//                    if(index < actions.size - 1) {
+//                        Spacer(Modifier.padding(vertical = SpacingXXS))
+//                    }
 //                }
 //            }
         }

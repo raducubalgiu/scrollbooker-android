@@ -12,7 +12,7 @@ fun Protected(
 ) {
     val permissionController = LocalUserPermissions.current
     val isAllowed = remember(permission, permissionController.values) {
-        permissionController.hasPermission(permission)
+        permission == PermissionEnum.NO_PROTECTION || permissionController.hasPermission(permission)
     }
 
     if(isAllowed) {

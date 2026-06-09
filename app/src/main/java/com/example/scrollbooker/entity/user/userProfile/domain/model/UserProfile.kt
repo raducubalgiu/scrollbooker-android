@@ -1,5 +1,4 @@
 package com.example.scrollbooker.entity.user.userProfile.domain.model
-import java.math.BigDecimal
 
 data class UserProfile(
     val id: Int,
@@ -7,6 +6,7 @@ data class UserProfile(
     val fullName: String,
     val avatar: String?,
     val gender: String,
+    val birthDate: String?,
     val bio: String?,
     val dateOfBirth: String?,
     val website: String?,

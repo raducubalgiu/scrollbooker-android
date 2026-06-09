@@ -2,8 +2,9 @@ package com.example.scrollbooker.core.enums
 
 enum class PermissionEnum(val key: String) {
     BOOK_BUTTON_VIEW("BOOK_BUTTON_VIEW"),
-
     POST_CREATE("POST_CREATE"),
+    GENDER_EDIT("GENDER_EDIT"),
+    BIRTHDATE_EDIT("BIRTHDATE_EDIT"),
 
     FILTER_APPOINTMENTS_VIEW("FILTER_APPOINTMENTS_VIEW"),
     NOMENCLATURES_VIEW("NOMENCLATURES_VIEW"),
@@ -24,7 +25,9 @@ enum class PermissionEnum(val key: String) {
     MY_CURRENCIES_VIEW("MY_CURRENCIES_VIEW"),
 
     MY_EMPLOYEES_VIEW("MY_EMPLOYEES_VIEW"),
-    MY_EMPLOYMENT_REQUESTS_VIEW("MY_EMPLOYMENT_REQUESTS_VIEW");
+    MY_EMPLOYMENT_REQUESTS_VIEW("MY_EMPLOYMENT_REQUESTS_VIEW"),
+
+    NO_PROTECTION("NO_PROTECTION");
 
     companion object {
         fun fromKey(key: String): PermissionEnum? =

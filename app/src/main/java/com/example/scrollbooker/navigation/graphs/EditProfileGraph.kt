@@ -10,6 +10,7 @@ import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
 import com.example.scrollbooker.ui.profile.edit.EditAvatarCropScreen
 import com.example.scrollbooker.ui.profile.edit.EditBioScreen
+import com.example.scrollbooker.ui.profile.edit.EditBirthDateScreen
 import com.example.scrollbooker.ui.profile.edit.EditFullNameScreen
 import com.example.scrollbooker.ui.profile.edit.EditGenderScreen
 import com.example.scrollbooker.ui.profile.edit.EditProfileScreen
@@ -71,6 +72,13 @@ fun NavGraphBuilder.editProfileGraph(
             EditGenderScreen(
                 viewModel=viewModel,
                 onBack= { navController.popBackStack() }
+            )
+        }
+
+        composable(route = MainRoute.EditBirthDate.route) {
+            EditBirthDateScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() },
             )
         }
 
