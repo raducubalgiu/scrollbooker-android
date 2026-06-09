@@ -110,8 +110,10 @@ fun UserProfileScreen(
                 is FeatureState.Success -> {
                     val user = profileData.data
 
-                    val tabs = remember(user.isBusinessOrEmployee, user.isOwnProfile) {
-                        ProfileTab.getTabs(user.isBusinessOrEmployee, user.isOwnProfile)
+                    val isEmployee = user.isBusinessOrEmployee && user.id != user.businessOwner?.id
+
+                    val tabs = remember(user.isBusinessOrEmployee, isEmployee,  user.isOwnProfile) {
+                        ProfileTab.getTabs(user.isBusinessOrEmployee, isEmployee, user.isOwnProfile)
                     }
 
                     val pagerState = rememberPagerState(initialPage = currentTab) { tabs.size }
@@ -187,6 +189,7 @@ fun UserProfileScreen(
                                             val employees = viewModel.employees.collectAsLazyPagingItems()
 
                                             ProfileEmployeesTab(
+                                                isOwnProfile = user.isOwnProfile,
                                                 employees = employees,
                                                 onNavigateToEmployeeProfile = { userId, username -> profileNavigate.toUserProfile(userId, username) },
                                             )

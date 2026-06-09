@@ -16,6 +16,8 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.AvatarWithRating
 import com.example.scrollbooker.components.core.buttons.MainButtonSmall
+import com.example.scrollbooker.components.customized.Protected.Protected
+import com.example.scrollbooker.core.enums.PermissionEnum
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
 import com.example.scrollbooker.ui.theme.Background
@@ -25,6 +27,7 @@ import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun ProfileEmployee(
+    isOwnProfile: Boolean,
     employee: Employee,
     onNavigateToEmployeeProfile: (userId: Int, username: String) -> Unit
 ) {
@@ -51,11 +54,15 @@ fun ProfileEmployee(
             )
         },
         trailingContent = {
-            MainButtonSmall(
-                modifier = Modifier.clip(shape = ShapeDefaults.ExtraLarge),
-                title = stringResource(R.string.pick),
-                onClick = {}
-            )
+            if(!isOwnProfile) {
+                Protected(permission = PermissionEnum.BOOK_BUTTON_VIEW) {
+                    MainButtonSmall(
+                        modifier = Modifier.clip(shape = ShapeDefaults.ExtraLarge),
+                        title = stringResource(R.string.pick),
+                        onClick = {}
+                    )
+                }
+            }
         },
         leadingContent = {
             AvatarWithRating(

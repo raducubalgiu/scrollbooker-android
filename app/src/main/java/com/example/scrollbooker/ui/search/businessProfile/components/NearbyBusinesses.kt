@@ -105,7 +105,7 @@ fun NearbyBusinesses(
 
         HorizontalPager(
             state = pagerState,
-            userScrollEnabled = shouldShowCarousel,
+            userScrollEnabled = false,
             contentPadding = PaddingValues(horizontal = BasePadding),
             pageSpacing = 16.dp
         ) { pageIndex ->

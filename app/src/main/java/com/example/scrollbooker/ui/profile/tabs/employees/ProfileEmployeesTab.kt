@@ -38,6 +38,7 @@ import com.example.scrollbooker.ui.theme.titleLarge
 
 @Composable
 fun ProfileEmployeesTab(
+    isOwnProfile: Boolean,
     employees: LazyPagingItems<Employee>,
     onNavigateToEmployeeProfile: (userId: Int, username: String) -> Unit
 ) {
@@ -80,6 +81,7 @@ fun ProfileEmployeesTab(
                         items(employees.itemCount) { index ->
                             employees[index]?.let { employee ->
                                 ProfileEmployee(
+                                    isOwnProfile = isOwnProfile,
                                     employee = employee,
                                     onNavigateToEmployeeProfile = onNavigateToEmployeeProfile
                                 )

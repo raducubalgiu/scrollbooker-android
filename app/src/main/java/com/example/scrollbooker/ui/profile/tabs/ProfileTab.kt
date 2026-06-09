@@ -13,11 +13,15 @@ sealed class ProfileTab(
     object Info: ProfileTab(route = "Info", icon = R.drawable.ic_location_outline)
 
     companion object {
-        fun getTabs(isBusinessOrEmployee: Boolean, isMyProfile: Boolean): List<ProfileTab> {
+        fun getTabs(
+            isBusinessOrEmployee: Boolean,
+            isEmployee: Boolean,
+            isMyProfile: Boolean
+        ): List<ProfileTab> {
             return buildList {
                 add(Posts)
                 if(isBusinessOrEmployee) add(Products)
-                if(isBusinessOrEmployee) add(Employees)
+                if(isBusinessOrEmployee && !isEmployee) add(Employees)
                 if(isMyProfile) add(Bookmarks)
                 if(isBusinessOrEmployee) add(Info)
             }
