@@ -8,12 +8,13 @@ import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointment
 import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentWrittenReview
-import com.example.scrollbooker.entity.booking.appointment.domain.useCase.DeleteAppointmentUseCase
+import com.example.scrollbooker.entity.booking.appointment.domain.useCase.CancelAppointmentUseCase
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.GetUserAppointmentsUseCase
 import com.example.scrollbooker.entity.booking.review.data.remote.ReviewCreateRequest
 import com.example.scrollbooker.entity.booking.review.domain.useCase.CreateWrittenReviewUseCase
 import com.example.scrollbooker.entity.booking.review.domain.useCase.DeleteWrittenReviewUseCase
 import com.example.scrollbooker.entity.booking.review.domain.useCase.UpdateWrittenReviewUseCase
+import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -22,6 +23,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
@@ -35,8 +37,9 @@ data class RatingReviewUpdate(
 
 @HiltViewModel
 class AppointmentsViewModel @Inject constructor(
+    private val authDataStore: AuthDataStore,
     private val getUserAppointmentsUseCase: GetUserAppointmentsUseCase,
-    private val deleteAppointmentUseCase: DeleteAppointmentUseCase,
+    private val cancelAppointmentUseCase: CancelAppointmentUseCase,
     private val createWrittenReviewUseCase: CreateWrittenReviewUseCase,
     private val updateWrittenReviewUseCase: UpdateWrittenReviewUseCase,
     private val deleteWrittenReviewUseCase: DeleteWrittenReviewUseCase
@@ -82,11 +85,17 @@ class AppointmentsViewModel @Inject constructor(
         _selectedAppointment.value = appointment
     }
 
-    suspend fun cancelAppointment(appointmentId: Int, message: String): Result<Unit> {
+    suspend fun cancelAppointment(
+        appointmentId: Int,
+        canceledReason: String
+    ): Result<Unit> {
         _isSaving.value = true
 
+        val userId = authDataStore.getUserId().firstOrNull()
+            ?: return Result.failure(Exception("User ID not found"))
+
         val result = withVisibleLoading {
-            deleteAppointmentUseCase(appointmentId, message)
+            cancelAppointmentUseCase(appointmentId, canceledReason, userId)
         }
 
         result
@@ -100,7 +109,7 @@ class AppointmentsViewModel @Inject constructor(
                     if(current.id == appointmentId) {
                         current.copy(
                             status = AppointmentStatusEnum.CANCELED,
-                            message = message
+                            message = canceledReason
                         )
                     } else current
                 }

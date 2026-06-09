@@ -39,8 +39,9 @@ interface AppointmentsApiService {
         @Body request: AppointmentBlockRequest
     )
 
-    @PUT("appointments/cancel-appointment")
+    @PUT("appointments/{appointmentId}/cancel-appointment")
     suspend fun cancelAppointment(
+        @Path("appointmentId") appointmentId: Int,
         @Body request: AppointmentCancelRequest
     )
 }

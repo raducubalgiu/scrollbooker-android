@@ -50,16 +50,16 @@ fun AppointmentCancelReason.toLabel(): Int = when(this) {
 fun AppointmentCancelScreen(
     viewModel: AppointmentsViewModel,
     onBack: () -> Unit,
-    onCancelAppointment: (appointmentId: Int, message: String) -> Unit
+    onCancelAppointment: (appointmentId: Int, canceledReason: String) -> Unit
 ) {
-    val context = LocalContext.current
-    //val appointment by viewModel.selectedAppointment.collectAsState()
+    val appointment by viewModel.selectedAppointment.collectAsState()
     val isSaving by viewModel.isSaving.collectAsState()
-
     val reasons = AppointmentCancelReason.entries.toList()
 
     var message by rememberSaveable { mutableStateOf("") }
     var selectedReason by rememberSaveable { mutableStateOf(AppointmentCancelReason.OTHER) }
+
+    val context = LocalContext.current
 
     val maxLength = 100
     val checkMessage = checkLength(LocalContext.current, maxLength = maxLength, field = message)
@@ -91,12 +91,11 @@ fun AppointmentCancelScreen(
                         contentColor = OnPrimary
                     ),
                     onClick = {
-//                        appointment?.id?.let { id ->
-//                            if(isOtherReason) onCancelAppointment(id, message)
-//                            else onCancelAppointment(
-//                                id, context.getString(selectedReason.toLabel())
-//                            )
-//                        }
+                        val finalMessage = if (isOtherReason) message else context.getString(selectedReason.toLabel())
+
+                        appointment?.id?.let { id ->
+                            onCancelAppointment(id, finalMessage)
+                        }
                     }
                 )
             }

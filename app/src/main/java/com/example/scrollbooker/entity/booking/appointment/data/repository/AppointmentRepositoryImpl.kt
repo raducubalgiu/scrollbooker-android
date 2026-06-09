@@ -46,9 +46,16 @@ class AppointmentRepositoryImpl @Inject constructor(
         return apiService.getUserAppointmentsNumber()
     }
 
-    override suspend fun cancelAppointment(appointmentId: Int, message: String) {
-        val request = AppointmentCancelRequest(appointmentId, message)
-        return apiService.cancelAppointment(request)
+    override suspend fun cancelAppointment(
+        appointmentId: Int,
+        canceledReason: String,
+        canceledByUserId: Int
+    ) {
+        val request = AppointmentCancelRequest(
+            canceledReason,
+            canceledByUserId
+        )
+        return apiService.cancelAppointment(appointmentId, request)
     }
 
     override suspend fun blockAppointments(request: AppointmentBlockRequest) {

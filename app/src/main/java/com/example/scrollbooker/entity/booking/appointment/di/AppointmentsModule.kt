@@ -4,11 +4,11 @@ import com.example.scrollbooker.core.util.Constants
 import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentsApiService
 import com.example.scrollbooker.entity.booking.appointment.data.repository.AppointmentRepositoryImpl
 import com.example.scrollbooker.entity.booking.appointment.domain.repository.AppointmentRepository
+import com.example.scrollbooker.entity.booking.appointment.domain.useCase.CancelAppointmentUseCase
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.CreateBlockAppointmentsUseCase
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.CreateLastMinuteAppointmentUseCase
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.CreateOwnClientAppointmentUseCase
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.CreateScrollBookerAppointmentUseCase
-import com.example.scrollbooker.entity.booking.appointment.domain.useCase.DeleteAppointmentUseCase
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.GetUserAppointmentsNumberUseCase
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.GetUserAppointmentsUseCase
 import dagger.Module
@@ -92,7 +92,7 @@ object AppointmentsModule {
     @Singleton
     fun provideDeleteAppointmentUseCase(
         repository: AppointmentRepository,
-    ): DeleteAppointmentUseCase {
-        return DeleteAppointmentUseCase(repository)
+    ): CancelAppointmentUseCase {
+        return CancelAppointmentUseCase(repository)
     }
 }

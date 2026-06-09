@@ -96,9 +96,9 @@ fun NavGraphBuilder.appointmentsGraph(
             AppointmentCancelScreen(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
-                onCancelAppointment = { appointmentId, message ->
+                onCancelAppointment = { appointmentId, canceledReason ->
                     navController.currentBackStackEntry?.lifecycleScope?.launch {
-                        val result = viewModel.cancelAppointment(appointmentId, message)
+                        val result = viewModel.cancelAppointment(appointmentId, canceledReason)
 
                         result
                             .onSuccess {

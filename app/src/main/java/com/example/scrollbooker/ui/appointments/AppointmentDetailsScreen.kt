@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,7 +21,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.headers.Header
-import com.example.scrollbooker.components.core.sheet.Sheet
 import com.example.scrollbooker.core.enums.AppointmentStatusEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
@@ -35,8 +33,6 @@ import com.example.scrollbooker.ui.appointments.components.ReviewCTA
 import com.example.scrollbooker.ui.appointments.components.VideoReviewCTA
 import com.example.scrollbooker.ui.appointments.sheets.AddReviewSheet
 import com.example.scrollbooker.ui.appointments.sheets.CancelReviewSheet
-import com.example.scrollbooker.ui.shared.booking.BookingsSheet
-import com.example.scrollbooker.ui.shared.booking.BookingsSheetUser
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.titleMedium
@@ -59,41 +55,8 @@ fun AppointmentDetailsScreen(
 
     val scope = rememberCoroutineScope()
 
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val reviewSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val cancelReviewSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
-    if(sheetState.isVisible) {
-        Sheet(
-            modifier = Modifier.statusBarsPadding(),
-            sheetState = sheetState,
-            onClose = { scope.launch { sheetState.hide() } }
-        ) {
-            appointment.let { app ->
-                val user = app?.user ?: return@Sheet
-                val userId = user.id ?: return@Sheet
-                val username = user.username ?: return@Sheet
-                val profession = user.profession ?: return@Sheet
-                val ratingsCount = user.ratingsCount ?: return@Sheet
-                val ratingsAverage = user.ratingsAverage ?: return@Sheet
-
-                BookingsSheet(
-                    user = BookingsSheetUser(
-                        id = userId,
-                        username = username,
-                        fullName = user.fullName,
-                        avatar = user.avatar,
-                        profession = profession,
-                        ratingsCount = ratingsCount,
-                        ratingsAverage = ratingsAverage
-                    ),
-                    initialIndex = 0,
-                    appointmentId = app.id,
-                    onClose = { scope.launch { sheetState.hide() } }
-                )
-            }
-        }
-    }
 
     if(reviewSheetState.isVisible) {
         appointment?.user?.let {
@@ -213,8 +176,7 @@ fun AppointmentDetailsScreen(
                     modifier = Modifier.padding(bottom = SpacingXL),
                     status = a.status,
                     isCustomer = a.isCustomer,
-                    onNavigateToCancel = onNavigateToCancel,
-                    onShowBookingsSheet = { scope.launch { sheetState.show() } }
+                    onNavigateToCancel = onNavigateToCancel
                 )
 
                 if(!a.hasWrittenReview && isFinished && a.isCustomer) {
