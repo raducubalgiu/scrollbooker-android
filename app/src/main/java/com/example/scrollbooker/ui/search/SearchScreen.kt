@@ -56,7 +56,6 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import kotlinx.coroutines.launch
 import rememberLocationsCountText
-import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,43 +80,26 @@ fun SearchScreen(
         contract = ActivityResultContracts.RequestPermission()
     ) { granted ->
         hasLocationPermission = granted
-
-        if (granted) {
-            Timber.tag("SearchScreen").d("Location permission granted, starting location updates")
-        } else {
-            Timber.tag("SearchScreen").d("Location permission denied")
-        }
     }
 
     val fusedLocationClient = remember {
         LocationServices.getFusedLocationProviderClient(context)
     }
 
-    val locationCallback = remember {
-        object : LocationCallback() {
+    DisposableEffect(isSearchTab, hasLocationPermission) {
+        val locationCallback = object : LocationCallback() {
             override fun onLocationResult(result: LocationResult) {
                 result.lastLocation?.let { location ->
-                    val lat = location.latitude
-                    val lng = location.longitude
-
-                    if (isLikelyDevLocation(lat, lng)) {
-                        Timber.tag("SearchScreen").w("Ignoring likely dev/mock location from updates: lat=$lat, lng=$lng")
-                        viewModel.setUserLocation(null)
-                        return@let
-                    }
-
-                    val coordinates = BusinessCoordinates(
-                        lat = lat.toFloat(),
-                        lng = lng.toFloat()
+                    viewModel.setUserLocation(
+                        // Here need to use Double in the future
+                        BusinessCoordinates(
+                            lat = location.latitude.toFloat(),
+                            lng = location.longitude.toFloat()
+                        )
                     )
-                    viewModel.setUserLocation(coordinates)
                 }
             }
         }
-    }
-
-    LaunchedEffect(isSearchTab) {
-        Timber.tag("SearchScreen").d("LaunchedEffect triggered: isSearchTab=$isSearchTab, hasPermission=$hasLocationPermission")
 
         if (isSearchTab) {
             if (hasLocationPermission) {
@@ -136,37 +118,27 @@ fun SearchScreen(
                         context.mainLooper
                     )
 
-                    Timber.tag("SearchScreen").d("Location updates requested successfully")
-
                     fusedLocationClient.lastLocation.addOnSuccessListener { location ->
                         location?.let {
-                            val coordinates = BusinessCoordinates(
-                                lat = it.latitude.toFloat(),
-                                lng = it.longitude.toFloat()
+                            viewModel.setUserLocation(
+                                BusinessCoordinates(
+                                    // Here need to use Double in the future
+                                    lat = it.latitude.toFloat(),
+                                    lng = it.longitude.toFloat()
+                                )
                             )
-                            viewModel.setUserLocation(coordinates)
-                            Timber.tag("SearchScreen").d("Last known location set immediately: lat=${it.latitude}, lng=${it.longitude}")
-                        } ?: run {
-                            Timber.tag("SearchScreen").w("Last known location is null")
                         }
-                    }.addOnFailureListener { e ->
-                        Timber.tag("SearchScreen").e(e, "Failed to get last known location")
                     }
-
                 } catch (e: SecurityException) {
-                    Timber.tag("SearchScreen").e(e, "Security exception when requesting location")
+                    // Tratat silențios în producție sau trimis către un serviciu de crash reporting (ex: Crashlytics)
                 }
             } else {
-                Timber.tag("SearchScreen").d("Requesting location permission...")
                 locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
             }
         }
-    }
 
-    DisposableEffect(Unit) {
         onDispose {
             fusedLocationClient.removeLocationUpdates(locationCallback)
-            Timber.tag("SearchScreen").d("Location updates stopped")
         }
     }
 
@@ -312,9 +284,4 @@ fun SearchScreen(
             ) {}
         }
     }
-}
-
-private fun isLikelyDevLocation(lat: Double, lng: Double): Boolean {
-    val isGoogleplexArea = lat in 37.40..37.45 && lng in -122.10..-122.00
-    return isGoogleplexArea
 }
