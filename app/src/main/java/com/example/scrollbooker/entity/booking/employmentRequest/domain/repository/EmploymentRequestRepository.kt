@@ -9,4 +9,5 @@ interface EmploymentRequestRepository {
     suspend fun getUserEmploymentRequests(userId: Int): List<EmploymentRequest>
     suspend fun createEmploymentRequest(requestCreateDto: EmploymentRequestCreate)
     suspend fun respondEmploymentRequest(status: EmploymentRequestStatusEnum, employmentId: Int)
+    suspend fun cancelEmploymentRequest(employmentId: Int)
 }

@@ -4,6 +4,7 @@ import com.example.scrollbooker.core.util.Constants
 import com.example.scrollbooker.entity.booking.employmentRequest.data.remote.EmploymentRequestApiService
 import com.example.scrollbooker.entity.booking.employmentRequest.data.repository.EmploymentRequestRepositoryImpl
 import com.example.scrollbooker.entity.booking.employmentRequest.domain.repository.EmploymentRequestRepository
+import com.example.scrollbooker.entity.booking.employmentRequest.domain.useCase.CancelEmploymentRequestUseCase
 import com.example.scrollbooker.entity.booking.employmentRequest.domain.useCase.CreateEmploymentRequestUseCase
 import com.example.scrollbooker.entity.booking.employmentRequest.domain.useCase.GetEmploymentRequestByIdUseCase
 import com.example.scrollbooker.entity.booking.employmentRequest.domain.useCase.GetEmploymentRequestsUseCase
@@ -69,5 +70,13 @@ object EmploymentRequestModule {
         repository: EmploymentRequestRepository,
     ): RespondEmploymentRequestUseCase {
         return RespondEmploymentRequestUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCancelEmploymentRequestUseCase(
+        repository: EmploymentRequestRepository,
+    ): CancelEmploymentRequestUseCase {
+        return CancelEmploymentRequestUseCase(repository)
     }
 }

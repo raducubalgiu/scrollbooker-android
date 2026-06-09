@@ -11,6 +11,7 @@ import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
 import com.example.scrollbooker.entity.booking.employee.domain.useCase.GetEmployeesByOwnerUseCase
 import com.example.scrollbooker.entity.booking.employmentRequest.domain.model.EmploymentRequest
 import com.example.scrollbooker.entity.booking.employmentRequest.domain.model.EmploymentRequestCreate
+import com.example.scrollbooker.entity.booking.employmentRequest.domain.useCase.CancelEmploymentRequestUseCase
 import com.example.scrollbooker.entity.booking.employmentRequest.domain.useCase.CreateEmploymentRequestUseCase
 import com.example.scrollbooker.entity.booking.employmentRequest.domain.useCase.GetEmploymentRequestsUseCase
 import com.example.scrollbooker.entity.nomenclature.consent.domain.model.Consent
@@ -52,6 +53,7 @@ class MyEmployeesViewModel @Inject constructor(
     private val getProfessionsByBusinessTypeUseCase: GetProfessionsByBusinessTypeUseCase,
     private val getConsentsByNameUseCase: GetConsentsByNameUseCase,
     private val createEmploymentRequestUseCase: CreateEmploymentRequestUseCase,
+    private val cancelEmploymentRequestUseCase: CancelEmploymentRequestUseCase
 ): ViewModel() {
     @OptIn(ExperimentalCoroutinesApi::class)
     val employees: Flow<PagingData<Employee>> = authDataStore.getBusinessOwnerId()
@@ -197,5 +199,25 @@ class MyEmployeesViewModel @Inject constructor(
 
         _isSaving.value = false
         return result
+    }
+
+    fun cancelEmploymentRequest(requestId: Int) {
+        viewModelScope.launch {
+            _isSaving.value = true
+
+            val result = withVisibleLoading {
+                cancelEmploymentRequestUseCase(requestId)
+            }
+
+            result
+                .onFailure { e ->
+                    _isSaving.value = false
+                    Timber.tag("Employment Requests").e("ERROR: on Cancelling Employment Request $e")
+                }
+                .onSuccess {
+                    loadEmploymentRequests()
+                    _isSaving.value = false
+                }
+        }
     }
 }

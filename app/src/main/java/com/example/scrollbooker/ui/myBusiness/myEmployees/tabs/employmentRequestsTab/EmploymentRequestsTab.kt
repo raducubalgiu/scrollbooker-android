@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.dialog.DialogConfirm
@@ -36,20 +36,29 @@ fun EmploymentRequestsTab(
     viewModel: MyEmployeesViewModel,
     onNavigateToSearchUser: () -> Unit
 ) {
-    val state by viewModel.employmentRequests.collectAsState()
-    var selectedEmployment by remember { mutableStateOf<Int?>(null) }
+    val state by viewModel.employmentRequests.collectAsStateWithLifecycle()
+    val isSaving by viewModel.isSaving.collectAsStateWithLifecycle()
+    var employmentRequestId by remember { mutableStateOf<Int?>(null) }
     var openModal by remember { mutableStateOf(false) }
 
     if(openModal) {
         DialogConfirm(
             onDismissRequest = {
-                openModal = false
-                selectedEmployment = null
+                if (!isSaving) {
+                    openModal = false
+                    employmentRequestId = null
+                }
             },
-            onConfirmation = {},
+            onConfirmation = {
+                employmentRequestId?.let {
+                    viewModel.cancelEmploymentRequest(it)
+                }
+                openModal = false
+                employmentRequestId = null
+            },
             title = stringResource(R.string.deleteRequest),
             text = stringResource(R.string.areYouSureDeleteEmploymentRequest),
-            confirmText = stringResource(R.string.delete)
+            confirmText = stringResource(R.string.delete),
         )
     }
 
@@ -66,14 +75,14 @@ fun EmploymentRequestsTab(
                 }
 
                 LazyColumn(Modifier.weight(1f)) {
-                    item { Spacer(Modifier.height(SpacingS)) }
+                    item { Spacer(Modifier.height(BasePadding)) }
 
                     itemsIndexed(result.data) { index, employmentRequest ->
                         EmploymentRequestCard(
                             employmentRequest = employmentRequest,
                             onClick = {
                                 openModal = true
-                                selectedEmployment = it
+                                employmentRequestId = it
                             }
                         )
                     }

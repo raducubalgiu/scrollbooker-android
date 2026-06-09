@@ -1,7 +1,9 @@
 package com.example.scrollbooker.ui.myBusiness.myEmployees.tabs.employeesTab
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,6 +17,7 @@ import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.customized.LoadMoreSpinner
+import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.myBusiness.myEmployees.MyEmployeesViewModel
 import com.example.scrollbooker.ui.myBusiness.myEmployees.components.EmployeeCard
 
@@ -31,6 +34,8 @@ fun EmployeesTab(
             is LoadState.Error -> ErrorScreen()
             is LoadState.NotLoading -> {
                 LazyColumn(Modifier.fillMaxSize()) {
+                    item { Spacer(Modifier.height(BasePadding)) }
+
                     items(employees.itemCount) { index ->
                         employees[index]?.let {
                             EmployeeCard(it, onNavigateToDismissalScreen = {})

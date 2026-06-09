@@ -33,4 +33,8 @@ class EmploymentRequestRepositoryImpl @Inject constructor(
         return apiService.respondEmploymentRequest(request, employmentId)
     }
 
+    override suspend fun cancelEmploymentRequest(employmentId: Int) {
+        return apiService.cancelEmploymentRequest(employmentId)
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.example.scrollbooker.entity.booking.employmentRequest.data.remote
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -24,6 +25,11 @@ interface EmploymentRequestApiService {
     @PUT("employment-requests/{employmentId}")
     suspend fun respondEmploymentRequest(
         @Body requestRespondDto: EmploymentRequestRespondDto,
+        @Path("employmentId") employmentId: Int
+    )
+
+    @DELETE("employment-requests/{employmentId}/cancel")
+    suspend fun cancelEmploymentRequest(
         @Path("employmentId") employmentId: Int
     )
 }

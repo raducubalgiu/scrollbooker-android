@@ -1,11 +1,18 @@
 package com.example.scrollbooker.components.core.dialog
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.ui.theme.Error
@@ -20,7 +27,8 @@ fun DialogConfirm(
     onConfirmation: () -> Unit,
     title: String,
     text: String,
-    confirmText: String = stringResource(R.string.delete)
+    confirmText: String = stringResource(R.string.delete),
+    isLoading: Boolean = false
 ) {
     AlertDialog(
         title = {
@@ -40,12 +48,28 @@ fun DialogConfirm(
         },
         onDismissRequest = onDismissRequest,
         confirmButton = {
-            TextButton(onClick = onConfirmation) {
-                Text(
-                    color = Error,
-                    fontWeight = FontWeight.ExtraBold,
-                    text = confirmText
-                )
+            TextButton(
+                onClick = onConfirmation,
+                enabled = !isLoading
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.defaultMinSize(minWidth = 60.dp)
+                ) {
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(18.dp),
+                            strokeWidth = 2.dp,
+                            color = Error
+                        )
+                    } else {
+                        Text(
+                            color = Error,
+                            fontWeight = FontWeight.ExtraBold,
+                            text = confirmText
+                        )
+                    }
+                }
             }
         },
         dismissButton = {

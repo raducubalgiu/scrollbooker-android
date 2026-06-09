@@ -58,7 +58,7 @@ fun EmploymentRespondScreen(
             },
             title = stringResource(R.string.denyEmploymentRequest),
             text = stringResource(R.string.areYouSureDenyEmployment),
-            confirmText = stringResource(R.string.deny)
+            confirmText = stringResource(R.string.deny),
         )
     }
 
