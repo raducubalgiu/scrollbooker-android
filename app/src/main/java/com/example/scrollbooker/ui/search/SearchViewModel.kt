@@ -261,6 +261,34 @@ class SearchViewModel @Inject constructor(
                 initialValue = FeatureState.Loading
             )
 
+    val selectedServicesText: StateFlow<String> = combine(
+        _request,
+        _selectedServiceDomain,
+        services
+    ) { requestState, selectedDomain, servicesState ->
+        val filters = requestState.filters
+
+        if (filters.serviceDomainId == null && filters.serviceId == null) {
+            return@combine "Toate serviciile"
+        }
+
+        val domainName = selectedDomain?.name ?: "Servicii"
+
+        val serviceName = if (filters.serviceId != null && servicesState is FeatureState.Success) {
+            servicesState.data
+                .find { it.id == filters.serviceId }?.name
+        } else null
+
+        when {
+            serviceName != null -> "$domainName – $serviceName"
+            else -> domainName
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = "Toate serviciile"
+    )
+
     init {
         loadAllBusinessDomains()
 
