@@ -8,6 +8,8 @@ import com.example.scrollbooker.entity.booking.business.data.remote.BusinessProf
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessProfileReviewDto
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessProfileReviewerDto
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessProfileReviewsDto
+import com.example.scrollbooker.entity.booking.business.data.remote.NearbyBusinessDto
+import com.example.scrollbooker.entity.booking.business.data.remote.NearbyBusinessOwnerDto
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessLocation
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfile
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileCounters
@@ -16,9 +18,9 @@ import com.example.scrollbooker.entity.booking.business.domain.model.BusinessPro
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileReview
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileReviewer
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileReviews
-import com.example.scrollbooker.entity.booking.products.data.mappers.toDomain
+import com.example.scrollbooker.entity.booking.business.domain.model.NearbyBusiness
+import com.example.scrollbooker.entity.booking.business.domain.model.NearbyBusinessOwner
 import com.example.scrollbooker.entity.booking.schedule.data.mappers.toDomain
-import com.example.scrollbooker.entity.social.post.data.mappers.toDomain
 import com.example.scrollbooker.entity.user.userProfile.data.mappers.toDomain
 import org.threeten.bp.ZonedDateTime
 
@@ -34,6 +36,7 @@ fun BusinessProfileDto.toDomain(): BusinessProfile {
         employees = employees.map { it.toDomain() },
         schedules = schedules.map { it.toDomain() },
         reviews = reviews.toDomain(),
+        nearbyBusinesses = nearbyBusinesses.map { it.toDomain() }
         //posts = posts.map { it.toDomain() }
     )
 }
@@ -102,5 +105,26 @@ fun BusinessProfileReviewerDto.toDomain(): BusinessProfileReviewer {
         fullName = fullName,
         username = username,
         avatar = avatar
+    )
+}
+
+fun NearbyBusinessDto.toDomain(): NearbyBusiness {
+    return NearbyBusiness(
+        id = id,
+        owner = owner.toDomain(),
+        mediaFiles = mediaFiles,
+        location = location,
+        distanceKm = distanceKm
+    )
+}
+
+fun NearbyBusinessOwnerDto.toDomain(): NearbyBusinessOwner {
+    return NearbyBusinessOwner(
+        id = id,
+        fullName = fullName,
+        username = username,
+        profession = profession,
+        avatar = avatar,
+        counters = counters.toDomain(),
     )
 }

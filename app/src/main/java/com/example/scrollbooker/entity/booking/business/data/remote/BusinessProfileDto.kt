@@ -27,6 +27,9 @@ data class BusinessProfileDto(
     val schedules: List<ScheduleDto>,
     val reviews: BusinessProfileReviewsDto,
     //val posts: List<PostDto>
+
+    @SerializedName("nearby_businesses")
+    val nearbyBusinesses: List<NearbyBusinessDto>
 )
 
 data class BusinessProfileOwnerDto(
@@ -106,4 +109,28 @@ data class BusinessProfileReviewerDto(
 
     val username: String,
     val avatar: String?
+)
+
+data class NearbyBusinessOwnerDto(
+    val id: Int,
+
+    @SerializedName("fullname")
+    val fullName: String,
+    val username: String,
+    val profession: String,
+    val avatar: String?,
+    val counters: BusinessProfileCountersDto,
+)
+
+data class NearbyBusinessDto(
+    val id: Int,
+    val owner: NearbyBusinessOwnerDto,
+
+    @SerializedName("media_files")
+    val mediaFiles: List<BusinessMediaFileDto>,
+
+    val location: BusinessLocationDto,
+
+    @SerializedName("distance_km")
+    val distanceKm: Float?,
 )

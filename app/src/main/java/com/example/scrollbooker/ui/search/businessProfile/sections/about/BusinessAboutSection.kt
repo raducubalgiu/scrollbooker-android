@@ -15,15 +15,19 @@ import com.example.scrollbooker.components.customized.SectionMap
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessLocation
+import com.example.scrollbooker.entity.booking.business.domain.model.NearbyBusiness
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
+import com.example.scrollbooker.ui.search.businessProfile.components.NearbyBusinesses
 import com.example.scrollbooker.ui.theme.titleLarge
 
 @Composable
 fun BusinessAboutSection(
+    nearbyBusinesses: List<NearbyBusiness>,
     description: String,
     schedules: List<Schedule>,
     location: BusinessLocation,
-    fullName: String
+    fullName: String,
+    onNavigateToBusinessProfile: (username: String) -> Unit
 ) {
     Column(modifier = Modifier
         .fillMaxWidth()
@@ -69,6 +73,13 @@ fun BusinessAboutSection(
                 fullName = fullName
             )
         }
+
+        Spacer(Modifier.height(BasePadding))
+
+        NearbyBusinesses(
+            businesses = nearbyBusinesses,
+            onNavigateToBusinessProfile = onNavigateToBusinessProfile
+        )
 
         Spacer(Modifier.height(SpacingXL))
     }

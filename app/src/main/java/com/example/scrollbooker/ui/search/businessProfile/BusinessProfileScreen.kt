@@ -250,7 +250,11 @@ fun BusinessProfileScreen(
                             description = profile.description ?: "",
                             schedules = profile.schedules,
                             location = profile.location,
-                            fullName = profile.owner.fullName
+                            fullName = profile.owner.fullName,
+                            nearbyBusinesses = profile.nearbyBusinesses,
+                            onNavigateToBusinessProfile = { username ->
+                                searchNavigate.toBusinessProfile(username)
+                            }
                         )
                     }
                 }
