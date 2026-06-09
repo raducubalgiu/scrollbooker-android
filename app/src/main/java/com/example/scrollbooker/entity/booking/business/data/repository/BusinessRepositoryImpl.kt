@@ -96,11 +96,12 @@ class BusinessRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateBusinessServices(
+        businessId: Int,
         serviceIds: List<Int>
     ): List<SelectedServiceDomainsWithServices> {
         val request = BusinessServicesUpdateRequest(serviceIds)
 
-        return apiService.updateBusinessServices(request).map { it.toDomain() }
+        return apiService.updateBusinessServices(businessId, request).map { it.toDomain() }
     }
 
     override suspend fun getBusiness(userId: Int): Business {

@@ -98,8 +98,14 @@ class MyServicesViewModel @Inject constructor(
     suspend fun updateBusinessServices(): List<SelectedServiceDomainsWithServices>? {
         _isSaving.value = FeatureState.Loading
 
+        val businessId = authDataStore.getBusinessId().firstOrNull()
+
+        if(businessId == null) {
+            throw IllegalStateException("Business Id not found in data store")
+        }
+
         val serviceIds = _selectedServiceIds.value.toList()
-        val result = withVisibleLoading { updateBusinessServicesUseCase(serviceIds) }
+        val result = withVisibleLoading { updateBusinessServicesUseCase(businessId, serviceIds) }
 
         return result
             .onFailure { e ->
@@ -126,7 +132,7 @@ class MyServicesViewModel @Inject constructor(
 
                 _events.tryEmit(
                     SnackBarUiEvent.Show(
-                        message = UiText.Resource(R.string.scheduleSaved)
+                        message = UiText.Resource(R.string.serviceCategorySaved)
                     )
                 )
             }

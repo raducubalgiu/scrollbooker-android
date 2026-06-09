@@ -30,8 +30,9 @@ interface BusinessApiService {
         @Path("userId") userId: Int
     ): BusinessDto
 
-    @PUT("/businesses/update-services")
+    @PUT("/businesses/{businessId}/update-services")
     suspend fun updateBusinessServices(
+        @Path("businessId") businessId: Int,
         @Body request: BusinessServicesUpdateRequest
     ): List<SelectedServiceDomainsWithServicesDto>
 

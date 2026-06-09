@@ -16,7 +16,10 @@ import kotlinx.coroutines.flow.Flow
 
 interface BusinessRepository {
     suspend fun searchBusinessAddress(query: String): List<BusinessAddress>
-    suspend fun updateBusinessServices(serviceIds: List<Int>): List<SelectedServiceDomainsWithServices>
+    suspend fun updateBusinessServices(
+        businessId: Int,
+        serviceIds: List<Int>
+    ): List<SelectedServiceDomainsWithServices>
     suspend fun getBusiness(userId: Int): Business
     suspend fun getBusinessProfileByOwnerUsername(ownerUsername: String): BusinessProfile
     suspend fun updateBusinessHasEmployees(hasEmployees: Boolean): AuthState

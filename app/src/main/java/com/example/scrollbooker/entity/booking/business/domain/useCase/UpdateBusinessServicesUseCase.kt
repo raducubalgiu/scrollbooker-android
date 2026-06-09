@@ -7,8 +7,9 @@ class UpdateBusinessServicesUseCase @Inject constructor(
     private val repository: BusinessRepository
 ) {
     suspend operator fun invoke(
-        serviceIds: List<Int>
+        businessId: Int,
+        serviceIds: List<Int>,
     ): Result<List<SelectedServiceDomainsWithServices>> = runCatching {
-        repository.updateBusinessServices(serviceIds)
+        repository.updateBusinessServices(businessId, serviceIds)
     }
 }
