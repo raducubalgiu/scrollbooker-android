@@ -29,6 +29,8 @@ data class SettingsItem(
     val navigate: () -> Unit
 )
 
+// V2 - Some settings options are removed for now, will be added in the future updates
+
 @Composable
 fun SettingsScreen(
     onBack: () -> Unit,
@@ -36,46 +38,46 @@ fun SettingsScreen(
     onLogout: () -> Unit
 ) {
     val editProfileItems = listOf(
-        SettingsItem(
-            headline = stringResource(R.string.account),
-            icon = R.drawable.ic_person_outline,
-            navigate = { settingsNavigate.toAccount() }
-        ),
-        SettingsItem(
-            headline = stringResource(R.string.privacy),
-            icon = R.drawable.ic_lock_closed_outline,
-            navigate = { settingsNavigate.toPrivacy() }
-        ),
-        SettingsItem(
-            headline = stringResource(R.string.security),
-            icon = R.drawable.ic_shield_check_outline,
-            navigate = { settingsNavigate.toSecurity() }
-        ),
+//        SettingsItem(
+//            headline = stringResource(R.string.account),
+//            icon = R.drawable.ic_person_outline,
+//            navigate = { settingsNavigate.toAccount() }
+//        ),
+//        SettingsItem(
+//            headline = stringResource(R.string.privacy),
+//            icon = R.drawable.ic_lock_closed_outline,
+//            navigate = { settingsNavigate.toPrivacy() }
+//        ),
+//        SettingsItem(
+//            headline = stringResource(R.string.security),
+//            icon = R.drawable.ic_shield_check_outline,
+//            navigate = { settingsNavigate.toSecurity() }
+//        ),
         SettingsItem(
             headline = stringResource(R.string.display),
             icon = R.drawable.ic_moon_outline,
             navigate = { settingsNavigate.toDisplay() }
         ),
-        SettingsItem(
-            headline = stringResource(R.string.notifications),
-            icon = R.drawable.ic_notifications_outline,
-            navigate = { settingsNavigate.toNotifications() }
-        ),
+//        SettingsItem(
+//            headline = stringResource(R.string.notifications),
+//            icon = R.drawable.ic_notifications_outline,
+//            navigate = { settingsNavigate.toNotifications() }
+//        ),
         SettingsItem(
             headline = stringResource(R.string.reportProblem),
             icon = R.drawable.ic_flag_outline,
             navigate = { settingsNavigate.toReportProblem() }
         ),
-        SettingsItem(
-            headline = stringResource(R.string.support),
-            icon = R.drawable.ic_comment_outline,
-            navigate = { settingsNavigate.toSupport() }
-        ),
-        SettingsItem(
-            headline = stringResource(R.string.termsAndConditions),
-            icon = R.drawable.ic_info_outline,
-            navigate = { settingsNavigate.toTermsAndConditions() }
-        )
+//        SettingsItem(
+//            headline = stringResource(R.string.support),
+//            icon = R.drawable.ic_comment_outline,
+//            navigate = { settingsNavigate.toSupport() }
+//        ),
+//        SettingsItem(
+//            headline = stringResource(R.string.termsAndConditions),
+//            icon = R.drawable.ic_info_outline,
+//            navigate = { settingsNavigate.toTermsAndConditions() }
+//        )
     )
 
     Layout(
