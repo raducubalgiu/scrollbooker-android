@@ -17,9 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.headers.HeaderEdit
 import com.example.scrollbooker.components.core.inputs.InputRadio
-import com.example.scrollbooker.components.core.layout.Layout
+import com.example.scrollbooker.components.core.layout.FormLayout
 import com.example.scrollbooker.core.enums.GenderTypeEnum
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.FeatureState
@@ -53,17 +52,14 @@ fun EditGenderScreen(
         }
     }
 
-    Layout(
-        enablePaddingH = false,
-        header =  {
-            HeaderEdit(
-                onBack = onBack,
-                title = stringResource(R.string.gender),
-                onAction = { viewModel.updateGender(newGender) },
-                isLoading = isLoading,
-                isEnabled = isEnabled
-            )
-        }
+    FormLayout(
+        headLine = stringResource(R.string.chooseYourGender),
+        subHeadLine = stringResource(R.string.genderLabelDescription),
+        buttonTitle = stringResource(R.string.save),
+        isLoading = isLoading,
+        isEnabled = isEnabled,
+        onBack = onBack,
+        onNext = { viewModel.updateGender(newGender) }
     ) {
         LazyColumn {
             itemsIndexed(genders) { index, gender ->
