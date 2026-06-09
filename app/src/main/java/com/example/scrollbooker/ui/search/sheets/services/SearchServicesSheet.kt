@@ -19,8 +19,8 @@ import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.S
 import com.example.scrollbooker.ui.search.SearchRequestState
 import com.example.scrollbooker.ui.search.SearchViewModel
 import com.example.scrollbooker.ui.search.sheets.services.components.MainFiltersFooter
-import com.example.scrollbooker.ui.search.sheets.services.steps.DateTimeState
-import com.example.scrollbooker.ui.search.sheets.services.steps.DateTimeStep
+import com.example.scrollbooker.ui.search.sheets.services.steps.dateTime.DateTimeState
+import com.example.scrollbooker.ui.search.sheets.services.steps.dateTime.DateTimeStep
 import com.example.scrollbooker.ui.search.sheets.services.steps.MainFiltersStep
 import com.example.scrollbooker.ui.search.sheets.services.steps.ServiceStep
 import com.example.scrollbooker.ui.search.sheets.services.steps.servicesSheetTransitionSpec

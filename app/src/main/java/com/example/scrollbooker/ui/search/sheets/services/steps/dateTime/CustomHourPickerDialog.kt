@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.search.sheets.services.steps
+package com.example.scrollbooker.ui.search.sheets.services.steps.dateTime
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
@@ -39,6 +39,7 @@ import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.titleLarge
 import org.threeten.bp.LocalTime
 import org.threeten.bp.format.DateTimeFormatter
+import kotlin.math.abs
 
 
 @Composable
@@ -64,7 +65,7 @@ fun CustomHourPickerDialog(
                 val containerCenter = (layoutInfo.viewportStartOffset + layoutInfo.viewportEndOffset) / 2
                 visibleItemsInfo.minByOrNull {
                     val itemCenter = (it.offset + it.offset + it.size) / 2
-                    kotlin.math.abs(itemCenter - containerCenter)
+                    abs(itemCenter - containerCenter)
                 }?.index ?: listState.firstVisibleItemIndex
             }
         }

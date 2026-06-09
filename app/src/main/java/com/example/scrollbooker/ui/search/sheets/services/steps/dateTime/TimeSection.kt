@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.search.sheets.services.steps
+package com.example.scrollbooker.ui.search.sheets.services.steps.dateTime
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
@@ -35,17 +35,6 @@ import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.titleMedium
 import org.threeten.bp.LocalTime
 import org.threeten.bp.format.DateTimeFormatter
-
-enum class TimeIntervalPreset(
-    val start: LocalTime?,
-    val end: LocalTime?
-) {
-    ANYTIME(start = null, end = null),
-    MORNING(start = LocalTime.of(9, 0), end = LocalTime.of(12, 0)),
-    LUNCH(start = LocalTime.of(12, 0), end = LocalTime.of(18, 0)),
-    EVENING(start = LocalTime.of(18, 0), end = LocalTime.of(22, 0)),
-    CUSTOM(start = null, end = null)
-}
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -85,68 +74,22 @@ fun TimeSection(
                 .horizontalScroll(rememberScrollState()),
             horizontalArrangement = Arrangement.spacedBy(SpacingM)
         ) {
-            TimeIntervalCard(
-                hasTime = false,
-                title = stringResource(R.string.anytime),
-                isSelected = currentPreset == TimeIntervalPreset.ANYTIME,
-                onClick = {
-                    onTimeChange(
-                        TimeIntervalPreset.ANYTIME.start,
-                        TimeIntervalPreset.ANYTIME.end
-                    )
-                }
-            )
-
-            TimeIntervalCard(
-                hasTime = true,
-                title = stringResource(R.string.morning),
-                description = "09:00 - 12:00",
-                isSelected = currentPreset == TimeIntervalPreset.MORNING,
-                onClick = {
-                    onTimeChange(
-                        TimeIntervalPreset.MORNING.start,
-                        TimeIntervalPreset.MORNING.end
-                    )
-                }
-            )
-
-            TimeIntervalCard(
-                hasTime = true,
-                title = stringResource(R.string.afternoon),
-                description = "12:00 - 18:00",
-                isSelected = currentPreset == TimeIntervalPreset.LUNCH,
-                onClick = {
-                    onTimeChange(
-                        TimeIntervalPreset.LUNCH.start,
-                        TimeIntervalPreset.LUNCH.end
-                    )
-                }
-            )
-
-            TimeIntervalCard(
-                hasTime = true,
-                title = stringResource(R.string.evening),
-                description = "18:00 - 22:00",
-                isSelected = currentPreset == TimeIntervalPreset.EVENING,
-                onClick = {
-                    onTimeChange(
-                        TimeIntervalPreset.EVENING.start,
-                        TimeIntervalPreset.EVENING.end
-                    )
-                }
-            )
-
-            TimeIntervalCard(
-                hasTime = false,
-                title = "Custom",
-                isSelected = currentPreset == TimeIntervalPreset.CUSTOM,
-                onClick = {
-                    val defaultStart = startTime ?: LocalTime.of(9, 0)
-                    val defaultEnd = endTime ?: LocalTime.of(18, 0)
-
-                    onTimeChange(defaultStart, defaultEnd)
-                }
-            )
+            TimeIntervalPreset.entries.forEach { preset ->
+                TimeIntervalCard(
+                    hasTime = false,
+                    title = stringResource(preset.labelRes),
+                    isSelected = currentPreset == preset,
+                    onClick = {
+                        if (preset == TimeIntervalPreset.CUSTOM) {
+                            val defaultStart = startTime ?: LocalTime.of(9, 0)
+                            val defaultEnd = endTime ?: LocalTime.of(18, 0)
+                            onTimeChange(defaultStart, defaultEnd)
+                        } else {
+                            onTimeChange(preset.start, preset.end)
+                        }
+                    }
+                )
+            }
         }
 
         AnimatedVisibility(visible = currentPreset == TimeIntervalPreset.CUSTOM) {

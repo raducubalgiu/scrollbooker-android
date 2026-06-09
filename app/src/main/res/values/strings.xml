@@ -267,6 +267,7 @@
     <string name="morning">Dimineață</string>
     <string name="afternoon">La prânz</string>
     <string name="evening">Seara</string>
+    <string name="custom">Custom</string>
     <string name="from">De la</string>
     <string name="until">Până la</string>
     <string name="chooseWhatDoYouWantToSeeInFeed">"Alege ce vrei să vezi în Feed-ul tău</string>

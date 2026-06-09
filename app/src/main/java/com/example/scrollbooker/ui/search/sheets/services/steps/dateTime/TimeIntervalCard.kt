@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.search.sheets.services.steps
+package com.example.scrollbooker.ui.search.sheets.services.steps.dateTime
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
