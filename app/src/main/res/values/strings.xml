@@ -263,6 +263,12 @@
     <string name="proposedProfession">Funcția propusă</string>
     <string name="allServices">Toate Serviciile</string>
     <string name="anytimeAnyHour">Oricând la orice oră</string>
+    <string name="anytime">Oricând</string>
+    <string name="morning">Dimineață</string>
+    <string name="afternoon">La prânz</string>
+    <string name="evening">Seara</string>
+    <string name="from">De la</string>
+    <string name="until">Până la</string>
     <string name="chooseWhatDoYouWantToSeeInFeed">"Alege ce vrei să vezi în Feed-ul tău</string>
     <string name="clearFilters">Elimină filtrele</string>
     <string name="filterVideoContentAccordingToYouPreferences">Filtrează conținutul video în funcție de preferințele tale</string>
