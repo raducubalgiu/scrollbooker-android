@@ -114,10 +114,13 @@ fun NavGraphBuilder.myBusinessGraph(
                     navController.getBackStackEntry(MainRoute.MyEmployeesNavigator.route)
                 }
 
+                val tabIndex = parentEntry.arguments?.getInt("tabIndex") ?: 0
+
                 val viewModel = hiltViewModel<MyEmployeesViewModel>(parentEntry)
 
                 MyEmployeesScreen(
                     viewModel = viewModel,
+                    tabIndex = tabIndex,
                     onBack = { navController.popBackStack() },
                     onNavigateToSearchUser = { navController.navigate(MainRoute.EmploymentSelectEmployee.route) }
                 )
@@ -166,7 +169,7 @@ fun NavGraphBuilder.myBusinessGraph(
                             val result = viewModel.createEmploymentRequest()
                             result
                                 .onSuccess {
-                                    navController.navigate("${MainRoute.MyEmployeesNavigator.route}/1") {
+                                    navController.navigate("myEmployeesNavigator/1") {
                                         popUpTo(MainRoute.MyEmployeesNavigator.route) {
                                             inclusive = true
                                         }

@@ -27,10 +27,11 @@ import kotlinx.coroutines.launch
 @Composable
 fun MyEmployeesScreen(
     viewModel: MyEmployeesViewModel,
+    tabIndex: Int,
     onBack: () -> Unit,
     onNavigateToSearchUser: () -> Unit
 ) {
-    val pagerState = rememberPagerState { 2 }
+    val pagerState = rememberPagerState(initialPage = tabIndex) { 2 }
     val tabs = remember { MyEmployeesTab.getTabs }
     val selectedTabIndex = pagerState.currentPage
     val scope = rememberCoroutineScope()
