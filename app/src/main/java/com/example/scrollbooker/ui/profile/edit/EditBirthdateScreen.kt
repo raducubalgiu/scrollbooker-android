@@ -18,6 +18,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.inputs.InputSelect
 import com.example.scrollbooker.components.core.inputs.Option
 import com.example.scrollbooker.components.core.layout.FormLayout
+import com.example.scrollbooker.core.util.AppLocaleProvider
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.FeatureState
@@ -33,21 +34,42 @@ fun EditBirthDateScreen(
     viewModel: MyProfileViewModel,
     onBack: () -> Unit
 ) {
+    val userState by viewModel.profile.collectAsState()
+    val user = (userState as? FeatureState.Success)?.data
+
     val state = viewModel.editState.collectAsState().value
     val selectedDay by viewModel.selectedDay.collectAsState()
     val selectedMonth by viewModel.selectedMonth.collectAsState()
     val selectedYear by viewModel.selectedYear.collectAsState()
     val isBirthDateValid by viewModel.isBirthDateValid.collectAsState()
 
-    val isEnabled by viewModel.isBirthDateValid.collectAsState()
     val isLoading = state is FeatureState.Loading
-
     val currentYear = LocalDate.now().year
 
-    val monthOptions = remember {
+    val currentLocale = AppLocaleProvider.current()
+
+    LaunchedEffect(user?.dateOfBirth) {
+        val birthDateStr = user?.dateOfBirth
+        if (!birthDateStr.isNullOrBlank() && selectedDay == null && selectedMonth == null && selectedYear == null) {
+            try {
+                val parsedDate = LocalDate.parse(birthDateStr)
+
+                val dayStr = parsedDate.dayOfMonth.toString().padStart(2, '0')
+                val monthStr = parsedDate.monthValue.toString().padStart(2, '0')
+                val yearStr = parsedDate.year.toString()
+
+                viewModel.setSelectedDay(dayStr)
+                viewModel.setSelectedMonth(monthStr)
+                viewModel.setSelectedYear(yearStr)
+            } catch (_: Exception) {
+            }
+        }
+    }
+
+    val monthOptions = remember(currentLocale) {
         (1..12).map { month ->
             val name = Month.of(month)
-                .getDisplayName(TextStyle.FULL, Locale("ro"))
+                .getDisplayName(TextStyle.FULL, currentLocale)
                 .replaceFirstChar { it.uppercase(Locale.ROOT) }
 
             Option(
@@ -84,7 +106,7 @@ fun EditBirthDateScreen(
                     Option(value = it.toString().padStart(2, '0'), name = it.toString())
                 }
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) { // Curățat warning
             emptyList()
         }
     }
@@ -95,8 +117,10 @@ fun EditBirthDateScreen(
 
         val newDayOptions = getValidDayOptions(month, year)
 
-        if(selectedDay !in newDayOptions.map { it.value }) {
-            viewModel.setSelectedDay(null)
+        if (selectedDay != null && selectedDay !in newDayOptions.map { it.value }) {
+            if (user?.dateOfBirth?.contains(selectedDay.toString()) == false) {
+                viewModel.setSelectedDay(null)
+            }
         }
 
         dayOptions = newDayOptions
@@ -106,7 +130,7 @@ fun EditBirthDateScreen(
         headLine = stringResource(R.string.dateOfBirth),
         subHeadLine = stringResource(R.string.dateOfBirthLabelDescription),
         buttonTitle = stringResource(R.string.save),
-        isEnabled = isEnabled && !isLoading && isBirthDateValid,
+        isEnabled = isBirthDateValid && !isLoading,
         isLoading = isLoading,
         onBack = onBack,
         onNext = {
@@ -127,7 +151,7 @@ fun EditBirthDateScreen(
                 InputSelect(
                     options = dayOptions,
                     placeholder = stringResource(R.string.day),
-                    selectedOption = selectedDay.toString(),
+                    selectedOption = selectedDay ?: "",
                     onValueChange = { viewModel.setSelectedDay(it) }
                 )
             }
@@ -138,7 +162,7 @@ fun EditBirthDateScreen(
                 InputSelect(
                     options = monthOptions,
                     placeholder = stringResource(R.string.month),
-                    selectedOption = selectedMonth.toString(),
+                    selectedOption = selectedMonth ?: "",
                     onValueChange = { viewModel.setSelectedMonth(it) }
                 )
             }
@@ -149,7 +173,7 @@ fun EditBirthDateScreen(
                 InputSelect(
                     options = yearOptions,
                     placeholder = stringResource(R.string.year),
-                    selectedOption = selectedYear.toString(),
+                    selectedOption = selectedYear ?: "",
                     onValueChange = { viewModel.setSelectedYear(it) }
                 )
             }

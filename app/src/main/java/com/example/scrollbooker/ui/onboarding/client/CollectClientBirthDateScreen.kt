@@ -24,6 +24,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.inputs.InputSelect
 import com.example.scrollbooker.components.core.inputs.Option
 import com.example.scrollbooker.components.core.layout.FormLayout
+import com.example.scrollbooker.core.util.AppLocaleProvider
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
@@ -49,11 +50,12 @@ fun CollectClientBirthDateScreen(
     val isLoading = isSaving is FeatureState.Loading
 
     val currentYear = LocalDate.now().year
+    val currentLocale = AppLocaleProvider.current()
 
-    val monthOptions = remember {
+    val monthOptions = remember(currentLocale) {
         (1..12).map { month ->
             val name = Month.of(month)
-                .getDisplayName(TextStyle.FULL, Locale("ro"))
+                .getDisplayName(TextStyle.FULL, currentLocale)
                 .replaceFirstChar { it.uppercase(Locale.ROOT) }
 
             Option(

@@ -12,13 +12,10 @@ data class UserProfileDto (
     val avatar: String?,
     val gender: String,
 
-    @SerializedName("birth_date")
-    val birthDate: String?,
-
-    val bio: String?,
-
     @SerializedName("date_of_birth")
     val dateOfBirth: String?,
+
+    val bio: String?,
 
     val website: String?,
 

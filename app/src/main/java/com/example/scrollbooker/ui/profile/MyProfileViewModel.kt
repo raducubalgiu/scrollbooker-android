@@ -327,7 +327,7 @@ class MyProfileViewModel @Inject constructor(
 
     fun updateBirthDate(birthDate: String) {
         viewModelScope.launch {
-            _editState.value = FeatureState.Success(Unit)
+            _editState.value = FeatureState.Loading
 
             val result = withVisibleLoading { updateBirthDateUseCase(birthdate = birthDate) }
 
@@ -337,13 +337,13 @@ class MyProfileViewModel @Inject constructor(
 
                     val currentProfile = (_profile.value as? FeatureState.Success)?.data
                     if(currentProfile != null) {
-                        val updatedProfile = currentProfile.copy(birthDate = birthDate)
+                        val updatedProfile = currentProfile.copy(dateOfBirth = birthDate)
                         _profile.value = FeatureState.Success(updatedProfile)
                     }
                     isSaved = true
                 }
                 .onFailure { e ->
-                    _editState.value = FeatureState.Success(Unit)
+                    _editState.value = FeatureState.Error()
                     Timber.tag("Update birthdate").e("ERROR: on updating Birthdate $e")
                 }
         }

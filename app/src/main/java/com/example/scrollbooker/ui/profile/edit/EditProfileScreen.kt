@@ -27,6 +27,7 @@ import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.components.core.list.ItemListInfo
 import com.example.scrollbooker.core.enums.GenderTypeEnum
 import com.example.scrollbooker.core.enums.PermissionEnum
+import com.example.scrollbooker.core.util.AppLocaleProvider
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.core.util.FeatureState
@@ -60,6 +61,22 @@ fun EditProfileScreen(
 
     val permissionController = LocalUserPermissions.current
 
+    val formattedBirthdate = remember(user?.dateOfBirth) {
+        val rawDate = user?.dateOfBirth
+        if (!rawDate.isNullOrBlank()) {
+            try {
+                val parsedDate = org.threeten.bp.LocalDate.parse(rawDate)
+                val currentLocale = AppLocaleProvider.current()
+                val formatter = org.threeten.bp.format.DateTimeFormatter.ofPattern("d MMMM yyyy", currentLocale)
+                parsedDate.format(formatter)
+            } catch (_: Exception) {
+                rawDate
+            }
+        } else {
+            ""
+        }
+    }
+
     val aboutListRaw = listOf<EditProfileAction>(
         EditProfileAction(
             title = stringResource(R.string.name),
@@ -84,7 +101,7 @@ fun EditProfileScreen(
         ),
         EditProfileAction(
             title = stringResource(R.string.dateOfBirth),
-            value = user?.dateOfBirth ?: "",
+            value = formattedBirthdate,
             navigate = { editProfileNavigate.toEditBirthdate() },
             permission = PermissionEnum.BIRTHDATE_EDIT
         ),
