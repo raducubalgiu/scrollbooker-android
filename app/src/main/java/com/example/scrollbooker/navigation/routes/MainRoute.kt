@@ -70,20 +70,15 @@ sealed class MainRoute(val route: String) {
     object MySubscription: MainRoute(route = "mySubscription")
     object MySchedules: MainRoute(route = "mySchedules")
     object MyServices: MainRoute(route = "myServices")
-    object MyClasses: MainRoute(route = "myClasses")
     object MyCalendar: MainRoute(route = "myCalendar")
-    object MyCurrencies: MainRoute(route = "myCurrencies")
 
     object MyProductsNavigator: MainRoute(route = "myProductsNavigator")
     object MyProducts: MainRoute(route = "myProducts")
     object AddProduct: MainRoute(route = "addProduct")
     object EditProduct: MainRoute(route = "editProduct")
 
-    object MyEmployeesNavigator: MainRoute(route = "myEmployeesNavigator")
+    object MyEmployeesNavigator: MainRoute(route = "myEmployeesNavigator/{tabIndex}")
     object MyEmployees: MainRoute(route = "myEmployees")
-
-    object EmploymentRequestsNavigator: MainRoute(route = "employmentRequestsNavigator")
-    object EmploymentsRequests: MainRoute(route = "employmentRequests")
     object EmploymentSelectEmployee: MainRoute(route = "employmentSelectEmployee")
     object EmploymentAssignJob: MainRoute(route = "employmentAssignJob")
     object EmploymentAcceptTerms: MainRoute(route = "employmentAcceptTerms")

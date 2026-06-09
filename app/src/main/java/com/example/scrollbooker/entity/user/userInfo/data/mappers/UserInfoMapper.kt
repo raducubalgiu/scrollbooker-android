@@ -9,6 +9,7 @@ fun UserInfoDto.toDomain(): UserInfo {
         id = id,
         username = username,
         fullname = fullname,
+        profession = profession,
         avatar = avatar,
         businessId = businessId,
         businessOwnerId = businessOwnerId,

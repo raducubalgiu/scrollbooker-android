@@ -8,14 +8,15 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
-import androidx.navigation.navigation
 import com.example.scrollbooker.R
 import com.example.scrollbooker.navigation.navigators.MyBusinessNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessServices.MyServicesScreen
 import com.example.scrollbooker.ui.LocalUserPermissions
 import com.example.scrollbooker.ui.myBusiness.MyBusinessScreen
+import com.example.scrollbooker.ui.myBusiness.MyBusinessViewModel
 import com.example.scrollbooker.ui.myBusiness.myBusinessDetails.MyBusinessEditGalleryScreen
 import com.example.scrollbooker.ui.myBusiness.myBusinessDetails.MyBusinessLocationScreen
 import com.example.scrollbooker.ui.myBusiness.myBusinessDetails.MyBusinessLocationViewModel
@@ -53,7 +54,10 @@ fun NavGraphBuilder.myBusinessGraph(
                 )
             }
 
+            val viewModel: MyBusinessViewModel = hiltViewModel()
+
             MyBusinessScreen(
+                viewModel = viewModel,
                 permissionsController = permissionController,
                 myBusinessNavigate = myBusinessNavigate,
                 onBack = { navController.popBackStack() }
@@ -96,7 +100,14 @@ fun NavGraphBuilder.myBusinessGraph(
 
         navigation(
             route = MainRoute.MyEmployeesNavigator.route,
-            startDestination = MainRoute.MyEmployees.route
+            startDestination = MainRoute.MyEmployees.route,
+            arguments = listOf(
+                navArgument("tabIndex") {
+                    type = NavType.IntType
+                    nullable = false
+                    defaultValue = 0
+                }
+            )
         ) {
             composable(MainRoute.MyEmployees.route) { backStackEntry ->
                 val parentEntry = remember(backStackEntry) {
@@ -155,8 +166,8 @@ fun NavGraphBuilder.myBusinessGraph(
                             val result = viewModel.createEmploymentRequest()
                             result
                                 .onSuccess {
-                                    navController.navigate(MainRoute.MyEmployees.route) {
-                                        popUpTo(MainRoute.MyEmployees.route) {
+                                    navController.navigate("${MainRoute.MyEmployeesNavigator.route}/1") {
+                                        popUpTo(MainRoute.MyEmployeesNavigator.route) {
                                             inclusive = true
                                         }
                                     }

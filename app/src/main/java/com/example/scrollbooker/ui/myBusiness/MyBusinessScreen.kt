@@ -13,16 +13,20 @@ import androidx.compose.material.icons.outlined.PeopleOutline
 import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material.icons.outlined.ShoppingBag
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.core.enums.PermissionEnum
 import com.example.scrollbooker.navigation.navigators.MyBusinessNavigator
 import com.example.scrollbooker.ui.UserPermissionsController
 import com.example.scrollbooker.ui.myBusiness.myProducts.components.MyBusinessCard
+import androidx.compose.runtime.getValue
+import com.example.scrollbooker.components.core.layout.LoadingScreen
 
 data class BusinessCard(
     val title: String,
@@ -34,10 +38,15 @@ data class BusinessCard(
 
 @Composable
 fun MyBusinessScreen(
+    viewModel: MyBusinessViewModel,
     permissionsController: UserPermissionsController,
     myBusinessNavigate: MyBusinessNavigator,
     onBack: () -> Unit
 ) {
+    val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
+    val hasEmployees by viewModel.hasEmployees.collectAsStateWithLifecycle()
+    val isEmployee by viewModel.isEmployee.collectAsStateWithLifecycle()
+
     val pages = listOf(
         BusinessCard(
             title = stringResource(R.string.businessDetails),
@@ -83,26 +92,44 @@ fun MyBusinessScreen(
         ),
     )
 
+    val visiblePages = remember(permissionsController.values, hasEmployees, isEmployee) {
+        pages.filter { page ->
+            when (page.permission) {
+                PermissionEnum.MY_EMPLOYEES_VIEW -> {
+                    if (!hasEmployees) return@filter false
+                }
+                PermissionEnum.MY_SCHEDULES_VIEW -> {
+                    if (!isEmployee) return@filter false
+                }
+                else -> {  }
+            }
+
+            permissionsController.hasPermission(page.permission)
+        }
+    }
+
     Layout(
         headerTitle = stringResource(R.string.myBusiness),
         onBack = onBack
     ) {
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(vertical = 8.dp),
-            modifier = Modifier.fillMaxSize()
-        ) {
-            val visiblePages = pages.filter { permissionsController.hasPermission(it.permission) }
-
-            items(visiblePages) { page ->
-                MyBusinessCard(
-                    title = page.title,
-                    icon = page.icon,
-                    description = page.description,
-                    onClick = page.navigate
-                )
+        if(isLoading) {
+            LoadingScreen()
+        } else {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(vertical = 8.dp),
+                modifier = Modifier.fillMaxSize()
+            ) {
+                items(visiblePages) { page ->
+                    MyBusinessCard(
+                        title = page.title,
+                        icon = page.icon,
+                        description = page.description,
+                        onClick = page.navigate
+                    )
+                }
             }
         }
     }

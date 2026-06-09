@@ -9,9 +9,6 @@ class MyBusinessNavigator (
     fun toMyBusinessLocation() {
         navController.navigate(MainRoute.MyBusinessLocation.route)
     }
-    fun toMySubscription() {
-        navController.navigate(MainRoute.MySubscription.route)
-    }
     fun toMySchedules() {
         navController.navigate(MainRoute.MySchedules.route)
     }
@@ -26,8 +23,5 @@ class MyBusinessNavigator (
     }
     fun toMyEmployees() {
         navController.navigate(MainRoute.MyEmployees.route)
-    }
-    fun toMyEmploymentRequests() {
-        navController.navigate(MainRoute.EmploymentsRequests.route)
     }
 }
