@@ -3,6 +3,7 @@ import com.example.scrollbooker.entity.booking.appointment.domain.model.Business
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessLocationDto
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessMediaFileDto
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
+import com.example.scrollbooker.entity.social.post.domain.model.PostMediaFile
 import com.example.scrollbooker.entity.user.userProfile.domain.model.OpeningHours
 import org.threeten.bp.ZonedDateTime
 
@@ -17,8 +18,24 @@ data class BusinessProfile(
     val employees: List<BusinessProfileEmployee>,
     val schedules: List<Schedule>,
     val reviews: BusinessProfileReviews,
-    val nearbyBusinesses: List<NearbyBusiness>
-    //val posts: List<Post>
+    val posts: List<BusinessProfileLatestPost>,
+    val nearbyBusinesses: List<NearbyBusiness>,
+)
+
+data class BusinessProfileLatestPost(
+    val id: Int,
+    val businessId: Int,
+    val user: BusinessProfileLatestPostUser,
+    val viewsCount: Int,
+    val mediaFiles: List<PostMediaFile>,
+)
+
+data class BusinessProfileLatestPostUser(
+    val id: Int,
+    val fullName: String,
+    val username: String,
+    val avatar: String?,
+    val profession: String
 )
 
 data class BusinessProfileOwner(

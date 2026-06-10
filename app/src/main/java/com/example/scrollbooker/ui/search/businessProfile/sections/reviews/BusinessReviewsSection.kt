@@ -15,6 +15,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
+import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileReviews
 import com.example.scrollbooker.ui.theme.headlineSmall
 import com.example.scrollbooker.ui.theme.titleLarge
@@ -44,7 +45,7 @@ fun BusinessReviewsSection(
             ratingsCount = ratingsCount
         )
 
-        Spacer(Modifier.height(SpacingXL))
+        Spacer(Modifier.height(SpacingXXL))
 
         if(reviews.data.isEmpty()) {
             Text(

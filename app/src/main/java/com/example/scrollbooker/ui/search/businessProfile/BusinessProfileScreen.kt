@@ -219,8 +219,8 @@ fun BusinessProfileScreen(
                         BusinessServicesSection()
                     }
 
-                    item(key = BusinessProfileSection.Social.key) {
-                        BusinessPostsSection(posts= emptyList())
+                    item(key = BusinessProfileSection.Posts.key) {
+                        BusinessPostsSection(posts= profile.posts)
                     }
 
                     if(employees.isNotEmpty()) {
@@ -247,7 +247,7 @@ fun BusinessProfileScreen(
 
                     item(key = BusinessProfileSection.About.key) {
                         BusinessAboutSection(
-                            description = profile.description ?: "",
+                            description = profile.description,
                             schedules = profile.schedules,
                             location = profile.location,
                             fullName = profile.owner.fullName,

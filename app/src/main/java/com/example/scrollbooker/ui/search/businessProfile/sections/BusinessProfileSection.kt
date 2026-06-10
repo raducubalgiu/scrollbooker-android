@@ -10,13 +10,13 @@ sealed class BusinessProfileSection(
 ) {
     object Summary: BusinessProfileSection(R.string.summary, "summary")
     object Services: BusinessProfileSection(R.string.services, "services")
-    object Social: BusinessProfileSection(R.string.social, "social")
+    object Posts: BusinessProfileSection(R.string.posts, "posts")
     object Employees: BusinessProfileSection(R.string.employees, "employees")
     object Reviews: BusinessProfileSection(R.string.reviews, "reviews")
     object About: BusinessProfileSection(R.string.about, "about")
 
     companion object {
-        val all = listOf(Summary, Services, Social, Employees, Reviews, About)
+        val all = listOf(Summary, Services, Posts, Employees, Reviews, About)
 
         fun getSections(
             employees: List<BusinessProfileEmployee>
@@ -24,7 +24,7 @@ sealed class BusinessProfileSection(
             return buildList {
                 add(Summary)
                 add(Services)
-                add(Social)
+                add(Posts)
                 if(employees.isNotEmpty()) add(Employees)
                 add(Reviews)
                 add(About)

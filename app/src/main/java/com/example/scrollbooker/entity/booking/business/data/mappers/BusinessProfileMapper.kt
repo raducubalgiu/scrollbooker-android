@@ -4,6 +4,8 @@ import com.example.scrollbooker.entity.booking.business.data.remote.BusinessLoca
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessProfileCountersDto
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessProfileDto
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessProfileEmployeeDto
+import com.example.scrollbooker.entity.booking.business.data.remote.BusinessProfileLatestPostDto
+import com.example.scrollbooker.entity.booking.business.data.remote.BusinessProfileLatestPostUserDto
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessProfileOwnerDto
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessProfileReviewDto
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessProfileReviewerDto
@@ -14,6 +16,8 @@ import com.example.scrollbooker.entity.booking.business.domain.model.BusinessLoc
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfile
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileCounters
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileEmployee
+import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileLatestPost
+import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileLatestPostUser
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileOwner
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileReview
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileReviewer
@@ -21,6 +25,7 @@ import com.example.scrollbooker.entity.booking.business.domain.model.BusinessPro
 import com.example.scrollbooker.entity.booking.business.domain.model.NearbyBusiness
 import com.example.scrollbooker.entity.booking.business.domain.model.NearbyBusinessOwner
 import com.example.scrollbooker.entity.booking.schedule.data.mappers.toDomain
+import com.example.scrollbooker.entity.social.post.data.mappers.toDomain
 import com.example.scrollbooker.entity.user.userProfile.data.mappers.toDomain
 import org.threeten.bp.ZonedDateTime
 
@@ -36,8 +41,28 @@ fun BusinessProfileDto.toDomain(): BusinessProfile {
         employees = employees.map { it.toDomain() },
         schedules = schedules.map { it.toDomain() },
         reviews = reviews.toDomain(),
+        posts = posts.map { it.toDomain() },
         nearbyBusinesses = nearbyBusinesses.map { it.toDomain() }
-        //posts = posts.map { it.toDomain() }
+    )
+}
+
+fun BusinessProfileLatestPostDto.toDomain(): BusinessProfileLatestPost {
+    return BusinessProfileLatestPost(
+        id = id,
+        businessId = businessId,
+        user = user.toDomain(),
+        viewsCount = viewsCount,
+        mediaFiles = mediaFiles.map { it.toDomain() }
+    )
+}
+
+fun BusinessProfileLatestPostUserDto.toDomain(): BusinessProfileLatestPostUser {
+    return BusinessProfileLatestPostUser(
+        id = id,
+        fullName = fullName,
+        username = username,
+        avatar = avatar,
+        profession = profession
     )
 }
 

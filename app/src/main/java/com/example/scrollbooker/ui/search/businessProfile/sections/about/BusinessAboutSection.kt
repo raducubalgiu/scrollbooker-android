@@ -14,6 +14,7 @@ import com.example.scrollbooker.components.customized.SchedulesSection
 import com.example.scrollbooker.components.customized.SectionMap
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
+import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessLocation
 import com.example.scrollbooker.entity.booking.business.domain.model.NearbyBusiness
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
@@ -23,7 +24,7 @@ import com.example.scrollbooker.ui.theme.titleLarge
 @Composable
 fun BusinessAboutSection(
     nearbyBusinesses: List<NearbyBusiness>,
-    description: String,
+    description: String?,
     schedules: List<Schedule>,
     location: BusinessLocation,
     fullName: String,
@@ -42,10 +43,17 @@ fun BusinessAboutSection(
 
         Spacer(Modifier.height(BasePadding))
 
-        Text(
-            modifier = Modifier.padding(horizontal = BasePadding),
-            text = description
-        )
+        if(description != null) {
+            Text(
+                modifier = Modifier.padding(horizontal = BasePadding),
+                text = description
+            )
+        } else {
+            Text(
+                modifier = Modifier.padding(start = BasePadding),
+                text = stringResource(R.string.notFoundDescription)
+            )
+        }
 
         Spacer(Modifier.height(SpacingXL))
 
@@ -81,6 +89,6 @@ fun BusinessAboutSection(
             onNavigateToBusinessProfile = onNavigateToBusinessProfile
         )
 
-        Spacer(Modifier.height(SpacingXL))
+        Spacer(Modifier.height(SpacingXXL))
     }
 }

@@ -26,14 +26,12 @@ import coil.compose.AsyncImage
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
-import com.example.scrollbooker.core.util.Dimens.SpacingXL
-import com.example.scrollbooker.entity.social.post.domain.model.Post
-import com.example.scrollbooker.ui.theme.headlineSmall
+import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileLatestPost
 import com.example.scrollbooker.ui.theme.titleLarge
 
 @Composable
 fun BusinessPostsSection(
-    posts: List<Post>
+    posts: List<BusinessProfileLatestPost>
 ) {
     Column(modifier = Modifier
         .fillMaxSize()
@@ -41,7 +39,7 @@ fun BusinessPostsSection(
     ) {
         Text(
             modifier = Modifier.padding(horizontal = BasePadding),
-            text = stringResource(R.string.social),
+            text = stringResource(R.string.posts),
             style = titleLarge,
             fontWeight = FontWeight.SemiBold
         )
@@ -53,37 +51,36 @@ fun BusinessPostsSection(
                 modifier = Modifier.padding(start = BasePadding),
                 text = stringResource(R.string.notFoundPosts)
             )
-        }
-        return@Column
-
-        LazyRow(
-            contentPadding = PaddingValues(horizontal = BasePadding)
-        ) {
-            items(posts) {
-                Box(
-                    modifier = Modifier
-                        .height(185.dp)
-                        .clip(ShapeDefaults.Small)
-                        .aspectRatio(9f / 12f)
-                        .background(
-                            brush = Brush.verticalGradient(
-                                colors = listOf(
-                                    Color.Black.copy(alpha = 0.1f),
-                                    Color.Transparent,
-                                    Color.Black.copy(alpha = 0.2f)
+        } else {
+            LazyRow(
+                contentPadding = PaddingValues(horizontal = BasePadding)
+            ) {
+                items(posts) {
+                    Box(
+                        modifier = Modifier
+                            .height(185.dp)
+                            .clip(ShapeDefaults.Small)
+                            .aspectRatio(9f / 12f)
+                            .background(
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color.Black.copy(alpha = 0.1f),
+                                        Color.Transparent,
+                                        Color.Black.copy(alpha = 0.2f)
+                                    )
                                 )
                             )
+                    ) {
+                        AsyncImage(
+                            model = it.mediaFiles.first().thumbnailUrl,
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
                         )
-                ) {
-                    AsyncImage(
-                        model = it.mediaFiles.first().thumbnailUrl,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
+                    }
 
-                Spacer(Modifier.width(SpacingM))
+                    Spacer(Modifier.width(SpacingM))
+                }
             }
         }
     }

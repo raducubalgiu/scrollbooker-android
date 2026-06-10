@@ -51,7 +51,6 @@ fun EmployeesList(
             val isSelected = selectedEmployeesIndex == index
 
             EmployeeTab(
-                isSelected = isSelected,
                 avatar = emp.avatar,
                 fullName = emp.fullName,
                 ratingsAverage = emp.ratingsAverage,
