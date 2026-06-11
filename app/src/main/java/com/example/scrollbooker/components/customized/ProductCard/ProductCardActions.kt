@@ -1,9 +1,6 @@
 package com.example.scrollbooker.components.customized.ProductCard
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
@@ -24,9 +21,9 @@ import com.example.scrollbooker.ui.theme.Primary
 @Composable
 fun ProductCardActions(
     product: Product,
-    displayEditableActions: Boolean,
     isEditable: Boolean,
     isSelected: Boolean,
+    displayEditableActions: Boolean,
     isLoadingDelete: Boolean,
     onSelect: ((Product) -> Unit)?,
     onNavigateToEdit: ((Int) -> Unit)? = null,
@@ -48,11 +45,8 @@ fun ProductCardActions(
         showAddSingleButton -> {
             Protected(permission = PermissionEnum.BOOK_BUTTON_VIEW) {
                 MainButtonOutlined(
-                    title = if (isSelected) stringResource(R.string.added) else stringResource(R.string.add),
-                    onClick = { onSelect?.invoke(product) },
-                    trailingIcon = if (isSelected) Icons.Default.Check else Icons.Default.Add,
-                    trailingIconTint = Primary,
-                    showTrailingIcon = true,
+                    title = stringResource(R.string.book),
+                    onClick = { onSelect?.invoke(product) }
                 )
             }
         }

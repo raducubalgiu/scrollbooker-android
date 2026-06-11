@@ -9,17 +9,17 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.components.customized.ProductCard.ProductCard
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.entity.booking.products.domain.model.BusinessServicesWithProducts
 import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.titleLarge
 
 @Composable
 fun BookingProductsList(
@@ -38,10 +38,11 @@ fun BookingProductsList(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Text(
+                    modifier = Modifier.padding(bottom = BasePadding),
                     text = group.service.name,
-                    fontSize = 20.sp,
+                    style = titleLarge,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = OnBackground
                 )
 
                 group.products.forEachIndexed { index, product ->

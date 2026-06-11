@@ -24,11 +24,18 @@ import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.core.enums.ProductTypeEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
+import com.example.scrollbooker.entity.booking.products.domain.model.getDurationText
+import com.example.scrollbooker.entity.booking.products.domain.model.getFiltersSummary
 import com.example.scrollbooker.ui.theme.Error
+import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
+import com.example.scrollbooker.ui.theme.bodyLarge
+import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.bodySmall
 import com.example.scrollbooker.ui.theme.labelSmall
+import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun ProductCard(
@@ -41,6 +48,8 @@ fun ProductCard(
     onNavigateToEdit: ((Int) -> Unit)? = null,
     onDeleteProduct: ((productId: Int) -> Unit)? = null,
 ) {
+    val productSummaryText = "${product.getDurationText(product.startingOffering.duration)} • ${product.getFiltersSummary()}"
+
     Column(modifier = Modifier
         .fillMaxSize()
         .clickable {}
@@ -60,15 +69,34 @@ fun ProductCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                ProductDetails(
-                    modifier = Modifier.weight(1f),
-                    name = product.name,
-                    duration = product.startingOffering.duration,
-                    price = product.startingOffering.price,
-                    priceWithDiscount = product.startingOffering.priceWithDiscount,
-                    discount = product.startingOffering.discount,
-                    filters = product.filters
-                )
+                Column(Modifier.weight(1f)) {
+                    Text(
+                        text = product.name,
+                        style = titleMedium,
+                        fontSize = 18.sp,
+                        color = OnBackground,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+
+                    Spacer(Modifier.height(SpacingXXS))
+
+                    Text(
+                        text = productSummaryText,
+                        style = bodyLarge,
+                        color = Color.Gray,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+
+                    Spacer(Modifier.height(SpacingS))
+
+                    ProductCardRowPrice(
+                        price = product.startingOffering.price,
+                        priceWithDiscount = product.startingOffering.priceWithDiscount,
+                        discount = product.startingOffering.discount
+                    )
+                }
 
                 Spacer(Modifier.width(SpacingS))
 

@@ -76,3 +76,42 @@ data class ProductFilter(
     val maxim: BigDecimal?,
     val displayAsTab: Boolean
 )
+
+fun Product.getDurationText(minutes: Int): String {
+    if (minutes == 0) return "0min"
+
+    val hours = minutes / 60
+    val remainingMinutes = minutes % 60
+
+    val hoursPart = if (hours > 0) "${hours}h" else ""
+    val minutesPart = if (remainingMinutes > 0) "${remainingMinutes}min" else ""
+
+    return listOf(hoursPart, minutesPart)
+        .filter { it.isNotEmpty() }
+        .joinToString(" ")
+}
+
+fun Product.getFiltersSummary(): String {
+    val filterParts = this.filters.mapNotNull { filter ->
+        when (filter.type) {
+            FilterTypeEnum.OPTIONS -> {
+                filter.subFilters.joinToString(" & ") { it.name }
+            }
+            FilterTypeEnum.RANGE -> {
+                val minim = filter.minim
+                val maxim = filter.maxim
+                val unit = filter.unit ?: ""
+
+                when {
+                    minim != null && maxim == null -> "> $minim $unit".trim()
+                    minim == null && maxim != null -> "< $maxim $unit".trim()
+                    minim != null && maxim != null -> "$minim - $maxim $unit".trim()
+                    else -> null
+                }
+            }
+            else -> null
+        }
+    }
+
+    return filterParts.joinToString(" • ")
+}
