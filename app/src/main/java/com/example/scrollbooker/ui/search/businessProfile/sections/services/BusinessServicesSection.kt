@@ -5,105 +5,37 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
-import com.example.scrollbooker.core.enums.ProductTypeEnum
+import com.example.scrollbooker.components.customized.ProductCard.ProductCard
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.core.util.Dimens.SpacingXL
-import com.example.scrollbooker.entity.booking.products.domain.model.Product
-import com.example.scrollbooker.ui.search.components.card.SearchCardProductRow
+import com.example.scrollbooker.entity.booking.products.domain.model.UserProducts
+import com.example.scrollbooker.ui.booking.services.BookingServicesTabs
 import com.example.scrollbooker.ui.theme.Divider
-import com.example.scrollbooker.ui.theme.headlineSmall
+import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleLarge
-import java.math.BigDecimal
+import kotlinx.coroutines.launch
 
 @Composable
-fun BusinessServicesSection() {
-//    val products = listOf(
-//        Product(
-//            id = 1,
-//            name = "Tuns clasic",
-//            description = "defe",
-//            duration = 30,
-//            price = BigDecimal("50"),
-//            priceWithDiscount = BigDecimal("50"),
-//            discount = BigDecimal("0"),
-//            userId = 2,
-//            serviceId = 2,
-//            businessId = 1,
-//            currencyId = 1,
-//            filters = emptyList(),
-//            type = ProductTypeEnum.SINGLE,
-//            sessionsCount = null,
-//            validityDays = null,
-//            canBeBooked = true
-//        ),
-//        Product(
-//            id = 2,
-//            name = "Skin fade (zero in laterale)",
-//            description = "defe",
-//            duration = 30,
-//            price = BigDecimal("60"),
-//            priceWithDiscount = BigDecimal("60"),
-//            discount = BigDecimal("0"),
-//            userId = 2,
-//            serviceId = 2,
-//            businessId = 1,
-//            currencyId = 1,
-//            filters = emptyList(),
-//            type = ProductTypeEnum.SINGLE,
-//            sessionsCount = null,
-//            validityDays = null,
-//            canBeBooked = true
-//        ),
-//        Product(
-//            id = 3,
-//            name = "Tuns Barba",
-//            description = "defe",
-//            duration = 20,
-//            price = BigDecimal("45"),
-//            priceWithDiscount = BigDecimal("45"),
-//            discount = BigDecimal("0"),
-//            userId = 2,
-//            serviceId = 2,
-//            businessId = 1,
-//            currencyId = 1,
-//            filters = emptyList(),
-//            type = ProductTypeEnum.SINGLE,
-//            sessionsCount = null,
-//            validityDays = null,
-//            canBeBooked = true
-//        ),
-//        Product(
-//            id = 4,
-//            name = "Pachet Premium",
-//            description = "defe",
-//            duration = 50,
-//            price = BigDecimal("100"),
-//            priceWithDiscount = BigDecimal("100"),
-//            discount = BigDecimal("0"),
-//            userId = 2,
-//            serviceId = 2,
-//            businessId = 1,
-//            currencyId = 1,
-//            filters = emptyList(),
-//            type = ProductTypeEnum.SINGLE,
-//            sessionsCount = null,
-//            validityDays = null,
-//            canBeBooked = true
-//        )
-//    )
-    
+fun BusinessServicesSection(
+    products: UserProducts
+) {
+    val serviceGroups = products.data
+    val totalCount = products.totalCount
+    val scope = rememberCoroutineScope()
 
     Column(modifier = Modifier.padding(BasePadding)) {
         Text(
@@ -114,28 +46,70 @@ fun BusinessServicesSection() {
 
         Spacer(Modifier.height(BasePadding))
 
-//        products.forEachIndexed { index, prod ->
-//            SearchCardProductRow(product = prod)
-//
-//            if(index < products.size - 1) {
-//                HorizontalDivider(
-//                    modifier = Modifier.padding(vertical = SpacingS),
-//                    color = Divider,
-//                    thickness = 0.55.dp
-//                )
-//            }
-//        }
+        if (serviceGroups.isNotEmpty()) {
+            val pagerState = rememberPagerState { serviceGroups.size }
 
-        MainButtonOutlined(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = BasePadding),
-            contentPadding = PaddingValues(
-                vertical = BasePadding
-            ),
-            shape = ShapeDefaults.Medium,
-            title = stringResource(R.string.seeAllServices),
-            onClick = {  }
-        )
+            BookingServicesTabs(
+                edgePadding = 0.dp,
+                activeTabIndex = pagerState.currentPage,
+                onTabChange = { tabIndex ->
+                    scope.launch {
+                        pagerState.animateScrollToPage(tabIndex)
+                    }
+                },
+                serviceGroups = serviceGroups
+            )
+
+            Spacer(Modifier.height(SpacingS))
+
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+            ) { page ->
+                val currentGroupProducts = serviceGroups[page].products
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = SpacingS)
+                ) {
+                    currentGroupProducts.forEachIndexed { index, product ->
+                        ProductCard(
+                            product = product,
+                            displayDescription = false
+                        )
+
+                        if (index < currentGroupProducts.lastIndex) {
+                            HorizontalDivider(
+                                modifier = Modifier.padding(vertical = BasePadding),
+                                color = Divider,
+                                thickness = 0.55.dp
+                            )
+                        }
+                    }
+
+                    val shouldShowViewMore = (serviceGroups.size * 5) < totalCount
+                    if (shouldShowViewMore) {
+                        MainButtonOutlined(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = BasePadding),
+                            contentPadding = PaddingValues(vertical = BasePadding),
+                            shape = ShapeDefaults.Medium,
+                            title = "Vezi toate cele $totalCount servicii",
+                            onClick = { }
+                        )
+                    }
+                }
+            }
+        } else {
+            Text(
+                text = "Nu există servicii disponibile.",
+                style = bodyMedium,
+                modifier = Modifier.padding(vertical = BasePadding)
+            )
+        }
     }
 }

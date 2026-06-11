@@ -38,7 +38,7 @@ sealed class MainTab(
     object Profile: MainTab(
         route = MainRoute.MyProfile.route,
         label = R.string.profile,
-        painterSolid = R.drawable.ic_person_outline,
+        painterSolid = R.drawable.ic_person_solid,
         painterOutline = R.drawable.ic_person_outline
     )
 

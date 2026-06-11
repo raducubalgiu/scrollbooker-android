@@ -40,6 +40,7 @@ fun ProductCard(
     modifier: Modifier = Modifier,
     product: Product,
     displayEditableActions: Boolean = false,
+    displayDescription: Boolean = true,
     isEditable: Boolean = false,
     isSelected: Boolean = false,
     isSelectable: Boolean = false,
@@ -112,7 +113,10 @@ fun ProductCard(
                 )
             }
 
-            if(product.description != null && product.description.isNotEmpty()) {
+            if(product.description != null &&
+                product.description.isNotEmpty() &&
+                displayDescription
+            ) {
                 Spacer(Modifier.height(BasePadding))
 
                 Text(

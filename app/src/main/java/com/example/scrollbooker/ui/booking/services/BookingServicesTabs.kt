@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.core.util.Dimens.BasePadding
@@ -30,12 +31,13 @@ import com.example.scrollbooker.ui.theme.SurfaceBG
 @Composable
 fun BookingServicesTabs(
     activeTabIndex: Int,
+    edgePadding: Dp = BasePadding,
     onTabChange: (Int) -> Unit,
     serviceGroups:  List<BusinessServicesWithProducts>
 ) {
     ScrollableTabRow(
         selectedTabIndex = activeTabIndex.coerceIn(0, serviceGroups.lastIndex),
-        edgePadding = BasePadding,
+        edgePadding = edgePadding,
         containerColor = Background,
         divider = {},
         indicator = { _ -> Box(Modifier.size(0.dp)) },

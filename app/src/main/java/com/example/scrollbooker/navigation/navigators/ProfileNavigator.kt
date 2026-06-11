@@ -68,11 +68,11 @@ class ProfileNavigator (
     }
 
     fun toBooking(
-        businessId: Int,
         userId: Int,
+        businessId: Int,
         businessOwnerId: Int,
+        selectedProductId: Int?,
         source: String,
-        selectedProductId: Int?
     ) {
         var route = "bookingNavigator/$businessId/$userId/$businessOwnerId/$source"
 

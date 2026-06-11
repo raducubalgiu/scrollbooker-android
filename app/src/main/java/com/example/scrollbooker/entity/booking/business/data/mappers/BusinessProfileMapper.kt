@@ -24,6 +24,7 @@ import com.example.scrollbooker.entity.booking.business.domain.model.BusinessPro
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileReviews
 import com.example.scrollbooker.entity.booking.business.domain.model.NearbyBusiness
 import com.example.scrollbooker.entity.booking.business.domain.model.NearbyBusinessOwner
+import com.example.scrollbooker.entity.booking.products.data.mappers.toDomain
 import com.example.scrollbooker.entity.booking.schedule.data.mappers.toDomain
 import com.example.scrollbooker.entity.social.post.data.mappers.toDomain
 import com.example.scrollbooker.entity.user.userProfile.data.mappers.toDomain
@@ -42,7 +43,8 @@ fun BusinessProfileDto.toDomain(): BusinessProfile {
         schedules = schedules.map { it.toDomain() },
         reviews = reviews.toDomain(),
         posts = posts.map { it.toDomain() },
-        nearbyBusinesses = nearbyBusinesses.map { it.toDomain() }
+        nearbyBusinesses = nearbyBusinesses.map { it.toDomain() },
+        userProducts = userProducts.toDomain()
     )
 }
 

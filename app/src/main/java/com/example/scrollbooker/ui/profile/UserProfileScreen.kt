@@ -231,9 +231,15 @@ fun UserProfileScreen(
                                         },
                                         onNavigateToEditProfile = { profileNavigate.toEditProfile() },
                                         onNavigateToMyCalendar = { profileNavigate.toMyCalendar() },
-                                        onNavigateToBooking = { businessId, employeeId ->
-
-                                        }
+                                        onNavigateToBooking = { userId, businessId, businessOwnerId ->
+                                            profileNavigate.toBooking(
+                                                userId = userId,
+                                                businessId = businessId,
+                                                businessOwnerId = businessOwnerId,
+                                                selectedProductId = null,
+                                                source = "user_profile"
+                                            )
+                                        },
                                     )
                                 }
                             }

@@ -2,6 +2,7 @@ package com.example.scrollbooker.components.customized.ProductCard
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,6 +28,8 @@ import com.example.scrollbooker.components.core.menu.MenuItemData
 import com.example.scrollbooker.components.customized.Protected.Protected
 import com.example.scrollbooker.core.enums.PermissionEnum
 import com.example.scrollbooker.core.enums.ProductTypeEnum
+import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Error
@@ -103,6 +106,10 @@ fun ProductCardActions(
         showAddSingleButtonNotSelectable -> {
             Protected(permission = PermissionEnum.BOOK_BUTTON_VIEW) {
                 MainButtonOutlined(
+                    contentPadding = PaddingValues(
+                        vertical = SpacingS,
+                        horizontal = BasePadding
+                ),
                     title = stringResource(R.string.book),
                     onClick = { onSelect?.invoke(product) }
                 )

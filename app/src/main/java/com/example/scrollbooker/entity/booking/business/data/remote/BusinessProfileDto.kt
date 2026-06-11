@@ -1,5 +1,6 @@
 package com.example.scrollbooker.entity.booking.business.data.remote
 import com.example.scrollbooker.entity.booking.appointment.domain.model.BusinessCoordinates
+import com.example.scrollbooker.entity.booking.products.data.remote.UserProductsDto
 import com.example.scrollbooker.entity.booking.schedule.data.remote.ScheduleDto
 import com.example.scrollbooker.entity.social.post.data.remote.PostMediaFileDto
 import com.example.scrollbooker.entity.user.userProfile.data.remote.OpeningHoursDto
@@ -29,7 +30,10 @@ data class BusinessProfileDto(
     val posts: List<BusinessProfileLatestPostDto>,
 
     @SerializedName("nearby_businesses")
-    val nearbyBusinesses: List<NearbyBusinessDto>
+    val nearbyBusinesses: List<NearbyBusinessDto>,
+
+    @SerializedName("user_products")
+    val userProducts: UserProductsDto
 )
 
 data class BusinessProfileLatestPostDto(

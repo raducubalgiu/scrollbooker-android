@@ -2,6 +2,7 @@ package com.example.scrollbooker.entity.booking.business.domain.model
 import com.example.scrollbooker.entity.booking.appointment.domain.model.BusinessCoordinates
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessLocationDto
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessMediaFileDto
+import com.example.scrollbooker.entity.booking.products.domain.model.UserProducts
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
 import com.example.scrollbooker.entity.social.post.domain.model.PostMediaFile
 import com.example.scrollbooker.entity.user.userProfile.domain.model.OpeningHours
@@ -20,6 +21,7 @@ data class BusinessProfile(
     val reviews: BusinessProfileReviews,
     val posts: List<BusinessProfileLatestPost>,
     val nearbyBusinesses: List<NearbyBusiness>,
+    val userProducts: UserProducts
 )
 
 data class BusinessProfileLatestPost(

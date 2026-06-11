@@ -90,7 +90,11 @@ fun ProfileUserInfo(
     onNavigateToSocial: (NavigateSocialParam) -> Unit,
     onNavigateToEditProfile: () -> Unit,
     onNavigateToMyCalendar: () -> Unit,
-    onNavigateToBooking: (businessId: Int, employeeId: Int?) -> Unit
+    onNavigateToBooking: (
+        userId: Int,
+        businessId: Int,
+        businessOwnerId: Int
+    ) -> Unit
 ) {
     val isBusinessOrEmployee = user.isBusinessOrEmployee
     val isOpenNow = user.openingHours.openNow
@@ -204,10 +208,13 @@ fun ProfileUserInfo(
                 isFollowEnabled = isFollowEnabled,
                 onFollow = onFollow,
                 onNavigateToBooking = {
-                    val resolvedBusinessId = user.businessId ?: return@UserProfileActions
-                    val employeeId = if(user.id == user.businessOwner?.id) null else user.id
-
-                    onNavigateToBooking(resolvedBusinessId, employeeId)
+                    if(user.businessId != null && user.businessOwner != null) {
+                        onNavigateToBooking(
+                            user.id,
+                            user.businessId,
+                            user.businessOwner.id,
+                        )
+                    }
                 }
             )
         }

@@ -222,7 +222,7 @@ fun BusinessProfileScreen(
                     }
 
                     item(key = BusinessProfileSection.Services.key) {
-                        BusinessServicesSection()
+                        BusinessServicesSection(products=profile.userProducts)
                     }
 
                     item(key = BusinessProfileSection.Posts.key) {
