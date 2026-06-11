@@ -17,10 +17,13 @@ fun NavHostController.navigateToBookingFromProfile(
     source: String,
     selectedProductId: Int?
 ) {
-    var route = "bookingNavigator/$businessId/$userId/$businessOwnerId/$source"
-    if (selectedProductId != null) {
-        route += "?selectedProductId=$selectedProductId"
-    }
+    val route = MainRoute.BookingNavigator.createRouteFromProfile(
+        businessId = businessId,
+        userId = userId,
+        businessOwnerId = businessOwnerId,
+        source = source,
+        selectedProductId = selectedProductId
+    )
 
     this.navigate(route) {
         launchSingleTop = true
@@ -31,20 +34,13 @@ fun NavHostController.navigateToBookingFromProduct(
     product: Product,
     source: String
 ) {
-    val uniqueUserIds = product.variants
-        .flatMap { it.offerings }
-        .map { it.user.id }
-        .distinct()
-
-    val targetUserId = when {
-        uniqueUserIds.size == 1 -> uniqueUserIds.first()
-        else -> product.businessOwnerId
-    }
-
-    var route = "bookingNavigator/${product.businessId}/$targetUserId/${product.businessOwnerId}/$source"
-    route += "?selectedProductId=${product.id}"
+    val route = MainRoute.BookingNavigator.createRouteFromProduct(
+        product = product,
+        source = source
+    )
 
     this.navigate(route) {
         launchSingleTop = true
     }
 }
+

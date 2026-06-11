@@ -1,5 +1,8 @@
 package com.example.scrollbooker.navigation.routes
 
+import com.example.scrollbooker.entity.booking.products.domain.model.Product
+import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
+
 sealed class MainRoute(val route: String) {
     object Shell: MainRoute(route = "shell")
     object Tabs: MainRoute(route = "tabs")
@@ -18,9 +21,6 @@ sealed class MainRoute(val route: String) {
         fun createRoute(businessOwnerUsername: String) = "businessProfile/$businessOwnerUsername"
     }
 
-    object BookingNavigator : MainRoute(
-        route = "bookingNavigator/{businessId}/{userId}/{businessOwnerId}/{source}?selectedProductId={selectedProductId}"
-    )
     object BookingServices: MainRoute(route = "bookingServices")
     object BookingSpecialists: MainRoute(route = "bookingSpecialists")
     object BookingDateTime: MainRoute(route = "bookingDateTime")
@@ -51,7 +51,11 @@ sealed class MainRoute(val route: String) {
     object EditWebsite: MainRoute(route = "website")
     object EditPublicEmail: MainRoute(route = "publicEmail")
 
-    object Social: MainRoute(route = "social")
+    object Social: MainRoute(route = "social/{tabIndex}/{userId}/{username}/{isBusinessOrEmployee}") {
+        fun createRoute(param: NavigateSocialParam): String {
+            return "social/${param.tabIndex}/${param.userId}/${param.username}/${param.isBusinessOrEmployee}"
+        }
+    }
 
     object CameraNavigator: MainRoute(route = "cameraNavigator")
     object Camera: MainRoute(route = "camera")
@@ -92,4 +96,40 @@ sealed class MainRoute(val route: String) {
     object ReportProblem: MainRoute(route = "reportProblem")
     object Support: MainRoute(route = "support")
     object TermsAndConditions: MainRoute(route = "termsAndConditions")
+
+    object BookingNavigator : MainRoute(
+        route = "bookingNavigator/{businessId}/{userId}/{businessOwnerId}/{source}?selectedProductId={selectedProductId}"
+    ) {
+        fun createRouteFromProfile(
+            businessId: Int,
+            userId: Int,
+            businessOwnerId: Int,
+            source: String,
+            selectedProductId: Int? = null
+        ): String {
+            val base = "bookingNavigator/$businessId/$userId/$businessOwnerId/$source"
+            return if (selectedProductId != null && selectedProductId != -1) {
+                "$base?selectedProductId=$selectedProductId"
+            } else {
+                base
+            }
+        }
+
+        fun createRouteFromProduct(
+            product: Product,
+            source: String
+        ): String {
+            val uniqueUserIds = product.variants
+                .flatMap { it.offerings }
+                .map { it.user.id }
+                .distinct()
+
+            val targetUserId = when {
+                uniqueUserIds.size == 1 -> uniqueUserIds.first()
+                else -> product.businessOwnerId
+            }
+
+            return "bookingNavigator/${product.businessId}/$targetUserId/${product.businessOwnerId}/$source?selectedProductId=${product.id}"
+        }
+    }
 }

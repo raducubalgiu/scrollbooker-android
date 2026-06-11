@@ -26,11 +26,7 @@ class ProfileNavigator (
     }
 
     fun toSocial(socialParam: NavigateSocialParam) {
-        val ( tabIndex, userId, username, isBusinessOrEmployee ) = socialParam
-
-        navController.navigate(
-            "${MainRoute.Social.route}/${tabIndex}/${userId}/${username}/${isBusinessOrEmployee}"
-        )  {
+        navController.navigate(MainRoute.Social.createRoute(socialParam)) {
             launchSingleTop = true
         }
     }

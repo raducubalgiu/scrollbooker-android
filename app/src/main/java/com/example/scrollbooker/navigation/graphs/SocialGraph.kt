@@ -17,12 +17,20 @@ fun NavGraphBuilder.socialGraph(
     profileNavigate: ProfileNavigator
 ) {
     composable(
-        route = "${MainRoute.Social.route}/{tabIndex}/{userId}/{username}/{isBusinessOrEmployee}",
+        route = MainRoute.Social.route,
         arguments = listOf(
-            navArgument("tabIndex") { type = NavType.IntType },
-            navArgument("userId") { type = NavType.IntType },
-            navArgument("username") { type = NavType.StringType },
-            navArgument("isBusinessOrEmployee") { type = NavType.BoolType }
+            navArgument("tabIndex") {
+                type = NavType.IntType
+            },
+            navArgument("userId") {
+                type = NavType.IntType
+            },
+            navArgument("username") {
+                type = NavType.StringType
+            },
+            navArgument("isBusinessOrEmployee") {
+                type = NavType.BoolType
+            }
         )
     ) { backStackEntry ->
         val tabIndex = backStackEntry.arguments?.getInt("tabIndex") ?: return@composable
