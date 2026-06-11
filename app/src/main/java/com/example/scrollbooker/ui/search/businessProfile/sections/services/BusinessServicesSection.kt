@@ -22,6 +22,7 @@ import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
 import com.example.scrollbooker.components.customized.ProductCard.ProductCard
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.model.UserProducts
 import com.example.scrollbooker.ui.booking.services.BookingServicesTabs
 import com.example.scrollbooker.ui.theme.Divider
@@ -31,7 +32,9 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun BusinessServicesSection(
-    products: UserProducts
+    products: UserProducts,
+    onNavigateToBookingFromProfile: () -> Unit,
+    onNavigateToBookingFromProduct: (product: Product) -> Unit
 ) {
     val serviceGroups = products.data
     val totalCount = products.totalCount
@@ -78,7 +81,8 @@ fun BusinessServicesSection(
                     currentGroupProducts.forEachIndexed { index, product ->
                         ProductCard(
                             product = product,
-                            displayDescription = false
+                            displayDescription = false,
+                            onNavigateToBooking = onNavigateToBookingFromProduct
                         )
 
                         if (index < currentGroupProducts.lastIndex) {
@@ -99,7 +103,7 @@ fun BusinessServicesSection(
                             contentPadding = PaddingValues(vertical = BasePadding),
                             shape = ShapeDefaults.Medium,
                             title = "Vezi toate cele $totalCount servicii",
-                            onClick = { }
+                            onClick = onNavigateToBookingFromProfile
                         )
                     }
                 }

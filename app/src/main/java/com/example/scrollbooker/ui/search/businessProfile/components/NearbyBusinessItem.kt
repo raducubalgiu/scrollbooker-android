@@ -28,16 +28,17 @@ import com.example.scrollbooker.ui.theme.titleMedium
 @Composable
 fun NearbyBusinessItem(
     business: NearbyBusiness,
-    onNavigateToBusinessProfile: (username: String) -> Unit
+    onNavigateToBusinessProfile: (username: String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val owner = business.owner
     val location = business.location
     val imageUrl = business.mediaFiles.firstOrNull()?.thumbnailUrl
 
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = modifier
             .padding(bottom = SpacingS)
+            .width(300.dp)
             .clickable(
                 onClick = { onNavigateToBusinessProfile(business.owner.username) },
                 indication = null,

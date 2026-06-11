@@ -29,20 +29,18 @@ fun NearbyBusinessImage(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .aspectRatio(16f / 10f)
+            .aspectRatio(16f / 9f)
             .clip(ShapeDefaults.Medium)
             .background(SurfaceBG)
     ) {
         if (!isPlaceholder) {
-            // Componenta din Coil pentru încărcare asincronă de pe web
             AsyncImage(
                 model = url,
                 contentDescription = "Imagine business $username",
-                contentScale = ContentScale.Crop, // Taie și umple containerul fără să deformeze imaginea
+                contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
         } else {
-            // Placeholder vizual în caz că afacerea nu are imagine încărcată (Afișează prima literă din username)
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center

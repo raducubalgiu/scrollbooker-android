@@ -9,6 +9,7 @@ import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.example.scrollbooker.R
@@ -17,6 +18,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileReviews
+import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.headlineSmall
 import com.example.scrollbooker.ui.theme.titleLarge
 
@@ -50,7 +52,9 @@ fun BusinessReviewsSection(
         if(reviews.data.isEmpty()) {
             Text(
                 modifier = Modifier.padding(start = BasePadding),
-                text = stringResource(R.string.notFoundReviews)
+                text = stringResource(R.string.notFoundReviews),
+                color = Color.Gray,
+                style = bodyMedium
             )
         }
 

@@ -1,6 +1,7 @@
 package com.example.scrollbooker.navigation.navigators
 
 import androidx.navigation.NavHostController
+import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.profile.PostTabEnum
 import com.example.scrollbooker.ui.profile.components.SelectedPostUi
@@ -67,12 +68,31 @@ class ProfileNavigator (
         }
     }
 
-    fun toBooking(
-        userId: Int,
+    fun toBookingFromProduct(product: Product, source: String) {
+        val uniqueUserIds = product.variants
+            .flatMap { it.offerings }
+            .map { it.user.id }
+            .distinct()
+
+        val targetUserId = when {
+            uniqueUserIds.size == 1 -> uniqueUserIds.first()
+            else -> product.businessOwnerId
+        }
+
+        var route = "bookingNavigator/${product.businessId}/$targetUserId/${product.businessOwnerId}/$source"
+        route += "?selectedProductId=${product.id}"
+
+        navController.navigate(route) {
+            launchSingleTop = true
+        }
+    }
+
+    fun toBookingFromProfile(
         businessId: Int,
+        userId: Int,
         businessOwnerId: Int,
-        selectedProductId: Int?,
         source: String,
+        selectedProductId: Int?
     ) {
         var route = "bookingNavigator/$businessId/$userId/$businessOwnerId/$source"
 

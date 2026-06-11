@@ -29,9 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.ErrorScreen
-import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.core.util.FeatureState
@@ -39,7 +37,6 @@ import com.example.scrollbooker.ui.booking.services.BookingProductsList
 import com.example.scrollbooker.ui.booking.services.BookingServicesTabs
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
-import com.example.scrollbooker.ui.theme.headlineMedium
 import com.example.scrollbooker.ui.theme.titleLarge
 import kotlinx.coroutines.launch
 
@@ -75,15 +72,6 @@ fun BookingServicesScreen(
 
                     Column(modifier = Modifier.fillMaxSize()) {
                         Column(Modifier.weight(1f)) {
-                            Text(
-                                modifier = Modifier.padding(horizontal = BasePadding),
-                                text = stringResource(R.string.chooseServices),
-                                style = headlineMedium,
-                                fontWeight = FontWeight.Bold
-                            )
-
-                            Spacer(Modifier.height(SpacingS))
-
                             if (serviceGroups.isNotEmpty()) {
                                 BookingServicesTabs(
                                     activeTabIndex = activeTabIndex,

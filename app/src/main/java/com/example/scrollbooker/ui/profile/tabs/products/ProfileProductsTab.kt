@@ -18,6 +18,7 @@ import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.customized.ProductCard.ProductCard
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.model.UserProducts
 import com.example.scrollbooker.ui.booking.services.BookingServicesTabs
 import com.example.scrollbooker.ui.theme.Divider
@@ -25,7 +26,9 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileProductsTab(
-    products: FeatureState<UserProducts>
+    products: FeatureState<UserProducts>,
+    onNavigateToBookingFromProduct: (product: Product) -> Unit,
+    onNavigateToBookingFromProfile: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
 
@@ -63,7 +66,8 @@ fun ProfileProductsTab(
                             itemsIndexed(currentGroupProducts) { index, product ->
                                 ProductCard(
                                     modifier = Modifier.padding(horizontal = BasePadding),
-                                    product = product
+                                    product = product,
+                                    onNavigateToBooking = onNavigateToBookingFromProduct
                                 )
 
                                 if (index < currentGroupProducts.lastIndex) {

@@ -1,6 +1,7 @@
 package com.example.scrollbooker.components.customized.ProductCard
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,12 +49,17 @@ fun ProductCard(
     isLoadingDelete: Boolean = false,
     onSelect: ((Product) -> Unit)? = null,
     onNavigateToEdit: ((Int) -> Unit)? = null,
+    onNavigateToBooking: (product: Product) -> Unit,
     onDeleteProduct: ((productId: Int) -> Unit)? = null,
 ) {
     val productSummaryText = "${product.getDurationText(product.startingOffering.duration)} • ${product.getFiltersSummary()}"
 
     Column(modifier = modifier
-        .clickable {}
+        .clickable (
+            onClick = { onNavigateToBooking(product) },
+            indication = null,
+            interactionSource = remember { MutableInteractionSource() }
+        )
     ) {
         Column {
             if (
@@ -109,7 +116,8 @@ fun ProductCard(
                     isLoadingDelete = isLoadingDelete,
                     onSelect = onSelect,
                     onNavigateToEdit = onNavigateToEdit,
-                    onDeleteProduct = onDeleteProduct
+                    onDeleteProduct = onDeleteProduct,
+                    onNavigateToBooking = onNavigateToBooking
                 )
             }
 

@@ -56,7 +56,9 @@ fun BusinessEmployeesSection(
                     modifier = Modifier
                         .width(90.dp)
                         .clickable(
-                            onClick = {},
+                            onClick = {
+                                onNavigateToEmployeeProfile(employee.id, employee.username)
+                            },
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null
                         )

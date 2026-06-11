@@ -188,7 +188,26 @@ fun MyProfileScreen(
                                         ProfileTab.Products -> {
                                             val products by viewModel.products.collectAsStateWithLifecycle()
 
-                                            ProfileProductsTab(products = products)
+                                            ProfileProductsTab(
+                                                products = products,
+                                                onNavigateToBookingFromProduct = {
+                                                    profileNavigate.toBookingFromProduct(
+                                                        it,
+                                                        source = "user_profile"
+                                                    )
+                                                },
+                                                onNavigateToBookingFromProfile = {
+                                                    if(user.businessId != null && user.businessOwner != null) {
+                                                        profileNavigate.toBookingFromProfile(
+                                                            businessId = user.businessId,
+                                                            userId = user.id,
+                                                            businessOwnerId = user.businessOwner.id,
+                                                            source = "user_profile",
+                                                            selectedProductId = null
+                                                        )
+                                                    }
+                                                }
+                                            )
                                         }
 
                                         ProfileTab.Employees -> {
@@ -256,7 +275,7 @@ fun MyProfileScreen(
                                         onNavigateToEditProfile = { profileNavigate.toEditProfile() },
                                         onNavigateToMyCalendar = { profileNavigate.toMyCalendar() },
                                         onNavigateToBooking = { userId, businessId, businessOwnerId ->
-                                            profileNavigate.toBooking(
+                                            profileNavigate.toBookingFromProfile(
                                                 userId = userId,
                                                 businessId = businessId,
                                                 businessOwnerId = businessOwnerId,

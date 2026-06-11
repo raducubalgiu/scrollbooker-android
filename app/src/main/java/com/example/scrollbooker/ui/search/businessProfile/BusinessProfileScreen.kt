@@ -222,7 +222,24 @@ fun BusinessProfileScreen(
                     }
 
                     item(key = BusinessProfileSection.Services.key) {
-                        BusinessServicesSection(products=profile.userProducts)
+                        BusinessServicesSection(
+                            products=profile.userProducts,
+                            onNavigateToBookingFromProduct = {
+                                searchNavigate.toBookingFromProduct(
+                                    it,
+                                    source = "businessProfile"
+                                )
+                            },
+                            onNavigateToBookingFromProfile = {
+                                searchNavigate.toBookingFromBusinessProfile(
+                                    businessId = profile.id,
+                                    userId = profile.owner.id,
+                                    businessOwnerId = profile.owner.id,
+                                    source = "businessProfile",
+                                    selectedProductId = null
+                                )
+                            }
+                        )
                     }
 
                     item(key = BusinessProfileSection.Posts.key) {

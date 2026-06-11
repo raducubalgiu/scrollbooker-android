@@ -48,7 +48,8 @@ fun BookingProductsList(
                 group.products.forEachIndexed { index, product ->
                     ProductCard(
                         product = product,
-                        isSelectable = true
+                        isSelectable = true,
+                        onNavigateToBooking = {}
                     )
 
                     if(index < group.products.size - 1) {
