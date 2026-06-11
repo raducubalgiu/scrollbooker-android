@@ -1,4 +1,6 @@
 package com.example.scrollbooker.navigation.host
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -12,7 +14,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.scrollbooker.navigation.graphs.bookingGraph
 import com.example.scrollbooker.navigation.graphs.userProfileGraph
-import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
 import com.example.scrollbooker.navigation.navigators.SearchNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
@@ -47,6 +48,37 @@ fun SearchNavHost(
                     type = NavType.StringType
                 }
             ),
+            enterTransition = {
+                slideInFromRight()
+            },
+            exitTransition = {
+                val targetRoute = targetState.destination.route ?: ""
+                val isGoingToBooking = targetRoute.startsWith("bookingNavigator") ||
+                        targetRoute.startsWith("bookingServices")
+
+                if (isGoingToBooking) {
+                    ExitTransition.None
+                } else {
+                    slideOutToLeft()
+                }
+            },
+            popEnterTransition = {
+                val initialRoute = initialState.destination.route ?: ""
+                val isComingFromBooking = initialRoute.startsWith("bookingNavigator") ||
+                        initialRoute.startsWith("bookingServices") ||
+                        initialRoute.startsWith("bookingSpecialists") ||
+                        initialRoute.startsWith("bookingDateTime") ||
+                        initialRoute.startsWith("bookingConfirmation")
+
+                if (isComingFromBooking) {
+                    EnterTransition.None
+                } else {
+                    slideInFromLeft()
+                }
+            },
+            popExitTransition = {
+                slideOutToRight()
+            }
         ) {
             val searchNavigate = remember(navController) {
                 SearchNavigator(navController)
