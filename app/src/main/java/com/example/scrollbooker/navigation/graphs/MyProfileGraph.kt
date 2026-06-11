@@ -23,7 +23,8 @@ import com.example.scrollbooker.ui.profile.MyProfileViewModel
 fun NavGraphBuilder.myProfileGraph(
     navController: NavHostController,
     myProfileData: FeatureState<UserProfile>,
-    myPosts: LazyPagingItems<Post>
+    myPosts: LazyPagingItems<Post>,
+    profileNavigate: ProfileNavigator
 ) {
     navigation(
         route = MainRoute.MyProfileNavigator.route,
@@ -32,10 +33,6 @@ fun NavGraphBuilder.myProfileGraph(
         composable(MainRoute.MyProfile.route) { backStackEntry ->
             val viewModel = hiltViewModel<MyProfileViewModel>(backStackEntry)
             val permissionController = LocalUserPermissions.current
-
-            val profileNavigate = remember(navController) {
-                ProfileNavigator(navController)
-            }
 
             MyProfileScreen(
                 viewModel = viewModel,

@@ -17,7 +17,7 @@ import com.example.scrollbooker.components.core.list.ItemList
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
-import com.example.scrollbooker.navigation.navigators.SettingsNavigator
+import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
@@ -34,7 +34,7 @@ data class SettingsItem(
 @Composable
 fun SettingsScreen(
     onBack: () -> Unit,
-    settingsNavigate: SettingsNavigator,
+    profileNavigate: ProfileNavigator,
     onLogout: () -> Unit
 ) {
     val editProfileItems = listOf(
@@ -56,7 +56,7 @@ fun SettingsScreen(
         SettingsItem(
             headline = stringResource(R.string.display),
             icon = R.drawable.ic_moon_outline,
-            navigate = { settingsNavigate.toDisplay() }
+            navigate = { profileNavigate.toDisplay() }
         ),
 //        SettingsItem(
 //            headline = stringResource(R.string.notifications),
@@ -66,7 +66,7 @@ fun SettingsScreen(
         SettingsItem(
             headline = stringResource(R.string.reportProblem),
             icon = R.drawable.ic_flag_outline,
-            navigate = { settingsNavigate.toReportProblem() }
+            navigate = { profileNavigate.toReportProblem() }
         ),
 //        SettingsItem(
 //            headline = stringResource(R.string.support),

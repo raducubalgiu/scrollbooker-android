@@ -15,6 +15,7 @@ import androidx.navigation.navArgument
 import com.example.scrollbooker.navigation.graphs.bookingGraph
 import com.example.scrollbooker.navigation.graphs.socialGraph
 import com.example.scrollbooker.navigation.graphs.userProfileGraph
+import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.navigation.navigators.SearchNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
@@ -28,6 +29,10 @@ import com.example.scrollbooker.ui.search.businessProfile.BusinessProfileViewMod
 fun SearchNavHost(
     navController: NavHostController
 ) {
+    val profileNavigate = remember(navController) {
+        ProfileNavigator(navController)
+    }
+
     val searchNavigate = remember(navController) {
         SearchNavigator(navController)
     }
@@ -77,9 +82,6 @@ fun SearchNavHost(
                 } else {
                     slideInFromLeft()
                 }
-            },
-            popExitTransition = {
-                slideOutToRight()
             }
         ) {
             val viewModel: BusinessProfileViewModel = hiltViewModel()
@@ -91,8 +93,8 @@ fun SearchNavHost(
             )
         }
 
-        userProfileGraph(navController)
+        userProfileGraph(navController, profileNavigate)
         bookingGraph(navController)
-        socialGraph(navController)
+        socialGraph(navController, profileNavigate)
     }
 }

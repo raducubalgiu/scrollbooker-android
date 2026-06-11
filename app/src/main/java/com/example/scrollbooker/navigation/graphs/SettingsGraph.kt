@@ -1,11 +1,10 @@
 package com.example.scrollbooker.navigation.graphs
-import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import com.example.scrollbooker.navigation.navigators.SettingsNavigator
+import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.settings.SettingsScreen
 import com.example.scrollbooker.ui.settings.account.AccountScreen
@@ -20,22 +19,17 @@ import com.example.scrollbooker.ui.settings.terms.TermsAndConditionsScreen
 
 fun NavGraphBuilder.settingsGraph(
     navController: NavHostController,
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
+    profileNavigate: ProfileNavigator
 ) {
     navigation(
         route = MainRoute.SettingsNavigator.route,
         startDestination = MainRoute.Settings.route
     ) {
         composable(MainRoute.Settings.route) {
-            val settingsNavigate = remember(navController) {
-                SettingsNavigator(
-                    navController = navController
-                )
-            }
-
             SettingsScreen(
                 onBack = { navController.popBackStack() },
-                settingsNavigate = settingsNavigate,
+                profileNavigate = profileNavigate,
                 onLogout = onLogout
             )
         }

@@ -31,7 +31,7 @@ import com.example.scrollbooker.core.util.AppLocaleProvider
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.navigation.navigators.EditProfileNavigator
+import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.LocalUserPermissions
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
 import com.example.scrollbooker.ui.profile.edit.components.ChoosePhotoSheet
@@ -51,7 +51,7 @@ data class EditProfileAction(
 @Composable
 fun EditProfileScreen(
     onBack: () -> Unit,
-    editProfileNavigate: EditProfileNavigator,
+    profileNavigate: ProfileNavigator,
     onNavigateToCropScreen: () -> Unit,
     viewModel: MyProfileViewModel
 ) {
@@ -81,28 +81,28 @@ fun EditProfileScreen(
         EditProfileAction(
             title = stringResource(R.string.name),
             value = user?.fullName ?: "",
-            navigate = { editProfileNavigate.toEditFullName() }
+            navigate = { profileNavigate.toEditFullName() }
         ),
         EditProfileAction(
             title = stringResource(R.string.username),
             value = user?.username ?: "",
-            navigate = { editProfileNavigate.toEditUsername() }
+            navigate = { profileNavigate.toEditUsername() }
         ),
         EditProfileAction(
             title = stringResource(R.string.biography),
             value = user?.bio ?: "",
-            navigate = { editProfileNavigate.toEditBio() }
+            navigate = { profileNavigate.toEditBio() }
         ),
         EditProfileAction(
             title = stringResource(R.string.gender),
             value = GenderTypeEnum.fromKey(user?.gender)?.getLabel() ?: "",
-            navigate = { editProfileNavigate.toEditGender() },
+            navigate = { profileNavigate.toEditGender() },
             permission = PermissionEnum.GENDER_EDIT
         ),
         EditProfileAction(
             title = stringResource(R.string.dateOfBirth),
             value = formattedBirthdate,
-            navigate = { editProfileNavigate.toEditBirthdate() },
+            navigate = { profileNavigate.toEditBirthdate() },
             permission = PermissionEnum.BIRTHDATE_EDIT
         ),
     )

@@ -5,10 +5,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
 import com.example.scrollbooker.navigation.graphs.bookingGraph
 import com.example.scrollbooker.navigation.graphs.socialGraph
 import com.example.scrollbooker.navigation.graphs.userProfileGraph
@@ -17,17 +15,19 @@ import com.example.scrollbooker.ui.feed.FeedScreen
 import com.example.scrollbooker.ui.feed.search.FeedSearchScreen
 import com.example.scrollbooker.ui.feed.search.FeedSearchViewModel
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
-import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
+import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.ui.feed.FeedScreenViewModel
-import com.example.scrollbooker.ui.social.SocialScreen
-import com.example.scrollbooker.ui.social.SocialViewModel
 
 @Composable
 fun FeedNavHost(navController: NavHostController) {
+    val profileNavigate = remember(navController) {
+        ProfileNavigator(navController)
+    }
+
     val feedNavigate = remember(navController) {
         FeedNavigator(navController)
     }
@@ -57,8 +57,6 @@ fun FeedNavHost(navController: NavHostController) {
             route = MainRoute.FeedSearch.route,
             enterTransition = { EnterTransition.None },
             exitTransition = { ExitTransition.None },
-            popEnterTransition = { slideInFromLeft() },
-            popExitTransition = { slideOutToRight() }
         ) {
             val feedSearchViewModel = hiltViewModel<FeedSearchViewModel>()
 
@@ -71,8 +69,8 @@ fun FeedNavHost(navController: NavHostController) {
             )
         }
 
-        userProfileGraph(navController)
+        userProfileGraph(navController, profileNavigate)
         bookingGraph(navController)
-        socialGraph(navController)
+        socialGraph(navController, profileNavigate)
     }
 }

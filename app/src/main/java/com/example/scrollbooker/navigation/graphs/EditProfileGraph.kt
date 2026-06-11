@@ -1,11 +1,9 @@
 package com.example.scrollbooker.navigation.graphs
-
-import androidx.compose.runtime.remember
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import com.example.scrollbooker.navigation.navigators.EditProfileNavigator
+import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
 import com.example.scrollbooker.ui.profile.edit.EditAvatarCropScreen
@@ -20,24 +18,19 @@ import com.example.scrollbooker.ui.profile.edit.EditWebsiteScreen
 
 fun NavGraphBuilder.editProfileGraph(
     navController: NavHostController,
-    viewModel: MyProfileViewModel
+    viewModel: MyProfileViewModel,
+    profileNavigate: ProfileNavigator
 ) {
     navigation(
         route = MainRoute.EditProfileNavigator.route,
         startDestination = MainRoute.EditProfile.route,
     ) {
         composable(route = MainRoute.EditProfile.route) {
-            val editProfileNavigate = remember(navController) {
-                EditProfileNavigator(
-                    navController = navController
-                )
-            }
-
             EditProfileScreen(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
-                onNavigateToCropScreen = { editProfileNavigate.toEditAvatarCropScreen() },
-                editProfileNavigate = editProfileNavigate,
+                onNavigateToCropScreen = { profileNavigate.toEditAvatarCropScreen() },
+                profileNavigate = profileNavigate,
             )
         }
 

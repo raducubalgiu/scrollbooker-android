@@ -128,6 +128,7 @@ fun FeedScreen(
                             feedViewModel = feedViewModel,
                             posts = posts,
                             isDrawerOpen = isDrawerOpen,
+                            showBookButton = true,
                             onAction = { action, post ->
                                 when(action) {
                                     PostOverlayActionEnum.OPEN_LINKED_PRODUCTS -> handleOpenSheet(LinkedProductsSheet(post.id))

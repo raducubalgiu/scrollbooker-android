@@ -7,12 +7,14 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
+import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.social.SocialScreen
 import com.example.scrollbooker.ui.social.SocialViewModel
 
 fun NavGraphBuilder.socialGraph(
-    navController: NavHostController
+    navController: NavHostController,
+    profileNavigate: ProfileNavigator
 ) {
     composable(
         route = "${MainRoute.Social.route}/{tabIndex}/{userId}/{username}/{isBusinessOrEmployee}",
@@ -36,9 +38,7 @@ fun NavGraphBuilder.socialGraph(
             socialParam = socialParams,
             onBack = { navController.popBackStack() },
             onNavigateUserProfile = { userId, username ->
-                navController.navigate("${MainRoute.UserProfile.route}/$userId/$username") {
-                    launchSingleTop = true
-                }
+                profileNavigate.toUserProfile(userId, username)
             }
         )
     }

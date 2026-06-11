@@ -11,7 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import com.example.scrollbooker.R
-import com.example.scrollbooker.navigation.navigators.MyBusinessNavigator
+import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusinessServices.MyServicesScreen
 import com.example.scrollbooker.ui.LocalUserPermissions
@@ -39,7 +39,8 @@ import com.example.scrollbooker.ui.myBusiness.myServices.MyServicesViewModel
 import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.myBusinessGraph(
-    navController: NavHostController
+    navController: NavHostController,
+    profileNavigate: ProfileNavigator
 ) {
     navigation(
         route = MainRoute.MyBusinessNavigator.route,
@@ -48,18 +49,12 @@ fun NavGraphBuilder.myBusinessGraph(
         composable(MainRoute.MyBusiness.route) {
             val permissionController = LocalUserPermissions.current
 
-            val myBusinessNavigate = remember(navController) {
-                MyBusinessNavigator(
-                    navController = navController
-                )
-            }
-
             val viewModel: MyBusinessViewModel = hiltViewModel()
 
             MyBusinessScreen(
                 viewModel = viewModel,
                 permissionsController = permissionController,
-                myBusinessNavigate = myBusinessNavigate,
+                profileNavigate = profileNavigate,
                 onBack = { navController.popBackStack() }
             )
         }

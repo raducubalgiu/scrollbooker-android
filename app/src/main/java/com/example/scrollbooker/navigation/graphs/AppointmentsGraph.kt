@@ -27,11 +27,7 @@ fun NavGraphBuilder.appointmentsGraph(
 ) {
     navigation(
         route = MainRoute.AppointmentsNavigator.route,
-        startDestination = MainRoute.Appointments.route,
-        enterTransition = { slideInFromRight() },
-        exitTransition = { slideOutToLeft() },
-        popEnterTransition = { slideInFromLeft() },
-        popExitTransition = { slideOutToRight() }
+        startDestination = MainRoute.Appointments.route
     ) {
         composable(
             route = MainRoute.Appointments.route

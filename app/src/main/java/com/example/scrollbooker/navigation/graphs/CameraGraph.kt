@@ -16,8 +16,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.example.scrollbooker.navigation.routes.MainRoute
-import com.example.scrollbooker.navigation.transition.slideInFromRight
-import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.ui.camera.CameraGalleryScreen
 import com.example.scrollbooker.ui.camera.CameraPreviewScreen
 import com.example.scrollbooker.ui.camera.CameraScreen
@@ -95,8 +93,6 @@ fun NavGraphBuilder.cameraGraph(navController: NavHostController) {
 
         composable(
             route = MainRoute.CreatePost.route,
-            enterTransition = { slideInFromRight() },
-            exitTransition = { slideOutToLeft() },
             popEnterTransition = { EnterTransition.None },
             popExitTransition = { ExitTransition.None }
         ) { backStackEntry ->

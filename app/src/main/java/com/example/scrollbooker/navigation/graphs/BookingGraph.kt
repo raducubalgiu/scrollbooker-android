@@ -3,10 +3,7 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.FiniteAnimationSpec
-import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.runtime.remember
@@ -28,13 +25,9 @@ import com.example.scrollbooker.ui.booking.BookingViewModel
 fun NavGraphBuilder.bookingGraph(
     navController: NavHostController
 ) {
-    // Curbe de easing mai fluide (FastOutSlowIn pentru tranziții naturale)
     val pushSpec: FiniteAnimationSpec<IntOffset> = tween(400, easing = FastOutSlowInEasing)
     val popSpec: FiniteAnimationSpec<IntOffset> = tween(350, easing = FastOutSlowInEasing)
 
-    // Animații orizontale standard pentru pașii din interiorul booking-ului
-    val stepEnterSpec: FiniteAnimationSpec<IntOffset> = tween(300, easing = FastOutSlowInEasing)
-    val stepExitSpec: FiniteAnimationSpec<IntOffset> = tween(300, easing = FastOutSlowInEasing)
     navigation(
         route = MainRoute.BookingNavigator.route,
         startDestination = MainRoute.BookingServices.route,

@@ -21,15 +21,12 @@ import com.example.scrollbooker.ui.profile.UserProfilePostDetailScreen
 import com.example.scrollbooker.ui.profile.UserProfileScreen
 
 fun NavGraphBuilder.userProfileGraph(
-    navController: NavHostController
+    navController: NavHostController,
+    profileNavigate: ProfileNavigator
 ) {
     navigation(
         route = MainRoute.ProfileNavigator.route,
-        startDestination = "${MainRoute.UserProfile.route}/{userId}/{username}",
-        enterTransition = { slideInFromRight() },
-        exitTransition = { slideOutToLeft() },
-        popEnterTransition = { slideInFromLeft() },
-        popExitTransition = { slideOutToRight() }
+        startDestination = "${MainRoute.UserProfile.route}/{userId}/{username}"
     ) {
         composable("${MainRoute.UserProfile.route}/{userId}/{username}",
             arguments = listOf(
@@ -70,10 +67,6 @@ fun NavGraphBuilder.userProfileGraph(
         ) { backStackEntry ->
             val viewModel = hiltViewModel<ProfileViewModel>(backStackEntry)
 
-            val profileNavigate = remember(navController) {
-                ProfileNavigator(navController)
-            }
-
             UserProfileScreen(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
@@ -88,30 +81,31 @@ fun NavGraphBuilder.userProfileGraph(
             popEnterTransition = { EnterTransition.None },
             popExitTransition = { ExitTransition.None },
             arguments = listOf(
-                navArgument("postTab") { type = NavType.StringType },
-                navArgument("postIndex") { type = NavType.IntType },
-                navArgument("userId") { type = NavType.IntType }
+                navArgument("postTab") {
+                    type = NavType.StringType
+                },
+                navArgument("postIndex") {
+                    type = NavType.IntType
+                },
+                navArgument("userId") {
+                    type = NavType.IntType
+                }
             ),
         ) { backStackEntry ->
             val postTabKey = backStackEntry.arguments?.getString("postTab") ?: return@composable
             val postIndex = backStackEntry.arguments?.getInt("postIndex") ?: return@composable
-            val userId = backStackEntry.arguments?.getInt("userId") ?: return@composable
 
             val parentBackStackEntry = remember(backStackEntry) {
-                navController.getBackStackEntry("${MainRoute.UserProfile.route}/$userId")
+                navController.getBackStackEntry(MainRoute.ProfileNavigator.route)
             }
             val viewModel = hiltViewModel<ProfileViewModel>(parentBackStackEntry)
-
-            val profileNavigate = remember(navController) {
-                ProfileNavigator(navController)
-            }
 
             UserProfilePostDetailScreen(
                 postTabKey = postTabKey,
                 postIndex = postIndex,
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
-                profileNavigate = profileNavigate,
+                profileNavigate = profileNavigate
             )
         }
     }

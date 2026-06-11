@@ -51,6 +51,7 @@ fun PostVerticalPager(
     feedViewModel: FeedScreenViewModel,
     posts: LazyPagingItems<Post>,
     isDrawerOpen: Boolean,
+    showBookButton: Boolean,
     onAction: (PostOverlayActionEnum, Post) -> Unit,
     onNavigateToUserProfile: (userId: Int, username: String) -> Unit,
     onNavigateToBooking: (userId: Int, businessId: Int, businessOwnerId: Int) -> Unit
@@ -176,6 +177,7 @@ fun PostVerticalPager(
                             onAction = { onAction(it, post) },
                             enableOpacity = false,
                             onNavigateToUserProfile = onNavigateToUserProfile,
+                            showBookButton = showBookButton,
                             onNavigateToBooking = {
                                 val userId = post.user.id
                                 val businessId = post.businessId

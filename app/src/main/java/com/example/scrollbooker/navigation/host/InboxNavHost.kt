@@ -9,11 +9,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.example.scrollbooker.navigation.graphs.appointmentsGraph
 import com.example.scrollbooker.navigation.graphs.socialGraph
 import com.example.scrollbooker.navigation.graphs.userProfileGraph
 import com.example.scrollbooker.navigation.navigators.InboxNavigator
-import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
+import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
@@ -23,12 +22,14 @@ import com.example.scrollbooker.ui.inbox.InboxScreen
 import com.example.scrollbooker.ui.inbox.InboxViewModel
 import com.example.scrollbooker.ui.inbox.EmploymentRespondConsentScreen
 import com.example.scrollbooker.ui.inbox.EmploymentRespondScreen
-import com.example.scrollbooker.ui.social.SocialScreen
-import com.example.scrollbooker.ui.social.SocialViewModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun InboxNavHost(navController: NavHostController) {
+    val profileNavigate = remember(navController) {
+        ProfileNavigator(navController)
+    }
+
     NavHost(
         navController = navController,
         startDestination = MainRoute.InboxNavigator.route,
@@ -117,7 +118,7 @@ fun InboxNavHost(navController: NavHostController) {
             }
         }
 
-        userProfileGraph(navController)
-        socialGraph(navController)
+        userProfileGraph(navController, profileNavigate)
+        socialGraph(navController, profileNavigate)
     }
 }

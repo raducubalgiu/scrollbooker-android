@@ -22,11 +22,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.core.enums.PermissionEnum
-import com.example.scrollbooker.navigation.navigators.MyBusinessNavigator
 import com.example.scrollbooker.ui.UserPermissionsController
 import com.example.scrollbooker.ui.myBusiness.myProducts.components.MyBusinessCard
 import androidx.compose.runtime.getValue
 import com.example.scrollbooker.components.core.layout.LoadingScreen
+import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 
 data class BusinessCard(
     val title: String,
@@ -40,7 +40,7 @@ data class BusinessCard(
 fun MyBusinessScreen(
     viewModel: MyBusinessViewModel,
     permissionsController: UserPermissionsController,
-    myBusinessNavigate: MyBusinessNavigator,
+    profileNavigate: ProfileNavigator,
     onBack: () -> Unit
 ) {
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
@@ -53,20 +53,20 @@ fun MyBusinessScreen(
             description = stringResource(R.string.businessDetailsDescription),
             icon = Icons.Outlined.LocationOn,
             permission = PermissionEnum.MY_BUSINESS_LOCATION_VIEW,
-            navigate = { myBusinessNavigate.toMyBusinessLocation() },
+            navigate = { profileNavigate.toMyBusinessLocation() },
         ),
         BusinessCard(
             title = stringResource(R.string.scheduleShort),
             description = stringResource(R.string.userScheduleDetails),
             icon = Icons.Outlined.Schedule,
             permission = PermissionEnum.MY_SCHEDULES_VIEW,
-            navigate = { myBusinessNavigate.toMySchedules() },
+            navigate = { profileNavigate.toMySchedules() },
         ),
         BusinessCard(
             title = stringResource(R.string.categories),
             description = stringResource(R.string.categoryservicesDetails),
             icon = Icons.Outlined.Book,
-            navigate = { myBusinessNavigate.toMyServices() },
+            navigate = { profileNavigate.toMyServices() },
             permission = PermissionEnum.MY_SERVICES_VIEW
         ),
         BusinessCard(
@@ -74,20 +74,20 @@ fun MyBusinessScreen(
             description = stringResource(R.string.servicesDetails),
             icon = Icons.Outlined.ShoppingBag,
             permission = PermissionEnum.MY_PRODUCTS_VIEW,
-            navigate = { myBusinessNavigate.toMyProducts() },
+            navigate = { profileNavigate.toMyProducts() },
         ),
         BusinessCard(
             title = stringResource(R.string.calendar),
             description = stringResource(R.string.calendarDetails),
             icon = Icons.Outlined.CalendarToday,
-            navigate = { myBusinessNavigate.toMyCalendar() },
+            navigate = { profileNavigate.toMyCalendar() },
             permission = PermissionEnum.MY_CALENDAR_VIEW,
         ),
         BusinessCard(
             title = stringResource(R.string.employees),
             description = stringResource(R.string.employeesAndEmploymentRequestsDetails),
             icon = Icons.Outlined.PeopleOutline,
-            navigate = { myBusinessNavigate.toMyEmployees() },
+            navigate = { profileNavigate.toMyEmployees() },
             permission = PermissionEnum.MY_EMPLOYEES_VIEW
         ),
     )
