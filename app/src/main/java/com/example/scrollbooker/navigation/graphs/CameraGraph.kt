@@ -15,6 +15,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.camera.CameraGalleryScreen
 import com.example.scrollbooker.ui.camera.CameraPreviewScreen
@@ -23,7 +24,10 @@ import com.example.scrollbooker.ui.camera.CameraViewModel
 import com.example.scrollbooker.ui.camera.CreatePostPreviewScreen
 import com.example.scrollbooker.ui.camera.CreatePostScreen
 
-fun NavGraphBuilder.cameraGraph(navController: NavHostController) {
+fun NavGraphBuilder.cameraGraph(
+    navController: NavHostController,
+    profileNavigate: ProfileNavigator
+) {
     val pushSpec: FiniteAnimationSpec<IntOffset> = tween(320, easing = LinearOutSlowInEasing)
     val popSpec: FiniteAnimationSpec<IntOffset> = tween(280, easing = LinearOutSlowInEasing)
     val fadeInSpec: FiniteAnimationSpec<Float> = tween(220, easing = LinearOutSlowInEasing)
@@ -49,7 +53,7 @@ fun NavGraphBuilder.cameraGraph(navController: NavHostController) {
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
                 onNavigateToCameraGallery = {
-                    navController.navigate(MainRoute.CameraGallery.route)
+                    profileNavigate.toCameraGallery()
                 }
             )
         }
@@ -68,7 +72,7 @@ fun NavGraphBuilder.cameraGraph(navController: NavHostController) {
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
                 onNavigateToCameraPreview = {
-                    navController.navigate(MainRoute.CameraPreview.route)
+                    profileNavigate.toCameraPreview()
                 }
             )
         }
@@ -86,7 +90,7 @@ fun NavGraphBuilder.cameraGraph(navController: NavHostController) {
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
                 onNavigateToCreatePostScreen = {
-                    navController.navigate(MainRoute.CreatePost.route)
+                    profileNavigate.toCreatePost()
                 }
             )
         }
@@ -105,7 +109,7 @@ fun NavGraphBuilder.cameraGraph(navController: NavHostController) {
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
                 onNavigateToPostPreview = {
-                    navController.navigate(MainRoute.CreatePostPreview.route)
+                    profileNavigate.toCreatePostPreview()
                 }
             )
         }

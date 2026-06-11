@@ -30,7 +30,7 @@ fun AppointmentsNavHost(navController: NavHostController) {
     ) {
         appointmentsGraph(navController)
         userProfileGraph(navController, profileNavigate)
-        cameraGraph(navController)
+        cameraGraph(navController, profileNavigate)
         socialGraph(navController, profileNavigate)
     }
 }

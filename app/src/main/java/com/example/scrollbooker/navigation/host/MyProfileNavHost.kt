@@ -88,7 +88,7 @@ fun MyProfileNavHost(
                 onLogout = onLogout,
                 profileNavigate = profileNavigate
             )
-            cameraGraph(navController)
+            cameraGraph(navController, profileNavigate)
             socialGraph(navController, profileNavigate)
         }
     }
