@@ -10,8 +10,8 @@ class InboxNavigator (
         navController.navigate("${MainRoute.EmploymentRespond.route}/${employmentId}")
     }
 
-    fun toUserProfile(userId: Int) {
-        navController.navigate("${MainRoute.UserProfile.route}/${userId}")
+    fun toUserProfile(userId: Int, username: String) {
+        navController.navigate("${MainRoute.UserProfile.route}/${userId}/${username}")
     }
 
     fun toAppointmentDetail(appointmentId: Int) {

@@ -139,7 +139,9 @@ fun NotificationItem(
         isEnabled = true,
         titleMaxLines = 1,
         descriptionMaxLines = descMaxLines,
-        onNavigateUserProfile = { inboxNavigate.toUserProfile(notification.senderId) },
+        onNavigateUserProfile = {
+            inboxNavigate.toUserProfile(notification.sender.id, notification.sender.username)
+        },
         badgeConfig = badgeConfig,
         trailingContent = trailingContent
     )
