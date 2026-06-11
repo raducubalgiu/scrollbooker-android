@@ -62,7 +62,7 @@ fun BookingServicesScreen(
         Box(Modifier.fillMaxSize().padding(innerPadding)) {
             when (val state = productsState) {
                 is FeatureState.Error -> ErrorScreen()
-                is FeatureState.Loading -> LoadingScreen()
+                is FeatureState.Loading -> Unit
                 is FeatureState.Success -> {
                     val serviceGroups = state.data.data
 

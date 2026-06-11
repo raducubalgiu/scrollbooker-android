@@ -1,6 +1,7 @@
 package com.example.scrollbooker.navigation.graphs
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -27,11 +28,13 @@ import com.example.scrollbooker.ui.booking.BookingViewModel
 fun NavGraphBuilder.bookingGraph(
     navController: NavHostController
 ) {
-    val pushSpec: FiniteAnimationSpec<IntOffset> = tween(320, easing = LinearOutSlowInEasing)
-    val popSpec: FiniteAnimationSpec<IntOffset> = tween(280, easing = LinearOutSlowInEasing)
-    val fadeInSpec: FiniteAnimationSpec<Float> = tween(220, easing = LinearOutSlowInEasing)
-    val fadeOutSpec: FiniteAnimationSpec<Float> = tween(220, easing = LinearOutSlowInEasing)
+    // Curbe de easing mai fluide (FastOutSlowIn pentru tranziții naturale)
+    val pushSpec: FiniteAnimationSpec<IntOffset> = tween(400, easing = FastOutSlowInEasing)
+    val popSpec: FiniteAnimationSpec<IntOffset> = tween(350, easing = FastOutSlowInEasing)
 
+    // Animații orizontale standard pentru pașii din interiorul booking-ului
+    val stepEnterSpec: FiniteAnimationSpec<IntOffset> = tween(300, easing = FastOutSlowInEasing)
+    val stepExitSpec: FiniteAnimationSpec<IntOffset> = tween(300, easing = FastOutSlowInEasing)
     navigation(
         route = MainRoute.BookingNavigator.route,
         startDestination = MainRoute.BookingServices.route,
@@ -57,10 +60,10 @@ fun NavGraphBuilder.bookingGraph(
                 defaultValue = -1
             }
         ),
-        enterTransition = { slideInVertically(pushSpec) { it } + fadeIn(fadeInSpec) },
+        enterTransition = { slideInVertically(pushSpec) { it } },
         exitTransition = { ExitTransition.None },
         popEnterTransition = { EnterTransition.None },
-        popExitTransition = { slideOutVertically(popSpec) { it } + fadeOut(fadeOutSpec) }
+        popExitTransition = { slideOutVertically(popSpec) { it } }
     ) {
         composable(
             route = MainRoute.BookingServices.route

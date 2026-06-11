@@ -1,10 +1,12 @@
 package com.example.scrollbooker.ui.shared.posts.components.postOverlay
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -46,76 +48,88 @@ fun PostOverlay(
 ) {
     val isVideoReview = post.isVideoReview
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .zIndex(3f)
-        .background(
-            Brush.verticalGradient(
-                colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.6f))
-            )
-        ),
-        verticalArrangement = Arrangement.Bottom
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .zIndex(3f)
     ) {
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = SpacingS, start = SpacingM),
-            verticalAlignment = Alignment.Bottom
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Spacer(Modifier.height(SpacingXS))
-
-                PostOverlayUser(
-                    enableOpacity = enableOpacity,
-                    user = post.user,
-                    isVideoReview = isVideoReview,
-                    onNavigateToUser = onNavigateToUserProfile,
+        // 1. Umbra subtilă: Ocupă doar jumătatea sau treimea inferioară a ecranului
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.4f) // Schimbă la 0.3f dacă vrei o umbră și mai mică (30% din ecran)
+                .align(Alignment.BottomCenter)
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.7f))
+                    )
                 )
+        )
 
-                Spacer(Modifier.height(SpacingS))
+        // 2. Conținutul tău original (fără fundalul pe fillMaxSize)
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Bottom
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = SpacingS, start = SpacingM),
+                verticalAlignment = Alignment.Bottom
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Spacer(Modifier.height(SpacingXS))
 
-                post.description
-                    ?.takeIf { it.isNotBlank() }
-                    ?.let { PostOverlayDescription(it) }
-                    ?: PostOverlayDescription("...")
+                    PostOverlayUser(
+                        enableOpacity = enableOpacity,
+                        user = post.user,
+                        isVideoReview = isVideoReview,
+                        onNavigateToUser = onNavigateToUserProfile,
+                    )
 
-                if(showBookButton) {
-                    Button(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = BasePadding),
-                        onClick = {
-                            //onAction(PostOverlayActionEnum.OPEN_LINKED_PRODUCTS)
-                            onNavigateToBooking()
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Primary,
-                            contentColor = OnPrimary
-                        ),
-                        contentPadding = PaddingValues(vertical = 12.dp)
-                    ) {
-                        Text(
-                            text = stringResource(R.string.bookNow),
-                            style = bodyLarge,
-                            fontWeight = FontWeight.SemiBold,
-                            color = OnPrimary,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
+                    Spacer(Modifier.height(SpacingS))
+
+                    post.description
+                        ?.takeIf { it.isNotBlank() }
+                        ?.let { PostOverlayDescription(it) }
+                        ?: PostOverlayDescription("...")
+
+                    if (showBookButton) {
+                        Button(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = BasePadding),
+                            onClick = { onNavigateToBooking() },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Primary,
+                                contentColor = OnPrimary
+                            ),
+                            contentPadding = PaddingValues(vertical = 12.dp)
+                        ) {
+                            Text(
+                                text = stringResource(R.string.bookNow),
+                                style = bodyLarge,
+                                fontWeight = FontWeight.SemiBold,
+                                color = OnPrimary,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
                     }
                 }
-            }
 
-            PostOverlayActions(
-                user = post.user,
-                isSavingLike = isSavingLike,
-                isSavingBookmark = isSavingBookmark,
-                isVideoReview = post.isVideoReview,
-                enableOpacity = enableOpacity,
-                counters = post.counters,
-                userActions = post.userActions,
-                onAction = onAction,
-                onNavigateToUser = { onNavigateToUserProfile(post.user.id, post.user.username) },
-            )
+                PostOverlayActions(
+                    user = post.user,
+                    isSavingLike = isSavingLike,
+                    isSavingBookmark = isSavingBookmark,
+                    isVideoReview = post.isVideoReview,
+                    enableOpacity = enableOpacity,
+                    counters = post.counters,
+                    userActions = post.userActions,
+                    onAction = onAction,
+                    onNavigateToUser = { onNavigateToUserProfile(post.user.id, post.user.username) },
+                )
+            }
         }
     }
 }

@@ -37,7 +37,7 @@ class BookingViewModel @Inject constructor(
     val productsState: StateFlow<FeatureState<UserProducts>> = flow {
         emit(FeatureState.Loading)
 
-        val result = withVisibleLoading {
+        val result = withVisibleLoading(minLoadingMs = 400L) {
             getProductsByBusinessIdAndEmployeeIdUseCase(
                 businessId = businessId,
                 employeeId = if(businessOwnerId != userId) userId else null,
