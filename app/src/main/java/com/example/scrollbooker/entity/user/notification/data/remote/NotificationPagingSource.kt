@@ -24,7 +24,12 @@ class NotificationPagingSource(
         val limit = 20
 
         return try {
-            val response = withVisibleLoading { api.getUserNotifications(page, limit) }
+            val response = if(page == 1) {
+                withVisibleLoading { api.getUserNotifications(page, limit) }
+            } else {
+                api.getUserNotifications(page, limit)
+            }
+
             val notifications = response.results.map { it.toDomain() }
 
             val totalLoaded = (page - 1) * limit + response.results.size
