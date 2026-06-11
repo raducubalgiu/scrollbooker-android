@@ -43,6 +43,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -55,6 +56,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -93,69 +95,69 @@ class ProfileViewModel @Inject constructor(
     private val _currentTab = MutableStateFlow<Int>(0)
     val currentTab: StateFlow<Int> = _currentTab.asStateFlow()
 
-    private val _profile = MutableStateFlow<FeatureState<UserProfile>>(FeatureState.Loading)
-    val profile: StateFlow<FeatureState<UserProfile>> = _profile.asStateFlow()
-
     private val _isFollowState = MutableStateFlow<Boolean?>(null)
     val isFollowState: StateFlow<Boolean?> = _isFollowState.asStateFlow()
 
     private val _isSaving = MutableStateFlow<Boolean>(false)
     val isSaving: StateFlow<Boolean> = _isSaving.asStateFlow()
 
-    init {
-        username.filterNotNull()
-            .onEach { username -> loadUserProfile(username) }
-            .launchIn(viewModelScope)
-    }
+    private val profileMutations = MutableSharedFlow<FeatureState<UserProfile>>()
 
-    fun loadUserProfile(username: String) {
-        viewModelScope.launch {
-            _profile.value = FeatureState.Loading
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val profile: StateFlow<FeatureState<UserProfile>> = merge(
+        username
+            .filterNotNull()
+            .distinctUntilChanged()
+            .flatMapLatest { currentUsername ->
+                flow {
+                    emit(FeatureState.Loading)
+                    val lat = 44.446145f
+                    val lng = 25.989074f
 
-            val lat = 44.446145f
-            val lng = 25.989074f
+                    val response = withVisibleLoading {
+                        getUserProfileUseCase(currentUsername, lat, lng)
+                    }
 
-            val response = withVisibleLoading {
-                getUserProfileUseCase(username, lat, lng)
-            }
-
-            if(response is FeatureState.Success) {
-                val profile = response.data
-                _isFollowState.value = profile.isFollow
-            }
-
-            _profile.value = response
-        }
-    }
+                    if (response is FeatureState.Success) {
+                        _isFollowState.value = response.data.isFollow
+                    }
+                    emit(response)
+                }
+            },
+        profileMutations
+    ).stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Lazily,
+        initialValue = FeatureState.Loading
+    )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val posts: Flow<PagingData<Post>> = userId
         .filterNotNull()
-        .flatMapLatest { userId -> getUserPostsUseCase(userId) }
+        .distinctUntilChanged()
+        .flatMapLatest { currentUserId -> getUserPostsUseCase(currentUserId) }
         .cachedIn(viewModelScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val employees: Flow<PagingData<Employee>> = userId
         .filterNotNull()
-        .flatMapLatest { userId -> getEmployeesByOwnerUseCase(userId) }
+        .distinctUntilChanged()
+        .flatMapLatest { currentUserId -> getEmployeesByOwnerUseCase(currentUserId) }
         .cachedIn(viewModelScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val bookmarks: Flow<PagingData<Post>> = userId
         .filterNotNull()
-        .flatMapLatest { userId -> getUserBookmarkedPostsUseCase(userId) }
+        .distinctUntilChanged()
+        .flatMapLatest { currentUserId -> getUserBookmarkedPostsUseCase(currentUserId) }
         .cachedIn(viewModelScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val products: StateFlow<FeatureState<UserProducts>> = profile
-        .mapNotNull { state ->
-            if (state is FeatureState.Success) state.data else null
-        }
+        .mapNotNull { state -> if (state is FeatureState.Success) state.data else null }
         .mapNotNull { userProfile ->
             val businessId = userProfile.businessId ?: return@mapNotNull null
-
             val isEmployee = userProfile.businessOwner?.id != userProfile.id
-
             val employeeId = if (isEmployee) userProfile.id else null
 
             Pair(businessId, employeeId)
@@ -164,7 +166,6 @@ class ProfileViewModel @Inject constructor(
         .flatMapLatest { (businessId, employeeId) ->
             flow {
                 emit(FeatureState.Loading)
-
                 val result = withVisibleLoading {
                     getProductsByBusinessIdAndEmployeeIdUseCase(
                         businessId = businessId,
@@ -186,10 +187,10 @@ class ProfileViewModel @Inject constructor(
     val about: StateFlow<FeatureState<UserProfileAbout>> = userId
         .filterNotNull()
         .distinctUntilChanged()
-        .flatMapLatest { userId ->
+        .flatMapLatest { currentUserId ->
             flow {
                 emit(FeatureState.Loading)
-                emit(withVisibleLoading { getUserProfileAboutUseCase(userId) })
+                emit(withVisibleLoading { getUserProfileAboutUseCase(currentUserId) })
             }
         }
         .stateIn(
@@ -202,15 +203,10 @@ class ProfileViewModel @Inject constructor(
     val schedules: StateFlow<FeatureState<List<Schedule>>> = userId
         .filterNotNull()
         .distinctUntilChanged()
-        .flatMapLatest { userId ->
+        .flatMapLatest { currentUserId ->
             flow {
                 emit(FeatureState.Loading)
-
-                val result = withVisibleLoading {
-                    getSchedulesByUserIdUseCase(userId)
-                }
-
-                emit(result)
+                emit(withVisibleLoading { getSchedulesByUserIdUseCase(currentUserId) })
             }
         }
         .stateIn(
@@ -223,54 +219,40 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             val targetUserId = userId.value
 
-            if(targetUserId == null) return@launch
-            if(_isSaving.value) return@launch
+            if (targetUserId == null || _isSaving.value) return@launch
 
             val previous = isFollowState.value == true
             val optimistic = !previous
 
-            val currentProfile = (_profile.value as? FeatureState.Success)?.data
+            val currentProfile = (profile.value as? FeatureState.Success)?.data
             val oldFollowersCount = currentProfile?.counters?.followersCount ?: 0
 
             _isSaving.value = true
             _isFollowState.value = optimistic
 
-            try {
-                if(optimistic) {
-                    followUserUseCase(targetUserId)
-
-                    if(currentProfile != null) {
-                        val updatedProfile = currentProfile.copy(
-                            counters = currentProfile.counters.copy(
-                                followersCount = oldFollowersCount + 1
-                            )
-                        )
-                        _profile.value = FeatureState.Success(updatedProfile)
-                    }
-                } else {
-                    unfollowUserUseCase(targetUserId)
-
-                    if(currentProfile != null) {
-                        val updatedProfile = currentProfile.copy(
-                            counters = currentProfile.counters.copy(
-                                followersCount = oldFollowersCount - 1
-                            )
-                        )
-                        _profile.value = FeatureState.Success(updatedProfile)
-                    }
-                }
-            } catch(e: Exception) {
-                Timber.tag("Follow/Unfollow").e(e, "ERROR: on Follow/Unfollow Action")
-                _isFollowState.value = previous
-
-                if(currentProfile != null) {
-                    val updatedProfile = currentProfile.copy(
+            fun updateProfileState(countOffset: Int) {
+                if (currentProfile != null) {
+                    val updated = currentProfile.copy(
                         counters = currentProfile.counters.copy(
-                            followersCount = oldFollowersCount
+                            followersCount = oldFollowersCount + countOffset
                         )
                     )
-                    _profile.value = FeatureState.Success(updatedProfile)
+                    viewModelScope.launch { profileMutations.emit(FeatureState.Success(updated)) }
                 }
+            }
+
+            try {
+                if (optimistic) {
+                    followUserUseCase(targetUserId)
+                    updateProfileState(1)
+                } else {
+                    unfollowUserUseCase(targetUserId)
+                    updateProfileState(-1)
+                }
+            } catch (e: Exception) {
+                Timber.tag("Follow/Unfollow").e(e, "ERROR: on Follow/Unfollow Action")
+                _isFollowState.value = previous
+                updateProfileState(0)
             } finally {
                 _isSaving.value = false
             }
@@ -281,7 +263,6 @@ class ProfileViewModel @Inject constructor(
         _currentTab.value = index
     }
 
-    // Post Action
     private val _postUi = MutableStateFlow<Map<Int, PostActionUiState>>(emptyMap())
     fun observePostUi(postId: Int): StateFlow<PostActionUiState> =
         _postUi.map { it[postId] ?: PostActionUiState.EMPTY }

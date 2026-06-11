@@ -54,6 +54,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -66,6 +67,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -102,64 +104,60 @@ class MyProfileViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
     @ApplicationContext private val app: Context,
 ): ViewModel() {
-    private val _profile =
-        MutableStateFlow<FeatureState<UserProfile>>(FeatureState.Loading)
-    val profile: StateFlow<FeatureState<UserProfile>> = _profile.asStateFlow()
-
     private val _currentTab = MutableStateFlow<Int>(0)
     val currentTab: StateFlow<Int> = _currentTab.asStateFlow()
 
-    fun loadUserProfile() {
-        viewModelScope.launch {
-            val username = authDataStore.getUserUsername().firstOrNull()
+    private val profileMutations = MutableSharedFlow<FeatureState<UserProfile>>()
 
-            if(username == null) {
-                Timber.Forest.tag("Refetch UserProfile").e("ERROR: on Refetching User Profile. Username not found ")
-                throw IllegalStateException("Username id not found in datastore")
-            }
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val profile: StateFlow<FeatureState<UserProfile>> = merge(
+        authDataStore.getUserUsername()
+            .filterNotNull()
+            .distinctUntilChanged()
+            .flatMapLatest { currentUsername ->
+                flow {
+                    emit(FeatureState.Loading)
 
-            _profile.value = FeatureState.Loading
-
-            val response = withVisibleLoading {
-                getUserProfileUseCase(username, lat = null, lng = null)
-            }
-
-            _profile.value = response
-        }
-    }
-
-    init {
-        loadUserProfile()
-    }
+                    val response = withVisibleLoading {
+                        getUserProfileUseCase(currentUsername, lat = null, lng = null)
+                    }
+                    emit(response)
+                }
+            },
+        profileMutations
+    ).stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Lazily,
+        initialValue = FeatureState.Loading
+    )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val posts: Flow<PagingData<Post>> = authDataStore.getUserId()
         .filterNotNull()
-        .flatMapLatest { userId -> getUserPostsUseCase(userId) }
+        .distinctUntilChanged()
+        .flatMapLatest { currentUserId -> getUserPostsUseCase(currentUserId) }
         .cachedIn(viewModelScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val employees: Flow<PagingData<Employee>> = authDataStore.getUserId()
         .filterNotNull()
-        .flatMapLatest { userId -> getEmployeesByOwnerUseCase(userId) }
+        .distinctUntilChanged()
+        .flatMapLatest { currentUserId -> getEmployeesByOwnerUseCase(currentUserId) }
         .cachedIn(viewModelScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val bookmarks: Flow<PagingData<Post>> = authDataStore.getUserId()
         .filterNotNull()
-        .flatMapLatest { userId -> getUserBookmarkedPostsUseCase(userId) }
+        .distinctUntilChanged()
+        .flatMapLatest { currentUserId -> getUserBookmarkedPostsUseCase(currentUserId) }
         .cachedIn(viewModelScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val products: StateFlow<FeatureState<UserProducts>> = profile
-        .mapNotNull { state ->
-            if (state is FeatureState.Success) state.data else null
-        }
+        .mapNotNull { state -> if (state is FeatureState.Success) state.data else null }
         .mapNotNull { userProfile ->
             val businessId = userProfile.businessId ?: return@mapNotNull null
-
             val isEmployee = userProfile.businessOwner?.id != userProfile.id
-
             val employeeId = if (isEmployee) userProfile.id else null
 
             Pair(businessId, employeeId)
@@ -168,7 +166,6 @@ class MyProfileViewModel @Inject constructor(
         .flatMapLatest { (businessId, employeeId) ->
             flow {
                 emit(FeatureState.Loading)
-
                 val result = withVisibleLoading {
                     getProductsByBusinessIdAndEmployeeIdUseCase(
                         businessId = businessId,
@@ -190,10 +187,10 @@ class MyProfileViewModel @Inject constructor(
     val about: StateFlow<FeatureState<UserProfileAbout>> = authDataStore.getUserId()
         .filterNotNull()
         .distinctUntilChanged()
-        .flatMapLatest { userId ->
+        .flatMapLatest { currentUserId ->
             flow {
                 emit(FeatureState.Loading)
-                emit(withVisibleLoading { getUserProfileAboutUseCase(userId) })
+                emit(withVisibleLoading { getUserProfileAboutUseCase(currentUserId) })
             }
         }
         .stateIn(
@@ -206,14 +203,10 @@ class MyProfileViewModel @Inject constructor(
     val schedules: StateFlow<FeatureState<List<Schedule>>> = authDataStore.getUserId()
         .filterNotNull()
         .distinctUntilChanged()
-        .flatMapLatest { userId ->
+        .flatMapLatest { currentUserId ->
             flow {
                 emit(FeatureState.Loading)
-
-                val result = withVisibleLoading {
-                    getSchedulesByUserIdUseCase(userId)
-                }
-
+                val result = withVisibleLoading { getSchedulesByUserIdUseCase(currentUserId) }
                 emit(result)
             }
         }
@@ -223,9 +216,8 @@ class MyProfileViewModel @Inject constructor(
             initialValue = FeatureState.Loading
         )
 
-    // Edit
     private val _editState = MutableStateFlow<FeatureState<Unit>?>(null)
-    val editState: StateFlow<FeatureState<Unit>?> = _editState
+    val editState: StateFlow<FeatureState<Unit>?> = _editState.asStateFlow()
 
     private val _photoUri = MutableStateFlow<Uri?>(null)
     val photoUri: StateFlow<Uri?> = _photoUri.asStateFlow()
@@ -239,16 +231,16 @@ class MyProfileViewModel @Inject constructor(
     ) { day, month, year ->
         !day.isNullOrBlank() && !month.isNullOrBlank() && !year.isNullOrBlank()
     }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5_000),
-        false
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = false
     )
+
+    var isSaved by mutableStateOf(false)
 
     fun setPhoto(uri: Uri) {
         _photoUri.value = uri
     }
-
-    var isSaved by mutableStateOf(false)
 
     fun setCurrentTab(index: Int) {
         _currentTab.value = index
@@ -276,15 +268,16 @@ class MyProfileViewModel @Inject constructor(
                 .onSuccess {
                     _editState.value = FeatureState.Success(Unit)
 
-                    val currentProfile = (_profile.value as? FeatureState.Success)?.data
-                    if(currentProfile != null) {
+                    val currentProfile = (profile.value as? FeatureState.Success)?.data
+                    if (currentProfile != null) {
                         val updatedProfile = currentProfile.copy(fullName = newFullName)
-                        _profile.value = FeatureState.Success(updatedProfile)
+
+                        profileMutations.emit(FeatureState.Success(updatedProfile))
                     }
                     isSaved = true
                 }
                 .onFailure { error ->
-                    Timber.Forest.tag("EditProfile").e(error, "ERROR: on Edit FullName User Data")
+                    Timber.tag("EditProfile").e(error, "ERROR: on Edit FullName User Data")
                     _editState.value = FeatureState.Error(error = null)
                 }
         }
@@ -300,15 +293,15 @@ class MyProfileViewModel @Inject constructor(
                 .onSuccess {
                     _editState.value = FeatureState.Success(Unit)
 
-                    val currentProfile = (_profile.value as? FeatureState.Success)?.data
-                    if(currentProfile != null) {
+                    val currentProfile = (profile.value as? FeatureState.Success)?.data
+                    if (currentProfile != null) {
                         val updatedProfile = currentProfile.copy(username = newUsername)
-                        _profile.value = FeatureState.Success(updatedProfile)
+                        profileMutations.emit(FeatureState.Success(updatedProfile))
                     }
                     isSaved = true
                 }
                 .onFailure { error ->
-                    Timber.Forest.tag("EditProfile").e(error, "ERROR: on Edit Username User Data")
+                    Timber.tag("EditProfile").e(error, "ERROR: on Edit Username User Data")
                     _editState.value = FeatureState.Error(error = null)
                 }
         }
@@ -324,16 +317,15 @@ class MyProfileViewModel @Inject constructor(
                 .onSuccess {
                     _editState.value = FeatureState.Success(Unit)
 
-                    val currentProfile = (_profile.value as? FeatureState.Success)?.data
-
-                    if(currentProfile != null) {
+                    val currentProfile = (profile.value as? FeatureState.Success)?.data
+                    if (currentProfile != null) {
                         val updatedProfile = currentProfile.copy(bio = newBio)
-                        _profile.value = FeatureState.Success(updatedProfile)
+                        profileMutations.emit(FeatureState.Success(updatedProfile))
                     }
                     isSaved = true
                 }
                 .onFailure { error ->
-                    Timber.Forest.tag("EditProfile").e(error, "ERROR: on Edit Bio User Data")
+                    Timber.tag("EditProfile").e(error, "ERROR: on Edit Bio User Data")
                     _editState.value = FeatureState.Error(error = null)
                 }
         }
@@ -349,15 +341,15 @@ class MyProfileViewModel @Inject constructor(
                 .onSuccess {
                     _editState.value = FeatureState.Success(Unit)
 
-                    val currentProfile = (_profile.value as? FeatureState.Success)?.data
-                    if(currentProfile != null) {
+                    val currentProfile = (profile.value as? FeatureState.Success)?.data
+                    if (currentProfile != null) {
                         val updatedProfile = currentProfile.copy(gender = newGender)
-                        _profile.value = FeatureState.Success(updatedProfile)
+                        profileMutations.emit(FeatureState.Success(updatedProfile))
                     }
                     isSaved = true
                 }
                 .onFailure { error ->
-                    Timber.Forest.tag("EditProfile").e(error, "ERROR: on Edit Gender User Data")
+                    Timber.tag("EditProfile").e(error, "ERROR: on Edit Gender User Data")
                     _editState.value = FeatureState.Error(error = null)
                 }
         }
@@ -373,15 +365,15 @@ class MyProfileViewModel @Inject constructor(
                 .onSuccess {
                     _editState.value = FeatureState.Success(Unit)
 
-                    val currentProfile = (_profile.value as? FeatureState.Success)?.data
-                    if(currentProfile != null) {
+                    val currentProfile = (profile.value as? FeatureState.Success)?.data
+                    if (currentProfile != null) {
                         val updatedProfile = currentProfile.copy(dateOfBirth = birthDate)
-                        _profile.value = FeatureState.Success(updatedProfile)
+                        profileMutations.emit(FeatureState.Success(updatedProfile))
                     }
                     isSaved = true
                 }
                 .onFailure { e ->
-                    _editState.value = FeatureState.Error()
+                    _editState.value = FeatureState.Error(error = null)
                     Timber.tag("Update birthdate").e("ERROR: on updating Birthdate $e")
                 }
         }
@@ -397,15 +389,15 @@ class MyProfileViewModel @Inject constructor(
                 .onSuccess {
                     _editState.value = FeatureState.Success(Unit)
 
-                    val currentProfile = (_profile.value as? FeatureState.Success)?.data
-                    if(currentProfile != null) {
+                    val currentProfile = (profile.value as? FeatureState.Success)?.data
+                    if (currentProfile != null) {
                         val updatedProfile = currentProfile.copy(website = newWebsite)
-                        _profile.value = FeatureState.Success(updatedProfile)
+                        profileMutations.emit(FeatureState.Success(updatedProfile))
                     }
                     isSaved = true
                 }
                 .onFailure { error ->
-                    Timber.Forest.tag("EditProfile").e(error, "ERROR: on Edit Website User Data")
+                    Timber.tag("EditProfile").e(error, "ERROR: on Edit Website User Data")
                     _editState.value = FeatureState.Error(error = null)
                 }
         }
@@ -421,15 +413,15 @@ class MyProfileViewModel @Inject constructor(
                 .onSuccess {
                     _editState.value = FeatureState.Success(Unit)
 
-                    val currentProfile = (_profile.value as? FeatureState.Success)?.data
-                    if(currentProfile != null) {
+                    val currentProfile = (profile.value as? FeatureState.Success)?.data
+                    if (currentProfile != null) {
                         val updatedProfile = currentProfile.copy(publicEmail = newPublicEmail)
-                        _profile.value = FeatureState.Success(updatedProfile)
+                        profileMutations.emit(FeatureState.Success(updatedProfile))
                     }
                     isSaved = true
                 }
                 .onFailure { error ->
-                    Timber.Forest.tag("EditProfile").e(error, "ERROR: on Edit Public Email User Data")
+                    Timber.tag("EditProfile").e(error, "ERROR: on Edit Public Email User Data")
                     _editState.value = FeatureState.Error(error = null)
                 }
         }
@@ -451,22 +443,20 @@ class MyProfileViewModel @Inject constructor(
                 .onSuccess {
                     _editState.value = FeatureState.Success(Unit)
 
-                    val currentProfile = (_profile.value as? FeatureState.Success)?.data
-
-                    if(currentProfile != null) {
+                    val currentProfile = (profile.value as? FeatureState.Success)?.data
+                    if (currentProfile != null) {
                         val updatedProfile = currentProfile.copy(avatar = uri.toString())
-                        _profile.value = FeatureState.Success(updatedProfile)
+                        profileMutations.emit(FeatureState.Success(updatedProfile))
                     }
                     isSaved = true
                 }
                 .onFailure { error ->
-                    Timber.Forest.tag("EditProfile").e(error, "ERROR: on Edit User Avatar")
+                    Timber.tag("EditProfile").e(error, "ERROR: on Edit User Avatar")
                     _editState.value = FeatureState.Error(error = null)
                 }
         }
     }
 
-    // Post Action
     private val _postUi = MutableStateFlow<Map<Int, PostActionUiState>>(emptyMap())
     fun observePostUi(postId: Int): StateFlow<PostActionUiState> =
         _postUi.map { it[postId] ?: PostActionUiState.EMPTY }
@@ -556,7 +546,6 @@ class MyProfileViewModel @Inject constructor(
         )
     }
 
-    // Player
     private val maxPlayers = 3
     private val pool = ArrayDeque<ExoPlayer>(maxPlayers)
     private val indexToPlayer: SnapshotStateMap<Int, ExoPlayer> = mutableStateMapOf()
