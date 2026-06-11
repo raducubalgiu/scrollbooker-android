@@ -6,10 +6,3 @@ data class NavigateSocialParam(
     val username: String,
     val isBusinessOrEmployee: Boolean
 )
-
-data class NavigateCalendarParam(
-    val userId: Int,
-    val slotDuration: Int,
-    val productId: Int,
-    val productName: String
-)

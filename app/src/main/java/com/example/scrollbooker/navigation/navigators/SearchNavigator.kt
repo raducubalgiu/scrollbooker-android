@@ -14,9 +14,11 @@ class SearchNavigator (
     }
 
     fun toUserProfile(userId: Int, username: String) {
-        navController.navigate("${MainRoute.UserProfile.route}/${userId}/${username}") {
-            launchSingleTop = true
-        }
+        navController.navigateToUserProfile(userId, username)
+    }
+
+    fun toBookingFromProduct(product: Product, source: String) {
+        navController.navigateToBookingFromProduct(product, source)
     }
 
     fun toBookingFromBusinessProfile(
@@ -26,33 +28,12 @@ class SearchNavigator (
         source: String,
         selectedProductId: Int?
     ) {
-        var route = "bookingNavigator/$businessId/$userId/$businessOwnerId/$source"
-
-        if (selectedProductId != null) {
-            route += "?selectedProductId=$selectedProductId"
-        }
-
-        navController.navigate(route) {
-            launchSingleTop = true
-        }
-    }
-
-    fun toBookingFromProduct(product: Product, source: String) {
-        val uniqueUserIds = product.variants
-            .flatMap { it.offerings }
-            .map { it.user.id }
-            .distinct()
-
-        val targetUserId = when {
-            uniqueUserIds.size == 1 -> uniqueUserIds.first()
-            else -> product.businessOwnerId
-        }
-
-        var route = "bookingNavigator/${product.businessId}/$targetUserId/${product.businessOwnerId}/$source"
-        route += "?selectedProductId=${product.id}"
-
-        navController.navigate(route) {
-            launchSingleTop = true
-        }
+        navController.navigateToBookingFromProfile(
+            businessId = businessId,
+            userId = userId,
+            businessOwnerId = businessOwnerId,
+            source = source,
+            selectedProductId = selectedProductId
+        )
     }
 }

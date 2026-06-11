@@ -13,9 +13,7 @@ class FeedNavigator (
     }
 
     fun toUserProfile(userId: Int, username: String) {
-        navController.navigate("${MainRoute.UserProfile.route}/${userId}/${username}") {
-            launchSingleTop = true
-        }
+        navController.navigateToUserProfile(userId, username)
     }
 
     fun toBooking(
@@ -25,14 +23,12 @@ class FeedNavigator (
         source: String,
         selectedProductId: Int?
     ) {
-        var route = "bookingNavigator/$businessId/$userId/$businessOwnerId/$source"
-
-        if (selectedProductId != null) {
-            route += "?selectedProductId=$selectedProductId"
-        }
-
-        navController.navigate(route) {
-            launchSingleTop = true
-        }
+        navController.navigateToBookingFromProfile(
+            businessId = businessId,
+            userId = userId,
+            businessOwnerId = businessOwnerId,
+            source = source,
+            selectedProductId = selectedProductId
+        )
     }
 }
