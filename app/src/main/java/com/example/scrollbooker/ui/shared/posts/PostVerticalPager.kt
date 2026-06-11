@@ -52,7 +52,8 @@ fun PostVerticalPager(
     posts: LazyPagingItems<Post>,
     isDrawerOpen: Boolean,
     onAction: (PostOverlayActionEnum, Post) -> Unit,
-    onNavigateToUserProfile: (userId: Int, username: String) -> Unit
+    onNavigateToUserProfile: (userId: Int, username: String) -> Unit,
+    onNavigateToBooking: (userId: Int, businessId: Int, businessOwnerId: Int) -> Unit
 ) {
     val userPausedSet by feedViewModel.userPausedPostIds.collectAsStateWithLifecycle()
 
@@ -174,7 +175,14 @@ fun PostVerticalPager(
                             isSavingBookmark = postActionState.isSavingBookmark,
                             onAction = { onAction(it, post) },
                             enableOpacity = false,
-                            onNavigateToUserProfile = onNavigateToUserProfile
+                            onNavigateToUserProfile = onNavigateToUserProfile,
+                            onNavigateToBooking = {
+                                val userId = post.user.id
+                                val businessId = post.businessId
+                                val businessOwnerId = post.businessOwner.id
+
+                                onNavigateToBooking(userId, businessId, businessOwnerId)
+                            }
                         )
                     }
                 }

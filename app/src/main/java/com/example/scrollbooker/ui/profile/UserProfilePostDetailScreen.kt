@@ -179,7 +179,8 @@ fun UserProfilePostDetailScreen(
                             isSavingLike = postActionState.isSavingLike,
                             isSavingBookmark = postActionState.isSavingBookmark,
                             onAction = { action -> },
-                            onNavigateToUserProfile = { userId, username -> profileNavigate.toUserProfile(userId, username) }
+                            onNavigateToUserProfile = { userId, username -> profileNavigate.toUserProfile(userId, username) },
+                            onNavigateToBooking = {}
                         )
                     }
                 }

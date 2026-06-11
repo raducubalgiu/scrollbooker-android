@@ -206,7 +206,13 @@ fun BusinessProfileScreen(
                             isFollowEnabled = !isSaving,
                             onFollow = { viewModel.follow() },
                             onNavigateToBooking = {
-                                searchNavigate.toBookingFromProfile(profile.id, null)
+                                searchNavigate.toBookingFromBusinessProfile(
+                                    businessId = profile.id,
+                                    userId = profile.owner.id,
+                                    businessOwnerId = profile.owner.id,
+                                    source = "businessProfile",
+                                    selectedProductId = null
+                                )
                             },
                             modifier = Modifier.padding(
                                 top = imageHeight - overlayHeight,

@@ -43,7 +43,9 @@ fun SearchNavHost(
         composable(
             route = MainRoute.BusinessProfile.route,
             arguments = listOf(
-                navArgument(MainRoute.BusinessProfile.ARG_BUSINESS_OWNER_USERNAME) { type = NavType.StringType }
+                navArgument(MainRoute.BusinessProfile.ARG_BUSINESS_OWNER_USERNAME) {
+                    type = NavType.StringType
+                }
             ),
         ) {
             val searchNavigate = remember(navController) {

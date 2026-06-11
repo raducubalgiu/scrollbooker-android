@@ -15,7 +15,7 @@ data class Post(
     val isOwnPost: Boolean,
     val rating: Int?,
     val bookable: Boolean,
-    val businessId: Int?,
+    val businessId: Int,
     val lastMinute: LastMinute,
     val createdAt: String
 )

@@ -17,4 +17,22 @@ class FeedNavigator (
             launchSingleTop = true
         }
     }
+
+    fun toBooking(
+        userId: Int,
+        businessId: Int,
+        businessOwnerId: Int,
+        source: String,
+        selectedProductId: Int?
+    ) {
+        var route = "bookingNavigator/$businessId/$userId/$businessOwnerId/$source"
+
+        if (selectedProductId != null) {
+            route += "?selectedProductId=$selectedProductId"
+        }
+
+        navController.navigate(route) {
+            launchSingleTop = true
+        }
+    }
 }

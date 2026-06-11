@@ -143,6 +143,15 @@ fun FeedScreen(
                             },
                             onNavigateToUserProfile = { userId, username ->
                                 feedNavigate.toUserProfile(userId, username)
+                            },
+                            onNavigateToBooking = { userId, businessId, businessOwnerId ->
+                                feedNavigate.toBooking(
+                                    userId,
+                                    businessId,
+                                    businessOwnerId,
+                                    source = "feed_explore",
+                                    selectedProductId = null
+                                )
                             }
                         )
                     }

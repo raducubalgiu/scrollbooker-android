@@ -232,11 +232,7 @@ fun UserProfileScreen(
                                         onNavigateToEditProfile = { profileNavigate.toEditProfile() },
                                         onNavigateToMyCalendar = { profileNavigate.toMyCalendar() },
                                         onNavigateToBooking = { businessId, employeeId ->
-                                            profileNavigate.toBooking(
-                                                businessId = businessId,
-                                                employeeId = employeeId,
-                                                null
-                                            )
+
                                         }
                                     )
                                 }

@@ -34,7 +34,7 @@ data class PostDto(
     val bookable: Boolean,
 
     @SerializedName("business_id")
-    val businessId: Int?,
+    val businessId: Int,
 
     @SerializedName("last_minute")
     val lastMinute: LastMinuteDto,

@@ -277,7 +277,10 @@ fun SearchScreen(
                         listState = listState,
                         businessesSheet = businessesSheet,
                         onNavigateToBusinessProfile = { searchNavigate.toBusinessProfile(it) },
-                        onSelectProduct = { searchNavigate.toBookingFromProduct(it) }
+                        onSelectProduct = { searchNavigate.toBookingFromProduct(
+                            it,
+                            source = "search"
+                        ) }
                     )
                 }
             ) {}

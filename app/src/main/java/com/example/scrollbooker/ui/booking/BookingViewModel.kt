@@ -3,6 +3,7 @@ package com.example.scrollbooker.ui.booking
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.scrollbooker.core.enums.BookingSourceEnum
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.products.domain.model.UserProducts
@@ -23,8 +24,15 @@ class BookingViewModel @Inject constructor(
     val businessId: Int = checkNotNull(savedStateHandle["businessId"]) {
         "businessId mandatory parameter is missing in Booking flow"
     }
-
-    val employeeId: Int? = savedStateHandle.get<Int>("employeeId")?.takeIf { it != -1 }
+    val businessOwnerId: Int = checkNotNull(savedStateHandle["businessOwnerId"]) {
+        "businessOwnerId mandatory parameter is missing in Booking flow"
+    }
+    val userId: Int = checkNotNull(savedStateHandle["userId"]) {
+        "userId mandatory parameter is missing in Booking flow"
+    }
+    val source: String = checkNotNull(savedStateHandle["source"]) {
+        "source mandatory parameter is missing in Booking flow"
+    }
 
     val productsState: StateFlow<FeatureState<UserProducts>> = flow {
         emit(FeatureState.Loading)
@@ -32,7 +40,7 @@ class BookingViewModel @Inject constructor(
         val result = withVisibleLoading {
             getProductsByBusinessIdAndEmployeeIdUseCase(
                 businessId = businessId,
-                employeeId = employeeId,
+                employeeId = if(businessOwnerId != userId) userId else null,
                 onlyServicesWithProducts = true
             )
         }

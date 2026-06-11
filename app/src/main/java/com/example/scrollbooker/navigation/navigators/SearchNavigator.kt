@@ -19,17 +19,17 @@ class SearchNavigator (
         }
     }
 
-    fun toBookingFromProfile(businessId: Int, employeeId: Int?) {
-        var route = "bookingNavigator/$businessId"
+    fun toBookingFromBusinessProfile(
+        businessId: Int,
+        userId: Int,
+        businessOwnerId: Int,
+        source: String,
+        selectedProductId: Int?
+    ) {
+        var route = "bookingNavigator/$businessId/$userId/$businessOwnerId/$source"
 
-        val queryParams = mutableListOf<String>()
-
-        if (employeeId != null) {
-            queryParams.add("employeeId=$employeeId")
-        }
-
-        if (queryParams.isNotEmpty()) {
-            route += "?" + queryParams.joinToString("&")
+        if (selectedProductId != null) {
+            route += "?selectedProductId=$selectedProductId"
         }
 
         navController.navigate(route) {
@@ -37,37 +37,19 @@ class SearchNavigator (
         }
     }
 
-    fun toBookingFromProduct(product: Product) {
+    fun toBookingFromProduct(product: Product, source: String) {
         val uniqueUserIds = product.variants
             .flatMap { it.offerings }
             .map { it.user.id }
             .distinct()
 
-        val employeeId = when {
-            uniqueUserIds.size == 1 -> {
-                val singleUserId = uniqueUserIds.first()
-                if (singleUserId == product.businessOwnerId) {
-                    null
-                } else {
-                    singleUserId
-                }
-            }
-            else -> null
+        val targetUserId = when {
+            uniqueUserIds.size == 1 -> uniqueUserIds.first()
+            else -> product.businessOwnerId
         }
 
-        var route = "bookingNavigator/${product.businessId}"
-
-        val queryParams = mutableListOf<String>()
-
-        if (employeeId != null) {
-            queryParams.add("employeeId=$employeeId")
-        }
-
-        queryParams.add("selectedProductId=${product.id}")
-
-        if (queryParams.isNotEmpty()) {
-            route += "?" + queryParams.joinToString("&")
-        }
+        var route = "bookingNavigator/${product.businessId}/$targetUserId/${product.businessOwnerId}/$source"
+        route += "?selectedProductId=${product.id}"
 
         navController.navigate(route) {
             launchSingleTop = true

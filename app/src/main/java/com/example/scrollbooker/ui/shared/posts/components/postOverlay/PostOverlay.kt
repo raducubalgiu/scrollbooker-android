@@ -41,7 +41,8 @@ fun PostOverlay(
 
     enableOpacity: Boolean = false,
     onNavigateToUserProfile: (userId: Int, username: String) -> Unit,
-    showBookButton: Boolean = true
+    showBookButton: Boolean = true,
+    onNavigateToBooking: () -> Unit
 ) {
     val isVideoReview = post.isVideoReview
 
@@ -82,7 +83,10 @@ fun PostOverlay(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = BasePadding),
-                        onClick = { onAction(PostOverlayActionEnum.OPEN_LINKED_PRODUCTS) },
+                        onClick = {
+                            //onAction(PostOverlayActionEnum.OPEN_LINKED_PRODUCTS)
+                            onNavigateToBooking()
+                        },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Primary,
                             contentColor = OnPrimary

@@ -240,7 +240,7 @@ fun CreatePostPreviewScreen(
                         isOwnPost = false,
                         rating = null,
                         bookable = false,
-                        businessId = null,
+                        businessId = 1,
                         lastMinute = LastMinute(
                             isLastMinute = false,
                             lastMinuteEnd = null,
@@ -252,7 +252,8 @@ fun CreatePostPreviewScreen(
                     isSavingLike = false,
                     isSavingBookmark = false,
                     onAction = {},
-                    onNavigateToUserProfile = { _, _ -> {} }
+                    onNavigateToUserProfile = { _, _ -> {} },
+                    onNavigateToBooking = {}
                 )
             }
         }
