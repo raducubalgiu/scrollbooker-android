@@ -1,13 +1,5 @@
 package com.example.scrollbooker.navigation.graphs
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.FiniteAnimationSpec
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.runtime.remember
-import androidx.compose.ui.unit.IntOffset
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -25,9 +17,6 @@ import com.example.scrollbooker.ui.booking.BookingViewModel
 fun NavGraphBuilder.bookingGraph(
     navController: NavHostController
 ) {
-    val pushSpec: FiniteAnimationSpec<IntOffset> = tween(400, easing = FastOutSlowInEasing)
-    val popSpec: FiniteAnimationSpec<IntOffset> = tween(350, easing = FastOutSlowInEasing)
-
     navigation(
         route = MainRoute.BookingNavigator.route,
         startDestination = MainRoute.BookingServices.route,
@@ -53,10 +42,6 @@ fun NavGraphBuilder.bookingGraph(
                 defaultValue = -1
             }
         ),
-        enterTransition = { slideInVertically(pushSpec) { it } },
-        exitTransition = { ExitTransition.None },
-        popEnterTransition = { EnterTransition.None },
-        popExitTransition = { slideOutVertically(popSpec) { it } }
     ) {
         composable(
             route = MainRoute.BookingServices.route

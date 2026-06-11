@@ -12,10 +12,6 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
-import com.example.scrollbooker.navigation.transition.slideInFromLeft
-import com.example.scrollbooker.navigation.transition.slideInFromRight
-import com.example.scrollbooker.navigation.transition.slideOutToLeft
-import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.ui.profile.ProfileViewModel
 import com.example.scrollbooker.ui.profile.UserProfilePostDetailScreen
 import com.example.scrollbooker.ui.profile.UserProfileScreen
@@ -32,38 +28,7 @@ fun NavGraphBuilder.userProfileGraph(
             arguments = listOf(
                 navArgument("userId") { type = NavType.IntType },
                 navArgument("username") { type = NavType.StringType }
-            ),
-            enterTransition = {
-                slideInFromRight()
-            },
-            exitTransition = {
-                val targetRoute = targetState.destination.route ?: ""
-                val isGoingToBooking = targetRoute.startsWith("bookingNavigator") ||
-                        targetRoute.startsWith("bookingServices")
-
-                if (isGoingToBooking) {
-                    ExitTransition.None
-                } else {
-                    slideOutToLeft()
-                }
-            },
-            popEnterTransition = {
-                val initialRoute = initialState.destination.route ?: ""
-                val isComingFromBooking = initialRoute.startsWith("bookingNavigator") ||
-                        initialRoute.startsWith("bookingServices") ||
-                        initialRoute.startsWith("bookingSpecialists") ||
-                        initialRoute.startsWith("bookingDateTime") ||
-                        initialRoute.startsWith("bookingConfirmation")
-
-                if (isComingFromBooking) {
-                    EnterTransition.None
-                } else {
-                    slideInFromLeft()
-                }
-            },
-            popExitTransition = {
-                slideOutToRight()
-            }
+            )
         ) { backStackEntry ->
             val viewModel = hiltViewModel<ProfileViewModel>(backStackEntry)
 
