@@ -46,7 +46,10 @@ fun BookingProductsList(
                 )
 
                 group.products.forEachIndexed { index, product ->
-                    ProductCard(product)
+                    ProductCard(
+                        product = product,
+                        isSelectable = true
+                    )
 
                     if(index < group.products.size - 1) {
                         HorizontalDivider(

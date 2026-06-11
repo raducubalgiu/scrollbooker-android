@@ -52,7 +52,7 @@ fun BookingServicesTabs(
                     val tabTitle = group.service.shortName
                     Text(
                         text = tabTitle,
-                        fontSize = 14.sp,
+                        fontSize = 16.sp,
                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
                         color = if (isSelected) OnPrimary else OnBackground,
                     )
