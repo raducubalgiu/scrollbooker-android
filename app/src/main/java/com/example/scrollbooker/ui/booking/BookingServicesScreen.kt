@@ -64,7 +64,7 @@ fun BookingServicesScreen(
                 is FeatureState.Error -> ErrorScreen()
                 is FeatureState.Loading -> LoadingScreen()
                 is FeatureState.Success -> {
-                    val serviceGroups = state.data
+                    val serviceGroups = state.data.data
 
                     val activeTabIndex by remember(serviceGroups) {
                         derivedStateOf {

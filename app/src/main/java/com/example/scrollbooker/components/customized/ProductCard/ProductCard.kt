@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -32,13 +31,13 @@ import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge
-import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.bodySmall
 import com.example.scrollbooker.ui.theme.labelSmall
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun ProductCard(
+    modifier: Modifier = Modifier,
     product: Product,
     displayEditableActions: Boolean = false,
     isEditable: Boolean = false,
@@ -51,8 +50,7 @@ fun ProductCard(
 ) {
     val productSummaryText = "${product.getDurationText(product.startingOffering.duration)} • ${product.getFiltersSummary()}"
 
-    Column(modifier = Modifier
-        .fillMaxSize()
+    Column(modifier = modifier
         .clickable {}
     ) {
         Column {

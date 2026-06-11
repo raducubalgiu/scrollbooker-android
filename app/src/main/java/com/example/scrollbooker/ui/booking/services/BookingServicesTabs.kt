@@ -3,8 +3,10 @@ package com.example.scrollbooker.ui.booking.services
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Tab
@@ -18,9 +20,12 @@ import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.entity.booking.products.domain.model.BusinessServicesWithProducts
 import com.example.scrollbooker.ui.theme.Background
+import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnPrimary
+import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
+import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable
 fun BookingServicesTabs(
@@ -45,19 +50,25 @@ fun BookingServicesTabs(
                 selected = isSelected,
                 onClick = { onTabChange(index) },
                 modifier = Modifier
-                    .padding(vertical = 6.dp)
-                    .clip(ShapeDefaults.ExtraLarge)
-                    .background(if (isSelected) Primary else Background),
+                    .clip(ShapeDefaults.Medium)
+                    .background(if (isSelected) SurfaceBG else Background)
+                    .height(42.dp),
                 text = {
                     val tabTitle = group.service.shortName
                     Text(
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
                         text = tabTitle,
                         fontSize = 16.sp,
                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                        color = if (isSelected) OnPrimary else OnBackground,
+                        color = if (isSelected) OnSurfaceBG else OnBackground,
                     )
                 }
             )
         }
     }
+
+    HorizontalDivider(
+        color = Divider,
+        thickness = 0.55.dp
+    )
 }

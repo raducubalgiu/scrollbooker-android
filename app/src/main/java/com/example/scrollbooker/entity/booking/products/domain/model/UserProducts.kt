@@ -1,6 +1,10 @@
 package com.example.scrollbooker.entity.booking.products.domain.model
-
 import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
+
+data class UserProducts(
+    val totalCount: Int,
+    val data: List<BusinessServicesWithProducts>
+)
 
 data class BusinessServicesWithProducts(
     val service: Service,

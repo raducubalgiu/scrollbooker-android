@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
-import com.example.scrollbooker.entity.booking.products.domain.model.BusinessServicesWithProducts
+import com.example.scrollbooker.entity.booking.products.domain.model.UserProducts
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByBusinessIdAndEmployeeIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -26,13 +26,14 @@ class BookingViewModel @Inject constructor(
 
     val employeeId: Int? = savedStateHandle.get<Int>("employeeId")?.takeIf { it != -1 }
 
-    val productsState: StateFlow<FeatureState<List<BusinessServicesWithProducts>>> = flow {
+    val productsState: StateFlow<FeatureState<UserProducts>> = flow {
         emit(FeatureState.Loading)
 
         val result = withVisibleLoading {
             getProductsByBusinessIdAndEmployeeIdUseCase(
                 businessId = businessId,
-                employeeId = employeeId
+                employeeId = employeeId,
+                onlyServicesWithProducts = true
             )
         }
         emit(result)

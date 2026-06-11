@@ -4,9 +4,9 @@ import com.example.scrollbooker.entity.booking.products.data.mappers.toDto
 import com.example.scrollbooker.entity.booking.products.data.remote.AddProductFilterRequest
 import com.example.scrollbooker.entity.booking.products.data.remote.ProductCreateRequestDto
 import com.example.scrollbooker.entity.booking.products.data.remote.ProductsApiService
-import com.example.scrollbooker.entity.booking.products.domain.model.BusinessServicesWithProducts
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.model.ProductCreate
+import com.example.scrollbooker.entity.booking.products.domain.model.UserProducts
 import com.example.scrollbooker.entity.booking.products.domain.repository.ProductRepository
 import javax.inject.Inject
 
@@ -16,11 +16,12 @@ class ProductRepositoryImpl @Inject constructor(
     override suspend fun getProductsByBusinessIdAndEmployeeId(
         businessId: Int,
         employeeId: Int?,
-        onlyServicesWithProducts: Boolean
-    ): List<BusinessServicesWithProducts> {
+        onlyServicesWithProducts: Boolean,
+        productsLimitPerService: Int?
+    ): UserProducts {
         return api.getProductsByBusinessIdAndEmployeeId(
-            businessId, employeeId, onlyServicesWithProducts
-        ).map { it.toDomain() }
+            businessId, employeeId, onlyServicesWithProducts, productsLimitPerService
+        ).toDomain()
     }
 
     override suspend fun getProductsByAppointmentId(appointmentId: Int): List<Product> {

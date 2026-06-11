@@ -21,6 +21,8 @@ import com.example.scrollbooker.core.util.VideoPlayerCache
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
 import com.example.scrollbooker.entity.booking.employee.domain.useCase.GetEmployeesByOwnerUseCase
+import com.example.scrollbooker.entity.booking.products.domain.model.UserProducts
+import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByBusinessIdAndEmployeeIdUseCase
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
 import com.example.scrollbooker.entity.booking.schedule.domain.useCase.GetSchedulesByUserIdUseCase
 import com.example.scrollbooker.entity.social.bookmark.domain.useCase.GetUserBookmarkedPostsUseCase
@@ -45,12 +47,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -74,6 +78,7 @@ class ProfileViewModel @Inject constructor(
     private val getEmployeesByOwnerUseCase: GetEmployeesByOwnerUseCase,
     private val getUserProfileAboutUseCase: GetUserProfileAboutUseCase,
     private val getSchedulesByUserIdUseCase: GetSchedulesByUserIdUseCase,
+    private val getProductsByBusinessIdAndEmployeeIdUseCase: GetProductsByBusinessIdAndEmployeeIdUseCase,
     private val getUserBookmarkedPostsUseCase: GetUserBookmarkedPostsUseCase,
     private val likePostUseCase: LikePostUseCase,
     private val unLikePostUseCase: UnLikePostUseCase,
@@ -140,6 +145,42 @@ class ProfileViewModel @Inject constructor(
         .filterNotNull()
         .flatMapLatest { userId -> getUserBookmarkedPostsUseCase(userId) }
         .cachedIn(viewModelScope)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val products: StateFlow<FeatureState<UserProducts>> = profile
+        .mapNotNull { state ->
+            if (state is FeatureState.Success) state.data else null
+        }
+        .mapNotNull { userProfile ->
+            val businessId = userProfile.businessId ?: return@mapNotNull null
+
+            val isEmployee = userProfile.businessOwner?.id != userProfile.id
+
+            val employeeId = if (isEmployee) userProfile.id else null
+
+            Pair(businessId, employeeId)
+        }
+        .distinctUntilChanged()
+        .flatMapLatest { (businessId, employeeId) ->
+            flow {
+                emit(FeatureState.Loading)
+
+                val result = withVisibleLoading {
+                    getProductsByBusinessIdAndEmployeeIdUseCase(
+                        businessId = businessId,
+                        employeeId = employeeId,
+                        onlyServicesWithProducts = true,
+                        productsLimitPerService = null
+                    )
+                }
+                emit(result)
+            }
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = FeatureState.Loading
+        )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val about: StateFlow<FeatureState<UserProfileAbout>> = userId

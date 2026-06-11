@@ -12,8 +12,9 @@ interface ProductsApiService {
     suspend fun getProductsByBusinessIdAndEmployeeId(
         @Path("businessId") businessId: Int,
         @Query("employee_id") employeeId: Int?,
-        @Query("only_services_with_products") onlyServicesWithProducts: Boolean
-    ): List<BusinessServicesWithProductsDto>
+        @Query("only_services_with_products") onlyServicesWithProducts: Boolean,
+        @Query("products_limit_per_service") productsLimitPerService: Int?
+    ): UserProductsDto
 
     @GET("appointments/{appointmentId}/products")
     suspend fun getProductsByAppointmentId(

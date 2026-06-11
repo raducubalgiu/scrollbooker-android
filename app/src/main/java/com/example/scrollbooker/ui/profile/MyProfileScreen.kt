@@ -62,6 +62,7 @@ import com.example.scrollbooker.ui.profile.tabs.bookmarks.ProfileBookmarksTab
 import com.example.scrollbooker.ui.profile.tabs.employees.ProfileEmployeesTab
 import com.example.scrollbooker.ui.profile.tabs.info.ProfileInfoTab
 import com.example.scrollbooker.ui.profile.tabs.posts.ProfilePostsTab
+import com.example.scrollbooker.ui.profile.tabs.products.ProfileProductsTab
 import com.example.scrollbooker.ui.theme.Background
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -185,19 +186,9 @@ fun MyProfileScreen(
                                         }
 
                                         ProfileTab.Products -> {
-                                            LazyVerticalGrid(
-                                                columns = GridCells.Fixed(3),
-                                                verticalArrangement = Arrangement.spacedBy(1.dp),
-                                                horizontalArrangement = Arrangement.spacedBy(1.dp),
-                                                modifier = Modifier.fillMaxSize()
-                                            ) {
-                                                items(50) {
-                                                    Box(modifier = Modifier
-                                                        .aspectRatio(9f / 12f)
-                                                        .background(Color.Gray)
-                                                    ) {}
-                                                }
-                                            }
+                                            val products by viewModel.products.collectAsStateWithLifecycle()
+
+                                            ProfileProductsTab(products = products)
                                         }
 
                                         ProfileTab.Employees -> {
