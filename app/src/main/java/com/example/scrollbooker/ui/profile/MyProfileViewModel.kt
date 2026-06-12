@@ -22,6 +22,7 @@ import androidx.paging.cachedIn
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.VideoPlayerCache
 import com.example.scrollbooker.core.util.withVisibleLoading
+import com.example.scrollbooker.entity.auth.domain.useCase.RefreshTokenUseCase
 import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
 import com.example.scrollbooker.entity.booking.employee.domain.useCase.GetEmployeesByOwnerUseCase
 import com.example.scrollbooker.entity.booking.products.domain.model.UserProducts
@@ -36,10 +37,12 @@ import com.example.scrollbooker.entity.social.post.domain.useCase.LikePostUseCas
 import com.example.scrollbooker.entity.social.post.domain.useCase.UnBookmarkPostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.UnLikePostUseCase
 import com.example.scrollbooker.entity.user.userProfile.data.remote.toUserAvatarRequest
+import com.example.scrollbooker.entity.user.userProfile.domain.model.SearchUsernameResponse
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfileAbout
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserProfileAboutUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserProfileUseCase
+import com.example.scrollbooker.entity.user.userProfile.domain.usecase.SearchUsernameUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateAvatarUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateBioUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateBirthDateUseCase
@@ -53,6 +56,8 @@ import com.example.scrollbooker.ui.shared.posts.PostActionUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -62,7 +67,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -101,6 +105,8 @@ class MyProfileViewModel @Inject constructor(
     private val unLikePostUseCase: UnLikePostUseCase,
     private val bookmarkPostUseCase: BookmarkPostUseCase,
     private val unBookmarkPostUseCase: UnBookmarkPostUseCase,
+    private val searchUsernameUseCase: SearchUsernameUseCase,
+    private val refreshTokenUseCase: RefreshTokenUseCase,
     private val authDataStore: AuthDataStore,
     @ApplicationContext private val app: Context,
 ): ViewModel() {
@@ -235,6 +241,38 @@ class MyProfileViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = false
     )
+
+    private val _searchState = MutableStateFlow<FeatureState<SearchUsernameResponse>?>(null)
+    val searchState: StateFlow<FeatureState<SearchUsernameResponse>?> = _searchState
+
+    private val _currentUsername = MutableStateFlow("")
+    val currentUsername: StateFlow<String> = _currentUsername
+
+    private var debounceJob: Job? = null
+
+    fun searchUsername(username: String) {
+        _currentUsername.value = username
+
+        if(username.length < 3) {
+            debounceJob?.cancel()
+            _searchState.value = null
+            return
+        }
+
+        debounceJob?.cancel()
+        debounceJob = viewModelScope.launch {
+            delay(200)
+
+            val latest = currentUsername.value
+            if(latest.length < 3 || latest != username) return@launch
+
+            _searchState.value = FeatureState.Loading
+
+            _searchState.value = withVisibleLoading {
+                searchUsernameUseCase(username)
+            }
+        }
+    }
 
     var isSaved by mutableStateOf(false)
 

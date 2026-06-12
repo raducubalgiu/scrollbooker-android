@@ -11,11 +11,11 @@ interface AuthApiService {
     suspend fun login(
         @Part("username") username: RequestBody,
         @Part("password") password: RequestBody,
-    ): AuthDto.LoginResponseDto
+    ): AuthResponseDto
 
     @POST("auth/register")
-    suspend fun register(@Body request: AuthDto.RegisterDto): AuthDto.LoginResponseDto
+    suspend fun register(@Body request: AuthRequestDto.RegisterDto): AuthResponseDto
 
     @POST("auth/refresh")
-    suspend fun refresh(@Body request: AuthDto.RefreshRequestDto): AuthDto.LoginResponseDto
+    suspend fun refresh(@Body request: AuthRequestDto.RefreshRequestDto): AuthResponseDto
 }

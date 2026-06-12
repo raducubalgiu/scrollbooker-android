@@ -1,7 +1,7 @@
 package com.example.scrollbooker.core.network.authenticator
 import com.example.scrollbooker.core.network.tokenProvider.TokenProvider
 import com.example.scrollbooker.entity.auth.data.remote.AuthApiService
-import com.example.scrollbooker.entity.auth.data.remote.AuthDto
+import com.example.scrollbooker.entity.auth.data.remote.AuthRequestDto
 import com.example.scrollbooker.store.AuthDataStore
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
@@ -27,7 +27,7 @@ class TokenAuthenticator @Inject constructor(
         return try {
             val refreshResponse = runBlocking {
                 authApiService.refresh(
-                    AuthDto.RefreshRequestDto(refreshToken)
+                    AuthRequestDto.RefreshRequestDto(refreshToken)
                 )
             }
 

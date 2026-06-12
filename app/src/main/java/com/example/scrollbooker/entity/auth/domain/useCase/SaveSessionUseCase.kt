@@ -2,8 +2,8 @@ package com.example.scrollbooker.entity.auth.domain.useCase
 
 import com.example.scrollbooker.core.network.tokenProvider.TokenProvider
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.entity.auth.domain.model.AuthResponse
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
-import com.example.scrollbooker.entity.auth.domain.model.LoginResponse
 import com.example.scrollbooker.entity.user.userInfo.domain.useCase.GetUserInfoUseCase
 import com.example.scrollbooker.entity.user.userPermissions.domain.useCase.GetUserPermissionsUseCase
 import com.example.scrollbooker.store.AuthDataStore
@@ -16,7 +16,7 @@ class SaveSessionUseCase @Inject constructor(
     private val getUserInfoUseCase: GetUserInfoUseCase,
     private val getUserPermissionsUseCase: GetUserPermissionsUseCase
 ) {
-    suspend operator fun invoke(authResponse: LoginResponse): FeatureState<AuthState> {
+    suspend operator fun invoke(authResponse: AuthResponse): FeatureState<AuthState> {
         return try {
             tokenProvider.updateTokens(
                 accessToken = authResponse.accessToken,
