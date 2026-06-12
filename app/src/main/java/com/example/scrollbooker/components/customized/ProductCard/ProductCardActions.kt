@@ -5,17 +5,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
@@ -50,29 +49,40 @@ fun ProductCardActions(
     onDeleteProduct: ((Int) -> Unit)? = null,
     onNavigateToBooking: (product: Product) -> Unit
 ) {
-    val showAddSingleButtonSelectable =
-        !displayEditableActions &&
-                product.canBeBooked &&
-                product.type == ProductTypeEnum.SINGLE &&
-                isSelectable
+    val (showAddSingleButtonSelectable, showAddSingleButtonNotSelectable, showBuyPackButton, showEditableMenu) = remember(
+        product.type, product.canBeBooked, isSelectable, isEditable, displayEditableActions
+    ) {
+        val isSingle = product.type == ProductTypeEnum.SINGLE
+        val canBook = product.canBeBooked
+        val isEditMenu = isEditable && displayEditableActions
 
-    val showAddSingleButtonNotSelectable =
-        !displayEditableActions &&
-                product.canBeBooked &&
-                product.type == ProductTypeEnum.SINGLE &&
-                !isSelectable
+        val btnSelectable = !displayEditableActions && canBook && isSingle && isSelectable
+        val btnNotSelectable = !displayEditableActions && canBook && isSingle && !isSelectable
+        val btnPack = !displayEditableActions && canBook && !isSingle
 
-    val showBuyPackButton =
-        !displayEditableActions &&
-                product.canBeBooked &&
-                product.type != ProductTypeEnum.SINGLE
+        Quadruple(btnSelectable, btnNotSelectable, btnPack, isEditMenu)
+    }
 
-    val showEditableMenu = isEditable && displayEditableActions
+    val handleSelect = remember(product, onSelect) {
+        { onSelect?.invoke(product) ?: Unit }
+    }
+
+    val handleBooking = remember(product, onNavigateToBooking) {
+        { onNavigateToBooking(product) }
+    }
+
+    val handleEdit = remember(product.id, onNavigateToEdit) {
+        { onNavigateToEdit?.invoke(product.id) ?: Unit }
+    }
+
+    val handleDelete = remember(product.id, onDeleteProduct) {
+        { onDeleteProduct?.invoke(product.id) ?: Unit }
+    }
 
     when {
         showAddSingleButtonSelectable -> {
             val containerColor = if (isSelected) Primary else Background
-            val contentColor = if(isSelected) OnPrimary else OnBackground
+            val contentColor = if (isSelected) OnPrimary else OnBackground
             val shadowElevation = if (isSelected) 1.dp else 4.dp
 
             Protected(permission = PermissionEnum.BOOK_BUTTON_VIEW) {
@@ -86,7 +96,7 @@ fun ProductCardActions(
                         )
                 ) {
                     FilledIconButton(
-                        onClick = { onSelect?.invoke(product) },
+                        onClick = handleSelect,
                         shape = ShapeDefaults.ExtraLarge,
                         colors = IconButtonDefaults.filledIconButtonColors(
                             containerColor = containerColor,
@@ -110,9 +120,9 @@ fun ProductCardActions(
                     contentPadding = PaddingValues(
                         vertical = SpacingS,
                         horizontal = BasePadding
-                ),
+                    ),
                     title = stringResource(R.string.book),
-                    onClick = { onNavigateToBooking(product) }
+                    onClick = handleBooking
                 )
             }
         }
@@ -121,7 +131,7 @@ fun ProductCardActions(
             Protected(permission = PermissionEnum.BOOK_BUTTON_VIEW) {
                 MainButtonOutlined(
                     title = stringResource(R.string.buy),
-                    onClick = { onSelect?.invoke(product) },
+                    onClick = handleSelect,
                     colors = ButtonDefaults.outlinedButtonColors(
                         containerColor = Primary,
                         contentColor = OnPrimary
@@ -133,23 +143,28 @@ fun ProductCardActions(
         }
 
         showEditableMenu -> {
+            val editIcon = painterResource(R.drawable.ic_edit_outline)
+            val deleteIcon = painterResource(R.drawable.ic_delete_outline)
+
             Menu(
                 items = listOf(
                     MenuItemData(
                         text = stringResource(R.string.edit),
-                        leadingIcon = painterResource(R.drawable.ic_edit_outline),
-                        onClick = { onNavigateToEdit?.invoke(product.id) },
+                        leadingIcon = editIcon,
+                        onClick = handleEdit,
                     ),
                     MenuItemData(
                         text = stringResource(R.string.delete),
                         color = Error,
-                        leadingIcon = painterResource(R.drawable.ic_delete_outline),
+                        leadingIcon = deleteIcon,
                         enabled = !isLoadingDelete,
                         isLoading = isLoadingDelete,
-                        onClick = { onDeleteProduct?.invoke(product.id) },
+                        onClick = handleDelete,
                     )
                 )
             )
         }
     }
 }
+
+private data class Quadruple<A, B, C, D>(val first: A, val second: B, val third: C, val fourth: D)

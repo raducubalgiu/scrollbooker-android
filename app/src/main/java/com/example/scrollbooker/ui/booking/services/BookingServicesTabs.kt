@@ -30,13 +30,13 @@ import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable
 fun BookingServicesTabs(
-    activeTabIndex: Int,
+    activeTabIndexProvider: () -> Int,
     edgePadding: Dp = BasePadding,
     onTabChange: (Int) -> Unit,
     serviceGroups:  List<BusinessServicesWithProducts>
 ) {
     ScrollableTabRow(
-        selectedTabIndex = activeTabIndex.coerceIn(0, serviceGroups.lastIndex),
+        selectedTabIndex = activeTabIndexProvider().coerceIn(0, serviceGroups.lastIndex),
         edgePadding = edgePadding,
         containerColor = Background,
         divider = {},
@@ -46,7 +46,7 @@ fun BookingServicesTabs(
             .padding(vertical = 8.dp)
     ) {
         serviceGroups.forEachIndexed { index, group ->
-            val isSelected = activeTabIndex == index
+            val isSelected = activeTabIndexProvider() == index
 
             Tab(
                 selected = isSelected,

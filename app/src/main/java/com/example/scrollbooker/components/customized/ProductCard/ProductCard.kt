@@ -1,4 +1,5 @@
 package com.example.scrollbooker.components.customized.ProductCard
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -51,16 +53,21 @@ fun ProductCard(
     onNavigateToBooking: (product: Product) -> Unit,
     onDeleteProduct: ((productId: Int) -> Unit)? = null,
 ) {
-    val productSummaryText = "${product.getDurationText(product.startingOffering.duration)} • ${product.getFiltersSummary()}"
+    val productSummaryText = remember(product) {
+        "${product.getDurationText(product.startingOffering.duration)} • ${product.getFiltersSummary()}"
+    }
+
+    val onCardClick = remember(product, onOpenProductDetail) {
+        { onOpenProductDetail(product) }
+    }
 
     Column(
         modifier = modifier
-            .clickable { onOpenProductDetail(product) }
+            .clickable(onClick = onCardClick)
             .padding(vertical = BasePadding)
     ) {
         Column {
-            if (
-                product.filters.isNotEmpty() &&
+            if (product.filters.isNotEmpty() &&
                 product.type == ProductTypeEnum.PACK &&
                 product.sessionsCount != null
             ) {
@@ -118,7 +125,7 @@ fun ProductCard(
                 )
             }
 
-            if(product.description != null &&
+            if (product.description != null &&
                 product.description.isNotEmpty() &&
                 displayDescription
             ) {
@@ -133,11 +140,11 @@ fun ProductCard(
                 )
             }
 
-            if(!product.canBeBooked) {
+            if (!product.canBeBooked) {
                 Spacer(Modifier.height(BasePadding))
 
                 Text(
-                    text = "Acest serviciu poate fi rezervat doar in urma unei discutii telefonice",
+                    text = "Acest serviciu poate fi rezervat doar în urma unei discuții telefonice",
                     color = Error,
                     style = bodySmall
                 )

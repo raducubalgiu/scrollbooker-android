@@ -24,6 +24,7 @@ import com.example.scrollbooker.components.customized.ProductCard.ProductDetailS
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.model.UserProducts
+import com.example.scrollbooker.entity.booking.products.domain.model.toBookingItem
 import com.example.scrollbooker.ui.booking.services.BookingProductsList
 import com.example.scrollbooker.ui.booking.services.BookingServicesTabs
 import kotlinx.coroutines.launch
@@ -59,15 +60,7 @@ fun BookingServicesScreen(
                     selectedProduct = targetProduct
                     sheetState.show()
                 } else {
-                    val variant = targetProduct.variants.first()
-                    val bookingItem = SelectedBookingItem(
-                        productId = targetProduct.id,
-                        variantId = variant.id,
-                        variantDuration = variant.duration,
-                        offerings = variant.offerings,
-                        productName = targetProduct.name,
-                        variantName = variant.name
-                    )
+                    val bookingItem = targetProduct.variants.first().toBookingItem(targetProduct)
                     viewModel.selectBookingItem(bookingItem)
                 }
             }
@@ -75,14 +68,23 @@ fun BookingServicesScreen(
         }
     }
 
-    if(sheetState.isVisible) {
+    if (selectedProduct != null) {
         ProductDetailSheet(
             product = selectedProduct,
+            selectedBookingItems = selectedBookingItems,
             sheetState = sheetState,
-            onClose = { scope.launch { sheetState.hide() } },
+            onClose = {
+                scope.launch {
+                    sheetState.hide()
+                    selectedProduct = null
+                }
+            },
             onAdd = {
                 viewModel.selectBookingItem(it)
-                scope.launch { sheetState.hide() }
+                scope.launch {
+                    sheetState.hide()
+                    selectedProduct = null
+                }
             }
         )
     }
@@ -122,7 +124,7 @@ fun BookingServicesScreen(
                         Column(Modifier.weight(1f)) {
                             if (serviceGroups.isNotEmpty()) {
                                 BookingServicesTabs(
-                                    activeTabIndex = activeTabIndexProvider.value,
+                                    activeTabIndexProvider = { activeTabIndexProvider.value },
                                     onTabChange = { tabIndex ->
                                         scope.launch {
                                             listState.animateScrollToItem(tabIndex)
@@ -137,21 +139,18 @@ fun BookingServicesScreen(
                                 serviceGroups = serviceGroups,
                                 selectedBookingItems = selectedBookingItems,
                                 onSelect = { product ->
-                                    if(product.variants.size > 1) {
-                                        selectedProduct = product
-                                        scope.launch { sheetState.show() }
-                                    } else {
-                                        val variant = product.variants.first()
-                                        val bookingItem = SelectedBookingItem(
-                                            productId = product.id,
-                                            variantId = variant.id,
-                                            variantDuration = variant.duration,
-                                            offerings = variant.offerings,
-                                            productName = product.name,
-                                            variantName = variant.name
-                                        )
+                                    val existingSelectedItem = selectedBookingItems.find { it.productId == product.id }
 
-                                        viewModel.selectBookingItem(bookingItem)
+                                    if (existingSelectedItem != null) {
+                                        viewModel.selectBookingItem(existingSelectedItem)
+                                    } else {
+                                        if (product.variants.size > 1) {
+                                            selectedProduct = product
+                                            scope.launch { sheetState.show() }
+                                        } else {
+                                            val bookingItem = product.variants.first().toBookingItem(product)
+                                            viewModel.selectBookingItem(bookingItem)
+                                        }
                                     }
                                 },
                                 onOpenProductDetail = {

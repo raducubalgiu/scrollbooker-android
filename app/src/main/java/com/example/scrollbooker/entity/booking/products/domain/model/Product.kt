@@ -3,6 +3,7 @@ package com.example.scrollbooker.entity.booking.products.domain.model
 import com.example.scrollbooker.core.enums.FilterTypeEnum
 import com.example.scrollbooker.core.enums.ProductTypeEnum
 import com.example.scrollbooker.entity.nomenclature.filter.domain.model.SubFilter
+import com.example.scrollbooker.ui.booking.SelectedBookingItem
 import java.math.BigDecimal
 
 data class Product(
@@ -114,4 +115,15 @@ fun Product.getFiltersSummary(): String {
     }
 
     return filterParts.joinToString(" • ")
+}
+
+fun ProductVariant.toBookingItem(product: Product): SelectedBookingItem {
+    return SelectedBookingItem(
+        productId = product.id,
+        variantId = this.id,
+        variantDuration = this.duration,
+        offerings = this.offerings,
+        productName = product.name,
+        variantName = this.name
+    )
 }

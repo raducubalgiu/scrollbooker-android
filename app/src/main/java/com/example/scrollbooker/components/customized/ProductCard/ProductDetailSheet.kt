@@ -26,6 +26,8 @@ import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,6 +49,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.model.ProductVariant
 import com.example.scrollbooker.entity.booking.products.domain.model.getDurationText
+import com.example.scrollbooker.entity.booking.products.domain.model.toBookingItem
 import com.example.scrollbooker.ui.booking.SelectedBookingItem
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
@@ -61,11 +64,48 @@ import com.example.scrollbooker.ui.theme.titleMedium
 @Composable
 fun ProductDetailSheet(
     product: Product?,
+    selectedBookingItems: List<SelectedBookingItem>,
     sheetState: SheetState,
     onAdd: (SelectedBookingItem) -> Unit,
     onClose: () -> Unit
 ) {
     var selectedVariant by remember { mutableStateOf<ProductVariant?>(null) }
+
+    val alreadySelectedItem = remember(product, selectedBookingItems) {
+        selectedBookingItems.find { it.productId == product?.id }
+    }
+
+    LaunchedEffect(product, alreadySelectedItem) {
+        if (product != null) {
+            when {
+                alreadySelectedItem != null -> {
+                    selectedVariant = product.variants.find { it.id == alreadySelectedItem.variantId }
+                }
+                product.variants.size == 1 -> {
+                    selectedVariant = product.variants.firstOrNull()
+                }
+                else -> {
+                    selectedVariant = null
+                }
+            }
+        }
+    }
+
+    val isButtonEnabled = remember(product, selectedVariant, alreadySelectedItem) {
+        derivedStateOf {
+            if (product == null) return@derivedStateOf false
+
+            val hasSelectedOption = selectedVariant != null
+            val isCurrentVariantAlreadyInCart = alreadySelectedItem != null &&
+                    alreadySelectedItem.variantId == selectedVariant?.id
+
+            when {
+                isCurrentVariantAlreadyInCart -> false
+                product.variants.size == 1 -> true
+                else -> hasSelectedOption
+            }
+        }
+    }
 
     ModalBottomSheet(
         modifier = Modifier.statusBarsPadding(),
@@ -97,7 +137,7 @@ fun ProductDetailSheet(
 
                         if(product.description.isNullOrBlank()) {
                             Text(
-                                text = "Acest serviciu nu are o descriere disponibila",
+                                text = stringResource(R.string.serviceWithoutDescription),
                                 style = bodyMedium,
                                 color = Color.Gray
                             )
@@ -171,7 +211,7 @@ fun ProductDetailSheet(
                     if(product.variants.size > 1) {
                         Text(
                             modifier = Modifier.padding(horizontal = SpacingXL),
-                            text = "Selectează o opțiune*",
+                            text = "${stringResource(R.string.selectAnOption)}*",
                             style = titleMedium,
                             fontWeight = FontWeight.Bold
                         )
@@ -222,41 +262,27 @@ fun ProductDetailSheet(
 
                     Button(
                         onClick = {
-                            if(selectedVariant != null) {
-                                val bookingItem = SelectedBookingItem(
-                                    productId = product.id,
-                                    variantId = selectedVariant!!.id,
-                                    variantDuration = selectedVariant!!.duration,
-                                    offerings = selectedVariant!!.offerings,
-                                    productName = product.name,
-                                    variantName = selectedVariant!!.name
-                                )
-                                onAdd(bookingItem)
-                            } else {
-                                val variant = product.variants.first()
+                            val targetVariant = selectedVariant ?: product.variants.first()
+                            val bookingItem = targetVariant.toBookingItem(product)
 
-                                val bookingItem = SelectedBookingItem(
-                                    productId = product.id,
-                                    variantId = variant.id,
-                                    variantDuration = variant.duration,
-                                    offerings = variant.offerings,
-                                    productName = product.name,
-                                    variantName = variant.name
-                                )
-
-                                onAdd(bookingItem)
-                            }
+                            onAdd(bookingItem)
                         },
-                        enabled = selectedVariant != null,
+                        enabled = isButtonEnabled.value,
                         contentPadding = PaddingValues(
                             vertical = BasePadding,
                             horizontal = SpacingXL
                         )
                     ) {
+                        val buttonText = when {
+                            alreadySelectedItem != null && selectedVariant?.id != alreadySelectedItem.variantId -> stringResource(R.string.update)
+                            alreadySelectedItem != null -> stringResource(R.string.added)
+                            else -> stringResource(R.string.add)
+                        }
+
                         Text(
                             style = bodyLarge,
                             fontWeight = FontWeight.SemiBold,
-                            text = stringResource(R.string.add),
+                            text = buttonText,
                         )
                     }
                 }
