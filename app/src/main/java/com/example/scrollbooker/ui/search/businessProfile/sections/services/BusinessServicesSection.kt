@@ -82,6 +82,7 @@ fun BusinessServicesSection(
                         ProductCard(
                             product = product,
                             displayDescription = false,
+                            onOpenDetailSheet = {},
                             onNavigateToBooking = onNavigateToBookingFromProduct
                         )
 
