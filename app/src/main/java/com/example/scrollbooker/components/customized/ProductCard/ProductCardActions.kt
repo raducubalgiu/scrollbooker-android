@@ -8,11 +8,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -69,8 +71,8 @@ fun ProductCardActions(
 
     when {
         showAddSingleButtonSelectable -> {
-            val containerColor = if (isSelected) Background.copy(alpha = 0.6f) else Background
-            val contentColor = OnBackground
+            val containerColor = if (isSelected) Primary else Background
+            val contentColor = if(isSelected) OnPrimary else OnBackground
             val shadowElevation = if (isSelected) 1.dp else 4.dp
 
             Protected(permission = PermissionEnum.BOOK_BUTTON_VIEW) {
@@ -79,13 +81,13 @@ fun ProductCardActions(
                         .size(40.dp)
                         .shadow(
                             elevation = shadowElevation,
-                            shape = RoundedCornerShape(12.dp),
+                            shape = ShapeDefaults.ExtraLarge,
                             clip = false
                         )
                 ) {
                     FilledIconButton(
                         onClick = { onSelect?.invoke(product) },
-                        shape = RoundedCornerShape(12.dp),
+                        shape = ShapeDefaults.ExtraLarge,
                         colors = IconButtonDefaults.filledIconButtonColors(
                             containerColor = containerColor,
                             contentColor = contentColor
@@ -93,7 +95,7 @@ fun ProductCardActions(
                         modifier = Modifier.fillMaxSize()
                     ) {
                         Icon(
-                            imageVector = if (isSelected) Icons.Default.Remove else Icons.Default.Add,
+                            imageVector = if (isSelected) Icons.Default.Check else Icons.Default.Add,
                             contentDescription = null,
                             modifier = Modifier.size(20.dp)
                         )

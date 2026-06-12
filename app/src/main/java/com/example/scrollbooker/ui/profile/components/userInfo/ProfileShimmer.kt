@@ -27,7 +27,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.components.core.divider.VerticalDivider
 import com.example.scrollbooker.components.core.layout.LoadingScreen
-import com.example.scrollbooker.components.core.shimmer.rememberShimmerBrush
+import com.example.scrollbooker.components.core.shimmer.shimmerEffect
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
@@ -39,8 +39,6 @@ import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable
 fun ProfileShimmer() {
-    val brush = rememberShimmerBrush()
-
     Column {
         Row(modifier = Modifier
             .fillMaxWidth()
@@ -87,7 +85,7 @@ fun ProfileShimmer() {
                     Spacer(modifier = Modifier
                         .height(12.5.dp)
                         .fillMaxWidth(fraction = 0.3f)
-                        .background(brush)
+                        .shimmerEffect()
                     )
 
                     Spacer(Modifier.height(SpacingS))
@@ -95,7 +93,7 @@ fun ProfileShimmer() {
                     Spacer(modifier = Modifier
                         .height(12.5.dp)
                         .fillMaxWidth(fraction = 0.4f)
-                        .background(brush)
+                        .shimmerEffect()
                     )
 
                     Spacer(Modifier.height(SpacingS))
@@ -103,7 +101,7 @@ fun ProfileShimmer() {
                     Spacer(modifier = Modifier
                         .height(12.5.dp)
                         .fillMaxWidth(fraction = 0.6f)
-                        .background(brush)
+                        .shimmerEffect()
                     )
                 }
             }
@@ -123,7 +121,7 @@ fun ProfileShimmer() {
                         modifier = Modifier
                             .height(12.5.dp)
                             .fillMaxWidth(fraction = 0.4f)
-                            .background(brush)
+                            .shimmerEffect()
                     )
                 }
                 Spacer(Modifier.width(SpacingS))
@@ -135,7 +133,7 @@ fun ProfileShimmer() {
                         modifier = Modifier
                             .height(12.5.dp)
                             .fillMaxWidth(fraction = 0.4f)
-                            .background(brush)
+                            .shimmerEffect()
                     )
                 }
                 Spacer(Modifier.width(SpacingS))

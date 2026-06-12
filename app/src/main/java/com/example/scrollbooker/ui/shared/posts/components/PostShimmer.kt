@@ -13,18 +13,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.shimmer.ShimmerMode
-import com.example.scrollbooker.components.core.shimmer.rememberShimmerBrush
+import com.example.scrollbooker.components.core.shimmer.shimmerEffect
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 
 @Composable
 fun PostShimmer() {
-    val brush = rememberShimmerBrush(mode = ShimmerMode.DARK)
-
     Box(modifier = Modifier
         .fillMaxSize()
         .padding(SpacingS),
@@ -35,7 +32,7 @@ fun PostShimmer() {
                 .fillMaxWidth(fraction = 0.3f)
                 .height(20.dp)
                 .clip(shape = ShapeDefaults.Medium)
-                .background(brush)
+                .shimmerEffect(mode = ShimmerMode.DARK)
             )
 
             Spacer(Modifier.height(SpacingM))
@@ -44,7 +41,7 @@ fun PostShimmer() {
                 .fillMaxWidth(fraction = 0.6f)
                 .height(20.dp)
                 .clip(shape = ShapeDefaults.Medium)
-                .background(brush)
+                .shimmerEffect(mode = ShimmerMode.DARK)
             )
 
             Spacer(Modifier.height(BasePadding))
@@ -53,7 +50,7 @@ fun PostShimmer() {
                 .fillMaxWidth(fraction = 0.8f)
                 .height(35.dp)
                 .clip(shape = ShapeDefaults.Medium)
-                .background(brush)
+                .shimmerEffect(mode = ShimmerMode.DARK)
             )
 
             Spacer(Modifier.height(BasePadding))

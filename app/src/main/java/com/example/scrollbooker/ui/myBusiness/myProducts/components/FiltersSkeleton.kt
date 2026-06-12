@@ -1,6 +1,5 @@
 package com.example.scrollbooker.ui.myBusiness.myProducts.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import com.example.scrollbooker.components.core.shimmer.rememberShimmerBrush
+import com.example.scrollbooker.components.core.shimmer.shimmerEffect
 
 @Composable
 fun FiltersSkeleton() {
@@ -20,7 +19,7 @@ fun FiltersSkeleton() {
                 .fillMaxWidth()
                 .height(52.dp)
                 .clip(RoundedCornerShape(12.dp))
-                .background(rememberShimmerBrush())
+                .shimmerEffect()
         )
 
         Spacer(Modifier.height(8.dp))

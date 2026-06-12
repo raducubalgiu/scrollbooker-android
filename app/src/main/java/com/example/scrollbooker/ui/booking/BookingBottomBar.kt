@@ -1,6 +1,10 @@
 package com.example.scrollbooker.ui.booking
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import com.example.scrollbooker.R
+import com.example.scrollbooker.core.extensions.toTwoDecimals
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
@@ -28,11 +33,18 @@ import com.example.scrollbooker.ui.theme.titleLarge
 
 @Composable
 fun BookingBottomBar(
-    modifier: Modifier = Modifier,
+    bookingTotals: BookingTotals,
+    onNavigateToSpecialists: () -> Unit,
     isVisible: Boolean
 ) {
     AnimatedVisibility(
-        visible = isVisible
+        visible = isVisible,
+        enter = fadeIn() + slideInVertically(
+            initialOffsetY = { fullHeight -> fullHeight }
+        ),
+        exit = fadeOut() + slideOutVertically(
+            targetOffsetY = { fullHeight -> fullHeight }
+        )
     ) {
         Row(
             modifier = Modifier
@@ -43,7 +55,7 @@ fun BookingBottomBar(
         ) {
             Column(Modifier.weight(1f)) {
                 Text(
-                    text = "260 RON",
+                    text = "${bookingTotals.totalPrice.toTwoDecimals()} RON",
                     style = titleLarge,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
@@ -53,7 +65,7 @@ fun BookingBottomBar(
                 Spacer(Modifier.height(SpacingXXS))
 
                 Text(
-                    text = "30min",
+                    text = "${bookingTotals.totalDuration}min",
                     style = bodyMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -62,7 +74,7 @@ fun BookingBottomBar(
             }
 
             Button(
-                onClick = {},
+                onClick = onNavigateToSpecialists,
                 contentPadding = PaddingValues(
                     vertical = BasePadding,
                     horizontal = SpacingXL

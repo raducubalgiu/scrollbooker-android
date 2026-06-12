@@ -4,29 +4,27 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import com.example.scrollbooker.ui.theme.Divider
-import com.example.scrollbooker.ui.theme.SurfaceBG
+import androidx.compose.runtime.getValue
 
 enum class ShimmerMode {
-    SYSTEM,
-    LIGHT,
-    DARK
+    SYSTEM, LIGHT, DARK
 }
 
-@Composable
-fun rememberShimmerBrush(
+fun Modifier.shimmerEffect(
     mode: ShimmerMode = ShimmerMode.SYSTEM
-): Brush {
+): Modifier = composed {
     val color = when(mode) {
         ShimmerMode.SYSTEM -> Divider
         ShimmerMode.LIGHT -> Color(0xFFCCCCCC)
         ShimmerMode.DARK -> Color(0xFF3A3A3A)
     }
-
 
     val shimmerColors = listOf(
         color.copy(alpha = 0.5f),
@@ -34,21 +32,24 @@ fun rememberShimmerBrush(
         color.copy(alpha = 0.5f)
     )
 
-    val transition = rememberInfiniteTransition()
-    val translateAnim = transition.animateFloat(
+    val transition = rememberInfiniteTransition(label = "shimmer")
+    val translateAnim by transition.animateFloat(
         initialValue = 0f,
         targetValue = 1000f,
         animationSpec = infiniteRepeatable(
-            animation = tween(
-                durationMillis = 1000,
-                easing = FastOutSlowInEasing
-            )
-        )
+            animation = tween(durationMillis = 1000, easing = FastOutSlowInEasing)
+        ),
+        label = "shimmer_translation"
     )
 
-    return Brush.linearGradient(
-        colors = shimmerColors,
-        start = Offset.Zero,
-        end = Offset(x = translateAnim.value, y = translateAnim.value)
-    )
+    this.drawWithCache {
+        val brush = Brush.linearGradient(
+            colors = shimmerColors,
+            start = Offset(x = translateAnim, y = translateAnim),
+            end = Offset(x = translateAnim + 300f, y = translateAnim + 300f)
+        )
+        onDrawWithContent {
+            drawRect(brush = brush)
+        }
+    }
 }

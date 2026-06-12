@@ -33,10 +33,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.inputs.InputRadio
 import com.example.scrollbooker.components.core.sheet.SheetHeader
 import com.example.scrollbooker.core.util.Dimens.BasePadding
@@ -45,6 +47,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.model.ProductVariant
 import com.example.scrollbooker.entity.booking.products.domain.model.getDurationText
+import com.example.scrollbooker.ui.booking.SelectedBookingItem
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
@@ -59,6 +62,7 @@ import com.example.scrollbooker.ui.theme.titleMedium
 fun ProductDetailSheet(
     product: Product?,
     sheetState: SheetState,
+    onAdd: (SelectedBookingItem) -> Unit,
     onClose: () -> Unit
 ) {
     var selectedVariant by remember { mutableStateOf<ProductVariant?>(null) }
@@ -168,16 +172,14 @@ fun ProductDetailSheet(
                         Text(
                             modifier = Modifier.padding(horizontal = SpacingXL),
                             text = "Selectează o opțiune*",
-                            style = titleLarge,
+                            style = titleMedium,
                             fontWeight = FontWeight.Bold
                         )
 
                         product.variants.mapIndexed { index, variant ->
                             InputRadio(
                                 selected = selectedVariant?.id == variant.id,
-                                onSelect = {
-                                    selectedVariant = variant
-                                },
+                                onSelect = { selectedVariant = variant },
                                 headLine = variant.name
                             )
 
@@ -219,7 +221,32 @@ fun ProductDetailSheet(
                     }
 
                     Button(
-                        onClick = {},
+                        onClick = {
+                            if(selectedVariant != null) {
+                                val bookingItem = SelectedBookingItem(
+                                    productId = product.id,
+                                    variantId = selectedVariant!!.id,
+                                    variantDuration = selectedVariant!!.duration,
+                                    offerings = selectedVariant!!.offerings,
+                                    productName = product.name,
+                                    variantName = selectedVariant!!.name
+                                )
+                                onAdd(bookingItem)
+                            } else {
+                                val variant = product.variants.first()
+
+                                val bookingItem = SelectedBookingItem(
+                                    productId = product.id,
+                                    variantId = variant.id,
+                                    variantDuration = variant.duration,
+                                    offerings = variant.offerings,
+                                    productName = product.name,
+                                    variantName = variant.name
+                                )
+
+                                onAdd(bookingItem)
+                            }
+                        },
                         enabled = selectedVariant != null,
                         contentPadding = PaddingValues(
                             vertical = BasePadding,
@@ -229,7 +256,7 @@ fun ProductDetailSheet(
                         Text(
                             style = bodyLarge,
                             fontWeight = FontWeight.SemiBold,
-                            text = "Adauga",
+                            text = stringResource(R.string.add),
                         )
                     }
                 }

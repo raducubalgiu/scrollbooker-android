@@ -15,14 +15,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import com.example.scrollbooker.components.core.shimmer.rememberShimmerBrush
+import com.example.scrollbooker.components.core.shimmer.shimmerEffect
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable
 fun SlotsShimmer() {
-    val brush = rememberShimmerBrush()
-
     Column(Modifier.fillMaxSize()) {
         repeat(5) {
             Spacer(Modifier.height(BasePadding))
@@ -41,8 +39,8 @@ fun SlotsShimmer() {
                         .height(20.dp)
                         .width(60.dp)
                         .clip(shape = ShapeDefaults.Medium)
-                        .background(brush)
                         .padding(start = BasePadding)
+                        .shimmerEffect()
                 )
             }
         }

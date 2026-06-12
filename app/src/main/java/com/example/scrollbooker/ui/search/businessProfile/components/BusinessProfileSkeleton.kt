@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.divider.VerticalDivider
-import com.example.scrollbooker.components.core.shimmer.rememberShimmerBrush
+import com.example.scrollbooker.components.core.shimmer.shimmerEffect
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
@@ -39,8 +39,6 @@ import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable
 fun BusinessProfileSkeleton() {
-    val brush = rememberShimmerBrush()
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -50,7 +48,7 @@ fun BusinessProfileSkeleton() {
             Spacer(modifier = Modifier
                 .fillMaxWidth()
                 .height(250.dp)
-                .background(brush)
+                .shimmerEffect()
             )
 
             Row(
@@ -100,7 +98,7 @@ fun BusinessProfileSkeleton() {
                     modifier = Modifier
                         .size(75.dp)
                         .clip(CircleShape)
-                        .background(brush)
+                        .shimmerEffect()
                 )
 
                 Spacer(Modifier.width(BasePadding))
@@ -147,7 +145,7 @@ fun BusinessProfileSkeleton() {
                                 modifier = Modifier
                                     .height(12.5.dp)
                                     .fillMaxWidth(fraction = 0.4f)
-                                    .background(brush)
+                                    .shimmerEffect()
                             )
                         }
 
@@ -165,7 +163,7 @@ fun BusinessProfileSkeleton() {
                                 modifier = Modifier
                                     .height(12.5.dp)
                                     .fillMaxWidth(fraction = 0.4f)
-                                    .background(brush)
+                                    .shimmerEffect()
                             )
                         }
                     }
@@ -176,7 +174,7 @@ fun BusinessProfileSkeleton() {
                 modifier = Modifier
                     .fillMaxWidth(fraction = 0.4f)
                     .height(20.dp)
-                    .background(brush)
+                    .shimmerEffect()
             )
 
             Spacer(Modifier.height(SpacingM))
@@ -185,7 +183,7 @@ fun BusinessProfileSkeleton() {
                 modifier = Modifier
                     .fillMaxWidth(fraction = 0.7f)
                     .height(17.5.dp)
-                    .background(brush)
+                    .shimmerEffect()
             )
 
             Spacer(Modifier.height(SpacingM))
@@ -194,7 +192,7 @@ fun BusinessProfileSkeleton() {
                 modifier = Modifier
                     .fillMaxWidth(fraction = 0.3f)
                     .height(17.5.dp)
-                    .background(brush)
+                    .shimmerEffect()
             )
 
             Spacer(Modifier.height(SpacingM))
@@ -203,7 +201,7 @@ fun BusinessProfileSkeleton() {
                 modifier = Modifier
                     .fillMaxWidth(fraction = 0.3f)
                     .height(17.5.dp)
-                    .background(brush)
+                    .shimmerEffect()
             )
 
             Spacer(Modifier.height(SpacingXXL))
@@ -212,7 +210,7 @@ fun BusinessProfileSkeleton() {
                 modifier = Modifier
                     .fillMaxWidth(fraction = 0.3f)
                     .height(20.dp)
-                    .background(brush)
+                    .shimmerEffect()
             )
 
             Spacer(Modifier.height(SpacingXXL))

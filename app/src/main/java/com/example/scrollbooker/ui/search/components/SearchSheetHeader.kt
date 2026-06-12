@@ -21,7 +21,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.scrollbooker.components.core.shimmer.rememberShimmerBrush
+import com.example.scrollbooker.components.core.shimmer.shimmerEffect
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.theme.Divider
 
@@ -33,7 +33,6 @@ fun SearchSheetHeader(
 ) {
     val density = LocalDensity.current
     val latestOnMeasured by rememberUpdatedState(onMeasured)
-    val brush = rememberShimmerBrush()
 
     Box(modifier = Modifier
         .fillMaxWidth()
@@ -65,7 +64,7 @@ fun SearchSheetHeader(
                         .height(20.dp)
                         .width(140.dp)
                         .clip(shape = ShapeDefaults.ExtraSmall)
-                        .background(brush)
+                        .shimmerEffect()
                 )
             } else {
                 Box(Modifier.height(20.dp)) {
