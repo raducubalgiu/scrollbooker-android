@@ -2,47 +2,38 @@ package com.example.scrollbooker.navigation.transition
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 
-private const val TRANSITION_DURATION = 300
+internal const val TRANSITION_DURATION = 300
+internal val PremiumNavigationEasing = CubicBezierEasing(0.2f, 0.0f, 0.0f, 1.0f)
 
 fun AnimatedContentTransitionScope<*>.slideInFromRight(): EnterTransition {
-    return slideIntoContainer(
-        AnimatedContentTransitionScope.SlideDirection.Left,
-        animationSpec = tween(
-            durationMillis = TRANSITION_DURATION,
-            easing = FastOutSlowInEasing
-        )
+    return slideInHorizontally(
+        initialOffsetX = { fullWidth -> fullWidth },
+        animationSpec = tween(TRANSITION_DURATION, easing = PremiumNavigationEasing)
     )
 }
 
 fun AnimatedContentTransitionScope<*>.slideOutToLeft(): ExitTransition {
-    return slideOutOfContainer(
-        AnimatedContentTransitionScope.SlideDirection.Left,
-        animationSpec = tween(
-            durationMillis = TRANSITION_DURATION,
-            easing = FastOutSlowInEasing
-        )
+    return slideOutHorizontally(
+        targetOffsetX = { fullWidth -> -fullWidth / 4 },
+        animationSpec = tween(TRANSITION_DURATION, easing = PremiumNavigationEasing)
     )
 }
 
 fun AnimatedContentTransitionScope<*>.slideInFromLeft(): EnterTransition {
-    return slideIntoContainer(
-        AnimatedContentTransitionScope.SlideDirection.Right,
-        animationSpec = tween(
-            durationMillis = TRANSITION_DURATION,
-            easing = FastOutSlowInEasing
-        )
+    return slideInHorizontally(
+        initialOffsetX = { fullWidth -> -fullWidth / 4 },
+        animationSpec = tween(TRANSITION_DURATION, easing = PremiumNavigationEasing)
     )
 }
 
 fun AnimatedContentTransitionScope<*>.slideOutToRight(): ExitTransition {
-    return slideOutOfContainer(
-        AnimatedContentTransitionScope.SlideDirection.Right,
-        animationSpec = tween(
-            durationMillis = TRANSITION_DURATION,
-            easing = FastOutSlowInEasing
-        )
+    return slideOutHorizontally(
+        targetOffsetX = { fullWidth -> fullWidth },
+        animationSpec = tween(TRANSITION_DURATION, easing = PremiumNavigationEasing)
     )
 }
