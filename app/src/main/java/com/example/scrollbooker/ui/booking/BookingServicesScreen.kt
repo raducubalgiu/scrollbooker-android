@@ -1,19 +1,10 @@
 package com.example.scrollbooker.ui.booking
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.Modifier
@@ -22,22 +13,11 @@ import com.example.scrollbooker.components.core.headers.Header
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
-import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.ErrorScreen
-import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingXL
-import com.example.scrollbooker.core.util.Dimens.SpacingXXS
+import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.ui.booking.services.BookingProductsList
 import com.example.scrollbooker.ui.booking.services.BookingServicesTabs
-import com.example.scrollbooker.ui.theme.bodyLarge
-import com.example.scrollbooker.ui.theme.bodyMedium
-import com.example.scrollbooker.ui.theme.titleLarge
 import kotlinx.coroutines.launch
 
 @Composable
@@ -56,17 +36,28 @@ fun BookingServicesScreen(
         modifier = modifier,
         topBar = { Header(onBack = onBack) },
     ) { innerPadding ->
-        Box(Modifier.fillMaxSize().padding(innerPadding)) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
+        ) {
             when (val state = productsState) {
                 is FeatureState.Error -> ErrorScreen()
-                is FeatureState.Loading -> Unit
+                is FeatureState.Loading -> LoadingScreen()
                 is FeatureState.Success -> {
                     val serviceGroups = state.data.data
 
-                    val activeTabIndex by remember(serviceGroups) {
+                    val activeTabIndexProvider = remember(serviceGroups) {
                         derivedStateOf {
-                            val firstVisibleIndex = listState.firstVisibleItemIndex
-                            if (firstVisibleIndex == 0) 0 else firstVisibleIndex - 1
+                            val visibleItems = listState.layoutInfo.visibleItemsInfo
+                            if (visibleItems.isEmpty()) {
+                                0
+                            } else {
+                                val firstVisibleItem = visibleItems.firstOrNull { item ->
+                                    item.offset <= 0 && item.offset + item.size > 0
+                                } ?: visibleItems.first()
+
+                                firstVisibleItem.index.coerceIn(0, serviceGroups.lastIndex)
+                            }
                         }
                     }
 
@@ -74,10 +65,10 @@ fun BookingServicesScreen(
                         Column(Modifier.weight(1f)) {
                             if (serviceGroups.isNotEmpty()) {
                                 BookingServicesTabs(
-                                    activeTabIndex = activeTabIndex,
+                                    activeTabIndex = activeTabIndexProvider.value,
                                     onTabChange = { tabIndex ->
                                         scope.launch {
-                                            listState.animateScrollToItem(tabIndex + 1)
+                                            listState.animateScrollToItem(tabIndex)
                                         }
                                     },
                                     serviceGroups = serviceGroups
@@ -89,52 +80,7 @@ fun BookingServicesScreen(
                                 serviceGroups = serviceGroups
                             )
                         }
-
-                        AnimatedVisibility(
-                            visible = true
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(BasePadding),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Column(Modifier.weight(1f)) {
-                                    Text(
-                                        text = "260 RON",
-                                        style = titleLarge,
-                                        fontWeight = FontWeight.SemiBold,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-
-                                    Spacer(Modifier.height(SpacingXXS))
-
-                                    Text(
-                                        text = "30min",
-                                        style = bodyMedium,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                        color = Color.Gray
-                                    )
-                                }
-
-                                Button(
-                                    onClick = {},
-                                    contentPadding = PaddingValues(
-                                        vertical = BasePadding,
-                                        horizontal = SpacingXL
-                                    )
-                                ) {
-                                    Text(
-                                        style = bodyLarge,
-                                        fontWeight = FontWeight.SemiBold,
-                                        text = stringResource(R.string.next),
-                                    )
-                                }
-                            }
-                        }
+                        BookingBottomBar(isVisible = false)
                     }
                 }
             }

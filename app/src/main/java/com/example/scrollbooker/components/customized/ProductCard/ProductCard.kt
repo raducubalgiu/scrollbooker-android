@@ -47,6 +47,7 @@ fun ProductCard(
     isSelected: Boolean = false,
     isSelectable: Boolean = false,
     isLoadingDelete: Boolean = false,
+    onOpenDetailSheet: (Product) -> Unit,
     onSelect: ((Product) -> Unit)? = null,
     onNavigateToEdit: ((Int) -> Unit)? = null,
     onNavigateToBooking: (product: Product) -> Unit,
@@ -56,9 +57,9 @@ fun ProductCard(
 
     Column(modifier = modifier
         .clickable (
-            onClick = { onNavigateToBooking(product) },
-            indication = null,
-            interactionSource = remember { MutableInteractionSource() }
+            onClick = { onOpenDetailSheet(product) },
+            //indication = null,
+            //interactionSource = remember { MutableInteractionSource() }
         )
     ) {
         Column {
