@@ -91,83 +91,153 @@ fun BookingServicesScreen(
 
     val listState = rememberLazyListState()
 
-    Scaffold(
+    BookingLayout(
         modifier = modifier,
-        topBar = { Header(onBack = onBack) },
-    ) { innerPadding ->
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding)
-        ) {
-            when (val state = productsState) {
-                is FeatureState.Error -> ErrorScreen()
-                is FeatureState.Loading -> LoadingScreen()
-                is FeatureState.Success -> {
-                    val serviceGroups = state.data.data
+        onBack = onBack,
+        onNext = onNavigateToSpecialists,
+        bookingTotals = bookingTotals,
+        displayBottomBar = selectedBookingItems.isNotEmpty()
+    ) {
+        when(val state = productsState) {
+            is FeatureState.Error -> ErrorScreen()
+            is FeatureState.Loading -> LoadingScreen()
+            is FeatureState.Success -> {
+                val serviceGroups = state.data.data
 
-                    val activeTabIndexProvider = remember(serviceGroups) {
-                        derivedStateOf {
-                            val visibleItems = listState.layoutInfo.visibleItemsInfo
-                            if (visibleItems.isEmpty()) {
-                                0
-                            } else {
-                                val firstVisibleItem = visibleItems.firstOrNull { item ->
-                                    item.offset <= 0 && item.offset + item.size > 0
-                                } ?: visibleItems.first()
+                val activeTabIndexProvider = remember(serviceGroups) {
+                    derivedStateOf {
+                        val visibleItems = listState.layoutInfo.visibleItemsInfo
+                        if (visibleItems.isEmpty()) {
+                            0
+                        } else {
+                            val firstVisibleItem = visibleItems.firstOrNull { item ->
+                                item.offset <= 0 && item.offset + item.size > 0
+                            } ?: visibleItems.first()
 
-                                firstVisibleItem.index.coerceIn(0, serviceGroups.lastIndex)
-                            }
+                            firstVisibleItem.index.coerceIn(0, serviceGroups.lastIndex)
                         }
                     }
+                }
 
-                    Column(modifier = Modifier.fillMaxSize()) {
-                        Column(Modifier.weight(1f)) {
-                            if (serviceGroups.isNotEmpty()) {
-                                BookingServicesTabs(
-                                    activeTabIndexProvider = { activeTabIndexProvider.value },
-                                    onTabChange = { tabIndex ->
-                                        scope.launch {
-                                            listState.animateScrollToItem(tabIndex)
-                                        }
-                                    },
-                                    serviceGroups = serviceGroups
-                                )
-                            }
-
-                            BookingProductsList(
-                                state = listState,
-                                serviceGroups = serviceGroups,
-                                selectedBookingItems = selectedBookingItems,
-                                onSelect = { product ->
-                                    val existingSelectedItem = selectedBookingItems.find { it.productId == product.id }
-
-                                    if (existingSelectedItem != null) {
-                                        viewModel.selectBookingItem(existingSelectedItem)
-                                    } else {
-                                        if (product.variants.size > 1) {
-                                            selectedProduct = product
-                                            scope.launch { sheetState.show() }
-                                        } else {
-                                            val bookingItem = product.variants.first().toBookingItem(product)
-                                            viewModel.selectBookingItem(bookingItem)
-                                        }
-                                    }
-                                },
-                                onOpenProductDetail = {
-                                    selectedProduct = it
-                                    scope.launch { sheetState.show() }
-                                },
-                            )
-                        }
-
-                        BookingBottomBar(
-                            bookingTotals = bookingTotals,
-                            isVisible = selectedBookingItems.isNotEmpty(),
-                            onNavigateToSpecialists = onNavigateToSpecialists
+                Column(Modifier.fillMaxSize()) {
+                    if (serviceGroups.isNotEmpty()) {
+                        BookingServicesTabs(
+                            activeTabIndexProvider = { activeTabIndexProvider.value },
+                            onTabChange = { tabIndex ->
+                                scope.launch {
+                                    listState.animateScrollToItem(tabIndex)
+                                }
+                            },
+                            serviceGroups = serviceGroups
                         )
                     }
+
+                    BookingProductsList(
+                        state = listState,
+                        serviceGroups = serviceGroups,
+                        selectedBookingItems = selectedBookingItems,
+                        onSelect = { product ->
+                            val existingSelectedItem = selectedBookingItems.find { it.productId == product.id }
+
+                            if (existingSelectedItem != null) {
+                                viewModel.selectBookingItem(existingSelectedItem)
+                            } else {
+                                if (product.variants.size > 1) {
+                                    selectedProduct = product
+                                    scope.launch { sheetState.show() }
+                                } else {
+                                    val bookingItem = product.variants.first().toBookingItem(product)
+                                    viewModel.selectBookingItem(bookingItem)
+                                }
+                            }
+                        },
+                        onOpenProductDetail = {
+                            selectedProduct = it
+                            scope.launch { sheetState.show() }
+                        },
+                    )
                 }
             }
         }
     }
+
+//    Scaffold(
+//        modifier = modifier,
+//        topBar = { Header(onBack = onBack) },
+//    ) { innerPadding ->
+//        Box(modifier = Modifier
+//            .fillMaxSize()
+//            .padding(innerPadding)
+//        ) {
+//            when (val state = productsState) {
+//                is FeatureState.Error -> ErrorScreen()
+//                is FeatureState.Loading -> LoadingScreen()
+//                is FeatureState.Success -> {
+//                    val serviceGroups = state.data.data
+//
+//                    val activeTabIndexProvider = remember(serviceGroups) {
+//                        derivedStateOf {
+//                            val visibleItems = listState.layoutInfo.visibleItemsInfo
+//                            if (visibleItems.isEmpty()) {
+//                                0
+//                            } else {
+//                                val firstVisibleItem = visibleItems.firstOrNull { item ->
+//                                    item.offset <= 0 && item.offset + item.size > 0
+//                                } ?: visibleItems.first()
+//
+//                                firstVisibleItem.index.coerceIn(0, serviceGroups.lastIndex)
+//                            }
+//                        }
+//                    }
+//
+//                    Column(modifier = Modifier.fillMaxSize()) {
+//                        Column(Modifier.weight(1f)) {
+//                            if (serviceGroups.isNotEmpty()) {
+//                                BookingServicesTabs(
+//                                    activeTabIndexProvider = { activeTabIndexProvider.value },
+//                                    onTabChange = { tabIndex ->
+//                                        scope.launch {
+//                                            listState.animateScrollToItem(tabIndex)
+//                                        }
+//                                    },
+//                                    serviceGroups = serviceGroups
+//                                )
+//                            }
+//
+//                            BookingProductsList(
+//                                state = listState,
+//                                serviceGroups = serviceGroups,
+//                                selectedBookingItems = selectedBookingItems,
+//                                onSelect = { product ->
+//                                    val existingSelectedItem = selectedBookingItems.find { it.productId == product.id }
+//
+//                                    if (existingSelectedItem != null) {
+//                                        viewModel.selectBookingItem(existingSelectedItem)
+//                                    } else {
+//                                        if (product.variants.size > 1) {
+//                                            selectedProduct = product
+//                                            scope.launch { sheetState.show() }
+//                                        } else {
+//                                            val bookingItem = product.variants.first().toBookingItem(product)
+//                                            viewModel.selectBookingItem(bookingItem)
+//                                        }
+//                                    }
+//                                },
+//                                onOpenProductDetail = {
+//                                    selectedProduct = it
+//                                    scope.launch { sheetState.show() }
+//                                },
+//                            )
+//                        }
+//
+//                        BookingBottomBar(
+//                            bookingTotals = bookingTotals,
+//                            isVisible = selectedBookingItems.isNotEmpty(),
+//                            onNavigateToSpecialists = onNavigateToSpecialists
+//                        )
+//                    }
+//                }
+//            }
+//        }
+//    }
 }

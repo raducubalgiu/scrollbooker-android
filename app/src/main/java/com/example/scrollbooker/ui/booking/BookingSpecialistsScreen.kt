@@ -1,13 +1,10 @@
 package com.example.scrollbooker.ui.booking
-
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import com.example.scrollbooker.components.core.buttons.MainButtonMedium
-import com.example.scrollbooker.components.core.headers.Header
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 fun BookingSpecialistsScreen(
@@ -16,16 +13,16 @@ fun BookingSpecialistsScreen(
     onNavigateToDateTime: () -> Unit,
     onBack: () -> Unit
 ) {
-    Scaffold(
+    val bookingTotals by viewModel.bookingTotals.collectAsStateWithLifecycle()
+
+    BookingLayout(
         modifier = modifier,
-        topBar = {
-            Header(onBack = onBack)
-        },
-        bottomBar = {
-            MainButtonMedium(title = "Catre date time", onClick = onNavigateToDateTime)
-        }
-    ) { innerPadding ->
-        Box(Modifier.padding(innerPadding).fillMaxSize()) {
+        onBack = onBack,
+        onNext = onNavigateToDateTime,
+        bookingTotals = bookingTotals,
+        displayBottomBar = true
+    ) {
+        Column(Modifier.fillMaxSize()) {
 
         }
     }

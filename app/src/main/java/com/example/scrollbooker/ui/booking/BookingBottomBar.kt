@@ -34,7 +34,7 @@ import com.example.scrollbooker.ui.theme.titleLarge
 @Composable
 fun BookingBottomBar(
     bookingTotals: BookingTotals,
-    onNavigateToSpecialists: () -> Unit,
+    onNext: () -> Unit,
     isVisible: Boolean
 ) {
     AnimatedVisibility(
@@ -74,7 +74,7 @@ fun BookingBottomBar(
             }
 
             Button(
-                onClick = onNavigateToSpecialists,
+                onClick = onNext,
                 contentPadding = PaddingValues(
                     vertical = BasePadding,
                     horizontal = SpacingXL
