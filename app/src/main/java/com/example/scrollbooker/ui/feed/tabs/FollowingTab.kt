@@ -51,6 +51,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 @Composable
 fun FollowingTab(
     isDrawerOpen: Boolean,
+    isTabActive: Boolean,
     onAction: (PostOverlayActionEnum, Post) -> Unit,
     onNavigateToUserProfile: (Int, String) -> Unit,
     onNavigateToBooking: (NavigateBookingParam) -> Unit
@@ -103,8 +104,15 @@ fun FollowingTab(
         snapAnimationSpec = snapSpec
     )
 
-    val currentOnReleasePlayer by rememberUpdatedState(followingViewModel::stopDetailSession)
+    LaunchedEffect(isTabActive, settledPage) {
+        if (!isTabActive) {
+            followingViewModel.stopDetailSession()
+        } else {
+            followingViewModel.resumePlayerOnTabEnter(settledPage)
+        }
+    }
 
+    val currentOnReleasePlayer by rememberUpdatedState(followingViewModel::stopDetailSession)
     LifecycleStartEffect(true) {
         onStopOrDispose {
             currentOnReleasePlayer()

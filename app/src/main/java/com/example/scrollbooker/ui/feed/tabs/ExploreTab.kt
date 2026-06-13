@@ -51,6 +51,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 fun ExploreTab(
     posts: LazyPagingItems<Post>,
     isDrawerOpen: Boolean,
+    isTabActive: Boolean,
     exploreViewModel: ExploreFeedViewModel,
     onAction: (PostOverlayActionEnum, Post) -> Unit,
     onNavigateToUserProfile: (Int, String) -> Unit,
@@ -101,8 +102,15 @@ fun ExploreTab(
         snapAnimationSpec = snapSpec
     )
 
-    val currentOnReleasePlayer by rememberUpdatedState(exploreViewModel::stopDetailSession)
+    LaunchedEffect(isTabActive, settledPage) {
+        if (!isTabActive) {
+            exploreViewModel.stopDetailSession()
+        } else {
+            exploreViewModel.resumePlayerOnTabEnter(settledPage)
+        }
+    }
 
+    val currentOnReleasePlayer by rememberUpdatedState(exploreViewModel::stopDetailSession)
     LifecycleStartEffect(true) {
         onStopOrDispose {
             currentOnReleasePlayer()

@@ -95,7 +95,7 @@ fun FeedScreen(
 
         FeedTabs(
             modifier = Modifier.statusBarsPadding(),
-            selectedTabIndex = horizontalPagerState.settledPage,
+            selectedTabIndex = horizontalPagerState.currentPage,
             onChangeTab = {
                 scope.launch { horizontalPagerState.animateScrollToPage(it) }
             },
@@ -117,6 +117,7 @@ fun FeedScreen(
                             exploreViewModel = exploreViewModel,
                             posts = explorePosts,
                             isDrawerOpen = isDrawerOpen,
+                            isTabActive = horizontalPagerState.settledPage == 0,
                             onAction = { action, post ->
                                 handleSheetAction(action, post, ::handleOpenSheet)
                             },
@@ -127,6 +128,7 @@ fun FeedScreen(
                         )
                         1 -> FollowingTab(
                             isDrawerOpen = isDrawerOpen,
+                            isTabActive = horizontalPagerState.settledPage == 1,
                             onAction = { action, post ->
                                 handleSheetAction(action, post, ::handleOpenSheet)
                             },

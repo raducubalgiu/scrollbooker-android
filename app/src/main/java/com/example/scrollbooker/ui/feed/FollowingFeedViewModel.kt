@@ -153,6 +153,8 @@ class FollowingFeedViewModel @Inject constructor(
     private val indexToPlayer: SnapshotStateMap<Int, ExoPlayer> = mutableStateMapOf()
     private val indexToPostId: SnapshotStateMap<Int, Int> = mutableStateMapOf()
 
+    private var isTabActiveGlobal = false
+
     private var focusedIndex: Int? = null
     private val windowMutex = Mutex()
 
@@ -247,9 +249,9 @@ class FollowingFeedViewModel @Inject constructor(
             val isFocused = (idx == focusedIndex)
             val isUserPaused = _userPausedPostIds.value.contains(post.id)
 
-            player.playWhenReady = isFocused && !isUserPaused
+            player.playWhenReady = isFocused && !isUserPaused && isTabActiveGlobal
 
-            if(!isFocused || isUserPaused) player.pause()
+            if(!isFocused || isUserPaused || !isTabActiveGlobal) player.pause()
         }
 
         applyFocus(centerIndex)
@@ -328,16 +330,20 @@ class FollowingFeedViewModel @Inject constructor(
         resumeIfAllowed(index)
     }
 
-    fun pauseAllNow() {
-        val players = indexToPlayer.values.toList()
-        viewModelScope.launch(Dispatchers.Main.immediate) {
-            players.forEach { p ->
-                p.playWhenReady = false
-            }
+    fun resumePlayerOnTabEnter(currentIndex: Int) {
+        isTabActiveGlobal = true
+        focusedIndex = currentIndex
+        val player = getPlayerForIndex(currentIndex) ?: return
+        val postId = indexToPostId[currentIndex] ?: return
+        val isUserPaused = _userPausedPostIds.value.contains(postId)
+
+        if (!isUserPaused) {
+            player.playWhenReady = true
         }
     }
 
     fun stopDetailSession() {
+        isTabActiveGlobal = false
         indexToPlayer.values.forEach { player ->
             player.playWhenReady = false
         }
