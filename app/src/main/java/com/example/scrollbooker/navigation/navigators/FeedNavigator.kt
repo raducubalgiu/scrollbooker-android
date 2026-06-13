@@ -16,19 +16,13 @@ class FeedNavigator (
         navController.navigateToUserProfile(userId, username)
     }
 
-    fun toBooking(
-        userId: Int,
-        businessId: Int,
-        businessOwnerId: Int,
-        source: String,
-        selectedProductId: Int?
-    ) {
+    fun toBooking(params: NavigateBookingParam) {
         navController.navigateToBookingFromProfile(
-            businessId = businessId,
-            userId = userId,
-            businessOwnerId = businessOwnerId,
-            source = source,
-            selectedProductId = selectedProductId
+            userId = params.userId,
+            businessId = params.businessId,
+            businessOwnerId = params.businessOwnerId,
+            source = params.source,
+            selectedProductId = params.selectedProductId
         )
     }
 }

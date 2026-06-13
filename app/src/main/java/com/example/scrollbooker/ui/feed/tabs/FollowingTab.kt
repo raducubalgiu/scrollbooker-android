@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.posts
+package com.example.scrollbooker.ui.feed.tabs
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.SpringSpec
@@ -27,10 +27,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.EmptyScreen
@@ -38,7 +39,8 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.extensions.getOrNull
 import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
-import com.example.scrollbooker.ui.feed.FeedScreenViewModel
+import com.example.scrollbooker.navigation.navigators.NavigateBookingParam
+import com.example.scrollbooker.ui.feed.FollowingFeedViewModel
 import com.example.scrollbooker.ui.shared.player.PostPlayerWithThumbnail
 import com.example.scrollbooker.ui.shared.posts.components.PostShimmer
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlay
@@ -47,16 +49,16 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Composable
-fun PostVerticalPager(
-    feedViewModel: FeedScreenViewModel,
-    posts: LazyPagingItems<Post>,
+fun FollowingTab(
     isDrawerOpen: Boolean,
-    showBookButton: Boolean,
     onAction: (PostOverlayActionEnum, Post) -> Unit,
-    onNavigateToUserProfile: (userId: Int, username: String) -> Unit,
-    onNavigateToBooking: (userId: Int, businessId: Int, businessOwnerId: Int) -> Unit
+    onNavigateToUserProfile: (Int, String) -> Unit,
+    onNavigateToBooking: (NavigateBookingParam) -> Unit
 ) {
-    val userPausedSet by feedViewModel.userPausedPostIds.collectAsStateWithLifecycle()
+    val followingViewModel: FollowingFeedViewModel = hiltViewModel()
+    val posts = followingViewModel.followingPosts.collectAsLazyPagingItems()
+
+    val userPausedSet by followingViewModel.userPausedPostIds.collectAsStateWithLifecycle()
 
     val verticalPagerState = rememberPagerState { posts.itemCount }
     val settledPage by remember { derivedStateOf { verticalPagerState.settledPage } }
@@ -70,8 +72,8 @@ fun PostVerticalPager(
             .collectLatest { (page, postId) ->
                 if (postId == null) return@collectLatest
 
-                feedViewModel.onPageSettled(page)
-                feedViewModel.ensureWindow(
+                followingViewModel.onPageSettled(page)
+                followingViewModel.ensureWindow(
                     centerIndex = page,
                     getPost = { idx -> posts.getOrNull(idx) }
                 )
@@ -82,8 +84,8 @@ fun PostVerticalPager(
         snapshotFlow { settledPage to isDrawerOpen }
             .distinctUntilChanged()
             .collectLatest { (page, drawerOpen) ->
-                if(drawerOpen) feedViewModel.pauseIfPlaying(page)
-                else feedViewModel.resumeAfterDrawer(page)
+                if(drawerOpen) followingViewModel.pauseIfPlaying(page)
+                else followingViewModel.resumeAfterDrawer(page)
             }
     }
 
@@ -101,7 +103,7 @@ fun PostVerticalPager(
         snapAnimationSpec = snapSpec
     )
 
-    val currentOnReleasePlayer by rememberUpdatedState(feedViewModel::stopDetailSession)
+    val currentOnReleasePlayer by rememberUpdatedState(followingViewModel::stopDetailSession)
 
     LifecycleStartEffect(true) {
         onStopOrDispose {
@@ -134,7 +136,7 @@ fun PostVerticalPager(
                 val postId = post.id
 
                 key(postId) {
-                    val postActionState by feedViewModel
+                    val postActionState by followingViewModel
                         .observePostUi(postId)
                         .collectAsStateWithLifecycle()
 
@@ -145,14 +147,14 @@ fun PostVerticalPager(
                         )
                     }
 
-                    val player = feedViewModel.getPlayerForIndex(page)
+                    val player = followingViewModel.getPlayerForIndex(page)
 
                     Box(modifier = Modifier
                         .fillMaxSize()
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null,
-                            onClick = { feedViewModel.togglePlayer(page) }
+                            onClick = { followingViewModel.togglePlayer(page) }
                         )
                     ) {
                         if (player != null) {
@@ -176,10 +178,18 @@ fun PostVerticalPager(
                             isSavingBookmark = postActionState.isSavingBookmark,
                             onAction = { onAction(it, post) },
                             onNavigateToUserProfile = onNavigateToUserProfile,
-                            showBookButton = showBookButton,
-                            onNavigateToBooking = {},
-                            onLike = {},
-                            onBookmark = {}
+                            onLike = { followingViewModel.toggleLike(post) },
+                            onBookmark = { followingViewModel.toggleBookmark(post) },
+                            onNavigateToBooking = {
+                                onNavigateToBooking(
+                                    NavigateBookingParam(
+                                        userId = post.user.id,
+                                        businessId = post.businessId,
+                                        businessOwnerId = post.businessOwner.id,
+                                        source = "feed_following"
+                                    )
+                                )
+                            }
                         )
                     }
                 }

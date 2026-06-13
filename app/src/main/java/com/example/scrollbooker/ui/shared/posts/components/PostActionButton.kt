@@ -33,7 +33,6 @@ import com.example.scrollbooker.ui.shared.posts.util.formatCounters
 fun PostActionButton(
     modifier: Modifier = Modifier,
     isEnabled: Boolean = true,
-    enableOpacity: Boolean = false,
     tint: Color = Color.White,
     counter: Int? = null,
     icon: Int,
@@ -67,7 +66,7 @@ fun PostActionButton(
             counter?.let {
                 Spacer(Modifier.height(SpacingXXS))
                 Text(
-                    color = Color.White.withAlpha(enableOpacity),
+                    color = Color.White,
                     text = formatCounters(it),
                     style = TextStyle(
                         fontWeight = FontWeight.SemiBold,

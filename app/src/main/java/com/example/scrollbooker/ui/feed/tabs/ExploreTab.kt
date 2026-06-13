@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.posts
+package com.example.scrollbooker.ui.feed.tabs
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.SpringSpec
@@ -38,7 +38,8 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.extensions.getOrNull
 import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
-import com.example.scrollbooker.ui.feed.FeedScreenViewModel
+import com.example.scrollbooker.navigation.navigators.NavigateBookingParam
+import com.example.scrollbooker.ui.feed.ExploreFeedViewModel
 import com.example.scrollbooker.ui.shared.player.PostPlayerWithThumbnail
 import com.example.scrollbooker.ui.shared.posts.components.PostShimmer
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlay
@@ -47,16 +48,15 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Composable
-fun PostVerticalPager(
-    feedViewModel: FeedScreenViewModel,
+fun ExploreTab(
     posts: LazyPagingItems<Post>,
     isDrawerOpen: Boolean,
-    showBookButton: Boolean,
+    exploreViewModel: ExploreFeedViewModel,
     onAction: (PostOverlayActionEnum, Post) -> Unit,
-    onNavigateToUserProfile: (userId: Int, username: String) -> Unit,
-    onNavigateToBooking: (userId: Int, businessId: Int, businessOwnerId: Int) -> Unit
+    onNavigateToUserProfile: (Int, String) -> Unit,
+    onNavigateToBooking: (NavigateBookingParam) -> Unit
 ) {
-    val userPausedSet by feedViewModel.userPausedPostIds.collectAsStateWithLifecycle()
+    val userPausedSet by exploreViewModel.userPausedPostIds.collectAsStateWithLifecycle()
 
     val verticalPagerState = rememberPagerState { posts.itemCount }
     val settledPage by remember { derivedStateOf { verticalPagerState.settledPage } }
@@ -70,8 +70,8 @@ fun PostVerticalPager(
             .collectLatest { (page, postId) ->
                 if (postId == null) return@collectLatest
 
-                feedViewModel.onPageSettled(page)
-                feedViewModel.ensureWindow(
+                exploreViewModel.onPageSettled(page)
+                exploreViewModel.ensureWindow(
                     centerIndex = page,
                     getPost = { idx -> posts.getOrNull(idx) }
                 )
@@ -82,8 +82,8 @@ fun PostVerticalPager(
         snapshotFlow { settledPage to isDrawerOpen }
             .distinctUntilChanged()
             .collectLatest { (page, drawerOpen) ->
-                if(drawerOpen) feedViewModel.pauseIfPlaying(page)
-                else feedViewModel.resumeAfterDrawer(page)
+                if(drawerOpen) exploreViewModel.pauseIfPlaying(page)
+                else exploreViewModel.resumeAfterDrawer(page)
             }
     }
 
@@ -101,7 +101,7 @@ fun PostVerticalPager(
         snapAnimationSpec = snapSpec
     )
 
-    val currentOnReleasePlayer by rememberUpdatedState(feedViewModel::stopDetailSession)
+    val currentOnReleasePlayer by rememberUpdatedState(exploreViewModel::stopDetailSession)
 
     LifecycleStartEffect(true) {
         onStopOrDispose {
@@ -134,7 +134,7 @@ fun PostVerticalPager(
                 val postId = post.id
 
                 key(postId) {
-                    val postActionState by feedViewModel
+                    val postActionState by exploreViewModel
                         .observePostUi(postId)
                         .collectAsStateWithLifecycle()
 
@@ -145,14 +145,14 @@ fun PostVerticalPager(
                         )
                     }
 
-                    val player = feedViewModel.getPlayerForIndex(page)
+                    val player = exploreViewModel.getPlayerForIndex(page)
 
                     Box(modifier = Modifier
                         .fillMaxSize()
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null,
-                            onClick = { feedViewModel.togglePlayer(page) }
+                            onClick = { exploreViewModel.togglePlayer(page) }
                         )
                     ) {
                         if (player != null) {
@@ -176,10 +176,18 @@ fun PostVerticalPager(
                             isSavingBookmark = postActionState.isSavingBookmark,
                             onAction = { onAction(it, post) },
                             onNavigateToUserProfile = onNavigateToUserProfile,
-                            showBookButton = showBookButton,
-                            onNavigateToBooking = {},
-                            onLike = {},
-                            onBookmark = {}
+                            onLike = { exploreViewModel.toggleLike(post) },
+                            onBookmark = { exploreViewModel.toggleBookmark(post) },
+                            onNavigateToBooking = {
+                                onNavigateToBooking(
+                                    NavigateBookingParam(
+                                        userId = post.user.id,
+                                        businessId = post.businessId,
+                                        businessOwnerId = post.businessOwner.id,
+                                        source = "feed_explore"
+                                    )
+                                )
+                            }
                         )
                     }
                 }

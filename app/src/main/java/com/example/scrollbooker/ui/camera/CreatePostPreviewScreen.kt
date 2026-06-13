@@ -200,10 +200,9 @@ fun CreatePostPreviewScreen(
                 }
 
                 PostOverlay(
-                    enableOpacity = true,
                     post = Post(
                         id = 1,
-                        description = if(description.isNotEmpty()) description else "...",
+                        description = if (description.isNotEmpty()) description else "...",
                         user = PostUser(
                             id = 1,
                             fullName = "Raducu Balgiu",
@@ -253,7 +252,10 @@ fun CreatePostPreviewScreen(
                     isSavingBookmark = false,
                     onAction = {},
                     onNavigateToUserProfile = { _, _ -> {} },
-                    onNavigateToBooking = {}
+                    onNavigateToBooking = {},
+                    onLike = {},
+                    onBookmark = {},
+                    showBookButton = false
                 )
             }
         }

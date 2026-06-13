@@ -6,3 +6,11 @@ data class NavigateSocialParam(
     val username: String,
     val isBusinessOrEmployee: Boolean
 )
+
+data class NavigateBookingParam(
+    val userId: Int,
+    val businessId: Int,
+    val businessOwnerId: Int,
+    val source: String,
+    val selectedProductId: Int? = null
+)

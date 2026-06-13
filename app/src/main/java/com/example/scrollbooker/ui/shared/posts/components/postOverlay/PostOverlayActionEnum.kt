@@ -5,6 +5,6 @@ enum class PostOverlayActionEnum {
     OPEN_REVIEWS,
     OPEN_COMMENTS,
     OPEN_MORE_OPTIONS,
-    LIKE,
-    BOOKMARK,
+    //LIKE,
+    //BOOKMARK,
 }

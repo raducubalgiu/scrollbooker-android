@@ -40,8 +40,9 @@ fun PostOverlay(
     isSavingLike: Boolean,
     isSavingBookmark: Boolean,
     onAction: (PostOverlayActionEnum) -> Unit,
+    onLike: () -> Unit,
+    onBookmark: () -> Unit,
 
-    enableOpacity: Boolean = false,
     onNavigateToUserProfile: (userId: Int, username: String) -> Unit,
     showBookButton: Boolean = true,
     onNavigateToBooking: () -> Unit
@@ -53,11 +54,10 @@ fun PostOverlay(
             .fillMaxSize()
             .zIndex(3f)
     ) {
-        // 1. Umbra subtilă: Ocupă doar jumătatea sau treimea inferioară a ecranului
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.4f) // Schimbă la 0.3f dacă vrei o umbră și mai mică (30% din ecran)
+                .fillMaxHeight(0.4f)
                 .align(Alignment.BottomCenter)
                 .background(
                     Brush.verticalGradient(
@@ -66,7 +66,6 @@ fun PostOverlay(
                 )
         )
 
-        // 2. Conținutul tău original (fără fundalul pe fillMaxSize)
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Bottom
@@ -81,7 +80,6 @@ fun PostOverlay(
                     Spacer(Modifier.height(SpacingXS))
 
                     PostOverlayUser(
-                        enableOpacity = enableOpacity,
                         user = post.user,
                         isVideoReview = isVideoReview,
                         onNavigateToUser = onNavigateToUserProfile,
@@ -123,10 +121,11 @@ fun PostOverlay(
                     isSavingLike = isSavingLike,
                     isSavingBookmark = isSavingBookmark,
                     isVideoReview = post.isVideoReview,
-                    enableOpacity = enableOpacity,
                     counters = post.counters,
                     userActions = post.userActions,
                     onAction = onAction,
+                    onLike = onLike,
+                    onBookmark = onBookmark,
                     onNavigateToUser = { onNavigateToUserProfile(post.user.id, post.user.username) },
                 )
             }

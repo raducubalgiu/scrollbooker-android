@@ -22,11 +22,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.ui.feed.components.FeedTabs
 import com.example.scrollbooker.ui.feed.drawer.FeedDrawer
 import com.example.scrollbooker.ui.feed.drawer.FeedDrawerLayout
-import com.example.scrollbooker.ui.shared.posts.PostVerticalPager
+import com.example.scrollbooker.ui.feed.tabs.ExploreTab
+import com.example.scrollbooker.ui.feed.tabs.FollowingTab
 import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlayActionEnum
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheets
 import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent
@@ -41,21 +43,19 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FeedScreen(
-    feedViewModel: FeedScreenViewModel,
+    exploreViewModel: ExploreFeedViewModel,
     feedNavigate: FeedNavigator,
 ) {
-    val explorePosts = feedViewModel.explorePosts.collectAsLazyPagingItems()
-    val followingPosts = feedViewModel.followingPosts.collectAsLazyPagingItems()
+    val explorePosts = exploreViewModel.explorePosts.collectAsLazyPagingItems()
 
     val horizontalPagerState = rememberPagerState { 2 }
     val scope = rememberCoroutineScope()
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var sheetContent by remember { mutableStateOf<PostSheetsContent>(None) }
-
     var isDrawerOpen by rememberSaveable { mutableStateOf(false) }
 
-    if(sheetState.isVisible) {
+    if(sheetContent != None) {
         key(sheetContent) {
             PostSheets(
                 sheetState = sheetState,
@@ -88,7 +88,6 @@ fun FeedScreen(
             scrimColor = BackgroundDark.copy(alpha = 0.7f)
         ) {
             FeedDrawer(
-                viewModel = feedViewModel,
                 isDrawerOpen = isDrawerOpen,
                 onClose = { isDrawerOpen = false },
             )
@@ -98,7 +97,6 @@ fun FeedScreen(
             modifier = Modifier.statusBarsPadding(),
             selectedTabIndex = horizontalPagerState.settledPage,
             onChangeTab = {
-                feedViewModel.pauseAllNow()
                 scope.launch { horizontalPagerState.animateScrollToPage(it) }
             },
             onOpenDrawer = { isDrawerOpen = true },
@@ -114,39 +112,28 @@ fun FeedScreen(
                     beyondViewportPageCount = 0,
                     userScrollEnabled = false
                 ) { tabIndex ->
-                    val posts = if (tabIndex == 0) explorePosts else followingPosts
-
-                    Box(Modifier.fillMaxSize()) {
-                        PostVerticalPager(
-                            feedViewModel = feedViewModel,
-                            posts = posts,
+                    when(tabIndex) {
+                        0 -> ExploreTab(
+                            exploreViewModel = exploreViewModel,
+                            posts = explorePosts,
                             isDrawerOpen = isDrawerOpen,
-                            showBookButton = true,
                             onAction = { action, post ->
-                                when(action) {
-                                    PostOverlayActionEnum.OPEN_LINKED_PRODUCTS -> handleOpenSheet(LinkedProductsSheet(post.id))
-                                    PostOverlayActionEnum.OPEN_COMMENTS -> handleOpenSheet(CommentsSheet(post.id))
-                                    PostOverlayActionEnum.OPEN_MORE_OPTIONS -> handleOpenSheet(MoreOptionsSheet(post.user.id, post.isOwnPost))
-                                    PostOverlayActionEnum.LIKE -> feedViewModel.toggleLike(post)
-                                    PostOverlayActionEnum.BOOKMARK -> feedViewModel.toggleBookmark(post)
-                                    PostOverlayActionEnum.OPEN_REVIEWS -> {
-                                        val id = if(post.isVideoReview) post.businessOwner.id else post.user.id
-                                        handleOpenSheet(ReviewsSheet(id))
-                                    }
-                                }
+                                handleSheetAction(action, post, ::handleOpenSheet)
                             },
                             onNavigateToUserProfile = { userId, username ->
                                 feedNavigate.toUserProfile(userId, username)
                             },
-                            onNavigateToBooking = { userId, businessId, businessOwnerId ->
-                                feedNavigate.toBooking(
-                                    userId,
-                                    businessId,
-                                    businessOwnerId,
-                                    source = "feed_explore",
-                                    selectedProductId = null
-                                )
-                            }
+                            onNavigateToBooking = { feedNavigate.toBooking(it) }
+                        )
+                        1 -> FollowingTab(
+                            isDrawerOpen = isDrawerOpen,
+                            onAction = { action, post ->
+                                handleSheetAction(action, post, ::handleOpenSheet)
+                            },
+                            onNavigateToUserProfile = { userId, username ->
+                                feedNavigate.toUserProfile(userId, username)
+                            },
+                            onNavigateToBooking = { feedNavigate.toBooking(it) }
                         )
                     }
                 }
@@ -158,6 +145,22 @@ fun FeedScreen(
             ) {
                 BottomBar()
             }
+        }
+    }
+}
+
+private fun handleSheetAction(
+    action: PostOverlayActionEnum,
+    post: Post,
+    handleOpenSheet: (PostSheetsContent) -> Unit
+) {
+    when(action) {
+        PostOverlayActionEnum.OPEN_LINKED_PRODUCTS -> handleOpenSheet(LinkedProductsSheet(post.id))
+        PostOverlayActionEnum.OPEN_COMMENTS -> handleOpenSheet(CommentsSheet(post.id))
+        PostOverlayActionEnum.OPEN_MORE_OPTIONS -> handleOpenSheet(MoreOptionsSheet(post.user.id, post.isOwnPost))
+        PostOverlayActionEnum.OPEN_REVIEWS -> {
+            val id = if(post.isVideoReview) post.businessOwner.id else post.user.id
+            handleOpenSheet(ReviewsSheet(id))
         }
     }
 }

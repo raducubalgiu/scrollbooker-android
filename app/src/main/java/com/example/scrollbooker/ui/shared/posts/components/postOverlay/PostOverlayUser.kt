@@ -35,7 +35,6 @@ import com.example.scrollbooker.ui.theme.bodyLarge
 
 @Composable
 fun PostOverlayUser(
-    enableOpacity: Boolean = false,
     user: PostUser,
     isVideoReview: Boolean,
     onNavigateToUser: (userId: Int, username: String) -> Unit
@@ -81,7 +80,7 @@ fun PostOverlayUser(
                 text = user.fullName,
                 style = bodyLarge,
                 fontWeight = FontWeight.SemiBold,
-                color = Color.White.withAlpha(enableOpacity),
+                color = Color.White,
                 fontSize = 18.sp
             )
         }
@@ -92,12 +91,12 @@ fun PostOverlayUser(
             isVideoReview -> {
                 SecondaryText(
                     text = "${stringResource(R.string.hasTestedTheService)} Tuns",
-                    color = Color.White.withAlpha(enableOpacity),
+                    color = Color.White,
                     fontWeight = FontWeight.Normal,
                     fontStyle = FontStyle.Italic
                 )
             }
-            else -> SecondaryText(user.profession, enableOpacity)
+            else -> SecondaryText(user.profession)
         }
 
         Spacer(Modifier.height(SpacingM))
@@ -107,8 +106,7 @@ fun PostOverlayUser(
 @Composable
 private fun SecondaryText(
     text: String,
-    enableOpacity: Boolean = false,
-    color: Color = Primary.copy(alpha = if(enableOpacity) 0.5f else 0.85f),
+    color: Color = Primary.copy(0.85f),
     fontWeight: FontWeight = FontWeight.SemiBold,
     fontStyle: FontStyle = FontStyle.Normal
 ) {

@@ -7,7 +7,6 @@ import com.example.scrollbooker.ui.feed.FeedScreenViewModel
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun FeedDrawer(
-    viewModel: FeedScreenViewModel,
     isDrawerOpen: Boolean,
     onClose: () -> Unit
 ) {
