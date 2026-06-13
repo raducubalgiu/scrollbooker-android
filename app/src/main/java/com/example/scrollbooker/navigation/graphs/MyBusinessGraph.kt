@@ -17,8 +17,8 @@ import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusin
 import com.example.scrollbooker.ui.LocalUserPermissions
 import com.example.scrollbooker.ui.myBusiness.MyBusinessScreen
 import com.example.scrollbooker.ui.myBusiness.MyBusinessViewModel
+import com.example.scrollbooker.ui.myBusiness.myBusinessDetails.MyBusinessDetailsScreen
 import com.example.scrollbooker.ui.myBusiness.myBusinessDetails.MyBusinessEditGalleryScreen
-import com.example.scrollbooker.ui.myBusiness.myBusinessDetails.MyBusinessLocationScreen
 import com.example.scrollbooker.ui.myBusiness.myBusinessDetails.MyBusinessLocationViewModel
 import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarScreen
 import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarViewModel
@@ -70,7 +70,7 @@ fun NavGraphBuilder.myBusinessGraph(
 
                 val viewModel = hiltViewModel<MyBusinessLocationViewModel>(parentEntry)
 
-                MyBusinessLocationScreen(
+                MyBusinessDetailsScreen(
                     viewModel = viewModel,
                     onBack = { navController.popBackStack() },
                     onNavigateToEditGallery = {

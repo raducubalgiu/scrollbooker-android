@@ -18,7 +18,9 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.myBusiness.myBusinessDetails.tabs.MyBusinessGalleryTab
-import com.example.scrollbooker.ui.myBusiness.myBusinessDetails.tabs.MyBusinessLocationTab
+import com.example.scrollbooker.ui.myBusiness.myBusinessDetails.tabs.MyBusinessDetailsTab
+import com.example.scrollbooker.ui.myBusiness.myBusinessDetails.tabs.MyBusinessSchedulesTab
+import com.example.scrollbooker.ui.myBusiness.myBusinessDetails.tabs.MyBusinessSummaryTab
 import com.example.scrollbooker.ui.shared.products.components.ServiceTab
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
@@ -26,15 +28,15 @@ import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import kotlinx.coroutines.launch
 
 @Composable
-fun MyBusinessLocationScreen(
+fun MyBusinessDetailsScreen(
     viewModel: MyBusinessLocationViewModel,
     onBack: () -> Unit,
     onNavigateToEditGallery: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
-    val tabs = remember { MyBusinessLocationTab.getTabs }
+    val tabs = remember { MyBusinessDetailsTab.getTabs }
 
-    val pagerState = rememberPagerState(initialPage = 0) { 4 }
+    val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
     val selectedTabIndex = pagerState.currentPage
 
     Scaffold(
@@ -79,8 +81,9 @@ fun MyBusinessLocationScreen(
                 key = { it }
             ) { page ->
                 when(page) {
-                    0 -> {}
+                    0 -> MyBusinessSummaryTab()
                     1 -> MyBusinessGalleryTab(onNavigateToEditGallery)
+                    2 -> MyBusinessSchedulesTab()
                 }
             }
         }
