@@ -116,7 +116,6 @@ fun FeedScreen(
                         0 -> ExploreTab(
                             exploreViewModel = exploreViewModel,
                             posts = explorePosts,
-                            isDrawerOpen = isDrawerOpen,
                             isTabActive = horizontalPagerState.settledPage == 0,
                             onAction = { action, post ->
                                 handleSheetAction(action, post, ::handleOpenSheet)
@@ -127,7 +126,6 @@ fun FeedScreen(
                             onNavigateToBooking = { feedNavigate.toBooking(it) }
                         )
                         1 -> FollowingTab(
-                            isDrawerOpen = isDrawerOpen,
                             isTabActive = horizontalPagerState.settledPage == 1,
                             onAction = { action, post ->
                                 handleSheetAction(action, post, ::handleOpenSheet)

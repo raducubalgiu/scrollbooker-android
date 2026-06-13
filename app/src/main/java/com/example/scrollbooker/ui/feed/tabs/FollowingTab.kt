@@ -50,7 +50,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Composable
 fun FollowingTab(
-    isDrawerOpen: Boolean,
     isTabActive: Boolean,
     onAction: (PostOverlayActionEnum, Post) -> Unit,
     onNavigateToUserProfile: (Int, String) -> Unit,
@@ -64,6 +63,7 @@ fun FollowingTab(
     val verticalPagerState = rememberPagerState { posts.itemCount }
     val settledPage by remember { derivedStateOf { verticalPagerState.settledPage } }
 
+    // 💡 EFECTUL 1: Se ocupă STRICT de managementul ferestrei de 3 elemente și Paging (Sliding Window)
     LaunchedEffect(verticalPagerState) {
         snapshotFlow {
             val page = settledPage
@@ -73,7 +73,7 @@ fun FollowingTab(
             .collectLatest { (page, postId) ->
                 if (postId == null) return@collectLatest
 
-                followingViewModel.onPageSettled(page)
+                // Lăsăm ensureWindow doar să încarce și să descarce playerele în pool în funcție de index
                 followingViewModel.ensureWindow(
                     centerIndex = page,
                     getPost = { idx -> posts.getOrNull(idx) }
@@ -81,13 +81,22 @@ fun FollowingTab(
             }
     }
 
-    LaunchedEffect(verticalPagerState) {
-        snapshotFlow { settledPage to isDrawerOpen }
-            .distinctUntilChanged()
-            .collectLatest { (page, drawerOpen) ->
-                if(drawerOpen) followingViewModel.pauseIfPlaying(page)
-                else followingViewModel.resumeAfterDrawer(page)
-            }
+    // 💡 EFECTUL 2: Singurul „creier” pentru Play/Pause (reacționează și la schimbarea tab-ului, și la scroll vertical)
+    LaunchedEffect(isTabActive, settledPage) {
+        if (!isTabActive) {
+            followingViewModel.stopDetailSession()
+        } else {
+            // Această funcție setează isTabActiveGlobal = true și apelează intern play pe settledPage
+            followingViewModel.resumePlayerOnTabEnter(settledPage)
+        }
+    }
+
+    // 💡 EFECTUL 3: Protecția pentru când utilizatorul iese din aplicație / blochează ecranul
+    val currentOnReleasePlayer by rememberUpdatedState(followingViewModel::stopDetailSession)
+    LifecycleStartEffect(true) {
+        onStopOrDispose {
+            currentOnReleasePlayer()
+        }
     }
 
     val decay = rememberSplineBasedDecay<Float>()
@@ -103,21 +112,6 @@ fun FollowingTab(
         decayAnimationSpec = decay,
         snapAnimationSpec = snapSpec
     )
-
-    LaunchedEffect(isTabActive, settledPage) {
-        if (!isTabActive) {
-            followingViewModel.stopDetailSession()
-        } else {
-            followingViewModel.resumePlayerOnTabEnter(settledPage)
-        }
-    }
-
-    val currentOnReleasePlayer by rememberUpdatedState(followingViewModel::stopDetailSession)
-    LifecycleStartEffect(true) {
-        onStopOrDispose {
-            currentOnReleasePlayer()
-        }
-    }
 
     when(posts.loadState.refresh) {
         is LoadState.Error -> ErrorScreen()

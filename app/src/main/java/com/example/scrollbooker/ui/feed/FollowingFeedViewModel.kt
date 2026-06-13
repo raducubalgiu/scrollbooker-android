@@ -27,7 +27,6 @@ import com.example.scrollbooker.entity.social.post.domain.useCase.UnLikePostUseC
 import com.example.scrollbooker.ui.shared.posts.PostActionUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -161,8 +160,6 @@ class FollowingFeedViewModel @Inject constructor(
     private val _userPausedPostIds = MutableStateFlow<Set<Int>>(emptySet())
     val userPausedPostIds: StateFlow<Set<Int>> = _userPausedPostIds.asStateFlow()
 
-    private val autoPausedByDrawer = mutableSetOf<Int>()
-
     init {
         repeat(maxPlayers) { pool.add(createPlayer(application)) }
     }
@@ -266,9 +263,13 @@ class FollowingFeedViewModel @Inject constructor(
         indexToPlayer.forEach { (idx, player) ->
             val postId = indexToPostId[idx]
             val isUserPaused = postId != null && _userPausedPostIds.value.contains(postId)
-            val shouldPlay = (idx == index) && !isUserPaused
+            val shouldPlay = (idx == index) && !isUserPaused && isTabActiveGlobal
 
             player.playWhenReady = shouldPlay
+
+            if (!shouldPlay) {
+                player.pause()
+            }
         }
     }
 
@@ -305,29 +306,6 @@ class FollowingFeedViewModel @Inject constructor(
                 applyFocus(index)
             }
         }
-    }
-
-    fun pauseIfPlaying(index: Int) {
-        val player = getPlayerForIndex(index)
-        if(player?.isPlaying == true) {
-            autoPausedByDrawer.add(index)
-            player.playWhenReady = false
-        }
-    }
-
-    fun resumeIfAllowed(index: Int) {
-        val player = getPlayerForIndex(index) ?: return
-        val postId = indexToPostId[index] ?: return
-        val isUserPaused = userPausedPostIds.value.contains(postId)
-
-        if(index == focusedIndex && !isUserPaused) {
-            player.playWhenReady = true
-        }
-    }
-
-    fun resumeAfterDrawer(index: Int) {
-        if(!autoPausedByDrawer.remove(index)) return
-        resumeIfAllowed(index)
     }
 
     fun resumePlayerOnTabEnter(currentIndex: Int) {
