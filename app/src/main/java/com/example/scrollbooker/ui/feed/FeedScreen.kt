@@ -21,7 +21,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.ui.feed.components.FeedTabs
@@ -47,9 +46,6 @@ fun FeedScreen(
 ) {
     val explorePosts = feedViewModel.explorePosts.collectAsLazyPagingItems()
     val followingPosts = feedViewModel.followingPosts.collectAsLazyPagingItems()
-
-    val businessDomainsState by feedViewModel.businessDomainsWithBusinessTypes.collectAsStateWithLifecycle()
-    val selectedFromVm by feedViewModel.selectedBusinessTypes.collectAsStateWithLifecycle()
 
     val horizontalPagerState = rememberPagerState { 2 }
     val scope = rememberCoroutineScope()
@@ -94,8 +90,6 @@ fun FeedScreen(
             FeedDrawer(
                 viewModel = feedViewModel,
                 isDrawerOpen = isDrawerOpen,
-                businessDomainsState = businessDomainsState,
-                selectedFromVm = selectedFromVm,
                 onClose = { isDrawerOpen = false },
             )
         }
@@ -103,7 +97,6 @@ fun FeedScreen(
         FeedTabs(
             modifier = Modifier.statusBarsPadding(),
             selectedTabIndex = horizontalPagerState.settledPage,
-            activeFiltersCount = selectedFromVm.size,
             onChangeTab = {
                 feedViewModel.pauseAllNow()
                 scope.launch { horizontalPagerState.animateScrollToPage(it) }
