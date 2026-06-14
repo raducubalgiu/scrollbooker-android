@@ -22,7 +22,6 @@ import com.example.scrollbooker.ui.myBusiness.myBusinessDetails.tabs.MyBusinessG
 import com.example.scrollbooker.ui.myBusiness.myBusinessDetails.tabs.MyBusinessDetailsTab
 import com.example.scrollbooker.ui.myBusiness.myBusinessDetails.tabs.MyBusinessSchedulesTab
 import com.example.scrollbooker.ui.myBusiness.myBusinessDetails.tabs.MyBusinessSummaryTab
-import com.example.scrollbooker.ui.shared.products.components.ServiceTab
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
@@ -30,8 +29,8 @@ import kotlinx.coroutines.launch
 import androidx.compose.runtime.getValue
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
+import com.example.scrollbooker.components.core.tabs.ServiceTab
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.ui.myBusiness.mySchedules.MySchedulesViewModel
 
 @Composable
 fun MyBusinessDetailsScreen(

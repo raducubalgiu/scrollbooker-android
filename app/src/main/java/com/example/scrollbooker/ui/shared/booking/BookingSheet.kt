@@ -15,8 +15,6 @@ import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.tabs.TabUI
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomainWithEmployeeServicesResponse
-import com.example.scrollbooker.ui.myBusiness.myProducts.ServicesTabsState
 import com.example.scrollbooker.ui.shared.booking.steps.BookingCalendarStep
 import com.example.scrollbooker.ui.shared.booking.steps.BookingConfirmationStep
 import com.example.scrollbooker.ui.shared.booking.steps.BookingSpecialistStep
@@ -43,52 +41,52 @@ sealed class BookingTab(
     }
 }
 
-@Composable
-fun BookingSheet(
-    serviceDomains: FeatureState<ServiceDomainWithEmployeeServicesResponse>,
-    tabsState: ServicesTabsState
-) {
-    val scope = rememberCoroutineScope()
-
-    val tabs = remember { BookingTab.getTabs() }
-    val pagerState = rememberPagerState { tabs.size }
-    val currentStep = pagerState.currentPage
-
-    Column(Modifier.fillMaxSize()) {
-        BookingSheetHeader(
-            stepTitle = stringResource(tabs[currentStep].title),
-            onClose = {}
-        )
-
-        Box(modifier = Modifier
-            .weight(1f)
-            .fillMaxWidth()
-        ) {
-            VerticalPager(
-                state = pagerState,
-                beyondViewportPageCount = 0,
-                userScrollEnabled = false
-            ) { page ->
-                val step = tabs[page]
-
-                key(step) {
-                    when(step) {
-                        BookingTab.Products -> {
-//                            BookingProductsStep(
-//                                serviceDomains = serviceDomains,
-//                                tabsState = tabsState,
-//                                products = TODO(),
-//                                onSelectDomain = TODO(),
-//                                onSelectService = TODO(),
-//                                onSelectEmployee = TODO()
-//                            )
-                        }
-                        BookingTab.Calendar -> BookingCalendarStep()
-                        BookingTab.Specialists -> BookingSpecialistStep()
-                        BookingTab.Confirmation -> BookingConfirmationStep()
-                    }
-                }
-            }
-        }
-    }
-}
+//@Composable
+//fun BookingSheet(
+//    serviceDomains: FeatureState<ServiceDomainWithEmployeeServicesResponse>,
+//    tabsState: ServicesTabsState
+//) {
+//    val scope = rememberCoroutineScope()
+//
+//    val tabs = remember { BookingTab.getTabs() }
+//    val pagerState = rememberPagerState { tabs.size }
+//    val currentStep = pagerState.currentPage
+//
+//    Column(Modifier.fillMaxSize()) {
+//        BookingSheetHeader(
+//            stepTitle = stringResource(tabs[currentStep].title),
+//            onClose = {}
+//        )
+//
+//        Box(modifier = Modifier
+//            .weight(1f)
+//            .fillMaxWidth()
+//        ) {
+//            VerticalPager(
+//                state = pagerState,
+//                beyondViewportPageCount = 0,
+//                userScrollEnabled = false
+//            ) { page ->
+//                val step = tabs[page]
+//
+//                key(step) {
+//                    when(step) {
+//                        BookingTab.Products -> {
+////                            BookingProductsStep(
+////                                serviceDomains = serviceDomains,
+////                                tabsState = tabsState,
+////                                products = TODO(),
+////                                onSelectDomain = TODO(),
+////                                onSelectService = TODO(),
+////                                onSelectEmployee = TODO()
+////                            )
+//                        }
+//                        BookingTab.Calendar -> BookingCalendarStep()
+//                        BookingTab.Specialists -> BookingSpecialistStep()
+//                        BookingTab.Confirmation -> BookingConfirmationStep()
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}

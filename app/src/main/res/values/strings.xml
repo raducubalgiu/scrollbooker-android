@@ -425,6 +425,7 @@
     <string name="update">Actualizează</string>
     <string name="selectAnOption">Selectează o opțiune</string>
     <string name="serviceWithoutDescription">Acest serviciu nu are o descriere disponibilă</string>
+    <string name="notFoundServicesForThisCategory">Nu au fost găsite servicii pentru această categorie.</string>
 
     <!-- Follow & Social Notifications -->
     <string name="notification_started_following_you">a început să te urmărească</string>

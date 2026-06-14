@@ -5,7 +5,6 @@ import com.example.scrollbooker.entity.nomenclature.serviceDomain.data.remote.Se
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.data.repository.ServiceDomainRepositoryImpl
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.repository.ServiceDomainRepository
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.useCase.GetAllServiceDomainsByBusinessDomainUseCase
-import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.useCase.GetAllServiceDomainsWithServicesByUserIdUseCase
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.useCase.GetSelectedServiceDomainsWithServicesByBusinessIdUseCase
 import dagger.Module
 import dagger.Provides
@@ -15,7 +14,6 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
-
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -51,13 +49,5 @@ object ServiceDomainModule {
         repository: ServiceDomainRepository,
     ): GetSelectedServiceDomainsWithServicesByBusinessIdUseCase {
         return GetSelectedServiceDomainsWithServicesByBusinessIdUseCase(repository)
-    }
-
-    @Provides
-    @Singleton
-    fun provideGetAllServiceDomainsWithServicesByUserIdUseCase(
-        repository: ServiceDomainRepository,
-    ): GetAllServiceDomainsWithServicesByUserIdUseCase {
-        return GetAllServiceDomainsWithServicesByUserIdUseCase(repository)
     }
 }

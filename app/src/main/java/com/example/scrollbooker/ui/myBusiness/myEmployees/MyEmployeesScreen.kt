@@ -1,5 +1,4 @@
 package com.example.scrollbooker.ui.myBusiness.myEmployees
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -15,11 +14,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.Layout
+import com.example.scrollbooker.components.core.tabs.ServiceTab
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.myBusiness.myEmployees.tabs.MyEmployeesTab
 import com.example.scrollbooker.ui.myBusiness.myEmployees.tabs.employeesTab.EmployeesTab
 import com.example.scrollbooker.ui.myBusiness.myEmployees.tabs.employmentRequestsTab.EmploymentRequestsTab
-import com.example.scrollbooker.ui.shared.products.components.ServiceTab
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnSurfaceBG

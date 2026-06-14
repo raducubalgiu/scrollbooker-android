@@ -3,12 +3,10 @@ package com.example.scrollbooker.ui.shared.booking.tabs.products
 import androidx.compose.runtime.Composable
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
-import com.example.scrollbooker.ui.shared.products.UserProductsViewModel
 import java.math.BigDecimal
 
 @Composable
 fun ProductsTab(
-    productsViewModel: UserProductsViewModel,
     appointmentProducts: FeatureState<List<Product>>?,
     postProducts:  FeatureState<List<Product>>?,
     initialIndex: Int = 1,

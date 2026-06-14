@@ -29,9 +29,7 @@ import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.myBusiness.myProducts.components.AddProductValidation
 import com.example.scrollbooker.ui.myBusiness.myProducts.components.FiltersActions
-import com.example.scrollbooker.ui.myBusiness.myProducts.components.ProductInputs
 import com.example.scrollbooker.ui.myBusiness.myProducts.components.ProductInputsActions
-import com.example.scrollbooker.ui.myBusiness.myProducts.components.ProductInputsState
 import com.example.scrollbooker.ui.theme.Divider
 
 @Composable

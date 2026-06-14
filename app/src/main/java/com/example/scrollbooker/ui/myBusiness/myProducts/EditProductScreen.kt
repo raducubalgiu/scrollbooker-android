@@ -11,7 +11,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -33,9 +32,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.ui.myBusiness.myProducts.components.AddProductValidation
 import com.example.scrollbooker.ui.myBusiness.myProducts.components.FiltersActions
-import com.example.scrollbooker.ui.myBusiness.myProducts.components.ProductInputs
 import com.example.scrollbooker.ui.myBusiness.myProducts.components.ProductInputsActions
-import com.example.scrollbooker.ui.myBusiness.myProducts.components.ProductInputsState
 import com.example.scrollbooker.ui.theme.Divider
 
 @OptIn(ExperimentalMaterial3Api::class)

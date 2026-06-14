@@ -3,7 +3,6 @@ import com.example.scrollbooker.entity.nomenclature.serviceDomain.data.mappers.t
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.data.remote.ServiceDomainApiService
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.SelectedServiceDomainsWithServices
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomain
-import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomainWithEmployeeServicesResponse
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.repository.ServiceDomainRepository
 import javax.inject.Inject
 
@@ -20,13 +19,5 @@ class ServiceDomainRepositoryImpl @Inject constructor(
         businessId: Int
     ): List<SelectedServiceDomainsWithServices> {
         return apiService.getSelectedServiceDomainsWithServicesByBusinessId(businessId).map { it.toDomain() }
-    }
-
-    override suspend fun getServiceDomainsWithServicesByUserId(
-        userId: Int,
-        onlyWithProducts: Boolean,
-        withFilters: Boolean
-    ): Result<ServiceDomainWithEmployeeServicesResponse> = runCatching {
-        apiService.getAllServiceDomainsWithServicesByUserId(userId, onlyWithProducts, withFilters).toDomain()
     }
 }
