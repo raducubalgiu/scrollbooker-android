@@ -14,6 +14,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.core.util.Dimens.BasePadding
@@ -26,10 +27,15 @@ import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.getValue
+import com.example.scrollbooker.components.core.layout.ErrorScreen
+import com.example.scrollbooker.components.core.layout.LoadingScreen
+import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.ui.myBusiness.mySchedules.MySchedulesViewModel
 
 @Composable
 fun MyBusinessDetailsScreen(
-    viewModel: MyBusinessLocationViewModel,
+    viewModel: MyBusinessDetailsViewModel,
     onBack: () -> Unit,
     onNavigateToEditGallery: () -> Unit
 ) {
@@ -39,6 +45,8 @@ fun MyBusinessDetailsScreen(
     val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
     val selectedTabIndex = pagerState.currentPage
 
+    val business by viewModel.business.collectAsStateWithLifecycle()
+
     Scaffold(
         topBar = { Header(
             onBack = onBack,
@@ -46,47 +54,54 @@ fun MyBusinessDetailsScreen(
         ) }
     ) { innerPadding ->
         Column(Modifier.fillMaxSize().padding(innerPadding)) {
-            ScrollableTabRow(
-                containerColor = Background,
-                contentColor = OnSurfaceBG,
-                edgePadding = BasePadding,
-                selectedTabIndex = pagerState.currentPage,
-                indicator = {},
-                divider = {
-                    HorizontalDivider(
-                        modifier = Modifier.padding(top = 5.dp),
-                        color = Divider,
-                        thickness = 0.55.dp
-                    )
-                }
-            ) {
-                tabs.forEachIndexed { index, tab ->
-                    val isSelected = selectedTabIndex == index
+            when(business) {
+                is FeatureState.Loading -> LoadingScreen()
+                is FeatureState.Error -> ErrorScreen()
+                is FeatureState.Success -> {
+                    val businessData = (business as FeatureState.Success).data
 
-                    ServiceTab(
-                        isSelected = isSelected,
-                        serviceName = stringResource(tab.label),
-                        onClick = {
-                            scope.launch { pagerState.animateScrollToPage(index) }
+                    ScrollableTabRow(
+                        containerColor = Background,
+                        contentColor = OnSurfaceBG,
+                        edgePadding = BasePadding,
+                        selectedTabIndex = pagerState.currentPage,
+                        indicator = {},
+                        divider = {
+                            HorizontalDivider(
+                                modifier = Modifier.padding(top = 5.dp),
+                                color = Divider,
+                                thickness = 0.55.dp
+                            )
                         }
-                    )
-                }
-            }
+                    ) {
+                        tabs.forEachIndexed { index, tab ->
+                            val isSelected = selectedTabIndex == index
 
-            HorizontalPager(
-                state = pagerState,
-                beyondViewportPageCount = 0,
-                modifier = Modifier.fillMaxSize(),
-                pageSize = PageSize.Fill,
-                key = { it }
-            ) { page ->
-                when(page) {
-                    0 -> MyBusinessSummaryTab()
-                    1 -> MyBusinessGalleryTab(onNavigateToEditGallery)
-                    2 -> MyBusinessSchedulesTab()
+                            ServiceTab(
+                                isSelected = isSelected,
+                                serviceName = stringResource(tab.label),
+                                onClick = {
+                                    scope.launch { pagerState.animateScrollToPage(index) }
+                                }
+                            )
+                        }
+                    }
+
+                    HorizontalPager(
+                        state = pagerState,
+                        beyondViewportPageCount = 0,
+                        modifier = Modifier.fillMaxSize(),
+                        pageSize = PageSize.Fill,
+                        key = { it }
+                    ) { page ->
+                        when(page) {
+                            0 -> MyBusinessSummaryTab()
+                            1 -> MyBusinessGalleryTab(onNavigateToEditGallery)
+                            2 -> MyBusinessSchedulesTab()
+                        }
+                    }
                 }
             }
         }
-
     }
 }

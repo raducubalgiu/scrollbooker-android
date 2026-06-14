@@ -93,8 +93,8 @@ class ProfileNavigator (
         }
     }
 
-    fun toMyBusinessLocation() {
-        navController.navigate(MainRoute.MyBusinessLocation.route)
+    fun toMyBusinessDetails() {
+        navController.navigate(MainRoute.MyBusinessDetails.route)
     }
     fun toMySchedules() {
         navController.navigate(MainRoute.MySchedules.route)

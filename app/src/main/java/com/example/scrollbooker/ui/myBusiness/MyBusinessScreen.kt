@@ -53,7 +53,7 @@ fun MyBusinessScreen(
             description = stringResource(R.string.businessDetailsDescription),
             icon = Icons.Outlined.LocationOn,
             permission = PermissionEnum.MY_BUSINESS_LOCATION_VIEW,
-            navigate = { profileNavigate.toMyBusinessLocation() },
+            navigate = { profileNavigate.toMyBusinessDetails() },
         ),
         BusinessCard(
             title = stringResource(R.string.scheduleShort),

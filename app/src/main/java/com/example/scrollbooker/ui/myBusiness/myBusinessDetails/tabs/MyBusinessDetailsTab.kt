@@ -15,14 +15,19 @@ sealed class MyBusinessDetailsTab(
         route = "Gallery",
         label = R.string.photoGallery
     )
+    object Schedules: MyBusinessDetailsTab(
+        route = "Schedules",
+        label = R.string.scheduleShort
+    )
 
     companion object {
         fun fromRoute(route: String): MyBusinessDetailsTab = when(route) {
             Summary.route -> Summary
             Gallery.route -> Gallery
+            Schedules.route -> Schedules
             else -> Summary
         }
 
-        val getTabs = listOf(Summary, Gallery)
+        val getTabs = listOf(Summary, Gallery, Schedules)
     }
 }
