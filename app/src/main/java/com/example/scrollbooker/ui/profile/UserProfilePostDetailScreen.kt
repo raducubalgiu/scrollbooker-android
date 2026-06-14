@@ -161,9 +161,7 @@ fun UserProfilePostDetailScreen(
                         )
                     ) {
                         if(player != null) {
-                            PostPlayerWithThumbnail(
-                                player = player
-                            )
+                            PostPlayerWithThumbnail(player = player)
                         } else {
                             AsyncImage(
                                 modifier = Modifier.fillMaxSize(),

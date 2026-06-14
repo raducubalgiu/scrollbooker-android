@@ -67,6 +67,7 @@ fun BusinessServicesSection(
                 containerColor = Background,
                 divider = {},
                 indicator = { _ -> Box(Modifier.size(0.dp)) },
+                edgePadding = 0.dp,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)
@@ -152,7 +153,7 @@ fun BusinessServicesSection(
             }
         } else {
             Text(
-                text = "Nu există servicii disponibile.",
+                text = stringResource(R.string.notFoundServices),
                 style = bodyMedium,
                 modifier = Modifier.padding(vertical = BasePadding)
             )

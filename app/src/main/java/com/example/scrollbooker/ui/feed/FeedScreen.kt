@@ -77,15 +77,18 @@ fun FeedScreen(
         }
     }
 
+    val currentBg = BackgroundDark
+    val scrimColor = remember(currentBg) { currentBg.copy(alpha = 0.7f) }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundDark)
+            .background(currentBg)
     ) {
         FeedDrawerLayout(
             isOpen = isDrawerOpen,
             onOpenChange = { isDrawerOpen = it },
-            scrimColor = BackgroundDark.copy(alpha = 0.7f)
+            scrimColor = scrimColor
         ) {
             FeedDrawer(
                 isDrawerOpen = isDrawerOpen,
@@ -117,9 +120,7 @@ fun FeedScreen(
                             exploreViewModel = exploreViewModel,
                             posts = explorePosts,
                             isTabActive = horizontalPagerState.settledPage == 0,
-                            onAction = { action, post ->
-                                handleSheetAction(action, post, ::handleOpenSheet)
-                            },
+                            onAction = { action, post -> handleSheetAction(action, post, ::handleOpenSheet) },
                             onNavigateToUserProfile = { userId, username ->
                                 feedNavigate.toUserProfile(userId, username)
                             },
@@ -127,9 +128,7 @@ fun FeedScreen(
                         )
                         1 -> FollowingTab(
                             isTabActive = horizontalPagerState.settledPage == 1,
-                            onAction = { action, post ->
-                                handleSheetAction(action, post, ::handleOpenSheet)
-                            },
+                            onAction = { action, post -> handleSheetAction(action, post, ::handleOpenSheet) },
                             onNavigateToUserProfile = { userId, username ->
                                 feedNavigate.toUserProfile(userId, username)
                             },

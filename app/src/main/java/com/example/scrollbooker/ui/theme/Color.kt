@@ -1,67 +1,108 @@
 package com.example.scrollbooker.ui.theme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.Color
 
 val Primary: Color
-    @Composable get() = MaterialTheme.colorScheme.primary
+    @Composable
+    @ReadOnlyComposable
+    get() = MaterialTheme.colorScheme.primary
 
 val OnPrimary: Color
-    @Composable get() = MaterialTheme.colorScheme.onPrimary
+    @Composable
+    @ReadOnlyComposable
+    get() = MaterialTheme.colorScheme.onPrimary
 
 val Secondary: Color
-    @Composable get() = MaterialTheme.colorScheme.secondary
+    @Composable
+    @ReadOnlyComposable
+    get() = MaterialTheme.colorScheme.secondary
 
 val OnSecondary: Color
-    @Composable get() = MaterialTheme.colorScheme.onSecondary
+    @Composable
+    @ReadOnlyComposable
+    get() = MaterialTheme.colorScheme.onSecondary
 
 val Tertiary: Color
-    @Composable get() = MaterialTheme.colorScheme.tertiary
+    @Composable
+    @ReadOnlyComposable
+    get() = MaterialTheme.colorScheme.tertiary
 
 val OnTertiary: Color
-    @Composable get() = MaterialTheme.colorScheme.onTertiary
+    @Composable
+    @ReadOnlyComposable
+    get() = MaterialTheme.colorScheme.onTertiary
 
 val Background: Color
-    @Composable get() = MaterialTheme.colorScheme.background
+    @Composable
+    @ReadOnlyComposable
+    get() = MaterialTheme.colorScheme.background
 
 val OnBackground: Color
-    @Composable get() = MaterialTheme.colorScheme.onBackground
+    @Composable
+    @ReadOnlyComposable
+    get() = MaterialTheme.colorScheme.onBackground
 
 val SurfaceBG: Color
-    @Composable get() = MaterialTheme.colorScheme.surface
+    @Composable
+    @ReadOnlyComposable
+    get() = MaterialTheme.colorScheme.surface
 
 val OnSurfaceBG: Color
-    @Composable get() = MaterialTheme.colorScheme.onSurface
+    @Composable
+    @ReadOnlyComposable
+    get() = MaterialTheme.colorScheme.onSurface
 
 val Error: Color
-    @Composable get() = MaterialTheme.colorScheme.error
+    @Composable
+    @ReadOnlyComposable
+    get() = MaterialTheme.colorScheme.error
 
 val OnError: Color
-    @Composable get() = MaterialTheme.colorScheme.onError
+    @Composable
+    @ReadOnlyComposable
+    get() = MaterialTheme.colorScheme.onError
 
 object ExtendedTheme {
     val colors: ExtendedColors
-        @Composable get() = LocalExtendedColors.current
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalExtendedColors.current
 }
 
 val Divider: Color
-    @Composable get() = ExtendedTheme.colors.divider
+    @Composable
+    @ReadOnlyComposable
+    get() = ExtendedTheme.colors.divider
 
 val LastMinute: Color
-    @Composable get() = ExtendedTheme.colors.lastMinute
+    @Composable
+    @ReadOnlyComposable
+    get() = ExtendedTheme.colors.lastMinute
 
 val BackgroundDark: Color
-    @Composable get() = ExtendedTheme.colors.backgroundDark
+    @Composable
+    @ReadOnlyComposable
+    get() = ExtendedTheme.colors.backgroundDark
 
 val Rating: Color
-    @Composable get() = ExtendedTheme.colors.rating
+    @Composable
+    @ReadOnlyComposable
+    get() = ExtendedTheme.colors.rating
 
 val Beauty: Color
-    @Composable get() = ExtendedTheme.colors.beauty
+    @Composable
+    @ReadOnlyComposable
+    get() = ExtendedTheme.colors.beauty
 
 val Medical: Color
-    @Composable get() = ExtendedTheme.colors.medical
+    @Composable
+    @ReadOnlyComposable
+    get() = ExtendedTheme.colors.medical
 
 val Auto: Color
-    @Composable get() = ExtendedTheme.colors.auto
+    @Composable
+    @ReadOnlyComposable
+    get() = ExtendedTheme.colors.auto
 
