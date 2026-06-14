@@ -13,29 +13,28 @@ import java.io.File
 
 @UnstableApi
 object VideoPlayerCache {
-    private const val MAX_CACHE_SIZE = 100L * 1024L * 1024L // 100MB
+    private const val MAX_CACHE_SIZE = 250L * 1024L * 1024L
 
     lateinit var simpleCache: SimpleCache
     lateinit var cacheDataSourceFactory: DataSource.Factory
     private lateinit var databaseProvider: DatabaseProvider
 
     fun init(context: Context) {
-        if(::simpleCache.isInitialized) return
+        if (::simpleCache.isInitialized) return
 
-        databaseProvider = StandaloneDatabaseProvider(context)
+        databaseProvider = StandaloneDatabaseProvider(context.applicationContext)
 
-        val cacheDir = File(context.cacheDir, "exo_cache")
+        val cacheDir = File(context.applicationContext.cacheDir, "exo_cache")
         val evictor = LeastRecentlyUsedCacheEvictor(MAX_CACHE_SIZE)
 
         simpleCache = SimpleCache(cacheDir, evictor, databaseProvider)
-        cacheDataSourceFactory = getFactory(context)
-    }
 
-    fun getFactory(context: Context): DataSource.Factory {
-        val upstreamFactory = DefaultDataSource.Factory(context)
-        return CacheDataSource.Factory()
+        val upstreamFactory = DefaultDataSource.Factory(context.applicationContext)
+        cacheDataSourceFactory = CacheDataSource.Factory()
             .setCache(simpleCache)
             .setUpstreamDataSourceFactory(upstreamFactory)
             .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
     }
+
+    fun getFactory(): DataSource.Factory = cacheDataSourceFactory
 }

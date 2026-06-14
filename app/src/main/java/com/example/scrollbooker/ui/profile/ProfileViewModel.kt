@@ -383,7 +383,7 @@ class ProfileViewModel @Inject constructor(
         return ExoPlayer.Builder(context)
             .setLoadControl(createLoadControl())
             .setHandleAudioBecomingNoisy(true)
-            .setMediaSourceFactory(DefaultMediaSourceFactory(VideoPlayerCache.getFactory(app.applicationContext)))
+            .setMediaSourceFactory(DefaultMediaSourceFactory(VideoPlayerCache.getFactory()))
             .setAudioAttributes(
                 AudioAttributes.Builder()
                     .setUsage(C.USAGE_MEDIA)

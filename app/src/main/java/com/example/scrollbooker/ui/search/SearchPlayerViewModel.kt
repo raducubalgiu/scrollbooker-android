@@ -53,7 +53,7 @@ class SearchPlayerViewModel @Inject constructor(
     val player: ExoPlayer = ExoPlayer.Builder(application.applicationContext)
         .setLoadControl(createLoadControl())
         .setPlaybackLooper(playerThread.looper)
-        .setMediaSourceFactory(DefaultMediaSourceFactory(VideoPlayerCache.getFactory(application.applicationContext)))
+        .setMediaSourceFactory(DefaultMediaSourceFactory(VideoPlayerCache.getFactory()))
         .build().apply {
             repeatMode = Player.REPEAT_MODE_OFF
             playWhenReady = false
