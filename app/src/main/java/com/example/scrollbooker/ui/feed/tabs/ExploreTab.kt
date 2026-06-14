@@ -35,15 +35,15 @@ import coil.compose.AsyncImage
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.components.core.layout.ErrorScreen
+import com.example.scrollbooker.components.customized.post.PostPlayerWithThumbnail
+import com.example.scrollbooker.components.customized.post.components.PostOverlay
+import com.example.scrollbooker.components.customized.post.components.PostShimmer
+import com.example.scrollbooker.components.customized.post.sheets.PostSheetActionEnum
 import com.example.scrollbooker.core.extensions.getOrNull
 import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.NavigateBookingParam
 import com.example.scrollbooker.ui.feed.ExploreFeedViewModel
-import com.example.scrollbooker.ui.shared.post.PostPlayerWithThumbnail
-import com.example.scrollbooker.ui.shared.post.components.PostShimmer
-import com.example.scrollbooker.ui.shared.post.components.PostOverlay
-import com.example.scrollbooker.ui.shared.post.sheets.PostSheetActionEnum
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 
@@ -61,7 +61,6 @@ fun ExploreTab(
     val verticalPagerState = rememberPagerState { posts.itemCount }
     val settledPage by remember { derivedStateOf { verticalPagerState.settledPage } }
 
-    // 💡 EFECTUL 1: Se ocupă STRICT de managementul ferestrei de 3 elemente și Paging (Sliding Window)
     LaunchedEffect(verticalPagerState) {
         snapshotFlow {
             val page = settledPage
@@ -71,7 +70,6 @@ fun ExploreTab(
             .collectLatest { (page, postId) ->
                 if (postId == null) return@collectLatest
 
-                // Lăsăm ensureWindow doar să încarce și să descarce playerele în pool în funcție de index
                 exploreViewModel.ensureWindow(
                     centerIndex = page,
                     getPost = { idx -> posts.getOrNull(idx) }
@@ -79,17 +77,14 @@ fun ExploreTab(
             }
     }
 
-    // 💡 EFECTUL 2: Singurul „creier” pentru Play/Pause (reacționează și la schimbarea tab-ului, și la scroll vertical)
     LaunchedEffect(isTabActive, settledPage) {
         if (!isTabActive) {
             exploreViewModel.stopDetailSession()
         } else {
-            // Această funcție setează isTabActiveGlobal = true și apelează intern play pe settledPage
             exploreViewModel.resumePlayerOnTabEnter(settledPage)
         }
     }
 
-    // 💡 EFECTUL 3: Protecția pentru când utilizatorul iese din aplicație / blochează ecranul
     val currentOnReleasePlayer by rememberUpdatedState(exploreViewModel::stopDetailSession)
     LifecycleStartEffect(true) {
         onStopOrDispose {
@@ -160,7 +155,6 @@ fun ExploreTab(
                         if (player != null) {
                             PostPlayerWithThumbnail(
                                 player = player,
-                                thumbnailUrl = post.mediaFiles.first().thumbnailUrl,
                                 showPlayIcon = userPausedSet.contains(postId)
                             )
                         } else {

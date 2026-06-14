@@ -18,8 +18,8 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.core.sheet.SheetHeader
-import com.example.scrollbooker.ui.shared.post.sheets.comments.components.CommentFooter
-import com.example.scrollbooker.ui.shared.post.sheets.comments.components.CommentsList
+import com.example.scrollbooker.components.customized.post.sheets.comments.components.CommentFooter
+import com.example.scrollbooker.components.customized.post.sheets.comments.components.CommentsList
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable

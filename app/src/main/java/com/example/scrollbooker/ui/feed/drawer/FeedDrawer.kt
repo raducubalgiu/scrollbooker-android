@@ -2,7 +2,6 @@ package com.example.scrollbooker.ui.feed.drawer
 
 import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
-import com.example.scrollbooker.ui.feed.FeedScreenViewModel
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable

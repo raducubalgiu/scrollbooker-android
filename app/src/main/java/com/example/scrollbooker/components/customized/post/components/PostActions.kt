@@ -11,11 +11,11 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.components.core.avatar.AvatarWithRating
+import com.example.scrollbooker.components.customized.post.sheets.PostSheetActionEnum
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.social.post.domain.model.PostCounters
 import com.example.scrollbooker.entity.social.post.domain.model.PostUser
 import com.example.scrollbooker.entity.social.post.domain.model.UserPostActions
-import com.example.scrollbooker.ui.shared.post.sheets.PostSheetActionEnum
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.Rating
 

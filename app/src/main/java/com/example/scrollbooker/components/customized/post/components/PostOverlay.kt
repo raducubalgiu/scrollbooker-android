@@ -25,12 +25,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.scrollbooker.R
+import com.example.scrollbooker.components.customized.post.sheets.PostSheetActionEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.entity.social.post.domain.model.Post
-import com.example.scrollbooker.ui.shared.post.sheets.PostSheetActionEnum
 import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge

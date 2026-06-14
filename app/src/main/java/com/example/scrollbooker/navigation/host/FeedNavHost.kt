@@ -19,7 +19,6 @@ import com.example.scrollbooker.navigation.transition.slideInFromRight
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
 import com.example.scrollbooker.ui.feed.ExploreFeedViewModel
-import com.example.scrollbooker.ui.feed.FeedScreenViewModel
 
 @Composable
 fun FeedNavHost(navController: NavHostController) {
@@ -39,11 +38,9 @@ fun FeedNavHost(navController: NavHostController) {
         popExitTransition = { slideOutToRight() }
     ) {
         composable(route = MainRoute.Feed.route) {
-            //val feedViewModel: FeedScreenViewModel = hiltViewModel()
             val exploreViewModel: ExploreFeedViewModel = hiltViewModel()
 
             FeedScreen(
-                //feedViewModel = feedViewModel,
                 exploreViewModel = exploreViewModel,
                 feedNavigate = feedNavigate
             )

@@ -36,15 +36,15 @@ import coil.compose.AsyncImage
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.components.core.layout.ErrorScreen
+import com.example.scrollbooker.components.customized.post.PostPlayerWithThumbnail
+import com.example.scrollbooker.components.customized.post.components.PostOverlay
+import com.example.scrollbooker.components.customized.post.components.PostShimmer
+import com.example.scrollbooker.components.customized.post.sheets.PostSheetActionEnum
 import com.example.scrollbooker.core.extensions.getOrNull
 import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.NavigateBookingParam
 import com.example.scrollbooker.ui.feed.FollowingFeedViewModel
-import com.example.scrollbooker.ui.shared.post.PostPlayerWithThumbnail
-import com.example.scrollbooker.ui.shared.post.components.PostShimmer
-import com.example.scrollbooker.ui.shared.post.components.PostOverlay
-import com.example.scrollbooker.ui.shared.post.sheets.PostSheetActionEnum
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 
@@ -162,7 +162,6 @@ fun FollowingTab(
                         if (player != null) {
                             PostPlayerWithThumbnail(
                                 player = player,
-                                thumbnailUrl = post.mediaFiles.first().thumbnailUrl,
                                 showPlayIcon = userPausedSet.contains(postId)
                             )
                         } else {

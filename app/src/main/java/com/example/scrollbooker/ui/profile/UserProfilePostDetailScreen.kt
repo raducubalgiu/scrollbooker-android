@@ -39,13 +39,13 @@ import coil.compose.AsyncImage
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.headers.Header
+import com.example.scrollbooker.components.customized.post.PostPlayerWithThumbnail
+import com.example.scrollbooker.components.customized.post.components.PostOverlay
 import com.example.scrollbooker.core.extensions.getOrNull
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
-import com.example.scrollbooker.ui.shared.post.PostPlayerWithThumbnail
-import com.example.scrollbooker.ui.shared.post.components.PostOverlay
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -162,8 +162,7 @@ fun UserProfilePostDetailScreen(
                     ) {
                         if(player != null) {
                             PostPlayerWithThumbnail(
-                                player = player,
-                                thumbnailUrl = post.mediaFiles.first().thumbnailUrl
+                                player = player
                             )
                         } else {
                             AsyncImage(

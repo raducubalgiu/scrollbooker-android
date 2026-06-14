@@ -19,6 +19,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.example.scrollbooker.components.customized.post.PostActionUiState
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.VideoPlayerCache
 import com.example.scrollbooker.core.util.withVisibleLoading
@@ -52,7 +53,6 @@ import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdatePub
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateUsernameUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateWebsiteUseCase
 import com.example.scrollbooker.store.AuthDataStore
-import com.example.scrollbooker.ui.shared.post.PostActionUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi

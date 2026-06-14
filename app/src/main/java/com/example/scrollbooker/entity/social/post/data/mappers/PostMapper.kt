@@ -1,4 +1,5 @@
 package com.example.scrollbooker.entity.social.post.data.mappers
+import com.example.scrollbooker.components.customized.post.PostActionUiState
 import com.example.scrollbooker.entity.social.post.data.remote.FixedSlotsDto
 import com.example.scrollbooker.entity.social.post.data.remote.HashtagDto
 import com.example.scrollbooker.entity.social.post.data.remote.LastMinuteDto
@@ -23,7 +24,6 @@ import com.example.scrollbooker.entity.social.post.domain.model.PostProduct
 import com.example.scrollbooker.entity.social.post.domain.model.PostProductCurrency
 import com.example.scrollbooker.entity.social.post.domain.model.PostUser
 import com.example.scrollbooker.entity.social.post.domain.model.UserPostActions
-import com.example.scrollbooker.ui.shared.post.PostActionUiState
 
 fun PostDto.toDomain(): Post {
     return Post(

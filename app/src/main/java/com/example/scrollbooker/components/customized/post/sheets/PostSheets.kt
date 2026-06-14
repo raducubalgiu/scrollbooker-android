@@ -7,10 +7,10 @@ import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.example.scrollbooker.ui.shared.post.sheets.comments.CommentsSheet
-import com.example.scrollbooker.ui.shared.post.sheets.linkedProducts.LinkedProductsSheet
-import com.example.scrollbooker.ui.shared.post.sheets.moreOptions.MoreOptionsSheet
-import com.example.scrollbooker.ui.shared.post.sheets.reviews.ReviewsSheet
+import com.example.scrollbooker.components.customized.post.sheets.comments.CommentsSheet
+import com.example.scrollbooker.components.customized.post.sheets.linkedProducts.LinkedProductsSheet
+import com.example.scrollbooker.components.customized.post.sheets.moreOptions.MoreOptionsSheet
+import com.example.scrollbooker.components.customized.post.sheets.reviews.ReviewsSheet
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
 

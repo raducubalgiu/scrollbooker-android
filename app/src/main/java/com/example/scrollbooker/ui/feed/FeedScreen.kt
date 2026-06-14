@@ -22,6 +22,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.scrollbooker.components.customized.post.sheets.PostSheetActionEnum
+import com.example.scrollbooker.components.customized.post.sheets.PostSheets
+import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent
+import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent.CommentsSheet
+import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent.LinkedProductsSheet
+import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent.MoreOptionsSheet
+import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent.None
+import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent.ReviewsSheet
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.ui.feed.components.FeedTabs
@@ -29,14 +37,6 @@ import com.example.scrollbooker.ui.feed.drawer.FeedDrawer
 import com.example.scrollbooker.ui.feed.drawer.FeedDrawerLayout
 import com.example.scrollbooker.ui.feed.tabs.ExploreTab
 import com.example.scrollbooker.ui.feed.tabs.FollowingTab
-import com.example.scrollbooker.ui.shared.post.sheets.PostSheetActionEnum
-import com.example.scrollbooker.ui.shared.post.sheets.PostSheets
-import com.example.scrollbooker.ui.shared.post.sheets.PostSheetsContent
-import com.example.scrollbooker.ui.shared.post.sheets.PostSheetsContent.CommentsSheet
-import com.example.scrollbooker.ui.shared.post.sheets.PostSheetsContent.LinkedProductsSheet
-import com.example.scrollbooker.ui.shared.post.sheets.PostSheetsContent.MoreOptionsSheet
-import com.example.scrollbooker.ui.shared.post.sheets.PostSheetsContent.None
-import com.example.scrollbooker.ui.shared.post.sheets.PostSheetsContent.ReviewsSheet
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import kotlinx.coroutines.launch
 
