@@ -1,4 +1,4 @@
-package com.example.scrollbooker.core.util
+package com.example.scrollbooker.components.customized.post
 
 import android.content.Context
 import androidx.media3.common.util.UnstableApi

@@ -3,7 +3,7 @@ package com.example.scrollbooker
 import android.app.Application
 import androidx.annotation.OptIn
 import androidx.media3.common.util.UnstableApi
-import com.example.scrollbooker.core.util.VideoPlayerCache
+import com.example.scrollbooker.components.customized.post.VideoPlayerCache
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 

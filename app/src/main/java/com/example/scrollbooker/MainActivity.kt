@@ -19,13 +19,23 @@ import com.example.scrollbooker.ui.theme.ScrollBookerTheme
 import com.jakewharton.threetenabp.AndroidThreeTen
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.compose.runtime.getValue
+import com.example.scrollbooker.components.customized.post.VideoPlayerManager
 import com.example.scrollbooker.navigation.host.RootNavHost
 import com.example.scrollbooker.ui.auth.AuthViewModel
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val themeViewModel: ThemeViewModel by viewModels()
     private val authViewModel: AuthViewModel by viewModels()
+
+    @Inject
+    lateinit var playerManager: VideoPlayerManager
+
+    override fun onDestroy() {
+        playerManager.releaseAllPlayers()
+        super.onDestroy()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()

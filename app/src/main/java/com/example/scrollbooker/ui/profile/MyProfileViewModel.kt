@@ -21,7 +21,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.scrollbooker.components.customized.post.PostActionUiState
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.core.util.VideoPlayerCache
+import com.example.scrollbooker.components.customized.post.VideoPlayerCache
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.auth.domain.useCase.RefreshTokenUseCase
 import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
