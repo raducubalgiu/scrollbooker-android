@@ -97,7 +97,7 @@ fun FeedScreen(
             modifier = Modifier.statusBarsPadding(),
             selectedTabIndex = horizontalPagerState.currentPage,
             onChangeTab = {
-                scope.launch { horizontalPagerState.animateScrollToPage(it) }
+                scope.launch { horizontalPagerState.scrollToPage(it) }
             },
             onOpenDrawer = { isDrawerOpen = true },
             onNavigateSearch = { feedNavigate.toFeedSearch() }
