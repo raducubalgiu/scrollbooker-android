@@ -1,4 +1,4 @@
-package com.example.scrollbooker.components.customized.Picker
+package com.example.scrollbooker.components.customized.picker
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth

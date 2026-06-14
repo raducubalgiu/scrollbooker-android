@@ -1,4 +1,4 @@
-package com.example.scrollbooker.components.customized.Picker
+package com.example.scrollbooker.components.customized.picker
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

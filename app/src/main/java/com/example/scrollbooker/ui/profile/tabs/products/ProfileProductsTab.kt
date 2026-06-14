@@ -27,12 +27,11 @@ import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
-import com.example.scrollbooker.components.customized.ProductCard.ProductCard
+import com.example.scrollbooker.components.customized.productCard.ProductCard
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.model.UserProducts
-import com.example.scrollbooker.ui.booking.services.BookingServicesTabs
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.components.customized.Picker
+package com.example.scrollbooker.components.customized.picker
 
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.LocalDate

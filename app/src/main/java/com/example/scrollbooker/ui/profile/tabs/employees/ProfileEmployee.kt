@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.AvatarWithRating
 import com.example.scrollbooker.components.core.buttons.MainButtonSmall
-import com.example.scrollbooker.components.customized.Protected.Protected
+import com.example.scrollbooker.components.customized.protected.Protected
 import com.example.scrollbooker.core.enums.PermissionEnum
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.entity.booking.employee.domain.model.Employee

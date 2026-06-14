@@ -12,9 +12,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.customized.PostGrid.PostGrid
+import com.example.scrollbooker.components.customized.postGrid.PostGrid
 import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
@@ -22,7 +21,6 @@ import com.example.scrollbooker.components.customized.LoadMoreSpinner
 import com.example.scrollbooker.core.util.rememberFlingBehavior
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.ui.profile.components.PostTabEnum
-import com.example.scrollbooker.ui.profile.components.ProfileLayoutViewModel
 import com.example.scrollbooker.ui.profile.components.SelectedPostUi
 
 @Composable

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.components.customized.ProductCard
+package com.example.scrollbooker.components.customized.productCard
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
@@ -24,7 +24,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
 import com.example.scrollbooker.components.core.menu.Menu
 import com.example.scrollbooker.components.core.menu.MenuItemData
-import com.example.scrollbooker.components.customized.Protected.Protected
+import com.example.scrollbooker.components.customized.protected.Protected
 import com.example.scrollbooker.core.enums.PermissionEnum
 import com.example.scrollbooker.core.enums.ProductTypeEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding

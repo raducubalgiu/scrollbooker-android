@@ -1,4 +1,4 @@
-package com.example.scrollbooker.components.customized.Protected
+package com.example.scrollbooker.components.customized.protected
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember

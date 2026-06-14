@@ -1,4 +1,4 @@
-package com.example.scrollbooker.components.customized.PostGrid
+package com.example.scrollbooker.components.customized.postGrid
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

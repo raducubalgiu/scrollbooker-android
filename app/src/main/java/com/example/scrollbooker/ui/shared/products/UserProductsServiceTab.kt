@@ -1,31 +1,9 @@
 package com.example.scrollbooker.ui.shared.products
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import androidx.paging.LoadState
-import androidx.paging.compose.collectAsLazyPagingItems
-import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.layout.EmptyScreen
-import com.example.scrollbooker.components.core.layout.ErrorScreen
-import com.example.scrollbooker.components.customized.ProductCard.ProductCard
-import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.components.customized.LoadMoreSpinner
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
-import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceEmployee
-import com.example.scrollbooker.ui.shared.products.components.EmployeesList
-import com.example.scrollbooker.ui.theme.Divider
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable

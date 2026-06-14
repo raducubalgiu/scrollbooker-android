@@ -23,7 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.iconButton.CustomIconButton
-import com.example.scrollbooker.components.customized.Picker.Picker
+import com.example.scrollbooker.components.customized.picker.Picker
 import com.example.scrollbooker.core.util.AppLocaleProvider
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL

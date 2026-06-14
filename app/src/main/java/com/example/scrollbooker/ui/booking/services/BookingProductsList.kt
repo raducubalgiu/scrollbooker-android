@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.scrollbooker.components.customized.ProductCard.ProductCard
+import com.example.scrollbooker.components.customized.productCard.ProductCard
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.entity.booking.products.domain.model.BusinessServicesWithProducts
 import com.example.scrollbooker.entity.booking.products.domain.model.Product

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.components.customized.ProductCard
+package com.example.scrollbooker.components.customized.productCard
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
