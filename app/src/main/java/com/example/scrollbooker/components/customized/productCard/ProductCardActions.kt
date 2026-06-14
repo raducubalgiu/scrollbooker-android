@@ -30,6 +30,7 @@ import com.example.scrollbooker.core.enums.ProductTypeEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
+import com.example.scrollbooker.ui.LocalUserPermissions
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
@@ -43,23 +44,30 @@ fun ProductCardActions(
     isSelectable: Boolean,
     displayEditableActions: Boolean,
     isLoadingDelete: Boolean,
+
     onSelect: ((Product) -> Unit)?,
     onNavigateToEdit: ((Int) -> Unit)? = null,
     onDeleteProduct: ((Int) -> Unit)? = null,
-    onNavigateToBooking: (product: Product) -> Unit
+    onNavigateToBooking: ((product: Product) -> Unit)? = null
 ) {
-    val (showAddSingleButtonSelectable, showAddSingleButtonNotSelectable, showBuyPackButton, showEditableMenu) = remember(
+    val permissionController = LocalUserPermissions.current
+
+    val (
+        showAddSingleButtonSelectable,
+        showAddSingleButtonNotSelectable,
+        showBuyPackButton,
+        displayEditableActions
+    ) = remember(
         product.type, product.canBeBooked, isSelectable, displayEditableActions
     ) {
         val isSingle = product.type == ProductTypeEnum.SINGLE
         val canBook = product.canBeBooked
-        val isEditMenu = displayEditableActions
 
         val btnSelectable = !displayEditableActions && canBook && isSingle && isSelectable
         val btnNotSelectable = !displayEditableActions && canBook && isSingle && !isSelectable
         val btnPack = !displayEditableActions && canBook && !isSingle
 
-        Quadruple(btnSelectable, btnNotSelectable, btnPack, isEditMenu)
+        Quadruple(btnSelectable, btnNotSelectable, btnPack, displayEditableActions)
     }
 
     val handleSelect = remember(product, onSelect) {
@@ -67,7 +75,7 @@ fun ProductCardActions(
     }
 
     val handleBooking = remember(product, onNavigateToBooking) {
-        { onNavigateToBooking(product) }
+        { onNavigateToBooking?.invoke(product) ?: Unit }
     }
 
     val handleEdit = remember(product.id, onNavigateToEdit) {
@@ -141,27 +149,49 @@ fun ProductCardActions(
             }
         }
 
-        showEditableMenu -> {
+        displayEditableActions -> {
+            val editText = stringResource(R.string.edit)
+            val deleteText = stringResource(R.string.delete)
             val editIcon = painterResource(R.drawable.ic_edit_outline)
             val deleteIcon = painterResource(R.drawable.ic_delete_outline)
+            val deleteColor = Error
 
-            Menu(
-                items = listOf(
-                    MenuItemData(
-                        text = stringResource(R.string.edit),
-                        leadingIcon = editIcon,
-                        onClick = handleEdit,
-                    ),
-                    MenuItemData(
-                        text = stringResource(R.string.delete),
-                        color = Error,
-                        leadingIcon = deleteIcon,
-                        enabled = !isLoadingDelete,
-                        isLoading = isLoadingDelete,
-                        onClick = handleDelete,
-                    )
-                )
-            )
+            val hasEditPermission = remember(permissionController) {
+                permissionController.hasPermission(PermissionEnum.PRODUCT_EDIT)
+            }
+            val hasDeletePermission = remember(permissionController) {
+                permissionController.hasPermission(PermissionEnum.PRODUCT_DELETE)
+            }
+
+            val menuItems = remember(hasEditPermission, hasDeletePermission, isLoadingDelete, handleEdit, handleDelete) {
+                buildList {
+                    if (hasEditPermission) {
+                        add(
+                            MenuItemData(
+                                text = editText,
+                                leadingIcon = editIcon,
+                                onClick = handleEdit,
+                            )
+                        )
+                    }
+                    if (hasDeletePermission) {
+                        add(
+                            MenuItemData(
+                                text = deleteText,
+                                color = deleteColor,
+                                leadingIcon = deleteIcon,
+                                enabled = !isLoadingDelete,
+                                isLoading = isLoadingDelete,
+                                onClick = handleDelete,
+                            )
+                        )
+                    }
+                }
+            }
+
+            if (menuItems.isNotEmpty()) {
+                Menu(items = menuItems)
+            }
         }
     }
 }

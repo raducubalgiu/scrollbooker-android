@@ -26,19 +26,6 @@ fun CollectBusinessGalleryPreviewScreen(
     ) { innerPadding ->
         Column(Modifier.fillMaxSize().padding(innerPadding)) {
             Column(Modifier.weight(1f).padding(BasePadding)) {
-//                SearchCard(
-//                    business = BusinessSheet(
-//                        owner = TODO(),
-//                        businessShortDomain = TODO(),
-//                        address = selectedAddress,
-//                        coordinates = TODO(),
-//                        hasVideo = TODO(),
-//                        mediaPreview = TODO(),
-//                        products = TODO()
-//                    ),
-//                    onNavigateToBusinessProfile = {},
-//                    onOpenBookingsSheet = {}
-//                )
             }
 
             MainButton(

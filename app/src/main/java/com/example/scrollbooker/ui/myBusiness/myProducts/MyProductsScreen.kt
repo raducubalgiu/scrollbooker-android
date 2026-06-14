@@ -11,8 +11,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -31,6 +33,8 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.customized.productCard.ProductCard
+import com.example.scrollbooker.core.snackbar.CustomSnackBar
+import com.example.scrollbooker.core.snackbar.rememberSnackBarController
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
@@ -44,12 +48,33 @@ fun MyProductsScreen(
     onNavigateEditProduct: (Int, Int) -> Unit
 ) {
     val productsState by viewModel.productsState.collectAsStateWithLifecycle()
+    val isSaving by viewModel.isSaving.collectAsStateWithLifecycle()
 
     val scope = rememberCoroutineScope()
     val listState = rememberLazyListState()
 
+    val hostState = remember { SnackbarHostState() }
+    val snackBarController = rememberSnackBarController(hostState)
+
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            snackBarController.show(event)
+        }
+    }
+
     Scaffold(
-        topBar = { Header(onBack = onBack) }
+        topBar = {
+            Header(
+                title = stringResource(R.string.myServices),
+                onBack = onBack
+            )
+        },
+        snackbarHost = {
+            CustomSnackBar(
+                hostState = hostState,
+                type = snackBarController.currentType
+            )
+        }
     ) { innerPadding ->
         Box(Modifier.fillMaxSize().padding(innerPadding)) {
             when(val state = productsState) {
@@ -152,10 +177,8 @@ fun MyProductsScreen(
                                 ) { product ->
                                     ProductCard(
                                         product = product,
-                                        isSelectable = true,
-                                        isSelected = false,
-                                        onSelect = {},
-                                        onNavigateToBooking = {},
+                                        onDeleteProduct = { viewModel.deleteProduct(it) },
+                                        isLoadingDelete = isSaving,
                                         onOpenProductDetail = {},
                                         displayEditableActions = true
                                     )

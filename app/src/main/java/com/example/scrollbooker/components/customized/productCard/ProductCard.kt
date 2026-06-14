@@ -49,7 +49,7 @@ fun ProductCard(
     onOpenProductDetail: (Product) -> Unit,
     onSelect: ((Product) -> Unit)? = null,
     onNavigateToEdit: ((Int) -> Unit)? = null,
-    onNavigateToBooking: (product: Product) -> Unit,
+    onNavigateToBooking: ((product: Product) -> Unit)? = null,
     onDeleteProduct: ((productId: Int) -> Unit)? = null,
 ) {
     val productSummaryText = remember(product) {
