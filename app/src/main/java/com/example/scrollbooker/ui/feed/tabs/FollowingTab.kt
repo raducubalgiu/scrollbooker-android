@@ -41,17 +41,17 @@ import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.NavigateBookingParam
 import com.example.scrollbooker.ui.feed.FollowingFeedViewModel
-import com.example.scrollbooker.ui.shared.player.PostPlayerWithThumbnail
-import com.example.scrollbooker.ui.shared.posts.components.PostShimmer
-import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlay
-import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlayActionEnum
+import com.example.scrollbooker.ui.shared.post.PostPlayerWithThumbnail
+import com.example.scrollbooker.ui.shared.post.components.PostShimmer
+import com.example.scrollbooker.ui.shared.post.components.PostOverlay
+import com.example.scrollbooker.ui.shared.post.sheets.PostSheetActionEnum
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Composable
 fun FollowingTab(
     isTabActive: Boolean,
-    onAction: (PostOverlayActionEnum, Post) -> Unit,
+    onAction: (PostSheetActionEnum, Post) -> Unit,
     onNavigateToUserProfile: (Int, String) -> Unit,
     onNavigateToBooking: (NavigateBookingParam) -> Unit
 ) {

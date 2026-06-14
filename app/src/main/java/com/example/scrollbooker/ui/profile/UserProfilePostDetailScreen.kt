@@ -44,8 +44,8 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
-import com.example.scrollbooker.ui.shared.player.PostPlayerWithThumbnail
-import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlay
+import com.example.scrollbooker.ui.shared.post.PostPlayerWithThumbnail
+import com.example.scrollbooker.ui.shared.post.components.PostOverlay
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged

@@ -52,7 +52,7 @@ import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdatePub
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateUsernameUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateWebsiteUseCase
 import com.example.scrollbooker.store.AuthDataStore
-import com.example.scrollbooker.ui.shared.posts.PostActionUiState
+import com.example.scrollbooker.ui.shared.post.PostActionUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi

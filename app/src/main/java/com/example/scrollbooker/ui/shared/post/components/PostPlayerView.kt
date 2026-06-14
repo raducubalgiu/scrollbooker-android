@@ -1,0 +1,56 @@
+package com.example.scrollbooker.ui.shared.post.components
+
+import android.view.ViewGroup
+import androidx.annotation.OptIn
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.AspectRatioFrameLayout
+import androidx.media3.ui.PlayerView
+import androidx.media3.ui.PlayerView.SHOW_BUFFERING_NEVER
+
+@OptIn(UnstableApi::class)
+@Composable
+fun PostPlayerView(player: ExoPlayer) {
+    val context = LocalContext.current
+
+    val playerView = remember(player) {
+        PlayerView(context).apply {
+            useController = false
+            controllerAutoShow = false
+            controllerShowTimeoutMs = 0
+
+            setKeepContentOnPlayerReset(true)
+            setShowBuffering(SHOW_BUFFERING_NEVER)
+
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+            )
+        }
+    }
+
+    DisposableEffect(player) {
+        playerView.player = player
+        onDispose {
+            playerView.player = null
+            player.clearVideoSurface()
+        }
+    }
+
+    AndroidView(
+        factory = { playerView },
+        update = { playerView ->
+            playerView.player = player
+            playerView.resizeMode =
+                AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+        },
+        modifier = Modifier.fillMaxSize(),
+    )
+}

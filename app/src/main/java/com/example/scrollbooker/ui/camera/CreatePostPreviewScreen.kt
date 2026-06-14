@@ -57,7 +57,7 @@ import com.example.scrollbooker.entity.social.post.domain.model.PostBusinessOwne
 import com.example.scrollbooker.entity.social.post.domain.model.PostCounters
 import com.example.scrollbooker.entity.social.post.domain.model.PostUser
 import com.example.scrollbooker.entity.social.post.domain.model.UserPostActions
-import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlay
+import com.example.scrollbooker.ui.shared.post.components.PostOverlay
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import com.example.scrollbooker.ui.theme.titleMedium
 import timber.log.Timber

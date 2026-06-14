@@ -23,7 +23,7 @@ import com.example.scrollbooker.entity.social.post.domain.model.PostProduct
 import com.example.scrollbooker.entity.social.post.domain.model.PostProductCurrency
 import com.example.scrollbooker.entity.social.post.domain.model.PostUser
 import com.example.scrollbooker.entity.social.post.domain.model.UserPostActions
-import com.example.scrollbooker.ui.shared.posts.PostActionUiState
+import com.example.scrollbooker.ui.shared.post.PostActionUiState
 
 fun PostDto.toDomain(): Post {
     return Post(

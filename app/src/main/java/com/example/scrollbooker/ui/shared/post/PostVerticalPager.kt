@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.feed.tabs
+package com.example.scrollbooker.ui.shared.post
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.SpringSpec
@@ -38,9 +38,7 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.extensions.getOrNull
 import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
-import com.example.scrollbooker.navigation.navigators.NavigateBookingParam
-import com.example.scrollbooker.ui.feed.ExploreFeedViewModel
-import com.example.scrollbooker.ui.shared.post.PostPlayerWithThumbnail
+import com.example.scrollbooker.ui.feed.FeedScreenViewModel
 import com.example.scrollbooker.ui.shared.post.components.PostShimmer
 import com.example.scrollbooker.ui.shared.post.components.PostOverlay
 import com.example.scrollbooker.ui.shared.post.sheets.PostSheetActionEnum
@@ -48,20 +46,20 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Composable
-fun ExploreTab(
+fun PostVerticalPager(
+    feedViewModel: FeedScreenViewModel,
     posts: LazyPagingItems<Post>,
-    isTabActive: Boolean,
-    exploreViewModel: ExploreFeedViewModel,
+    isDrawerOpen: Boolean,
+    showBookButton: Boolean,
     onAction: (PostSheetActionEnum, Post) -> Unit,
-    onNavigateToUserProfile: (Int, String) -> Unit,
-    onNavigateToBooking: (NavigateBookingParam) -> Unit
+    onNavigateToUserProfile: (userId: Int, username: String) -> Unit,
+    onNavigateToBooking: (userId: Int, businessId: Int, businessOwnerId: Int) -> Unit
 ) {
-    val userPausedSet by exploreViewModel.userPausedPostIds.collectAsStateWithLifecycle()
+    val userPausedSet by feedViewModel.userPausedPostIds.collectAsStateWithLifecycle()
 
     val verticalPagerState = rememberPagerState { posts.itemCount }
     val settledPage by remember { derivedStateOf { verticalPagerState.settledPage } }
 
-    // 💡 EFECTUL 1: Se ocupă STRICT de managementul ferestrei de 3 elemente și Paging (Sliding Window)
     LaunchedEffect(verticalPagerState) {
         snapshotFlow {
             val page = settledPage
@@ -71,30 +69,21 @@ fun ExploreTab(
             .collectLatest { (page, postId) ->
                 if (postId == null) return@collectLatest
 
-                // Lăsăm ensureWindow doar să încarce și să descarce playerele în pool în funcție de index
-                exploreViewModel.ensureWindow(
+                feedViewModel.onPageSettled(page)
+                feedViewModel.ensureWindow(
                     centerIndex = page,
                     getPost = { idx -> posts.getOrNull(idx) }
                 )
             }
     }
 
-    // 💡 EFECTUL 2: Singurul „creier” pentru Play/Pause (reacționează și la schimbarea tab-ului, și la scroll vertical)
-    LaunchedEffect(isTabActive, settledPage) {
-        if (!isTabActive) {
-            exploreViewModel.stopDetailSession()
-        } else {
-            // Această funcție setează isTabActiveGlobal = true și apelează intern play pe settledPage
-            exploreViewModel.resumePlayerOnTabEnter(settledPage)
-        }
-    }
-
-    // 💡 EFECTUL 3: Protecția pentru când utilizatorul iese din aplicație / blochează ecranul
-    val currentOnReleasePlayer by rememberUpdatedState(exploreViewModel::stopDetailSession)
-    LifecycleStartEffect(true) {
-        onStopOrDispose {
-            currentOnReleasePlayer()
-        }
+    LaunchedEffect(verticalPagerState) {
+        snapshotFlow { settledPage to isDrawerOpen }
+            .distinctUntilChanged()
+            .collectLatest { (page, drawerOpen) ->
+                if(drawerOpen) feedViewModel.pauseIfPlaying(page)
+                else feedViewModel.resumeAfterDrawer(page)
+            }
     }
 
     val decay = rememberSplineBasedDecay<Float>()
@@ -110,6 +99,14 @@ fun ExploreTab(
         decayAnimationSpec = decay,
         snapAnimationSpec = snapSpec
     )
+
+    val currentOnReleasePlayer by rememberUpdatedState(feedViewModel::stopDetailSession)
+
+    LifecycleStartEffect(true) {
+        onStopOrDispose {
+            currentOnReleasePlayer()
+        }
+    }
 
     when(posts.loadState.refresh) {
         is LoadState.Error -> ErrorScreen()
@@ -136,7 +133,7 @@ fun ExploreTab(
                 val postId = post.id
 
                 key(postId) {
-                    val postActionState by exploreViewModel
+                    val postActionState by feedViewModel
                         .observePostUi(postId)
                         .collectAsStateWithLifecycle()
 
@@ -147,14 +144,14 @@ fun ExploreTab(
                         )
                     }
 
-                    val player = exploreViewModel.getPlayerForIndex(page)
+                    val player = feedViewModel.getPlayerForIndex(page)
 
                     Box(modifier = Modifier
                         .fillMaxSize()
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null,
-                            onClick = { exploreViewModel.togglePlayer(page) }
+                            onClick = { feedViewModel.togglePlayer(page) }
                         )
                     ) {
                         if (player != null) {
@@ -178,18 +175,10 @@ fun ExploreTab(
                             isSavingBookmark = postActionState.isSavingBookmark,
                             onAction = { onAction(it, post) },
                             onNavigateToUserProfile = onNavigateToUserProfile,
-                            onLike = { exploreViewModel.toggleLike(post) },
-                            onBookmark = { exploreViewModel.toggleBookmark(post) },
-                            onNavigateToBooking = {
-                                onNavigateToBooking(
-                                    NavigateBookingParam(
-                                        userId = post.user.id,
-                                        businessId = post.businessId,
-                                        businessOwnerId = post.businessOwner.id,
-                                        source = "feed_explore"
-                                    )
-                                )
-                            }
+                            showBookButton = showBookButton,
+                            onNavigateToBooking = {},
+                            onLike = {},
+                            onBookmark = {}
                         )
                     }
                 }

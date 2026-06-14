@@ -29,14 +29,14 @@ import com.example.scrollbooker.ui.feed.drawer.FeedDrawer
 import com.example.scrollbooker.ui.feed.drawer.FeedDrawerLayout
 import com.example.scrollbooker.ui.feed.tabs.ExploreTab
 import com.example.scrollbooker.ui.feed.tabs.FollowingTab
-import com.example.scrollbooker.ui.shared.posts.components.postOverlay.PostOverlayActionEnum
-import com.example.scrollbooker.ui.shared.posts.sheets.PostSheets
-import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent
-import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.CommentsSheet
-import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.LinkedProductsSheet
-import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.MoreOptionsSheet
-import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.None
-import com.example.scrollbooker.ui.shared.posts.sheets.PostSheetsContent.ReviewsSheet
+import com.example.scrollbooker.ui.shared.post.sheets.PostSheetActionEnum
+import com.example.scrollbooker.ui.shared.post.sheets.PostSheets
+import com.example.scrollbooker.ui.shared.post.sheets.PostSheetsContent
+import com.example.scrollbooker.ui.shared.post.sheets.PostSheetsContent.CommentsSheet
+import com.example.scrollbooker.ui.shared.post.sheets.PostSheetsContent.LinkedProductsSheet
+import com.example.scrollbooker.ui.shared.post.sheets.PostSheetsContent.MoreOptionsSheet
+import com.example.scrollbooker.ui.shared.post.sheets.PostSheetsContent.None
+import com.example.scrollbooker.ui.shared.post.sheets.PostSheetsContent.ReviewsSheet
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import kotlinx.coroutines.launch
 
@@ -150,15 +150,15 @@ fun FeedScreen(
 }
 
 private fun handleSheetAction(
-    action: PostOverlayActionEnum,
+    action: PostSheetActionEnum,
     post: Post,
     handleOpenSheet: (PostSheetsContent) -> Unit
 ) {
     when(action) {
-        PostOverlayActionEnum.OPEN_LINKED_PRODUCTS -> handleOpenSheet(LinkedProductsSheet(post.id))
-        PostOverlayActionEnum.OPEN_COMMENTS -> handleOpenSheet(CommentsSheet(post.id))
-        PostOverlayActionEnum.OPEN_MORE_OPTIONS -> handleOpenSheet(MoreOptionsSheet(post.user.id, post.isOwnPost))
-        PostOverlayActionEnum.OPEN_REVIEWS -> {
+        PostSheetActionEnum.OPEN_LINKED_PRODUCTS -> handleOpenSheet(LinkedProductsSheet(post.id))
+        PostSheetActionEnum.OPEN_COMMENTS -> handleOpenSheet(CommentsSheet(post.id))
+        PostSheetActionEnum.OPEN_MORE_OPTIONS -> handleOpenSheet(MoreOptionsSheet(post.user.id, post.isOwnPost))
+        PostSheetActionEnum.OPEN_REVIEWS -> {
             val id = if(post.isVideoReview) post.businessOwner.id else post.user.id
             handleOpenSheet(ReviewsSheet(id))
         }
