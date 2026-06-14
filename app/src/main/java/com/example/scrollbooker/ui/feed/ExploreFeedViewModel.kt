@@ -1,23 +1,11 @@
 package com.example.scrollbooker.ui.feed
-
-import android.content.Context
-import androidx.annotation.OptIn
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.media3.common.AudioAttributes
-import androidx.media3.common.C
-import androidx.media3.common.MediaItem
-import androidx.media3.common.Player
-import androidx.media3.common.util.UnstableApi
-import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.scrollbooker.components.customized.post.PostActionUiState
-import com.example.scrollbooker.core.util.VideoPlayerCache
+import com.example.scrollbooker.components.customized.post.VideoPlayerManager
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.social.post.domain.useCase.BookmarkPostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetExplorePostsUseCase
@@ -25,32 +13,25 @@ import com.example.scrollbooker.entity.social.post.domain.useCase.LikePostUseCas
 import com.example.scrollbooker.entity.social.post.domain.useCase.UnBookmarkPostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.UnLikePostUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
-import kotlin.collections.component1
-import kotlin.collections.component2
 import kotlin.collections.plus
-import kotlin.collections.set
 
 @HiltViewModel
 class ExploreFeedViewModel @Inject constructor(
-    private val getExplorePostsUseCase: GetExplorePostsUseCase,
+    getExplorePostsUseCase: GetExplorePostsUseCase,
     private val likePostUseCase: LikePostUseCase,
     private val unLikePostUseCase: UnLikePostUseCase,
     private val bookmarkPostUseCase: BookmarkPostUseCase,
     private val unBookmarkPostUseCase: UnBookmarkPostUseCase,
-    @ApplicationContext private val application: Context,
+    private val playerManager: VideoPlayerManager,
 ): ViewModel() {
     val explorePosts: Flow<PagingData<Post>> =
         getExplorePostsUseCase(selectedBusinessTypes = emptyList())
@@ -145,181 +126,30 @@ class ExploreFeedViewModel @Inject constructor(
         )
     }
 
-    // Player
-    private val maxPlayers = 3
-    private val pool = ArrayDeque<ExoPlayer>(maxPlayers)
-    private val indexToPlayer: SnapshotStateMap<Int, ExoPlayer> = mutableStateMapOf()
-    private val indexToPostId: SnapshotStateMap<Int, Int> = mutableStateMapOf()
+    val userPausedPostIds: StateFlow<Set<Int>> = playerManager.userPausedPostIds
 
-    private var isTabActiveGlobal = false
-
-    private var focusedIndex: Int? = null
-    private val windowMutex = Mutex()
-
-    private val _userPausedPostIds = MutableStateFlow<Set<Int>>(emptySet())
-    val userPausedPostIds: StateFlow<Set<Int>> = _userPausedPostIds.asStateFlow()
-
-    init {
-        repeat(maxPlayers) { pool.add(createPlayer(application)) }
-    }
-
-    @OptIn(UnstableApi::class)
-    private fun createLoadControl(): DefaultLoadControl {
-        return DefaultLoadControl.Builder()
-            .setBufferDurationsMs(
-                3000,
-                10000,
-                1000,
-                2000
-            )
-            .setTargetBufferBytes(C.LENGTH_UNSET)
-            .setPrioritizeTimeOverSizeThresholds(true)
-            .build()
-    }
-
-    @OptIn(UnstableApi::class)
-    private fun createPlayer(context: Context): ExoPlayer {
-        return ExoPlayer.Builder(context)
-            .setLoadControl(createLoadControl())
-            .setHandleAudioBecomingNoisy(true)
-            .setMediaSourceFactory(DefaultMediaSourceFactory(VideoPlayerCache.getFactory(application.applicationContext)))
-            .setAudioAttributes(
-                AudioAttributes.Builder()
-                    .setUsage(C.USAGE_MEDIA)
-                    .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
-                    .build(), true
-            )
-            .build()
-            .apply {
-                repeatMode = Player.REPEAT_MODE_ONE
-                playWhenReady = false
-            }
-    }
-
-    fun ensureWindow(
-        centerIndex: Int,
-        getPost: (Int) -> Post?
-    ) {
-        viewModelScope.launch {
-            windowMutex.withLock {
-                ensureWindowInternal(centerIndex, getPost)
-            }
-        }
-    }
-
-    private fun ensureWindowInternal(
-        centerIndex: Int,
-        getPost: (Int) -> Post?
-    ) {
-        val desired = listOf(centerIndex - 1, centerIndex, centerIndex + 1)
-            .filter { it >= 0 }
-
-        val toRemove = indexToPlayer.keys - desired
-        toRemove.forEach { idx ->
-            indexToPlayer.remove(idx)?.let { player ->
-                indexToPostId.remove(idx)
-                resetPlayer(player)
-                pool.addLast(player)
-            }
-        }
-
-        desired.forEach { idx ->
-            if (idx < 0) return@forEach
-            val post = getPost(idx) ?: return@forEach
-
-            val existing = indexToPlayer[idx]
-            val existingPostId = indexToPostId[idx]
-            if (existing != null && existingPostId == post.id) return@forEach
-
-            val player = existing ?: pool.removeFirstOrNull() ?: return@forEach
-
-            if (existing != null) {
-                resetPlayer(player)
-            }
-
-            indexToPlayer[idx] = player
-            indexToPostId[idx] = post.id
-
-            prepareForPost(player, post)
-
-            val isFocused = (idx == focusedIndex)
-            val isUserPaused = _userPausedPostIds.value.contains(post.id)
-
-            player.playWhenReady = isFocused && !isUserPaused && isTabActiveGlobal
-
-            if(!isFocused || isUserPaused || !isTabActiveGlobal) player.pause()
-        }
-
-        applyFocus(centerIndex)
+    fun ensureWindow(centerIndex: Int, getPost: (Int) -> Post?) {
+        playerManager.ensureWindow(tabKey = "explore", centerIndex, getPost)
     }
 
     fun onPageSettled(index: Int) {
-        focusedIndex = index
-        applyFocus(index)
+        playerManager.onPageSettled(tabKey = "explore", index)
     }
 
-    private fun applyFocus(index: Int) {
-        indexToPlayer.forEach { (idx, player) ->
-            val postId = indexToPostId[idx]
-            val isUserPaused = postId != null && _userPausedPostIds.value.contains(postId)
-            val shouldPlay = (idx == index) && !isUserPaused
-
-            player.playWhenReady = shouldPlay
-        }
+    fun getPlayerForIndex(index: Int): ExoPlayer? {
+        return playerManager.getPlayerForIndex(tabKey = "explore", index)
     }
-
-    private fun prepareForPost(player: ExoPlayer, post: Post) {
-        val mediaItem = MediaItem.fromUri(post.mediaFiles.first().url)
-        player.setMediaItem(mediaItem)
-        player.prepare()
-        player.seekTo(0)
-    }
-
-    private fun resetPlayer(player: ExoPlayer) {
-        player.playWhenReady = false
-        player.seekTo(0)
-    }
-
-    fun getPlayerForIndex(index: Int): ExoPlayer? = indexToPlayer[index]
 
     fun togglePlayer(index: Int) {
-        val player = getPlayerForIndex(index) ?: return
-        val postId = indexToPostId[index] ?: return
-
-        val isFocused = (index == focusedIndex)
-
-        if(player.isPlaying) {
-            player.playWhenReady = false
-            _userPausedPostIds.update { it + postId }
-        } else {
-            _userPausedPostIds.update { it - postId }
-
-            if(isFocused) {
-                player.playWhenReady = true
-            } else {
-                focusedIndex = index
-                applyFocus(index)
-            }
-        }
+        playerManager.togglePlayer(tabKey = "explore", index)
     }
 
     fun resumePlayerOnTabEnter(currentIndex: Int) {
-        isTabActiveGlobal = true
-        focusedIndex = currentIndex
-        val player = getPlayerForIndex(currentIndex) ?: return
-        val postId = indexToPostId[currentIndex] ?: return
-        val isUserPaused = _userPausedPostIds.value.contains(postId)
-
-        if (!isUserPaused) {
-            player.playWhenReady = true
-        }
+        playerManager.resumePlayerOnTabEnter(tabKey = "explore", currentIndex)
     }
 
     fun stopDetailSession() {
-        isTabActiveGlobal = false
-        indexToPlayer.values.forEach { player ->
-            player.playWhenReady = false
-        }
+        playerManager.stopDetailSession(tabKey = "explore")
     }
 
     override fun onCleared() {

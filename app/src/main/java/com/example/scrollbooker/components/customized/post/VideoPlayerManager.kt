@@ -28,9 +28,6 @@ import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
 import javax.inject.Singleton
 
-// Presupunem că modelul tău Post se află în acest pachet, adaptează dacă e cazul
-// import com.example.app.model.Post
-
 @Singleton
 class VideoPlayerManager @Inject constructor(
     private val application: Application
@@ -38,11 +35,9 @@ class VideoPlayerManager @Inject constructor(
     private val maxPlayers = 3
     private val pool = ArrayDeque<ExoPlayer>(maxPlayers)
 
-    // Mapările folosesc acum o cheie de tip String formată din "tabKey#index" (ex: "explore#0")
     private val indexToPlayer: SnapshotStateMap<String, ExoPlayer> = mutableStateMapOf()
     private val indexToPostId: SnapshotStateMap<String, Int> = mutableStateMapOf()
 
-    // Gestionăm starea activă globală per Tab în loc de un simplu Boolean
     private var activeTabKey: String? = null
 
     private var focusedIndex: Int? = null
@@ -51,7 +46,6 @@ class VideoPlayerManager @Inject constructor(
     private val _userPausedPostIds = MutableStateFlow<Set<Int>>(emptySet())
     val userPausedPostIds: StateFlow<Set<Int>> = _userPausedPostIds.asStateFlow()
 
-    // Managerul rulează operațiunile asincrone în propriul scope global securizat
     private val managerScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     init {
@@ -77,7 +71,6 @@ class VideoPlayerManager @Inject constructor(
         return ExoPlayer.Builder(context)
             .setLoadControl(createLoadControl())
             .setHandleAudioBecomingNoisy(true)
-            // Asigură-te că VideoPlayerCache este accesibil sau adaptează linia după factory-ul tău
             .setMediaSourceFactory(DefaultMediaSourceFactory(VideoPlayerCache.getFactory(application.applicationContext)))
             .setAudioAttributes(
                 AudioAttributes.Builder()
@@ -92,7 +85,6 @@ class VideoPlayerManager @Inject constructor(
             }
     }
 
-    // Funcție helper privată pentru generarea cheii unice în mapări
     private fun buildMapKey(tabKey: String, index: Int): String = "$tabKey#$index"
 
     fun ensureWindow(
@@ -117,7 +109,6 @@ class VideoPlayerManager @Inject constructor(
 
         val desiredKeys = desiredIndices.map { buildMapKey(tabKey, it) }
 
-        // Identificăm și eliminăm doar cheile care aparțin tab-ului curent și nu mai sunt dorite
         val toRemove = indexToPlayer.keys.filter { it.startsWith("$tabKey#") && it !in desiredKeys }
         toRemove.forEach { key ->
             indexToPlayer.remove(key)?.let { player ->
@@ -167,7 +158,6 @@ class VideoPlayerManager @Inject constructor(
 
     private fun applyFocus(index: Int) {
         indexToPlayer.forEach { (key, player) ->
-            // Extragm componentele din cheie ("explore#0" -> tab="explore", idx=0)
             val parts = key.split("#")
             val tabKey = parts.getOrNull(0) ?: ""
             val idx = parts.getOrNull(1)?.toIntOrNull() ?: -1
@@ -233,7 +223,6 @@ class VideoPlayerManager @Inject constructor(
         val postId = indexToPostId[currentKey] ?: return
         val isUserPaused = _userPausedPostIds.value.contains(postId)
 
-        // Forțăm o re-aliniere a focusului vizual pe toate playerele din sistem conform noului tab activ
         applyFocus(currentIndex)
 
         if (!isUserPaused) {
@@ -245,7 +234,6 @@ class VideoPlayerManager @Inject constructor(
         if (activeTabKey == tabKey) {
             activeTabKey = null
         }
-        // Punem pe pauză doar playerele care aparțin tab-ului care a solicitat oprirea
         indexToPlayer.forEach { (key, player) ->
             if (key.startsWith("$tabKey#")) {
                 player.playWhenReady = false
@@ -253,7 +241,6 @@ class VideoPlayerManager @Inject constructor(
         }
     }
 
-    // Această metodă va fi apelată global dacă vrei să eliberezi instanțele hardware la distrugerea aplicației
     fun releaseAllPlayers() {
         indexToPlayer.clear()
         indexToPostId.clear()
