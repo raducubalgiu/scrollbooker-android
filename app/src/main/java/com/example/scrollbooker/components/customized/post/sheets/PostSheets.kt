@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.post.sheets
+package com.example.scrollbooker.components.customized.post.sheets
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api

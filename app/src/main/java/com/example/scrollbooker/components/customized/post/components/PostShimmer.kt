@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.post.components
+package com.example.scrollbooker.components.customized.post.components
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

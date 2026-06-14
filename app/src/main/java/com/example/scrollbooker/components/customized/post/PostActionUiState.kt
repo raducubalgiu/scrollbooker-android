@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.post
+package com.example.scrollbooker.components.customized.post
 
 data class PostActionUiState(
     val isLiked: Boolean? = null,

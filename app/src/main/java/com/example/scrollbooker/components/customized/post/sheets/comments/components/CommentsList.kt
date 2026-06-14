@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.post.sheets.comments.components
+package com.example.scrollbooker.components.customized.post.sheets.comments.components
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box

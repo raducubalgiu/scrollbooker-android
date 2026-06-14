@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.post
+package com.example.scrollbooker.components.customized.post
 
 import android.app.Application
 import android.content.Context

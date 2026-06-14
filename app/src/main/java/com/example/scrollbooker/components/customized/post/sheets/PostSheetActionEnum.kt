@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.post.sheets
+package com.example.scrollbooker.components.customized.post.sheets
 
 enum class PostSheetActionEnum {
     OPEN_LINKED_PRODUCTS,

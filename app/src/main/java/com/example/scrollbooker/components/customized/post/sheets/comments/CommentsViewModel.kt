@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.post.sheets.comments
+package com.example.scrollbooker.components.customized.post.sheets.comments
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.post.sheets.moreOptions
+package com.example.scrollbooker.components.customized.post.sheets.moreOptions
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

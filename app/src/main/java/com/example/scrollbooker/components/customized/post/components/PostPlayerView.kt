@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.post.components
+package com.example.scrollbooker.components.customized.post.components
 
 import android.view.ViewGroup
 import androidx.annotation.OptIn

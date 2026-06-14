@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.post
+package com.example.scrollbooker.components.customized.post
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.SpringSpec

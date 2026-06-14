@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.post.sheets
+package com.example.scrollbooker.components.customized.post.sheets
 
 sealed class PostSheetsContent {
     data class LinkedProductsSheet(val postId: Int): PostSheetsContent()

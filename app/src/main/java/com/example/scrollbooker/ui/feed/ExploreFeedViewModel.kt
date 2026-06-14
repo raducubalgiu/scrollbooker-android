@@ -23,7 +23,7 @@ import com.example.scrollbooker.entity.social.post.domain.useCase.GetExplorePost
 import com.example.scrollbooker.entity.social.post.domain.useCase.LikePostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.UnBookmarkPostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.UnLikePostUseCase
-import com.example.scrollbooker.ui.shared.posts.PostActionUiState
+import com.example.scrollbooker.ui.shared.post.PostActionUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow

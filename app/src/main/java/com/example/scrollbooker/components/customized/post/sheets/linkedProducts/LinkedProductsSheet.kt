@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.post.sheets.linkedProducts
+package com.example.scrollbooker.components.customized.post.sheets.linkedProducts
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.post.components
+package com.example.scrollbooker.components.customized.post.components
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable

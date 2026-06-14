@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.post.sheets.reviews
+package com.example.scrollbooker.components.customized.post.sheets.reviews
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
