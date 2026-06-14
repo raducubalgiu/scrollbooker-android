@@ -157,7 +157,6 @@ fun MyProductsScreen(
                                         onSelect = {},
                                         onNavigateToBooking = {},
                                         onOpenProductDetail = {},
-                                        isEditable = true,
                                         displayEditableActions = true
                                     )
 

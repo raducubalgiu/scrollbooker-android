@@ -43,7 +43,6 @@ fun ProductCard(
     product: Product,
     displayEditableActions: Boolean = false,
     displayDescription: Boolean = true,
-    isEditable: Boolean = false,
     isSelected: Boolean = false,
     isSelectable: Boolean = false,
     isLoadingDelete: Boolean = false,
@@ -114,7 +113,6 @@ fun ProductCard(
                 ProductCardActions(
                     product = product,
                     displayEditableActions = displayEditableActions,
-                    isEditable = isEditable,
                     isSelected = isSelected,
                     isSelectable = isSelectable,
                     isLoadingDelete = isLoadingDelete,

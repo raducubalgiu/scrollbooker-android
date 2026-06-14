@@ -39,7 +39,6 @@ import com.example.scrollbooker.ui.theme.Primary
 @Composable
 fun ProductCardActions(
     product: Product,
-    isEditable: Boolean,
     isSelected: Boolean,
     isSelectable: Boolean,
     displayEditableActions: Boolean,
@@ -50,11 +49,11 @@ fun ProductCardActions(
     onNavigateToBooking: (product: Product) -> Unit
 ) {
     val (showAddSingleButtonSelectable, showAddSingleButtonNotSelectable, showBuyPackButton, showEditableMenu) = remember(
-        product.type, product.canBeBooked, isSelectable, isEditable, displayEditableActions
+        product.type, product.canBeBooked, isSelectable, displayEditableActions
     ) {
         val isSingle = product.type == ProductTypeEnum.SINGLE
         val canBook = product.canBeBooked
-        val isEditMenu = isEditable && displayEditableActions
+        val isEditMenu = displayEditableActions
 
         val btnSelectable = !displayEditableActions && canBook && isSingle && isSelectable
         val btnNotSelectable = !displayEditableActions && canBook && isSingle && !isSelectable
