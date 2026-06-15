@@ -32,7 +32,6 @@ import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.core.util.rememberFlingBehavior
 import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
-import com.example.scrollbooker.ui.profile.components.ProfileLayoutViewModel
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.titleLarge
 
