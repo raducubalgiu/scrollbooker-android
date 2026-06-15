@@ -5,10 +5,10 @@ import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentScrollBookerCreate
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.CreateScrollBookerAppointmentUseCase
-import com.example.scrollbooker.entity.booking.calendar.domain.model.AvailableDay
-import com.example.scrollbooker.entity.booking.calendar.domain.model.Slot
-import com.example.scrollbooker.entity.booking.calendar.domain.useCase.GetCalendarAvailableDaysUseCase
-import com.example.scrollbooker.entity.booking.calendar.domain.useCase.GetUserAvailableTimeslotsUseCase
+import com.example.scrollbooker.entity.booking.availability.domain.model.AvailableDay
+import com.example.scrollbooker.entity.booking.availability.domain.model.Slot
+import com.example.scrollbooker.entity.booking.availability.domain.useCase.GetCalendarAvailableDaysUseCase
+import com.example.scrollbooker.entity.booking.availability.domain.useCase.GetUserAvailableTimeslotsUseCase
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductByIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -128,25 +128,25 @@ class CalendarViewModel @Inject constructor(
         )
 
     fun loadSlotsForDay(params: SlotsParams): Flow<FeatureState<AvailableDay>> = flow {
-        with(params) {
-            if(!forceRefresh && cachedSlots.containsKey(day)) {
-                emit(cachedSlots[day]!!)
-                return@flow
-            }
-
-            emit(FeatureState.Loading)
-
-            val response = withVisibleLoading {
-                getUserAvailableTimeslotsUseCase(
-                    day = day.toString(),
-                    userId = userId,
-                    slotDuration = slotDuration
-                )
-            }
-
-            cachedSlots[day] = response
-            emit(response)
-        }
+//        with(params) {
+//            if(!forceRefresh && cachedSlots.containsKey(day)) {
+//                emit(cachedSlots[day]!!)
+//                return@flow
+//            }
+//
+//            emit(FeatureState.Loading)
+//
+//            val response = withVisibleLoading {
+//                getUserAvailableTimeslotsUseCase(
+//                    day = day.toString(),
+//                    userId = userId,
+//                    slotDuration = slotDuration
+//                )
+//            }
+//
+//            cachedSlots[day] = response
+//            emit(response)
+//        }
     }
 
     fun setUserId(id: Int) {

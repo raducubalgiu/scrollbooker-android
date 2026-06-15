@@ -1,5 +1,5 @@
-package com.example.scrollbooker.entity.booking.calendar.data.remote
-import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsCustomer
+package com.example.scrollbooker.entity.booking.availability.data.remote
+import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsCustomer
 import com.example.scrollbooker.entity.nomenclature.currency.domain.model.Currency
 import com.google.gson.annotations.SerializedName
 import java.math.BigDecimal

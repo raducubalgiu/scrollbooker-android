@@ -29,10 +29,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.entity.booking.calendar.domain.model.BlockStatus
-import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsSlot
-import com.example.scrollbooker.entity.booking.calendar.domain.model.blockStatus
-import com.example.scrollbooker.entity.booking.calendar.domain.model.isFreeSlot
+import com.example.scrollbooker.entity.booking.availability.domain.model.BlockStatus
+import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsSlot
+import com.example.scrollbooker.entity.booking.availability.domain.model.blockStatus
+import com.example.scrollbooker.entity.booking.availability.domain.model.isFreeSlot
 import com.example.scrollbooker.ui.myBusiness.myCalendar.BlockUiState
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Error

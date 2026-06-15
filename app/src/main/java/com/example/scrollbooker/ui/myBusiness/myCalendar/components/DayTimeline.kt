@@ -11,8 +11,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.extensions.minutesBetween
-import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsSlot
-import com.example.scrollbooker.entity.booking.calendar.domain.model.SlotUiStyle
+import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsSlot
+import com.example.scrollbooker.entity.booking.availability.domain.model.SlotUiStyle
 import com.example.scrollbooker.ui.myBusiness.myCalendar.BlockUiState
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.slot.CalendarSlot
 import com.example.scrollbooker.ui.myBusiness.myCalendar.util.generateTicks

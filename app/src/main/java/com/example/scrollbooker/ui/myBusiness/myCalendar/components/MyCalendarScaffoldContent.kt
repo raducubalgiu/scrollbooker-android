@@ -12,8 +12,8 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.extensions.displayDatePeriod
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEvents
-import com.example.scrollbooker.entity.booking.calendar.domain.model.hasDayFreeSlots
+import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEvents
+import com.example.scrollbooker.entity.booking.availability.domain.model.hasDayFreeSlots
 import com.example.scrollbooker.ui.myBusiness.myCalendar.BlockUiState
 import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarAction
 import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarAction.*

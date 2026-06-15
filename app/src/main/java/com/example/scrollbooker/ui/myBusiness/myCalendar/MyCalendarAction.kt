@@ -1,5 +1,5 @@
 package com.example.scrollbooker.ui.myBusiness.myCalendar
-import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsSlot
+import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsSlot
 import org.threeten.bp.LocalDate
 
 sealed interface MyCalendarAction {

@@ -14,7 +14,7 @@ import com.example.scrollbooker.core.util.checkMinMax
 import com.example.scrollbooker.core.util.checkRequired
 import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentLastMinuteRequest
 import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentOwnClientCreate
-import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsSlot
+import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsSlot
 import org.threeten.bp.LocalDate
 
 data class OwnClientSheetState(

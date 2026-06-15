@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 import java.util.Locale
 import com.example.scrollbooker.core.extensions.displayShortDayOfWeek
-import com.example.scrollbooker.entity.booking.calendar.domain.model.Slot
+import com.example.scrollbooker.entity.booking.availability.domain.model.Slot
 import com.example.scrollbooker.ui.shared.calendar.components.CalendarDayTab
 import com.example.scrollbooker.ui.shared.calendar.components.CalendarHeader
 import com.example.scrollbooker.ui.shared.calendar.components.slots.SlotsList

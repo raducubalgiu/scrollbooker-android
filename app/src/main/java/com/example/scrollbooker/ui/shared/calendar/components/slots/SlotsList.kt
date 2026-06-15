@@ -2,7 +2,6 @@ package com.example.scrollbooker.ui.shared.calendar.components.slots
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -13,7 +12,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.entity.booking.calendar.domain.model.Slot
+import com.example.scrollbooker.entity.booking.availability.domain.model.Slot
 import com.example.scrollbooker.ui.shared.calendar.CalendarViewModel
 import kotlinx.coroutines.launch
 
@@ -49,16 +48,16 @@ fun SlotsList(
                     }
                 }
             ) {
-                LazyColumn {
-                    items(day.availableSlots) { slot ->
-                        Spacer(Modifier.height(BasePadding))
-
-                        SlotItem(
-                            slot = slot,
-                            onSelectSlot = onSelectSlot
-                        )
-                    }
-                }
+//                LazyColumn {
+//                    items(day.availableSlots) { slot ->
+//                        Spacer(Modifier.height(BasePadding))
+//
+//                        SlotItem(
+//                            slot = slot,
+//                            onSelectSlot = onSelectSlot
+//                        )
+//                    }
+//                }
             }
         }
     }

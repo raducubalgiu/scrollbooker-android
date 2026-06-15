@@ -1,4 +1,4 @@
-package com.example.scrollbooker.entity.booking.calendar.data.remote
+package com.example.scrollbooker.entity.booking.availability.data.remote
 
 import com.google.gson.annotations.SerializedName
 import java.math.BigDecimal

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.entity.booking.calendar.domain.model
+package com.example.scrollbooker.entity.booking.availability.domain.model
 
 import java.math.BigDecimal
 

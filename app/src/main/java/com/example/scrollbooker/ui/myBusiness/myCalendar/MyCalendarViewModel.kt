@@ -11,11 +11,11 @@ import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointm
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.CreateBlockAppointmentsUseCase
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.CreateLastMinuteAppointmentUseCase
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.CreateOwnClientAppointmentUseCase
-import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEvents
-import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsSlot
-import com.example.scrollbooker.entity.booking.calendar.domain.model.blockedStartLocale
-import com.example.scrollbooker.entity.booking.calendar.domain.useCase.GetCalendarAvailableDaysUseCase
-import com.example.scrollbooker.entity.booking.calendar.domain.useCase.GetUserCalendarEventsUseCase
+import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEvents
+import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsSlot
+import com.example.scrollbooker.entity.booking.availability.domain.model.blockedStartLocale
+import com.example.scrollbooker.entity.booking.availability.domain.useCase.GetCalendarAvailableDaysUseCase
+import com.example.scrollbooker.entity.booking.availability.domain.useCase.GetUserCalendarEventsUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import com.example.scrollbooker.ui.shared.calendar.CalendarConfig
 import com.example.scrollbooker.ui.shared.calendar.CalendarHeaderState

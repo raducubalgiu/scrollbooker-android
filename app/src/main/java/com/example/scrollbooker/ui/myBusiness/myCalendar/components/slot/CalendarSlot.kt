@@ -16,8 +16,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
-import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsSlot
-import com.example.scrollbooker.entity.booking.calendar.domain.model.SlotUiStyle
+import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsSlot
+import com.example.scrollbooker.entity.booking.availability.domain.model.SlotUiStyle
 import com.example.scrollbooker.ui.myBusiness.myCalendar.BlockUiState
 
 @Composable

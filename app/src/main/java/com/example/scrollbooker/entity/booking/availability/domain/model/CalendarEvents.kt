@@ -1,4 +1,4 @@
-package com.example.scrollbooker.entity.booking.calendar.domain.model
+package com.example.scrollbooker.entity.booking.availability.domain.model
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color

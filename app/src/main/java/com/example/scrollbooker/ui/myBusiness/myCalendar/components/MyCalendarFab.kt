@@ -17,8 +17,8 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.enums.toDomainColor
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEvents
-import com.example.scrollbooker.entity.booking.calendar.domain.model.hasDayFreeSlots
+import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEvents
+import com.example.scrollbooker.entity.booking.availability.domain.model.hasDayFreeSlots
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.Primary

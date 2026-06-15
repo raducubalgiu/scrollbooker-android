@@ -1,15 +1,14 @@
-package com.example.scrollbooker.entity.booking.calendar.data.repository
-
-import com.example.scrollbooker.entity.booking.calendar.data.mappers.toDomain
-import com.example.scrollbooker.entity.booking.calendar.data.remote.CalendarApiService
-import com.example.scrollbooker.entity.booking.calendar.domain.model.AvailableDay
-import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEvents
-import com.example.scrollbooker.entity.booking.calendar.domain.repository.CalendarRepository
+package com.example.scrollbooker.entity.booking.availability.data.repository
+import com.example.scrollbooker.entity.booking.availability.data.mappers.toDomain
+import com.example.scrollbooker.entity.booking.availability.data.remote.AvailabilityApiService
+import com.example.scrollbooker.entity.booking.availability.domain.model.AvailableDay
+import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEvents
+import com.example.scrollbooker.entity.booking.availability.domain.repository.AvailabilityRepository
 import javax.inject.Inject
 
-class CalendarRepositoryImpl @Inject constructor(
-    private val apiService: CalendarApiService
-): CalendarRepository {
+class AvailabilityRepositoryImpl @Inject constructor(
+    private val apiService: AvailabilityApiService
+): AvailabilityRepository {
     override suspend fun getUserCalendarAvailableDays(
         userId: Int,
         startDate: String,

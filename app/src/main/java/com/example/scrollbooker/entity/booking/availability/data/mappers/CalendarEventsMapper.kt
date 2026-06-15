@@ -1,18 +1,18 @@
-package com.example.scrollbooker.entity.booking.calendar.data.mappers
+package com.example.scrollbooker.entity.booking.availability.data.mappers
 
 import com.example.scrollbooker.core.enums.AppointmentChannelEnum
 import com.example.scrollbooker.core.enums.BusinessShortDomainEnum
 import com.example.scrollbooker.core.extensions.parseDateTimeStringToLocalDateTime
-import com.example.scrollbooker.entity.booking.calendar.data.remote.CalendarEventsCustomerDto
-import com.example.scrollbooker.entity.booking.calendar.data.remote.CalendarEventsDayDto
-import com.example.scrollbooker.entity.booking.calendar.data.remote.CalendarEventsDto
-import com.example.scrollbooker.entity.booking.calendar.data.remote.CalendarEventsInfoDto
-import com.example.scrollbooker.entity.booking.calendar.data.remote.CalendarEventsSlotDto
-import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEvents
-import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsCustomer
-import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsDay
-import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsInfo
-import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEventsSlot
+import com.example.scrollbooker.entity.booking.availability.data.remote.CalendarEventsCustomerDto
+import com.example.scrollbooker.entity.booking.availability.data.remote.CalendarEventsDayDto
+import com.example.scrollbooker.entity.booking.availability.data.remote.CalendarEventsDto
+import com.example.scrollbooker.entity.booking.availability.data.remote.CalendarEventsInfoDto
+import com.example.scrollbooker.entity.booking.availability.data.remote.CalendarEventsSlotDto
+import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEvents
+import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsCustomer
+import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsDay
+import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsInfo
+import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsSlot
 
 fun CalendarEventsDto.toDomain(): CalendarEvents {
     return CalendarEvents(

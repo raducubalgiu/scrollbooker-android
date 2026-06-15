@@ -1,13 +1,13 @@
-package com.example.scrollbooker.entity.booking.calendar.domain.useCase
+package com.example.scrollbooker.entity.booking.availability.domain.useCase
 
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.entity.booking.calendar.domain.model.CalendarEvents
-import com.example.scrollbooker.entity.booking.calendar.domain.repository.CalendarRepository
+import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEvents
+import com.example.scrollbooker.entity.booking.availability.domain.repository.AvailabilityRepository
 import timber.log.Timber
 import javax.inject.Inject
 
 class GetUserCalendarEventsUseCase @Inject constructor(
-    private val repository: CalendarRepository
+    private val repository: AvailabilityRepository
 ) {
     suspend operator fun invoke(
         startDate: String,
