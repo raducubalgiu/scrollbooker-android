@@ -47,6 +47,7 @@ import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.UserPermissionsController
 import com.example.scrollbooker.ui.profile.components.sheets.ProfileMenuSheet
+import com.example.scrollbooker.ui.profile.components.sheets.UserScheduleSheet
 import com.example.scrollbooker.ui.profile.components.userInfo.ProfileShimmer
 import com.example.scrollbooker.ui.profile.components.userInfo.ProfileUserInfo
 import com.example.scrollbooker.ui.profile.tabs.ProfileTab
@@ -89,6 +90,13 @@ fun MyProfileScreen(
         headerOffset = headerOffset,
         onHeaderOffsetChanged = { headerOffset = it }
     )
+
+    if(scheduleSheetState.isVisible) {
+        UserScheduleSheet(
+            sheetState = scheduleSheetState,
+            schedulesFlow = viewModel.schedules
+        )
+    }
 
     if(menuSheetState.isVisible) {
         ProfileMenuSheet(
@@ -262,8 +270,10 @@ fun MyProfileScreen(
                                         isFollowEnabled = false,
                                         onOpenScheduleSheet = { scope.launch { scheduleSheetState.show() } },
                                         onNavigateToSocial = { profileNavigate.toSocial(it) },
-                                        onNavigateToBusinessOwner = { userId, username ->
-                                            profileNavigate.toUserProfile(userId, username)
+                                        onNavigateToBusinessOwner = {
+                                            user.businessOwner?.let {
+                                                profileNavigate.toUserProfile(it.id, it.username)
+                                            }
                                         },
                                         onNavigateToEditProfile = { profileNavigate.toEditProfile() },
                                         onNavigateToMyCalendar = { profileNavigate.toMyCalendar() },

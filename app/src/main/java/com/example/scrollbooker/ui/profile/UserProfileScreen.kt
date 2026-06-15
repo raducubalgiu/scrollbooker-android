@@ -1,16 +1,11 @@
 package com.example.scrollbooker.ui.profile
 import android.annotation.SuppressLint
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,12 +22,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.components.core.headers.Header
@@ -40,6 +33,7 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.rememberCollapsingNestedScroll
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
+import com.example.scrollbooker.ui.profile.components.sheets.UserScheduleSheet
 import com.example.scrollbooker.ui.profile.components.userInfo.ProfileShimmer
 import com.example.scrollbooker.ui.profile.components.userInfo.ProfileUserInfo
 import com.example.scrollbooker.ui.profile.tabs.ProfileTab
@@ -84,12 +78,12 @@ fun UserProfileScreen(
         onHeaderOffsetChanged = { headerOffset = it }
     )
 
-//    if(scheduleSheetState.isVisible) {
-//        UserScheduleSheet(
-//            sheetState = scheduleSheetState,
-//            layoutViewModel = layoutViewModel,
-//        )
-//    }
+    if(scheduleSheetState.isVisible) {
+        UserScheduleSheet(
+            sheetState = scheduleSheetState,
+            schedulesFlow = viewModel.schedules,
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -245,8 +239,10 @@ fun UserProfileScreen(
                                         onFollow = { viewModel.follow() },
                                         onOpenScheduleSheet = { scope.launch { scheduleSheetState.show() } },
                                         onNavigateToSocial = { profileNavigate.toSocial(it) },
-                                        onNavigateToBusinessOwner = { userId, username ->
-                                            profileNavigate.toUserProfile(userId, username)
+                                        onNavigateToBusinessOwner = {
+                                            user.businessOwner?.let {
+                                                profileNavigate.toUserProfile(it.id, it.username)
+                                            }
                                         },
                                         onNavigateToEditProfile = { profileNavigate.toEditProfile() },
                                         onNavigateToMyCalendar = { profileNavigate.toMyCalendar() },

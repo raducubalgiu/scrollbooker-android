@@ -65,16 +65,13 @@ fun PostOverlayUser(
 
     Column(
         modifier = Modifier
-            .padding(vertical = SpacingS)
             .clickable(
                 onClick = { onNavigateToUser(user.id, user.username) },
                 interactionSource = interactionSource,
                 indication = null
             ),
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
                 text = user.fullName,
                 style = bodyLarge,
@@ -97,8 +94,6 @@ fun PostOverlayUser(
             }
             else -> SecondaryText(user.profession)
         }
-
-        Spacer(Modifier.height(SpacingM))
     }
 }
 

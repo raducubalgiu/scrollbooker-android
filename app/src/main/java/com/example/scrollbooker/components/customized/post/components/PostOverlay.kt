@@ -28,8 +28,8 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.customized.post.sheets.PostSheetActionEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
-import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
+import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.Primary
@@ -68,13 +68,17 @@ fun PostOverlay(
         )
 
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(
+                    start = SpacingM,
+                    end = SpacingXXS,
+                    bottom = BasePadding
+                ),
             verticalArrangement = Arrangement.Bottom
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = SpacingS, start = SpacingM),
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.Bottom
             ) {
                 Column(modifier = Modifier.weight(1f)) {
@@ -86,7 +90,7 @@ fun PostOverlay(
                         onNavigateToUser = onNavigateToUserProfile,
                     )
 
-                    Spacer(Modifier.height(SpacingS))
+                    Spacer(Modifier.height(BasePadding))
 
                     post.description
                         ?.takeIf { it.isNotBlank() }
@@ -95,9 +99,7 @@ fun PostOverlay(
 
                     if (showBookButton) {
                         Button(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = BasePadding),
+                            modifier = Modifier.fillMaxWidth(),
                             onClick = { onNavigateToBooking() },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Primary,

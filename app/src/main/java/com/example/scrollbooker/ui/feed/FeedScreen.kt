@@ -60,6 +60,7 @@ fun FeedScreen(
             PostSheets(
                 sheetState = sheetState,
                 sheetContent = sheetContent,
+                onDeletePost = {},
                 onClose = {
                     scope.launch {
                         sheetState.hide()
@@ -156,7 +157,7 @@ private fun handleSheetAction(
     when(action) {
         PostSheetActionEnum.OPEN_LINKED_PRODUCTS -> handleOpenSheet(LinkedProductsSheet(post.id))
         PostSheetActionEnum.OPEN_COMMENTS -> handleOpenSheet(CommentsSheet(post.id))
-        PostSheetActionEnum.OPEN_MORE_OPTIONS -> handleOpenSheet(MoreOptionsSheet(post.user.id, post.isOwnPost))
+        PostSheetActionEnum.OPEN_MORE_OPTIONS -> handleOpenSheet(MoreOptionsSheet(post.id, post.user.id, post.isOwnPost))
         PostSheetActionEnum.OPEN_REVIEWS -> {
             val id = if(post.isVideoReview) post.businessOwner.id else post.user.id
             handleOpenSheet(ReviewsSheet(id))

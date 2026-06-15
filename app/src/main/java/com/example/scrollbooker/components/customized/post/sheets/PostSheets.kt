@@ -19,7 +19,8 @@ import com.example.scrollbooker.ui.theme.OnBackground
 fun PostSheets(
     sheetState: SheetState,
     sheetContent: PostSheetsContent,
-    onClose: () -> Unit
+    onClose: () -> Unit,
+    onDeletePost: (postId: Int) -> Unit
 ) {
     ModalBottomSheet(
         modifier = Modifier.statusBarsPadding(),
@@ -50,7 +51,8 @@ fun PostSheets(
             is PostSheetsContent.MoreOptionsSheet -> {
                 MoreOptionsSheet(
                     onClose = onClose,
-                    isOwnPost = content.isOwnPost
+                    onDelete = { onDeletePost(content.postId) },
+                    isOwnPost = content.isOwnPost,
                 )
             }
             is PostSheetsContent.LinkedProductsSheet -> {

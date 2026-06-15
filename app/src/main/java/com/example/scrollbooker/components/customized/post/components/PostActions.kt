@@ -91,7 +91,5 @@ fun PostActions(
             tint = Color.White,
             onClick = { onAction(PostSheetActionEnum.OPEN_MORE_OPTIONS) }
         )
-
-        Spacer(Modifier.height(SpacingS))
     }
 }

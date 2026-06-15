@@ -19,8 +19,9 @@ import com.example.scrollbooker.components.core.sheet.SheetHeader
 import com.example.scrollbooker.components.customized.SchedulesSection
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.ui.profile.components.ProfileLayoutViewModel
+import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
 import com.example.scrollbooker.ui.theme.Background
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 enum class WorkScheduleStatus {
@@ -31,10 +32,10 @@ enum class WorkScheduleStatus {
 @Composable
 fun UserScheduleSheet(
     sheetState: SheetState,
-    layoutViewModel: ProfileLayoutViewModel,
+    schedulesFlow: StateFlow<FeatureState<List<Schedule>>>
 ) {
     val scope = rememberCoroutineScope()
-    val schedules by layoutViewModel.schedules.collectAsStateWithLifecycle()
+    val schedules by schedulesFlow.collectAsStateWithLifecycle()
 
     ModalBottomSheet(
         sheetState = sheetState,
