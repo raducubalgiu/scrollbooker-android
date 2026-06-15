@@ -1,11 +1,6 @@
 package com.example.scrollbooker.ui.camera
-
-import android.Manifest
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.provider.Settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -30,7 +25,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -44,6 +38,10 @@ import com.example.scrollbooker.ui.camera.components.LimitedAccessWarningBanner
 import com.example.scrollbooker.ui.camera.components.MediaLibraryGridItem
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.BackgroundDark
+import androidx.compose.runtime.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 
 @Composable
 fun CameraGalleryScreen(
@@ -53,14 +51,24 @@ fun CameraGalleryScreen(
 ) {
     val context = LocalContext.current
     val galleryViewModel: CameraGalleryViewModel = hiltViewModel()
+    val lifecycleOwner = LocalLifecycleOwner.current
 
     var permissionState by remember { mutableStateOf(MediaPermissionState.CHECKING) }
 
-    LaunchedEffect(Unit) {
-        permissionState = checkMediaPermissionState(context)
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                val newState = MediaPermissionHelper.checkMediaPermissionState(context)
+                permissionState = newState
 
-        if (permissionState == MediaPermissionState.GRANTED || permissionState == MediaPermissionState.PARTIAL) {
-            galleryViewModel.refreshVideos()
+                if (newState == MediaPermissionState.GRANTED || newState == MediaPermissionState.PARTIAL) {
+                    galleryViewModel.refreshVideos()
+                }
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
 
@@ -71,16 +79,18 @@ fun CameraGalleryScreen(
         }
     }
 
-    fun openAppSettings() {
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-            data = Uri.fromParts("package", context.packageName, null)
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    val openAppSettings = remember(context) {
+        {
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                data = Uri.fromParts("package", context.packageName, null)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            context.startActivity(intent)
         }
-        context.startActivity(intent)
     }
 
     val canAccessLibrary = permissionState == MediaPermissionState.GRANTED ||
-                           permissionState == MediaPermissionState.PARTIAL
+            permissionState == MediaPermissionState.PARTIAL
 
     if (!canAccessLibrary) {
         LoadingScreen()
@@ -91,7 +101,7 @@ fun CameraGalleryScreen(
     val cameraState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(cameraState.isReady, cameraState.selectedUri) {
-        if(cameraState.isReady && cameraState.selectedUri != null) {
+        if (cameraState.isReady && cameraState.selectedUri != null) {
             onNavigateToCameraPreview()
         }
     }
@@ -100,22 +110,23 @@ fun CameraGalleryScreen(
         modifier = Modifier,
         containerColor = BackgroundDark
     ) { innerPadding ->
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(top = innerPadding.calculateTopPadding())
-            .clip(
-                RoundedCornerShape(
-                    topStart = 20.dp,
-                    topEnd = 20.dp
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = innerPadding.calculateTopPadding())
+                .clip(
+                    RoundedCornerShape(
+                        topStart = 20.dp,
+                        topEnd = 20.dp
+                    )
                 )
-            )
-            .background(Background)
+                .background(Background)
         ) {
             GalleryHeader(onBack)
 
             if (permissionState == MediaPermissionState.PARTIAL) {
                 LimitedAccessWarningBanner(
-                    onOpenSettings = { openAppSettings() }
+                    onOpenSettings = openAppSettings
                 )
             }
 
@@ -145,7 +156,7 @@ fun CameraGalleryScreen(
                                 }
                             }
 
-                            if(videos.loadState.append is LoadState.Loading) {
+                            if (videos.loadState.append is LoadState.Loading) {
                                 LoadMoreSpinner()
                             }
                         }
@@ -156,47 +167,4 @@ fun CameraGalleryScreen(
     }
 }
 
-private fun checkMediaPermissionState(context: Context): MediaPermissionState {
-    return when {
-        Build.VERSION.SDK_INT >= 34 -> {
-            val fullAccess = ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.READ_MEDIA_VIDEO
-            ) == PackageManager.PERMISSION_GRANTED
-
-            val partialAccess = ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
-            ) == PackageManager.PERMISSION_GRANTED
-
-            when {
-                fullAccess -> MediaPermissionState.GRANTED
-                partialAccess -> MediaPermissionState.PARTIAL
-                else -> MediaPermissionState.DENIED
-            }
-        }
-        Build.VERSION.SDK_INT >= 33 -> {
-            if (ContextCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.READ_MEDIA_VIDEO
-                ) == PackageManager.PERMISSION_GRANTED
-            ) {
-                MediaPermissionState.GRANTED
-            } else {
-                MediaPermissionState.DENIED
-            }
-        }
-        else -> {
-            if (ContextCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                ) == PackageManager.PERMISSION_GRANTED
-            ) {
-                MediaPermissionState.GRANTED
-            } else {
-                MediaPermissionState.DENIED
-            }
-        }
-    }
-}
 

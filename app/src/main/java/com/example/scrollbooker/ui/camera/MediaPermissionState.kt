@@ -1,6 +1,6 @@
 package com.example.scrollbooker.ui.camera
 
-internal enum class MediaPermissionState {
+enum class MediaPermissionState {
     CHECKING,
     GRANTED,
     PARTIAL,
