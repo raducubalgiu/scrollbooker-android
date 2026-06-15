@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntOffset
+import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -134,6 +135,9 @@ fun MyProfileScreen(
                     }
 
                     val pagerState = rememberPagerState(initialPage = currentTab) { tabs.size }
+                    val currentTab = tabs[pagerState.currentPage]
+
+                    val myBookmarks = viewModel.bookmarks.collectAsLazyPagingItems()
 
                     LaunchedEffect(pagerState) {
                         snapshotFlow {
@@ -172,16 +176,9 @@ fun MyProfileScreen(
                                         ProfileTab.Posts -> {
                                             ProfilePostsTab(
                                                 posts = myPosts,
-                                                onNavigateToPost = {
-                                                    viewModel.onPageSettled(it.index)
-                                                    viewModel.seekToZero(it.index)
-
-                                                    viewModel.ensureImmediate(
-                                                        centerIndex = it.index,
-                                                        getPost = { i -> if(i == it.index) it.post else null }
-                                                    )
-
-                                                    profileNavigate.toMyPostDetail(PostTabEnum.POSTS, it)
+                                                onNavigateToPost = { clickData ->
+                                                    // Navigăm direct! Lăsăm ecranul de detalii să pornească video-ul când se montează hardware pe ecran.
+                                                    profileNavigate.toMyPostDetail(PostTabEnum.POSTS, clickData)
                                                 }
                                             )
                                         }
@@ -222,20 +219,10 @@ fun MyProfileScreen(
                                         }
 
                                         ProfileTab.Bookmarks -> {
-                                            val bookmarks = viewModel.bookmarks.collectAsLazyPagingItems()
-
                                             ProfileBookmarksTab(
-                                                posts = bookmarks,
-                                                onNavigateToPost = {
-                                                    viewModel.onPageSettled(it.index)
-                                                    viewModel.seekToZero(it.index)
-
-                                                    viewModel.ensureImmediate(
-                                                        centerIndex = it.index,
-                                                        getPost = { i -> if(i == it.index) it.post else null }
-                                                    )
-
-                                                    profileNavigate.toMyPostDetail(PostTabEnum.BOOKMARKS, it)
+                                                posts = myBookmarks,
+                                                onNavigateToPost = { clickData ->
+                                                    profileNavigate.toMyPostDetail(PostTabEnum.BOOKMARKS, clickData)
                                                 }
                                             )
                                         }

@@ -34,18 +34,15 @@ class VideoPlayerManager @Inject constructor(
     private val maxPlayers = 3
     private val pool = ArrayDeque<ExoPlayer>(maxPlayers)
 
+    // SnapshotStateMap oferă reactivitate nativă în Jetpack Compose
     private val indexToPlayer: SnapshotStateMap<String, ExoPlayer> = mutableStateMapOf()
     private val indexToPostId: SnapshotStateMap<String, Int> = mutableStateMapOf()
 
-    private var activeTabKey: String? = null
-
-    private var focusedIndex: Int? = null
     private val windowMutex = Mutex()
+    private val managerScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     private val _userPausedPostIds = MutableStateFlow<Set<Int>>(emptySet())
     val userPausedPostIds: StateFlow<Set<Int>> = _userPausedPostIds.asStateFlow()
-
-    private val managerScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     init {
         repeat(maxPlayers) { pool.add(createPlayer(application)) }
@@ -54,12 +51,7 @@ class VideoPlayerManager @Inject constructor(
     @OptIn(UnstableApi::class)
     private fun createLoadControl(): DefaultLoadControl {
         return DefaultLoadControl.Builder()
-            .setBufferDurationsMs(
-                3000,
-                10000,
-                1000,
-                2000
-            )
+            .setBufferDurationsMs(3000, 10000, 1000, 2000)
             .setTargetBufferBytes(C.LENGTH_UNSET)
             .setPrioritizeTimeOverSizeThresholds(true)
             .build()
@@ -84,167 +76,146 @@ class VideoPlayerManager @Inject constructor(
             }
     }
 
-    private fun buildMapKey(tabKey: String, index: Int): String = "$tabKey#$index"
+    private fun buildMapKey(scopeKey: String, index: Int): String = "$scopeKey#$index"
 
-    fun ensureWindow(
-        tabKey: String,
-        centerIndex: Int,
-        getPost: (Int) -> Post?
-    ) {
-        managerScope.launch {
-            windowMutex.withLock {
-                ensureWindowInternal(tabKey, centerIndex, getPost)
-            }
-        }
+    fun getPlayerForIndex(scopeKey: String, index: Int): ExoPlayer? {
+        return indexToPlayer[buildMapKey(scopeKey, index)]
     }
 
-    private fun ensureWindowInternal(
-        tabKey: String,
-        centerIndex: Int,
-        getPost: (Int) -> Post?
-    ) {
-        val desiredIndices = listOf(centerIndex - 1, centerIndex, centerIndex + 1)
-            .filter { it >= 0 }
-
-        val desiredKeys = desiredIndices.map { buildMapKey(tabKey, it) }
-
-        val toRemove = indexToPlayer.keys.filter { it.startsWith("$tabKey#") && it !in desiredKeys }
-        toRemove.forEach { key ->
-            indexToPlayer.remove(key)?.let { player ->
-                indexToPostId.remove(key)
-                resetPlayer(player)
-                pool.addLast(player)
-            }
-        }
-
-        desiredIndices.forEach { idx ->
-            if (idx < 0) return@forEach
-            val post = getPost(idx) ?: return@forEach
-
-            val currentKey = buildMapKey(tabKey, idx)
-            val existing = indexToPlayer[currentKey]
-            val existingPostId = indexToPostId[currentKey]
-            if (existing != null && existingPostId == post.id) return@forEach
-
-            val player = existing ?: pool.removeFirstOrNull() ?: return@forEach
-
-            if (existing != null) {
-                resetPlayer(player)
-            }
-
-            indexToPlayer[currentKey] = player
-            indexToPostId[currentKey] = post.id
-
-            prepareForPost(player, post)
-
-            val isFocused = (idx == focusedIndex && activeTabKey == tabKey)
-            val isUserPaused = _userPausedPostIds.value.contains(post.id)
-            val isTabActiveGlobal = (activeTabKey == tabKey)
-
-            player.playWhenReady = isFocused && !isUserPaused && isTabActiveGlobal
-
-            if (!isFocused || isUserPaused || !isTabActiveGlobal) player.pause()
-        }
-
-        applyFocus(centerIndex)
-    }
-
-    fun onPageSettled(tabKey: String, index: Int) {
-        if (activeTabKey != tabKey) return
-        focusedIndex = index
-        applyFocus(index)
-    }
-
-    private fun applyFocus(index: Int) {
+    /**
+     * Oprește instant sunetul pentru ORICE alt ecran din fundal
+     */
+    fun activateScreenScope(scopeKey: String) {
         indexToPlayer.forEach { (key, player) ->
-            val parts = key.split("#")
-            val tabKey = parts.getOrNull(0) ?: ""
-            val idx = parts.getOrNull(1)?.toIntOrNull() ?: -1
-
-            val postId = indexToPostId[key]
-            val isUserPaused = postId != null && _userPausedPostIds.value.contains(postId)
-            val isTabActiveGlobal = (activeTabKey == tabKey)
-
-            val shouldPlay = (idx == index) && !isUserPaused && isTabActiveGlobal
-
-            player.playWhenReady = shouldPlay
-
-            if (!shouldPlay) {
+            if (!key.startsWith("$scopeKey#")) {
+                player.playWhenReady = false
                 player.pause()
             }
         }
     }
 
-    private fun prepareForPost(player: ExoPlayer, post: Post) {
-        val mediaItem = MediaItem.fromUri(post.mediaFiles.first().url)
-        player.setMediaItem(mediaItem)
-        player.prepare()
-        player.seekTo(0)
+    /**
+     * Gestionează fereastra glisantă (Sliding Window de 3) izolată pe contextul ecranului curent
+     */
+    fun ensureWindow(
+        scopeKey: String,
+        centerIndex: Int,
+        isScreenActive: Boolean,
+        getPost: (Int) -> Post?
+    ) {
+        managerScope.launch {
+            windowMutex.withLock {
+                val desiredIndices = listOf(centerIndex - 1, centerIndex, centerIndex + 1).filter { it >= 0 }
+                val desiredKeys = desiredIndices.map { buildMapKey(scopeKey, it) }
+
+                // 1. Eliminăm din map elementele care au ieșit din fereastra acestui ecran
+                val toRemove = indexToPlayer.keys.filter { it.startsWith("$scopeKey#") && it !in desiredKeys }
+                toRemove.forEach { key ->
+                    indexToPlayer.remove(key)?.let { player ->
+                        indexToPostId.remove(key)
+                        player.playWhenReady = false
+                        player.pause()
+                        resetPlayer(player)
+                        if (!pool.contains(player) && pool.size < maxPlayers) {
+                            pool.addLast(player)
+                        }
+                    }
+                }
+
+                // 2. Alocăm sau actualizăm starea playerelor pentru indicii doriți
+                desiredIndices.forEach { idx ->
+                    val post = getPost(idx) ?: return@forEach
+                    val currentKey = buildMapKey(scopeKey, idx)
+
+                    val existing = indexToPlayer[currentKey]
+                    val existingPostId = indexToPostId[currentKey]
+
+                    if (existing != null && existingPostId == post.id) {
+                        val isFocused = (idx == centerIndex)
+                        val isUserPaused = _userPausedPostIds.value.contains(post.id)
+                        existing.playWhenReady = isFocused && isScreenActive && !isUserPaused
+                        if (!existing.playWhenReady) existing.pause()
+                        return@forEach
+                    }
+
+                    // Extragere player din pool sau abandon dacă pool-ul e gol din cauza altor scurgeri
+                    val player = existing ?: pool.removeFirstOrNull() ?: return@forEach
+
+                    if (existing != null) {
+                        resetPlayer(player)
+                    }
+
+                    indexToPlayer[currentKey] = player
+                    indexToPostId[currentKey] = post.id
+
+                    // Pregătire media asincronă
+                    val mediaItem = MediaItem.fromUri(post.mediaFiles.first().url)
+                    player.setMediaItem(mediaItem)
+                    player.prepare()
+
+                    val isFocused = (idx == centerIndex)
+                    val isUserPaused = _userPausedPostIds.value.contains(post.id)
+                    player.playWhenReady = isFocused && isScreenActive && !isUserPaused
+                    if (!player.playWhenReady) player.pause()
+                }
+            }
+        }
+    }
+
+    /**
+     * Forțează oprirea redării la scroll (OnPageSettled)
+     */
+    fun onPageSettled(scopeKey: String, centerIndex: Int, isScreenActive: Boolean) {
+        indexToPlayer.forEach { (key, player) ->
+            if (key.startsWith("$scopeKey#")) {
+                val idx = key.split("#").getOrNull(1)?.toIntOrNull() ?: -1
+                val postId = indexToPostId[key]
+                val isUserPaused = postId != null && _userPausedPostIds.value.contains(postId)
+
+                val shouldPlay = (idx == centerIndex) && isScreenActive && !isUserPaused
+                player.playWhenReady = shouldPlay
+                if (!shouldPlay) player.pause()
+            }
+        }
+    }
+
+    fun togglePlayer(scopeKey: String, index: Int) {
+        val currentKey = buildMapKey(scopeKey, index)
+        val player = indexToPlayer[currentKey] ?: return
+        val postId = indexToPostId[currentKey] ?: return
+
+        if (player.isPlaying) {
+            player.playWhenReady = false
+            player.pause()
+            _userPausedPostIds.update { it + postId }
+        } else {
+            _userPausedPostIds.update { it - postId }
+            player.playWhenReady = true
+        }
+    }
+
+    /**
+     * REZOLVARE AUDIO FUNDAL: Oprește fizic elementele media dintr-un scope și le returnează în pool la distrugere
+     */
+    fun releaseScreenScope(scopeKey: String) {
+        val keysToRemove = indexToPlayer.keys.filter { it.startsWith("$scopeKey#") }.toList()
+        keysToRemove.forEach { key ->
+            indexToPlayer.remove(key)?.let { player ->
+                indexToPostId.remove(key)
+                player.playWhenReady = false
+                player.stop()
+                player.clearMediaItems()
+                resetPlayer(player)
+                if (!pool.contains(player) && pool.size < maxPlayers) {
+                    pool.addLast(player)
+                }
+            }
+        }
     }
 
     private fun resetPlayer(player: ExoPlayer) {
         player.playWhenReady = false
         player.seekTo(0)
     }
-
-    fun getPlayerForIndex(tabKey: String, index: Int): ExoPlayer? {
-        return indexToPlayer[buildMapKey(tabKey, index)]
-    }
-
-    fun togglePlayer(tabKey: String, index: Int) {
-        val currentKey = buildMapKey(tabKey, index)
-        val player = getPlayerForIndex(tabKey, index) ?: return
-        val postId = indexToPostId[currentKey] ?: return
-
-        val isFocused = (index == focusedIndex && activeTabKey == tabKey)
-
-        if (player.isPlaying) {
-            player.playWhenReady = false
-            _userPausedPostIds.update { it + postId }
-        } else {
-            _userPausedPostIds.update { it - postId }
-
-            if (isFocused) {
-                player.playWhenReady = true
-            } else {
-                focusedIndex = index
-                applyFocus(index)
-            }
-        }
-    }
-
-    fun resumePlayerOnTabEnter(tabKey: String, currentIndex: Int) {
-        activeTabKey = tabKey
-        focusedIndex = currentIndex
-
-        val currentKey = buildMapKey(tabKey, currentIndex)
-        val player = getPlayerForIndex(tabKey, currentIndex) ?: return
-        val postId = indexToPostId[currentKey] ?: return
-        val isUserPaused = _userPausedPostIds.value.contains(postId)
-
-        applyFocus(currentIndex)
-
-        if (!isUserPaused) {
-            player.playWhenReady = true
-        }
-    }
-
-    fun stopDetailSession(tabKey: String) {
-        if (activeTabKey == tabKey) {
-            activeTabKey = null
-        }
-        indexToPlayer.forEach { (key, player) ->
-            if (key.startsWith("$tabKey#")) {
-                player.playWhenReady = false
-            }
-        }
-    }
-
-    fun releaseAllPlayers() {
-        indexToPlayer.clear()
-        indexToPostId.clear()
-
-        pool.forEach { it.release() }
-        pool.clear()
-    }
 }
+

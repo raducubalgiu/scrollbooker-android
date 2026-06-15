@@ -150,16 +150,12 @@ fun UserProfileScreen(
                                         ProfileTab.Posts -> {
                                             ProfilePostsTab(
                                                 posts = posts,
-                                                onNavigateToPost = {
-                                                    viewModel.onPageSettled(it.index)
-                                                    viewModel.seekToZero(it.index)
-
-                                                    viewModel.ensureImmediate(
-                                                        centerIndex = it.index,
-                                                        getPost = { i -> if(i == it.index) it.post else null }
+                                                onNavigateToPost = { clickData ->
+                                                    profileNavigate.toUserPostDetail(
+                                                        postTab = PostTabEnum.POSTS,
+                                                        selectedPostUi = clickData,
+                                                        userId = user.id
                                                     )
-
-                                                    profileNavigate.toUserPostDetail(PostTabEnum.POSTS, it, it.post.user.id)
                                                 }
                                             )
                                         }

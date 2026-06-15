@@ -58,20 +58,16 @@ fun NavGraphBuilder.myProfileGraph(
             val postIndex = backStackEntry.arguments?.getInt("postIndex") ?: return@composable
 
             val parentBackStackEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(MainRoute.MyProfile.route)
+                navController.getBackStackEntry(MainRoute.MyProfileNavigator.route)
             }
             val viewModel = hiltViewModel<MyProfileViewModel>(parentBackStackEntry)
-
-            val profileNavigate = remember(navController) {
-                ProfileNavigator(navController)
-            }
 
             MyProfilePostDetailScreen(
                 postTabKey = postTabKey,
                 postIndex = postIndex,
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
-                profileNavigate = profileNavigate,
+                profileNavigate = profileNavigate, // Folosește instanța curată de sus
             )
         }
     }

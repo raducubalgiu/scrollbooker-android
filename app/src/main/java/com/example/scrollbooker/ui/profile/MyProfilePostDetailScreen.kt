@@ -21,10 +21,13 @@ import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -38,6 +41,7 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.LifecycleStartEffect
@@ -51,6 +55,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
+import com.example.scrollbooker.ui.theme.Primary
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 
@@ -64,8 +69,7 @@ fun MyProfilePostDetailScreen(
     profileNavigate: ProfileNavigator,
 ) {
     val postTab = PostTabEnum.fromKey(postTabKey)
-
-    val title: String = when(postTab) {
+    val title = when(postTab) {
         PostTabEnum.POSTS -> stringResource(R.string.posts)
         PostTabEnum.BOOKMARKS -> stringResource(R.string.bookmarks)
         null -> ""
@@ -77,79 +81,73 @@ fun MyProfilePostDetailScreen(
         null -> error("Invalid post tab key")
     }
 
-    key(postIndex) {
-        val pagerState = rememberPagerState(
-            initialPage = postIndex
-        ) { posts.itemCount }
-
-        LaunchedEffect(pagerState) {
-            snapshotFlow { pagerState.settledPage }
-                .distinctUntilChanged()
-                .collectLatest { page ->
-                    viewModel.onPageSettled(page)
-                    viewModel.ensureWindow(
-                        centerIndex = page,
-                        getPost = { idx -> posts.getOrNull(idx) }
-                    )
-                }
+    // REZOLVARE CRASH FATAL: Dacă Paging-ul este momentan gol sau se re-colectează asincron,
+    // oprim execuția pentru a preveni colapsul PagerState-ului la initialPage.
+    if (posts.itemCount == 0) {
+        Box(
+            modifier = Modifier.fillMaxSize().background(BackgroundDark),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(color = Primary) // Sau un simplu placeholder negru
         }
+        return
+    }
 
-        val decay = rememberSplineBasedDecay<Float>()
+    val detailScopeKey = "MY_PROFILE_DETAIL_${postTabKey}"
 
-        val snapSpec: SpringSpec<Float> = spring(
-            dampingRatio = Spring.DampingRatioNoBouncy,
-            stiffness = Spring.StiffnessHigh,
-        )
+    // Controlul video pornește și se oprește STRICT în interiorul acestui ecran
+    DisposableEffect(detailScopeKey) {
+        viewModel.setDetailScreenActive(true, detailScopeKey, postIndex, { idx ->
+            if (idx in 0 until posts.itemCount) posts.peek(idx) else null
+        })
+        onDispose {
+            viewModel.setDetailScreenActive(false, detailScopeKey, postIndex, { idx ->
+                if (idx in 0 until posts.itemCount) posts.peek(idx) else null
+            })
+            viewModel.onDetailSessionFinished(detailScopeKey) // Eliberează instant player-ele în pool!
+        }
+    }
+
+    key(postIndex) {
+        // PagerState securizat: acum garantat posts.itemCount este mai mare decât 0
+        val pagerState = rememberPagerState(initialPage = postIndex) { posts.itemCount }
+
+        // Sincronizare la scroll în interiorul detaliilor
+        LaunchedEffect(pagerState.settledPage) {
+            viewModel.onPostSettled(
+                scopeKey = detailScopeKey,
+                index = pagerState.settledPage,
+                getPost = { idx -> if (idx in 0 until posts.itemCount) posts.peek(idx) else null }
+            )
+        }
 
         val fling = PagerDefaults.flingBehavior(
             state = pagerState,
             pagerSnapDistance = PagerSnapDistance.atMost(1),
-            decayAnimationSpec = decay,
-            snapAnimationSpec = snapSpec
+            decayAnimationSpec = rememberSplineBasedDecay(),
+            snapAnimationSpec = spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessHigh)
         )
-
-        val currentOnReleasePlayer by rememberUpdatedState(viewModel::stopDetailSession)
-
-        LifecycleStartEffect(true) {
-            onStopOrDispose {
-                currentOnReleasePlayer()
-            }
-        }
 
         Scaffold(
             containerColor = BackgroundDark,
-            topBar = {
-                Header(
-                    modifier = Modifier.zIndex(14f),
-                    onBack = onBack,
-                    title = title,
-                    icon = Icons.Default.Close,
-                    iconSize = 30.dp,
-                    withBackground = false
-                )
-            }
+            topBar = { Header(onBack = onBack, title = title, icon = Icons.Default.Close, iconSize = 30.dp, withBackground = false) }
         ) { innerPadding ->
-            Column(modifier = Modifier
-                .fillMaxSize()
-                .background(BackgroundDark)
-                .padding(bottom = innerPadding.calculateBottomPadding())
-            ) {
+            Column(modifier = Modifier.fillMaxSize().background(BackgroundDark).padding(bottom = innerPadding.calculateBottomPadding())) {
                 VerticalPager(
                     state = pagerState,
-                    overscrollEffect = null,
                     flingBehavior = fling,
                     pageSize = PageSize.Fill,
-                    pageSpacing = 0.dp,
                     beyondViewportPageCount = 1,
                     modifier = Modifier.weight(1f),
                 ) { page ->
                     val post = posts.getOrNull(page) ?: return@VerticalPager
-                    val player = viewModel.getPlayerForIndex(page)
 
-                    val postActionState by viewModel
-                        .observePostUi(post.id)
-                        .collectAsStateWithLifecycle()
+                    // Citire reactivă stabilă din SnapshotStateMap
+                    val player by remember(detailScopeKey, page) {
+                        derivedStateOf { viewModel.getPlayerForIndex(detailScopeKey, page) }
+                    }
 
+                    val postActionState by viewModel.observePostUi(post.id).collectAsStateWithLifecycle()
                     val postUi = remember(post, postActionState) {
                         post.copy(
                             userActions = post.userActions.applyUiState(postActionState),
@@ -162,13 +160,11 @@ fun MyProfilePostDetailScreen(
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null,
-                            onClick = { viewModel.togglePlayer(page) }
+                            onClick = { viewModel.togglePlayPause(detailScopeKey, page) }
                         )
                     ) {
-                        if(player != null) {
-                            PostPlayerWithThumbnail(
-                                player = player
-                            )
+                        if (player != null) {
+                            PostPlayerWithThumbnail(player = player!!)
                         } else {
                             AsyncImage(
                                 modifier = Modifier.fillMaxSize(),
@@ -183,13 +179,8 @@ fun MyProfilePostDetailScreen(
                             isSavingLike = postActionState.isSavingLike,
                             isSavingBookmark = postActionState.isSavingBookmark,
                             showBookButton = false,
-                            onAction = { action -> },
-                            onNavigateToUserProfile = { userId, username ->
-                                profileNavigate.toUserProfile(
-                                    userId,
-                                    username
-                                )
-                            },
+                            onAction = {},
+                            onNavigateToUserProfile = { userId, username -> profileNavigate.toUserProfile(userId, username) },
                             onLike = {},
                             onBookmark = {},
                             onNavigateToBooking = {}
@@ -198,11 +189,7 @@ fun MyProfilePostDetailScreen(
                 }
 
                 MainButton(
-                    modifier = Modifier
-                        .padding(
-                            vertical = SpacingS,
-                            horizontal = BasePadding
-                        ),
+                    modifier = Modifier.padding(vertical = SpacingS, horizontal = BasePadding),
                     contentPadding = PaddingValues(12.dp),
                     onClick = {},
                     title = stringResource(R.string.bookNow),
@@ -211,24 +198,3 @@ fun MyProfilePostDetailScreen(
         }
     }
 }
-
-//private fun handlePostAction(
-//    feedViewModel: ProfileLayoutViewModel,
-//    action: PostOverlayActionEnum,
-//    handleOpenSheet: (PostSheetsContent) -> Unit,
-//    post: Post
-//) {
-//    when(action) {
-//        PostOverlayActionEnum.OPEN_BOOKINGS -> handleOpenSheet(BookingsSheet(post.user))
-//        PostOverlayActionEnum.OPEN_REVIEWS -> {
-//            val id = if(post.isVideoReview) post.businessOwner.id else post.user.id
-//            handleOpenSheet(ReviewsSheet(id))
-//        }
-//        PostOverlayActionEnum.OPEN_COMMENTS -> handleOpenSheet(CommentsSheet(post.id))
-//        PostOverlayActionEnum.OPEN_LOCATION -> handleOpenSheet(LocationSheet(post.businessId))
-//        PostOverlayActionEnum.OPEN_MORE_OPTIONS -> handleOpenSheet(MoreOptionsSheet(post.user.id, post.isOwnPost))
-//        PostOverlayActionEnum.OPEN_PHONE -> handleOpenSheet(PhoneSheet(0.7f))
-//        PostOverlayActionEnum.LIKE -> feedViewModel.toggleLike(post)
-//        PostOverlayActionEnum.BOOKMARK -> feedViewModel.toggleBookmark(post)
-//    }
-//}

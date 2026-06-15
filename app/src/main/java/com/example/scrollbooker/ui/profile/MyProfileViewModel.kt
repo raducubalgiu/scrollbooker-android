@@ -22,6 +22,7 @@ import androidx.paging.cachedIn
 import com.example.scrollbooker.components.customized.post.PostActionUiState
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.components.customized.post.VideoPlayerCache
+import com.example.scrollbooker.components.customized.post.VideoPlayerManager
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.auth.domain.useCase.RefreshTokenUseCase
 import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
@@ -86,6 +87,7 @@ import kotlin.collections.set
 
 @HiltViewModel
 class MyProfileViewModel @Inject constructor(
+    authDataStore: AuthDataStore,
     private val updateFullNameUseCase: UpdateFullNameUseCase,
     private val updateUsernameUseCase: UpdateUsernameUseCase,
     private val updateBioUseCase: UpdateBioUseCase,
@@ -106,8 +108,7 @@ class MyProfileViewModel @Inject constructor(
     private val bookmarkPostUseCase: BookmarkPostUseCase,
     private val unBookmarkPostUseCase: UnBookmarkPostUseCase,
     private val searchUsernameUseCase: SearchUsernameUseCase,
-    private val refreshTokenUseCase: RefreshTokenUseCase,
-    private val authDataStore: AuthDataStore,
+    private val videoPlayerManager: VideoPlayerManager,
     @ApplicationContext private val app: Context,
 ): ViewModel() {
     private val _currentTab = MutableStateFlow<Int>(0)
@@ -584,184 +585,43 @@ class MyProfileViewModel @Inject constructor(
         )
     }
 
-    private val maxPlayers = 3
-    private val pool = ArrayDeque<ExoPlayer>(maxPlayers)
-    private val indexToPlayer: SnapshotStateMap<Int, ExoPlayer> = mutableStateMapOf()
-    private val indexToPostId: SnapshotStateMap<Int, Int> = mutableStateMapOf()
+    private val _currentIndex = MutableStateFlow(0)
+    val currentIndex: StateFlow<Int> = _currentIndex.asStateFlow()
 
-    private var focusedIndex: Int? = null
-    private val windowMutex = Mutex()
+    val userPausedPostIds = videoPlayerManager.userPausedPostIds
 
-    init {
-        repeat(maxPlayers) { pool.add(createPlayer(app)) }
+    fun getPlayerForIndex(scopeKey: String, index: Int): ExoPlayer? {
+        return videoPlayerManager.getPlayerForIndex(scopeKey, index)
     }
 
-    @androidx.annotation.OptIn(UnstableApi::class)
-    @OptIn(UnstableApi::class)
-    private fun createLoadControl(): DefaultLoadControl {
-        return DefaultLoadControl.Builder()
-            .setBufferDurationsMs(
-                1500,
-                5000,
-                500,
-                1500
-            )
-            .setTargetBufferBytes(C.LENGTH_UNSET)
-            .setPrioritizeTimeOverSizeThresholds(true)
-            .build()
-    }
-
-    @androidx.annotation.OptIn(UnstableApi::class)
-    @OptIn(UnstableApi::class)
-    private fun createPlayer(context: Context): ExoPlayer {
-        return ExoPlayer.Builder(context)
-            .setLoadControl(createLoadControl())
-            .setHandleAudioBecomingNoisy(true)
-            .setMediaSourceFactory(DefaultMediaSourceFactory(VideoPlayerCache.getFactory()))
-            .setAudioAttributes(
-                AudioAttributes.Builder()
-                    .setUsage(C.USAGE_MEDIA)
-                    .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
-                    .build(), true
-            )
-            .build()
-            .apply {
-                repeatMode = Player.REPEAT_MODE_ONE
-                playWhenReady = false
-                volume = 1f
-            }
-    }
-
-    fun ensureWindow(
-        centerIndex: Int,
-        getPost: (Int) -> Post?
-    ) {
-        viewModelScope.launch {
-            windowMutex.withLock {
-                ensureWindowInternal(centerIndex, getPost)
-            }
+    /**
+     * Pregătește buffer-ul asincron (fereastra glisantă) DOAR când suntem în ecranul de detalii active
+     */
+    fun setDetailScreenActive(isActive: Boolean, scopeKey: String, centerIndex: Int, getPost: (Int) -> Post?) {
+        if (isActive) {
+            // Dezactivează orice alt video activ din aplicație (ex: din Feed)
+            videoPlayerManager.activateScreenScope(scopeKey)
         }
+        videoPlayerManager.ensureWindow(scopeKey, centerIndex, isActive, getPost)
     }
 
-    private fun ensureWindowInternal(
-        centerIndex: Int,
-        getPost: (Int) -> Post?
-    ) {
-        val desired = listOf(centerIndex - 1, centerIndex, centerIndex + 1)
-            .filter { it >= 0 }
-
-        // 1) Detach indices care nu mai sunt în fereastră
-        val toRemove = indexToPlayer.keys - desired
-        toRemove.forEach { idx ->
-            indexToPlayer.remove(idx)?.let { player ->
-                indexToPostId.remove(idx)
-                resetPlayer(player)
-                pool.addLast(player)
-            }
-        }
-
-        // 2) Attach indices noi
-        desired.forEach { idx ->
-            if (idx < 0) return@forEach
-            val post = getPost(idx) ?: return@forEach
-
-            val existing = indexToPlayer[idx]
-            val existingPostId = indexToPostId[idx]
-            if (existing != null && existingPostId == post.id) return@forEach
-
-            val player = existing ?: pool.removeFirstOrNull() ?: return@forEach
-
-            // dacă era “existing” dar alt post, îl resetăm
-            if (existing != null) {
-                resetPlayer(player)
-            }
-
-            indexToPlayer[idx] = player
-            indexToPostId[idx] = post.id
-
-            prepareForPost(player, post)
-
-            player.playWhenReady = (idx == focusedIndex)
-        }
-
-        applyFocus(centerIndex)
+    fun onPostSettled(scopeKey: String, index: Int, getPost: (Int) -> Post?) {
+        _currentIndex.value = index
+        videoPlayerManager.onPageSettled(scopeKey, index, true)
+        videoPlayerManager.ensureWindow(scopeKey, index, true, getPost)
     }
 
-    fun ensureImmediate(
-        centerIndex: Int,
-        getPost: (Int) -> Post?
-    ) {
-        if(!windowMutex.tryLock()) return
-        try {
-            ensureWindowInternal(centerIndex, getPost)
-        } finally {
-            windowMutex.unlock()
-        }
+    fun togglePlayPause(scopeKey: String, index: Int) {
+        videoPlayerManager.togglePlayer(scopeKey, index)
     }
 
-    fun onPageSettled(index: Int) {
-        focusedIndex = index
-        applyFocus(index)
-    }
-
-    private fun applyFocus(index: Int) {
-        indexToPlayer.forEach { (idx, player) ->
-            val shouldPlay = (idx == index)
-            player.playWhenReady = shouldPlay
-            player.volume = if (shouldPlay) 1f else 0f
-            if (!shouldPlay) player.pause()
-        }
-    }
-
-    private fun prepareForPost(player: ExoPlayer, post: Post) {
-        val mediaItem = MediaItem.fromUri(post.mediaFiles.first().url)
-        player.setMediaItem(mediaItem)
-        player.prepare()
-        player.seekTo(0)
-    }
-
-    private fun resetPlayer(player: ExoPlayer) {
-        player.playWhenReady = false
-        player.pause()
-        player.stop()
-        player.clearMediaItems()
-        player.seekTo(0)
-        player.volume = 0f
-    }
-
-    fun seekToZero(index: Int) {
-        val player = getPlayerForIndex(index) ?: return
-        player.seekTo(0)
-    }
-
-    fun getPlayerForIndex(index: Int): ExoPlayer? = indexToPlayer[index]
-
-    fun togglePlayer(index: Int) {
-        val player = getPlayerForIndex(index) ?: return
-
-        val isFocused = (index == focusedIndex)
-
-        if(player.isPlaying) {
-            player.playWhenReady = false
-
-        } else {
-            if(isFocused) {
-                player.playWhenReady = true
-            } else {
-                focusedIndex = index
-                applyFocus(index)
-            }
-        }
-    }
-
-    fun stopDetailSession() {
-        indexToPlayer.values.forEach { player ->
-            player.pause()
-        }
+    fun onDetailSessionFinished(scopeKey: String) {
+        videoPlayerManager.releaseScreenScope(scopeKey)
     }
 
     override fun onCleared() {
-        stopDetailSession()
         super.onCleared()
+        videoPlayerManager.releaseScreenScope("MY_PROFILE_DETAIL_POSTS")
+        videoPlayerManager.releaseScreenScope("MY_PROFILE_DETAIL_BOOKMARKS")
     }
 }
