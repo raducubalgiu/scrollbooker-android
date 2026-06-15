@@ -3,7 +3,6 @@ package com.example.scrollbooker.ui.booking
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import coil.network.HttpException
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.availability.domain.model.AvailableDay
@@ -24,12 +23,12 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.withContext
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.LocalDate
 import timber.log.Timber
@@ -117,7 +116,7 @@ class BookingViewModel @Inject constructor(
         emit(FeatureState.Error(e as? Exception ?: Exception(e)))
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
+        started = SharingStarted.Lazily,
         initialValue = FeatureState.Loading
     )
 
@@ -143,6 +142,9 @@ class BookingViewModel @Inject constructor(
 
     private val _selectedDay = MutableStateFlow<LocalDate>(LocalDate.now())
     val selectedDay: StateFlow<LocalDate> = _selectedDay.asStateFlow()
+
+    private val _selectedSlot = MutableStateFlow<Slot?>(null)
+    val selectedSlot: StateFlow<Slot?> = _selectedSlot.asStateFlow()
 
     val calendarHeader: StateFlow<FeatureState<CalendarHeaderState>> = flow {
         emit(FeatureState.Loading)
@@ -186,28 +188,53 @@ class BookingViewModel @Inject constructor(
         .catch { emit(FeatureState.Error(it)) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, FeatureState.Loading)
 
+    private val slotDuration: StateFlow<Int> = _selectedBookingItems
+        .map { items ->
+            val total = items.sumOf { it.variantDuration }
+            if (total > 0) total else 0
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = 0
+        )
+
+    private val slotsCache = mutableMapOf<Pair<LocalDate, Int>, AvailableDay>()
+
     @OptIn(ExperimentalCoroutinesApi::class)
-    val availableSlots: StateFlow<FeatureState<AvailableDay>> = selectedDay
-        .flatMapLatest { day ->
+    val availableSlots: StateFlow<FeatureState<AvailableDay>> = combine(
+        selectedDay,
+        slotDuration
+    ) { day, duration ->
+        Pair(day, duration)
+    }
+        .flatMapLatest { (day, duration) ->
             flow {
-                emit(FeatureState.Loading)
+                val cacheKey = Pair(day, duration)
 
-                val params = SlotsParams(
-                    day = day,
-                    userId = userId,
-                    slotDuration = 30,
-                    forceRefresh = false
-                )
+                if (slotsCache.containsKey(cacheKey)) {
+                    emit(FeatureState.Success(slotsCache[cacheKey]!!))
+                } else {
+                    emit(FeatureState.Loading)
 
-                val availableDayData = withVisibleLoading {
-                    getUserAvailableTimeslotsUseCase(
-                        day = params.day.toString(),
-                        userId = params.userId,
-                        slotDuration = params.slotDuration
+                    val params = SlotsParams(
+                        day = day,
+                        userId = userId,
+                        slotDuration = duration,
+                        forceRefresh = false
                     )
-                }
 
-                emit(FeatureState.Success(availableDayData))
+                    val availableDayData = withVisibleLoading {
+                        getUserAvailableTimeslotsUseCase(
+                            day = params.day.toString(),
+                            userId = params.userId,
+                            slotDuration = params.slotDuration
+                        )
+                    }
+
+                    slotsCache[cacheKey] = availableDayData
+                    emit(FeatureState.Success(availableDayData))
+                }
             }
                 .flowOn(Dispatchers.IO)
                 .catch { exception ->
@@ -217,7 +244,19 @@ class BookingViewModel @Inject constructor(
         }
         .stateIn(
             viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
+            SharingStarted.Lazily,
             FeatureState.Loading
         )
+
+    fun clearSlotsCache() {
+        slotsCache.clear()
+    }
+
+    fun onDaySelected(date: LocalDate) {
+        _selectedDay.value = date
+    }
+
+    fun onSlotSelected(slot: Slot) {
+        _selectedSlot.value = slot
+    }
 }

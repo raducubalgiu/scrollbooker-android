@@ -13,6 +13,7 @@ import com.example.scrollbooker.components.core.headers.Header
 @Composable
 fun BookingLayout(
     modifier: Modifier = Modifier,
+    title: String = "",
     onBack: () -> Unit,
     onNext: () -> Unit,
     bookingTotals: BookingTotals,
@@ -21,7 +22,12 @@ fun BookingLayout(
 ) {
     Scaffold(
         modifier = modifier,
-        topBar = { Header(onBack = onBack) }
+        topBar = {
+            Header(
+                title = title,
+                onBack = onBack
+            )
+        }
     ) { innerPadding ->
         Box(
             modifier = Modifier

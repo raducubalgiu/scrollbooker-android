@@ -26,6 +26,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnPrimary
+import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.titleMedium
 import org.threeten.bp.LocalDate
 
@@ -56,7 +57,7 @@ fun CalendarDayTab(
         ) {
             Text(
                 text = label,
-                style = titleMedium,
+                style = bodyLarge,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 color = if(isDayAvailable) OnBackground else Divider

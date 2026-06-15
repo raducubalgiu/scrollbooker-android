@@ -28,10 +28,11 @@ import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun FullyBookedDayMessage(
+    modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = SpacingXL)
             .padding(top = SpacingXXL),

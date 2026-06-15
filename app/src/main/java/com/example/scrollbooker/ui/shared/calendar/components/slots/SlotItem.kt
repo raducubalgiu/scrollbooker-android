@@ -8,12 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material3.Icon
 import androidx.compose.material3.ShapeDefaults
-import androidx.compose.material3.SuggestionChip
-import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,7 +24,6 @@ import com.example.scrollbooker.entity.booking.availability.domain.model.Slot
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.LastMinute
 import com.example.scrollbooker.ui.theme.OnPrimary
-import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
 
@@ -41,7 +35,8 @@ fun SlotItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(shape = ShapeDefaults.Medium)
+            .padding(horizontal = BasePadding)
+            .clip(shape = ShapeDefaults.Large)
             .background(SurfaceBG)
             .clickable { onSelectSlot(slot) }
             .padding(BasePadding),
@@ -83,12 +78,6 @@ fun SlotItem(
 
                 Spacer(Modifier.width(SpacingS))
             }
-
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                contentDescription = null,
-                tint = Primary
-            )
         }
     }
 }

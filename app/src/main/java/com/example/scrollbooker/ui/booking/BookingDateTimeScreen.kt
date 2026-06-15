@@ -3,6 +3,7 @@ package com.example.scrollbooker.ui.booking
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,8 +12,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
@@ -22,30 +24,38 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.extensions.displayDatePeriod
 import com.example.scrollbooker.core.extensions.displayShortDayOfWeek
 import com.example.scrollbooker.core.util.AppLocaleProvider
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.ui.shared.calendar.components.CalendarDayTab
+import com.example.scrollbooker.ui.shared.calendar.components.slots.FullyBookedDayMessage
+import com.example.scrollbooker.ui.shared.calendar.components.slots.SlotItem
+import com.example.scrollbooker.ui.shared.calendar.components.slots.SlotsShimmer
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.SurfaceBG
-import com.example.scrollbooker.ui.theme.headlineMedium
+import com.example.scrollbooker.ui.theme.titleMedium
 import kotlinx.coroutines.launch
+import org.threeten.bp.LocalDate
 
 @Composable
 fun BookingDateTimeScreen(
@@ -62,14 +72,17 @@ fun BookingDateTimeScreen(
     val scope = rememberCoroutineScope()
 
     val totalWeeks = 26
+    val totalDays = totalWeeks * 7
     val weekPagerState = rememberPagerState(initialPage = 0) { totalWeeks }
+    val dayPagerState = rememberPagerState(initialPage = 0) { totalDays }
 
     BookingLayout(
         modifier = modifier,
+        title = "Alege Data si Ora",
         onBack = onBack,
         onNext = onNavigateToConfirmation,
         bookingTotals = bookingTotals,
-        displayBottomBar = true
+        displayBottomBar = false
     ) {
         when (val header = headerState) {
             is FeatureState.Error -> ErrorScreen()
@@ -77,6 +90,7 @@ fun BookingDateTimeScreen(
             is FeatureState.Success -> {
                 val calendar = header.data
                 val calendarDays = calendar.calendarDays
+                val config = calendar.config
 
                 val availableDaysSet = remember(calendar.calendarAvailableDays) {
                     calendar.calendarAvailableDays.toSet()
@@ -100,7 +114,7 @@ fun BookingDateTimeScreen(
                 }
 
                 val enableBack = currentWeekIndex > 0
-                val enableNext = currentWeekIndex < header.data.config.totalWeeks - 1
+                val enableNext = currentWeekIndex < config.totalWeeks - 1
 
                 fun handlePreviousWeek() {
                     scope.launch { weekPagerState.animateScrollToPage(currentWeekIndex - 1) }
@@ -112,17 +126,72 @@ fun BookingDateTimeScreen(
 
                 val currentLocale = AppLocaleProvider.current()
 
+                LaunchedEffect(weekPagerState.currentPage, dayPagerState.currentPage) {
+                    val today = LocalDate.now()
+                    val calendar = (headerState as? FeatureState.Success)?.data ?: return@LaunchedEffect
+                    val calendarDays = calendar.calendarDays
+
+                    if (dayPagerState.isScrollInProgress) {
+                        val currentDayIndex = dayPagerState.currentPage
+                        val targetWeekPage = currentDayIndex / 7
+
+                        if (weekPagerState.currentPage != targetWeekPage) {
+                            weekPagerState.scrollToPage(targetWeekPage)
+                        }
+
+                        calendarDays.getOrNull(currentDayIndex)?.let { targetDate ->
+                            val finalDate = if (targetDate.isBefore(today)) today else targetDate
+                            if (finalDate != selectedDay) {
+                                viewModel.onDaySelected(finalDate)
+                            }
+                        }
+                    } else if (weekPagerState.isScrollInProgress) {
+                        val targetWeekIndex = weekPagerState.currentPage
+
+                        val currentDayOfWeekOrdinal = selectedDay.dayOfWeek.ordinal
+
+                        val targetDayIndex = targetWeekIndex * 7 + currentDayOfWeekOrdinal
+                        val targetDate = calendarDays.getOrNull(targetDayIndex)
+
+                        if (targetDate != null) {
+                            val finalDate = if (targetDate.isBefore(today)) today else targetDate
+
+                            val finalDayIndex = calendarDays.indexOf(finalDate).coerceAtLeast(0)
+                            if (dayPagerState.currentPage != finalDayIndex) {
+                                dayPagerState.scrollToPage(finalDayIndex)
+                            }
+
+                            if (finalDate != selectedDay) {
+                                viewModel.onDaySelected(finalDate)
+                            }
+                        }
+                    }
+                }
+
                 Column(modifier = Modifier.fillMaxSize()) {
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = BasePadding),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(
-                            text = period,
-                            style = headlineMedium,
-                            fontWeight = FontWeight.SemiBold
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_calendar_outline),
+                                contentDescription = null
+                            )
+
+                            Spacer(Modifier.width(SpacingS))
+
+                            Text(
+                                text = period,
+                                style = titleMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
 
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             IconButton(
@@ -159,11 +228,7 @@ fun BookingDateTimeScreen(
 
                     HorizontalPager(
                         state = weekPagerState,
-                        pageSize = PageSize.Fill,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(95.dp)
-                            .padding(horizontal = BasePadding),
+                        modifier = Modifier.fillMaxWidth().height(95.dp).padding(horizontal = BasePadding),
                         beyondViewportPageCount = 1
                     ) { page ->
                         val weekDates = remember(page, calendarDays) {
@@ -175,22 +240,20 @@ fun BookingDateTimeScreen(
                             horizontalArrangement = Arrangement.SpaceEvenly,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            weekDates.forEach { date ->
+                            weekDates.forEachIndexed { index, date ->
                                 val isAvailable = availableDaysSet.contains(date)
                                 val isSelected = selectedDay == date
 
-                                Box(
-                                    modifier = Modifier.weight(1f),
-                                    contentAlignment = Alignment.Center
-                                ) {
+                                Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
                                     CalendarDayTab(
                                         date = date,
                                         isCurrentTab = isSelected,
-                                        onChangeTab = {},
-                                        bgColor = if (isSelected) Primary else Color.Transparent,
-                                        label = remember(date, currentLocale) {
-                                            displayShortDayOfWeek(date, currentLocale)
+                                        onChangeTab = {
+                                            val targetDayIndex = page * 7 + index
+                                            scope.launch { dayPagerState.animateScrollToPage(targetDayIndex) }
                                         },
+                                        bgColor = if (isSelected) Primary else Color.Transparent,
+                                        label = remember(date, currentLocale) { displayShortDayOfWeek(date, currentLocale) },
                                         isLoading = false,
                                         isDayAvailable = isAvailable
                                     )
@@ -199,37 +262,36 @@ fun BookingDateTimeScreen(
                         }
                     }
 
-                    when(val slots = timeSlots) {
-                        is FeatureState.Loading -> LoadingScreen(modifier = Modifier.fillMaxSize())
-                        is FeatureState.Error -> ErrorScreen(modifier = Modifier.fillMaxSize())
-                        is FeatureState.Success -> {
-                            val slots = slots.data.availableSlots
-                            if (slots.isEmpty()) {
-                                Text(
-                                    text = "No available time slots for the selected day.",
-                                    modifier = Modifier.padding(BasePadding)
-                                )
-                            } else {
-                                Column(modifier = Modifier.fillMaxWidth()) {
-                                    Text(
-                                        text = "Available Time Slots",
-                                        style = headlineMedium,
-                                        fontWeight = FontWeight.SemiBold,
-                                        modifier = Modifier.padding(horizontal = BasePadding)
-                                    )
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                                    Spacer(modifier = Modifier.height(SpacingXS))
+                    HorizontalPager(
+                        state = dayPagerState,
+                        modifier = Modifier.fillMaxWidth().weight(1f),
+                        beyondViewportPageCount = 1
+                    ) { pageIndex ->
+                        when (val slots = timeSlots) {
+                            is FeatureState.Loading -> SlotsShimmer()
+                            is FeatureState.Error -> ErrorScreen()
+                            is FeatureState.Success -> {
+                                val availableSlotsList = slots.data.availableSlots
 
-                                    slots.forEach { slot ->
-                                        Text(
-                                            text = slot.startDateLocale,
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(
-                                                    horizontal = BasePadding,
-                                                    vertical = SpacingXS
-                                                )
-                                        )
+                                if (availableSlotsList.isEmpty()) {
+                                    FullyBookedDayMessage(onClick = {})
+                                } else {
+                                    LazyColumn(
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentPadding = PaddingValues(bottom = BasePadding),
+                                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                                    ) {
+                                        items(availableSlotsList) { slot ->
+                                            SlotItem(
+                                                slot = slot,
+                                                onSelectSlot = {
+                                                    viewModel.onSlotSelected(slot)
+                                                    onNavigateToConfirmation()
+                                                }
+                                            )
+                                        }
                                     }
                                 }
                             }

@@ -17,6 +17,7 @@ fun BookingSpecialistsScreen(
 
     BookingLayout(
         modifier = modifier,
+        title = "Alege Specialistul",
         onBack = onBack,
         onNext = onNavigateToDateTime,
         bookingTotals = bookingTotals,

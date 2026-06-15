@@ -21,28 +21,27 @@ import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable
 fun SlotsShimmer() {
-    Column(Modifier.fillMaxSize()) {
+    Column(Modifier.fillMaxSize().padding(horizontal = BasePadding)) {
         repeat(5) {
-            Spacer(Modifier.height(BasePadding))
-
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(55.dp)
-                    .clip(shape = ShapeDefaults.Medium)
+                    .height(50.dp)
+                    .clip(shape = ShapeDefaults.Large)
                     .background(SurfaceBG)
                     .padding(BasePadding),
                 contentAlignment = Alignment.CenterStart
             ) {
                 Spacer(
                     modifier = Modifier
-                        .height(20.dp)
+                        .height(15.dp)
                         .width(60.dp)
                         .clip(shape = ShapeDefaults.Medium)
-                        .padding(start = BasePadding)
                         .shimmerEffect()
                 )
             }
+
+            Spacer(Modifier.height(12.dp))
         }
     }
 }

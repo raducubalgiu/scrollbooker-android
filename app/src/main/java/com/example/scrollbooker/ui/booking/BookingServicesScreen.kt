@@ -89,6 +89,7 @@ fun BookingServicesScreen(
 
     BookingLayout(
         modifier = modifier,
+        title = "Alege Serviciile",
         onBack = onBack,
         onNext = onNavigateToSpecialists,
         bookingTotals = bookingTotals,
