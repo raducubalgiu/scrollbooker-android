@@ -5,11 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
+import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentScrollBookerCreateDto
+import com.example.scrollbooker.entity.booking.appointment.domain.useCase.CreateScrollBookerAppointmentUseCase
 import com.example.scrollbooker.entity.booking.availability.domain.model.AvailableDay
 import com.example.scrollbooker.entity.booking.availability.domain.model.Slot
 import com.example.scrollbooker.entity.booking.availability.domain.useCase.GetCalendarAvailableDaysUseCase
 import com.example.scrollbooker.entity.booking.availability.domain.useCase.GetUserAvailableTimeslotsUseCase
-import com.example.scrollbooker.entity.booking.products.domain.model.ProductOffering
 import com.example.scrollbooker.entity.booking.products.domain.model.UserProducts
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByBusinessIdAndEmployeeIdUseCase
 import com.example.scrollbooker.ui.shared.calendar.CalendarConfig
@@ -35,26 +36,13 @@ import timber.log.Timber
 import java.math.BigDecimal
 import javax.inject.Inject
 
-data class SelectedBookingItem(
-    val productId: Int,
-    val variantId: Int,
-    val variantDuration: Int,
-    val offerings: List<ProductOffering>,
-    val productName: String,
-    val variantName: String
-)
-
-data class BookingTotals(
-    val totalPrice: BigDecimal,
-    val totalDuration: Int
-)
-
 @HiltViewModel
 class BookingViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getProductsByBusinessIdAndEmployeeIdUseCase: GetProductsByBusinessIdAndEmployeeIdUseCase,
     private val getCalendarAvailableDaysUseCase: GetCalendarAvailableDaysUseCase,
     private val getUserAvailableTimeslotsUseCase: GetUserAvailableTimeslotsUseCase,
+    private val createScrollBookerAppointmentUseCase: CreateScrollBookerAppointmentUseCase,
 ): ViewModel() {
     val businessId: Int = checkNotNull(savedStateHandle["businessId"]) {
         "businessId mandatory parameter is missing in Booking flow"
@@ -247,6 +235,44 @@ class BookingViewModel @Inject constructor(
             SharingStarted.Lazily,
             FeatureState.Loading
         )
+
+    private val _isSaving = MutableStateFlow<Boolean>(false)
+    val isSaving: StateFlow<Boolean> = _isSaving.asStateFlow()
+
+    suspend fun createAppointment(): Result<Unit> {
+        _isSaving.value = true
+
+        val startDate = _selectedSlot.value?.startDateUtc
+        val endDate = _selectedSlot.value?.endDateUtc
+
+        if(startDate.isNullOrBlank() || endDate.isNullOrBlank()) {
+            Timber.tag("Create Appointment").e("ERROR: on Creating ScrollBooker Appointment, the provided data are invalid")
+            return Result.failure(Exception("Invalid data"))
+        }
+
+        val appointment = AppointmentScrollBookerCreateDto(
+            startDate = startDate,
+            endDate = endDate,
+            productVariants = _selectedBookingItems.value.toProductVariantsDto(),
+            paymentCurrencyId = 1,
+        )
+
+        val result = withVisibleLoading {
+            createScrollBookerAppointmentUseCase(appointment)
+        }
+
+        result
+            .onFailure { e ->
+                _isSaving.value = false
+                Timber.tag("Appointment").e("ERROR: onCreating ScrollBooker Appointment $e")
+            }
+            .onSuccess {
+                _isSaving.value = false
+            }
+
+        return result
+
+    }
 
     fun clearSlotsCache() {
         slotsCache.clear()

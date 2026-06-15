@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.example.scrollbooker.navigation.graphs.bookingGraph
 import com.example.scrollbooker.navigation.graphs.socialGraph
 import com.example.scrollbooker.navigation.graphs.userProfileGraph
 import com.example.scrollbooker.navigation.navigators.InboxNavigator
@@ -120,5 +121,6 @@ fun InboxNavHost(navController: NavHostController) {
 
         userProfileGraph(navController, profileNavigate)
         socialGraph(navController, profileNavigate)
+        bookingGraph(navController)
     }
 }

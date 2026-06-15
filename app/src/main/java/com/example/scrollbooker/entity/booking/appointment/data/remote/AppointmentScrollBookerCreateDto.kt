@@ -9,12 +9,19 @@ data class AppointmentScrollBookerCreateDto(
     @SerializedName("end_date")
     val endDate: String,
 
-    @SerializedName("user_id")
-    val userId: Int,
-
-    @SerializedName("product_ids")
-    val productIds: List<Int>,
+    @SerializedName("product_variants")
+    val productVariants: List<AppointmentProductVariantCreateDto>,
 
     @SerializedName("payment_currency_id")
-    val currencyId: Int,
+    val paymentCurrencyId: Int,
+)
+
+data class AppointmentProductVariantCreateDto(
+    val id: Int,
+    val offering: AppointmentProductOfferingCreateDto
+)
+
+data class AppointmentProductOfferingCreateDto(
+    @SerializedName("user_id")
+    val userId: Int
 )

@@ -9,8 +9,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Star
@@ -23,9 +21,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.scrollbooker.entity.booking.products.domain.model.ProductOffering
 import com.example.scrollbooker.entity.booking.products.domain.model.ProductOfferingUser
 import java.math.BigDecimal
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import com.example.scrollbooker.components.core.buttons.MainButton
+import kotlinx.coroutines.launch
 
 val dummySelectedItems = listOf(
     SelectedBookingItem(
@@ -67,6 +70,9 @@ fun BookingConfirmationScreen(
     onBack: () -> Unit,
     onConfirmBooking: () -> Unit = {}
 ) {
+    val isSaving by viewModel.isSaving.collectAsStateWithLifecycle()
+    val scope = rememberCoroutineScope()
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -87,29 +93,23 @@ fun BookingConfirmationScreen(
             )
         },
         bottomBar = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(16.dp)
-            ) {
-                Button(
-                    onClick = onConfirmBooking,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(54.dp),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Text("Confirmă Rezervarea", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            MainButton(
+                title = "Confirma programarea",
+                isLoading = isSaving,
+                enabled = !isSaving,
+                onClick = {
+                    scope.launch {
+                        viewModel.createAppointment()
+                    }
                 }
-            }
+            )
         }
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(Color(0xFFF7F9FA)) // Fundal gri foarte deschis pentru contrast cu cardurile
+                .background(Color(0xFFF7F9FA))
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -323,7 +323,6 @@ fun BookingConfirmationScreen(
                             }
                         }
 
-                        // Adaugă linie separatoare între elemente, mai puțin după ultimul
                         if (index < dummySelectedItems.lastIndex) {
                             Divider(color = Color(0xFFF5F5F5), modifier = Modifier.padding(top = 4.dp))
                         }

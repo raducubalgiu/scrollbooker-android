@@ -3,7 +3,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
-import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentScrollBookerCreate
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.CreateScrollBookerAppointmentUseCase
 import com.example.scrollbooker.entity.booking.availability.domain.model.AvailableDay
 import com.example.scrollbooker.entity.booking.availability.domain.model.Slot
@@ -199,43 +198,43 @@ class CalendarViewModel @Inject constructor(
         }
     }
 
-    suspend fun createAppointment(): Result<Unit> {
-        _isSaving.value = true
-
-        val selectedProduct = _product.value
-        val startDate = _selectedSlot.value?.startDateUtc
-        val endDate = _selectedSlot.value?.endDateUtc
-
-        val isProductSuccess = selectedProduct is FeatureState.Success
-
-        if(startDate.isNullOrBlank() || endDate.isNullOrBlank() || !isProductSuccess) {
-            Timber.tag("Create Appointment").e("ERROR: on Creating ScrollBooker Appointment, the provided data are invalid")
-            return Result.failure(Exception("Invalid data"))
-        }
-
-        val appointment = AppointmentScrollBookerCreate(
-            startDate = startDate,
-            endDate = endDate,
-            //userId = selectedProduct.data.userId,
-            userId = 1,
-            currencyId = selectedProduct.data.currencyId,
-            productIds = emptyList(),
-        )
-
-        val result = withVisibleLoading {
-            createScrollBookerAppointmentUseCase(appointment)
-        }
-
-        result
-            .onFailure { e ->
-                _isSaving.value = false
-                Timber.tag("Appointment").e("ERROR: onCreating ScrollBooker Appointment $e")
-            }
-            .onSuccess {
-                _isSaving.value = false
-            }
-
-        return result
-
-    }
+//    suspend fun createAppointment(): Result<Unit> {
+//        _isSaving.value = true
+//
+//        val selectedProduct = _product.value
+//        val startDate = _selectedSlot.value?.startDateUtc
+//        val endDate = _selectedSlot.value?.endDateUtc
+//
+//        val isProductSuccess = selectedProduct is FeatureState.Success
+//
+//        if(startDate.isNullOrBlank() || endDate.isNullOrBlank() || !isProductSuccess) {
+//            Timber.tag("Create Appointment").e("ERROR: on Creating ScrollBooker Appointment, the provided data are invalid")
+//            return Result.failure(Exception("Invalid data"))
+//        }
+//
+//        val appointment = AppointmentScrollBookerCreate(
+//            startDate = startDate,
+//            endDate = endDate,
+//            //userId = selectedProduct.data.userId,
+//            userId = 1,
+//            currencyId = selectedProduct.data.currencyId,
+//            productIds = emptyList(),
+//        )
+//
+//        val result = withVisibleLoading {
+//            createScrollBookerAppointmentUseCase(appointment)
+//        }
+//
+//        result
+//            .onFailure { e ->
+//                _isSaving.value = false
+//                Timber.tag("Appointment").e("ERROR: onCreating ScrollBooker Appointment $e")
+//            }
+//            .onSuccess {
+//                _isSaving.value = false
+//            }
+//
+//        return result
+//
+//    }
 }
