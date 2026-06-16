@@ -1,6 +1,9 @@
 package com.example.scrollbooker.navigation.graphs
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
@@ -30,7 +33,23 @@ fun NavGraphBuilder.myProfileGraph(
         route = MainRoute.MyProfileNavigator.route,
         startDestination = MainRoute.MyProfile.route
     ) {
-        composable(MainRoute.MyProfile.route) { backStackEntry ->
+        composable(
+            route = MainRoute.MyProfile.route,
+            exitTransition = {
+                if (targetState.destination.route?.startsWith(MainRoute.MyProfilePostDetail.route) == true) {
+                    ExitTransition.None
+                } else {
+                    null
+                }
+            },
+            popEnterTransition = {
+                if (initialState.destination.route?.startsWith(MainRoute.MyProfilePostDetail.route) == true) {
+                    EnterTransition.None
+                } else {
+                    null
+                }
+            },
+        ) { backStackEntry ->
             val viewModel = hiltViewModel<MyProfileViewModel>(backStackEntry)
             val permissionController = LocalUserPermissions.current
 
@@ -45,8 +64,8 @@ fun NavGraphBuilder.myProfileGraph(
 
         composable(
             route = "${MainRoute.MyProfilePostDetail.route}/{postTab}/{postIndex}",
-            enterTransition = { EnterTransition.None },
-            exitTransition = { ExitTransition.None},
+            enterTransition = { fadeIn(animationSpec = tween(durationMillis = 200)) },
+            exitTransition = { ExitTransition.None },
             popEnterTransition = { EnterTransition.None },
             popExitTransition = { ExitTransition.None },
             arguments = listOf(

@@ -8,6 +8,7 @@ import androidx.paging.cachedIn
 import com.example.scrollbooker.components.customized.post.PostActionUiState
 import com.example.scrollbooker.components.customized.post.VideoPlayerManager
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
 import com.example.scrollbooker.entity.booking.employee.domain.useCase.GetEmployeesByOwnerUseCase
 import com.example.scrollbooker.entity.booking.products.domain.model.UserProducts
@@ -74,7 +75,9 @@ abstract class BaseProfileViewModel(
                 .flatMapLatest { currentUsername ->
                     flow {
                         emit(FeatureState.Loading)
-                        val response = getUserProfileUseCase(currentUsername, lat = null, lng = null)
+                        val response = withVisibleLoading {
+                            getUserProfileUseCase(currentUsername, lat = null, lng = null)
+                        }
 
                         if (response is FeatureState.Success) {
                             _isFollowState.value = response.data.isFollow
@@ -266,9 +269,12 @@ abstract class BaseProfileViewModel(
         return videoPlayerManager.getPlayerForIndex(scopeKey, index)
     }
 
-    override fun setDetailScreenActive(isActive: Boolean, scopeKey: String, centerIndex: Int, getPost: (Int) -> Post?) {
+    override fun setDetailScreenActive(
+        isActive: Boolean,
+        scopeKey: String,
+        centerIndex: Int,
+        getPost: (Int) -> Post?) {
         if (isActive) {
-            // Oprește sunetul de la ecranele din spate (ex: din Feed), dar NU le distruge bufferul!
             videoPlayerManager.activateScreenScope(scopeKey)
         }
         videoPlayerManager.ensureWindow(scopeKey, centerIndex, isActive, getPost)
@@ -284,7 +290,6 @@ abstract class BaseProfileViewModel(
     }
 
     override fun onDetailSessionFinished(scopeKey: String) {
-        // Ecranul de detalii s-a închis de tot (Back) -> eliberăm aceste playere în pool-ul global
         videoPlayerManager.releaseScreenScope(scopeKey)
     }
 }

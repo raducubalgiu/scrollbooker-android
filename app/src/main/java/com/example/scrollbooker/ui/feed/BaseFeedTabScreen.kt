@@ -47,13 +47,12 @@ import com.example.scrollbooker.navigation.navigators.NavigateBookingParam
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 
-
 @Composable
 fun BaseFeedTabScreen(
     posts: LazyPagingItems<Post>,
     isTabActive: Boolean,
     viewModel: FeedViewModelContract,
-    sourceName: String, // Pentru tracking/booking dinamic (ex: "feed_explore")
+    sourceName: String,
     onAction: (PostSheetActionEnum, Post) -> Unit,
     onNavigateToUserProfile: (Int, String) -> Unit,
     onNavigateToBooking: (NavigateBookingParam) -> Unit
@@ -63,7 +62,7 @@ fun BaseFeedTabScreen(
     val verticalPagerState = rememberPagerState { posts.itemCount }
     val settledPage by remember { derivedStateOf { verticalPagerState.settledPage } }
 
-    LaunchedEffect(verticalPagerState, isTabActive) {
+    LaunchedEffect(verticalPagerState.settledPage, isTabActive) {
         if (!isTabActive) return@LaunchedEffect
 
         snapshotFlow {
@@ -74,34 +73,12 @@ fun BaseFeedTabScreen(
             .collectLatest { (page, postId) ->
                 if (postId == null) return@collectLatest
 
-                viewModel.resumePlayerOnTabEnter(page)
-
                 viewModel.ensureWindow(
                     centerIndex = page,
                     getPost = { idx -> posts.getOrNull(idx) }
                 )
+                viewModel.onPageSettled(page)
             }
-    }
-
-    LaunchedEffect(isTabActive) {
-        if (!isTabActive) {
-            viewModel.stopDetailSession()
-        } else {
-            viewModel.resumePlayerOnTabEnter(settledPage)
-            // Re-evaluăm fereastra pentru tab-ul proaspăt deschis ca să își tragă playerele din pool
-            viewModel.ensureWindow(
-                centerIndex = settledPage,
-                getPost = { idx -> posts.getOrNull(idx) }
-            )
-        }
-    }
-
-    // Curățare resurse la părăsirea aplicației/ecranului
-    val currentOnReleasePlayer by rememberUpdatedState(viewModel::stopDetailSession)
-    LifecycleStartEffect(true) {
-        onStopOrDispose {
-            currentOnReleasePlayer()
-        }
     }
 
     val decay = rememberSplineBasedDecay<Float>()

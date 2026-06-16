@@ -1,5 +1,4 @@
 package com.example.scrollbooker.ui.profile
-
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.rememberSplineBasedDecay
@@ -43,8 +42,8 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.customized.post.PostPlayerWithThumbnail
-import com.example.scrollbooker.components.customized.post.components.PostDetailShimmer
 import com.example.scrollbooker.components.customized.post.components.PostOverlay
+import com.example.scrollbooker.components.customized.post.components.PostShimmer
 import com.example.scrollbooker.components.customized.post.handlePostSheetAction
 import com.example.scrollbooker.components.customized.post.sheets.PostSheets
 import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent
@@ -80,11 +79,6 @@ fun BaseProfilePostDetailScreen(
         PostTabEnum.POSTS -> viewModel.posts.collectAsLazyPagingItems()
         PostTabEnum.BOOKMARKS -> viewModel.bookmarks.collectAsLazyPagingItems()
         null -> error("Invalid post tab key")
-    }
-
-    if (posts.itemCount == 0) {
-        PostDetailShimmer()
-        return
     }
 
     DisposableEffect(detailScopeKey) {
@@ -123,6 +117,19 @@ fun BaseProfilePostDetailScreen(
             sheetState.show()
             sheetContent = targetSheet
         }
+    }
+
+    val hasData = remember(posts.itemCount) { posts.itemCount > 0 }
+
+    if (!hasData) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(BackgroundDark)
+        ) {
+            PostShimmer()
+        }
+        return
     }
 
     key(postIndex) {
@@ -218,7 +225,9 @@ fun BaseProfilePostDetailScreen(
                             onAction = { action ->
                                 handlePostSheetAction(action, post, ::handleOpenSheet)
                             },
-                            onNavigateToUserProfile = { userId, username -> profileNavigate.toUserProfile(userId, username) },
+                            onNavigateToUserProfile = { userId, username ->
+                                profileNavigate.toUserProfile(userId, username)
+                            },
                             onLike = { viewModel.toggleLike(post) },
                             onBookmark = { viewModel.toggleBookmark(post) },
                             onNavigateToBooking = {}

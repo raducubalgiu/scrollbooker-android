@@ -115,9 +115,6 @@ abstract class BaseFeedViewModel(
         )
     }
 
-    // =========================================================================
-    // IMPLEMENTAREA METODELOR VIDEO PRIN DELEGARE CĂTRE VIDEO_PLAYER_MANAGER
-    // =========================================================================
     override fun getPlayerForIndex(index: Int): ExoPlayer? {
         return videoPlayerManager.getPlayerForIndex(feedScopeKey, index)
     }
@@ -140,22 +137,11 @@ abstract class BaseFeedViewModel(
     }
 
     override fun stopDetailSession() {
-        // REZOLVARE GLITCH: Nu mai golim fereastra!
-        // Doar punem pe pauză clipurile din acest feed, lăsând bufferul neatins.
         videoPlayerManager.freezeScreenScope(feedScopeKey)
     }
 
     override fun resumePlayerOnTabEnter(index: Int) {
-        // 1. Readucem acest feed în Foreground (oprește audio din ecranele de detaliu dacă existau)
         videoPlayerManager.activateScreenScope(feedScopeKey)
-
-        // 2. Dăm play direct pe clipul unde rămăsese utilizatorul, instant și fără încărcare suplimentară
         videoPlayerManager.onPageSettled(feedScopeKey, index, isScreenActive = true)
     }
-
-//    override fun onCleared() {
-//        super.onCleared()
-//        // Doar când ViewModel-ul este distrus definitiv din memorie eliberăm fizic resursele
-//        videoPlayerManager.releaseScreenScope(feedScopeKey)
-//    }
 }

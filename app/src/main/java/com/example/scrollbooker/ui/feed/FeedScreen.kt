@@ -11,17 +11,20 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LifecycleStartEffect
+import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.components.customized.post.handlePostSheetAction
 import com.example.scrollbooker.components.customized.post.sheets.PostSheets
@@ -32,18 +35,31 @@ import com.example.scrollbooker.ui.feed.components.FeedTabs
 import com.example.scrollbooker.ui.feed.drawer.FeedDrawer
 import com.example.scrollbooker.ui.feed.drawer.FeedDrawerLayout
 import com.example.scrollbooker.ui.theme.BackgroundDark
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FeedScreen(
     exploreViewModel: ExploreFeedViewModel,
+    followingViewModel: FollowingFeedViewModel,
     feedNavigate: FeedNavigator,
 ) {
     val explorePosts = exploreViewModel.posts.collectAsLazyPagingItems()
+    val isFollowingTabOpened = rememberSaveable { mutableStateOf(false) }
 
     val horizontalPagerState = rememberPagerState { 2 }
     val scope = rememberCoroutineScope()
+
+    LaunchedEffect(horizontalPagerState.settledPage) {
+        if (horizontalPagerState.settledPage == 1) {
+            isFollowingTabOpened.value = true
+        }
+    }
+
+    val followingPosts = remember(isFollowingTabOpened.value) {
+        if (isFollowingTabOpened.value) followingViewModel.posts else flowOf(PagingData.empty())
+    }.collectAsLazyPagingItems()
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var sheetContent by remember { mutableStateOf<PostSheetsContent>(None) }
@@ -74,6 +90,27 @@ fun FeedScreen(
 
     val currentBg = BackgroundDark
     val scrimColor = remember(currentBg) { currentBg.copy(alpha = 0.7f) }
+
+    val currentOnPauseExplore by rememberUpdatedState(exploreViewModel::stopDetailSession)
+    val currentOnPauseFollowing by rememberUpdatedState(followingViewModel::stopDetailSession)
+
+    LifecycleStartEffect(true) {
+        onStopOrDispose {
+            currentOnPauseExplore()
+            currentOnPauseFollowing()
+        }
+    }
+
+    LaunchedEffect(horizontalPagerState.settledPage) {
+        val activeTab = horizontalPagerState.settledPage
+        if (activeTab == 0) {
+            followingViewModel.stopDetailSession()
+            exploreViewModel.resumePlayerOnTabEnter(horizontalPagerState.currentPage)
+        } else {
+            exploreViewModel.stopDetailSession()
+            followingViewModel.resumePlayerOnTabEnter(horizontalPagerState.currentPage)
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -119,11 +156,8 @@ fun FeedScreen(
                             onNavigateToBooking = { feedNavigate.toBooking(it) }
                         )
                         1 -> {
-                            val followingViewModel: FollowingFeedViewModel = hiltViewModel()
-                            val posts = followingViewModel.posts.collectAsLazyPagingItems()
-
                             BaseFeedTabScreen(
-                                posts = posts,
+                                posts = followingPosts,
                                 isTabActive = horizontalPagerState.settledPage == 1,
                                 viewModel = followingViewModel,
                                 sourceName = "feed_following",

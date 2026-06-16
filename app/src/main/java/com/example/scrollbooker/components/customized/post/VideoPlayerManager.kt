@@ -31,12 +31,11 @@ import javax.inject.Singleton
 class VideoPlayerManager @Inject constructor(
     private val application: Application
 ) {
-    private val maxPlayers = 4
+    private val maxPlayers = 5
     private val pool = ArrayDeque<ExoPlayer>(maxPlayers)
 
     private val indexToPlayer: SnapshotStateMap<String, ExoPlayer> = mutableStateMapOf()
     private val indexToPostId: SnapshotStateMap<String, Int> = mutableStateMapOf()
-
     private val indexToLastPosition = mutableMapOf<String, Long>()
 
     private val windowMutex = Mutex()
@@ -85,22 +84,12 @@ class VideoPlayerManager @Inject constructor(
         return indexToPlayer[buildMapKey(scopeKey, index)]
     }
 
-    /**
-     * Schimbarea focusului între tab-uri sau ecrane (TikTok Style)
-     */
     fun activateScreenScope(scopeKey: String) {
         activeScopeKey = scopeKey
-
-        // Doar punem pe pauză elementele din fundal, NU le distrugem suprafața grafică preventiv!
         indexToPlayer.forEach { (key, player) ->
             if (!key.startsWith("$scopeKey#")) {
                 player.playWhenReady = false
-                indexToLastPosition[key] = player.currentPosition
-                player.pause()
-                // AM ELIMINAT player.clearVideoSurface() de aici!
-                if (!pool.contains(player)) {
-                    pool.addLast(player)
-                }
+                player.pause() // Înghețare pură în RAM
             }
         }
     }
@@ -109,15 +98,32 @@ class VideoPlayerManager @Inject constructor(
         indexToPlayer.forEach { (key, player) ->
             if (key.startsWith("$scopeKey#")) {
                 player.playWhenReady = false
-                indexToLastPosition[key] = player.currentPosition
                 player.pause()
             }
         }
     }
 
-    /**
-     * Sliding Window stabil care nu lasă pool-ul să se golească
-     */
+    private fun rentPlayerFromPool(currentScopeKey: String): ExoPlayer? {
+        val free = pool.removeFirstOrNull()
+        if (free != null) return free
+
+        indexToPlayer.keys.toList().forEach { key ->
+            if (!key.startsWith("$currentScopeKey#")) {
+                val player = indexToPlayer.remove(key)
+                if (player != null) {
+                    indexToPostId.remove(key)
+                    indexToLastPosition.remove(key)
+
+                    player.playWhenReady = false
+                    player.stop()
+                    player.clearMediaItems()
+                    return player
+                }
+            }
+        }
+        return null
+    }
+
     fun ensureWindow(
         scopeKey: String,
         centerIndex: Int,
@@ -129,27 +135,23 @@ class VideoPlayerManager @Inject constructor(
             return
         }
 
-        activeScopeKey = scopeKey
+        if (activeScopeKey != null && activeScopeKey != scopeKey) return
 
         managerScope.launch {
             windowMutex.withLock {
                 val desiredIndices = listOf(centerIndex - 1, centerIndex, centerIndex + 1).filter { it >= 0 }
                 val desiredKeys = desiredIndices.map { buildMapKey(scopeKey, it) }
 
-                // 1. Curățăm elementele care au ieșit definitiv din fereastră prin scroll agresiv
                 val toRemove = indexToPlayer.keys.filter { it.startsWith("$scopeKey#") && it !in desiredKeys }
                 toRemove.forEach { key ->
                     indexToPlayer.remove(key)?.let { player ->
                         indexToPostId.remove(key)
                         indexToLastPosition.remove(key)
-                        resetPlayerFull(player) // Curățare totală la scroll complet în afara ferestrei
-                        if (!pool.contains(player)) {
-                            pool.addLast(player)
-                        }
+                        resetPlayerFull(player)
+                        if (!pool.contains(player)) pool.addLast(player)
                     }
                 }
 
-                // 2. Alocăm sau recuperăm playerele pentru indicii vizibili
                 desiredIndices.forEach { idx ->
                     val post = getPost(idx) ?: return@forEach
                     val currentKey = buildMapKey(scopeKey, idx)
@@ -157,31 +159,23 @@ class VideoPlayerManager @Inject constructor(
                     val existing = indexToPlayer[currentKey]
                     val existingPostId = indexToPostId[currentKey]
 
-                    // TIPARUL TIKTOK REVENIRE: Dacă playerul există deja pe această cheie unică, dăm doar PLAY direct!
                     if (existing != null && existingPostId == post.id) {
                         val isFocused = (idx == centerIndex)
                         val isUserPaused = _userPausedPostIds.value.contains(post.id)
 
-                        existing.playWhenReady = isFocused && !isUserPaused
-                        if (isFocused && !isUserPaused && !existing.isPlaying) {
-                            existing.play()
-                        } else if (!existing.playWhenReady) {
+                        existing.playWhenReady = isFocused
+                        if (isFocused && !isUserPaused) {
+                            if (!existing.isPlaying) existing.play()
+                        } else {
                             existing.pause()
                         }
                         return@forEach
                     }
 
-                    // PULL DIN POOL: Dacă ecranul curent are nevoie de un player nou, îl trage din resurse
-                    val player = existing ?: pool.removeFirstOrNull() ?: return@forEach
+                    val player = existing ?: rentPlayerFromPool(scopeKey) ?: return@forEach
 
-                    indexToPlayer[currentKey] = player
-                    indexToPostId[currentKey] = post.id
-
-                    // REZOLVARE BLOCAJ SWIPE: Dacă este un player proaspăt tras din pool (existing == null),
-                    // trebuie să îi dăm o resetare hardware atomică înainte de a-i injecta noul URL media!
                     if (existing == null) {
                         player.playWhenReady = false
-                        player.clearVideoSurface() // Dezlipim vechea textură de pe alt ecran ca să nu înghețe
                         player.stop()
                         player.clearMediaItems()
                         player.seekTo(0)
@@ -189,16 +183,12 @@ class VideoPlayerManager @Inject constructor(
                         resetPlayerFull(player)
                     }
 
-                    // Preluăm poziția salvată în cache dacă utilizatorul a mai fost pe acest video
-                    val savedPosition = indexToLastPosition[currentKey] ?: 0L
+                    indexToPlayer[currentKey] = player
+                    indexToPostId[currentKey] = post.id
 
                     val mediaItem = MediaItem.fromUri(post.mediaFiles.first().url)
                     player.setMediaItem(mediaItem)
                     player.prepare()
-
-                    if (savedPosition > 0L) {
-                        player.seekTo(savedPosition)
-                    }
 
                     val isFocused = (idx == centerIndex)
                     val isUserPaused = _userPausedPostIds.value.contains(post.id)
@@ -220,7 +210,11 @@ class VideoPlayerManager @Inject constructor(
 
                 val shouldPlay = (idx == centerIndex) && !isUserPaused
                 player.playWhenReady = shouldPlay
-                if (!shouldPlay) player.pause()
+                if (shouldPlay) {
+                    if (!player.isPlaying) player.play()
+                } else {
+                    player.pause()
+                }
             }
         }
     }
@@ -231,17 +225,25 @@ class VideoPlayerManager @Inject constructor(
             indexToPlayer.remove(key)?.let { player ->
                 indexToPostId.remove(key)
                 indexToLastPosition.remove(key)
-                resetPlayerFull(player)
+
+                player.playWhenReady = false
+                player.pause()
+
                 if (!pool.contains(player)) {
                     pool.addLast(player)
                 }
             }
+        }
+
+        if (activeScopeKey == scopeKey) {
+            activeScopeKey = null
         }
     }
 
     private fun resetPlayerFull(player: ExoPlayer) {
         player.playWhenReady = false
         player.stop()
+        player.clearVideoSurface()
         player.clearMediaItems()
         player.seekTo(0)
     }
@@ -258,7 +260,9 @@ class VideoPlayerManager @Inject constructor(
         } else {
             _userPausedPostIds.update { it - postId }
             player.playWhenReady = true
+            player.play()
         }
     }
 }
+
 
