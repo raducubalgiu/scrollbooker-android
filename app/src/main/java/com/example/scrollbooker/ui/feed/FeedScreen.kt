@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.components.customized.post.handlePostSheetAction
 import com.example.scrollbooker.components.customized.post.sheets.PostSheets
@@ -30,8 +31,6 @@ import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.ui.feed.components.FeedTabs
 import com.example.scrollbooker.ui.feed.drawer.FeedDrawer
 import com.example.scrollbooker.ui.feed.drawer.FeedDrawerLayout
-import com.example.scrollbooker.ui.feed.tabs.ExploreTab
-import com.example.scrollbooker.ui.feed.tabs.FollowingTab
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import kotlinx.coroutines.launch
 
@@ -41,7 +40,7 @@ fun FeedScreen(
     exploreViewModel: ExploreFeedViewModel,
     feedNavigate: FeedNavigator,
 ) {
-    val explorePosts = exploreViewModel.explorePosts.collectAsLazyPagingItems()
+    val explorePosts = exploreViewModel.posts.collectAsLazyPagingItems()
 
     val horizontalPagerState = rememberPagerState { 2 }
     val scope = rememberCoroutineScope()
@@ -107,33 +106,32 @@ fun FeedScreen(
                 HorizontalPager(
                     modifier = Modifier.fillMaxSize(),
                     state = horizontalPagerState,
-                    overscrollEffect = null,
-                    beyondViewportPageCount = 0,
                     userScrollEnabled = false
                 ) { tabIndex ->
                     when(tabIndex) {
-                        0 -> ExploreTab(
-                            exploreViewModel = exploreViewModel,
+                        0 -> BaseFeedTabScreen(
                             posts = explorePosts,
                             isTabActive = horizontalPagerState.settledPage == 0,
-                            onAction = { action, post ->
-                                handlePostSheetAction(action, post, ::handleOpenSheet)
-                            },
-                            onNavigateToUserProfile = { userId, username ->
-                                feedNavigate.toUserProfile(userId, username)
-                            },
+                            viewModel = exploreViewModel,
+                            sourceName = "feed_explore",
+                            onAction = { action, post -> handlePostSheetAction(action, post, ::handleOpenSheet) },
+                            onNavigateToUserProfile = { userId, username -> feedNavigate.toUserProfile(userId, username) },
                             onNavigateToBooking = { feedNavigate.toBooking(it) }
                         )
-                        1 -> FollowingTab(
-                            isTabActive = horizontalPagerState.settledPage == 1,
-                            onAction = { action, post ->
-                                handlePostSheetAction(action, post, ::handleOpenSheet)
-                            },
-                            onNavigateToUserProfile = { userId, username ->
-                                feedNavigate.toUserProfile(userId, username)
-                            },
-                            onNavigateToBooking = { feedNavigate.toBooking(it) }
-                        )
+                        1 -> {
+                            val followingViewModel: FollowingFeedViewModel = hiltViewModel()
+                            val posts = followingViewModel.posts.collectAsLazyPagingItems()
+
+                            BaseFeedTabScreen(
+                                posts = posts,
+                                isTabActive = horizontalPagerState.settledPage == 1,
+                                viewModel = followingViewModel,
+                                sourceName = "feed_following",
+                                onAction = { action, post -> handlePostSheetAction(action, post, ::handleOpenSheet) },
+                                onNavigateToUserProfile = { userId, username -> feedNavigate.toUserProfile(userId, username) },
+                                onNavigateToBooking = { feedNavigate.toBooking(it) }
+                            )
+                        }
                     }
                 }
             }

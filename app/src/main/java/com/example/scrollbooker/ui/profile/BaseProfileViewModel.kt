@@ -262,13 +262,13 @@ abstract class BaseProfileViewModel(
         )
     }
 
-    // Player
     override fun getPlayerForIndex(scopeKey: String, index: Int): ExoPlayer? {
         return videoPlayerManager.getPlayerForIndex(scopeKey, index)
     }
 
     override fun setDetailScreenActive(isActive: Boolean, scopeKey: String, centerIndex: Int, getPost: (Int) -> Post?) {
         if (isActive) {
+            // Oprește sunetul de la ecranele din spate (ex: din Feed), dar NU le distruge bufferul!
             videoPlayerManager.activateScreenScope(scopeKey)
         }
         videoPlayerManager.ensureWindow(scopeKey, centerIndex, isActive, getPost)
@@ -284,6 +284,7 @@ abstract class BaseProfileViewModel(
     }
 
     override fun onDetailSessionFinished(scopeKey: String) {
+        // Ecranul de detalii s-a închis de tot (Back) -> eliberăm aceste playere în pool-ul global
         videoPlayerManager.releaseScreenScope(scopeKey)
     }
 }
