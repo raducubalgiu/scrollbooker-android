@@ -68,6 +68,7 @@ fun BaseProfilePostDetailScreen(
     onBack: () -> Unit,
     profileNavigate: ProfileNavigator,
 ) {
+    val userPausedSet by viewModel.userPausedPostIds.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
     val postTab = PostTabEnum.fromKey(postTabKey)
 
@@ -215,6 +216,7 @@ fun BaseProfilePostDetailScreen(
                         if (player != null) {
                             PostPlayerWithThumbnail(
                                 player = player!! as ExoPlayer,
+                                showPlayIcon = userPausedSet.contains(post.id),
                                 thumbnailUrl = post.mediaFiles.first().thumbnailUrl
                             )
                         } else {

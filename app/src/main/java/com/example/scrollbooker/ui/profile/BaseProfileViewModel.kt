@@ -265,6 +265,8 @@ abstract class BaseProfileViewModel(
         )
     }
 
+    override val userPausedPostIds: StateFlow<Set<Int>> = videoPlayerManager.userPausedPostIds
+
     override fun getPlayerForIndex(scopeKey: String, index: Int): ExoPlayer? {
         return videoPlayerManager.getPlayerForIndex(scopeKey, index)
     }

@@ -21,6 +21,7 @@ interface ProfilePostDetailViewModelContract {
     val about: StateFlow<FeatureState<UserProfileAbout>>
     val schedules: StateFlow<FeatureState<List<Schedule>>>
 
+    val userPausedPostIds: StateFlow<Set<Int>>
     fun setDetailScreenActive(isActive: Boolean, scopeKey: String, initialIndex: Int, getPost: (Int) -> Post?)
     fun onDetailSessionFinished(scopeKey: String)
     fun onPostSettled(scopeKey: String, index: Int, getPost: (Int) -> Post?)

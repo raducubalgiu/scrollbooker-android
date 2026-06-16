@@ -121,8 +121,6 @@ class ProfileViewModel @Inject constructor(
         _currentTab.value = index
     }
 
-    val userPausedPostIds = videoPlayerManager.userPausedPostIds
-
     override fun onCleared() {
         super.onCleared()
         videoPlayerManager.releaseScreenScope("USER_PROFILE_DETAIL_POSTS_${userId}")

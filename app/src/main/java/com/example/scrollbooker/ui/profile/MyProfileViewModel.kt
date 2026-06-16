@@ -367,8 +367,6 @@ class MyProfileViewModel @Inject constructor(
         }
     }
 
-    val userPausedPostIds = videoPlayerManager.userPausedPostIds
-
     override fun onCleared() {
         super.onCleared()
         videoPlayerManager.releaseScreenScope("MY_PROFILE_DETAIL_POSTS")
