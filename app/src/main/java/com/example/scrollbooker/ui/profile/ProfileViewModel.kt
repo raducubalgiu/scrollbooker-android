@@ -87,7 +87,7 @@ class ProfileViewModel @Inject constructor(
     @ApplicationContext private val app: Context,
     private val videoPlayerManager: VideoPlayerManager,
     savedStateHandle: SavedStateHandle
-): ViewModel() {
+): ViewModel(), ProfilePostDetailViewModelContract {
     private val userIdFlow: StateFlow<Int?> = savedStateHandle.getStateFlow("userId", null)
     private val username: StateFlow<String?> = savedStateHandle.getStateFlow("username", null)
 
@@ -134,7 +134,7 @@ class ProfileViewModel @Inject constructor(
     )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val posts: Flow<PagingData<Post>> = userIdFlow
+    override val posts: Flow<PagingData<Post>> = userIdFlow
         .filterNotNull()
         .distinctUntilChanged()
         .flatMapLatest { currentUserId -> getUserPostsUseCase(currentUserId) }
@@ -148,7 +148,7 @@ class ProfileViewModel @Inject constructor(
         .cachedIn(viewModelScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val bookmarks: Flow<PagingData<Post>> = userIdFlow
+    override val bookmarks: Flow<PagingData<Post>> = userIdFlow
         .filterNotNull()
         .distinctUntilChanged()
         .flatMapLatest { currentUserId -> getUserBookmarkedPostsUseCase(currentUserId) }
@@ -266,7 +266,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     private val _postUi = MutableStateFlow<Map<Int, PostActionUiState>>(emptyMap())
-    fun observePostUi(postId: Int): StateFlow<PostActionUiState> =
+    override fun observePostUi(postId: Int): StateFlow<PostActionUiState> =
         _postUi.map { it[postId] ?: PostActionUiState.EMPTY }
             .stateIn(viewModelScope, SharingStarted.Eagerly, PostActionUiState.EMPTY)
 
@@ -322,7 +322,7 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun toggleLike(post: Post) {
+    override fun toggleLike(post: Post) {
         toggleAction(
             postId = post.id,
             backendFlag = post.userActions.isLiked,
@@ -338,7 +338,7 @@ class ProfileViewModel @Inject constructor(
         )
     }
 
-    fun toggleBookmark(post: Post) {
+    override fun toggleBookmark(post: Post) {
         toggleAction(
             postId = post.id,
             backendFlag = post.userActions.isBookmarked,
@@ -359,34 +359,33 @@ class ProfileViewModel @Inject constructor(
     private val _currentIndex = MutableStateFlow(0)
     val currentIndex: StateFlow<Int> = _currentIndex.asStateFlow()
 
-    fun getPlayerForIndex(scopeKey: String, index: Int): ExoPlayer? {
+    override fun getPlayerForIndex(scopeKey: String, index: Int): ExoPlayer? {
         return videoPlayerManager.getPlayerForIndex(scopeKey, index)
     }
 
-    fun setDetailScreenActive(isActive: Boolean, scopeKey: String, centerIndex: Int, getPost: (Int) -> Post?) {
+    override fun setDetailScreenActive(isActive: Boolean, scopeKey: String, centerIndex: Int, getPost: (Int) -> Post?) {
         if (isActive) {
             videoPlayerManager.activateScreenScope(scopeKey)
         }
         videoPlayerManager.ensureWindow(scopeKey, centerIndex, isActive, getPost)
     }
 
-    fun onPostSettled(scopeKey: String, index: Int, getPost: (Int) -> Post?) {
+    override fun onPostSettled(scopeKey: String, index: Int, getPost: (Int) -> Post?) {
         _currentIndex.value = index
         videoPlayerManager.onPageSettled(scopeKey, index, true)
         videoPlayerManager.ensureWindow(scopeKey, index, true, getPost)
     }
 
-    fun togglePlayPause(scopeKey: String, index: Int) {
+    override fun togglePlayPause(scopeKey: String, index: Int) {
         videoPlayerManager.togglePlayer(scopeKey, index)
     }
 
-    fun onDetailSessionFinished(scopeKey: String) {
+    override fun onDetailSessionFinished(scopeKey: String) {
         videoPlayerManager.releaseScreenScope(scopeKey)
     }
 
     override fun onCleared() {
         super.onCleared()
-        // Curățăm preventiv orice sesiune de detalii deschisă pentru acest utilizator specific
         videoPlayerManager.releaseScreenScope("USER_PROFILE_DETAIL_POSTS_${userId}")
         videoPlayerManager.releaseScreenScope("USER_PROFILE_DETAIL_BOOKMARKS_${userId}")
     }

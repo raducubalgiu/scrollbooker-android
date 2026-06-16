@@ -26,7 +26,8 @@ import coil.compose.AsyncImage
 @Composable
 fun PostPlayerView(
     player: ExoPlayer,
-    thumbnailUrl: String
+    displayThumbnail: Boolean,
+    thumbnailUrl: String,
 ) {
     var isVideoRendered by remember(player) { mutableStateOf(false) }
     val context = LocalContext.current
@@ -79,7 +80,7 @@ fun PostPlayerView(
             modifier = Modifier.fillMaxSize(),
         )
 
-        if (!isVideoRendered) {
+        if (!isVideoRendered && displayThumbnail) {
             AsyncImage(
                 modifier = Modifier.fillMaxSize(),
                 model = thumbnailUrl,

@@ -110,7 +110,7 @@ class MyProfileViewModel @Inject constructor(
     private val searchUsernameUseCase: SearchUsernameUseCase,
     private val videoPlayerManager: VideoPlayerManager,
     @ApplicationContext private val app: Context,
-): ViewModel() {
+): ViewModel(), ProfilePostDetailViewModelContract {
     private val _currentTab = MutableStateFlow<Int>(0)
     val currentTab: StateFlow<Int> = _currentTab.asStateFlow()
 
@@ -139,7 +139,7 @@ class MyProfileViewModel @Inject constructor(
     )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val posts: Flow<PagingData<Post>> = authDataStore.getUserId()
+    override val posts: Flow<PagingData<Post>> = authDataStore.getUserId()
         .filterNotNull()
         .distinctUntilChanged()
         .flatMapLatest { currentUserId -> getUserPostsUseCase(currentUserId) }
@@ -153,7 +153,7 @@ class MyProfileViewModel @Inject constructor(
         .cachedIn(viewModelScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val bookmarks: Flow<PagingData<Post>> = authDataStore.getUserId()
+    override val bookmarks: Flow<PagingData<Post>> = authDataStore.getUserId()
         .filterNotNull()
         .distinctUntilChanged()
         .flatMapLatest { currentUserId -> getUserBookmarkedPostsUseCase(currentUserId) }
@@ -497,7 +497,7 @@ class MyProfileViewModel @Inject constructor(
     }
 
     private val _postUi = MutableStateFlow<Map<Int, PostActionUiState>>(emptyMap())
-    fun observePostUi(postId: Int): StateFlow<PostActionUiState> =
+    override fun observePostUi(postId: Int): StateFlow<PostActionUiState> =
         _postUi.map { it[postId] ?: PostActionUiState.EMPTY }
             .stateIn(viewModelScope, SharingStarted.Eagerly, PostActionUiState.EMPTY)
 
@@ -553,7 +553,7 @@ class MyProfileViewModel @Inject constructor(
         }
     }
 
-    fun toggleLike(post: Post) {
+    override fun toggleLike(post: Post) {
         toggleAction(
             postId = post.id,
             backendFlag = post.userActions.isLiked,
@@ -569,7 +569,7 @@ class MyProfileViewModel @Inject constructor(
         )
     }
 
-    fun toggleBookmark(post: Post) {
+    override fun toggleBookmark(post: Post) {
         toggleAction(
             postId = post.id,
             backendFlag = post.userActions.isBookmarked,
@@ -590,14 +590,14 @@ class MyProfileViewModel @Inject constructor(
 
     val userPausedPostIds = videoPlayerManager.userPausedPostIds
 
-    fun getPlayerForIndex(scopeKey: String, index: Int): ExoPlayer? {
+    override fun getPlayerForIndex(scopeKey: String, index: Int): ExoPlayer? {
         return videoPlayerManager.getPlayerForIndex(scopeKey, index)
     }
 
     /**
      * Pregătește buffer-ul asincron (fereastra glisantă) DOAR când suntem în ecranul de detalii active
      */
-    fun setDetailScreenActive(isActive: Boolean, scopeKey: String, centerIndex: Int, getPost: (Int) -> Post?) {
+    override fun setDetailScreenActive(isActive: Boolean, scopeKey: String, centerIndex: Int, getPost: (Int) -> Post?) {
         if (isActive) {
             // Dezactivează orice alt video activ din aplicație (ex: din Feed)
             videoPlayerManager.activateScreenScope(scopeKey)
@@ -605,17 +605,17 @@ class MyProfileViewModel @Inject constructor(
         videoPlayerManager.ensureWindow(scopeKey, centerIndex, isActive, getPost)
     }
 
-    fun onPostSettled(scopeKey: String, index: Int, getPost: (Int) -> Post?) {
+    override fun onPostSettled(scopeKey: String, index: Int, getPost: (Int) -> Post?) {
         _currentIndex.value = index
         videoPlayerManager.onPageSettled(scopeKey, index, true)
         videoPlayerManager.ensureWindow(scopeKey, index, true, getPost)
     }
 
-    fun togglePlayPause(scopeKey: String, index: Int) {
+    override fun togglePlayPause(scopeKey: String, index: Int) {
         videoPlayerManager.togglePlayer(scopeKey, index)
     }
 
-    fun onDetailSessionFinished(scopeKey: String) {
+    override fun onDetailSessionFinished(scopeKey: String) {
         videoPlayerManager.releaseScreenScope(scopeKey)
     }
 

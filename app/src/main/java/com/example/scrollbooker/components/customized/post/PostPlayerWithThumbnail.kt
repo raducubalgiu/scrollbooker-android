@@ -22,11 +22,13 @@ import com.example.scrollbooker.components.customized.post.components.PostPlayer
 fun PostPlayerWithThumbnail(
     player: ExoPlayer,
     showPlayIcon: Boolean = false,
+    displayThumbnail: Boolean = true,
     thumbnailUrl: String
 ) {
     Box(Modifier.fillMaxSize()) {
         PostPlayerView(
             player = player,
+            displayThumbnail = displayThumbnail,
             thumbnailUrl = thumbnailUrl
         )
 

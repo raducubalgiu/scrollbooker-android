@@ -163,6 +163,7 @@ fun FollowingTab(
                             PostPlayerWithThumbnail(
                                 player = player,
                                 showPlayIcon = userPausedSet.contains(postId),
+                                displayThumbnail = false,
                                 thumbnailUrl = post.mediaFiles.first().thumbnailUrl
                             )
                         } else {
