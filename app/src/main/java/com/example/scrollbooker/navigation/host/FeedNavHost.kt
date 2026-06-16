@@ -1,6 +1,4 @@
 package com.example.scrollbooker.navigation.host
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -39,13 +37,7 @@ fun FeedNavHost(navController: NavHostController) {
         popEnterTransition = { slideInFromLeft() },
         popExitTransition = { slideOutToRight() }
     ) {
-        composable(
-            route = MainRoute.Feed.route,
-            enterTransition = { EnterTransition.None },
-            exitTransition = { ExitTransition.None },
-            popEnterTransition = { EnterTransition.None },
-            popExitTransition = { ExitTransition.None }
-        ) {
+        composable(route = MainRoute.Feed.route) {
             val exploreViewModel: ExploreFeedViewModel = hiltViewModel()
 
             FeedScreen(

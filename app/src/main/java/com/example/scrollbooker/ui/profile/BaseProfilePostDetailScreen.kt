@@ -166,8 +166,10 @@ fun BaseProfilePostDetailScreen(
             ) {
                 VerticalPager(
                     state = pagerState,
+                    overscrollEffect = null,
                     flingBehavior = fling,
                     pageSize = PageSize.Fill,
+                    pageSpacing = 0.dp,
                     beyondViewportPageCount = 1,
                     modifier = Modifier.weight(1f),
                 ) { page ->
