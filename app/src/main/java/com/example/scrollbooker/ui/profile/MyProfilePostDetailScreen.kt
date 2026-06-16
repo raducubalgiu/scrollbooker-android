@@ -50,6 +50,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import com.example.scrollbooker.components.customized.post.PostPlayerWithThumbnail
 import com.example.scrollbooker.components.customized.post.components.PostOverlay
+import com.example.scrollbooker.components.customized.post.components.PostShimmer
 import com.example.scrollbooker.core.extensions.getOrNull
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
@@ -81,15 +82,8 @@ fun MyProfilePostDetailScreen(
         null -> error("Invalid post tab key")
     }
 
-    // REZOLVARE CRASH FATAL: Dacă Paging-ul este momentan gol sau se re-colectează asincron,
-    // oprim execuția pentru a preveni colapsul PagerState-ului la initialPage.
     if (posts.itemCount == 0) {
-        Box(
-            modifier = Modifier.fillMaxSize().background(BackgroundDark),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator(color = Primary) // Sau un simplu placeholder negru
-        }
+        PostShimmer()
         return
     }
 
@@ -164,7 +158,7 @@ fun MyProfilePostDetailScreen(
                         )
                     ) {
                         if (player != null) {
-                            PostPlayerWithThumbnail(player = player!!)
+                            PostPlayerWithThumbnail(player = player!!, thumbnailUrl = post.mediaFiles.first().thumbnailUrl)
                         } else {
                             AsyncImage(
                                 modifier = Modifier.fillMaxSize(),

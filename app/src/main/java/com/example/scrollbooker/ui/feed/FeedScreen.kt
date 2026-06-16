@@ -22,15 +22,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.example.scrollbooker.components.customized.post.sheets.PostSheetActionEnum
+import com.example.scrollbooker.components.customized.post.handlePostSheetAction
 import com.example.scrollbooker.components.customized.post.sheets.PostSheets
 import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent
-import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent.CommentsSheet
-import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent.LinkedProductsSheet
-import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent.MoreOptionsSheet
 import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent.None
-import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent.ReviewsSheet
-import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.ui.feed.components.FeedTabs
 import com.example.scrollbooker.ui.feed.drawer.FeedDrawer
@@ -121,7 +116,9 @@ fun FeedScreen(
                             exploreViewModel = exploreViewModel,
                             posts = explorePosts,
                             isTabActive = horizontalPagerState.settledPage == 0,
-                            onAction = { action, post -> handleSheetAction(action, post, ::handleOpenSheet) },
+                            onAction = { action, post ->
+                                handlePostSheetAction(action, post, ::handleOpenSheet)
+                            },
                             onNavigateToUserProfile = { userId, username ->
                                 feedNavigate.toUserProfile(userId, username)
                             },
@@ -129,7 +126,9 @@ fun FeedScreen(
                         )
                         1 -> FollowingTab(
                             isTabActive = horizontalPagerState.settledPage == 1,
-                            onAction = { action, post -> handleSheetAction(action, post, ::handleOpenSheet) },
+                            onAction = { action, post ->
+                                handlePostSheetAction(action, post, ::handleOpenSheet)
+                            },
                             onNavigateToUserProfile = { userId, username ->
                                 feedNavigate.toUserProfile(userId, username)
                             },
@@ -145,22 +144,6 @@ fun FeedScreen(
             ) {
                 BottomBar()
             }
-        }
-    }
-}
-
-private fun handleSheetAction(
-    action: PostSheetActionEnum,
-    post: Post,
-    handleOpenSheet: (PostSheetsContent) -> Unit
-) {
-    when(action) {
-        PostSheetActionEnum.OPEN_LINKED_PRODUCTS -> handleOpenSheet(LinkedProductsSheet(post.id))
-        PostSheetActionEnum.OPEN_COMMENTS -> handleOpenSheet(CommentsSheet(post.id))
-        PostSheetActionEnum.OPEN_MORE_OPTIONS -> handleOpenSheet(MoreOptionsSheet(post.id, post.user.id, post.isOwnPost))
-        PostSheetActionEnum.OPEN_REVIEWS -> {
-            val id = if(post.isVideoReview) post.businessOwner.id else post.user.id
-            handleOpenSheet(ReviewsSheet(id))
         }
     }
 }

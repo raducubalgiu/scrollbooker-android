@@ -21,10 +21,14 @@ import com.example.scrollbooker.components.customized.post.components.PostPlayer
 @Composable
 fun PostPlayerWithThumbnail(
     player: ExoPlayer,
-    showPlayIcon: Boolean = false
+    showPlayIcon: Boolean = false,
+    thumbnailUrl: String
 ) {
     Box(Modifier.fillMaxSize()) {
-        PostPlayerView(player)
+        PostPlayerView(
+            player = player,
+            thumbnailUrl = thumbnailUrl
+        )
 
         AnimatedVisibility(
             visible = showPlayIcon,

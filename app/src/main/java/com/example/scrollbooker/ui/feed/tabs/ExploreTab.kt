@@ -155,7 +155,8 @@ fun ExploreTab(
                         if (player != null) {
                             PostPlayerWithThumbnail(
                                 player = player,
-                                showPlayIcon = userPausedSet.contains(postId)
+                                showPlayIcon = userPausedSet.contains(postId),
+                                thumbnailUrl = post.mediaFiles.first().thumbnailUrl
                             )
                         } else {
                             AsyncImage(

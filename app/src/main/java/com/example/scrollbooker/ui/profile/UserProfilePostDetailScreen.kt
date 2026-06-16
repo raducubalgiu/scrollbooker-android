@@ -1,7 +1,6 @@
 package com.example.scrollbooker.ui.profile
 
 import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.background
@@ -22,24 +21,23 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
-import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.media3.common.util.UnstableApi
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import com.example.scrollbooker.R
@@ -47,6 +45,11 @@ import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.customized.post.PostPlayerWithThumbnail
 import com.example.scrollbooker.components.customized.post.components.PostOverlay
+import com.example.scrollbooker.components.customized.post.components.PostShimmer
+import com.example.scrollbooker.components.customized.post.handlePostSheetAction
+import com.example.scrollbooker.components.customized.post.sheets.PostSheets
+import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent
+import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent.None
 import com.example.scrollbooker.core.extensions.getOrNull
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
@@ -54,7 +57,9 @@ import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import com.example.scrollbooker.ui.theme.Primary
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserProfilePostDetailScreen(
     postTabKey: String,
@@ -63,6 +68,8 @@ fun UserProfilePostDetailScreen(
     onBack: () -> Unit,
     profileNavigate: ProfileNavigator,
 ) {
+    val scope = rememberCoroutineScope()
+
     val postTab = PostTabEnum.fromKey(postTabKey)
     val title = when(postTab) {
         PostTabEnum.POSTS -> stringResource(R.string.posts)
@@ -78,17 +85,15 @@ fun UserProfilePostDetailScreen(
 
     if (posts.itemCount == 0) {
         Box(
-            modifier = Modifier.fillMaxSize().background(BackgroundDark),
-            contentAlignment = Alignment.Center
+            modifier = Modifier.fillMaxSize().background(BackgroundDark)
         ) {
-            CircularProgressIndicator(color = Primary)
+            PostShimmer()
         }
         return
     }
 
     val detailScopeKey = "USER_PROFILE_DETAIL_${postTabKey}_${viewModel.userId}"
 
-    // Activați și curățați sesiunea hardware pe baza acestui ecran specific
     DisposableEffect(detailScopeKey) {
         viewModel.setDetailScreenActive(true, detailScopeKey, postIndex, { idx ->
             if (idx in 0 until posts.itemCount) posts.peek(idx) else null
@@ -98,6 +103,32 @@ fun UserProfilePostDetailScreen(
                 if (idx in 0 until posts.itemCount) posts.peek(idx) else null
             })
             viewModel.onDetailSessionFinished(detailScopeKey)
+        }
+    }
+
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var sheetContent by remember { mutableStateOf<PostSheetsContent>(None) }
+
+    if(sheetContent != None) {
+        key(sheetContent) {
+            PostSheets(
+                sheetState = sheetState,
+                sheetContent = sheetContent,
+                onDeletePost = {},
+                onClose = {
+                    scope.launch {
+                        sheetState.hide()
+                        sheetContent = None
+                    }
+                },
+            )
+        }
+    }
+
+    fun handleOpenSheet(targetSheet: PostSheetsContent) {
+        scope.launch {
+            sheetState.show()
+            sheetContent = targetSheet
         }
     }
 
@@ -121,9 +152,21 @@ fun UserProfilePostDetailScreen(
 
         Scaffold(
             containerColor = BackgroundDark,
-            topBar = { Header(onBack = onBack, title = title, icon = Icons.Default.Close, iconSize = 30.dp, withBackground = false) }
+            topBar = {
+                Header(
+                    onBack = onBack,
+                    title = title,
+                    icon = Icons.Default.Close,
+                    iconSize = 30.dp,
+                    withBackground = false
+                )
+            }
         ) { innerPadding ->
-            Column(modifier = Modifier.fillMaxSize().background(BackgroundDark).padding(bottom = innerPadding.calculateBottomPadding())) {
+            Column(modifier = Modifier
+                .fillMaxSize()
+                .background(BackgroundDark)
+                .padding(bottom = innerPadding.calculateBottomPadding())
+            ) {
                 VerticalPager(
                     state = pagerState,
                     flingBehavior = fling,
@@ -154,7 +197,10 @@ fun UserProfilePostDetailScreen(
                         )
                     ) {
                         if (player != null) {
-                            PostPlayerWithThumbnail(player = player!!)
+                            PostPlayerWithThumbnail(
+                                player = player!!,
+                                thumbnailUrl = post.mediaFiles.first().thumbnailUrl
+                            )
                         } else {
                             AsyncImage(
                                 modifier = Modifier.fillMaxSize(),
@@ -169,10 +215,12 @@ fun UserProfilePostDetailScreen(
                             isSavingLike = postActionState.isSavingLike,
                             isSavingBookmark = postActionState.isSavingBookmark,
                             showBookButton = false,
-                            onAction = {},
+                            onAction = { action ->
+                                handlePostSheetAction(action, post, ::handleOpenSheet)
+                            },
                             onNavigateToUserProfile = { userId, username -> profileNavigate.toUserProfile(userId, username) },
-                            onLike = {},
-                            onBookmark = {},
+                            onLike = { viewModel.toggleLike(post) },
+                            onBookmark = { viewModel.toggleBookmark(post) },
                             onNavigateToBooking = {}
                         )
                     }
