@@ -30,6 +30,7 @@ import com.example.scrollbooker.components.customized.post.handlePostSheetAction
 import com.example.scrollbooker.components.customized.post.sheets.PostSheets
 import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent
 import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent.None
+import com.example.scrollbooker.core.enums.BookingSourceEnum
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.ui.feed.components.FeedTabs
 import com.example.scrollbooker.ui.feed.drawer.FeedDrawer
@@ -150,7 +151,7 @@ fun FeedScreen(
                             posts = explorePosts,
                             isTabActive = horizontalPagerState.settledPage == 0,
                             viewModel = exploreViewModel,
-                            sourceName = "feed_explore",
+                            sourceName = BookingSourceEnum.EXPLORE_FEED,
                             onAction = { action, post -> handlePostSheetAction(action, post, ::handleOpenSheet) },
                             onNavigateToUserProfile = { userId, username -> feedNavigate.toUserProfile(userId, username) },
                             onNavigateToBooking = { feedNavigate.toBooking(it) }
@@ -160,7 +161,7 @@ fun FeedScreen(
                                 posts = followingPosts,
                                 isTabActive = horizontalPagerState.settledPage == 1,
                                 viewModel = followingViewModel,
-                                sourceName = "feed_following",
+                                sourceName = BookingSourceEnum.FOLLOWING_FEED,
                                 onAction = { action, post -> handlePostSheetAction(action, post, ::handleOpenSheet) },
                                 onNavigateToUserProfile = { userId, username -> feedNavigate.toUserProfile(userId, username) },
                                 onNavigateToBooking = { feedNavigate.toBooking(it) }

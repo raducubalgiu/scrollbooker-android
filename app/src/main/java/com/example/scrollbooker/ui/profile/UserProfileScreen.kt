@@ -30,8 +30,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.layout.ErrorScreen
+import com.example.scrollbooker.core.enums.BookingSourceEnum
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.rememberCollapsingNestedScroll
+import com.example.scrollbooker.navigation.navigators.NavigateBookingParam
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.profile.components.sheets.UserScheduleSheet
 import com.example.scrollbooker.ui.profile.components.userInfo.ProfileShimmer
@@ -167,18 +169,19 @@ fun UserProfileScreen(
                                                 products = products,
                                                 onNavigateToBookingFromProduct = {
                                                     profileNavigate.toBookingFromProduct(
-                                                        it,
-                                                        source = "user_profile"
+                                                        it, source = BookingSourceEnum.PROFILE
                                                     )
                                                 },
                                                 onNavigateToBookingFromProfile = {
                                                     if(user.businessId != null && user.businessOwner != null) {
                                                         profileNavigate.toBookingFromProfile(
-                                                            businessId = user.businessId,
-                                                            userId = user.id,
-                                                            businessOwnerId = user.businessOwner.id,
-                                                            source = "user_profile",
-                                                            selectedProductId = null
+                                                            NavigateBookingParam(
+                                                                businessId = user.businessId,
+                                                                userId = user.id,
+                                                                businessOwnerId = user.businessOwner.id,
+                                                                source = BookingSourceEnum.PROFILE,
+                                                                selectedProductId = null
+                                                            )
                                                         )
                                                     }
                                                 }
@@ -244,11 +247,13 @@ fun UserProfileScreen(
                                         onNavigateToMyCalendar = { profileNavigate.toMyCalendar() },
                                         onNavigateToBooking = { userId, businessId, businessOwnerId ->
                                             profileNavigate.toBookingFromProfile(
-                                                userId = userId,
-                                                businessId = businessId,
-                                                businessOwnerId = businessOwnerId,
-                                                selectedProductId = null,
-                                                source = "user_profile"
+                                                NavigateBookingParam(
+                                                    userId = userId,
+                                                    businessId = businessId,
+                                                    businessOwnerId = businessOwnerId,
+                                                    selectedProductId = null,
+                                                    source = BookingSourceEnum.PROFILE
+                                                )
                                             )
                                         },
                                     )

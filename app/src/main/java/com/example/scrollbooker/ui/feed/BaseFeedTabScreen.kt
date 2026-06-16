@@ -40,6 +40,7 @@ import com.example.scrollbooker.components.customized.post.PostPlayerWithThumbna
 import com.example.scrollbooker.components.customized.post.components.PostOverlay
 import com.example.scrollbooker.components.customized.post.components.PostShimmer
 import com.example.scrollbooker.components.customized.post.sheets.PostSheetActionEnum
+import com.example.scrollbooker.core.enums.BookingSourceEnum
 import com.example.scrollbooker.core.extensions.getOrNull
 import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
@@ -52,7 +53,7 @@ fun BaseFeedTabScreen(
     posts: LazyPagingItems<Post>,
     isTabActive: Boolean,
     viewModel: FeedViewModelContract,
-    sourceName: String,
+    sourceName: BookingSourceEnum,
     onAction: (PostSheetActionEnum, Post) -> Unit,
     onNavigateToUserProfile: (Int, String) -> Unit,
     onNavigateToBooking: (NavigateBookingParam) -> Unit

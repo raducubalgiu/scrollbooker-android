@@ -39,12 +39,14 @@ import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.iconButton.CustomIconButton
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.customized.protected.Protected
+import com.example.scrollbooker.core.enums.BookingSourceEnum
 import com.example.scrollbooker.core.enums.PermissionEnum
 import com.example.scrollbooker.core.util.Dimens.IconSizeXL
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.rememberCollapsingNestedScroll
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
+import com.example.scrollbooker.navigation.navigators.NavigateBookingParam
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.UserPermissionsController
 import com.example.scrollbooker.ui.profile.components.sheets.ProfileMenuSheet
@@ -177,7 +179,6 @@ fun MyProfileScreen(
                                             ProfilePostsTab(
                                                 posts = myPosts,
                                                 onNavigateToPost = { clickData ->
-                                                    // Navigăm direct! Lăsăm ecranul de detalii să pornească video-ul când se montează hardware pe ecran.
                                                     profileNavigate.toMyPostDetail(PostTabEnum.POSTS, clickData)
                                                 }
                                             )
@@ -191,17 +192,19 @@ fun MyProfileScreen(
                                                 onNavigateToBookingFromProduct = {
                                                     profileNavigate.toBookingFromProduct(
                                                         it,
-                                                        source = "user_profile"
+                                                        source = BookingSourceEnum.PROFILE
                                                     )
                                                 },
                                                 onNavigateToBookingFromProfile = {
                                                     if(user.businessId != null && user.businessOwner != null) {
                                                         profileNavigate.toBookingFromProfile(
-                                                            businessId = user.businessId,
-                                                            userId = user.id,
-                                                            businessOwnerId = user.businessOwner.id,
-                                                            source = "user_profile",
-                                                            selectedProductId = null
+                                                            NavigateBookingParam(
+                                                                businessId = user.businessId,
+                                                                userId = user.id,
+                                                                businessOwnerId = user.businessOwner.id,
+                                                                source = BookingSourceEnum.PROFILE,
+                                                                selectedProductId = null
+                                                            )
                                                         )
                                                     }
                                                 }
@@ -266,11 +269,13 @@ fun MyProfileScreen(
                                         onNavigateToMyCalendar = { profileNavigate.toMyCalendar() },
                                         onNavigateToBooking = { userId, businessId, businessOwnerId ->
                                             profileNavigate.toBookingFromProfile(
-                                                userId = userId,
-                                                businessId = businessId,
-                                                businessOwnerId = businessOwnerId,
-                                                selectedProductId = null,
-                                                source = "user_profile"
+                                                NavigateBookingParam(
+                                                    userId = userId,
+                                                    businessId = businessId,
+                                                    businessOwnerId = businessOwnerId,
+                                                    selectedProductId = null,
+                                                    source = BookingSourceEnum.PROFILE
+                                                )
                                             )
                                         },
                                     )

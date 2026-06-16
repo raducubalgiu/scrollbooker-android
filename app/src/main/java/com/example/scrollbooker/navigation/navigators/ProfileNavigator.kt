@@ -1,6 +1,7 @@
 package com.example.scrollbooker.navigation.navigators
 
 import androidx.navigation.NavHostController
+import com.example.scrollbooker.core.enums.BookingSourceEnum
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.profile.PostTabEnum
@@ -31,23 +32,17 @@ class ProfileNavigator (
         }
     }
 
-    fun toBookingFromProduct(product: Product, source: String) {
+    fun toBookingFromProduct(product: Product, source: BookingSourceEnum) {
         navController.navigateToBookingFromProduct(product, source)
     }
 
-    fun toBookingFromProfile(
-        businessId: Int,
-        userId: Int,
-        businessOwnerId: Int,
-        source: String,
-        selectedProductId: Int?
-    ) {
+    fun toBookingFromProfile(params: NavigateBookingParam) {
         navController.navigateToBookingFromProfile(
-            businessId = businessId,
-            userId = userId,
-            businessOwnerId = businessOwnerId,
-            source = source,
-            selectedProductId = selectedProductId
+            businessId = params.businessId,
+            userId = params.userId,
+            businessOwnerId = params.businessOwnerId,
+            source = params.source,
+            selectedProductId = params.selectedProductId
         )
     }
 

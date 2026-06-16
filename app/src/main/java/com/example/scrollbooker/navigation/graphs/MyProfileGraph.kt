@@ -86,7 +86,7 @@ fun NavGraphBuilder.myProfileGraph(
                 postIndex = postIndex,
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
-                profileNavigate = profileNavigate, // Folosește instanța curată de sus
+                profileNavigate = profileNavigate,
             )
         }
     }

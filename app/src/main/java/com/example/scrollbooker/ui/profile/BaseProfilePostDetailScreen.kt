@@ -48,10 +48,12 @@ import com.example.scrollbooker.components.customized.post.handlePostSheetAction
 import com.example.scrollbooker.components.customized.post.sheets.PostSheets
 import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent
 import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent.None
+import com.example.scrollbooker.core.enums.BookingSourceEnum
 import com.example.scrollbooker.core.extensions.getOrNull
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
+import com.example.scrollbooker.navigation.navigators.NavigateBookingParam
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import kotlinx.coroutines.launch
@@ -134,6 +136,13 @@ fun BaseProfilePostDetailScreen(
 
     key(postIndex) {
         val pagerState = rememberPagerState(initialPage = postIndex) { posts.itemCount }
+
+        val currentPost by remember(pagerState) {
+            derivedStateOf {
+                val currentPage = pagerState.currentPage
+                if (currentPage in 0 until posts.itemCount) posts.peek(currentPage) else null
+            }
+        }
 
         LaunchedEffect(pagerState.settledPage) {
             viewModel.onPostSettled(
@@ -221,15 +230,11 @@ fun BaseProfilePostDetailScreen(
                             post = postUi,
                             isSavingLike = postActionState.isSavingLike,
                             isSavingBookmark = postActionState.isSavingBookmark,
-                            showBookButton = false,
-                            onAction = { action ->
-                                handlePostSheetAction(action, post, ::handleOpenSheet)
-                            },
-                            onNavigateToUserProfile = { userId, username ->
-                                profileNavigate.toUserProfile(userId, username)
-                            },
+                            onAction = { action -> handlePostSheetAction(action, post, ::handleOpenSheet) },
                             onLike = { viewModel.toggleLike(post) },
                             onBookmark = { viewModel.toggleBookmark(post) },
+                            onNavigateToUserProfile = { userId, username -> profileNavigate.toUserProfile(userId, username) },
+                            showBookButton = false,
                             onNavigateToBooking = {}
                         )
                     }
@@ -241,7 +246,24 @@ fun BaseProfilePostDetailScreen(
                         horizontal = BasePadding
                     ),
                     contentPadding = PaddingValues(12.dp),
-                    onClick = {},
+                    onClick = {
+                        currentPost?.let {
+                            val bookingSource = when (PostTabEnum.fromKey(postTabKey)) {
+                                PostTabEnum.POSTS -> BookingSourceEnum.PROFILE_GRID_POST_DETAIL
+                                PostTabEnum.BOOKMARKS -> BookingSourceEnum.PROFILE_BOOKMARKS_POST_DETAIL
+                                null -> BookingSourceEnum.PROFILE_GRID_POST_DETAIL
+                            }
+
+                            profileNavigate.toBookingFromProfile(
+                                NavigateBookingParam(
+                                    userId = it.user.id,
+                                    businessId = it.businessId,
+                                    businessOwnerId = it.businessOwner.id,
+                                    source = bookingSource
+                                )
+                            )
+                        }
+                    },
                     title = stringResource(R.string.bookNow),
                 )
             }

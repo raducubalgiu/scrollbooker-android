@@ -1,6 +1,7 @@
 package com.example.scrollbooker.navigation.navigators
 
 import androidx.navigation.NavHostController
+import com.example.scrollbooker.core.enums.BookingSourceEnum
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.navigation.routes.MainRoute
 
@@ -14,14 +15,14 @@ fun NavHostController.navigateToBookingFromProfile(
     businessId: Int,
     userId: Int,
     businessOwnerId: Int,
-    source: String,
+    source: BookingSourceEnum,
     selectedProductId: Int?
 ) {
     val route = MainRoute.BookingNavigator.createRouteFromProfile(
         businessId = businessId,
         userId = userId,
         businessOwnerId = businessOwnerId,
-        source = source,
+        source = source.key,
         selectedProductId = selectedProductId
     )
 
@@ -32,11 +33,11 @@ fun NavHostController.navigateToBookingFromProfile(
 
 fun NavHostController.navigateToBookingFromProduct(
     product: Product,
-    source: String
+    source: BookingSourceEnum
 ) {
     val route = MainRoute.BookingNavigator.createRouteFromProduct(
         product = product,
-        source = source
+        source = source.key
     )
 
     this.navigate(route) {

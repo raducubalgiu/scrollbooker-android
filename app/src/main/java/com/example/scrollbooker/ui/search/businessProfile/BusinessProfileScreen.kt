@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.layout.ErrorScreen
+import com.example.scrollbooker.core.enums.BookingSourceEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.navigation.navigators.SearchNavigator
@@ -210,7 +211,7 @@ fun BusinessProfileScreen(
                                     businessId = profile.id,
                                     userId = profile.owner.id,
                                     businessOwnerId = profile.owner.id,
-                                    source = "businessProfile",
+                                    source = BookingSourceEnum.SEARCH_BUSINESS_PROFILE,
                                     selectedProductId = null
                                 )
                             },
@@ -227,7 +228,7 @@ fun BusinessProfileScreen(
                             onNavigateToBookingFromProduct = {
                                 searchNavigate.toBookingFromProduct(
                                     it,
-                                    source = "businessProfile"
+                                    source = BookingSourceEnum.SEARCH_BUSINESS_PROFILE
                                 )
                             },
                             onNavigateToBookingFromProfile = {
@@ -235,7 +236,7 @@ fun BusinessProfileScreen(
                                     businessId = profile.id,
                                     userId = profile.owner.id,
                                     businessOwnerId = profile.owner.id,
-                                    source = "businessProfile",
+                                    source = BookingSourceEnum.SEARCH_BUSINESS_PROFILE,
                                     selectedProductId = null
                                 )
                             }

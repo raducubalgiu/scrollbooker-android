@@ -34,6 +34,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.scrollbooker.core.enums.BookingSourceEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.appointment.domain.model.BusinessCoordinates
@@ -279,7 +280,7 @@ fun SearchScreen(
                         onNavigateToBusinessProfile = { searchNavigate.toBusinessProfile(it) },
                         onSelectProduct = { searchNavigate.toBookingFromProduct(
                             it,
-                            source = "search"
+                            source = BookingSourceEnum.SEARCH
                         ) }
                     )
                 }
