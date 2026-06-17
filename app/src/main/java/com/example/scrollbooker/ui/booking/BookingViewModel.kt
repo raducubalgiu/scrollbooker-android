@@ -11,8 +11,8 @@ import com.example.scrollbooker.entity.booking.availability.domain.model.Availab
 import com.example.scrollbooker.entity.booking.availability.domain.model.Slot
 import com.example.scrollbooker.entity.booking.availability.domain.useCase.GetCalendarAvailableDaysUseCase
 import com.example.scrollbooker.entity.booking.availability.domain.useCase.GetUserAvailableTimeslotsUseCase
-import com.example.scrollbooker.entity.booking.products.domain.model.UserProducts
-import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByBusinessIdAndEmployeeIdUseCase
+import com.example.scrollbooker.entity.booking.booking.domain.model.BookingFlow
+import com.example.scrollbooker.entity.booking.booking.domain.useCase.GetBookingFlowUseCase
 import com.example.scrollbooker.ui.shared.calendar.CalendarConfig
 import com.example.scrollbooker.ui.shared.calendar.CalendarHeaderState
 import com.example.scrollbooker.ui.shared.calendar.SlotsParams
@@ -39,7 +39,7 @@ import javax.inject.Inject
 @HiltViewModel
 class BookingViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val getProductsByBusinessIdAndEmployeeIdUseCase: GetProductsByBusinessIdAndEmployeeIdUseCase,
+    private val getBookingFlowUseCase: GetBookingFlowUseCase,
     private val getCalendarAvailableDaysUseCase: GetCalendarAvailableDaysUseCase,
     private val getUserAvailableTimeslotsUseCase: GetUserAvailableTimeslotsUseCase,
     private val createScrollBookerAppointmentUseCase: CreateScrollBookerAppointmentUseCase,
@@ -89,14 +89,13 @@ class BookingViewModel @Inject constructor(
             initialValue = BookingTotals(BigDecimal.ZERO, 0)
         )
 
-    val productsState: StateFlow<FeatureState<UserProducts>> = flow {
+    val bookingFlowState: StateFlow<FeatureState<BookingFlow>> = flow {
         emit(FeatureState.Loading)
 
-        val result = withVisibleLoading {
-            getProductsByBusinessIdAndEmployeeIdUseCase(
+        val result = withVisibleLoading(minLoadingMs = 400L) {
+            getBookingFlowUseCase(
                 businessId = businessId,
                 employeeId = if(businessOwnerId != userId) userId else null,
-                onlyServicesWithProducts = true
             )
         }
         emit(result)

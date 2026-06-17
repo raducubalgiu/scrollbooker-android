@@ -18,8 +18,8 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.customized.productCard.ProductDetailSheet
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.entity.booking.booking.domain.model.BookingFlow
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
-import com.example.scrollbooker.entity.booking.products.domain.model.UserProducts
 import com.example.scrollbooker.entity.booking.products.domain.model.toBookingItem
 import com.example.scrollbooker.ui.booking.services.BookingProductsList
 import com.example.scrollbooker.ui.booking.services.BookingServicesTabs
@@ -33,7 +33,7 @@ fun BookingServicesScreen(
     onNavigateToSpecialists: () -> Unit,
     onBack: () -> Unit
 ) {
-    val productsState by viewModel.productsState.collectAsStateWithLifecycle()
+    val bookingFlowState by viewModel.bookingFlowState.collectAsStateWithLifecycle()
     val selectedBookingItems by viewModel.selectedBookingItems.collectAsStateWithLifecycle()
     val bookingTotals by viewModel.bookingTotals.collectAsStateWithLifecycle()
     val isInitialProductProcessed by viewModel.isInitialProductProcessed.collectAsStateWithLifecycle()
@@ -43,8 +43,12 @@ fun BookingServicesScreen(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
 
-    if (productsState is FeatureState.Success && !isInitialProductProcessed && viewModel.initialSelectedProductId != -1) {
-        val serviceGroups = (productsState as FeatureState.Success<UserProducts>).data.data
+    if (
+        bookingFlowState is FeatureState.Success &&
+        !isInitialProductProcessed &&
+        viewModel.initialSelectedProductId != -1
+    ) {
+        val serviceGroups = (bookingFlowState as FeatureState.Success<BookingFlow>).data.products.data
 
         LaunchedEffect(serviceGroups) {
             val targetProduct = serviceGroups
@@ -95,11 +99,11 @@ fun BookingServicesScreen(
         bookingTotals = bookingTotals,
         displayBottomBar = selectedBookingItems.isNotEmpty()
     ) {
-        when(val state = productsState) {
+        when(val state = bookingFlowState) {
             is FeatureState.Error -> ErrorScreen()
             is FeatureState.Loading -> LoadingScreen()
             is FeatureState.Success -> {
-                val serviceGroups = state.data.data
+                val serviceGroups = state.data.products.data
 
                 val activeTabIndexProvider = remember(serviceGroups) {
                     derivedStateOf {
@@ -157,84 +161,4 @@ fun BookingServicesScreen(
             }
         }
     }
-
-//    Scaffold(
-//        modifier = modifier,
-//        topBar = { Header(onBack = onBack) },
-//    ) { innerPadding ->
-//        Box(modifier = Modifier
-//            .fillMaxSize()
-//            .padding(innerPadding)
-//        ) {
-//            when (val state = productsState) {
-//                is FeatureState.Error -> ErrorScreen()
-//                is FeatureState.Loading -> LoadingScreen()
-//                is FeatureState.Success -> {
-//                    val serviceGroups = state.data.data
-//
-//                    val activeTabIndexProvider = remember(serviceGroups) {
-//                        derivedStateOf {
-//                            val visibleItems = listState.layoutInfo.visibleItemsInfo
-//                            if (visibleItems.isEmpty()) {
-//                                0
-//                            } else {
-//                                val firstVisibleItem = visibleItems.firstOrNull { item ->
-//                                    item.offset <= 0 && item.offset + item.size > 0
-//                                } ?: visibleItems.first()
-//
-//                                firstVisibleItem.index.coerceIn(0, serviceGroups.lastIndex)
-//                            }
-//                        }
-//                    }
-//
-//                    Column(modifier = Modifier.fillMaxSize()) {
-//                        Column(Modifier.weight(1f)) {
-//                            if (serviceGroups.isNotEmpty()) {
-//                                BookingServicesTabs(
-//                                    activeTabIndexProvider = { activeTabIndexProvider.value },
-//                                    onTabChange = { tabIndex ->
-//                                        scope.launch {
-//                                            listState.animateScrollToItem(tabIndex)
-//                                        }
-//                                    },
-//                                    serviceGroups = serviceGroups
-//                                )
-//                            }
-//
-//                            BookingProductsList(
-//                                state = listState,
-//                                serviceGroups = serviceGroups,
-//                                selectedBookingItems = selectedBookingItems,
-//                                onSelect = { product ->
-//                                    val existingSelectedItem = selectedBookingItems.find { it.productId == product.id }
-//
-//                                    if (existingSelectedItem != null) {
-//                                        viewModel.selectBookingItem(existingSelectedItem)
-//                                    } else {
-//                                        if (product.variants.size > 1) {
-//                                            selectedProduct = product
-//                                            scope.launch { sheetState.show() }
-//                                        } else {
-//                                            val bookingItem = product.variants.first().toBookingItem(product)
-//                                            viewModel.selectBookingItem(bookingItem)
-//                                        }
-//                                    }
-//                                },
-//                                onOpenProductDetail = {
-//                                    selectedProduct = it
-//                                    scope.launch { sheetState.show() }
-//                                },
-//                            )
-//                        }
-//
-//                        BookingBottomBar(
-//                            bookingTotals = bookingTotals,
-//                            isVisible = selectedBookingItems.isNotEmpty(),
-//                            onNavigateToSpecialists = onNavigateToSpecialists
-//                        )
-//                    }
-//                }
-//            }
-//        }
-//    }
 }
