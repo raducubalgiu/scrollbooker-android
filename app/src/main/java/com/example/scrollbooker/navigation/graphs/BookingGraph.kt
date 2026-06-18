@@ -10,9 +10,9 @@ import androidx.navigation.navArgument
 import com.example.scrollbooker.navigation.navigators.BookingNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.booking.BookingConfirmationScreen
-import com.example.scrollbooker.ui.booking.BookingDateTimeScreen
-import com.example.scrollbooker.ui.booking.BookingServicesScreen
-import com.example.scrollbooker.ui.booking.BookingSpecialistsScreen
+import com.example.scrollbooker.ui.booking.dateTime.BookingDateTimeScreen
+import com.example.scrollbooker.ui.booking.services.BookingServicesScreen
+import com.example.scrollbooker.ui.booking.specialists.BookingSpecialistsScreen
 import com.example.scrollbooker.ui.booking.BookingViewModel
 
 fun NavGraphBuilder.bookingGraph(

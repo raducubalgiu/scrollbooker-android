@@ -19,6 +19,6 @@ class BookingNavigator (
     }
 
     fun toConfirmation() {
-        navController.navigate(MainRoute.BookingDateTime.route)
+        navController.navigate(MainRoute.BookingConfirmation.route)
     }
 }

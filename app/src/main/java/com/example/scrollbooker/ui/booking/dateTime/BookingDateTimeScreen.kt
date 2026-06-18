@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.booking
+package com.example.scrollbooker.ui.booking.dateTime
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,6 +46,8 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.navigation.navigators.BookingNavigator
+import com.example.scrollbooker.ui.booking.BookingLayout
+import com.example.scrollbooker.ui.booking.BookingViewModel
 import com.example.scrollbooker.ui.shared.calendar.components.CalendarDayTab
 import com.example.scrollbooker.ui.shared.calendar.components.slots.FullyBookedDayMessage
 import com.example.scrollbooker.ui.shared.calendar.components.slots.SlotItem
@@ -128,7 +130,8 @@ fun BookingDateTimeScreen(
 
                 LaunchedEffect(weekPagerState.currentPage, dayPagerState.currentPage) {
                     val today = LocalDate.now()
-                    val calendar = (headerState as? FeatureState.Success)?.data ?: return@LaunchedEffect
+                    val calendar =
+                        (headerState as? FeatureState.Success)?.data ?: return@LaunchedEffect
                     val calendarDays = calendar.calendarDays
 
                     if (dayPagerState.isScrollInProgress) {
@@ -197,8 +200,8 @@ fun BookingDateTimeScreen(
                             IconButton(
                                 onClick = { if (enableBack) handlePreviousWeek() },
                                 colors = IconButtonDefaults.iconButtonColors(
-                                    containerColor = if(enableBack) SurfaceBG else Color.Transparent,
-                                    contentColor = if(enableBack) OnSurfaceBG.copy(0.8f) else Divider
+                                    containerColor = if (enableBack) SurfaceBG else Color.Transparent,
+                                    contentColor = if (enableBack) OnSurfaceBG.copy(0.8f) else Divider
                                 )
                             ) {
                                 Icon(
@@ -213,8 +216,8 @@ fun BookingDateTimeScreen(
                             IconButton(
                                 onClick = { if (enableNext) handleNextWeek() },
                                 colors = IconButtonDefaults.iconButtonColors(
-                                    containerColor = if(enableNext) SurfaceBG else Color.Transparent,
-                                    contentColor = if(enableNext) OnSurfaceBG.copy(0.8f) else Divider
+                                    containerColor = if (enableNext) SurfaceBG else Color.Transparent,
+                                    contentColor = if (enableNext) OnSurfaceBG.copy(0.8f) else Divider
                                 )
                             ) {
                                 Icon(
@@ -228,7 +231,8 @@ fun BookingDateTimeScreen(
 
                     HorizontalPager(
                         state = weekPagerState,
-                        modifier = Modifier.fillMaxWidth().height(95.dp).padding(horizontal = BasePadding),
+                        modifier = Modifier.fillMaxWidth().height(95.dp)
+                            .padding(horizontal = BasePadding),
                         beyondViewportPageCount = 1
                     ) { page ->
                         val weekDates = remember(page, calendarDays) {
@@ -244,16 +248,26 @@ fun BookingDateTimeScreen(
                                 val isAvailable = availableDaysSet.contains(date)
                                 val isSelected = selectedDay == date
 
-                                Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                                Box(
+                                    modifier = Modifier.weight(1f),
+                                    contentAlignment = Alignment.Center
+                                ) {
                                     CalendarDayTab(
                                         date = date,
                                         isCurrentTab = isSelected,
                                         onChangeTab = {
                                             val targetDayIndex = page * 7 + index
-                                            scope.launch { dayPagerState.animateScrollToPage(targetDayIndex) }
+                                            scope.launch {
+                                                dayPagerState.animateScrollToPage(
+                                                    targetDayIndex
+                                                )
+                                            }
                                         },
                                         bgColor = if (isSelected) Primary else Color.Transparent,
-                                        label = remember(date, currentLocale) { displayShortDayOfWeek(date, currentLocale) },
+                                        label = remember(
+                                            date,
+                                            currentLocale
+                                        ) { displayShortDayOfWeek(date, currentLocale) },
                                         isLoading = false,
                                         isDayAvailable = isAvailable
                                     )

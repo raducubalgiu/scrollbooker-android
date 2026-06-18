@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.booking
+package com.example.scrollbooker.ui.booking.services
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -22,8 +22,8 @@ import com.example.scrollbooker.entity.booking.booking.domain.model.BookingFlow
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.model.toBookingItem
 import com.example.scrollbooker.navigation.navigators.BookingNavigator
-import com.example.scrollbooker.ui.booking.services.BookingProductsList
-import com.example.scrollbooker.ui.booking.services.BookingServicesTabs
+import com.example.scrollbooker.ui.booking.BookingLayout
+import com.example.scrollbooker.ui.booking.BookingViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -97,13 +97,13 @@ fun BookingServicesScreen(
         onBack = { bookingNavigate.back() },
         onNext = {
             val bookingFlow = (bookingFlowState as FeatureState.Success<BookingFlow>).data
-            if(bookingFlow.business.hasEmployees) bookingNavigate.toSpecialists()
+            if (bookingFlow.business.hasEmployees) bookingNavigate.toSpecialists()
             else bookingNavigate.toDateTime()
         },
         bookingTotals = bookingTotals,
         displayBottomBar = selectedBookingItems.isNotEmpty()
     ) {
-        when(val state = bookingFlowState) {
+        when (val state = bookingFlowState) {
             is FeatureState.Error -> ErrorScreen()
             is FeatureState.Loading -> LoadingScreen()
             is FeatureState.Success -> {
@@ -142,7 +142,8 @@ fun BookingServicesScreen(
                         serviceGroups = serviceGroups,
                         selectedBookingItems = selectedBookingItems,
                         onSelect = { product ->
-                            val existingSelectedItem = selectedBookingItems.find { it.productId == product.id }
+                            val existingSelectedItem =
+                                selectedBookingItems.find { it.productId == product.id }
 
                             if (existingSelectedItem != null) {
                                 viewModel.selectBookingItem(existingSelectedItem)
@@ -151,7 +152,8 @@ fun BookingServicesScreen(
                                     selectedProduct = product
                                     scope.launch { sheetState.show() }
                                 } else {
-                                    val bookingItem = product.variants.first().toBookingItem(product)
+                                    val bookingItem =
+                                        product.variants.first().toBookingItem(product)
                                     viewModel.selectBookingItem(bookingItem)
                                 }
                             }
