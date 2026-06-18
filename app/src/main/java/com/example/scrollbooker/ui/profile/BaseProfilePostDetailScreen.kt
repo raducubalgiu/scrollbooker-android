@@ -53,7 +53,6 @@ import com.example.scrollbooker.core.extensions.getOrNull
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
-import com.example.scrollbooker.navigation.navigators.NavigateBookingParam
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import kotlinx.coroutines.launch
@@ -256,14 +255,9 @@ fun BaseProfilePostDetailScreen(
                                 null -> BookingSourceEnum.PROFILE_GRID_POST_DETAIL
                             }
 
-                            profileNavigate.toBookingFromProfile(
-                                NavigateBookingParam(
-                                    userId = it.user.id,
-                                    businessId = it.businessId,
-                                    businessOwnerId = it.businessOwner.id,
-                                    source = bookingSource
-                                )
-                            )
+                            currentPost?.let {
+                                profileNavigate.toBookingFromPost(it, bookingSource)
+                            }
                         }
                     },
                     title = stringResource(R.string.bookNow),

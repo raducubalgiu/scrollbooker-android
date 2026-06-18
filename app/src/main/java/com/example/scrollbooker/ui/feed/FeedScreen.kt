@@ -151,20 +151,18 @@ fun FeedScreen(
                             posts = explorePosts,
                             isTabActive = horizontalPagerState.settledPage == 0,
                             viewModel = exploreViewModel,
-                            sourceName = BookingSourceEnum.EXPLORE_FEED,
                             onAction = { action, post -> handlePostSheetAction(action, post, ::handleOpenSheet) },
                             onNavigateToUserProfile = { userId, username -> feedNavigate.toUserProfile(userId, username) },
-                            onNavigateToBooking = { feedNavigate.toBooking(it) }
+                            onNavigateToBooking = { feedNavigate.toBookingFromPost(it, source = BookingSourceEnum.EXPLORE_FEED,) }
                         )
                         1 -> {
                             BaseFeedTabScreen(
                                 posts = followingPosts,
                                 isTabActive = horizontalPagerState.settledPage == 1,
                                 viewModel = followingViewModel,
-                                sourceName = BookingSourceEnum.FOLLOWING_FEED,
                                 onAction = { action, post -> handlePostSheetAction(action, post, ::handleOpenSheet) },
                                 onNavigateToUserProfile = { userId, username -> feedNavigate.toUserProfile(userId, username) },
-                                onNavigateToBooking = { feedNavigate.toBooking(it) }
+                                onNavigateToBooking = { feedNavigate.toBookingFromPost(it, BookingSourceEnum.FOLLOWING_FEED) }
                             )
                         }
                     }

@@ -1,6 +1,7 @@
 package com.example.scrollbooker.navigation.routes
 
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
+import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
 
 sealed class MainRoute(val route: String) {
@@ -98,6 +99,13 @@ sealed class MainRoute(val route: String) {
     object BookingNavigator : MainRoute(
         route = "bookingNavigator/{businessId}/{userId}/{businessOwnerId}/{source}?selectedProductId={selectedProductId}"
     ) {
+        fun createRouteFromPost(
+            post: Post,
+            source: String
+        ): String {
+            return "bookingNavigator/${post.businessId}/${post.user.id}/${post.businessOwner.id}/$source"
+        }
+
         fun createRouteFromProfile(
             businessId: Int,
             userId: Int,

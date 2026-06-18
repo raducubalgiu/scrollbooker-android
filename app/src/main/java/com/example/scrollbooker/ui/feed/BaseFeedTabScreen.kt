@@ -19,7 +19,6 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,7 +26,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.paging.LoadState
@@ -40,11 +38,9 @@ import com.example.scrollbooker.components.customized.post.PostPlayerWithThumbna
 import com.example.scrollbooker.components.customized.post.components.PostOverlay
 import com.example.scrollbooker.components.customized.post.components.PostShimmer
 import com.example.scrollbooker.components.customized.post.sheets.PostSheetActionEnum
-import com.example.scrollbooker.core.enums.BookingSourceEnum
 import com.example.scrollbooker.core.extensions.getOrNull
 import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
-import com.example.scrollbooker.navigation.navigators.NavigateBookingParam
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 
@@ -53,10 +49,9 @@ fun BaseFeedTabScreen(
     posts: LazyPagingItems<Post>,
     isTabActive: Boolean,
     viewModel: FeedViewModelContract,
-    sourceName: BookingSourceEnum,
     onAction: (PostSheetActionEnum, Post) -> Unit,
     onNavigateToUserProfile: (Int, String) -> Unit,
-    onNavigateToBooking: (NavigateBookingParam) -> Unit
+    onNavigateToBooking: (Post) -> Unit
 ) {
     val userPausedSet by viewModel.userPausedPostIds.collectAsStateWithLifecycle()
 
@@ -161,16 +156,7 @@ fun BaseFeedTabScreen(
                             onNavigateToUserProfile = onNavigateToUserProfile,
                             onLike = { viewModel.toggleLike(post) },
                             onBookmark = { viewModel.toggleBookmark(post) },
-                            onNavigateToBooking = {
-                                onNavigateToBooking(
-                                    NavigateBookingParam(
-                                        userId = post.user.id,
-                                        businessId = post.businessId,
-                                        businessOwnerId = post.businessOwner.id,
-                                        source = sourceName
-                                    )
-                                )
-                            }
+                            onNavigateToBooking = { onNavigateToBooking(post) }
                         )
                     }
                 }
