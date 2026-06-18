@@ -7,6 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
+import com.example.scrollbooker.navigation.navigators.BookingNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.booking.BookingConfirmationScreen
 import com.example.scrollbooker.ui.booking.BookingDateTimeScreen
@@ -15,7 +16,8 @@ import com.example.scrollbooker.ui.booking.BookingSpecialistsScreen
 import com.example.scrollbooker.ui.booking.BookingViewModel
 
 fun NavGraphBuilder.bookingGraph(
-    navController: NavHostController
+    navController: NavHostController,
+    bookingNavigate: BookingNavigator,
 ) {
     navigation(
         route = MainRoute.BookingNavigator.route,
@@ -54,8 +56,7 @@ fun NavGraphBuilder.bookingGraph(
 
             BookingServicesScreen(
                 viewModel = viewModel,
-                onNavigateToSpecialists = { navController.navigate(MainRoute.BookingSpecialists.route) },
-                onBack = { navController.popBackStack() }
+                bookingNavigate = bookingNavigate
             )
         }
 
@@ -69,8 +70,7 @@ fun NavGraphBuilder.bookingGraph(
 
             BookingSpecialistsScreen(
                 viewModel = viewModel,
-                onNavigateToDateTime = { navController.navigate(MainRoute.BookingDateTime.route) },
-                onBack = { navController.popBackStack() }
+                bookingNavigate = bookingNavigate
             )
         }
 
@@ -84,8 +84,7 @@ fun NavGraphBuilder.bookingGraph(
 
             BookingDateTimeScreen(
                 viewModel = viewModel,
-                onNavigateToConfirmation = { navController.navigate(MainRoute.BookingConfirmation.route) },
-                onBack = { navController.popBackStack() }
+                bookingNavigate = bookingNavigate
             )
         }
 
@@ -99,7 +98,7 @@ fun NavGraphBuilder.bookingGraph(
 
             BookingConfirmationScreen(
                 viewModel = viewModel,
-                onBack = { navController.popBackStack() }
+                bookingNavigate = bookingNavigate
             )
         }
     }

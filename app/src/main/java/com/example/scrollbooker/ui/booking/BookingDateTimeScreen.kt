@@ -45,6 +45,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.navigation.navigators.BookingNavigator
 import com.example.scrollbooker.ui.shared.calendar.components.CalendarDayTab
 import com.example.scrollbooker.ui.shared.calendar.components.slots.FullyBookedDayMessage
 import com.example.scrollbooker.ui.shared.calendar.components.slots.SlotItem
@@ -61,8 +62,7 @@ import org.threeten.bp.LocalDate
 fun BookingDateTimeScreen(
     modifier: Modifier = Modifier,
     viewModel: BookingViewModel,
-    onNavigateToConfirmation: () -> Unit,
-    onBack: () -> Unit
+    bookingNavigate: BookingNavigator
 ) {
     val bookingTotals by viewModel.bookingTotals.collectAsStateWithLifecycle()
     val headerState by viewModel.calendarHeader.collectAsStateWithLifecycle()
@@ -79,8 +79,8 @@ fun BookingDateTimeScreen(
     BookingLayout(
         modifier = modifier,
         title = "Alege Data si Ora",
-        onBack = onBack,
-        onNext = onNavigateToConfirmation,
+        onBack = { bookingNavigate.back() },
+        onNext = { bookingNavigate.toConfirmation() },
         bookingTotals = bookingTotals,
         displayBottomBar = false
     ) {
@@ -288,7 +288,7 @@ fun BookingDateTimeScreen(
                                                 slot = slot,
                                                 onSelectSlot = {
                                                     viewModel.onSlotSelected(slot)
-                                                    onNavigateToConfirmation()
+                                                    bookingNavigate.toConfirmation()
                                                 }
                                             )
                                         }

@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import com.example.scrollbooker.navigation.graphs.bookingGraph
 import com.example.scrollbooker.navigation.graphs.socialGraph
 import com.example.scrollbooker.navigation.graphs.userProfileGraph
+import com.example.scrollbooker.navigation.navigators.BookingNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.feed.FeedScreen
 import com.example.scrollbooker.ui.feed.search.FeedSearchScreen
@@ -30,6 +31,11 @@ fun FeedNavHost(navController: NavHostController) {
     val feedNavigate = remember(navController) {
         FeedNavigator(navController)
     }
+
+    val bookingNavigate = remember(navController) {
+        BookingNavigator(navController)
+    }
+
     NavHost(
         navController = navController,
         startDestination = MainRoute.Feed.route,
@@ -62,7 +68,7 @@ fun FeedNavHost(navController: NavHostController) {
         }
 
         userProfileGraph(navController, profileNavigate)
-        bookingGraph(navController)
+        bookingGraph(navController, bookingNavigate)
         socialGraph(navController, profileNavigate)
     }
 }

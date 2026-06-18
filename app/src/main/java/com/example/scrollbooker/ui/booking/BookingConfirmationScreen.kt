@@ -28,6 +28,7 @@ import java.math.BigDecimal
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import com.example.scrollbooker.components.core.buttons.MainButton
+import com.example.scrollbooker.navigation.navigators.BookingNavigator
 import kotlinx.coroutines.launch
 
 val dummySelectedItems = listOf(
@@ -67,8 +68,7 @@ val dummySelectedItems = listOf(
 @Composable
 fun BookingConfirmationScreen(
     viewModel: BookingViewModel,
-    onBack: () -> Unit,
-    onConfirmBooking: () -> Unit = {}
+    bookingNavigate: BookingNavigator,
 ) {
     val isSaving by viewModel.isSaving.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
@@ -83,7 +83,7 @@ fun BookingConfirmationScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = { bookingNavigate.back() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Înapoi"

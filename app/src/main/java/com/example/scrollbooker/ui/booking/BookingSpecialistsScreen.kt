@@ -5,21 +5,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.scrollbooker.navigation.navigators.BookingNavigator
 
 @Composable
 fun BookingSpecialistsScreen(
     modifier: Modifier = Modifier,
     viewModel: BookingViewModel,
-    onNavigateToDateTime: () -> Unit,
-    onBack: () -> Unit
+    bookingNavigate: BookingNavigator
 ) {
     val bookingTotals by viewModel.bookingTotals.collectAsStateWithLifecycle()
 
     BookingLayout(
         modifier = modifier,
         title = "Alege Specialistul",
-        onBack = onBack,
-        onNext = onNavigateToDateTime,
+        onBack = { bookingNavigate.back() },
+        onNext = { bookingNavigate.toDateTime() },
         bookingTotals = bookingTotals,
         displayBottomBar = true
     ) {

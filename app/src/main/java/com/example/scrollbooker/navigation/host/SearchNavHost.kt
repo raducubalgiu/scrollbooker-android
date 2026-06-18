@@ -13,6 +13,7 @@ import androidx.navigation.navArgument
 import com.example.scrollbooker.navigation.graphs.bookingGraph
 import com.example.scrollbooker.navigation.graphs.socialGraph
 import com.example.scrollbooker.navigation.graphs.userProfileGraph
+import com.example.scrollbooker.navigation.navigators.BookingNavigator
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.navigation.navigators.SearchNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
@@ -33,6 +34,10 @@ fun SearchNavHost(
 
     val searchNavigate = remember(navController) {
         SearchNavigator(navController)
+    }
+
+    val bookingNavigate = remember(navController) {
+        BookingNavigator(navController)
     }
 
     NavHost(
@@ -64,7 +69,7 @@ fun SearchNavHost(
         }
 
         userProfileGraph(navController, profileNavigate)
-        bookingGraph(navController)
+        bookingGraph(navController, bookingNavigate)
         socialGraph(navController, profileNavigate)
     }
 }

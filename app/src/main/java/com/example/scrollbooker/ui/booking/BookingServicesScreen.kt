@@ -21,6 +21,7 @@ import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.booking.domain.model.BookingFlow
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.model.toBookingItem
+import com.example.scrollbooker.navigation.navigators.BookingNavigator
 import com.example.scrollbooker.ui.booking.services.BookingProductsList
 import com.example.scrollbooker.ui.booking.services.BookingServicesTabs
 import kotlinx.coroutines.launch
@@ -30,8 +31,7 @@ import kotlinx.coroutines.launch
 fun BookingServicesScreen(
     modifier: Modifier = Modifier,
     viewModel: BookingViewModel,
-    onNavigateToSpecialists: () -> Unit,
-    onBack: () -> Unit
+    bookingNavigate: BookingNavigator
 ) {
     val bookingFlowState by viewModel.bookingFlowState.collectAsStateWithLifecycle()
     val selectedBookingItems by viewModel.selectedBookingItems.collectAsStateWithLifecycle()
@@ -94,8 +94,12 @@ fun BookingServicesScreen(
     BookingLayout(
         modifier = modifier,
         title = "Alege Serviciile",
-        onBack = onBack,
-        onNext = onNavigateToSpecialists,
+        onBack = { bookingNavigate.back() },
+        onNext = {
+            val bookingFlow = (bookingFlowState as FeatureState.Success<BookingFlow>).data
+            if(bookingFlow.business.hasEmployees) bookingNavigate.toSpecialists()
+            else bookingNavigate.toDateTime()
+        },
         bookingTotals = bookingTotals,
         displayBottomBar = selectedBookingItems.isNotEmpty()
     ) {

@@ -12,6 +12,7 @@ import androidx.navigation.navigation
 import com.example.scrollbooker.navigation.graphs.bookingGraph
 import com.example.scrollbooker.navigation.graphs.socialGraph
 import com.example.scrollbooker.navigation.graphs.userProfileGraph
+import com.example.scrollbooker.navigation.navigators.BookingNavigator
 import com.example.scrollbooker.navigation.navigators.InboxNavigator
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
@@ -29,6 +30,10 @@ import kotlinx.coroutines.launch
 fun InboxNavHost(navController: NavHostController) {
     val profileNavigate = remember(navController) {
         ProfileNavigator(navController)
+    }
+
+    val bookingNavigate = remember(navController) {
+        BookingNavigator(navController)
     }
 
     NavHost(
@@ -121,6 +126,6 @@ fun InboxNavHost(navController: NavHostController) {
 
         userProfileGraph(navController, profileNavigate)
         socialGraph(navController, profileNavigate)
-        bookingGraph(navController)
+        bookingGraph(navController, bookingNavigate)
     }
 }
