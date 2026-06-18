@@ -9,7 +9,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import com.example.scrollbooker.navigation.navigators.BookingNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
-import com.example.scrollbooker.ui.booking.BookingConfirmationScreen
+import com.example.scrollbooker.ui.booking.confirmation.BookingConfirmationScreen
 import com.example.scrollbooker.ui.booking.dateTime.BookingDateTimeScreen
 import com.example.scrollbooker.ui.booking.services.BookingServicesScreen
 import com.example.scrollbooker.ui.booking.specialists.BookingSpecialistsScreen

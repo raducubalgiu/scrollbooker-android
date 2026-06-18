@@ -30,6 +30,8 @@ fun BookingFlowUserDto.toDomain(): BookingFlowUser {
         username = username,
         fullName = fullName,
         profession = profession,
-        avatar = avatar
+        avatar = avatar,
+        ratingsCount = ratingsCount,
+        ratingsAverage = ratingsAverage
     )
 }

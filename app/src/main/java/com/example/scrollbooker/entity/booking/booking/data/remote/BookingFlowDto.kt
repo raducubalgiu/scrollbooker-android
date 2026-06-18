@@ -28,5 +28,11 @@ data class BookingFlowUserDto(
 
     val profession: String,
 
-    val avatar: String?
+    val avatar: String?,
+
+    @SerializedName("ratings_count")
+    val ratingsCount: Int,
+
+    @SerializedName("ratings_average")
+    val ratingsAverage: Float
 )

@@ -286,6 +286,7 @@
     <string name="collapse">Colapsează</string>
     <string name="nearServices">Servicii în apropiere</string>
     <string name="confirmReservation">Confirmă rezervarea</string>
+    <string name="confirmReservationDetails">Ești la un pas de a finaliza programarea. Asigură-te că toate datele sunt corecte.</string>
     <string name="explore">Explorează</string>
     <string name="dontHaveAnyNotification">Nu ai nici o notificare</string>
     <string name="categories">Categorii</string>
@@ -428,6 +429,9 @@
     <string name="serviceWithoutDescription">Acest serviciu nu are o descriere disponibilă</string>
     <string name="notFoundServices">Nu au fost găsite servicii</string>
     <string name="notFoundServicesForThisCategory">Nu au fost găsite servicii pentru această categorie.</string>
+    <string name="checkDetails">Verifică detaliile</string>
+    <string name="cancellationPolicy">Politica de anulare</string>
+    <string name="cancellationPolicyDescription">Anularea gratuită este disponibilă cu până la 24 de ore înainte de ora programată. Ulterior, se pot aplica taxe conform regulamentului afacerii.</string>
 
     <!-- Follow & Social Notifications -->
     <string name="notification_started_following_you">a început să te urmărească</string>
