@@ -358,6 +358,9 @@
     <string name="noProductsSelected">Nici un produs selectat</string>
     <string name="chooseServices">Alege serviciile</string>
     <string name="chooseSpecialist">Alege specialistul</string>
+    <string name="chooseSpecialistDescription">Selectează un specialist din lista de mai sus pentru a verifica disponibilitatea serviciilor.</string>
+    <string name="availableOnSpecialist">Disponibil la acest specialist</string>
+    <string name="doesNotOfferThisService">Nu oferă acest serviciu</string>
     <string name="chooseService">Alege serviciul</string>
     <string name="verifyAvailability">Verifică disponibilitatea</string>
     <string name="totalPayment">Total de plată</string>

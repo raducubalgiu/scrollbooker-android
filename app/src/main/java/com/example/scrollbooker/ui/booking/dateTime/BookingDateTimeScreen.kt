@@ -1,5 +1,4 @@
 package com.example.scrollbooker.ui.booking.dateTime
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -53,9 +52,11 @@ import com.example.scrollbooker.ui.shared.calendar.components.slots.FullyBookedD
 import com.example.scrollbooker.ui.shared.calendar.components.slots.SlotItem
 import com.example.scrollbooker.ui.shared.calendar.components.slots.SlotsShimmer
 import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.SurfaceBG
+import com.example.scrollbooker.ui.theme.headlineLarge
 import com.example.scrollbooker.ui.theme.titleMedium
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
@@ -86,6 +87,13 @@ fun BookingDateTimeScreen(
         bookingTotals = bookingTotals,
         displayBottomBar = false
     ) {
+        Text(
+            style = headlineLarge,
+            color = OnBackground,
+            fontWeight = FontWeight.ExtraBold,
+            text = "Alege Ora"
+        )
+
         when (val header = headerState) {
             is FeatureState.Error -> ErrorScreen()
             is FeatureState.Loading -> LoadingScreen()
