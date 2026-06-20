@@ -1,6 +1,7 @@
 package com.example.scrollbooker.ui.shared.calendar.components.slots
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -19,8 +20,10 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.extensions.formatHour
 import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.entity.booking.availability.domain.model.Slot
+import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.LastMinute
 import com.example.scrollbooker.ui.theme.OnPrimary
@@ -38,8 +41,9 @@ fun SlotItem(
             .padding(horizontal = BasePadding)
             .clip(shape = ShapeDefaults.Large)
             .background(SurfaceBG)
+            .border(1.dp, Divider, ShapeDefaults.Large)
             .clickable { onSelectSlot(slot) }
-            .padding(BasePadding),
+            .padding(18.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -55,7 +59,7 @@ fun SlotItem(
                         .clip(shape = ShapeDefaults.Large)
                         .background(LastMinute)
                         .padding(
-                            vertical = 2.dp,
+                            vertical = 3.dp,
                             horizontal = 6.dp
                         )
                     ,

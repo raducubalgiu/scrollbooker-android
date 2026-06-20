@@ -16,10 +16,3 @@ data class CalendarHeaderState(
     val calendarDays: List<LocalDate>,
     val calendarAvailableDays: List<LocalDate>
 )
-
-data class SlotsParams(
-    val day: LocalDate,
-    val userId: Int,
-    val slotDuration: Int,
-    val forceRefresh: Boolean
-)

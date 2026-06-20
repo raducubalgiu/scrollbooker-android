@@ -5,7 +5,17 @@ import javax.inject.Inject
 class GetCalendarAvailableDaysUseCase @Inject constructor(
     private val repository: AvailabilityRepository
 ) {
-    suspend operator fun invoke(userId: Int, startDate: String, endDate: String): List<String> {
-        return repository.getUserCalendarAvailableDays(userId, startDate, endDate)
+    suspend operator fun invoke(
+        businessId: Int,
+        employeeId: Int?,
+        startDate: String,
+        endDate: String
+    ): List<String> {
+        return repository.getUserCalendarAvailableDays(
+            businessId = businessId,
+            employeeId = employeeId,
+            startDate = startDate,
+            endDate = endDate
+        )
     }
 }

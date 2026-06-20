@@ -9,9 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -34,11 +32,11 @@ fun BookingSpecialistsScreen(
     viewModel: BookingViewModel,
     bookingNavigate: BookingNavigator
 ) {
+    val selectedEmployeeId by viewModel.selectedEmployeeId.collectAsStateWithLifecycle()
     val selectedBookingItems by viewModel.selectedBookingItems.collectAsStateWithLifecycle()
     val bookingFlowState by viewModel.bookingFlowState.collectAsStateWithLifecycle()
     val bookingTotals by viewModel.bookingTotals.collectAsStateWithLifecycle()
 
-    var selectedEmployeeId by remember { mutableStateOf<Int?>(null) }
     val bookingFlow = (bookingFlowState as FeatureState.Success).data
 
     val allowedEmployeeIds: Set<Int> = remember(selectedBookingItems) {
@@ -60,6 +58,7 @@ fun BookingSpecialistsScreen(
         onBack = { bookingNavigate.back() },
         onNext = { bookingNavigate.toDateTime() },
         bookingTotals = bookingTotals,
+        isEnabled = selectedEmployeeId != null,
         displayBottomBar = true
     ) {
         Column(modifier = Modifier
@@ -77,7 +76,9 @@ fun BookingSpecialistsScreen(
             EmployeeSelectDropdown(
                 selectedEmployeeId = selectedEmployeeId,
                 employees = filteredEmployees,
-                onEmployeeSelected = { selectedEmployeeId = it }
+                onEmployeeSelected = { id ->
+                    viewModel.setSelectedEmployeeId(id)
+                }
             )
 
             if (selectedEmployeeId == null) UnselectedSpecialistOverlay()
@@ -89,7 +90,7 @@ fun BookingSpecialistsScreen(
                         ProductOfferingCard(
                             item = item,
                             selectedEmployeeId = selectedEmployeeId,
-                            employees = bookingFlow.employees,
+                            employees = filteredEmployees,
                             currentOffering = getSelectedOffering(item),
                             onRemoveItem = { }
                         )

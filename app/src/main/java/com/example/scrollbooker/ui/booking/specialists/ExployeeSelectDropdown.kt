@@ -66,7 +66,7 @@ fun EmployeeSelectDropdown(
                     ) {
                         Box(
                             modifier = Modifier
-                                .size(50.dp)
+                                .size(40.dp)
                                 .background(MaterialTheme.colorScheme.primary, shape = CircleShape),
                             contentAlignment = Alignment.Center
                         ) {
@@ -85,7 +85,7 @@ fun EmployeeSelectDropdown(
                     SpecialistItem(
                         specialist = currentSelected,
                         withBadge = false,
-                        size = 50.dp
+                        size = 40.dp
                     )
                 }
             }
@@ -113,7 +113,7 @@ fun EmployeeSelectDropdown(
                         SpecialistItem(
                             specialist = specialist,
                             withBadge = true,
-                            size = 60.dp
+                            size = 55.dp
                         )
                     },
                     onClick = {

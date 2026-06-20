@@ -19,7 +19,10 @@ import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable
 fun BookingSummary(
-    owner: BookingFlowUser
+    startDate: String,
+    totalDuration: Int,
+    owner: BookingFlowUser,
+    address: String
 ) {
     Card(
         modifier = Modifier
@@ -34,14 +37,14 @@ fun BookingSummary(
 
         BookingSummaryItem(
             title = stringResource(R.string.dateAndHour),
-            description = "14:30 - 15:15 (45 min)"
+            description = "$startDate (${totalDuration}) min"
         )
 
         HorizontalDivider(Modifier.padding(horizontal = BasePadding))
 
         BookingSummaryItem(
             title = stringResource(R.string.location),
-            description = "Bulevardul Iuliu Maniu 67, 077042 București, România"
+            description = address
         )
     }
 }

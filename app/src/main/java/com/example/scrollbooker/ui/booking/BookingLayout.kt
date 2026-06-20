@@ -18,6 +18,7 @@ fun BookingLayout(
     onNext: () -> Unit,
     bookingTotals: BookingTotals,
     displayBottomBar: Boolean,
+    isEnabled: Boolean = true,
     content: @Composable () -> Unit
 ) {
     Scaffold(
@@ -29,28 +30,24 @@ fun BookingLayout(
             )
         }
     ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
         ) {
             Column(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
             ) {
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth()
-                ) {
-                    content()
-                }
-
-                BookingBottomBar(
-                    bookingTotals = bookingTotals,
-                    isVisible = displayBottomBar,
-                    onNext = onNext
-                )
+                content()
             }
+
+            BookingBottomBar(
+                bookingTotals = bookingTotals,
+                isVisible = displayBottomBar,
+                isEnabled = isEnabled,
+                onNext = onNext
+            )
         }
     }
 }

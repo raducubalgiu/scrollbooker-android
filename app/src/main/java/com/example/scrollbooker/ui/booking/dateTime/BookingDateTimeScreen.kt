@@ -1,4 +1,5 @@
 package com.example.scrollbooker.ui.booking.dateTime
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.ArrowBackIosNew
@@ -57,6 +59,7 @@ import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.headlineLarge
+import com.example.scrollbooker.ui.theme.titleLarge
 import com.example.scrollbooker.ui.theme.titleMedium
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
@@ -81,13 +84,13 @@ fun BookingDateTimeScreen(
 
     BookingLayout(
         modifier = modifier,
-        title = "Alege Data si Ora",
         onBack = { bookingNavigate.back() },
         onNext = { bookingNavigate.toConfirmation() },
         bookingTotals = bookingTotals,
         displayBottomBar = false
     ) {
         Text(
+            modifier = Modifier.padding(BasePadding),
             style = headlineLarge,
             color = OnBackground,
             fontWeight = FontWeight.ExtraBold,
@@ -191,7 +194,9 @@ fun BookingDateTimeScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Icon(
-                                painter = painterResource(R.drawable.ic_calendar_outline),
+                                modifier = Modifier.size(30.dp),
+                                tint = Color.Gray,
+                                painter = painterResource(R.drawable.ic_calendar_outline_stroke_small),
                                 contentDescription = null
                             )
 
@@ -199,17 +204,22 @@ fun BookingDateTimeScreen(
 
                             Text(
                                 text = period,
-                                style = titleMedium,
-                                fontWeight = FontWeight.Bold
+                                style = titleLarge,
+                                fontWeight = FontWeight.SemiBold
                             )
                         }
 
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             IconButton(
                                 onClick = { if (enableBack) handlePreviousWeek() },
+                                modifier = Modifier.border(
+                                    width = 1.dp,
+                                    color = if(enableBack) Divider else Color.Transparent,
+                                    shape = CircleShape
+                                ),
                                 colors = IconButtonDefaults.iconButtonColors(
-                                    containerColor = if (enableBack) SurfaceBG else Color.Transparent,
-                                    contentColor = if (enableBack) OnSurfaceBG.copy(0.8f) else Divider
+                                    containerColor = Color.Transparent,
+                                    contentColor = if (enableBack) OnSurfaceBG.copy(alpha = 0.8f) else Divider
                                 )
                             ) {
                                 Icon(
@@ -219,13 +229,18 @@ fun BookingDateTimeScreen(
                                 )
                             }
 
-                            Spacer(Modifier.width(SpacingXS))
+                            Spacer(Modifier.width(SpacingS))
 
                             IconButton(
                                 onClick = { if (enableNext) handleNextWeek() },
+                                modifier = Modifier.border(
+                                    width = 1.dp,
+                                    color = if(enableNext) Divider else Color.Transparent,
+                                    shape = CircleShape
+                                ),
                                 colors = IconButtonDefaults.iconButtonColors(
-                                    containerColor = if (enableNext) SurfaceBG else Color.Transparent,
-                                    contentColor = if (enableNext) OnSurfaceBG.copy(0.8f) else Divider
+                                    containerColor = Color.Transparent,
+                                    contentColor = if (enableNext) OnSurfaceBG.copy(alpha = 0.8f) else Divider
                                 )
                             ) {
                                 Icon(
@@ -236,6 +251,8 @@ fun BookingDateTimeScreen(
                             }
                         }
                     }
+
+                    Spacer(Modifier.height(SpacingS))
 
                     HorizontalPager(
                         state = weekPagerState,
@@ -284,7 +301,7 @@ fun BookingDateTimeScreen(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(BasePadding))
 
                     HorizontalPager(
                         state = dayPagerState,

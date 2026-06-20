@@ -10,19 +10,31 @@ class AvailabilityRepositoryImpl @Inject constructor(
     private val apiService: AvailabilityApiService
 ): AvailabilityRepository {
     override suspend fun getUserCalendarAvailableDays(
-        userId: Int,
+        businessId: Int,
+        employeeId: Int?,
         startDate: String,
         endDate: String
     ): List<String> {
-        return apiService.getUserCalendarAvailableDays(userId, startDate, endDate)
+        return apiService.getUserCalendarAvailableDays(
+            businessId = businessId,
+            employeeId = employeeId,
+            startDate = startDate,
+            endDate = endDate
+        )
     }
 
     override suspend fun getUserAvailableTimeSlots(
+        businessId: Int,
+        employeeId: Int?,
+        slotDuration: Int,
         day: String,
-        userId: Int,
-        slotDuration: Int
     ): AvailableDay {
-        return apiService.getUserAvailableTimeslots(day, userId, slotDuration).toDomain()
+        return apiService.getUserAvailableTimeslots(
+            businessId = businessId,
+            employeeId = employeeId,
+            slotDuration = slotDuration,
+            day = day
+        ).toDomain()
     }
 
     override suspend fun getUserCalendarEvents(

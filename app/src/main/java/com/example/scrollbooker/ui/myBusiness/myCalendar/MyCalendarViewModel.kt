@@ -100,49 +100,49 @@ class MyCalendarViewModel @Inject constructor(
             CalendarParams(userId, day, slot, refresh)
         }.distinctUntilChanged()
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val calendarHeader: StateFlow<FeatureState<CalendarHeaderState>> = userIdFlow
-        .filterNotNull()
-        .flatMapLatest { userId ->
-            flow {
-                emit(FeatureState.Loading)
-
-                val today = LocalDate.now()
-                val currentMonday = today.with(DayOfWeek.MONDAY)
-
-                val startDate = currentMonday.minusWeeks(13)
-                val endDate = currentMonday.plusWeeks(13)
-
-                val totalWeeks = 26
-                val calendarDays = (0 until (totalWeeks * 7)).map {
-                    startDate.plusDays(it.toLong())
-                }
-
-                val availableDays = withVisibleLoading {
-                    getCalendarAvailableDaysUseCase(
-                        userId, startDate.toString(), endDate.toString())
-                }
-
-                emit(
-                    FeatureState.Success(
-                        CalendarHeaderState(
-                            config = CalendarConfig(
-                                userId = userId,
-                                startDate = startDate,
-                                endDate = endDate,
-                                totalWeeks = totalWeeks,
-                                initialWeekPage = totalWeeks / 2,
-                                initialDayPage = today.dayOfWeek.ordinal,
-                                selectedDay = today
-                            ),
-                            calendarDays = calendarDays,
-                            calendarAvailableDays = availableDays.map {LocalDate.parse(it) },
-                        )
-                    )
-                )
-            }
-        }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, FeatureState.Loading)
+//    @OptIn(ExperimentalCoroutinesApi::class)
+//    val calendarHeader: StateFlow<FeatureState<CalendarHeaderState>> = userIdFlow
+//        .filterNotNull()
+//        .flatMapLatest { userId ->
+//            flow {
+//                emit(FeatureState.Loading)
+//
+//                val today = LocalDate.now()
+//                val currentMonday = today.with(DayOfWeek.MONDAY)
+//
+//                val startDate = currentMonday.minusWeeks(13)
+//                val endDate = currentMonday.plusWeeks(13)
+//
+//                val totalWeeks = 26
+//                val calendarDays = (0 until (totalWeeks * 7)).map {
+//                    startDate.plusDays(it.toLong())
+//                }
+//
+//                val availableDays = withVisibleLoading {
+//                    getCalendarAvailableDaysUseCase(
+//                        userId, startDate.toString(), endDate.toString())
+//                }
+//
+//                emit(
+//                    FeatureState.Success(
+//                        CalendarHeaderState(
+//                            config = CalendarConfig(
+//                                userId = userId,
+//                                startDate = startDate,
+//                                endDate = endDate,
+//                                totalWeeks = totalWeeks,
+//                                initialWeekPage = totalWeeks / 2,
+//                                initialDayPage = today.dayOfWeek.ordinal,
+//                                selectedDay = today
+//                            ),
+//                            calendarDays = calendarDays,
+//                            calendarAvailableDays = availableDays.map {LocalDate.parse(it) },
+//                        )
+//                    )
+//                )
+//            }
+//        }
+//        .stateIn(viewModelScope, SharingStarted.Eagerly, FeatureState.Loading)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val calendarEvents: StateFlow<FeatureState<CalendarEvents>> =

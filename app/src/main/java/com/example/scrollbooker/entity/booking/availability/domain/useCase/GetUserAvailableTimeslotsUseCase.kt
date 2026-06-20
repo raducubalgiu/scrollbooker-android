@@ -6,7 +6,17 @@ import javax.inject.Inject
 class GetUserAvailableTimeslotsUseCase @Inject constructor(
     private val repository: AvailabilityRepository
 ) {
-    suspend operator fun invoke(day: String, userId: Int, slotDuration: Int): AvailableDay {
-        return repository.getUserAvailableTimeSlots(day, userId, slotDuration)
+    suspend operator fun invoke(
+        businessId: Int,
+        employeeId: Int?,
+        slotDuration: Int,
+        day: String,
+    ): AvailableDay {
+        return repository.getUserAvailableTimeSlots(
+            businessId = businessId,
+            employeeId = employeeId,
+            slotDuration = slotDuration,
+            day = day
+        )
     }
 }

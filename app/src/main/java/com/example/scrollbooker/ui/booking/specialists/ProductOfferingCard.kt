@@ -13,12 +13,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -38,6 +38,7 @@ import com.example.scrollbooker.ui.booking.SelectedBookingItem
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
+import timber.log.Timber
 
 @Composable
 fun ProductOfferingCard(
@@ -48,6 +49,7 @@ fun ProductOfferingCard(
     onRemoveItem: () -> Unit
 ) {
     val hasOffering = currentOffering != null
+
     val offerings = item.offerings
     val prices = offerings.map { it.priceWithDiscount }
 
@@ -59,12 +61,8 @@ fun ProductOfferingCard(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .border(
-                width = 1.5.dp,
-                color = borderColor,
-                shape = RoundedCornerShape(16.dp)
-            )
-            .background(color = cardBgColor, shape = RoundedCornerShape(16.dp))
+            .border(1.5.dp, borderColor, ShapeDefaults.Medium)
+            .background(color = cardBgColor, ShapeDefaults.Medium)
             .padding(12.dp)
     ) {
         Row(
@@ -101,7 +99,7 @@ fun ProductOfferingCard(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            val statusColor = if (hasOffering) Error else Color(0xFFF44336)
+            val statusColor = if (hasOffering) Color(0xFF4CAF50) else Color(0xFFF44336)
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,

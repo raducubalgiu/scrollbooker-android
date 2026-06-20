@@ -14,6 +14,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
+import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.customized.productCard.ProductDetailSheet
@@ -93,12 +95,16 @@ fun BookingServicesScreen(
 
     BookingLayout(
         modifier = modifier,
-        title = "Alege Serviciile",
+        title = stringResource(R.string.chooseServices),
         onBack = { bookingNavigate.back() },
         onNext = {
             val bookingFlow = (bookingFlowState as FeatureState.Success<BookingFlow>).data
-            if (bookingFlow.business.hasEmployees) bookingNavigate.toSpecialists()
-            else bookingNavigate.toDateTime()
+
+            if (bookingFlow.business.hasEmployees && !viewModel.isEmployee) {
+                bookingNavigate.toSpecialists()
+            } else {
+                bookingNavigate.toDateTime()
+            }
         },
         bookingTotals = bookingTotals,
         displayBottomBar = selectedBookingItems.isNotEmpty()

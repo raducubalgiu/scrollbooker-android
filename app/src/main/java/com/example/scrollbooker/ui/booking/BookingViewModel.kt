@@ -15,7 +15,6 @@ import com.example.scrollbooker.entity.booking.booking.domain.model.BookingFlow
 import com.example.scrollbooker.entity.booking.booking.domain.useCase.GetBookingFlowUseCase
 import com.example.scrollbooker.ui.shared.calendar.CalendarConfig
 import com.example.scrollbooker.ui.shared.calendar.CalendarHeaderState
-import com.example.scrollbooker.ui.shared.calendar.SlotsParams
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -56,8 +55,43 @@ class BookingViewModel @Inject constructor(
     val source: String = checkNotNull(savedStateHandle["source"]) {
         "source mandatory parameter is missing in Booking flow"
     }
-
     val initialSelectedProductId: Int = savedStateHandle["selectedProductId"] ?: -1
+
+    private val _isSaving = MutableStateFlow<Boolean>(false)
+    val isSaving: StateFlow<Boolean> = _isSaving.asStateFlow()
+
+    val isEmployee: Boolean = businessOwnerId != userId
+
+    private val _selectedEmployeeId = MutableStateFlow<Int?>(
+        if (businessOwnerId != userId) userId else null
+    )
+    val selectedEmployeeId: StateFlow<Int?> = _selectedEmployeeId.asStateFlow()
+
+    fun setSelectedEmployeeId(employeeId: Int) {
+        _selectedEmployeeId.value = employeeId
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val bookingFlowState: StateFlow<FeatureState<BookingFlow>> = _selectedEmployeeId
+        .flatMapLatest { currentEmployeeId ->
+            flow {
+                val result = withVisibleLoading {
+                    getBookingFlowUseCase(
+                        businessId = businessId,
+                        employeeId = currentEmployeeId,
+                    )
+                }
+                emit(result)
+            }
+        }
+        .catch { e ->
+            emit(FeatureState.Error(e as? Exception ?: Exception(e)))
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = FeatureState.Loading
+        )
 
     private val _isInitialProductProcessed = MutableStateFlow(false)
     val isInitialProductProcessed = _isInitialProductProcessed.asStateFlow()
@@ -89,24 +123,6 @@ class BookingViewModel @Inject constructor(
             initialValue = BookingTotals(BigDecimal.ZERO, 0)
         )
 
-    val bookingFlowState: StateFlow<FeatureState<BookingFlow>> = flow {
-        emit(FeatureState.Loading)
-
-        val result = withVisibleLoading {
-            getBookingFlowUseCase(
-                businessId = businessId,
-                employeeId = if(businessOwnerId != userId) userId else null,
-            )
-        }
-        emit(result)
-    }.catch { e ->
-        emit(FeatureState.Error(e as? Exception ?: Exception(e)))
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.Lazily,
-        initialValue = FeatureState.Loading
-    )
-
     fun selectBookingItem(item: SelectedBookingItem) {
         val currentItems = _selectedBookingItems.value.toMutableList()
         val existingItemWithSameProduct = currentItems.find { it.productId == item.productId }
@@ -133,46 +149,52 @@ class BookingViewModel @Inject constructor(
     private val _selectedSlot = MutableStateFlow<Slot?>(null)
     val selectedSlot: StateFlow<Slot?> = _selectedSlot.asStateFlow()
 
-    val calendarHeader: StateFlow<FeatureState<CalendarHeaderState>> = flow {
-        emit(FeatureState.Loading)
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val calendarHeader: StateFlow<FeatureState<CalendarHeaderState>> = _selectedEmployeeId
+        .flatMapLatest { currentEmployeeId ->
+            flow {
+                emit(FeatureState.Loading)
 
-        val today = LocalDate.now()
-        val currentMonday = today.with(DayOfWeek.MONDAY)
+                val today = LocalDate.now()
+                val currentMonday = today.with(DayOfWeek.MONDAY)
+                val startDate = currentMonday
+                val endDate = currentMonday.plusWeeks(26)
+                val totalWeeks = 26
 
-        val startDate = currentMonday
-        val endDate = currentMonday.plusWeeks(26)
+                val calendarDays = (0 until (totalWeeks * 7)).map {
+                    startDate.plusDays(it.toLong())
+                }
 
-        val totalWeeks = 26
-        val calendarDays = (0 until (totalWeeks * 7)).map {
-            startDate.plusDays(it.toLong())
-        }
+                val availableDays = withVisibleLoading {
+                    getCalendarAvailableDaysUseCase(
+                        businessId = businessId,
+                        employeeId = currentEmployeeId,
+                        startDate = startDate.toString(),
+                        endDate = endDate.toString()
+                    )
+                }
 
-        val availableDays = withVisibleLoading {
-            getCalendarAvailableDaysUseCase(
-                userId, startDate.toString(), endDate.toString()
-            )
-        }
-
-        emit(
-            FeatureState.Success(
-                CalendarHeaderState(
-                    config = CalendarConfig(
-                        userId = userId,
-                        startDate = startDate,
-                        endDate = endDate,
-                        totalWeeks = totalWeeks,
-                        initialWeekPage = 0,
-                        initialDayPage = today.dayOfWeek.ordinal,
-                        selectedDay = today
-                    ),
-                    calendarDays = calendarDays,
-                    calendarAvailableDays = availableDays.map { LocalDate.parse(it) },
+                emit(
+                    FeatureState.Success(
+                        CalendarHeaderState(
+                            config = CalendarConfig(
+                                userId = userId,
+                                startDate = startDate,
+                                endDate = endDate,
+                                totalWeeks = totalWeeks,
+                                initialWeekPage = 0,
+                                initialDayPage = today.dayOfWeek.ordinal,
+                                selectedDay = today
+                            ),
+                            calendarDays = calendarDays,
+                            calendarAvailableDays = availableDays.map { LocalDate.parse(it) },
+                        )
+                    )
                 )
-            )
-        )
-    }
-        .flowOn(Dispatchers.Default)
-        .catch { emit(FeatureState.Error(it)) }
+            }
+                .flowOn(Dispatchers.Default)
+                .catch { emit(FeatureState.Error(it)) }
+        }
         .stateIn(viewModelScope, SharingStarted.Eagerly, FeatureState.Loading)
 
     private val slotDuration: StateFlow<Int> = _selectedBookingItems
@@ -186,36 +208,31 @@ class BookingViewModel @Inject constructor(
             initialValue = 0
         )
 
-    private val slotsCache = mutableMapOf<Pair<LocalDate, Int>, AvailableDay>()
+    private val slotsCache = mutableMapOf<Triple<LocalDate, Int, Int?>, AvailableDay>()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val availableSlots: StateFlow<FeatureState<AvailableDay>> = combine(
         selectedDay,
-        slotDuration
-    ) { day, duration ->
-        Pair(day, duration)
+        slotDuration,
+        selectedEmployeeId
+    ) { day, duration, empId ->
+        Triple(day, duration, empId)
     }
-        .flatMapLatest { (day, duration) ->
+        .flatMapLatest { (day, duration, empId) ->
             flow {
-                val cacheKey = Pair(day, duration)
+                val cacheKey = Triple(day, duration, empId)
 
                 if (slotsCache.containsKey(cacheKey)) {
                     emit(FeatureState.Success(slotsCache[cacheKey]!!))
                 } else {
                     emit(FeatureState.Loading)
 
-                    val params = SlotsParams(
-                        day = day,
-                        userId = userId,
-                        slotDuration = duration,
-                        forceRefresh = false
-                    )
-
                     val availableDayData = withVisibleLoading {
                         getUserAvailableTimeslotsUseCase(
-                            day = params.day.toString(),
-                            userId = params.userId,
-                            slotDuration = params.slotDuration
+                            businessId = businessId,
+                            employeeId = empId,
+                            slotDuration = duration,
+                            day = day.toString(),
                         )
                     }
 
@@ -234,9 +251,6 @@ class BookingViewModel @Inject constructor(
             SharingStarted.Lazily,
             FeatureState.Loading
         )
-
-    private val _isSaving = MutableStateFlow<Boolean>(false)
-    val isSaving: StateFlow<Boolean> = _isSaving.asStateFlow()
 
     suspend fun createAppointment(): Result<Unit> {
         _isSaving.value = true

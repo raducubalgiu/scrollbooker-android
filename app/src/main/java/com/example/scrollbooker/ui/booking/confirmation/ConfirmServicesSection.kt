@@ -18,12 +18,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.ui.booking.BookingTotals
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.SurfaceBG
@@ -31,7 +34,9 @@ import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
-fun ConfirmServicesSection() {
+fun ConfirmServicesSection(
+    totals: BookingTotals
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -91,7 +96,7 @@ fun ConfirmServicesSection() {
         ) {
             Column {
                 Text(
-                    text = "Total",
+                    text = stringResource(R.string.total),
                     style = titleMedium,
                     fontWeight = FontWeight.Bold,
                 )
@@ -99,23 +104,11 @@ fun ConfirmServicesSection() {
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = "100 RON",
+                    text = "${totals.totalPrice} RON",
                     style = titleMedium,
                     fontSize = 17.sp,
                     fontWeight = FontWeight.Bold
                 )
-//                        Spacer(Modifier.width(SpacingS))
-//
-//                        Text(
-//                            text = "200",
-//                            style = bodyMedium,
-//                            textDecoration = TextDecoration.LineThrough
-//                        )
-//                        Spacer(Modifier.width(SpacingS))
-//                        Text(
-//                            text = "(-50%)",
-//                            color = Error
-//                        )
             }
         }
     }

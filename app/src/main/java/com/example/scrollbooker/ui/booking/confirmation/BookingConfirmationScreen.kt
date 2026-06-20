@@ -27,7 +27,10 @@ import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.headlineLarge
 import com.example.scrollbooker.R
+import com.example.scrollbooker.core.util.AppLocaleProvider
 import kotlinx.coroutines.launch
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,6 +38,7 @@ fun BookingConfirmationScreen(
     viewModel: BookingViewModel,
     bookingNavigate: BookingNavigator,
 ) {
+    val totals by viewModel.bookingTotals.collectAsStateWithLifecycle()
     val bookingFlowState by viewModel.bookingFlowState.collectAsStateWithLifecycle()
     val selectedSlot by viewModel.selectedSlot.collectAsStateWithLifecycle()
     val selectedItems by viewModel.selectedBookingItems.collectAsStateWithLifecycle()
@@ -43,6 +47,26 @@ fun BookingConfirmationScreen(
     val scope = rememberCoroutineScope()
 
     val bookingFlow = (bookingFlowState as FeatureState.Success).data
+
+    fun formatBookingInterval(dateLocaleStr: String, durationMinutes: Int): String {
+        return try {
+            val startDateTime = LocalDateTime.parse(dateLocaleStr)
+            val endDateTime = startDateTime.plusMinutes(durationMinutes.toLong())
+
+            val currentLocale = AppLocaleProvider.current()
+
+            val dateFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy", currentLocale)
+            val formattedDate = startDateTime.format(dateFormatter)
+
+            val timeFormatter = DateTimeFormatter.ofPattern("HH:mm", currentLocale)
+            val startTimeStr = startDateTime.format(timeFormatter)
+            val endTimeStr = endDateTime.format(timeFormatter)
+
+            "$formattedDate, $startTimeStr - $endTimeStr"
+        } catch (e: Exception) {
+            ""
+        }
+    }
 
     Scaffold(
         topBar = { Header(onBack = { bookingNavigate.back() }) },
@@ -88,7 +112,13 @@ fun BookingConfirmationScreen(
             }
 
             BookingSummary(
-                owner = bookingFlow.business.owner
+                startDate = formatBookingInterval(
+                    dateLocaleStr = selectedSlot?.startDateLocale ?: "",
+                    durationMinutes = totals.totalDuration
+                ),
+                totalDuration = totals.totalDuration,
+                owner = bookingFlow.business.owner,
+                address = bookingFlow.business.formattedAddress
             )
 
             Text(
@@ -98,7 +128,9 @@ fun BookingConfirmationScreen(
                 color = Color.Gray
             )
 
-            ConfirmServicesSection()
+            ConfirmServicesSection(
+                totals = totals
+            )
 
             CancellationPolicy()
         }

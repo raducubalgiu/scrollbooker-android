@@ -39,7 +39,7 @@ fun MyCalendarScreen(
 ) {
     val scope = rememberCoroutineScope()
 
-    val headerState by viewModel.calendarHeader.collectAsState()
+    //val headerState by viewModel.calendarHeader.collectAsState()
     val calendarEvents by viewModel.calendarEvents.collectAsState()
     val selectedDay by viewModel.selectedDay.collectAsState()
     val slotDuration by viewModel.slotDuration.collectAsState()
@@ -140,13 +140,13 @@ fun MyCalendarScreen(
             .fillMaxSize()
             .padding(bottom = innerPadding.calculateBottomPadding())
         ) {
-            MyCalendarScaffoldContent(
-                headerState = headerState,
-                calendarEvents = calendarEvents,
-                slotDuration = slotDuration,
-                blockUiState = blockUiState,
-                onAction = { action -> handleMyCalendarAction(action, viewModel, sheets, isBlocking, onBack, scope) },
-            )
+//            MyCalendarScaffoldContent(
+//                headerState = headerState,
+//                calendarEvents = calendarEvents,
+//                slotDuration = slotDuration,
+//                blockUiState = blockUiState,
+//                onAction = { action -> handleMyCalendarAction(action, viewModel, sheets, isBlocking, onBack, scope) },
+//            )
         }
     }
 }
