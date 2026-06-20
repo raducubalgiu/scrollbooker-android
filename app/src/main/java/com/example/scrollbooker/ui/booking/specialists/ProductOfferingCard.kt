@@ -38,7 +38,6 @@ import com.example.scrollbooker.ui.booking.SelectedBookingItem
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
-import timber.log.Timber
 
 @Composable
 fun ProductOfferingCard(

@@ -22,7 +22,9 @@ import com.example.scrollbooker.navigation.graphs.userProfileGraph
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.remember
+import com.example.scrollbooker.navigation.graphs.bookingGraph
 import com.example.scrollbooker.navigation.graphs.socialGraph
+import com.example.scrollbooker.navigation.navigators.BookingNavigator
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
@@ -39,6 +41,9 @@ fun MyProfileNavHost(
 ) {
     val profileNavigate = remember(navController) {
         ProfileNavigator(navController)
+    }
+    val bookingNavigate = remember(navController) {
+        BookingNavigator(navController)
     }
 
     Box(
@@ -90,6 +95,7 @@ fun MyProfileNavHost(
             )
             cameraGraph(navController, profileNavigate)
             socialGraph(navController, profileNavigate)
+            bookingGraph(navController, bookingNavigate)
         }
     }
 }
