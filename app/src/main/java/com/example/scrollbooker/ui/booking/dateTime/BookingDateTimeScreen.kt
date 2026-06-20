@@ -256,7 +256,9 @@ fun BookingDateTimeScreen(
 
                     HorizontalPager(
                         state = weekPagerState,
-                        modifier = Modifier.fillMaxWidth().height(95.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(95.dp)
                             .padding(horizontal = BasePadding),
                         beyondViewportPageCount = 1
                     ) { page ->
@@ -303,33 +305,40 @@ fun BookingDateTimeScreen(
 
                     Spacer(modifier = Modifier.height(BasePadding))
 
-                    HorizontalPager(
-                        state = dayPagerState,
-                        modifier = Modifier.fillMaxWidth().weight(1f),
-                        beyondViewportPageCount = 1
-                    ) { pageIndex ->
-                        when (val slots = timeSlots) {
-                            is FeatureState.Loading -> SlotsShimmer()
-                            is FeatureState.Error -> ErrorScreen()
-                            is FeatureState.Success -> {
-                                val availableSlotsList = slots.data.availableSlots
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
+                        contentAlignment = Alignment.TopCenter
+                    ) {
+                        HorizontalPager(
+                            state = dayPagerState,
+                            modifier = Modifier.fillMaxWidth(),
+                            beyondViewportPageCount = 1
+                        ) { pageIndex ->
+                            when (val slots = timeSlots) {
+                                is FeatureState.Loading -> SlotsShimmer()
+                                is FeatureState.Error -> ErrorScreen()
+                                is FeatureState.Success -> {
+                                    val availableSlotsList = slots.data.availableSlots
 
-                                if (availableSlotsList.isEmpty()) {
-                                    FullyBookedDayMessage(onClick = {})
-                                } else {
-                                    LazyColumn(
-                                        modifier = Modifier.fillMaxSize(),
-                                        contentPadding = PaddingValues(bottom = BasePadding),
-                                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                                    ) {
-                                        items(availableSlotsList) { slot ->
-                                            SlotItem(
-                                                slot = slot,
-                                                onSelectSlot = {
-                                                    viewModel.onSlotSelected(slot)
-                                                    bookingNavigate.toConfirmation()
-                                                }
-                                            )
+                                    if (availableSlotsList.isEmpty()) {
+                                        FullyBookedDayMessage(onClick = {})
+                                    } else {
+                                        LazyColumn(
+                                            modifier = Modifier.fillMaxSize(),
+                                            contentPadding = PaddingValues(bottom = BasePadding),
+                                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                                        ) {
+                                            items(availableSlotsList) { slot ->
+                                                SlotItem(
+                                                    slot = slot,
+                                                    onSelectSlot = {
+                                                        viewModel.onSlotSelected(slot)
+                                                        bookingNavigate.toConfirmation()
+                                                    }
+                                                )
+                                            }
                                         }
                                     }
                                 }

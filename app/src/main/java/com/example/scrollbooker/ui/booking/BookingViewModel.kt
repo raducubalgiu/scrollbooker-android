@@ -104,19 +104,26 @@ class BookingViewModel @Inject constructor(
     val selectedBookingItems: StateFlow<List<SelectedBookingItem>> =
         _selectedBookingItems.asStateFlow()
 
-    val bookingTotals: StateFlow<BookingTotals> = selectedBookingItems
-        .map { items ->
-            val sumPrice = items.sumOf { item ->
-                item.offerings.sumOf { offering -> offering.priceWithDiscount }
+    val bookingTotals: StateFlow<BookingTotals> = combine(
+        selectedBookingItems,
+        selectedEmployeeId
+    ) { items, employeeId ->
+        val sumPrice = items.sumOf { item ->
+            if (employeeId != null) {
+                val specificOffering = item.offerings.find { it.user.id == employeeId }
+                specificOffering?.priceWithDiscount ?: BigDecimal.ZERO
+            } else {
+                item.offerings.firstOrNull()?.priceWithDiscount ?: BigDecimal.ZERO
             }
-
-            val sumDuration = items.sumOf { item -> item.variantDuration }
-
-            BookingTotals(
-                totalPrice = sumPrice,
-                totalDuration = sumDuration
-            )
         }
+        
+        val sumDuration = items.sumOf { item -> item.variantDuration }
+
+        BookingTotals(
+            totalPrice = sumPrice,
+            totalDuration = sumDuration
+        )
+    }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),

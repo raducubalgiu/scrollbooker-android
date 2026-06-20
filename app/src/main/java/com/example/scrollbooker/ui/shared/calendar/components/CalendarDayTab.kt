@@ -49,7 +49,7 @@ fun CalendarDayTab(
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null
-            ) { onChangeTab() },
+            ) { if(isDayAvailable) onChangeTab() else null },
         contentAlignment = Alignment.Center
     ) {
         Column(

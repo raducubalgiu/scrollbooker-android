@@ -227,7 +227,7 @@
     <string name="address">Adresă</string>
     <string name="website">Website</string>
     <string name="nextOpenDay">Următoarea zi disponibilă</string>
-    <string name="doesntHaveOpenSeatsThisDay">nu mai are locuri libere în această zi</string>
+    <string name="emptySets">Nu mai sunt locuri libere în această zi</string>
     <string name="youArrivedToLate">Ai ajuns prea târziu</string>
     <string name="locationIsClosed">Locația este închisă</string>
     <string name="thisDayDoesntBelongToSchedule">Această zi nu face parte din programul de lucru</string>
@@ -255,6 +255,9 @@
     <string name="reasonCancel_cannotArrive">Nu mai pot ajunge la programare</string>
     <string name="reasonCancel_foundBetterOffer">Am găsit o ofertă mai bună</string>
     <string name="reasonCancel_bookedByMistake">Am rezervat din greșeală</string>
+    <string name="employeePricesDiffers">Prețurile diferă în funcție de specialist</string>
+    <string name="expand">Extinde</string>
+    <string name="selected">Selectat</string>
     <string name="otherReason">Alt motiv</string>
     <string name="cancelReason">Motivul anulării</string>
     <string name="others">Altele</string>

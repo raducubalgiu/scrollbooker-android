@@ -9,6 +9,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
@@ -28,7 +29,7 @@ fun BookingSummary(
         modifier = Modifier
             .fillMaxWidth()
             .border(1.dp, Divider, ShapeDefaults.Medium),
-        colors = CardDefaults.cardColors(containerColor = SurfaceBG),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         shape = RoundedCornerShape(BasePadding)
     ) {
         BookingSummaryOwner(owner)

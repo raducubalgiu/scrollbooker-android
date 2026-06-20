@@ -29,7 +29,6 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.ui.booking.BookingTotals
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Error
-import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
 
@@ -41,7 +40,7 @@ fun ConfirmServicesSection(
         modifier = Modifier
             .fillMaxWidth()
             .border(1.dp, Divider, ShapeDefaults.Medium),
-        colors = CardDefaults.cardColors(containerColor = SurfaceBG),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(modifier = Modifier.padding(BasePadding)) {

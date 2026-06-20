@@ -7,13 +7,11 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -28,12 +26,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.scrollbooker.R
 import com.example.scrollbooker.entity.booking.booking.domain.model.BookingFlowUser
 import com.example.scrollbooker.ui.booking.SelectedBookingItem
 import kotlin.collections.forEach
@@ -51,7 +50,7 @@ fun PriceVarianceAccordion(
             .fillMaxWidth()
             .padding(top = 8.dp)
             .clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.04f)) // bgcolor: alpha(..., 0.04)
+            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.04f))
     ) {
         Row(
             modifier = Modifier
@@ -62,14 +61,15 @@ fun PriceVarianceAccordion(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Preturile difera in functie de specialist",
+                text = stringResource(R.string.employeePricesDiffers),
                 fontSize = 14.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Icon(
                 imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                contentDescription = if (isExpanded) "Restrânge" else "Extinde",
+                contentDescription = if (isExpanded) stringResource(R.string.collapse)
+                                    else stringResource(R.string.expand),
                 modifier = Modifier.size(20.dp),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -98,44 +98,13 @@ fun PriceVarianceAccordion(
                         Color.Transparent
                     }
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .alpha(rowAlpha)
-                            .background(color = rowBgColor, shape = RoundedCornerShape(8.dp))
-                            .padding(horizontal = 12.dp, vertical = 8.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(28.dp)
-                                    .background(
-                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
-                                        shape = CircleShape
-                                    )
-                            )
-
-                            Text(
-                                text = buildString {
-                                    append(emp.fullName)
-                                    if (isCurrentlySelected) append(" (Selectat)")
-                                },
-                                fontSize = 14.sp,
-                                fontWeight = if (isCurrentlySelected) FontWeight.Bold else FontWeight.Medium
-                            )
-                        }
-
-                        Text(
-                            text = offering?.let { "${it.priceWithDiscount} RON" } ?: "N/A",
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
+                    ProductEmployeeOffering(
+                        isSelected = isCurrentlySelected,
+                        employee = emp,
+                        offering = offering,
+                        rowAlpha = rowAlpha,
+                        rowBgColor = rowBgColor
+                    )
                 }
             }
         }

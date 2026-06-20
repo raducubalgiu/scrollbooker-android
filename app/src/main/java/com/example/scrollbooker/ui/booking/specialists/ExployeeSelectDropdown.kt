@@ -26,6 +26,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.components.core.avatar.AvatarWithRating
 import com.example.scrollbooker.entity.booking.booking.domain.model.BookingFlowUser
+import com.example.scrollbooker.ui.theme.Primary
 
 @Composable
 fun EmployeeSelectDropdown(
@@ -83,6 +84,7 @@ fun EmployeeSelectDropdown(
                     }
                 } else {
                     SpecialistItem(
+                        isSelected = false,
                         specialist = currentSelected,
                         withBadge = false,
                         size = 40.dp
@@ -111,6 +113,7 @@ fun EmployeeSelectDropdown(
                 DropdownMenuItem(
                     text = {
                         SpecialistItem(
+                            isSelected = currentSelected?.id == specialist.id,
                             specialist = specialist,
                             withBadge = true,
                             size = 55.dp
@@ -121,7 +124,7 @@ fun EmployeeSelectDropdown(
                         expanded = false
                     },
                     modifier = Modifier
-                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                        //.padding(horizontal = 8.dp, vertical = 4.dp)
                         .clip(RoundedCornerShape(12.dp))
                 )
             }
@@ -131,6 +134,7 @@ fun EmployeeSelectDropdown(
 
 @Composable
 fun SpecialistItem(
+    isSelected: Boolean,
     specialist: BookingFlowUser,
     withBadge: Boolean = true,
     size: Dp
@@ -138,7 +142,15 @@ fun SpecialistItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
+            .background(
+                    if(isSelected) Primary.copy(alpha = 0.2f)
+                    else Color.Transparent,
+                shape = RoundedCornerShape(8.dp)
+            )
+            .padding(
+                vertical = 6.dp,
+                horizontal = 8.dp
+            ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
