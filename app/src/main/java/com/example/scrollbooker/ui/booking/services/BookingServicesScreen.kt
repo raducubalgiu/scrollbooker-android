@@ -1,6 +1,8 @@
 package com.example.scrollbooker.ui.booking.services
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -14,8 +16,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
+import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.customized.productCard.ProductDetailSheet
@@ -114,63 +119,74 @@ fun BookingServicesScreen(
             is FeatureState.Loading -> LoadingScreen()
             is FeatureState.Success -> {
                 val serviceGroups = state.data.products.data
+                val totalCount = state.data.products.totalCount
 
-                val activeTabIndexProvider = remember(serviceGroups) {
-                    derivedStateOf {
-                        val visibleItems = listState.layoutInfo.visibleItemsInfo
-                        if (visibleItems.isEmpty()) {
-                            0
-                        } else {
-                            val firstVisibleItem = visibleItems.firstOrNull { item ->
-                                item.offset <= 0 && item.offset + item.size > 0
-                            } ?: visibleItems.first()
+                if (totalCount == 0) {
+                    EmptyScreen(
+                        modifier = Modifier.padding(top = 50.dp),
+                        arrangement = Arrangement.Top,
+                        message = "Nu s-au găsit servicii disponibile pentru acest business.",
+                        icon = painterResource(R.drawable.ic_shopping_outline)
+                    )
+                } else {
+                    val activeTabIndexProvider = remember(serviceGroups) {
+                        derivedStateOf {
+                            val visibleItems = listState.layoutInfo.visibleItemsInfo
+                            if (visibleItems.isEmpty()) {
+                                0
+                            } else {
+                                val firstVisibleItem = visibleItems.firstOrNull { item ->
+                                    item.offset <= 0 && item.offset + item.size > 0
+                                } ?: visibleItems.first()
 
-                            firstVisibleItem.index.coerceIn(0, serviceGroups.lastIndex)
+                                firstVisibleItem.index.coerceIn(0, serviceGroups.lastIndex)
+                            }
                         }
                     }
-                }
 
-                Column(Modifier.fillMaxSize()) {
-                    if (serviceGroups.isNotEmpty()) {
-                        BookingServicesTabs(
-                            activeTabIndexProvider = { activeTabIndexProvider.value },
-                            onTabChange = { tabIndex ->
-                                scope.launch {
-                                    listState.animateScrollToItem(tabIndex)
+                    Column(Modifier.fillMaxSize()) {
+                        if (serviceGroups.isNotEmpty()) {
+                            BookingServicesTabs(
+                                activeTabIndexProvider = { activeTabIndexProvider.value },
+                                onTabChange = { tabIndex ->
+                                    scope.launch {
+                                        listState.animateScrollToItem(tabIndex)
+                                    }
+                                },
+                                serviceGroups = serviceGroups
+                            )
+                        }
+
+                        BookingProductsList(
+                            state = listState,
+                            serviceGroups = serviceGroups,
+                            selectedBookingItems = selectedBookingItems,
+                            onSelect = { product ->
+                                val existingSelectedItem =
+                                    selectedBookingItems.find { it.productId == product.id }
+
+                                if (existingSelectedItem != null) {
+                                    viewModel.selectBookingItem(existingSelectedItem)
+                                } else {
+                                    if (product.variants.size > 1) {
+                                        selectedProduct = product
+                                        scope.launch { sheetState.show() }
+                                    } else {
+                                        val bookingItem =
+                                            product.variants.first().toBookingItem(product)
+                                        viewModel.selectBookingItem(bookingItem)
+                                    }
                                 }
                             },
-                            serviceGroups = serviceGroups
+                            onOpenProductDetail = {
+                                selectedProduct = it
+                                scope.launch { sheetState.show() }
+                            },
                         )
                     }
-
-                    BookingProductsList(
-                        state = listState,
-                        serviceGroups = serviceGroups,
-                        selectedBookingItems = selectedBookingItems,
-                        onSelect = { product ->
-                            val existingSelectedItem =
-                                selectedBookingItems.find { it.productId == product.id }
-
-                            if (existingSelectedItem != null) {
-                                viewModel.selectBookingItem(existingSelectedItem)
-                            } else {
-                                if (product.variants.size > 1) {
-                                    selectedProduct = product
-                                    scope.launch { sheetState.show() }
-                                } else {
-                                    val bookingItem =
-                                        product.variants.first().toBookingItem(product)
-                                    viewModel.selectBookingItem(bookingItem)
-                                }
-                            }
-                        },
-                        onOpenProductDetail = {
-                            selectedProduct = it
-                            scope.launch { sheetState.show() }
-                        },
-                    )
                 }
             }
         }
+
     }
 }

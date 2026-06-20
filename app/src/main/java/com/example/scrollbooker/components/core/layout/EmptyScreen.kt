@@ -1,5 +1,7 @@
 package com.example.scrollbooker.components.core.layout
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 
 import androidx.compose.foundation.layout.Spacer
@@ -8,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -22,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
+import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
 
 @Composable
@@ -40,12 +44,19 @@ fun EmptyScreen(
         Column(modifier = Modifier.padding(BasePadding),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Icon(
-                modifier = Modifier.size(50.dp),
-                tint = Divider,
-                painter = icon,
-                contentDescription = null,
-            )
+            Box(
+                modifier = Modifier
+                    .size(60.dp)
+                    .background(SurfaceBG, CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    modifier = Modifier.size(35.dp),
+                    tint = OnSurfaceBG,
+                    painter = icon,
+                    contentDescription = null,
+                )
+            }
             Spacer(Modifier.height(BasePadding))
             Text(
                 style = bodyLarge,
