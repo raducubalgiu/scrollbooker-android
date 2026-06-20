@@ -54,7 +54,12 @@ class VideoPlayerManager @Inject constructor(
     @OptIn(UnstableApi::class)
     private fun createLoadControl(): DefaultLoadControl {
         return DefaultLoadControl.Builder()
-            .setBufferDurationsMs(3000, 10000, 1000, 2000)
+            .setBufferDurationsMs(
+                2500,
+                15000,
+                250,
+                500
+            )
             .setTargetBufferBytes(C.LENGTH_UNSET)
             .setPrioritizeTimeOverSizeThresholds(true)
             .build()

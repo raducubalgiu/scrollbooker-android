@@ -17,20 +17,20 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.components.customized.post.handlePostSheetAction
 import com.example.scrollbooker.components.customized.post.sheets.PostSheets
 import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent
 import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent.None
 import com.example.scrollbooker.core.enums.BookingSourceEnum
+import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.ui.feed.components.FeedTabs
 import com.example.scrollbooker.ui.feed.drawer.FeedDrawer
@@ -62,6 +62,13 @@ fun FeedScreen(
         if (isFollowingTabOpened.value) followingViewModel.posts else flowOf(PagingData.empty())
     }.collectAsLazyPagingItems()
 
+    val tabConfigs = remember(explorePosts, followingPosts) {
+        listOf(
+            FeedTabConfig(explorePosts, exploreViewModel, BookingSourceEnum.EXPLORE_FEED),
+            FeedTabConfig(followingPosts, followingViewModel, BookingSourceEnum.FOLLOWING_FEED)
+        )
+    }
+
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var sheetContent by remember { mutableStateOf<PostSheetsContent>(None) }
     var isDrawerOpen by rememberSaveable { mutableStateOf(false) }
@@ -89,93 +96,67 @@ fun FeedScreen(
         }
     }
 
-    val currentBg = BackgroundDark
-    val scrimColor = remember(currentBg) { currentBg.copy(alpha = 0.7f) }
-
-    val currentOnPauseExplore by rememberUpdatedState(exploreViewModel::stopDetailSession)
-    val currentOnPauseFollowing by rememberUpdatedState(followingViewModel::stopDetailSession)
-
-    LifecycleStartEffect(true) {
-        onStopOrDispose {
-            currentOnPauseExplore()
-            currentOnPauseFollowing()
-        }
-    }
-
-    LaunchedEffect(horizontalPagerState.settledPage) {
-        val activeTab = horizontalPagerState.settledPage
-        if (activeTab == 0) {
-            followingViewModel.stopDetailSession()
-            exploreViewModel.resumePlayerOnTabEnter(horizontalPagerState.currentPage)
-        } else {
-            exploreViewModel.stopDetailSession()
-            followingViewModel.resumePlayerOnTabEnter(horizontalPagerState.currentPage)
-        }
-    }
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(currentBg)
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(BackgroundDark)
     ) {
         FeedDrawerLayout(
             isOpen = isDrawerOpen,
             onOpenChange = { isDrawerOpen = it },
-            scrimColor = scrimColor
+            scrimColor = BackgroundDark.copy(alpha = 0.7f)
         ) {
-            FeedDrawer(
-                isDrawerOpen = isDrawerOpen,
-                onClose = { isDrawerOpen = false },
-            )
+            FeedDrawer(isDrawerOpen = isDrawerOpen, onClose = { isDrawerOpen = false })
         }
 
         FeedTabs(
             modifier = Modifier.statusBarsPadding(),
             selectedTabIndex = horizontalPagerState.currentPage,
-            onChangeTab = {
-                scope.launch { horizontalPagerState.scrollToPage(it) }
-            },
+            onChangeTab = { scope.launch { horizontalPagerState.scrollToPage(it) } },
             onOpenDrawer = { isDrawerOpen = true },
             onNavigateSearch = { feedNavigate.toFeedSearch() }
         )
 
-        Column(Modifier.fillMaxSize()) {
-            Box(Modifier.weight(1f)) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Box(modifier = Modifier.weight(1f)) {
                 HorizontalPager(
                     modifier = Modifier.fillMaxSize(),
                     state = horizontalPagerState,
-                    userScrollEnabled = false
+                    userScrollEnabled = false,
+                    key = { it }
                 ) { tabIndex ->
-                    when(tabIndex) {
-                        0 -> BaseFeedTabScreen(
-                            posts = explorePosts,
-                            isTabActive = horizontalPagerState.settledPage == 0,
-                            viewModel = exploreViewModel,
-                            onAction = { action, post -> handlePostSheetAction(action, post, ::handleOpenSheet) },
-                            onNavigateToUserProfile = { userId, username -> feedNavigate.toUserProfile(userId, username) },
-                            onNavigateToBooking = { feedNavigate.toBookingFromPost(it, source = BookingSourceEnum.EXPLORE_FEED,) }
-                        )
-                        1 -> {
-                            BaseFeedTabScreen(
-                                posts = followingPosts,
-                                isTabActive = horizontalPagerState.settledPage == 1,
-                                viewModel = followingViewModel,
-                                onAction = { action, post -> handlePostSheetAction(action, post, ::handleOpenSheet) },
-                                onNavigateToUserProfile = { userId, username -> feedNavigate.toUserProfile(userId, username) },
-                                onNavigateToBooking = { feedNavigate.toBookingFromPost(it, BookingSourceEnum.FOLLOWING_FEED) }
-                            )
+                    val config = tabConfigs[tabIndex]
+
+                    BaseFeedTabScreen(
+                        posts = config.posts,
+                        isTabActive = horizontalPagerState.settledPage == tabIndex,
+                        viewModel = config.viewModel,
+                        onAction = { action, post ->
+                            handlePostSheetAction(action, post, ::handleOpenSheet)
+                        },
+                        onNavigateToUserProfile = { userId, username ->
+                            feedNavigate.toUserProfile(userId, username)
+                        },
+                        onNavigateToBooking = { post ->
+                            feedNavigate.toBookingFromPost(post, config.bookingSource)
                         }
-                    }
+                    )
                 }
             }
 
-            Column(modifier = Modifier
-                .height(90.dp)
-                .zIndex(14f)
+            Column(
+                modifier = Modifier
+                    .height(90.dp)
+                    .zIndex(14f)
             ) {
                 BottomBar()
             }
         }
     }
 }
+
+private data class FeedTabConfig(
+    val posts: LazyPagingItems<Post>,
+    val viewModel: FeedViewModelContract,
+    val bookingSource: BookingSourceEnum
+)
 

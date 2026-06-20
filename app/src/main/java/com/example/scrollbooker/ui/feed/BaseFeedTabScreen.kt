@@ -14,11 +14,13 @@ import androidx.compose.foundation.pager.PagerSnapDistance
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,6 +28,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.paging.LoadState
@@ -58,22 +63,62 @@ fun BaseFeedTabScreen(
     val verticalPagerState = rememberPagerState { posts.itemCount }
     val settledPage by remember { derivedStateOf { verticalPagerState.settledPage } }
 
-    LaunchedEffect(verticalPagerState.settledPage, isTabActive) {
+    val currentSettledPage by rememberUpdatedState(settledPage)
+    val currentViewModel by rememberUpdatedState(viewModel)
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+// --- 1. GESTIONARE LIFECYCLE ȘI SCHIMBARE TABURI (ORIZONTAL) ---
+    DisposableEffect(isTabActive, lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                // Când pleci de pe ecran (navigație), oprim INSTANT sunetul
+                Lifecycle.Event.ON_PAUSE -> {
+                    currentViewModel.stopDetailSession()
+                }
+                // Când te întorci pe ecran, dăm resume doar dacă această filă e cea vizibilă
+                Lifecycle.Event.ON_RESUME -> {
+                    if (isTabActive) {
+                        currentViewModel.resumePlayerOnTabEnter(currentSettledPage)
+                    }
+                }
+                else -> {}
+            }
+        }
+
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        // Acțiune la schimbarea tab-ului (Explore <-> Following)
+        if (isTabActive) {
+            currentViewModel.resumePlayerOnTabEnter(currentSettledPage)
+        } else {
+            currentViewModel.stopDetailSession()
+        }
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+            currentViewModel.stopDetailSession()
+        }
+    }
+
+// --- 2. GESTIONARE SCROLL VERTICAL (SWIPE CLIPURI) ---
+    LaunchedEffect(settledPage, isTabActive) {
         if (!isTabActive) return@LaunchedEffect
 
-        snapshotFlow {
-            val page = settledPage
-            settledPage to posts.getOrNull(page)?.id
-        }
+        snapshotFlow { posts.getOrNull(settledPage)?.id }
             .distinctUntilChanged()
-            .collectLatest { (page, postId) ->
+            .collectLatest { postId ->
                 if (postId == null) return@collectLatest
 
+                // Sincronizăm fereastra de paging
                 viewModel.ensureWindow(
-                    centerIndex = page,
+                    centerIndex = settledPage,
                     getPost = { idx -> posts.getOrNull(idx) }
                 )
-                viewModel.onPageSettled(page)
+
+                // Notificăm managerul video că pagina s-a schimbat stabil pe verticală.
+                // Asigură-te că în această metodă din VM schimbi playerul activ și îi dai `.play()`.
+                viewModel.onPageSettled(settledPage)
             }
     }
 

@@ -29,11 +29,16 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -55,6 +60,8 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.theme.BackgroundDark
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -144,12 +151,67 @@ fun BaseProfilePostDetailScreen(
             }
         }
 
-        LaunchedEffect(pagerState.settledPage) {
-            viewModel.onPostSettled(
-                scopeKey = detailScopeKey,
-                index = pagerState.settledPage,
-                getPost = { idx -> if (idx in 0 until posts.itemCount) posts.peek(idx) else null }
-            )
+        val currentPagerState by rememberUpdatedState(pagerState)
+        val currentViewModel by rememberUpdatedState(viewModel)
+        val currentPosts by rememberUpdatedState(posts)
+
+        val lifecycleOwner = LocalLifecycleOwner.current
+
+        // --- 1. GESTIONARE LIFECYCLE ȘI NAVIGAȚIE (Rămâne neschimbat, e perfect) ---
+        DisposableEffect(detailScopeKey, lifecycleOwner) {
+            currentViewModel.setDetailScreenActive(true, detailScopeKey, currentPagerState.currentPage) { idx ->
+                if (idx in 0 until currentPosts.itemCount) currentPosts.peek(idx) else null
+            }
+
+            val observer = LifecycleEventObserver { _, event ->
+                when (event) {
+                    Lifecycle.Event.ON_PAUSE -> {
+                        currentViewModel.onPostSettled(
+                            scopeKey = detailScopeKey,
+                            index = -1,
+                            getPost = { null }
+                        )
+                    }
+                    Lifecycle.Event.ON_RESUME -> {
+                        currentViewModel.onPostSettled(
+                            scopeKey = detailScopeKey,
+                            index = currentPagerState.settledPage,
+                            getPost = { idx -> if (idx in 0 until currentPosts.itemCount) currentPosts.peek(idx) else null }
+                        )
+                    }
+                    else -> {}
+                }
+            }
+
+            lifecycleOwner.lifecycle.addObserver(observer)
+
+            onDispose {
+                lifecycleOwner.lifecycle.removeObserver(observer)
+                currentViewModel.setDetailScreenActive(false, detailScopeKey, currentPagerState.currentPage) { idx ->
+                    if (idx in 0 until currentPosts.itemCount) currentPosts.peek(idx) else null
+                }
+                currentViewModel.onDetailSessionFinished(detailScopeKey)
+            }
+        }
+
+        // --- 2. CORECTAT: GESTIONARE SCROLL VERTICAL (Fără blocaj la pornire) ---
+        // Adăugăm ambele variabile ca chei pentru LaunchedEffect
+        LaunchedEffect(pagerState.settledPage, lifecycleOwner) {
+            snapshotFlow {
+                // Combinăm indexul paginii și starea lifecycle-ului într-o singură emisie
+                pagerState.settledPage to lifecycleOwner.lifecycle.currentState
+            }
+                .distinctUntilChanged()
+                .collectLatest { (settledPage, currentState) ->
+                    // Permitem rularea doar dacă ecranul s-a stabilizat în prim-plan (RESUMED)
+                    if (currentState == Lifecycle.State.RESUMED) {
+                        viewModel.onPostSettled(
+                            scopeKey = detailScopeKey,
+                            index = settledPage,
+                            getPost = { idx -> if (idx in 0 until posts.itemCount) posts.peek(idx) else null }
+                        )
+                    }
+                }
         }
 
         val fling = PagerDefaults.flingBehavior(
