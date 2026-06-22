@@ -1,11 +1,11 @@
 package com.example.scrollbooker.entity.auth.di
 
 import android.content.Context
+import com.example.scrollbooker.BuildConfig
 import com.example.scrollbooker.core.network.authenticator.TokenAuthenticator
 import com.example.scrollbooker.core.network.interceptor.AuthInterceptor
 import com.example.scrollbooker.core.network.tokenProvider.TokenProvider
 import com.example.scrollbooker.core.network.tokenProvider.TokenProviderImpl
-import com.example.scrollbooker.core.util.Constants
 import com.example.scrollbooker.entity.auth.domain.repository.AuthRepository
 import com.example.scrollbooker.entity.auth.data.remote.AuthApiService
 import com.example.scrollbooker.entity.auth.data.repository.AuthRepositoryImpl
@@ -14,7 +14,6 @@ import com.example.scrollbooker.entity.auth.domain.useCase.LoginUseCase
 import com.example.scrollbooker.entity.auth.domain.useCase.RefreshTokenUseCase
 import com.example.scrollbooker.entity.auth.domain.useCase.RegisterUseCase
 import com.example.scrollbooker.entity.auth.domain.useCase.SaveSessionUseCase
-import com.example.scrollbooker.entity.user.userEmailVerify.domain.useCase.VerifyUserEmailUseCase
 import com.example.scrollbooker.entity.user.userInfo.domain.useCase.GetUserInfoUseCase
 import com.example.scrollbooker.entity.user.userPermissions.domain.useCase.GetUserPermissionsUseCase
 import com.example.scrollbooker.store.AuthDataStore
@@ -58,7 +57,7 @@ object AuthModule {
     @Singleton
     fun provideAuthApi(): AuthApiService {
         return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(AuthApiService::class.java)

@@ -1,6 +1,6 @@
 package com.example.scrollbooker.entity.onboarding.di
 
-import com.example.scrollbooker.core.util.Constants
+import com.example.scrollbooker.BuildConfig
 import com.example.scrollbooker.entity.onboarding.data.remote.OnboardingApiService
 import com.example.scrollbooker.entity.onboarding.data.repository.OnboardingRepositoryImpl
 import com.example.scrollbooker.entity.onboarding.domain.repository.OnboardingRepository
@@ -28,7 +28,7 @@ object BusinessModule {
     @Singleton
     fun provideOnboardingApiService(okHttpClient: OkHttpClient): OnboardingApiService {
         return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

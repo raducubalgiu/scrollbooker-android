@@ -1,6 +1,6 @@
 package com.example.scrollbooker.entity.nomenclature.businessDomain.di
 
-import com.example.scrollbooker.core.util.Constants
+import com.example.scrollbooker.BuildConfig
 import com.example.scrollbooker.entity.nomenclature.businessDomain.data.remote.BusinessDomainApiService
 import com.example.scrollbooker.entity.nomenclature.businessDomain.data.repository.BusinessDomainRepositoryImpl
 import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.repository.BusinessDomainRepository
@@ -21,7 +21,7 @@ object BusinessModule {
     @Singleton
     fun provideBusinessDomainApiService(okHttpClient: OkHttpClient): BusinessDomainApiService {
         return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

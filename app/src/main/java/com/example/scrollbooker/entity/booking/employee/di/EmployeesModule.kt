@@ -1,6 +1,6 @@
 package com.example.scrollbooker.entity.booking.employee.di
 
-import com.example.scrollbooker.core.util.Constants
+import com.example.scrollbooker.BuildConfig
 import com.example.scrollbooker.entity.booking.employee.data.remote.EmployeesApiService
 import com.example.scrollbooker.entity.booking.employee.data.repository.EmployeesRepositoryImpl
 import com.example.scrollbooker.entity.booking.employee.domain.repository.EmployeesRepository
@@ -21,7 +21,7 @@ object EmployeesModule {
     @Singleton
     fun provideEmployeesApiService(okHttpClient: OkHttpClient): EmployeesApiService {
         return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

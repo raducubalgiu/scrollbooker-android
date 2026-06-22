@@ -1,6 +1,6 @@
 package com.example.scrollbooker.entity.user.notification.di
 
-import com.example.scrollbooker.core.util.Constants
+import com.example.scrollbooker.BuildConfig
 import com.example.scrollbooker.entity.user.notification.data.remote.AppointmentBookedNotificationDataDto
 import com.example.scrollbooker.entity.user.notification.data.remote.AppointmentCanceledNotificationDataDto
 import com.example.scrollbooker.entity.user.notification.data.remote.AppointmentReminderNotificationDataDto
@@ -19,7 +19,6 @@ import com.example.scrollbooker.entity.user.notification.data.remote.Notificatio
 import com.example.scrollbooker.entity.user.notification.data.remote.NotificationsApiService
 import com.example.scrollbooker.entity.user.notification.data.remote.RepostNotificationDataDto
 import com.example.scrollbooker.entity.user.notification.data.repository.NotificationRepositoryImpl
-import com.example.scrollbooker.entity.user.notification.domain.model.FollowNotificationData
 import com.example.scrollbooker.entity.user.notification.domain.repository.NotificationRepository
 import com.example.scrollbooker.entity.user.notification.domain.useCase.GetNotificationsUseCase
 import com.example.scrollbooker.entity.user.notification.domain.useCase.GetUserNotificationsNumberUseCase
@@ -27,7 +26,6 @@ import com.example.scrollbooker.entity.user.userSocial.data.remote.UserSocialDto
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonDeserializer
-import com.mapbox.geojson.internal.typeadapters.RuntimeTypeAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -112,7 +110,7 @@ object NotificationsModule {
         gson: Gson
     ): NotificationsApiService {
         return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()

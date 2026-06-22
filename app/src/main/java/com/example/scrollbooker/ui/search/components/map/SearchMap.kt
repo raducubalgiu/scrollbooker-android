@@ -24,7 +24,6 @@ import com.mapbox.maps.extension.compose.DisposableMapEffect
 import com.mapbox.maps.extension.compose.MapboxMap
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessBoundingBox
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMarker
-import com.example.scrollbooker.ui.GeoPoint
 import com.example.scrollbooker.ui.search.MarkersUiState
 import com.example.scrollbooker.ui.search.components.SearchMapActions
 import com.example.scrollbooker.ui.search.components.map.markers.SearchMarker
@@ -38,6 +37,11 @@ import com.mapbox.maps.extension.compose.style.MapStyle
 import com.mapbox.maps.toCameraOptions
 import kotlinx.coroutines.launch
 import kotlin.math.abs
+
+data class GeoPoint(
+    val lat: Double,
+    val lng: Double
+)
 
 @Composable
 fun SearchMap(

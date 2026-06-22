@@ -8,7 +8,7 @@ interface NotificationsApiService {
     @GET("notifications/count")
     suspend fun getUserNotificationsNumber(): Int
 
-    @GET("notifications/")
+    @GET("notifications")
     suspend fun getUserNotifications(
         @Query("page") page: Int,
         @Query("limit") limit: Int

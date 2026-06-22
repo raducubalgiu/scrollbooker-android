@@ -1,6 +1,6 @@
 package com.example.scrollbooker.entity.user.userProfile.di
 
-import com.example.scrollbooker.core.util.Constants.BASE_URL
+import com.example.scrollbooker.BuildConfig
 import com.example.scrollbooker.entity.user.userProfile.data.remote.UserProfileApiService
 import com.example.scrollbooker.entity.user.userProfile.data.repository.UserProfileRepositoryImpl
 import com.example.scrollbooker.entity.user.userProfile.domain.repository.UserProfileRepository
@@ -14,7 +14,6 @@ import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateGen
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdatePublicEmailUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateUsernameUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateWebsiteUseCase
-import com.example.scrollbooker.store.AuthDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,7 +30,7 @@ object UserProfileModule {
     @Singleton
     fun provideUserProfileApiService(okHttpClient: OkHttpClient): UserProfileApiService {
         return Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

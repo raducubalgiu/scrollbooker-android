@@ -1,5 +1,5 @@
 package com.example.scrollbooker.entity.social.post.di
-import com.example.scrollbooker.core.util.Constants
+import com.example.scrollbooker.BuildConfig
 import com.example.scrollbooker.entity.social.post.data.remote.PostApiService
 import com.example.scrollbooker.entity.social.post.data.repository.PostRepositoryImpl
 import com.example.scrollbooker.entity.social.post.domain.repository.PostRepository
@@ -27,7 +27,7 @@ object PostsModule {
     @Singleton
     fun providePostsApiService(okHttpClient: OkHttpClient): PostApiService {
         return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

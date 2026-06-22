@@ -28,6 +28,22 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
+            buildConfigField("String", "BASE_URL", "\"https://scrollbooker.com\"")
+        }
+
+        debug {
+            // URL-ul pentru Local Development (Emulator)
+            buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:8000\"")
+        }
+
+        create("staging") {
+            initWith(getByName("debug"))
+
+            // CORECT: URL-ul exact pentru mediul vostru de Staging din Cloud
+            buildConfigField("String", "BASE_URL", "\"https://api-staging.scrollbooker.com\"")
+
+            applicationIdSuffix = ".staging"
         }
     }
     compileOptions {
@@ -50,7 +66,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

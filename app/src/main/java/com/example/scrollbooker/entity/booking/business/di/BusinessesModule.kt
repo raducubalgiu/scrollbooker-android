@@ -1,7 +1,7 @@
 package com.example.scrollbooker.entity.booking.business.di
 
 import android.content.Context
-import com.example.scrollbooker.core.util.Constants
+import com.example.scrollbooker.BuildConfig
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessApiService
 import com.example.scrollbooker.entity.booking.business.data.repository.BusinessRepositoryImpl
 import com.example.scrollbooker.entity.booking.business.domain.repository.BusinessRepository
@@ -32,7 +32,7 @@ object BusinessModule {
     @Singleton
     fun provideBusinessApiService(okHttpClient: OkHttpClient): BusinessApiService {
         return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

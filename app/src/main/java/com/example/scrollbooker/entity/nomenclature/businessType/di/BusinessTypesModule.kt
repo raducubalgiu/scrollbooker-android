@@ -1,6 +1,6 @@
 package com.example.scrollbooker.entity.nomenclature.businessType.di
 
-import com.example.scrollbooker.core.util.Constants
+import com.example.scrollbooker.BuildConfig
 import com.example.scrollbooker.entity.nomenclature.businessType.data.remote.BusinessTypeApiService
 import com.example.scrollbooker.entity.nomenclature.businessType.data.repository.BusinessTypeRepositoryImpl
 import com.example.scrollbooker.entity.nomenclature.businessType.domain.repository.BusinessTypeRepository
@@ -24,7 +24,7 @@ object BusinessTypesModule {
     @Singleton
     fun provideBusinessTypeApiService(okHttpClient: OkHttpClient): BusinessTypeApiService {
         return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

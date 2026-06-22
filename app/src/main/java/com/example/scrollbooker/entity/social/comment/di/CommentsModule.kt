@@ -1,6 +1,6 @@
 package com.example.scrollbooker.entity.social.comment.di
 
-import com.example.scrollbooker.core.util.Constants
+import com.example.scrollbooker.BuildConfig
 import com.example.scrollbooker.entity.social.comment.data.remote.CommentsApiService
 import com.example.scrollbooker.entity.social.comment.data.repository.CommentRepositoryImpl
 import com.example.scrollbooker.entity.social.comment.domain.repository.CommentRepository
@@ -24,7 +24,7 @@ object CommentsModule {
     @Singleton
     fun provideGetPostCommentsApiService(okHttpClient: OkHttpClient): CommentsApiService {
         return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

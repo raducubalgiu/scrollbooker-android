@@ -1,10 +1,9 @@
 package com.example.scrollbooker.entity.user.userEmailVerify.di
-import com.example.scrollbooker.core.util.Constants
+import com.example.scrollbooker.BuildConfig
 import com.example.scrollbooker.entity.user.userEmailVerify.domain.useCase.VerifyUserEmailUseCase
 import com.example.scrollbooker.entity.user.userEmailVerify.data.remote.UserEmailVerifyApiService
 import com.example.scrollbooker.entity.user.userEmailVerify.data.repository.UserEmailVerifyRepositoryImpl
 import com.example.scrollbooker.entity.user.userEmailVerify.domain.repository.UserEmailVerifyRepository
-import com.example.scrollbooker.store.AuthDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,7 +20,7 @@ object UserEmailVerifyModule {
     @Singleton
     fun provideUserEmailVerifyApiService(okHttpClient: OkHttpClient): UserEmailVerifyApiService {
         return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

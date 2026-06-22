@@ -1,6 +1,6 @@
 package com.example.scrollbooker.entity.nomenclature.currency.di
 
-import com.example.scrollbooker.core.util.Constants
+import com.example.scrollbooker.BuildConfig
 import com.example.scrollbooker.entity.nomenclature.currency.data.remote.CurrenciesApiService
 import com.example.scrollbooker.entity.nomenclature.currency.data.repository.CurrencyRepositoryImpl
 import com.example.scrollbooker.entity.nomenclature.currency.domain.repository.CurrencyRepository
@@ -23,7 +23,7 @@ object CurrenciesModule {
     @Singleton
     fun provideCurrenciesApiService(okHttpClient: OkHttpClient): CurrenciesApiService {
         return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

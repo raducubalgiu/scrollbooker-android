@@ -1,6 +1,6 @@
 package com.example.scrollbooker.entity.user.userInfo.di
 
-import com.example.scrollbooker.core.util.Constants
+import com.example.scrollbooker.BuildConfig
 import com.example.scrollbooker.entity.user.userInfo.data.remote.UserInfoApiService
 import com.example.scrollbooker.entity.user.userInfo.data.repository.UserInfoRepositoryImpl
 import com.example.scrollbooker.entity.user.userInfo.domain.repository.UserInfoRepository
@@ -21,7 +21,7 @@ object UserInfoModule {
     @Singleton
     fun provideUserInfoApiService(okHttpClient: OkHttpClient): UserInfoApiService {
         return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

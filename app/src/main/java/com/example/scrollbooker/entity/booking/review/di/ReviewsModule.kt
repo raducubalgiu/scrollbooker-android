@@ -1,6 +1,6 @@
 package com.example.scrollbooker.entity.booking.review.di
 
-import com.example.scrollbooker.core.util.Constants
+import com.example.scrollbooker.BuildConfig
 import com.example.scrollbooker.entity.booking.review.data.remote.ReviewsApiService
 import com.example.scrollbooker.entity.booking.review.data.repository.ReviewRepositoryImpl
 import com.example.scrollbooker.entity.booking.review.domain.repository.ReviewRepository
@@ -27,7 +27,7 @@ object ReviewsModule {
     @Singleton
     fun provideReviewsApiService(okHttpClient: OkHttpClient): ReviewsApiService {
         return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

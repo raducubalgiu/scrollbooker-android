@@ -1,6 +1,6 @@
 package com.example.scrollbooker.entity.social.bookmark.di
 
-import com.example.scrollbooker.core.util.Constants
+import com.example.scrollbooker.BuildConfig
 import com.example.scrollbooker.entity.social.bookmark.data.remote.BookmarkPostsApiService
 import com.example.scrollbooker.entity.social.bookmark.data.repository.BookmarkPostRepositoryImpl
 import com.example.scrollbooker.entity.social.bookmark.domain.repository.BookmarkPostRepository
@@ -21,7 +21,7 @@ object BookmarkPostsModule {
     @Singleton
     fun provideBookmarkedPostsApiService(okHttpClient: OkHttpClient): BookmarkPostsApiService {
         return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

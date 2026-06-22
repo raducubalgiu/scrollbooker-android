@@ -1,6 +1,6 @@
 package com.example.scrollbooker.entity.user.userPermissions.di
 
-import com.example.scrollbooker.core.util.Constants
+import com.example.scrollbooker.BuildConfig
 import com.example.scrollbooker.entity.user.userPermissions.domain.repository.PermissionRepository
 import com.example.scrollbooker.entity.user.userPermissions.domain.useCase.GetUserPermissionsUseCase
 import com.example.scrollbooker.entity.user.userPermissions.data.remote.PermissionsApiService
@@ -21,7 +21,7 @@ object PermissionsModule {
     @Singleton
     fun providePermissionsApiService(okHttpClient: OkHttpClient): PermissionsApiService {
         return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

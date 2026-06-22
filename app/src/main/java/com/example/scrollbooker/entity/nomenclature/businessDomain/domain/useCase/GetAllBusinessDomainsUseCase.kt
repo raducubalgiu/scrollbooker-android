@@ -14,7 +14,7 @@ class GetAllBusinessDomainsUseCase(
             val businessDomains = repository.getAllBusinessDomains()
             FeatureState.Success(businessDomains)
         } catch (e: Exception) {
-            Timber.tag("Business Domains").e("ERROR: on Fetching Business Domains: $e")
+            Timber.tag("Business Domains").e(e, "ERROR: on Fetching Business Domains")
             FeatureState.Error(e)
         }
     }

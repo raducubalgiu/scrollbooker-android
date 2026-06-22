@@ -1,6 +1,6 @@
 package com.example.scrollbooker.entity.nomenclature.profession.di
 
-import com.example.scrollbooker.core.util.Constants
+import com.example.scrollbooker.BuildConfig
 import com.example.scrollbooker.entity.nomenclature.profession.data.remote.ProfessionsApiService
 import com.example.scrollbooker.entity.nomenclature.profession.data.repository.ProfessionRepositoryImpl
 import com.example.scrollbooker.entity.nomenclature.profession.domain.repository.ProfessionRepository
@@ -21,7 +21,7 @@ object ProfessionsModule {
     @Singleton
     fun provideProfessionsApiService(okHttpClient: OkHttpClient): ProfessionsApiService {
         return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

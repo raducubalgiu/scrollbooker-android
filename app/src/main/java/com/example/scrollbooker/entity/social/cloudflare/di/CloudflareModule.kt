@@ -1,5 +1,5 @@
 package com.example.scrollbooker.entity.social.cloudflare.di
-import com.example.scrollbooker.core.util.Constants
+import com.example.scrollbooker.BuildConfig
 import com.example.scrollbooker.entity.social.cloudflare.data.remote.CloudflareApiService
 import com.example.scrollbooker.entity.social.cloudflare.data.repository.CloudflareRepositoryImpl
 import com.example.scrollbooker.entity.social.cloudflare.domain.repository.CloudflareRepository
@@ -21,7 +21,7 @@ object CloudflareModule {
     @Singleton
     fun provideCloudflareApiService(okHttpClient: OkHttpClient): CloudflareApiService {
         return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

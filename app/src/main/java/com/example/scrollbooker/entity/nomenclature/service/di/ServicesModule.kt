@@ -1,6 +1,6 @@
 package com.example.scrollbooker.entity.nomenclature.service.di
 
-import com.example.scrollbooker.core.util.Constants
+import com.example.scrollbooker.BuildConfig
 import com.example.scrollbooker.entity.nomenclature.service.data.remote.ServicesApiService
 import com.example.scrollbooker.entity.nomenclature.service.data.repository.ServiceRepositoryImpl
 import com.example.scrollbooker.entity.nomenclature.service.domain.repository.ServiceRepository
@@ -23,7 +23,7 @@ object ServicesModule {
     @Singleton
     fun provideServicesApiService(okHttpClient: OkHttpClient): ServicesApiService {
         return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
         .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

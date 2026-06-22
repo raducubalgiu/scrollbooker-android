@@ -1,6 +1,6 @@
 package com.example.scrollbooker.entity.nomenclature.filter.di
 
-import com.example.scrollbooker.core.util.Constants
+import com.example.scrollbooker.BuildConfig
 import com.example.scrollbooker.entity.nomenclature.filter.data.remote.FilterApiService
 import com.example.scrollbooker.entity.nomenclature.filter.data.repository.FilterRepositoryImpl
 import com.example.scrollbooker.entity.nomenclature.filter.domain.repository.FilterRepository
@@ -23,7 +23,7 @@ object FiltersModule {
     @Singleton
     fun provideGetFiltersByBusinessType(okHttpClient: OkHttpClient): FilterApiService {
         return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

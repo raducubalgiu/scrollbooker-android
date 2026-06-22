@@ -1,6 +1,6 @@
 package com.example.scrollbooker.entity.booking.schedule.di
 
-import com.example.scrollbooker.core.util.Constants
+import com.example.scrollbooker.BuildConfig
 import com.example.scrollbooker.entity.booking.schedule.data.remote.SchedulesApiService
 import com.example.scrollbooker.entity.booking.schedule.data.repository.ScheduleRepositoryImpl
 import com.example.scrollbooker.entity.booking.schedule.domain.repository.ScheduleRepository
@@ -22,7 +22,7 @@ object SchedulesModule {
     @Singleton
     fun provideSchedulesApiService(okHttpClient: OkHttpClient): SchedulesApiService {
         return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

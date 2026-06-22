@@ -1,6 +1,6 @@
 package com.example.scrollbooker.entity.booking.availability.di
 
-import com.example.scrollbooker.core.util.Constants
+import com.example.scrollbooker.BuildConfig
 import com.example.scrollbooker.entity.booking.availability.data.remote.AvailabilityApiService
 import com.example.scrollbooker.entity.booking.availability.data.repository.AvailabilityRepositoryImpl
 import com.example.scrollbooker.entity.booking.availability.domain.repository.AvailabilityRepository
@@ -23,7 +23,7 @@ object AvailabilityModule {
     @Singleton
     fun provideAvailabilityApiService(okHttpClient: OkHttpClient): AvailabilityApiService {
         return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
