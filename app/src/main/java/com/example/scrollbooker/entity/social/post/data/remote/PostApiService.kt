@@ -41,22 +41,22 @@ interface PostApiService {
         @Query("limit") limit: Int
     ): PaginatedResponseDto<PostDto>
 
-    @POST("posts/{postId}/likes/")
+    @POST("posts/{postId}/likes")
     suspend fun likePost(
         @Path("postId") postId: Int
     )
 
-    @DELETE("posts/{postId}/likes/")
+    @DELETE("posts/{postId}/likes")
     suspend fun unLikePost(
         @Path("postId") postId: Int
     )
 
-    @POST("posts/{postId}/bookmark-posts/")
+    @POST("posts/{postId}/bookmark-posts")
     suspend fun bookmarkPost(
         @Path("postId") postId: Int
     )
 
-    @DELETE("posts/{postId}/bookmark-posts/")
+    @DELETE("posts/{postId}/bookmark-posts")
     suspend fun unBookmarkPost(
         @Path("postId") postId: Int
     )

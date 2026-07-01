@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -27,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.extensions.formatRating
-import com.example.scrollbooker.core.extensions.toFixedDecimals
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
@@ -42,9 +42,18 @@ fun AvatarWithRating(
     rating: Float,
     size: Dp = 75.dp,
     elevation: Dp = 1.dp,
+    badgeBackgroundColor: Color? = null,
     onClick: () -> Unit
 ) {
     val isSystemInDarkMode = isSystemInDarkTheme()
+
+    val resolvedBadgeColor = badgeBackgroundColor ?: if (isSystemInDarkMode) SurfaceBG else Background
+
+    val resolvedTextColor = when {
+        badgeBackgroundColor != null -> Color(0xFF1C1B1F)
+        isSystemInDarkMode -> OnSurfaceBG
+        else -> OnBackground
+    }
 
     Box(
         modifier = modifier
@@ -72,7 +81,7 @@ fun AvatarWithRating(
                     clip = false
                 )
                 .background(
-                    color = if(isSystemInDarkMode) SurfaceBG else Background,
+                    color = resolvedBadgeColor,
                     shape = RoundedCornerShape(15.dp)
                 )
                 .padding(horizontal = 8.dp, vertical = 6.dp)
@@ -86,7 +95,7 @@ fun AvatarWithRating(
             Spacer(Modifier.width(2.dp))
             Text(
                 text = rating.formatRating(),
-                color = if(isSystemInDarkMode) OnSurfaceBG else OnBackground,
+                color = resolvedTextColor,
                 fontWeight = FontWeight.ExtraBold,
                 style = bodyMedium,
                 fontSize = 16.sp

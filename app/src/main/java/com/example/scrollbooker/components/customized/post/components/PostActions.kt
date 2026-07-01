@@ -16,6 +16,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.social.post.domain.model.PostCounters
 import com.example.scrollbooker.entity.social.post.domain.model.PostUser
 import com.example.scrollbooker.entity.social.post.domain.model.UserPostActions
+import com.example.scrollbooker.ui.theme.BackgroundLight
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.Rating
 
@@ -47,6 +48,7 @@ fun PostActions(
                 url = user.avatar ?: "",
                 rating = user.ratingsAverage,
                 size = 55.dp,
+                badgeBackgroundColor = BackgroundLight,
                 onClick = onNavigateToUser
             )
         }

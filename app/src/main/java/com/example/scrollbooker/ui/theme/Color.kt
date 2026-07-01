@@ -86,6 +86,11 @@ val BackgroundDark: Color
     @ReadOnlyComposable
     get() = ExtendedTheme.colors.backgroundDark
 
+val BackgroundLight: Color
+    @Composable
+    @ReadOnlyComposable
+    get() = ExtendedTheme.colors.backgroundLight
+
 val Rating: Color
     @Composable
     @ReadOnlyComposable
