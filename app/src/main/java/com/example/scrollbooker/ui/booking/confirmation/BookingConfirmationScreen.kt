@@ -72,7 +72,7 @@ fun BookingConfirmationScreen(
         topBar = { Header(onBack = { bookingNavigate.back() }) },
         bottomBar = {
             MainButton(
-                modifier = Modifier.padding(BasePadding),
+                modifier = Modifier.padding(BasePadding).navigationBarsPadding(),
                 title = stringResource(R.string.confirmReservation),
                 isLoading = isSaving,
                 enabled = !isSaving,

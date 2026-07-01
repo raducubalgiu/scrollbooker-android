@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
@@ -102,11 +103,9 @@ private fun FormLayoutBottomBar(
             .padding(vertical = BasePadding)
     ) {
         MainButton(
-            modifier = Modifier.padding(
-                start = SpacingXXL,
-                end = SpacingXXL,
-                bottom = BasePadding
-            ),
+            modifier = Modifier
+                .padding(horizontal = SpacingXXL)
+                .navigationBarsPadding(),
             title = buttonTitle ?: "",
             onClick = { onNext?.invoke() },
             enabled = isEnabled,

@@ -3,6 +3,7 @@ import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -82,7 +83,7 @@ fun AppointmentCancelScreen(
             Column {
                 HorizontalDivider(color = Divider, thickness = 0.55.dp)
                 MainButton(
-                    modifier = Modifier.padding(BasePadding),
+                    modifier = Modifier.padding(BasePadding).navigationBarsPadding(),
                     title = stringResource(R.string.cancelAppointment),
                     enabled = (message.isNotEmpty() || !isOtherReason) && isMessageValid && !isSaving,
                     isLoading = isSaving,

@@ -79,7 +79,6 @@ fun AppointmentCardInfo(appointment: Appointment) {
         Text(
             text = appointment.getProductNames(),
             style = titleMedium,
-            fontSize = 17.sp,
             fontWeight = FontWeight.Normal,
             color = Color.Gray,
             maxLines = 1,
