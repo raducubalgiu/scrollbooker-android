@@ -44,7 +44,6 @@ fun StyledTab(
             Text(
                 text = title,
                 style = bodyLarge,
-                fontSize = 16.sp,
                 color = if (isSelected) OnSurfaceBG else Color.Gray,
                 fontWeight = FontWeight.Bold,
             )

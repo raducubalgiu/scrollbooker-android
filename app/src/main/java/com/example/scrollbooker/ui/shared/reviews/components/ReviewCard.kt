@@ -126,15 +126,6 @@ fun ReviewCard(
 
         Spacer(modifier = Modifier.height(SpacingM))
 
-        Text(
-            modifier = Modifier,
-            text = stringResource(id = ReviewLabel.fromValue(review.rating).labelRes),
-            style = titleMedium,
-            fontWeight = FontWeight.SemiBold
-        )
-
-        Spacer(modifier = Modifier.height(SpacingM))
-
         if (review.review.isNotEmpty()) {
             Column(
                 modifier = Modifier

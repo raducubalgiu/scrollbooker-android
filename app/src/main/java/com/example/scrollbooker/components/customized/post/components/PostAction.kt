@@ -62,15 +62,13 @@ fun PostAction(
                 tint = tint
             )
             counter?.let {
-                Spacer(Modifier.height(SpacingXXS))
+                Spacer(Modifier.height(2.dp))
                 Text(
                     color = Color.White,
                     text = "$it",
                     style = TextStyle(
                         fontWeight = FontWeight.SemiBold,
-                        fontSize = 16.sp,
-                        lineHeight = 24.sp,
-                        letterSpacing = 0.5.sp,
+                        fontSize = 13.sp,
                         shadow = Shadow(
                             color = Color.Black.copy(alpha = 0.8f),
                             offset = Offset(2f, 2f),

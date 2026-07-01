@@ -89,9 +89,11 @@ fun PostActions(
         )
 
         PostAction(
-            icon = R.drawable.ic_elipsis_horizontal,
+            isEnabled = true,
+            counter = 100,
+            icon = R.drawable.ic_share,
             tint = Color.White,
-            onClick = { onAction(PostSheetActionEnum.OPEN_MORE_OPTIONS) }
+            onClick = {}
         )
     }
 }

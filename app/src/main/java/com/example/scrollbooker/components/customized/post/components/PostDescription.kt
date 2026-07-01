@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import com.example.scrollbooker.core.util.Dimens.SpacingM
+import com.example.scrollbooker.ui.theme.bodyMedium
 
 @Composable
 fun PostDescription(description: String) {
@@ -34,6 +35,7 @@ fun PostDescription(description: String) {
             modifier = Modifier.animateContentSize(),
             text = description,
             color = Color.White,
+            style = bodyMedium,
             maxLines = if(isDescriptionCollapsed) Int.MAX_VALUE else 1,
             overflow = if(isDescriptionCollapsed) TextOverflow.Visible else TextOverflow.Ellipsis
         )

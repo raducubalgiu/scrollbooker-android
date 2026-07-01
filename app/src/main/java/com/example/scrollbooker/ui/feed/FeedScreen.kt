@@ -78,7 +78,6 @@ fun FeedScreen(
             PostSheets(
                 sheetState = sheetState,
                 sheetContent = sheetContent,
-                onDeletePost = {},
                 onClose = {
                     scope.launch {
                         sheetState.hide()

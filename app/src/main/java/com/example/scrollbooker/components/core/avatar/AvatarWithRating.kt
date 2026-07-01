@@ -98,7 +98,7 @@ fun AvatarWithRating(
                 color = resolvedTextColor,
                 fontWeight = FontWeight.ExtraBold,
                 style = bodyMedium,
-                fontSize = 16.sp
+                fontSize = 14.sp
             )
         }
     }

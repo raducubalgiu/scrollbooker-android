@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.scrollbooker.components.customized.post.sheets.comments.CommentsSheet
 import com.example.scrollbooker.components.customized.post.sheets.linkedProducts.LinkedProductsSheet
-import com.example.scrollbooker.components.customized.post.sheets.moreOptions.MoreOptionsSheet
 import com.example.scrollbooker.components.customized.post.sheets.reviews.ReviewsSheet
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
@@ -19,8 +18,7 @@ import com.example.scrollbooker.ui.theme.OnBackground
 fun PostSheets(
     sheetState: SheetState,
     sheetContent: PostSheetsContent,
-    onClose: () -> Unit,
-    onDeletePost: (postId: Int) -> Unit
+    onClose: () -> Unit
 ) {
     ModalBottomSheet(
         modifier = Modifier.statusBarsPadding(),
@@ -46,13 +44,6 @@ fun PostSheets(
                     postId = content.postId,
                     isSheetVisible = sheetState.isVisible,
                     onClose = onClose
-                )
-            }
-            is PostSheetsContent.MoreOptionsSheet -> {
-                MoreOptionsSheet(
-                    onClose = onClose,
-                    onDelete = { onDeletePost(content.postId) },
-                    isOwnPost = content.isOwnPost,
                 )
             }
             is PostSheetsContent.LinkedProductsSheet -> {
