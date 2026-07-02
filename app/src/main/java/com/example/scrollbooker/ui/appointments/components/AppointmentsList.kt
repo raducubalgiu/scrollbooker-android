@@ -35,10 +35,15 @@ fun AppointmentsList(
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(BasePadding)
+            contentPadding = PaddingValues(BasePadding),
         ) {
-            items(appointments.itemCount) { index ->
-                appointments[index]?.let { appointment ->
+            items(
+                count = appointments.itemCount,
+                key = { index -> appointments[index]?.id ?: index }
+            ) { index ->
+                val appointment = appointments[index]
+
+                appointment?.let { appointment ->
                     AppointmentCard(
                         appointment = appointment,
                         navigateToAppointmentDetails = onNavigateToAppointmentDetails
