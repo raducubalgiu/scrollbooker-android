@@ -12,9 +12,9 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
-import com.example.scrollbooker.core.extensions.uriToCacheFile
+import com.example.scrollbooker.core.presentation.UploadManager
 import com.example.scrollbooker.entity.permission.domain.repository.PermissionRepository
-import com.example.scrollbooker.entity.social.cloudflare.domain.useCase.CreatePostWithCloudflareUseCase
+import com.example.scrollbooker.entity.social.post.domain.useCase.CreateVideoPostUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -31,12 +31,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CameraViewModel @Inject constructor(
-    private val createPostWithCloudflareUseCase: CreatePostWithCloudflareUseCase,
+    private val uploadManager: UploadManager,
     private val permissionRepository: PermissionRepository,
     @ApplicationContext private val context: Context
 ): ViewModel() {
-    private val _isSaving = MutableStateFlow<Boolean>(false)
-    val isSaving: StateFlow<Boolean> = _isSaving.asStateFlow()
+    val uploadStatus = uploadManager.uploadStatus
 
     private val _description = MutableStateFlow<String>("")
     val description: StateFlow<String> = _description.asStateFlow()
@@ -243,28 +242,18 @@ class CameraViewModel @Inject constructor(
         videoReviewMessage: String? = null,
         rating: Int? = null
     ) {
-        viewModelScope.launch {
-            _isSaving.value = true
+        val coverUri = _uiState.value.coverUri
 
-            runCatching {
-                val file = uriToCacheFile(context, videoUri)
+        uploadManager.startUpload(
+            videoUri = videoUri,
+            coverUri = coverUri,
+            description = description,
+            businessOrEmployeeId = businessOrEmployeeId,
+            isVideoReview = isVideoReview,
+            videoReviewMessage = videoReviewMessage,
+            rating = rating
+        )
 
-                createPostWithCloudflareUseCase(
-                    videoFile = file,
-                    description = description,
-                    businessOrEmployeeId = businessOrEmployeeId,
-                    isVideoReview = isVideoReview,
-                    videoReviewMessage = videoReviewMessage,
-                    rating = rating
-                )
-            }
-                .onSuccess {
-                    _isSaving.value = false
-                }
-                .onFailure { e ->
-                    _isSaving.value = false
-                    Timber.tag("Create Post").e("Error: on creating post: $e")
-                }
-        }
+        pause()
     }
 }

@@ -37,6 +37,8 @@ retrofit = "2.11.0"
 threetenabp = "1.4.5"
 timber = "5.0.1"
 turbine = "1.1.0"
+tusAndroidClient = "0.1.10"
+tusJavaClient = "0.4.5"
 
 [libraries]
 android = { module = "com.mapbox.maps:android", version.ref = "android" }
@@ -93,6 +95,8 @@ retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit
 threetenabp = { module = "com.jakewharton.threetenabp:threetenabp", version.ref = "threetenabp" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+tus-android-client = { module = "io.tus.android.client:tus-android-client", version.ref = "tusAndroidClient" }
+tus-java-client = { module = "io.tus.java.client:tus-java-client", version.ref = "tusJavaClient" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

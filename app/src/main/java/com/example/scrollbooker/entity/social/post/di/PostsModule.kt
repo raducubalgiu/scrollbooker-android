@@ -1,9 +1,12 @@
 package com.example.scrollbooker.entity.social.post.di
+import android.content.Context
 import com.example.scrollbooker.BuildConfig
+import com.example.scrollbooker.entity.social.cloudflare.domain.repository.CloudflareRepository
 import com.example.scrollbooker.entity.social.post.data.remote.PostApiService
 import com.example.scrollbooker.entity.social.post.data.repository.PostRepositoryImpl
 import com.example.scrollbooker.entity.social.post.domain.repository.PostRepository
 import com.example.scrollbooker.entity.social.post.domain.useCase.BookmarkPostUseCase
+import com.example.scrollbooker.entity.social.post.domain.useCase.CreateVideoPostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetExplorePostsUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetFollowingPostsUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetUserPostsUseCase
@@ -14,6 +17,7 @@ import com.example.scrollbooker.entity.social.post.domain.useCase.UnLikePostUseC
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -32,6 +36,16 @@ object PostsModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(PostApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCreateVideoPostUseCase(
+        cloudflareRepository: CloudflareRepository,
+        postRepository: PostRepository,
+        @ApplicationContext context: Context
+    ): CreateVideoPostUseCase {
+        return CreateVideoPostUseCase(cloudflareRepository, postRepository, context)
     }
 
     @Provides

@@ -9,6 +9,7 @@ interface PostRepository {
     fun getExplorePosts(
         selectedBusinessTypes: List<Int?>
     ): Flow<PagingData<Post>>
+
     fun getFollowingPosts(): Flow<PagingData<Post>>
     fun getUserPosts(userId: Int): Flow<PagingData<Post>>
     fun getUserVideoReviewsPosts(userId: Int): Flow<PagingData<Post>>

@@ -1,13 +1,13 @@
 package com.example.scrollbooker.entity.social.cloudflare.di
+import android.content.Context
 import com.example.scrollbooker.BuildConfig
 import com.example.scrollbooker.entity.social.cloudflare.data.remote.CloudflareApiService
 import com.example.scrollbooker.entity.social.cloudflare.data.repository.CloudflareRepositoryImpl
 import com.example.scrollbooker.entity.social.cloudflare.domain.repository.CloudflareRepository
-import com.example.scrollbooker.entity.social.cloudflare.domain.useCase.CreatePostWithCloudflareUseCase
-import com.example.scrollbooker.entity.social.post.domain.repository.PostRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -32,16 +32,8 @@ object CloudflareModule {
     @Singleton
     fun provideCloudflareRepository(
         apiService: CloudflareApiService,
+        @ApplicationContext context: Context
     ): CloudflareRepository {
-        return CloudflareRepositoryImpl(apiService)
-    }
-
-    @Provides
-    @Singleton
-    fun provideCreatePostWithCloudflareUseCase(
-        cloudflareRepository: CloudflareRepository,
-        postsRepository: PostRepository
-    ): CreatePostWithCloudflareUseCase {
-        return CreatePostWithCloudflareUseCase(cloudflareRepository, postsRepository)
+        return CloudflareRepositoryImpl(apiService ,context)
     }
 }
