@@ -45,8 +45,7 @@ fun PostOverlay(
     onBookmark: () -> Unit,
 
     onNavigateToUserProfile: (userId: Int, username: String) -> Unit,
-    showBookButton: Boolean = true,
-    onNavigateToBooking: () -> Unit
+    showBookButton: Boolean = true
 ) {
     val isVideoReview = post.isVideoReview
 
@@ -100,7 +99,7 @@ fun PostOverlay(
                     if (showBookButton) {
                         Button(
                             modifier = Modifier.fillMaxWidth(),
-                            onClick = { onNavigateToBooking() },
+                            onClick = { onAction(PostSheetActionEnum.OPEN_LINKED_PRODUCTS) },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Primary,
                                 contentColor = OnPrimary

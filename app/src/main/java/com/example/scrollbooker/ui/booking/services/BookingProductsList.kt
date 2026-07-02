@@ -24,6 +24,8 @@ import com.example.scrollbooker.ui.theme.titleLarge
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.remember
+import com.example.scrollbooker.core.util.Dimens.SpacingM
+import com.example.scrollbooker.core.util.Dimens.SpacingS
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -49,7 +51,7 @@ fun BookingProductsList(
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 12.dp, bottom = BasePadding),
+                        .padding(vertical = SpacingM),
                     text = group.service.name,
                     style = titleLarge,
                     fontWeight = FontWeight.Bold,
@@ -74,7 +76,7 @@ fun BookingProductsList(
 
                 if (group.products.lastOrNull()?.id != product.id) {
                     HorizontalDivider(
-                        modifier = Modifier.padding(vertical = BasePadding),
+                        modifier = Modifier.padding(vertical = SpacingS),
                         color = Divider,
                         thickness = 0.55.dp
                     )

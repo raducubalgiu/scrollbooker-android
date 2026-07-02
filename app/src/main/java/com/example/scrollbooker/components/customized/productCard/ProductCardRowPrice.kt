@@ -38,7 +38,7 @@ fun ProductCardRowPrice(
                 Text(
                     text = "${priceWithDiscount.toTwoDecimals()} RON",
                     style = titleMedium,
-                    fontSize = 17.sp,
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold
                 )
                 Spacer(Modifier.width(SpacingS))
@@ -52,7 +52,9 @@ fun ProductCardRowPrice(
                     Spacer(Modifier.width(SpacingS))
                     Text(
                         text = "(-${discount.toTwoDecimals()}%)",
-                        color = Error
+                        color = Error,
+                        style = titleMedium,
+                        fontSize = 16.sp,
                     )
                 }
             }

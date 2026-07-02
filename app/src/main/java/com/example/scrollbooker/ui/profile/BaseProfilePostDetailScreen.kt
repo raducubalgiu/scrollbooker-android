@@ -45,6 +45,7 @@ import com.example.scrollbooker.components.customized.post.PostPlayerWithThumbna
 import com.example.scrollbooker.components.customized.post.components.PostOverlay
 import com.example.scrollbooker.components.customized.post.components.PostShimmer
 import com.example.scrollbooker.components.customized.post.handlePostSheetAction
+import com.example.scrollbooker.components.customized.post.sheets.PostSheetActionEnum
 import com.example.scrollbooker.components.customized.post.sheets.PostSheets
 import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent
 import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent.None
@@ -109,6 +110,15 @@ fun BaseProfilePostDetailScreen(
                         sheetContent = None
                     }
                 },
+                onNavigateToBooking = { product ->
+                    val source = when (PostTabEnum.fromKey(postTabKey)) {
+                        PostTabEnum.POSTS -> BookingSourceEnum.PROFILE_GRID_POST_DETAIL
+                        PostTabEnum.BOOKMARKS -> BookingSourceEnum.PROFILE_BOOKMARKS_POST_DETAIL
+                        null -> BookingSourceEnum.PROFILE_GRID_POST_DETAIL
+                    }
+
+                    profileNavigate.toBookingFromProduct(product, source)
+                }
             )
         }
     }
@@ -234,8 +244,7 @@ fun BaseProfilePostDetailScreen(
                             onLike = { viewModel.toggleLike(post) },
                             onBookmark = { viewModel.toggleBookmark(post) },
                             onNavigateToUserProfile = { userId, username -> profileNavigate.toUserProfile(userId, username) },
-                            showBookButton = false,
-                            onNavigateToBooking = {}
+                            showBookButton = false
                         )
                     }
                 }
@@ -248,15 +257,11 @@ fun BaseProfilePostDetailScreen(
                     contentPadding = PaddingValues(12.dp),
                     onClick = {
                         currentPost?.let {
-                            val bookingSource = when (PostTabEnum.fromKey(postTabKey)) {
-                                PostTabEnum.POSTS -> BookingSourceEnum.PROFILE_GRID_POST_DETAIL
-                                PostTabEnum.BOOKMARKS -> BookingSourceEnum.PROFILE_BOOKMARKS_POST_DETAIL
-                                null -> BookingSourceEnum.PROFILE_GRID_POST_DETAIL
-                            }
-
-                            currentPost?.let {
-                                profileNavigate.toBookingFromPost(it, bookingSource)
-                            }
+                            handlePostSheetAction(
+                                action = PostSheetActionEnum.OPEN_LINKED_PRODUCTS,
+                                post = it,
+                                handleOpenSheet = ::handleOpenSheet
+                            )
                         }
                     },
                     title = stringResource(R.string.bookNow),

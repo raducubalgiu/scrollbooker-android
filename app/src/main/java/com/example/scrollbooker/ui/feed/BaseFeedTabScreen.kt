@@ -55,8 +55,7 @@ fun BaseFeedTabScreen(
     isTabActive: Boolean,
     viewModel: FeedViewModelContract,
     onAction: (PostSheetActionEnum, Post) -> Unit,
-    onNavigateToUserProfile: (Int, String) -> Unit,
-    onNavigateToBooking: (Post) -> Unit
+    onNavigateToUserProfile: (Int, String) -> Unit
 ) {
     val userPausedSet by viewModel.userPausedPostIds.collectAsStateWithLifecycle()
 
@@ -68,15 +67,12 @@ fun BaseFeedTabScreen(
 
     val lifecycleOwner = LocalLifecycleOwner.current
 
-// --- 1. GESTIONARE LIFECYCLE ȘI SCHIMBARE TABURI (ORIZONTAL) ---
     DisposableEffect(isTabActive, lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
-                // Când pleci de pe ecran (navigație), oprim INSTANT sunetul
                 Lifecycle.Event.ON_PAUSE -> {
                     currentViewModel.stopDetailSession()
                 }
-                // Când te întorci pe ecran, dăm resume doar dacă această filă e cea vizibilă
                 Lifecycle.Event.ON_RESUME -> {
                     if (isTabActive) {
                         currentViewModel.resumePlayerOnTabEnter(currentSettledPage)
@@ -88,7 +84,6 @@ fun BaseFeedTabScreen(
 
         lifecycleOwner.lifecycle.addObserver(observer)
 
-        // Acțiune la schimbarea tab-ului (Explore <-> Following)
         if (isTabActive) {
             currentViewModel.resumePlayerOnTabEnter(currentSettledPage)
         } else {
@@ -101,7 +96,6 @@ fun BaseFeedTabScreen(
         }
     }
 
-// --- 2. GESTIONARE SCROLL VERTICAL (SWIPE CLIPURI) ---
     LaunchedEffect(settledPage, isTabActive) {
         if (!isTabActive) return@LaunchedEffect
 
@@ -110,14 +104,10 @@ fun BaseFeedTabScreen(
             .collectLatest { postId ->
                 if (postId == null) return@collectLatest
 
-                // Sincronizăm fereastra de paging
                 viewModel.ensureWindow(
                     centerIndex = settledPage,
                     getPost = { idx -> posts.getOrNull(idx) }
                 )
-
-                // Notificăm managerul video că pagina s-a schimbat stabil pe verticală.
-                // Asigură-te că în această metodă din VM schimbi playerul activ și îi dai `.play()`.
                 viewModel.onPageSettled(settledPage)
             }
     }
@@ -198,10 +188,9 @@ fun BaseFeedTabScreen(
                             isSavingLike = postActionState.isSavingLike,
                             isSavingBookmark = postActionState.isSavingBookmark,
                             onAction = { onAction(it, post) },
-                            onNavigateToUserProfile = onNavigateToUserProfile,
                             onLike = { viewModel.toggleLike(post) },
                             onBookmark = { viewModel.toggleBookmark(post) },
-                            onNavigateToBooking = { onNavigateToBooking(post) }
+                            onNavigateToUserProfile = onNavigateToUserProfile,
                         )
                     }
                 }

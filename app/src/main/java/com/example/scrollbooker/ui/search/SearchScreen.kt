@@ -222,7 +222,8 @@ fun SearchScreen(
                 onFilter = { openSheetWith(SearchSheetActionEnum.OPEN_FILTERS) }
             )
         },
-        bottomBar = { BottomBar() }
+        bottomBar = { BottomBar() },
+        containerColor = Background
     ) { padding ->
         val paddingBottom = padding.calculateBottomPadding() + sheetHeaderDp + BasePadding
 

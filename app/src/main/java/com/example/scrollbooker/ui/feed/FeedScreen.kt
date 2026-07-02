@@ -84,6 +84,12 @@ fun FeedScreen(
                         sheetContent = None
                     }
                 },
+                onNavigateToBooking = { product ->
+                    val source = if(horizontalPagerState.currentPage == 0) BookingSourceEnum.EXPLORE_FEED
+                        else BookingSourceEnum.FOLLOWING_FEED
+
+                    feedNavigate.toBookingFromProduct(product, source)
+                }
             )
         }
     }
@@ -129,15 +135,8 @@ fun FeedScreen(
                         posts = config.posts,
                         isTabActive = horizontalPagerState.settledPage == tabIndex,
                         viewModel = config.viewModel,
-                        onAction = { action, post ->
-                            handlePostSheetAction(action, post, ::handleOpenSheet)
-                        },
-                        onNavigateToUserProfile = { userId, username ->
-                            feedNavigate.toUserProfile(userId, username)
-                        },
-                        onNavigateToBooking = { post ->
-                            feedNavigate.toBookingFromPost(post, config.bookingSource)
-                        }
+                        onAction = { action, post -> handlePostSheetAction(action, post, ::handleOpenSheet) },
+                        onNavigateToUserProfile = { userId, username -> feedNavigate.toUserProfile(userId, username) }
                     )
                 }
             }

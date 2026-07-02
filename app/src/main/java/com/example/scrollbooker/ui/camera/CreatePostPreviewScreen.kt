@@ -252,7 +252,6 @@ fun CreatePostPreviewScreen(
                     isSavingBookmark = false,
                     onAction = {},
                     onNavigateToUserProfile = { _, _ -> {} },
-                    onNavigateToBooking = {},
                     onLike = {},
                     onBookmark = {},
                     showBookButton = false

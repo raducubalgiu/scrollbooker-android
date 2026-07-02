@@ -33,6 +33,7 @@ import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge
+import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.bodySmall
 import com.example.scrollbooker.ui.theme.labelSmall
 import com.example.scrollbooker.ui.theme.titleMedium
@@ -63,7 +64,7 @@ fun ProductCard(
     Column(
         modifier = modifier
             .clickable(onClick = onCardClick)
-            .padding(vertical = BasePadding)
+            //.padding(vertical = BasePadding)
     ) {
         Column {
             if (product.filters.isNotEmpty() &&
@@ -83,7 +84,7 @@ fun ProductCard(
                     Text(
                         text = product.name,
                         style = titleMedium,
-                        fontSize = 18.sp,
+                        fontSize = 17.sp,
                         color = OnBackground,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
@@ -93,7 +94,7 @@ fun ProductCard(
 
                     Text(
                         text = productSummaryText,
-                        style = bodyLarge,
+                        style = bodyMedium,
                         color = Color.Gray,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis

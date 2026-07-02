@@ -125,7 +125,7 @@ fun BookingServicesScreen(
                     EmptyScreen(
                         modifier = Modifier.padding(top = 50.dp),
                         arrangement = Arrangement.Top,
-                        message = "Nu s-au găsit servicii disponibile pentru acest business.",
+                        message = stringResource(R.string.notFoundServices),
                         icon = painterResource(R.drawable.ic_shopping_outline)
                     )
                 } else {
