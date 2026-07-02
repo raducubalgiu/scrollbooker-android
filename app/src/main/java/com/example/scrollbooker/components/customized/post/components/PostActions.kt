@@ -1,6 +1,7 @@
 package com.example.scrollbooker.components.customized.post.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
@@ -40,16 +41,20 @@ fun PostActions(
         if(isVideoReview) {
             Avatar(
                 url = user.avatar ?: "",
-                size = 55.dp,
+                size = 50.dp,
                 onClick = onNavigateToUser
             )
         } else {
             AvatarWithRating(
                 url = user.avatar ?: "",
                 rating = user.ratingsAverage,
-                size = 55.dp,
+                size = 50.dp,
                 badgeBackgroundColor = BackgroundLight,
-                onClick = onNavigateToUser
+                onClick = onNavigateToUser,
+                badgePadding = PaddingValues(
+                    horizontal = 6.dp,
+                    vertical = 4.5.dp
+                )
             )
         }
 

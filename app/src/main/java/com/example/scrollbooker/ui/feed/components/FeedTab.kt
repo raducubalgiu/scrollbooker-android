@@ -23,7 +23,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.ui.theme.Primary
 
@@ -44,7 +43,7 @@ fun FeedTab(
         .clip(shape = ShapeDefaults.ExtraLarge)
         .background(if (isSelected) Primary.copy(alpha = 0.6f) else Color.Transparent)
         .padding(
-            vertical = 9.dp,
+            vertical = 7.dp,
             horizontal = SpacingS
         )
         .clickable(
@@ -58,11 +57,8 @@ fun FeedTab(
             modifier = Modifier.scale(animatedScale),
             text = title,
             color = if (isSelected) Color.White else Color.White.copy(0.9f),
-            fontWeight = FontWeight.Bold,
+            fontWeight = if(isSelected) FontWeight.Bold else FontWeight.SemiBold,
             style = TextStyle(
-                fontSize = 16.sp,
-                lineHeight = 24.sp,
-                letterSpacing = 0.5.sp,
                 shadow = Shadow(
                     color = Color.Black.copy(alpha = 0.8f),
                     offset = Offset(2f, 2f),

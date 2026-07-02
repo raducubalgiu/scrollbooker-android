@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ListItem
@@ -68,7 +68,8 @@ fun FeedSearchScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(Background)
-            .safeDrawingPadding()
+            .padding(top = 6.dp)
+            .statusBarsPadding()
     ) {
         FeedSearchHeader(
             value = currentSearch,
@@ -122,14 +123,14 @@ fun FeedSearchScreen(
                                     AvatarWithRating(
                                         url = user.avatar ?: "",
                                         rating = user.ratingsAverage,
-                                        size = 55.dp,
+                                        size = 52.5.dp,
                                         elevation = 2.dp,
                                         onClick = {}
                                     )
                                 } else {
                                     Avatar(
                                         url = user.avatar ?: "",
-                                        size = 55.dp
+                                        size = 52.5.dp
                                     )
                                 }
                             },

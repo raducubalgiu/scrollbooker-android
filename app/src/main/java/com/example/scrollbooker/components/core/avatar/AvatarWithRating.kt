@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.offset
@@ -43,6 +44,10 @@ fun AvatarWithRating(
     size: Dp = 75.dp,
     elevation: Dp = 1.dp,
     badgeBackgroundColor: Color? = null,
+    badgePadding: PaddingValues = PaddingValues(
+        horizontal = 8.dp,
+        vertical = 6.dp
+    ),
     onClick: () -> Unit
 ) {
     val isSystemInDarkMode = isSystemInDarkTheme()
@@ -84,13 +89,13 @@ fun AvatarWithRating(
                     color = resolvedBadgeColor,
                     shape = RoundedCornerShape(15.dp)
                 )
-                .padding(horizontal = 8.dp, vertical = 6.dp)
+                .padding(badgePadding)
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_star_solid),
                 contentDescription = "Rating",
                 tint = Rating,
-                modifier = Modifier.size(17.dp)
+                modifier = Modifier.size(16.dp)
             )
             Spacer(Modifier.width(2.dp))
             Text(
