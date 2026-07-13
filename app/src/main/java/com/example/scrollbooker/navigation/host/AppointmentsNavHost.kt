@@ -22,7 +22,7 @@ fun AppointmentsNavHost(navController: NavHostController) {
 
     NavHost(
         navController = navController,
-        startDestination = MainRoute.AppointmentsNavigator.route,
+        startDestination = MainRoute.Appointments.route,
         enterTransition = { slideInFromRight() },
         exitTransition = { slideOutToLeft() },
         popEnterTransition = { slideInFromLeft() },

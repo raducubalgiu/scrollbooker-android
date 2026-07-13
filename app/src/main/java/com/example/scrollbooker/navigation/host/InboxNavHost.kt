@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.example.scrollbooker.navigation.graphs.appointmentsGraph
 import com.example.scrollbooker.navigation.graphs.bookingGraph
 import com.example.scrollbooker.navigation.graphs.socialGraph
 import com.example.scrollbooker.navigation.graphs.userProfileGraph
@@ -88,7 +89,7 @@ fun InboxNavHost(navController: NavHostController) {
 
                             denied.onSuccess {
                                 navController.navigate(MainRoute.Inbox.route) {
-                                    popUpTo(MainRoute.AppointmentsNavigator.route) {
+                                    popUpTo(MainRoute.Appointments.route) {
                                         inclusive = true
                                     }
                                 }
@@ -113,7 +114,7 @@ fun InboxNavHost(navController: NavHostController) {
 
                             accepted.onSuccess {
                                 navController.navigate(MainRoute.Inbox.route) {
-                                    popUpTo(MainRoute.AppointmentsNavigator.route) {
+                                    popUpTo(MainRoute.Appointments.route) {
                                         inclusive = true
                                     }
                                 }
@@ -124,6 +125,7 @@ fun InboxNavHost(navController: NavHostController) {
             }
         }
 
+        appointmentsGraph(navController)
         userProfileGraph(navController, profileNavigate)
         socialGraph(navController, profileNavigate)
         bookingGraph(navController, bookingNavigate)

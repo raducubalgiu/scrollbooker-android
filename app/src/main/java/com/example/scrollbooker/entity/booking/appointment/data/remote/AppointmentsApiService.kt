@@ -19,6 +19,11 @@ interface AppointmentsApiService {
     @GET("appointments/count")
     suspend fun getUserAppointmentsNumber(): Int
 
+    @GET("appointments/{appointmentId}")
+    suspend fun getAppointmentById(
+        @Path("appointmentId") appointmentId: Int
+    ): AppointmentDto
+
     @POST("appointments/create-scrollbooker-appointment")
     suspend fun createScrollBookerAppointment(
         @Body request: AppointmentScrollBookerCreateDto

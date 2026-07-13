@@ -23,7 +23,7 @@ import com.example.scrollbooker.ui.theme.Divider
 @Composable
 fun AppointmentsList(
     appointments: LazyPagingItems<Appointment>,
-    onNavigateToAppointmentDetails: (Appointment) -> Unit,
+    onNavigateToAppointmentDetails: (appointmentId: Int) -> Unit,
     isRefreshing: Boolean,
     onRefresh: () -> Unit
 ) {

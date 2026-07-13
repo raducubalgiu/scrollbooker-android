@@ -1,112 +1,67 @@
 package com.example.scrollbooker.navigation.graphs
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigation
+import androidx.navigation.navArgument
 import com.example.scrollbooker.core.extensions.isInRoute
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
-import com.example.scrollbooker.ui.LocalBottomBarController
-import com.example.scrollbooker.ui.appointments.AppointmentCancelScreen
 import com.example.scrollbooker.ui.appointments.AppointmentDetailsScreen
+import com.example.scrollbooker.ui.appointments.AppointmentDetailsViewModel
 import com.example.scrollbooker.ui.appointments.AppointmentsScreen
 import com.example.scrollbooker.ui.appointments.AppointmentsViewModel
-import kotlinx.coroutines.launch
-import timber.log.Timber
 
 fun NavGraphBuilder.appointmentsGraph(
     navController: NavHostController
 ) {
-    navigation(
-        route = MainRoute.AppointmentsNavigator.route,
-        startDestination = MainRoute.Appointments.route
+    composable(route = MainRoute.Appointments.route) {
+        val viewModel = hiltViewModel<AppointmentsViewModel>()
+
+        AppointmentsScreen(
+            viewModel = viewModel,
+            onNavigateToAppointmentDetails = { appointmentId ->
+                navController.navigate("${MainRoute.AppointmentDetails.route}/$appointmentId")
+            }
+        )
+    }
+
+    composable(
+        route = "${MainRoute.AppointmentDetails.route}/{appointmentId}",
+        arguments = listOf(
+            navArgument("appointmentId") { type = NavType.IntType }
+        ),
+        exitTransition = {
+            if (targetState.isInRoute(MainRoute.Camera.route)) {
+                ExitTransition.None
+            } else {
+                slideOutToLeft()
+            }
+        },
+        popEnterTransition = {
+            if (initialState.isInRoute(MainRoute.Camera.route)) {
+                EnterTransition.None
+            } else {
+                slideInFromLeft()
+            }
+        },
+        enterTransition = { slideInFromRight() },
+        popExitTransition = { slideOutToRight() },
     ) {
-        composable(
-            route = MainRoute.Appointments.route
-        ) { backStackEntry ->
-            val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(MainRoute.AppointmentsNavigator.route)
+        val viewModel = hiltViewModel<AppointmentDetailsViewModel>()
+
+        AppointmentDetailsScreen(
+            viewModel = viewModel,
+            onBack = { navController.popBackStack() },
+            onNavigateToCamera = {
+                navController.navigate(MainRoute.Camera.route)
             }
-
-            val viewModel = hiltViewModel<AppointmentsViewModel>(parentEntry)
-
-            AppointmentsScreen(
-                viewModel = viewModel,
-                onNavigateToAppointmentDetails = {
-                    viewModel.setAppointment(it)
-                    navController.navigate(MainRoute.AppointmentDetails.route)
-                }
-            )
-        }
-
-        composable(
-            route = MainRoute.AppointmentDetails.route,
-            exitTransition = {
-                if (targetState.isInRoute(MainRoute.Camera.route)) {
-                    ExitTransition.None
-                } else {
-                    slideOutToLeft()
-                }
-            },
-            popEnterTransition = {
-                if (initialState.isInRoute(MainRoute.Camera.route)) {
-                    EnterTransition.None
-                } else {
-                    slideInFromLeft()
-                }
-            },
-            enterTransition = { slideInFromRight() },
-            popExitTransition = { slideOutToRight() }
-        ) { backStackEntry ->
-            val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(MainRoute.AppointmentsNavigator.route)
-            }
-            val viewModel = hiltViewModel<AppointmentsViewModel>(parentEntry)
-
-            AppointmentDetailsScreen(
-                viewModel = viewModel,
-                onBack = { navController.popBackStack() },
-                onNavigateToCancel = { navController.navigate(MainRoute.AppointmentCancel.route) },
-                onNavigateToCamera = { navController.navigate(MainRoute.Camera.route) }
-            )
-        }
-
-        composable(
-            route = MainRoute.AppointmentCancel.route
-        ) { backStackEntry ->
-            val bottom = LocalBottomBarController.current
-
-            val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(MainRoute.AppointmentsNavigator.route)
-            }
-            val viewModel = hiltViewModel<AppointmentsViewModel>(parentEntry)
-
-            AppointmentCancelScreen(
-                viewModel = viewModel,
-                onBack = { navController.popBackStack() },
-                onCancelAppointment = { appointmentId, canceledReason ->
-                    navController.currentBackStackEntry?.lifecycleScope?.launch {
-                        val result = viewModel.cancelAppointment(appointmentId, canceledReason)
-
-                        result
-                            .onSuccess {
-                                bottom.decAppointments()
-                                navController.popBackStack()
-                            }
-                            .onFailure { e ->
-                                Timber.tag("Appointment").e("ERROR: onCreating Appointment $e")
-                            }
-                    }
-                }
-            )
-        }
+        )
     }
 }

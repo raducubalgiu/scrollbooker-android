@@ -2,6 +2,7 @@ package com.example.scrollbooker.entity.booking.appointment.data.repository
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.example.scrollbooker.entity.booking.appointment.data.mappers.toDomain
 import com.example.scrollbooker.entity.booking.appointment.data.mappers.toDto
 import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentBlockRequest
 import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentCancelRequest
@@ -42,6 +43,10 @@ class AppointmentRepositoryImpl @Inject constructor(
 
     override suspend fun getUserAppointmentsNumber(): Int {
         return apiService.getUserAppointmentsNumber()
+    }
+
+    override suspend fun getAppointmentById(appointmentId: Int): Appointment {
+        return apiService.getAppointmentById(appointmentId).toDomain()
     }
 
     override suspend fun cancelAppointment(

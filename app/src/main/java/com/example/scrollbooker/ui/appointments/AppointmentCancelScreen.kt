@@ -53,99 +53,99 @@ fun AppointmentCancelScreen(
     onBack: () -> Unit,
     onCancelAppointment: (appointmentId: Int, canceledReason: String) -> Unit
 ) {
-    val appointment by viewModel.selectedAppointment.collectAsState()
-    val isSaving by viewModel.isSaving.collectAsState()
-    val reasons = AppointmentCancelReason.entries.toList()
-
-    var message by rememberSaveable { mutableStateOf("") }
-    var selectedReason by rememberSaveable { mutableStateOf(AppointmentCancelReason.OTHER) }
-
-    val context = LocalContext.current
-
-    val maxLength = 100
-    val checkMessage = checkLength(LocalContext.current, maxLength = maxLength, field = message)
-    val isMessageValid = checkMessage.isNullOrEmpty()
-
-    val isOtherReason = selectedReason == AppointmentCancelReason.OTHER
-
-    Scaffold(
-        topBar = {
-            Header(
-                title = stringResource(R.string.cancelAppointment),
-                onBack = onBack
-            )
-        },
-        bottomBar = {
-            HorizontalDivider(
-                color = Divider,
-                thickness = 0.55.dp
-            )
-            Column {
-                HorizontalDivider(color = Divider, thickness = 0.55.dp)
-                MainButton(
-                    modifier = Modifier.padding(BasePadding).navigationBarsPadding(),
-                    title = stringResource(R.string.cancelAppointment),
-                    enabled = (message.isNotEmpty() || !isOtherReason) && isMessageValid && !isSaving,
-                    isLoading = isSaving,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Error,
-                        contentColor = OnPrimary
-                    ),
-                    onClick = {
-                        val finalMessage = if (isOtherReason) message else context.getString(selectedReason.toLabel())
-
-                        appointment?.id?.let { id ->
-                            onCancelAppointment(id, finalMessage)
-                        }
-                    }
-                )
-            }
-        }
-    ) { innerPadding ->
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding)
-        ) {
-            LazyColumn(Modifier.weight(1f)) {
-                itemsIndexed(reasons) { index, reason ->
-                    InputRadio(
-                        selected = reason == selectedReason,
-                        onSelect = {
-                            selectedReason = reason
-
-                            if(reason in reasons) {
-                                message = ""
-                            }
-                        },
-                        headLine = stringResource(reason.toLabel())
-                    )
-
-                    if(index < reasons.size) {
-                        HorizontalDivider(
-                            modifier = Modifier.padding(horizontal = SpacingXL),
-                            color = Divider,
-                            thickness = 0.55.dp
-                        )
-                    }
-                }
-
-                item {
-                    AnimatedVisibility(isOtherReason) {
-                        EditInput(
-                            modifier = Modifier.padding(horizontal = BasePadding),
-                            value = message,
-                            onValueChange = { message = it },
-                            singleLine = false,
-                            placeholder = stringResource(R.string.writeCancelReason),
-                            minLines = 5,
-                            maxLines = 5,
-                            maxLength = maxLength,
-                            isEnabled = selectedReason == AppointmentCancelReason.OTHER && !isSaving,
-                            errorMessage = checkMessage.toString(),
-                        )
-                    }
-                }
-            }
-        }
-    }
+//    val appointment by viewModel.selectedAppointment.collectAsState()
+//    val isSaving by viewModel.isSaving.collectAsState()
+//    val reasons = AppointmentCancelReason.entries.toList()
+//
+//    var message by rememberSaveable { mutableStateOf("") }
+//    var selectedReason by rememberSaveable { mutableStateOf(AppointmentCancelReason.OTHER) }
+//
+//    val context = LocalContext.current
+//
+//    val maxLength = 100
+//    val checkMessage = checkLength(LocalContext.current, maxLength = maxLength, field = message)
+//    val isMessageValid = checkMessage.isNullOrEmpty()
+//
+//    val isOtherReason = selectedReason == AppointmentCancelReason.OTHER
+//
+//    Scaffold(
+//        topBar = {
+//            Header(
+//                title = stringResource(R.string.cancelAppointment),
+//                onBack = onBack
+//            )
+//        },
+//        bottomBar = {
+//            HorizontalDivider(
+//                color = Divider,
+//                thickness = 0.55.dp
+//            )
+//            Column {
+//                HorizontalDivider(color = Divider, thickness = 0.55.dp)
+//                MainButton(
+//                    modifier = Modifier.padding(BasePadding).navigationBarsPadding(),
+//                    title = stringResource(R.string.cancelAppointment),
+//                    enabled = (message.isNotEmpty() || !isOtherReason) && isMessageValid && !isSaving,
+//                    isLoading = isSaving,
+//                    colors = ButtonDefaults.buttonColors(
+//                        containerColor = Error,
+//                        contentColor = OnPrimary
+//                    ),
+//                    onClick = {
+//                        val finalMessage = if (isOtherReason) message else context.getString(selectedReason.toLabel())
+//
+//                        appointment?.id?.let { id ->
+//                            onCancelAppointment(id, finalMessage)
+//                        }
+//                    }
+//                )
+//            }
+//        }
+//    ) { innerPadding ->
+//        Column(modifier = Modifier
+//            .fillMaxSize()
+//            .padding(innerPadding)
+//        ) {
+//            LazyColumn(Modifier.weight(1f)) {
+//                itemsIndexed(reasons) { index, reason ->
+//                    InputRadio(
+//                        selected = reason == selectedReason,
+//                        onSelect = {
+//                            selectedReason = reason
+//
+//                            if(reason in reasons) {
+//                                message = ""
+//                            }
+//                        },
+//                        headLine = stringResource(reason.toLabel())
+//                    )
+//
+//                    if(index < reasons.size) {
+//                        HorizontalDivider(
+//                            modifier = Modifier.padding(horizontal = SpacingXL),
+//                            color = Divider,
+//                            thickness = 0.55.dp
+//                        )
+//                    }
+//                }
+//
+//                item {
+//                    AnimatedVisibility(isOtherReason) {
+//                        EditInput(
+//                            modifier = Modifier.padding(horizontal = BasePadding),
+//                            value = message,
+//                            onValueChange = { message = it },
+//                            singleLine = false,
+//                            placeholder = stringResource(R.string.writeCancelReason),
+//                            minLines = 5,
+//                            maxLines = 5,
+//                            maxLength = maxLength,
+//                            isEnabled = selectedReason == AppointmentCancelReason.OTHER && !isSaving,
+//                            errorMessage = checkMessage.toString(),
+//                        )
+//                    }
+//                }
+//            }
+//        }
+//    }
 }

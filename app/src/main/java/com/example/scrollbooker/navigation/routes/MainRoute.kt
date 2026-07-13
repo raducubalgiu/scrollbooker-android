@@ -27,10 +27,9 @@ sealed class MainRoute(val route: String) {
     object BookingDateTime: MainRoute(route = "bookingDateTime")
     object BookingConfirmation: MainRoute(route = "bookingConfirmation")
 
-    object AppointmentsNavigator: MainRoute(route = "appointmentsNavigator")
     object Appointments: MainRoute(route = "appointments")
     object AppointmentDetails: MainRoute(route = "appointmentDetails")
-    object AppointmentCancel: MainRoute(route = "appointmentCancel")
+    //object AppointmentCancel: MainRoute(route = "appointmentCancel")
 
     object ProfileNavigator: MainRoute(route = "profileNavigator")
 

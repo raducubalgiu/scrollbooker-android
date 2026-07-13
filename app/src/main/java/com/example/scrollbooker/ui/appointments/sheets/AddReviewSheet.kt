@@ -21,13 +21,13 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentUser
 import com.example.scrollbooker.entity.booking.review.data.remote.ReviewLabel
-import com.example.scrollbooker.ui.appointments.AppointmentsViewModel
+import com.example.scrollbooker.ui.appointments.AppointmentDetailsViewModel
 import com.example.scrollbooker.ui.appointments.RatingReviewUpdate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddReviewSheet(
-    viewModel: AppointmentsViewModel,
+    viewModel: AppointmentDetailsViewModel,
     sheetState: SheetState,
     user: AppointmentUser,
     isSaving: Boolean,

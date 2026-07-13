@@ -39,14 +39,14 @@ import com.example.scrollbooker.ui.theme.titleMedium
 @Composable
 fun AppointmentCard(
     appointment: Appointment,
-    navigateToAppointmentDetails: (Appointment) -> Unit
+    navigateToAppointmentDetails: (appointmentId: Int) -> Unit
 ) {
     Column(modifier = Modifier
         .fillMaxWidth()
         .clickable(
             interactionSource = remember { MutableInteractionSource() },
             indication = null,
-            onClick = { navigateToAppointmentDetails(appointment) }
+            onClick = { navigateToAppointmentDetails(appointment.id) }
         )
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {

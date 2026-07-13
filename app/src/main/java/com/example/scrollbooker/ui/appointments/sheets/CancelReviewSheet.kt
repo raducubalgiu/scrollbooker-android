@@ -16,14 +16,14 @@ import com.example.scrollbooker.components.core.sheet.Sheet
 import com.example.scrollbooker.components.core.sheet.SheetHeader
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.ui.appointments.AppointmentsViewModel
 import com.example.scrollbooker.ui.theme.Error
 import androidx.compose.runtime.getValue
+import com.example.scrollbooker.ui.appointments.AppointmentDetailsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CancelReviewSheet(
-    viewModel: AppointmentsViewModel,
+    viewModel: AppointmentDetailsViewModel,
     sheetState: SheetState,
     isLoadingDelete: Boolean,
     onClose: () -> Unit,

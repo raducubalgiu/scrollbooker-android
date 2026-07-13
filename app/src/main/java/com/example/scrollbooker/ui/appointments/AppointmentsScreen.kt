@@ -17,17 +17,15 @@ import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.core.layout.MessageScreen
-import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointment
 import com.example.scrollbooker.ui.appointments.components.AppointmentsList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppointmentsScreen(
     viewModel: AppointmentsViewModel,
-    onNavigateToAppointmentDetails: (Appointment) -> Unit
+    onNavigateToAppointmentDetails: (appointmentId: Int) -> Unit
 ) {
     val appointments = viewModel.appointments.collectAsLazyPagingItems()
-
     val isRefreshing = appointments.loadState.refresh is LoadState.Loading
 
     val refreshState = appointments.loadState.refresh
