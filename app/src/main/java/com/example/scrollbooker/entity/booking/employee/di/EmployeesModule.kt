@@ -4,6 +4,7 @@ import com.example.scrollbooker.BuildConfig
 import com.example.scrollbooker.entity.booking.employee.data.remote.EmployeesApiService
 import com.example.scrollbooker.entity.booking.employee.data.repository.EmployeesRepositoryImpl
 import com.example.scrollbooker.entity.booking.employee.domain.repository.EmployeesRepository
+import com.example.scrollbooker.entity.booking.employee.domain.useCase.GetAllEmployeesByOwnerUseCase
 import com.example.scrollbooker.entity.booking.employee.domain.useCase.GetEmployeesByOwnerUseCase
 import dagger.Module
 import dagger.Provides
@@ -40,5 +41,13 @@ object EmployeesModule {
         repository: EmployeesRepository,
     ): GetEmployeesByOwnerUseCase {
         return GetEmployeesByOwnerUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetAllEmployeesByOwnerUseCase(
+        repository: EmployeesRepository,
+    ): GetAllEmployeesByOwnerUseCase {
+        return GetAllEmployeesByOwnerUseCase(repository)
     }
 }

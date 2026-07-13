@@ -6,4 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface EmployeesRepository {
     fun getEmployeesByOwnerId(ownerId: Int): Flow<PagingData<Employee>>
+    suspend fun getAllEmployeesByOwnerId(ownerId: Int): List<Employee>
 }

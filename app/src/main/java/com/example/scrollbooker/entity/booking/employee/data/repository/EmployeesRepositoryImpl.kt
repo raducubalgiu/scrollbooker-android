@@ -2,6 +2,7 @@ package com.example.scrollbooker.entity.booking.employee.data.repository
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.example.scrollbooker.entity.booking.employee.data.mappers.toDomain
 import com.example.scrollbooker.entity.booking.employee.data.remote.EmployeesApiService
 import com.example.scrollbooker.entity.booking.employee.data.remote.EmployeesByOwnerPagingSource
 import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
@@ -20,5 +21,9 @@ class EmployeesRepositoryImpl @Inject constructor(
             ),
             pagingSourceFactory = { EmployeesByOwnerPagingSource(api, ownerId) }
         ).flow
+    }
+
+    override suspend fun getAllEmployeesByOwnerId(ownerId: Int): List<Employee> {
+        return api.getAllEmployeesByOwner(ownerId).map { it.toDomain() }
     }
 }
