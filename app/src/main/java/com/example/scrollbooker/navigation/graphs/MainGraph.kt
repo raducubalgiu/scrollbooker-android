@@ -16,6 +16,8 @@ import com.example.scrollbooker.ui.MainUIViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -88,17 +90,30 @@ fun NavGraphBuilder.mainGraph(onLogout: () -> Unit) {
                 ) {
                     composable(MainRoute.Tabs.route) {
                         Box(modifier = Modifier.fillMaxSize()) {
+                            val isSearchActive = currentTab is MainTab.Search
                             val searchNavHostController = navControllers[MainTab.Search]!!
-
                             val searchNavigate = remember(searchNavHostController) {
                                 SearchNavigator(searchNavHostController)
                             }
 
-                            SearchScreen(
-                                viewModel = searchViewModel,
-                                isSearchTab = currentTab is MainTab.Search,
-                                searchNavigate = searchNavigate,
-                            )
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .graphicsLayer {
+                                        alpha = if (isSearchActive) 1f else 0f
+                                    }
+                                    .pointerInput(isSearchActive) {
+                                        if (!isSearchActive) {
+                                            return@pointerInput
+                                        }
+                                    }
+                            ) {
+                                SearchScreen(
+                                    viewModel = searchViewModel,
+                                    isSearchTab = isSearchActive,
+                                    searchNavigate = searchNavigate,
+                                )
+                            }
 
                             saveableStateHolder.SaveableStateProvider(currentTab.route) {
                                 when (currentTab) {
