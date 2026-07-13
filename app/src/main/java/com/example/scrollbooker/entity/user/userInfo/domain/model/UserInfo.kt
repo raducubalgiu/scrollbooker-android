@@ -1,5 +1,7 @@
 package com.example.scrollbooker.entity.user.userInfo.domain.model
 
+import com.example.scrollbooker.core.enums.RegistrationStepEnum
+
 data class UserInfo(
     val id: Int,
     val username: String,

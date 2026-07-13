@@ -1,4 +1,4 @@
-package com.example.scrollbooker.entity.user.userInfo.domain.model
+package com.example.scrollbooker.core.enums
 
 enum class RegistrationStepEnum(val key: String) {
     // Shared
