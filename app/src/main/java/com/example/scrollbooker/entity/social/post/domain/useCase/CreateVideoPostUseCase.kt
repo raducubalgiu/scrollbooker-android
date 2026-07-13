@@ -17,7 +17,7 @@ class CreateVideoPostUseCase @Inject constructor(
     private val postsRepository: PostRepository,
     private val context: Context
 ) {
-    private val MAX_VIDEO_DURATION_MS = 30_000L
+    private val MAX_VIDEO_DURATION_MS = 60_000L
 
     suspend operator fun invoke(
         videoUri: Uri,
@@ -40,7 +40,7 @@ class CreateVideoPostUseCase @Inject constructor(
             }
 
             val direct = cloudflareRepository.getUploadUrl(
-                CloudflareDirectUploadRequest(maxDurationSeconds = 30)
+                CloudflareDirectUploadRequest()
             )
 
             cloudflareRepository.uploadVideo(

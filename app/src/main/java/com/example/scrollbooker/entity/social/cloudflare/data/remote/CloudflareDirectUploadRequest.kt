@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class CloudflareDirectUploadRequest(
     @SerializedName("max_duration_seconds")
-    val maxDurationSeconds: Int = 120,
+    val maxDurationSeconds: Int = 60,
 
     @SerializedName("expiry_seconds")
     val expirySeconds: Int = 600,
