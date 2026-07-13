@@ -82,11 +82,15 @@ fun Input(
                 onValueChange(newValue)
             }
         },
-        label = {
-            Text(
-                text = label,
-                style = labelLarge
-            )
+        label = if (label.isNotEmpty()) {
+            {
+                Text(
+                    text = label,
+                    style = labelLarge
+                )
+            }
+        } else {
+            null
         },
         leadingIcon = leadingIcon,
         trailingIcon = trailingIcon,

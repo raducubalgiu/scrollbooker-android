@@ -26,8 +26,8 @@ import com.example.scrollbooker.ui.myBusiness.myEmployees.MyEmployeesScreen
 import com.example.scrollbooker.ui.myBusiness.myEmployees.tabs.employmentRequestsTab.EmploymentAcceptTermsScreen
 import com.example.scrollbooker.ui.myBusiness.myEmployees.tabs.employmentRequestsTab.EmploymentAssignJobScreen
 import com.example.scrollbooker.ui.myBusiness.myEmployees.tabs.employmentRequestsTab.EmploymentSelectEmployeeScreen
-import com.example.scrollbooker.ui.myBusiness.myProducts.AddProductScreen
-import com.example.scrollbooker.ui.myBusiness.myProducts.AddProductsViewModel
+import com.example.scrollbooker.ui.myBusiness.myProducts.AddProduct.AddProductScreen
+import com.example.scrollbooker.ui.myBusiness.myProducts.AddProduct.AddProductsViewModel
 import com.example.scrollbooker.ui.myBusiness.myProducts.EditProductScreen
 import com.example.scrollbooker.ui.myBusiness.myProducts.EditProductsViewModel
 import com.example.scrollbooker.ui.myBusiness.myProducts.MyProductsScreen
@@ -220,18 +220,12 @@ fun NavGraphBuilder.myBusinessGraph(
                         navController.navigate("${MainRoute.EditProduct.route}/$serviceDomainId/$productId")
                     },
                     onNavigateAddProduct = {
-
+                        navController.navigate(MainRoute.AddProduct.route)
                     },
                 )
             }
 
-            composable(
-                route = "${MainRoute.AddProduct.route}/{serviceDomainId}/{serviceId}",
-                arguments = listOf(
-                    navArgument("serviceDomainId") { type = NavType.IntType },
-                    navArgument("serviceId") { type = NavType.IntType }
-                )
-            ) { backStackEntry ->
+            composable(route = MainRoute.AddProduct.route) { backStackEntry ->
                 val parentEntry = remember(backStackEntry) {
                     navController.getBackStackEntry(MainRoute.MyProductsNavigator.route)
                 }

@@ -46,25 +46,25 @@ import com.example.scrollbooker.ui.theme.labelLarge
 //    val selectedFilters: SelectedFilters,
 //)
 
-@Immutable
-data class ProductInputsActions(
-    val onSetServiceDomainId: (String) -> Unit,
-    val onSetServiceId: (String) -> Unit,
-    val onSetProductType: (ProductTypeEnum) -> Unit,
-    val onSetSessionsCount: (String) -> Unit,
-    val onSetValidityDays: (String) -> Unit,
-    val onSetName: (String) -> Unit,
-    val onSetDescription: (String) -> Unit,
-    val onSetDuration: (String) -> Unit,
-    val onSetPrice: (String) -> Unit,
-    val onSetDiscount: (String) -> Unit,
-    val onSetCanBeBooked: (Boolean) -> Unit,
-)
+//@Immutable
+//data class ProductInputsActions(
+//    val onSetServiceDomainId: (String) -> Unit,
+//    val onSetServiceId: (String) -> Unit,
+//    val onSetProductType: (ProductTypeEnum) -> Unit,
+//    val onSetSessionsCount: (String) -> Unit,
+//    val onSetValidityDays: (String) -> Unit,
+//    val onSetName: (String) -> Unit,
+//    val onSetDescription: (String) -> Unit,
+//    val onSetDuration: (String) -> Unit,
+//    val onSetPrice: (String) -> Unit,
+//    val onSetDiscount: (String) -> Unit,
+//    val onSetCanBeBooked: (Boolean) -> Unit,
+//)
 
 @Composable
 fun ProductInputs(
     //state: ProductInputsState,
-    actions: ProductInputsActions,
+    //actions: ProductInputsActions,
 ) {
 //    val context = LocalContext.current
 //

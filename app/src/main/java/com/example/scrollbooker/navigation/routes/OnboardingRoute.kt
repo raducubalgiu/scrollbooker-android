@@ -1,6 +1,6 @@
 package com.example.scrollbooker.navigation.routes
 
-import com.example.scrollbooker.entity.user.userInfo.domain.model.RegistrationStepEnum
+import com.example.scrollbooker.core.enums.RegistrationStepEnum
 
 sealed class OnboardingRoute(val route: String) {
     object CollectEmailVerification: AuthRoute(route = RegistrationStepEnum.COLLECT_USER_EMAIL_VALIDATION.key)
