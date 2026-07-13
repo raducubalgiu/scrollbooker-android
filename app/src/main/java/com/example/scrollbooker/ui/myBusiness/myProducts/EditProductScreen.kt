@@ -30,9 +30,9 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.ui.myBusiness.myProducts.components.AddProductValidation
+import com.example.scrollbooker.ui.myBusiness.myProducts.AddProduct.AddProductValidation
+import com.example.scrollbooker.ui.myBusiness.myProducts.AddProduct.ProductInputsActions
 import com.example.scrollbooker.ui.myBusiness.myProducts.components.FiltersActions
-import com.example.scrollbooker.ui.myBusiness.myProducts.components.ProductInputsActions
 import com.example.scrollbooker.ui.theme.Divider
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -148,8 +148,6 @@ private fun rememberProductInputsActions(
             onSetName = viewModel::setName,
             onSetDescription = viewModel::setDescription,
             onSetDuration = viewModel::setDuration,
-            onSetPrice = viewModel::setPrice,
-            onSetDiscount = viewModel::setDiscount,
             onSetCanBeBooked = viewModel::setCanBeBooked
         )
     }

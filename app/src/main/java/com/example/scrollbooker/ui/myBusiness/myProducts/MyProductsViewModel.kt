@@ -9,6 +9,7 @@ import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.products.domain.model.UserProducts
 import com.example.scrollbooker.entity.booking.products.domain.useCase.DeleteProductUseCase
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByBusinessIdAndEmployeeIdUseCase
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.useCase.GetSelectedServiceDomainsWithServicesByBusinessIdUseCase
 
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,6 +22,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
@@ -31,6 +34,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MyProductsViewModel @Inject constructor(
     private val getProductsByBusinessIdAndEmployeeIdUseCase: GetProductsByBusinessIdAndEmployeeIdUseCase,
+    private val getSelectedServiceDomainsWithServicesByBusinessIdUseCase: GetSelectedServiceDomainsWithServicesByBusinessIdUseCase,
     private val deleteProductUseCase: DeleteProductUseCase,
     authDataStore: AuthDataStore,
 ): ViewModel() {
@@ -56,6 +60,26 @@ class MyProductsViewModel @Inject constructor(
 
     private val _isSaving = MutableStateFlow<Boolean>(false)
     val isSaving: StateFlow<Boolean> = _isSaving.asStateFlow()
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val selectedServices = authDataStore.getBusinessId()
+        .filterNotNull()
+        .distinctUntilChanged()
+        .flatMapLatest { businessId ->
+            flow {
+                emit(FeatureState.Loading)
+
+                val result = withVisibleLoading {
+                    getSelectedServiceDomainsWithServicesByBusinessIdUseCase(businessId)
+                }
+                emit(result)
+            }
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = FeatureState.Loading
+        )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val productsState: StateFlow<FeatureState<UserProducts>> = combine(

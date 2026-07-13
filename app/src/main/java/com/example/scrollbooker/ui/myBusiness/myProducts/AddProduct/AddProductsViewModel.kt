@@ -1,46 +1,43 @@
-package com.example.scrollbooker.ui.myBusiness.myProducts
+package com.example.scrollbooker.ui.myBusiness.myProducts.AddProduct
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.scrollbooker.core.enums.FilterTypeEnum
 import com.example.scrollbooker.core.enums.ProductTypeEnum
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
-import com.example.scrollbooker.entity.booking.products.data.remote.AddProductFilterRequest
-import com.example.scrollbooker.entity.booking.products.domain.model.ProductCreate
-import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductByIdUseCase
-import com.example.scrollbooker.entity.booking.products.domain.useCase.UpdateProductUseCase
+import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
+import com.example.scrollbooker.entity.booking.employee.domain.useCase.GetAllEmployeesByOwnerUseCase
+import com.example.scrollbooker.entity.booking.products.domain.useCase.CreateProductUseCase
 import com.example.scrollbooker.store.AuthDataStore
-import com.example.scrollbooker.ui.myBusiness.myProducts.AddProduct.ProductState
-import com.example.scrollbooker.ui.myBusiness.myProducts.components.calculatePriceWithDiscount
+import com.example.scrollbooker.ui.myBusiness.myProducts.FilterSelection
+import com.example.scrollbooker.ui.myBusiness.myProducts.SelectedFilters
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.math.BigDecimal
 import javax.inject.Inject
-import kotlin.collections.plus
 
 @HiltViewModel
-class EditProductsViewModel @Inject constructor(
-    private val getProductByIdUseCase: GetProductByIdUseCase,
-    private val updateProductUseCase: UpdateProductUseCase,
+class AddProductsViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
+    private val getAllEmployeesByOwnerUseCase: GetAllEmployeesByOwnerUseCase,
+    private val createProductUseCase: CreateProductUseCase,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
-    private val serviceDomainId: StateFlow<Int?> = savedStateHandle.getStateFlow("serviceDomainId", null)
-    private val productId: StateFlow<Int?> = savedStateHandle.getStateFlow("productId", null)
-
-    private val _productState = MutableStateFlow<ProductState>(
-        ProductState(serviceDomainId = serviceDomainId.value?.toString().orEmpty())
-    )
+    private val _productState = MutableStateFlow<ProductState>(ProductState())
     val productState: StateFlow<ProductState> = _productState.asStateFlow()
 
     private val _selectedFilters = MutableStateFlow<SelectedFilters>(emptyMap())
@@ -49,76 +46,30 @@ class EditProductsViewModel @Inject constructor(
     private val _isSaving = MutableStateFlow<Boolean>(false)
     val isSaving: StateFlow<Boolean> = _isSaving
 
-    private val _loadingState = MutableStateFlow<FeatureState<Unit>>(FeatureState.Loading)
-    val loadingState: StateFlow<FeatureState<Unit>> = _loadingState.asStateFlow()
+    private val _createSuccessEvent = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+    val createSuccessEvent = _createSuccessEvent.asSharedFlow()
 
-    private val _editSuccessEvent = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
-    val editSuccessEvent = _editSuccessEvent.asSharedFlow()
-
-    init {
-        loadProduct()
-    }
-
-    fun loadProduct() {
-        viewModelScope.launch {
-            val id = productId.value ?: return@launch
-
-            _loadingState.value = FeatureState.Loading
-
-            val result = withVisibleLoading { getProductByIdUseCase(id) }
-
-            when (result) {
-                is FeatureState.Success -> {
-                    val product = result.data
-
-//                    _productState.update { current ->
-//                        current.copy(
-//                            name = product.name,
-//                            description = product.description.orEmpty(),
-//                            price = product.price.toPlainString(),
-//                            priceWithDiscount = product.priceWithDiscount.toPlainString(),
-//                            discount = product.discount.toPlainString(),
-//                            duration = product.duration.toString(),
-//                            serviceId = product.serviceId.toString(),
-//                            canBeBooked = product.canBeBooked,
-//                            type = product.type,
-//                            sessionsCount = product.sessionsCount?.toString().orEmpty(),
-//                            validityDays = product.validityDays?.toString().orEmpty()
-//                        )
-//                    }
-//
-//                    // Map product filters to selectedFilters
-//                    product.filters.forEach { filter ->
-//                        when {
-//                            filter.type?.key == "options" && filter.subFilters.isNotEmpty() -> {
-//                                val subFilterIds = filter.subFilters.map { it.id }.toSet()
-//                                _selectedFilters.update { current ->
-//                                    current + (filter.id to FilterSelection.Options(subFilterIds))
-//                                }
-//                            }
-//                            filter.type?.key == "range" -> {
-//                                _selectedFilters.update { current ->
-//                                    current + (filter.id to FilterSelection.Range(
-//                                        minim = filter.minim,
-//                                        maxim = filter.maxim,
-//                                        isNotApplicable = false
-//                                    ))
-//                                }
-//                            }
-//                        }
-//                    }
-
-                    _loadingState.value = FeatureState.Success(Unit)
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val employees = authDataStore.getBusinessOwnerId()
+        .filterNotNull()
+        .distinctUntilChanged()
+        .flatMapLatest { ownerId ->
+            flow {
+                emit(FeatureState.Loading)
+                try {
+                    val employeeList = withVisibleLoading { getAllEmployeesByOwnerUseCase(ownerId) }
+                    emit(FeatureState.Success(employeeList))
+                } catch (e: Exception) {
+                    Timber.tag("Employees").e(e, "ERROR: on Fetching employees failed")
+                    emit(FeatureState.Error(e))
                 }
-
-                is FeatureState.Error -> {
-                    Timber.tag("EditProduct").e("ERROR: on Loading Product by Id")
-                    _loadingState.value = FeatureState.Error()
-                }
-                else -> Unit
             }
         }
-    }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = FeatureState.Loading
+        )
 
     fun setSingleOption(filterId: Int, subFilterId: Int?) {
         _selectedFilters.update { current ->
@@ -195,6 +146,14 @@ class EditProductsViewModel @Inject constructor(
         _productState.update { current -> current.copy(duration = duration) }
     }
 
+//    fun setPrice(price: String) {
+//        _productState.update { current -> current.copy(price = price) }
+//    }
+//
+//    fun setDiscount(discount: String) {
+//        _productState.update { current -> current.copy(discount = discount) }
+//    }
+
     fun setServiceDomainId(domainId: String) {
         _productState.update { current -> current.copy(serviceDomainId = domainId) }
     }
@@ -207,17 +166,15 @@ class EditProductsViewModel @Inject constructor(
         _productState.update { current -> current.copy(canBeBooked = can) }
     }
 
-    fun editProduct() {
+    fun createProduct() {
 //        viewModelScope.launch {
 //            _isSaving.value = true
-//
-//            val id = productId.value ?: return@launch
 //
 //            val state = _productState.value
 //            val businessId = authDataStore.getBusinessId().firstOrNull()
 //
 //            if(businessId == null) {
-//                throw kotlin.IllegalStateException("Business Id not found in Auth Data Store")
+//                throw IllegalStateException("Business Id not found in Auth Data Store")
 //            }
 //
 //            val priceWithDiscount = calculatePriceWithDiscount(state.price, state.discount)
@@ -257,7 +214,7 @@ class EditProductsViewModel @Inject constructor(
 //            val productType = state.type?.key ?: return@launch
 //
 //            val response = withVisibleLoading {
-//                updateProductUseCase(
+//                createProductUseCase(
 //                    productCreate = ProductCreate(
 //                        name = state.name,
 //                        description = state.description,
@@ -274,18 +231,17 @@ class EditProductsViewModel @Inject constructor(
 //                        canBeBooked = state.canBeBooked
 //                    ),
 //                    serviceDomainId = state.serviceDomainId.toInt(),
-//                    filters = filters,
-//                    productId = id
+//                    filters = filters
 //                )
 //            }
 //
 //            response
 //                .onSuccess { response ->
 //                    _isSaving.value = false
-//                    _editSuccessEvent.tryEmit(Unit)
+//                    _createSuccessEvent.tryEmit(Unit)
 //                }
 //                .onFailure { e ->
-//                    Timber.tag("Update").e(e, "ERROR: on Updating Product")
+//                    Timber.Forest.tag("Create Product").e(e, "ERROR: on Creating Product")
 //                    _isSaving.value = false
 //                }
 //        }
