@@ -51,9 +51,9 @@ fun SegmentedButtons(
                     icon = {},
                     shape = RoundedCornerShape(50),
                     colors = SegmentedButtonDefaults.colors(
-                        activeContainerColor = LastMinute,
-                        activeContentColor = OnPrimary,
-                        activeBorderColor = LastMinute,
+                        activeContainerColor = Background,
+                        activeContentColor = OnBackground,
+                        activeBorderColor = Background,
                         inactiveContainerColor = SurfaceBG,
                         inactiveContentColor = OnSurfaceBG,
                         inactiveBorderColor = SurfaceBG,

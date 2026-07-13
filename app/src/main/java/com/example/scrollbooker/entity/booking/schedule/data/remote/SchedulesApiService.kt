@@ -1,6 +1,4 @@
 package com.example.scrollbooker.entity.booking.schedule.data.remote
-
-import com.example.scrollbooker.entity.auth.data.remote.AuthStateDto
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PUT
