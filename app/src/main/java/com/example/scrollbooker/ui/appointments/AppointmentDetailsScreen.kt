@@ -54,10 +54,12 @@ fun AppointmentDetailsScreen(
     onBack: () -> Unit,
     onNavigateToCamera: () -> Unit
 ) {
+    val isSaving by viewModel.isSaving.collectAsStateWithLifecycle()
+
     val appointmentState by viewModel.appointmentState.collectAsStateWithLifecycle()
     val createReviewState by viewModel.createReviewState.collectAsStateWithLifecycle()
     val deleteReviewState by viewModel.deleteReviewState.collectAsStateWithLifecycle()
-    val isSaving by viewModel.isSaving.collectAsStateWithLifecycle()
+    val cancelAppointmentState by viewModel.cancelAppointmentState.collectAsStateWithLifecycle()
 
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -75,7 +77,7 @@ fun AppointmentDetailsScreen(
         }
     }
 
-    LaunchedEffect(createReviewState, deleteReviewState) {
+    LaunchedEffect(createReviewState, deleteReviewState, cancelAppointmentState) {
         if (createReviewState is FeatureState.Success) {
             closeSheet()
             viewModel.consumeCreateReviewState()
@@ -85,6 +87,11 @@ fun AppointmentDetailsScreen(
             closeSheet()
             viewModel.consumeDeleteReviewState()
         }
+
+        if (cancelAppointmentState is FeatureState.Success) {
+            closeSheet()
+            viewModel.consumeCancelAppointmentState()
+        }
     }
 
     if (sheetContent != AppointmentSheetsContent.None) {
@@ -92,6 +99,9 @@ fun AppointmentDetailsScreen(
             isSaving = isSaving,
             sheetState = sheetState,
             sheetContent = sheetContent,
+            onClose = closeSheet,
+            onCancelAppointment = { viewModel.cancelAppointment(it) },
+            onDeleteReview = { viewModel.deleteReview() },
             onSaveReview = { ratingReviewUpdate ->
                 val reviewId = appointment?.writtenReview?.id
                 if (reviewId != null) {
@@ -100,7 +110,18 @@ fun AppointmentDetailsScreen(
                     viewModel.createReview(ratingReviewUpdate)
                 }
             },
-            onClose = closeSheet
+            onOpenEditReview = {
+                val review = appointment?.writtenReview
+                if (review != null) {
+                    sheetContent = AppointmentSheetsContent.ReviewAppointmentSheet(
+                        reviewUpdate = RatingReviewUpdate(
+                            rating = review.rating,
+                            review = review.review
+                        ),
+                        user = appointment.user
+                    )
+                }
+            },
         )
     }
 
@@ -172,7 +193,10 @@ fun AppointmentDetailsScreen(
                             modifier = Modifier.padding(bottom = SpacingXL),
                             status = a.status,
                             isCustomer = a.isCustomer,
-                            onNavigateToCancel = {}
+                            onNavigateToCancel = {
+                                sheetContent = AppointmentSheetsContent.CancelAppointmentSheet
+                                scope.launch { sheetState.show() }
+                            }
                         )
 
                         if (!a.hasWrittenReview && isFinished && a.isCustomer) {
@@ -198,7 +222,8 @@ fun AppointmentDetailsScreen(
                                 rating = rev.rating,
                                 isCustomer = a.isCustomer,
                                 onOpenCancelSheet = {
-
+                                    sheetContent = AppointmentSheetsContent.ReviewOptions
+                                    scope.launch { sheetState.show() }
                                 }
                             )
                         }
@@ -227,6 +252,7 @@ fun AppointmentDetailsScreen(
                                 )
                             }
                         }
+
                         Spacer(Modifier.height(BasePadding))
                     }
                 }

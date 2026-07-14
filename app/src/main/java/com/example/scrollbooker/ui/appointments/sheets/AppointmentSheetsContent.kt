@@ -1,6 +1,4 @@
 package com.example.scrollbooker.ui.appointments.sheets
-
-import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointment
 import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentUser
 
 sealed class AppointmentSheetsContent {
@@ -8,6 +6,7 @@ sealed class AppointmentSheetsContent {
         val reviewUpdate: RatingReviewUpdate,
         val user: AppointmentUser
     ): AppointmentSheetsContent()
-    data class CancelAppointmentSheet(val appointment: Appointment): AppointmentSheetsContent()
+    object CancelAppointmentSheet: AppointmentSheetsContent()
+    object ReviewOptions: AppointmentSheetsContent()
     object None: AppointmentSheetsContent()
 }

@@ -3,6 +3,7 @@ package com.example.scrollbooker.ui.appointments
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.scrollbooker.core.enums.AppointmentStatusEnum
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointment
@@ -48,6 +49,9 @@ class AppointmentDetailsViewModel @Inject constructor(
     private val _deleteReviewState = MutableStateFlow<FeatureState<Unit>?>(null)
     val deleteReviewState: StateFlow<FeatureState<Unit>?> = _deleteReviewState.asStateFlow()
 
+    private val _cancelAppointmentState = MutableStateFlow<FeatureState<Unit>?>(null)
+    val cancelAppointmentState: StateFlow<FeatureState<Unit>?> = _cancelAppointmentState.asStateFlow()
+
     init {
         fetchAppointmentDetails()
     }
@@ -66,41 +70,54 @@ class AppointmentDetailsViewModel @Inject constructor(
         }
     }
 
-    suspend fun cancelAppointment(
-        appointmentId: Int,
-        canceledReason: String
-    ): Result<Unit> {
-        _isSaving.value = true
+    fun cancelAppointment(canceledReason: String) {
+        viewModelScope.launch {
+            val currentState = _appointmentState.value
+            if (currentState !is FeatureState.Success) {
+                return@launch
+            }
+            val appointment = currentState.data
 
-        val userId = authDataStore.getUserId().firstOrNull()
-            ?: return Result.failure(Exception("User ID not found"))
+            _isSaving.value = true
+            _cancelAppointmentState.value = FeatureState.Loading
 
-        val result = withVisibleLoading {
-            cancelAppointmentUseCase(appointmentId, canceledReason, userId)
+            val userId = authDataStore.getUserId().firstOrNull()
+            if (userId == null) {
+                _isSaving.value = false
+                _cancelAppointmentState.value = FeatureState.Error(Exception("User ID not found"))
+                return@launch
+            }
+
+            val result = withVisibleLoading {
+                cancelAppointmentUseCase(appointment.id, canceledReason, userId)
+            }
+
+            result
+                .onFailure { e ->
+                    _isSaving.value = false
+                    _cancelAppointmentState.value = FeatureState.Error(e)
+                    Timber.tag("Appointments").e(e, "ERROR: on Cancelling Appointment")
+                }
+                .onSuccess {
+                    val latestState = _appointmentState.value
+                    if (latestState is FeatureState.Success) {
+                        val currentAppointment = latestState.data
+
+                        if (currentAppointment.id == appointment.id) {
+                            val updatedAppointment = currentAppointment.copy(
+                                status = AppointmentStatusEnum.CANCELED,
+                                message = canceledReason
+                            )
+                            _appointmentState.value = FeatureState.Success(updatedAppointment)
+                        }
+                    }
+
+                    _isSaving.value = false
+                    _cancelAppointmentState.value = FeatureState.Success(Unit)
+                }
         }
-
-        result
-            .onFailure { e ->
-                Timber.tag("Appointments").e("ERROR: on Cancelling Appointment $e")
-            }
-            .onSuccess {
-//                val currentState = _appointment.value
-//                if (currentState is FeatureState.Success) {
-//                    val currentAppointment = currentState.data
-//
-//                    if (currentAppointment.id == appointmentId) {
-//                        val updatedAppointment = currentAppointment.copy(
-//                            status = AppointmentStatusEnum.CANCELED,
-//                            message = canceledReason
-//                        )
-//                        _appointment.value = FeatureState.Success(updatedAppointment)
-//                    }
-//                }
-            }
-
-        _isSaving.value = false
-        return result
     }
+
 
     fun createReview(reviewUpdate: RatingReviewUpdate) {
         viewModelScope.launch {
@@ -133,7 +150,7 @@ class AppointmentDetailsViewModel @Inject constructor(
                 .onFailure { e ->
                     _isSaving.value = false
                     _createReviewState.value = FeatureState.Error(e)
-                    Timber.tag("Reviews").e("ERROR: on Creating Review $e")
+                    Timber.tag("Reviews").e(e, "ERROR: on Creating Review")
                 }
                 .onSuccess { new ->
                     val latestState = _appointmentState.value
@@ -183,7 +200,7 @@ class AppointmentDetailsViewModel @Inject constructor(
                 .onFailure { e ->
                     _isSaving.value = false
                     _createReviewState.value = FeatureState.Error(e)
-                    Timber.tag("Reviews").e("ERROR: on Updating Review $e")
+                    Timber.tag("Reviews").e(e, "ERROR: on Updating Review")
                 }
                 .onSuccess { update ->
                     val latestState = _appointmentState.value
@@ -209,37 +226,44 @@ class AppointmentDetailsViewModel @Inject constructor(
         }
     }
 
-    fun deleteReview(appointmentId: Int, reviewId: Int) {
+    fun deleteReview() {
         viewModelScope.launch {
+            val currentState = _appointmentState.value
+            if (currentState !is FeatureState.Success) {
+                return@launch
+            }
+            val appointment = currentState.data
+            val reviewId = appointment.writtenReview?.id ?: return@launch
+
             _deleteReviewState.value = FeatureState.Loading
             _isSaving.value = true
 
-            val result = withVisibleLoading { deleteWrittenReviewUseCase(reviewId) }
+            val result = withVisibleLoading {
+                deleteWrittenReviewUseCase(reviewId)
+            }
 
             result
                 .onFailure { e ->
                     _isSaving.value = false
-                    _deleteReviewState.value = FeatureState.Error()
-                    Timber.tag("Reviews").e("ERROR: on Deleting Review $e")
+                    _deleteReviewState.value = FeatureState.Error(e)
+                    Timber.tag("Reviews").e(e, "ERROR: on Deleting Review")
                 }
                 .onSuccess {
-//                    val currentState = _appointment.value
-//
-//                    if (currentState is FeatureState.Success) {
-//                        val currentAppointment = currentState.data
-//
-//                        if (currentAppointment.id == appointmentId) {
-//                            val updatedAppointment = currentAppointment.copy(
-//                                writtenReview = null,
-//                                hasWrittenReview = false
-//                            )
-//
-//                            _appointment.value = FeatureState.Success(updatedAppointment)
-//                        }
-//                    }
-//
-//                    _isSaving.value = false
-//                    _deleteReviewState.value = FeatureState.Success(Unit)
+                    val latestState = _appointmentState.value
+                    if (latestState is FeatureState.Success) {
+                        val currentAppointment = latestState.data
+
+                        if (currentAppointment.id == appointment.id) {
+                            val updatedAppointment = currentAppointment.copy(
+                                writtenReview = null,
+                                hasWrittenReview = false
+                            )
+                            _appointmentState.value = FeatureState.Success(updatedAppointment)
+                        }
+                    }
+
+                    _isSaving.value = false
+                    _deleteReviewState.value = FeatureState.Success(Unit)
                 }
         }
     }
@@ -250,5 +274,9 @@ class AppointmentDetailsViewModel @Inject constructor(
 
     fun consumeDeleteReviewState() {
         _deleteReviewState.value = null
+    }
+
+    fun consumeCancelAppointmentState() {
+        _cancelAppointmentState.value = null
     }
 }

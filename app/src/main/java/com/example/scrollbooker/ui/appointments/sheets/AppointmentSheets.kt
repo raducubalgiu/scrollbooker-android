@@ -18,7 +18,10 @@ fun AppointmentSheets(
     sheetState: SheetState,
     sheetContent: AppointmentSheetsContent,
     onClose: () -> Unit,
-    onSaveReview: (RatingReviewUpdate) -> Unit
+    onSaveReview: (RatingReviewUpdate) -> Unit,
+    onOpenEditReview: () -> Unit,
+    onDeleteReview: () -> Unit,
+    onCancelAppointment: (String) -> Unit
 ) {
     ModalBottomSheet(
         modifier = Modifier.statusBarsPadding(),
@@ -42,7 +45,21 @@ fun AppointmentSheets(
                     onClose = onClose,
                 )
             }
-            is AppointmentSheetsContent.CancelAppointmentSheet -> {}
+            is AppointmentSheetsContent.CancelAppointmentSheet -> {
+                CancelAppointmentSheet(
+                    isSaving = isSaving,
+                    onClose = onClose,
+                    onCancelAppointment = onCancelAppointment
+                )
+            }
+            is AppointmentSheetsContent.ReviewOptions -> {
+                CancelReviewSheet(
+                    isLoadingDelete = isSaving,
+                    onEdit = onOpenEditReview,
+                    onDeleteReview = onDeleteReview,
+                    onClose = onClose,
+                )
+            }
             is AppointmentSheetsContent.None -> Unit
         }
     }
