@@ -69,9 +69,9 @@ fun FeedScreen(
         )
     }
 
+    var isDrawerOpen by rememberSaveable { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var sheetContent by remember { mutableStateOf<PostSheetsContent>(None) }
-    var isDrawerOpen by rememberSaveable { mutableStateOf(false) }
 
     if(sheetContent != None) {
         key(sheetContent) {

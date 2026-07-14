@@ -3,7 +3,6 @@ package com.example.scrollbooker.ui.appointments
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.scrollbooker.core.enums.AppointmentStatusEnum
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointment
@@ -15,6 +14,7 @@ import com.example.scrollbooker.entity.booking.review.domain.useCase.CreateWritt
 import com.example.scrollbooker.entity.booking.review.domain.useCase.DeleteWrittenReviewUseCase
 import com.example.scrollbooker.entity.booking.review.domain.useCase.UpdateWrittenReviewUseCase
 import com.example.scrollbooker.store.AuthDataStore
+import com.example.scrollbooker.ui.appointments.sheets.RatingReviewUpdate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -36,8 +36,8 @@ class AppointmentDetailsViewModel @Inject constructor(
 ) : ViewModel() {
     private val appointmentId: Int = checkNotNull(savedStateHandle["appointmentId"])
 
-    private val _appointment = MutableStateFlow<FeatureState<Appointment>>(FeatureState.Loading)
-    val appointment: StateFlow<FeatureState<Appointment>> = _appointment.asStateFlow()
+    private val _appointmentState = MutableStateFlow<FeatureState<Appointment>>(FeatureState.Loading)
+    val appointmentState: StateFlow<FeatureState<Appointment>> = _appointmentState.asStateFlow()
 
     private val _isSaving = MutableStateFlow<Boolean>(false)
     val isSaving: StateFlow<Boolean> = _isSaving
@@ -48,27 +48,20 @@ class AppointmentDetailsViewModel @Inject constructor(
     private val _deleteReviewState = MutableStateFlow<FeatureState<Unit>?>(null)
     val deleteReviewState: StateFlow<FeatureState<Unit>?> = _deleteReviewState.asStateFlow()
 
-    private val _selectedWrittenReview = MutableStateFlow<RatingReviewUpdate?>(null)
-    val selectedWrittenReview: StateFlow<RatingReviewUpdate?> = _selectedWrittenReview.asStateFlow()
-
-    fun setSelectedWrittenReview(update: RatingReviewUpdate) {
-        _selectedWrittenReview.value = update
-    }
-
     init {
         fetchAppointmentDetails()
     }
 
     private fun fetchAppointmentDetails() {
         viewModelScope.launch {
-            _appointment.value = FeatureState.Loading
+            _appointmentState.value = FeatureState.Loading
             try {
                 val result = withVisibleLoading {
                     getAppointmentByIdUseCase(appointmentId)
                 }
-                _appointment.value = FeatureState.Success(result)
+                _appointmentState.value = FeatureState.Success(result)
             } catch (e: Exception) {
-                _appointment.value = FeatureState.Error(e)
+                _appointmentState.value = FeatureState.Error(e)
             }
         }
     }
@@ -91,38 +84,42 @@ class AppointmentDetailsViewModel @Inject constructor(
                 Timber.tag("Appointments").e("ERROR: on Cancelling Appointment $e")
             }
             .onSuccess {
-                val currentState = _appointment.value
-                if (currentState is FeatureState.Success) {
-                    val currentAppointment = currentState.data
-
-                    if (currentAppointment.id == appointmentId) {
-                        val updatedAppointment = currentAppointment.copy(
-                            status = AppointmentStatusEnum.CANCELED,
-                            message = canceledReason
-                        )
-                        _appointment.value = FeatureState.Success(updatedAppointment)
-                    }
-                }
+//                val currentState = _appointment.value
+//                if (currentState is FeatureState.Success) {
+//                    val currentAppointment = currentState.data
+//
+//                    if (currentAppointment.id == appointmentId) {
+//                        val updatedAppointment = currentAppointment.copy(
+//                            status = AppointmentStatusEnum.CANCELED,
+//                            message = canceledReason
+//                        )
+//                        _appointment.value = FeatureState.Success(updatedAppointment)
+//                    }
+//                }
             }
 
         _isSaving.value = false
         return result
     }
 
-    fun createReview(appointment: Appointment?) {
+    fun createReview(reviewUpdate: RatingReviewUpdate) {
         viewModelScope.launch {
-            _isSaving.value = true
-            _deleteReviewState.value = FeatureState.Loading
+            val currentState = _appointmentState.value
+            if (currentState !is FeatureState.Success) {
+                return@launch
+            }
+            val appointment = currentState.data
 
-            val appointment = appointment ?: return@launch
+            _isSaving.value = true
+            _createReviewState.value = FeatureState.Loading
+
             val userId = appointment.user.id ?: return@launch
             val firstProduct = appointment.products.firstOrNull() ?: return@launch
             val firstProductId = firstProduct.id ?: return@launch
-            val rating = _selectedWrittenReview.value?.rating ?: return@launch
 
             val request = ReviewCreateRequest(
-                review = _selectedWrittenReview.value?.review,
-                rating = rating,
+                review = reviewUpdate.review,
+                rating = reviewUpdate.rating,
                 userId = userId,
                 productId = firstProductId,
                 parentId = null
@@ -135,24 +132,24 @@ class AppointmentDetailsViewModel @Inject constructor(
             result
                 .onFailure { e ->
                     _isSaving.value = false
-                    _deleteReviewState.value = FeatureState.Error()
+                    _createReviewState.value = FeatureState.Error(e)
                     Timber.tag("Reviews").e("ERROR: on Creating Review $e")
                 }
                 .onSuccess { new ->
-                    val currentState = _appointment.value
-                    if (currentState is FeatureState.Success) {
-                        val currentAppointment = currentState.data
+                    val latestState = _appointmentState.value
+                    if (latestState is FeatureState.Success) {
+                        val currentAppointment = latestState.data
 
                         if (currentAppointment.id == appointment.id) {
                             val updatedAppointment = currentAppointment.copy(
                                 writtenReview = AppointmentWrittenReview(
                                     id = new.id,
-                                    review = _selectedWrittenReview.value?.review,
-                                    rating = rating
+                                    review = reviewUpdate.review,
+                                    rating = reviewUpdate.rating
                                 ),
                                 hasWrittenReview = true
                             )
-                            _appointment.value = FeatureState.Success(updatedAppointment)
+                            _appointmentState.value = FeatureState.Success(updatedAppointment)
                         }
                     }
 
@@ -162,42 +159,47 @@ class AppointmentDetailsViewModel @Inject constructor(
         }
     }
 
-    fun editReview(review: AppointmentWrittenReview) {
+    fun editReview(reviewUpdate: RatingReviewUpdate) {
         viewModelScope.launch {
-            _createReviewState.value = FeatureState.Loading
+            val currentState = _appointmentState.value
+            if (currentState !is FeatureState.Success) {
+                return@launch
+            }
+            val appointment = currentState.data
+            val reviewId = appointment.writtenReview?.id ?: return@launch
+
             _isSaving.value = true
+            _createReviewState.value = FeatureState.Loading
 
             val result = withVisibleLoading {
                 updateWrittenReviewUseCase(
-                    reviewId = review.id,
-                    review = review.review,
-                    rating = review.rating
+                    reviewId = reviewId,
+                    review = reviewUpdate.review,
+                    rating = reviewUpdate.rating
                 )
             }
 
             result
                 .onFailure { e ->
                     _isSaving.value = false
-                    _createReviewState.value = FeatureState.Error()
+                    _createReviewState.value = FeatureState.Error(e)
                     Timber.tag("Reviews").e("ERROR: on Updating Review $e")
                 }
                 .onSuccess { update ->
-                    val currentState = _appointment.value
-
-                    if (currentState is FeatureState.Success) {
-                        val currentAppointment = currentState.data
+                    val latestState = _appointmentState.value
+                    if (latestState is FeatureState.Success) {
+                        val currentAppointment = latestState.data
 
                         if (currentAppointment.id == update.appointmentId) {
                             val updatedAppointment = currentAppointment.copy(
                                 writtenReview = AppointmentWrittenReview(
                                     id = update.id,
-                                    review = review.review,
-                                    rating = review.rating
+                                    review = reviewUpdate.review,
+                                    rating = reviewUpdate.rating
                                 ),
                                 hasWrittenReview = true
                             )
-
-                            _appointment.value = FeatureState.Success(updatedAppointment)
+                            _appointmentState.value = FeatureState.Success(updatedAppointment)
                         }
                     }
 
@@ -221,23 +223,23 @@ class AppointmentDetailsViewModel @Inject constructor(
                     Timber.tag("Reviews").e("ERROR: on Deleting Review $e")
                 }
                 .onSuccess {
-                    val currentState = _appointment.value
-
-                    if (currentState is FeatureState.Success) {
-                        val currentAppointment = currentState.data
-
-                        if (currentAppointment.id == appointmentId) {
-                            val updatedAppointment = currentAppointment.copy(
-                                writtenReview = null,
-                                hasWrittenReview = false
-                            )
-
-                            _appointment.value = FeatureState.Success(updatedAppointment)
-                        }
-                    }
-
-                    _isSaving.value = false
-                    _deleteReviewState.value = FeatureState.Success(Unit)
+//                    val currentState = _appointment.value
+//
+//                    if (currentState is FeatureState.Success) {
+//                        val currentAppointment = currentState.data
+//
+//                        if (currentAppointment.id == appointmentId) {
+//                            val updatedAppointment = currentAppointment.copy(
+//                                writtenReview = null,
+//                                hasWrittenReview = false
+//                            )
+//
+//                            _appointment.value = FeatureState.Success(updatedAppointment)
+//                        }
+//                    }
+//
+//                    _isSaving.value = false
+//                    _deleteReviewState.value = FeatureState.Success(Unit)
                 }
         }
     }

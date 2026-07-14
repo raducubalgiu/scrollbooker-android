@@ -18,7 +18,7 @@ import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun AddReviewSheetHeader(
-    user: AppointmentUser,
+    user: AppointmentUser?,
     onClose: () -> Unit
 ) {
     SheetHeader(
@@ -27,12 +27,12 @@ fun AddReviewSheetHeader(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                Avatar(url = user.avatar ?: "", size = 25.dp)
+                Avatar(url = user?.avatar ?: "", size = 25.dp)
 
                 Spacer(Modifier.width(SpacingS))
 
                 Text(
-                    text = user.fullName,
+                    text = user?.fullName ?: "",
                     fontWeight = FontWeight.SemiBold,
                     style = titleMedium
                 )

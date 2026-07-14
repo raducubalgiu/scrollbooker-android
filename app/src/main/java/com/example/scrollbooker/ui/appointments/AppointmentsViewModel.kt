@@ -15,11 +15,6 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
-data class RatingReviewUpdate(
-    val rating: Int,
-    val review: String?
-)
-
 @HiltViewModel
 class AppointmentsViewModel @Inject constructor(
     private val getUserAppointmentsUseCase: GetUserAppointmentsUseCase,

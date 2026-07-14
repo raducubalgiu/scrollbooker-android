@@ -13,9 +13,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -27,21 +31,21 @@ import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.enums.AppointmentStatusEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
-import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentWrittenReview
 import com.example.scrollbooker.ui.appointments.components.AppointmentDetailsActions
 import com.example.scrollbooker.ui.appointments.components.AppointmentDetailsHeader
 import com.example.scrollbooker.ui.appointments.components.AppointmentDetailsMessage
 import com.example.scrollbooker.ui.appointments.components.AppointmentProductPrice
 import com.example.scrollbooker.ui.appointments.components.ReviewCTA
 import com.example.scrollbooker.ui.appointments.components.VideoReviewCTA
-import com.example.scrollbooker.ui.appointments.sheets.AddReviewSheet
-import com.example.scrollbooker.ui.appointments.sheets.CancelReviewSheet
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.titleMedium
 import kotlinx.coroutines.launch
 import com.example.scrollbooker.components.customized.SectionMap
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.ui.appointments.sheets.AppointmentSheets
+import com.example.scrollbooker.ui.appointments.sheets.AppointmentSheetsContent
+import com.example.scrollbooker.ui.appointments.sheets.RatingReviewUpdate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,67 +54,53 @@ fun AppointmentDetailsScreen(
     onBack: () -> Unit,
     onNavigateToCamera: () -> Unit
 ) {
-    val appointmentState by viewModel.appointment.collectAsStateWithLifecycle()
+    val appointmentState by viewModel.appointmentState.collectAsStateWithLifecycle()
+    val createReviewState by viewModel.createReviewState.collectAsStateWithLifecycle()
+    val deleteReviewState by viewModel.deleteReviewState.collectAsStateWithLifecycle()
     val isSaving by viewModel.isSaving.collectAsStateWithLifecycle()
 
     val scope = rememberCoroutineScope()
-    val reviewSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val cancelReviewSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var sheetContent by remember { mutableStateOf<AppointmentSheetsContent>(AppointmentSheetsContent.None) }
 
     val appointment = (appointmentState as? FeatureState.Success)?.data
 
-    if (reviewSheetState.isVisible && appointment != null) {
-        AddReviewSheet(
-            viewModel = viewModel,
-            sheetState = reviewSheetState,
-            user = appointment.user,
-            onClose = { scope.launch { reviewSheetState.hide() } },
-            isSaving = isSaving,
-            onCreateReview = { update ->
-                val reviewId = appointment.writtenReview?.id
-                if (reviewId != null) {
-                    viewModel.editReview(
-                        AppointmentWrittenReview(
-                            id = reviewId,
-                            rating = update.rating,
-                            review = update.review
-                        )
-                    )
-                } else {
-                    viewModel.createReview(appointment)
-                }
+    val closeSheet: () -> Unit = {
+        scope.launch {
+            sheetState.hide()
+        }.invokeOnCompletion {
+            if (!sheetState.isVisible) {
+                sheetContent = AppointmentSheetsContent.None
             }
-        )
+        }
     }
 
-    if (cancelReviewSheetState.isVisible && appointment != null) {
-        CancelReviewSheet(
-            viewModel = viewModel,
-            sheetState = cancelReviewSheetState,
-            isLoadingDelete = isSaving,
-            onClose = { scope.launch { cancelReviewSheetState.hide() } },
-            onEdit = {
-                val rating = appointment.writtenReview?.rating
-                val review = appointment.writtenReview?.review
+    LaunchedEffect(createReviewState, deleteReviewState) {
+        if (createReviewState is FeatureState.Success) {
+            closeSheet()
+            viewModel.consumeCreateReviewState()
+        }
 
-                scope.launch {
-                    cancelReviewSheetState.hide()
-                    if (!cancelReviewSheetState.isVisible && rating != null) {
-                        viewModel.setSelectedWrittenReview(
-                            RatingReviewUpdate(
-                                rating = rating,
-                                review = review
-                            )
-                        )
-                        reviewSheetState.show()
-                    }
+        if (deleteReviewState is FeatureState.Success) {
+            closeSheet()
+            viewModel.consumeDeleteReviewState()
+        }
+    }
+
+    if (sheetContent != AppointmentSheetsContent.None) {
+        AppointmentSheets(
+            isSaving = isSaving,
+            sheetState = sheetState,
+            sheetContent = sheetContent,
+            onSaveReview = { ratingReviewUpdate ->
+                val reviewId = appointment?.writtenReview?.id
+                if (reviewId != null) {
+                    viewModel.editReview(ratingReviewUpdate)
+                } else {
+                    viewModel.createReview(ratingReviewUpdate)
                 }
             },
-            onDelete = {
-                appointment.writtenReview?.id?.let { reviewId ->
-                    viewModel.deleteReview(appointment.id, reviewId)
-                }
-            }
+            onClose = closeSheet
         )
     }
 
@@ -189,13 +179,14 @@ fun AppointmentDetailsScreen(
                             ReviewCTA(
                                 modifier = Modifier.padding(bottom = SpacingXL),
                                 onRatingClick = { rating ->
-                                    viewModel.setSelectedWrittenReview(
-                                        RatingReviewUpdate(
+                                    sheetContent = AppointmentSheetsContent.ReviewAppointmentSheet(
+                                        reviewUpdate = RatingReviewUpdate(
                                             rating = rating,
                                             review = ""
-                                        )
+                                        ),
+                                        user = a.user
                                     )
-                                    scope.launch { reviewSheetState.show() }
+                                    scope.launch { sheetState.show() }
                                 }
                             )
                         }
@@ -206,7 +197,9 @@ fun AppointmentDetailsScreen(
                                 review = rev.review,
                                 rating = rev.rating,
                                 isCustomer = a.isCustomer,
-                                onOpenCancelSheet = { scope.launch { cancelReviewSheetState.show() } }
+                                onOpenCancelSheet = {
+
+                                }
                             )
                         }
 
