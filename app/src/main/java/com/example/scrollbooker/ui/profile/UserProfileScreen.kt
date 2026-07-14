@@ -1,55 +1,25 @@
 package com.example.scrollbooker.ui.profile
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.unit.IntOffset
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.components.core.headers.Header
-import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.enums.BookingSourceEnum
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.core.util.rememberCollapsingNestedScroll
 import com.example.scrollbooker.navigation.navigators.NavigateBookingParam
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
-import com.example.scrollbooker.ui.profile.components.sheets.UserScheduleSheet
-import com.example.scrollbooker.ui.profile.components.userInfo.ProfileShimmer
-import com.example.scrollbooker.ui.profile.components.userInfo.ProfileUserInfo
-import com.example.scrollbooker.ui.profile.tabs.ProfileTab
-import com.example.scrollbooker.ui.profile.tabs.ProfileTabRow
-import com.example.scrollbooker.ui.profile.tabs.bookmarks.ProfileBookmarksTab
-import com.example.scrollbooker.ui.profile.tabs.employees.ProfileEmployeesTab
-import com.example.scrollbooker.ui.profile.tabs.info.ProfileInfoTab
-import com.example.scrollbooker.ui.profile.tabs.posts.ProfilePostsTab
-import com.example.scrollbooker.ui.profile.tabs.products.ProfileProductsTab
+import com.example.scrollbooker.ui.profile.components.ProfileLayout
+import com.example.scrollbooker.ui.profile.components.userInfo.components.MyProfileActions
+import com.example.scrollbooker.ui.profile.components.userInfo.components.UserProfileActions
+import com.example.scrollbooker.ui.profile.sheets.UserScheduleSheet
 import com.example.scrollbooker.ui.theme.Background
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -60,26 +30,13 @@ fun UserProfileScreen(
     profileNavigate: ProfileNavigator
 ) {
     val profile by viewModel.profile.collectAsStateWithLifecycle()
-    val posts = viewModel.posts.collectAsLazyPagingItems()
+    val userData = (profile as? FeatureState.Success)?.data
+    val isBusinessOrEmployee = userData?.isBusinessOrEmployee == true
 
     val isFollow by viewModel.isFollowState.collectAsStateWithLifecycle()
     val isSaving by viewModel.isSaving.collectAsStateWithLifecycle()
-    val currentTab by viewModel.currentTab.collectAsStateWithLifecycle()
-
-    val userData = (profile as? FeatureState.Success)?.data
-
-    val scope = rememberCoroutineScope()
-    var headerHeightPx by remember { mutableIntStateOf(0) }
-    var headerOffset by remember { mutableFloatStateOf(0f) }
 
     val scheduleSheetState = rememberModalBottomSheetState()
-
-    val nestedScrollConnection = rememberCollapsingNestedScroll(
-        headerHeightPx = headerHeightPx,
-        headerOffset = headerOffset,
-        onHeaderOffsetChanged = { headerOffset = it }
-    )
-
     if(scheduleSheetState.isVisible) {
         UserScheduleSheet(
             sheetState = scheduleSheetState,
@@ -96,171 +53,51 @@ fun UserProfileScreen(
         },
         containerColor = Background
     ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = innerPadding.calculateTopPadding())
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(top = innerPadding.calculateTopPadding())
         ) {
-            when (val profileData = profile) {
-                is FeatureState.Error -> ErrorScreen()
-                is FeatureState.Loading -> ProfileShimmer()
-                is FeatureState.Success -> {
-                    val user = profileData.data
+            ProfileLayout(
+                profile = profile,
+                profileNavigate = profileNavigate,
+                postsState = viewModel.posts,
+                productsState = viewModel.products,
+                employeesState = viewModel.employees,
+                bookmarksState = viewModel.bookmarks,
+                aboutState = viewModel.about,
+                onNavigateToPost = {
+                    val userId = userData?.id ?: return@ProfileLayout
+                    profileNavigate.toUserPostDetail(PostTabEnum.POSTS, it, userId)
+                }
+            ) {
+                if(userData?.isOwnProfile == true) {
+                    MyProfileActions(
+                        isBusinessOrEmployee = isBusinessOrEmployee,
+                        onEditProfile = { profileNavigate.toEditProfile() },
+                        onNavigateToMyCalendar = { profileNavigate.toMyCalendar() },
+                    )
+                } else {
+                    UserProfileActions(
+                        isBusinessOrEmployee = isBusinessOrEmployee,
+                        isFollow = isFollow,
+                        isFollowEnabled = !isSaving,
+                        onFollow = { viewModel.follow() },
+                        onNavigateToBooking = {
+                            val userId = userData?.id ?: return@UserProfileActions
+                            val businessId = userData.businessId ?: return@UserProfileActions
+                            val businessOwnerId = userData.businessOwner?.id ?: return@UserProfileActions
 
-                    val isEmployee = user.isBusinessOrEmployee && user.id != user.businessOwner?.id
-
-                    val tabs = remember(user.isBusinessOrEmployee, isEmployee,  user.isOwnProfile) {
-                        ProfileTab.getTabs(user.isBusinessOrEmployee, isEmployee, user.isOwnProfile)
-                    }
-
-                    val pagerState = rememberPagerState(initialPage = currentTab) { tabs.size }
-
-                    LaunchedEffect(pagerState) {
-                        snapshotFlow {
-                            pagerState.currentPage
-                        }
-                            .distinctUntilChanged()
-                            .collectLatest { page -> viewModel.setCurrentTab(page) }
-                    }
-
-                    PullToRefreshBox(
-                        isRefreshing = false,
-                        onRefresh = {  }
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .nestedScroll(nestedScrollConnection)
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .graphicsLayer {
-                                        translationY = headerHeightPx + headerOffset
-                                    }
-                            ) {
-                                ProfileTabRow(
-                                    selectedTabIndex = pagerState.currentPage,
-                                    onChangeTab = {
-                                        viewModel.setCurrentTab(it)
-                                        scope.launch { pagerState.animateScrollToPage(it) }
-                                    },
-                                    tabs = tabs
+                            profileNavigate.toBookingFromProfile(
+                                NavigateBookingParam(
+                                    userId = userId,
+                                    businessId = businessId,
+                                    businessOwnerId = businessOwnerId,
+                                    selectedProductId = null,
+                                    source = BookingSourceEnum.PROFILE
                                 )
-
-                                HorizontalPager(state = pagerState) { page ->
-                                    when(tabs[page]) {
-                                        ProfileTab.Posts -> {
-                                            ProfilePostsTab(
-                                                posts = posts,
-                                                onNavigateToPost = { clickData ->
-                                                    profileNavigate.toUserPostDetail(
-                                                        postTab = PostTabEnum.POSTS,
-                                                        selectedPostUi = clickData,
-                                                        userId = user.id
-                                                    )
-                                                }
-                                            )
-                                        }
-
-                                        ProfileTab.Products -> {
-                                            val products by viewModel.products.collectAsStateWithLifecycle()
-
-                                            ProfileProductsTab(
-                                                products = products,
-                                                onNavigateToBookingFromProduct = {
-                                                    profileNavigate.toBookingFromProduct(
-                                                        it, source = BookingSourceEnum.PROFILE
-                                                    )
-                                                },
-                                                onNavigateToBookingFromProfile = {
-                                                    if(user.businessId != null && user.businessOwner != null) {
-                                                        profileNavigate.toBookingFromProfile(
-                                                            NavigateBookingParam(
-                                                                businessId = user.businessId,
-                                                                userId = user.id,
-                                                                businessOwnerId = user.businessOwner.id,
-                                                                source = BookingSourceEnum.PROFILE,
-                                                                selectedProductId = null
-                                                            )
-                                                        )
-                                                    }
-                                                }
-                                            )
-                                        }
-
-                                        ProfileTab.Employees -> {
-                                            val employees = viewModel.employees.collectAsLazyPagingItems()
-
-                                            ProfileEmployeesTab(
-                                                isOwnProfile = user.isOwnProfile,
-                                                employees = employees,
-                                                onNavigateToEmployeeProfile = { userId, username -> profileNavigate.toUserProfile(userId, username) },
-                                            )
-                                        }
-
-                                        ProfileTab.Bookmarks -> {
-                                            val bookmarks = viewModel.bookmarks.collectAsLazyPagingItems()
-
-                                            ProfileBookmarksTab(
-                                                posts = bookmarks,
-                                                onNavigateToPost = {}
-                                            )
-                                        }
-
-                                        ProfileTab.Info -> {
-                                            val about by viewModel.about.collectAsStateWithLifecycle()
-                                            ProfileInfoTab(
-                                                isEmployee = isEmployee,
-                                                about = about,
-                                                onNavigateToUserProfile = { userId, username ->
-                                                    profileNavigate.toUserProfile(userId, username)
-                                                },
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .offset { IntOffset(0, headerOffset.roundToInt()) }
-                            ) {
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .onSizeChanged { size -> headerHeightPx = size.height }
-                                ) {
-                                    ProfileUserInfo(
-                                        user = user,
-                                        isFollow = isFollow == true,
-                                        isFollowEnabled = !isSaving,
-                                        onFollow = { viewModel.follow() },
-                                        onOpenScheduleSheet = { scope.launch { scheduleSheetState.show() } },
-                                        onNavigateToSocial = { profileNavigate.toSocial(it) },
-                                        onNavigateToBusinessOwner = {
-                                            user.businessOwner?.let {
-                                                profileNavigate.toUserProfile(it.id, it.username)
-                                            }
-                                        },
-                                        onNavigateToEditProfile = { profileNavigate.toEditProfile() },
-                                        onNavigateToMyCalendar = { profileNavigate.toMyCalendar() },
-                                        onNavigateToBooking = { userId, businessId, businessOwnerId ->
-                                            profileNavigate.toBookingFromProfile(
-                                                NavigateBookingParam(
-                                                    userId = userId,
-                                                    businessId = businessId,
-                                                    businessOwnerId = businessOwnerId,
-                                                    selectedProductId = null,
-                                                    source = BookingSourceEnum.PROFILE
-                                                )
-                                            )
-                                        },
-                                    )
-                                }
-                            }
-                        }
-                    }
+                            )
+                        },
+                    )
                 }
             }
         }

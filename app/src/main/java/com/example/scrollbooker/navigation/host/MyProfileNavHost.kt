@@ -6,10 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.paging.compose.LazyPagingItems
-import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.entity.social.post.domain.model.Post
-import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.navigation.graphs.cameraGraph
 import com.example.scrollbooker.navigation.graphs.editProfileGraph
 import com.example.scrollbooker.navigation.graphs.myBusinessGraph
@@ -22,6 +18,7 @@ import com.example.scrollbooker.navigation.graphs.userProfileGraph
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.remember
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.scrollbooker.navigation.graphs.bookingGraph
 import com.example.scrollbooker.navigation.graphs.socialGraph
 import com.example.scrollbooker.navigation.navigators.BookingNavigator
@@ -33,12 +30,11 @@ import com.example.scrollbooker.ui.theme.Background
 
 @Composable
 fun MyProfileNavHost(
-    viewModel: MyProfileViewModel,
-    myProfileData: FeatureState<UserProfile>,
-    myPosts: LazyPagingItems<Post>,
     navController: NavHostController,
     onLogout: () -> Unit
 ) {
+    val viewModel: MyProfileViewModel = hiltViewModel()
+
     val profileNavigate = remember(navController) {
         ProfileNavigator(navController)
     }
@@ -83,7 +79,7 @@ fun MyProfileNavHost(
                 }
             }
         ) {
-            myProfileGraph(navController, myProfileData, myPosts, profileNavigate)
+            myProfileGraph(navController, profileNavigate)
             userProfileGraph(navController, profileNavigate)
 
             editProfileGraph(navController, viewModel, profileNavigate)

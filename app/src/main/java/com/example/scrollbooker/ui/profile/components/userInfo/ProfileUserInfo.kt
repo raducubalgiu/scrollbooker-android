@@ -15,7 +15,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,28 +27,20 @@ import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.core.extensions.formatRating
-import com.example.scrollbooker.core.extensions.toFixedDecimals
 import com.example.scrollbooker.core.util.Dimens.AvatarSizeXL
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
-import com.example.scrollbooker.ui.profile.components.userInfo.components.INTENT_ACTION_SPECS
-import com.example.scrollbooker.ui.profile.components.userInfo.components.IntentAction
-import com.example.scrollbooker.ui.profile.components.userInfo.components.MyProfileActions
 import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileBio
 import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileBusinessOwner
 import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileCounters
-import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileIntentActionsList
 import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileLocationDistance
 import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileOpeningHours
-import com.example.scrollbooker.ui.profile.components.userInfo.components.UserProfileActions
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Rating
 import com.example.scrollbooker.ui.theme.titleMedium
-import timber.log.Timber
 
 // V2 - Intent Actions logic will be added in next iterations, for now it's hidden in the code
 
@@ -82,19 +73,10 @@ import timber.log.Timber
 @Composable
 fun ProfileUserInfo(
     user: UserProfile,
-    isFollow: Boolean,
-    isFollowEnabled: Boolean,
-    onFollow: (() -> Unit)? = null,
     onOpenScheduleSheet: () -> Unit,
     onNavigateToBusinessOwner: () -> Unit,
     onNavigateToSocial: (NavigateSocialParam) -> Unit,
-    onNavigateToEditProfile: () -> Unit,
-    onNavigateToMyCalendar: () -> Unit,
-    onNavigateToBooking: (
-        userId: Int,
-        businessId: Int,
-        businessOwnerId: Int
-    ) -> Unit
+    actions: @Composable () -> Unit
 ) {
     val isBusinessOrEmployee = user.isBusinessOrEmployee
     val isOpenNow = user.openingHours.openNow
@@ -195,29 +177,7 @@ fun ProfileUserInfo(
             end = BasePadding
         ),
     ) {
-        if (user.isOwnProfile) {
-            MyProfileActions(
-                isBusinessOrEmployee = user.isBusinessOrEmployee,
-                onEditProfile = onNavigateToEditProfile,
-                onNavigateToMyCalendar = onNavigateToMyCalendar
-            )
-        } else {
-            UserProfileActions(
-                isBusinessOrEmployee = user.isBusinessOrEmployee,
-                isFollow = isFollow,
-                isFollowEnabled = isFollowEnabled,
-                onFollow = onFollow,
-                onNavigateToBooking = {
-                    if(user.businessId != null && user.businessOwner != null) {
-                        onNavigateToBooking(
-                            user.id,
-                            user.businessId,
-                            user.businessOwner.id,
-                        )
-                    }
-                }
-            )
-        }
+        actions()
     }
 
     if(isBusinessOrEmployee) {

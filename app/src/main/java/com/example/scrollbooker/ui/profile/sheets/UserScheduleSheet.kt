@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.components.sheets
+package com.example.scrollbooker.ui.profile.sheets
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth

@@ -22,7 +22,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.navigation.host.AppointmentsNavHost
 import com.example.scrollbooker.navigation.host.FeedNavHost
@@ -32,7 +31,6 @@ import com.example.scrollbooker.navigation.host.SearchNavHost
 import com.example.scrollbooker.navigation.navigators.SearchNavigator
 import com.example.scrollbooker.ui.LocalUserPermissions
 import com.example.scrollbooker.ui.UserPermissionsController
-import com.example.scrollbooker.ui.profile.MyProfileViewModel
 import com.example.scrollbooker.ui.search.SearchScreen
 import com.example.scrollbooker.ui.search.SearchViewModel
 
@@ -63,11 +61,6 @@ fun NavGraphBuilder.mainGraph(onLogout: () -> Unit) {
             val permissionsController = remember(permissions) {
                 UserPermissionsController(permissions)
             }
-
-            // My Profile View Model
-            val myProfileViewModel: MyProfileViewModel = hiltViewModel()
-            val myProfileData by myProfileViewModel.profile.collectAsState()
-            val myPosts = myProfileViewModel.posts.collectAsLazyPagingItems()
 
             val searchViewModel: SearchViewModel = hiltViewModel()
 
@@ -133,9 +126,6 @@ fun NavGraphBuilder.mainGraph(onLogout: () -> Unit) {
                                     is MainTab.Profile -> {
                                         MyProfileNavHost(
                                             navController = navControllers[MainTab.Profile]!!,
-                                            viewModel = myProfileViewModel,
-                                            myProfileData = myProfileData,
-                                            myPosts = myPosts,
                                             onLogout = onLogout
                                         )
                                     }

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.components.sheets
+package com.example.scrollbooker.ui.profile.sheets
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,14 +13,10 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.layout.ErrorScreen
-import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.core.list.ItemList
 import com.example.scrollbooker.components.core.sheet.Sheet
 import com.example.scrollbooker.core.enums.PermissionEnum
-import com.example.scrollbooker.core.enums.has
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.UserPermissionsController
 import kotlinx.coroutines.launch

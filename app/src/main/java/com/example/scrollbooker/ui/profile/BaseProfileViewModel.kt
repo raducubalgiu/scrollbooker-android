@@ -45,6 +45,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 abstract class BaseProfileViewModel(
+    private val shouldShowVisibleLoading: Boolean,
     private val getUserProfileUseCase: GetUserProfileUseCase,
     private val getUserPostsUseCase: GetUserPostsUseCase,
     private val getEmployeesByOwnerUseCase: GetEmployeesByOwnerUseCase,
@@ -75,7 +76,12 @@ abstract class BaseProfileViewModel(
                 .flatMapLatest { currentUsername ->
                     flow {
                         emit(FeatureState.Loading)
-                        val response = withVisibleLoading {
+
+                        val response = if (shouldShowVisibleLoading) {
+                            withVisibleLoading {
+                                getUserProfileUseCase(currentUsername, lat = null, lng = null)
+                            }
+                        } else {
                             getUserProfileUseCase(currentUsername, lat = null, lng = null)
                         }
 

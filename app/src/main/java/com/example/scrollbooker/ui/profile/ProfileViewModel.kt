@@ -45,6 +45,7 @@ class ProfileViewModel @Inject constructor(
     unBookmarkPostUseCase: UnBookmarkPostUseCase,
     videoPlayerManager: VideoPlayerManager
 ): BaseProfileViewModel(
+    shouldShowVisibleLoading = true,
     getUserProfileUseCase = getUserProfileUseCase,
     getUserPostsUseCase = getUserPostsUseCase,
     getEmployeesByOwnerUseCase = getEmployeesByOwnerUseCase,
@@ -66,9 +67,6 @@ class ProfileViewModel @Inject constructor(
 
     override val userIdFlow: Flow<Int?> = userIdFlowInternal
     override val usernameFlow: Flow<String?> = usernameInternal
-
-    private val _currentTab = MutableStateFlow<Int>(0)
-    val currentTab: StateFlow<Int> = _currentTab.asStateFlow()
 
     private val _isSaving = MutableStateFlow<Boolean>(false)
     val isSaving: StateFlow<Boolean> = _isSaving.asStateFlow()
@@ -115,10 +113,6 @@ class ProfileViewModel @Inject constructor(
                 _isSaving.value = false
             }
         }
-    }
-
-    fun setCurrentTab(index: Int) {
-        _currentTab.value = index
     }
 
     override fun onCleared() {

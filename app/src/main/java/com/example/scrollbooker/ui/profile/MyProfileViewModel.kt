@@ -75,6 +75,7 @@ class MyProfileViewModel @Inject constructor(
     unBookmarkPostUseCase: UnBookmarkPostUseCase,
     videoPlayerManager: VideoPlayerManager,
 ):  BaseProfileViewModel(
+    shouldShowVisibleLoading = false,
     getUserProfileUseCase = getUserProfileUseCase,
     getUserPostsUseCase = getUserPostsUseCase,
     getEmployeesByOwnerUseCase = getEmployeesByOwnerUseCase,
@@ -90,9 +91,6 @@ class MyProfileViewModel @Inject constructor(
 ) {
     override val userIdFlow: Flow<Int?> = authDataStore.getUserId().distinctUntilChanged()
     override val usernameFlow: Flow<String?> = authDataStore.getUserUsername().distinctUntilChanged()
-
-    private val _currentTab = MutableStateFlow<Int>(0)
-    val currentTab: StateFlow<Int> = _currentTab.asStateFlow()
 
     private val _editState = MutableStateFlow<FeatureState<Unit>?>(null)
     val editState: StateFlow<FeatureState<Unit>?> = _editState.asStateFlow()
@@ -150,10 +148,6 @@ class MyProfileViewModel @Inject constructor(
 
     fun setPhoto(uri: Uri) {
         _photoUri.value = uri
-    }
-
-    fun setCurrentTab(index: Int) {
-        _currentTab.value = index
     }
 
     fun setSelectedDay(newDay: String?) {
