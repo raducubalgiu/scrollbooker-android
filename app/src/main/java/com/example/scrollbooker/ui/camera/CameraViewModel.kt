@@ -39,8 +39,32 @@ import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
+
+sealed interface CreatePostUiState {
+    object Loading : CreatePostUiState
+    data class Success(
+        val description: String,
+        val linkedProducts: Set<Product>,
+        val catalogProducts: UserProducts
+    ) : CreatePostUiState
+    data class Error(val error: Throwable?) : CreatePostUiState
+}
+
+data class UiState(
+    val selectedUri: Uri? = null,
+    val selectedKey: String? = null,
+    val preparingUri: Uri? = null,
+    val isReady: Boolean = false,
+    val error: Throwable? = null,
+    val coverUri: Uri? = null,
+    val coverKey: String? = null,
+    val isCoverLoading: Boolean = false
+)
 
 @HiltViewModel
 class CameraViewModel @Inject constructor(
@@ -50,8 +74,36 @@ class CameraViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
     @ApplicationContext private val context: Context
 ): ViewModel() {
+    private val _description = MutableStateFlow<String>("")
+    private val _linkedProducts = MutableStateFlow<Set<Product>>(emptySet())
     private val _userProducts = MutableStateFlow<FeatureState<UserProducts>>(FeatureState.Loading)
-    val userProducts: StateFlow<FeatureState<UserProducts>> = _userProducts.asStateFlow()
+
+    private val _mediaThumbUri = MutableStateFlow<String?>(null)
+    val mediaThumbUri: StateFlow<String?> = _mediaThumbUri.asStateFlow()
+
+    val createUiState: StateFlow<CreatePostUiState> = combine(
+        _description,
+        _linkedProducts,
+        _userProducts
+    ) { desc: String, linked: Set<Product>, catalog: FeatureState<UserProducts> ->
+        val result: CreatePostUiState = when {
+            catalog is FeatureState.Error -> CreatePostUiState.Error(catalog.error)
+            catalog is FeatureState.Loading -> CreatePostUiState.Loading
+            catalog is FeatureState.Success -> {
+                CreatePostUiState.Success(
+                    description = desc,
+                    linkedProducts = linked,
+                    catalogProducts = catalog.data
+                )
+            }
+            else -> CreatePostUiState.Loading
+        }
+        result
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = CreatePostUiState.Loading
+    )
 
     private val _isSaving = MutableStateFlow<FeatureState<Unit>?>(null)
     val isSaving: StateFlow<FeatureState<Unit>?> = _isSaving
@@ -59,20 +111,43 @@ class CameraViewModel @Inject constructor(
     private val _navigationEvents = Channel<NavigationEvent>(Channel.BUFFERED)
     val navigationEvents = _navigationEvents.receiveAsFlow()
 
-    private val _description = MutableStateFlow<String>("")
-    val description: StateFlow<String> = _description.asStateFlow()
-
-    private val _linkedProducts = MutableStateFlow<Set<Product>>(emptySet())
-    val linkedProducts: StateFlow<Set<Product>> = _linkedProducts.asStateFlow()
-
-    private val _mediaThumbUri = MutableStateFlow<String?>(null)
-    val mediaThumbUri: StateFlow<String?> = _mediaThumbUri.asStateFlow()
-
     private val _events = MutableSharedFlow<SnackBarUiEvent.Show>(
         extraBufferCapacity = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
     val events = _events.asSharedFlow()
+
+    fun loadUserProducts() {
+        viewModelScope.launch {
+            _userProducts.value = FeatureState.Loading
+            try {
+                val userId = authDataStore.getUserId().firstOrNull()
+                val businessId = authDataStore.getBusinessId().firstOrNull()
+                val businessOwnerId = authDataStore.getBusinessOwnerId().firstOrNull()
+
+                if (businessId == null) {
+                    _userProducts.value = FeatureState.Error(
+                        IllegalStateException("Business ID is missing.")
+                    )
+                    return@launch
+                }
+
+                val resolvedEmployeeId = if (businessOwnerId == userId) null else userId
+
+                val result = getProductsByBusinessIdAndEmployeeIdUseCase(
+                    businessId = businessId,
+                    employeeId = resolvedEmployeeId,
+                    onlyServicesWithProducts = true,
+                    productsLimitPerService = null
+                )
+                _userProducts.value = result
+
+            } catch (e: Exception) {
+                Timber.tag("BookingProducts").e(e, "ERROR: Failed to read auth data or fetch products")
+                _userProducts.value = FeatureState.Error(e)
+            }
+        }
+    }
 
     fun setDescription(desc: String) {
         _description.value = desc
@@ -80,6 +155,12 @@ class CameraViewModel @Inject constructor(
 
     fun updateLinkedProducts(products: Set<Product>) {
         _linkedProducts.value = products
+    }
+
+    fun removeLinkedProduct(product: Product) {
+        _linkedProducts.update { currentSet ->
+            currentSet - product
+        }
     }
 
     fun loadMediaThumb() {
@@ -90,17 +171,6 @@ class CameraViewModel @Inject constructor(
     }
 
     // Video Player
-    data class UiState(
-        val selectedUri: Uri? = null,
-        val selectedKey: String? = null,
-        val preparingUri: Uri? = null,
-        val isReady: Boolean = false,
-        val error: Throwable? = null,
-        val coverUri: Uri? = null,
-        val coverKey: String? = null,
-        val isCoverLoading: Boolean = false
-    )
-
     private val _uiState = MutableStateFlow(UiState())
     val uiState = _uiState.asStateFlow()
 
@@ -268,41 +338,6 @@ class CameraViewModel @Inject constructor(
             retriever.release()
         }
     }
-
-    fun loadUserProducts() {
-        viewModelScope.launch {
-            _userProducts.value = FeatureState.Loading
-
-            try {
-                val userId = authDataStore.getUserId().firstOrNull()
-                val businessId = authDataStore.getBusinessId().firstOrNull()
-                val businessOwnerId = authDataStore.getBusinessOwnerId().firstOrNull()
-
-                if (businessId == null) {
-                    _userProducts.value = FeatureState.Error(
-                        IllegalStateException("Business ID is missing.")
-                    )
-                    return@launch
-                }
-
-                val resolvedEmployeeId = if (businessOwnerId == userId) null else userId
-
-                val result = getProductsByBusinessIdAndEmployeeIdUseCase(
-                    businessId = businessId,
-                    employeeId = resolvedEmployeeId,
-                    onlyServicesWithProducts = true,
-                    productsLimitPerService = null
-                )
-
-                _userProducts.value = result
-
-            } catch (e: Exception) {
-                Timber.tag("BookingProducts").e(e, "ERROR: Failed to read auth data or fetch products")
-                _userProducts.value = FeatureState.Error(e)
-            }
-        }
-    }
-
 
     fun createPost(videoUri: Uri) {
         viewModelScope.launch {

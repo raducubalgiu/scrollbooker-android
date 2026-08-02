@@ -40,6 +40,7 @@ import com.example.scrollbooker.ui.profile.sheets.ScheduleShimmer
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.bodyLarge
+import com.example.scrollbooker.ui.theme.labelLarge
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,7 +49,8 @@ fun UserProductsSheet(
     sheetState: SheetState,
     linkedProducts: Set<Product>,
     userProducts: FeatureState<UserProducts>,
-    onConfirmSelection: (Set<Product>) -> Unit
+    onConfirmSelection: (Set<Product>) -> Unit,
+    onClose: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val listState = rememberLazyListState()
@@ -62,11 +64,11 @@ fun UserProductsSheet(
     Sheet(
         modifier = Modifier.statusBarsPadding(),
         sheetState = sheetState,
-        onClose = { scope.launch { sheetState.hide() } }
+        onClose = onClose
     ) {
         SheetHeader(
-            title = stringResource(R.string.products),
-            onClose = { scope.launch { sheetState.hide() } }
+            title = stringResource(R.string.linkedServices),
+            onClose = onClose
         )
 
         Box(modifier = Modifier.fillMaxSize()) {
@@ -123,8 +125,7 @@ fun UserProductsSheet(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         val count = localLinkedProducts.size
-                        val message =
-                            if (count == 1) "$count produs selectat" else "$count produse selectate"
+                        val message = if (count == 1) "$count produs selectat" else "$count produse selectate"
 
                         Text(
                             text = message,
@@ -141,7 +142,11 @@ fun UserProductsSheet(
                                 }
                             }
                         ) {
-                            Text(text = "Confirmă")
+                            Text(
+                                text = stringResource(R.string.confirm),
+                                style = labelLarge,
+                                fontWeight = FontWeight.SemiBold
+                            )
                         }
                     }
                 }

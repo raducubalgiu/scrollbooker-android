@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.LifecycleStartEffect
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
 import androidx.media3.common.util.UnstableApi
@@ -70,9 +71,9 @@ fun CreatePostPreviewScreen(
     viewModel: CameraViewModel,
     onBack: () -> Unit
 ) {
-    val state by viewModel.uiState.collectAsState()
-    val description by viewModel.description.collectAsState()
-    val player by viewModel.player.collectAsState()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val createState by viewModel.createUiState.collectAsStateWithLifecycle()
+    val player by viewModel.player.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
 
@@ -199,63 +200,68 @@ fun CreatePostPreviewScreen(
                     )
                 }
 
-                PostOverlay(
-                    post = Post(
-                        id = 1,
-                        description = if (description.isNotEmpty()) description else "...",
-                        user = PostUser(
-                            id = 1,
-                            fullName = "Raducu Balgiu",
-                            username = "radu_balgiu",
-                            avatar = null,
-                            isFollow = false,
-                            profession = "Creator",
-                            ratingsAverage = 4.5f,
-                            ratingsCount = 100
-                        ),
-                        businessOwner = PostBusinessOwner(
-                            id = 1,
-                            fullName = "Raducu Balgiu",
-                            ratingsAverage = 4.5f,
-                            avatar = null
-                        ),
-                        employee = null,
-                        userActions = UserPostActions(
-                            isLiked = false,
-                            isBookmarked = false,
-                            isReposted = false
-                        ),
-                        mediaFiles = emptyList(),
-                        counters = PostCounters(
-                            commentCount = 0,
-                            likeCount = 0,
-                            bookmarkCount = 0,
-                            repostCount = 0,
-                            bookingsCount = 0,
-                            viewsCount = 0
-                        ),
-                        hashtags = emptyList(),
-                        isVideoReview = false,
-                        isOwnPost = false,
-                        rating = null,
-                        bookable = false,
-                        businessId = 1,
-                        lastMinute = LastMinute(
-                            isLastMinute = false,
-                            lastMinuteEnd = null,
-                            hasFixedSlots = false,
-                            fixedSlots = emptyList()
-                        ),
-                        createdAt = ""
-                    ),
-                    isSavingLike = false,
-                    isSavingBookmark = false,
-                    onAction = {},
-                    onNavigateToUserProfile = { _, _ -> {} },
-                    onLike = {},
-                    onBookmark = {},
-                    showBookButton = false
-                )
+                when(val uiState = createState) {
+                    is CreatePostUiState.Success -> {
+                        PostOverlay(
+                            post = Post(
+                                id = 1,
+                                description = uiState.description,
+                                user = PostUser(
+                                    id = 1,
+                                    fullName = "Numele meu",
+                                    username = "numele_meu",
+                                    avatar = null,
+                                    isFollow = false,
+                                    profession = "Creator",
+                                    ratingsAverage = 4.5f,
+                                    ratingsCount = 100
+                                ),
+                                businessOwner = PostBusinessOwner(
+                                    id = 1,
+                                    fullName = "Numele meu",
+                                    ratingsAverage = 4.5f,
+                                    avatar = null
+                                ),
+                                employee = null,
+                                userActions = UserPostActions(
+                                    isLiked = false,
+                                    isBookmarked = false,
+                                    isReposted = false
+                                ),
+                                mediaFiles = emptyList(),
+                                counters = PostCounters(
+                                    commentCount = 0,
+                                    likeCount = 0,
+                                    bookmarkCount = 0,
+                                    repostCount = 0,
+                                    bookingsCount = 0,
+                                    viewsCount = 0
+                                ),
+                                hashtags = emptyList(),
+                                isVideoReview = false,
+                                isOwnPost = false,
+                                rating = null,
+                                bookable = false,
+                                businessId = 1,
+                                lastMinute = LastMinute(
+                                    isLastMinute = false,
+                                    lastMinuteEnd = null,
+                                    hasFixedSlots = false,
+                                    fixedSlots = emptyList()
+                                ),
+                                createdAt = ""
+                            ),
+                            isSavingLike = false,
+                            isSavingBookmark = false,
+                            onAction = {},
+                            onNavigateToUserProfile = { _, _ -> {} },
+                            onLike = {},
+                            onBookmark = {},
+                            showBookButton = false
+                        )
+                    }
+                    else -> Unit
+                }
             }
         }
 

@@ -17,6 +17,7 @@ import com.example.scrollbooker.ui.theme.Divider
 
 @Composable
 fun CreatePostBottomBar(
+    title: String,
     onCreate: () -> Unit,
     isLoading: Boolean,
     isDisabled: Boolean
@@ -30,7 +31,7 @@ fun CreatePostBottomBar(
                 .padding(horizontal = BasePadding)
                 .padding(top = BasePadding)
                 .padding(bottom = bottomInset),
-            title = stringResource(R.string.postNow),
+            title = title,
             onClick = onCreate,
             isLoading = isLoading,
             enabled = !isDisabled

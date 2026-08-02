@@ -295,6 +295,7 @@
     <string name="categories">Categorii</string>
     <string name="lastMinute">Last Minute</string>
     <string name="sale">Reducere</string>
+    <string name="create">Creează</string>
     <string name="createPost">Creează o postare</string>
     <string name="postNow">Postează</string>
     <string name="searchAddress">Caută adresa</string>
@@ -441,6 +442,9 @@
     <string name="recommendedServices">Servicii recomandate</string>
     <string name="myPost">Postarea mea</string>
     <string name="statistics">Statistici</string>
+    <string name="linkedServices">Servicii atașate</string>
+    <string name="change">Modifică</string>
+    <string name="linkServices">Atașează servicii</string>
 
     <!-- Follow & Social Notifications -->
     <string name="notification_started_following_you">a început să te urmărească</string>

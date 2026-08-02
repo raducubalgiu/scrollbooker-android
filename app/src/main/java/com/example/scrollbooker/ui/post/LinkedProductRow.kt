@@ -33,7 +33,7 @@ import com.example.scrollbooker.ui.theme.titleMedium
 @Composable
 fun LinkedProductRow(
     product: Product,
-    onDelete: () -> Unit
+    onRemove: (Product) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -73,7 +73,7 @@ fun LinkedProductRow(
 
         Spacer(Modifier.width(SpacingS))
 
-        IconButton(onClick = onDelete) {
+        IconButton(onClick = { onRemove(product) }) {
             Icon(
                 painter = painterResource(R.drawable.ic_delete_outline),
                 contentDescription = null,

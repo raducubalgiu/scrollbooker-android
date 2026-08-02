@@ -50,7 +50,7 @@ class EditPostViewModel @Inject constructor(
     private val postId: Int = savedStateHandle["postId"] ?: error("Missing postId")
 
     private val _description = MutableStateFlow<String?>(null)
-    private val _linkedProducts = MutableStateFlow<Set<Product>?>(null)
+    private val _linkedProducts = MutableStateFlow<Set<Product>>(emptySet())
     private val _catalogProducts = MutableStateFlow<FeatureState<UserProducts>>(FeatureState.Loading)
     private val _postMedia = MutableStateFlow<PostMediaFile?>(null)
 
@@ -62,7 +62,7 @@ class EditPostViewModel @Inject constructor(
     ) { desc, linked, catalog, media ->
         when {
             catalog is FeatureState.Error -> EditPostUiState.Error(catalog.error)
-            desc == null || linked == null || catalog is FeatureState.Loading -> EditPostUiState.Loading
+            desc == null || catalog is FeatureState.Loading -> EditPostUiState.Loading
 
             catalog is FeatureState.Success -> {
                 EditPostUiState.Success(
@@ -162,7 +162,7 @@ class EditPostViewModel @Inject constructor(
     }
 
     fun removeLinkedProduct(product: Product) {
-        _linkedProducts.value = _linkedProducts.value?.minus(product)
+        _linkedProducts.value = _linkedProducts.value.minus(product)
     }
 
     fun editPost() { /* ... */ }

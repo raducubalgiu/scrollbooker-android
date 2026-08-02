@@ -35,6 +35,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.iconButton.CustomIconButton
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import kotlin.math.max
 
@@ -110,7 +111,7 @@ fun CameraPreviewScreen(
     Scaffold(
         containerColor = BackgroundDark,
         bottomBar = {
-            Box(modifier = Modifier.padding(BasePadding)) {
+            Box(Modifier.padding(SpacingM)) {
                 MainButton(
                     modifier = Modifier.navigationBarsPadding(),
                     onClick = onNavigateToCreatePostScreen,

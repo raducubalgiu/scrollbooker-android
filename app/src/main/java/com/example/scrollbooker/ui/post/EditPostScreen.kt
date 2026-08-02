@@ -40,8 +40,10 @@ fun EditPostScreen(
         }
         is EditPostUiState.Success -> {
             EditPostContent(
+                isEditMode = true,
                 description = state.description,
-                postMedia = state.postMedia,
+                coverUri = state.postMedia?.thumbnailUrl,
+                coverKey = null,
                 linkedProducts = state.linkedProducts,
                 userProducts = state.catalogProducts,
                 isLoading = isLoading,
@@ -49,8 +51,9 @@ fun EditPostScreen(
                 onDescriptionChange = { viewModel.setDescription(it) },
                 onRemoveProduct = { viewModel.removeLinkedProduct(it) },
                 onConfirmSelection = { viewModel.updateLinkedProducts(it) },
+                onNavigateToPostPreview = {},
                 onSave = { viewModel.editPost() },
-                onBack = onBack
+                onBack = onBack,
             )
         }
     }
