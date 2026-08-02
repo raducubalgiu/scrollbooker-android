@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.tabs.info
+package com.example.scrollbooker.ui.profile.tabs.about
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ShapeDefaults

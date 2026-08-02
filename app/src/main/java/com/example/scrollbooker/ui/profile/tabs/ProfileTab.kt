@@ -10,7 +10,7 @@ sealed class ProfileTab(
     object Products: ProfileTab(route = "Products", icon = R.drawable.ic_shopping_outline)
     object Employees: ProfileTab(route = "Employees", icon = R.drawable.ic_users_outline)
     object Bookmarks: ProfileTab(route = "Bookmarks", icon = R.drawable.ic_bookmark_outline)
-    object Info: ProfileTab(route = "Info", icon = R.drawable.ic_location_outline)
+    object About: ProfileTab(route = "about", icon = R.drawable.ic_location_outline)
 
     companion object {
         fun getTabs(
@@ -23,7 +23,7 @@ sealed class ProfileTab(
                 if(isBusinessOrEmployee) add(Products)
                 if(isBusinessOrEmployee && !isEmployee) add(Employees)
                 if(isMyProfile) add(Bookmarks)
-                if(isBusinessOrEmployee) add(Info)
+                if(isBusinessOrEmployee) add(About)
             }
         }
     }

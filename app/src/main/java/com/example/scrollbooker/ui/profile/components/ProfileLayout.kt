@@ -40,9 +40,9 @@ import com.example.scrollbooker.ui.profile.components.userInfo.ProfileShimmer
 import com.example.scrollbooker.ui.profile.components.userInfo.ProfileUserInfo
 import com.example.scrollbooker.ui.profile.tabs.ProfileTab
 import com.example.scrollbooker.ui.profile.tabs.ProfileTabRow
+import com.example.scrollbooker.ui.profile.tabs.about.ProfileAboutTab
 import com.example.scrollbooker.ui.profile.tabs.bookmarks.ProfileBookmarksTab
 import com.example.scrollbooker.ui.profile.tabs.employees.ProfileEmployeesTab
-import com.example.scrollbooker.ui.profile.tabs.info.ProfileInfoTab
 import com.example.scrollbooker.ui.profile.tabs.posts.ProfilePostsTab
 import com.example.scrollbooker.ui.profile.tabs.products.ProfileProductsTab
 import kotlinx.coroutines.flow.Flow
@@ -171,10 +171,10 @@ fun ProfileLayout(
                                         )
                                     }
 
-                                    ProfileTab.Info -> {
+                                    ProfileTab.About -> {
                                         val about by aboutState.collectAsStateWithLifecycle()
 
-                                        ProfileInfoTab(
+                                        ProfileAboutTab(
                                             isEmployee = isEmployee,
                                             about = about,
                                             onNavigateToUserProfile = { userId, username ->

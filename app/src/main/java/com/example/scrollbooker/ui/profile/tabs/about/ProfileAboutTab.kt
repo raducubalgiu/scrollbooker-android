@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.tabs.info
+package com.example.scrollbooker.ui.profile.tabs.about
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,7 +33,7 @@ import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
-fun ProfileInfoTab(
+fun ProfileAboutTab(
     isEmployee: Boolean,
     about: FeatureState<UserProfileAbout>,
     onNavigateToUserProfile: (userId: Int, username: String) -> Unit

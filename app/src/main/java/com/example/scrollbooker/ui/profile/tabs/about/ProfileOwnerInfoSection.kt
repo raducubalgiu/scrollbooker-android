@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.profile.tabs.info
+package com.example.scrollbooker.ui.profile.tabs.about
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background

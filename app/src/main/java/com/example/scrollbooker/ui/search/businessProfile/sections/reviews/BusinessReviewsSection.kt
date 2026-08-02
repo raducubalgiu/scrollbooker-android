@@ -15,11 +15,9 @@ import androidx.compose.ui.text.font.FontWeight
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileReviews
 import com.example.scrollbooker.ui.theme.bodyMedium
-import com.example.scrollbooker.ui.theme.headlineSmall
 import com.example.scrollbooker.ui.theme.titleLarge
 
 @Composable
@@ -76,39 +74,5 @@ fun BusinessReviewsSection(
                 onClick = {  }
             )
         }
-
-//
-//        LazyRow(modifier = Modifier.padding(top = BasePadding)) {
-//            item { Spacer(Modifier.width(BasePadding)) }
-//
-//            items(10) {
-//                Box(
-//                    modifier = Modifier
-//                        .height(185.dp)
-//                        .clip(ShapeDefaults.Small)
-//                        .aspectRatio(9f / 12f)
-//                        .background(
-//                            brush = Brush.verticalGradient(
-//                                colors = listOf(
-//                                    Color.Black.copy(alpha = 0.1f),
-//                                    Color.Transparent,
-//                                    Color.Black.copy(alpha = 0.2f)
-//                                )
-//                            )
-//                        )
-//                ) {
-//                    AsyncImage(
-//                        model = "",
-//                        contentDescription = null,
-//                        contentScale = ContentScale.Crop,
-//                        modifier = Modifier.fillMaxSize()
-//                    )
-//                }
-//
-//                Spacer(Modifier.width(SpacingM))
-//            }
-//
-//            item { Spacer(Modifier.width(BasePadding)) }
-//        }
     }
 }
