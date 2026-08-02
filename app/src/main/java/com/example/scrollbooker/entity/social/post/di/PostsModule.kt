@@ -15,6 +15,7 @@ import com.example.scrollbooker.entity.social.post.domain.useCase.GetUserVideoRe
 import com.example.scrollbooker.entity.social.post.domain.useCase.LikePostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.UnBookmarkPostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.UnLikePostUseCase
+import com.example.scrollbooker.entity.social.post.domain.useCase.UpdatePostUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -55,6 +56,14 @@ object PostsModule {
         apiService: PostApiService,
     ): PostRepository {
         return PostRepositoryImpl(apiService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUpdatePostUseCase(
+        repository: PostRepository,
+    ): UpdatePostUseCase {
+        return UpdatePostUseCase(repository)
     }
 
     @Provides

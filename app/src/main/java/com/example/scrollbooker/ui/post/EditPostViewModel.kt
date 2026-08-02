@@ -11,6 +11,7 @@ import com.example.scrollbooker.entity.booking.products.domain.useCase.GetPostLi
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByBusinessIdAndEmployeeIdUseCase
 import com.example.scrollbooker.entity.social.post.domain.model.PostMediaFile
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetPostByIdUseCase
+import com.example.scrollbooker.entity.social.post.domain.useCase.UpdatePostUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
@@ -44,6 +45,7 @@ class EditPostViewModel @Inject constructor(
     private val getPostByIdUseCase: GetPostByIdUseCase,
     private val getProductsByBusinessIdAndEmployeeIdUseCase: GetProductsByBusinessIdAndEmployeeIdUseCase,
     private val getPostLinkedProductsUseCase: GetPostLinkedProductsUseCase,
+    private val updatePostUseCase: UpdatePostUseCase,
     private val authDataStore: AuthDataStore,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
@@ -165,5 +167,25 @@ class EditPostViewModel @Inject constructor(
         _linkedProducts.value = _linkedProducts.value.minus(product)
     }
 
-    fun editPost() { /* ... */ }
+    fun editPost() {
+        viewModelScope.launch {
+            _isSaving.value = FeatureState.Loading
+
+            val description = _description.value ?: ""
+            val linkedProductIds = _linkedProducts.value.map { it.id }
+
+            val result = updatePostUseCase(postId, description, linkedProductIds)
+
+            result
+                .onSuccess { post ->
+                    _isSaving.value = FeatureState.Success(Unit)
+                }
+                .onFailure { e ->
+                    Timber.tag("EditPost").e(e, "Failed to update post")
+                    _events.tryEmit(SnackBarUiEvent.somethingWentWrong())
+
+                    _isSaving.value = FeatureState.Error(e)
+                }
+        }
+    }
 }

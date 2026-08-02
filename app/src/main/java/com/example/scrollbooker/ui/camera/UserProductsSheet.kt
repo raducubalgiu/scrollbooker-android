@@ -60,6 +60,7 @@ fun UserProductsSheet(
     }
 
     val bottomBarHeight = 80.dp
+    val isEnabled = localLinkedProducts.isNotEmpty() && localLinkedProducts != linkedProducts
 
     Sheet(
         modifier = Modifier.statusBarsPadding(),
@@ -134,13 +135,13 @@ fun UserProductsSheet(
                         )
 
                         Button(
-                            enabled = localLinkedProducts.isNotEmpty(),
+                            enabled = isEnabled,
                             onClick = {
                                 scope.launch {
                                     onConfirmSelection(localLinkedProducts)
                                     sheetState.hide()
                                 }
-                            }
+                            },
                         ) {
                             Text(
                                 text = stringResource(R.string.confirm),

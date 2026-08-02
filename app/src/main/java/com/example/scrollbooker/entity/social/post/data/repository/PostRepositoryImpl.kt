@@ -9,6 +9,7 @@ import com.example.scrollbooker.entity.social.post.data.remote.PostExplorePaging
 import com.example.scrollbooker.entity.social.post.data.remote.PostFollowingPagingSource
 import com.example.scrollbooker.entity.social.post.data.remote.PostPagingSource
 import com.example.scrollbooker.entity.social.post.data.remote.PostVideoReviewsPagingSource
+import com.example.scrollbooker.entity.social.post.data.remote.UpdatePostRequest
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.social.post.domain.repository.PostRepository
 import kotlinx.coroutines.flow.Flow
@@ -63,6 +64,13 @@ class PostRepositoryImpl @Inject constructor(
 
     override suspend fun unBookmarkPost(postId: Int) {
         return apiService.unBookmarkPost(postId)
+    }
+
+    override suspend fun updatePostById(
+        postId: Int,
+        request: UpdatePostRequest
+    ): Post {
+        return apiService.updatePostById(postId, request).toDomain()
     }
 
     override suspend fun getPostById(postId: Int): Post {

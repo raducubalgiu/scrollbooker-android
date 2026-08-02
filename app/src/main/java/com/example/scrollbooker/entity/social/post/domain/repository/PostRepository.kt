@@ -2,6 +2,7 @@ package com.example.scrollbooker.entity.social.post.domain.repository
 
 import androidx.paging.PagingData
 import com.example.scrollbooker.entity.social.post.data.remote.CreatePostRequest
+import com.example.scrollbooker.entity.social.post.data.remote.UpdatePostRequest
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import kotlinx.coroutines.flow.Flow
 
@@ -19,6 +20,7 @@ interface PostRepository {
     suspend fun bookmarkPost(postId: Int)
     suspend fun unBookmarkPost(postId: Int)
 
+    suspend fun updatePostById(postId: Int, request: UpdatePostRequest): Post
     suspend fun getPostById(postId: Int): Post
     suspend fun createPost(request: CreatePostRequest)
 }
