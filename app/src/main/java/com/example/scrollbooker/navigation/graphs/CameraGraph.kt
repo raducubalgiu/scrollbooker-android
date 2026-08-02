@@ -11,6 +11,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.IntOffset
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -23,6 +24,7 @@ import com.example.scrollbooker.ui.camera.CameraScreen
 import com.example.scrollbooker.ui.camera.CameraViewModel
 import com.example.scrollbooker.ui.camera.CreatePostPreviewScreen
 import com.example.scrollbooker.ui.camera.CreatePostScreen
+import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.cameraGraph(
     navController: NavHostController,
@@ -110,6 +112,13 @@ fun NavGraphBuilder.cameraGraph(
                 onBack = { navController.popBackStack() },
                 onNavigateToPostPreview = {
                     profileNavigate.toCreatePostPreview()
+                },
+                onPostCreated = {
+                    navController.navigate(MainRoute.MyProfile.route) {
+                        popUpTo(MainRoute.CameraNavigator.route) {
+                            inclusive = true
+                        }
+                    }
                 }
             )
         }

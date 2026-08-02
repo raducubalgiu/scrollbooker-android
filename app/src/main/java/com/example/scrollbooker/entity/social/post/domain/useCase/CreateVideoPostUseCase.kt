@@ -22,6 +22,7 @@ class CreateVideoPostUseCase @Inject constructor(
     suspend operator fun invoke(
         videoUri: Uri,
         description: String?,
+        linkedProductIds: List<Int>,
         businessOrEmployeeId: Int?,
         isVideoReview: Boolean,
         videoReviewMessage: String?,
@@ -35,7 +36,7 @@ class CreateVideoPostUseCase @Inject constructor(
 
             if (durationMs > MAX_VIDEO_DURATION_MS) {
                 throw IllegalArgumentException(
-                    "The video exceeds the maximum allowed duration of 30 seconds."
+                    "The video exceeds the maximum allowed duration of 60 seconds."
                 )
             }
 
@@ -54,7 +55,7 @@ class CreateVideoPostUseCase @Inject constructor(
                     description = description,
                     provider = "cloudflare_stream",
                     providerUid = direct.providerUid,
-                    linkedProductIds = emptyList(),
+                    linkedProductIds = linkedProductIds,
                     businessOrEmployeeId = businessOrEmployeeId,
                     isVideoReview = isVideoReview,
                     videoReviewMessage = videoReviewMessage,

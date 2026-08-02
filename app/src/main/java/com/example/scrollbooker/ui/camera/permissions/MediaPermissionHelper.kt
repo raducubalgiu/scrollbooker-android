@@ -1,10 +1,12 @@
-package com.example.scrollbooker.ui.camera
+package com.example.scrollbooker.ui.camera.permissions
 
 import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.content.ContextCompat
+import com.example.scrollbooker.ui.camera.permissions.MediaPermissionState
 
 object MediaPermissionHelper {
 
@@ -81,7 +83,7 @@ object MediaPermissionHelper {
                     partialGranted -> MediaPermissionState.PARTIAL
                     grants.values.any { it == false } -> {
                         val canShowRationale =
-                            (context as? android.app.Activity)?.shouldShowRequestPermissionRationale(
+                            (context as? Activity)?.shouldShowRequestPermissionRationale(
                                 Manifest.permission.READ_MEDIA_VIDEO
                             ) ?: false
 
@@ -98,7 +100,7 @@ object MediaPermissionHelper {
                     MediaPermissionState.GRANTED
                 } else {
                     val canShowRationale =
-                        (context as? android.app.Activity)?.shouldShowRequestPermissionRationale(
+                        (context as? Activity)?.shouldShowRequestPermissionRationale(
                             Manifest.permission.READ_MEDIA_VIDEO
                         ) ?: false
 
@@ -113,7 +115,7 @@ object MediaPermissionHelper {
                     MediaPermissionState.GRANTED
                 } else {
                     val canShowRationale =
-                        (context as? android.app.Activity)?.shouldShowRequestPermissionRationale(
+                        (context as? Activity)?.shouldShowRequestPermissionRationale(
                             Manifest.permission.READ_EXTERNAL_STORAGE
                         ) ?: false
 

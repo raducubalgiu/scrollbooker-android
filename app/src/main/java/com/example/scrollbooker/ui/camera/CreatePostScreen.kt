@@ -7,21 +7,23 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.scrollbooker.components.core.headers.Header
-import com.example.scrollbooker.core.presentation.GlobalUploadStatus
+import com.example.scrollbooker.core.snackbar.CustomSnackBar
+import com.example.scrollbooker.core.snackbar.rememberSnackBarController
+import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.navigation.navigators.NavigationEvent
 import com.example.scrollbooker.ui.camera.components.CreatePostBottomBar
 import com.example.scrollbooker.ui.camera.components.CreatePostHeader
 
@@ -31,37 +33,47 @@ import com.example.scrollbooker.ui.camera.components.CreatePostHeader
 fun CreatePostScreen(
     viewModel: CameraViewModel,
     onBack: () -> Unit,
-    onNavigateToPostPreview: () -> Unit
+    onNavigateToPostPreview: () -> Unit,
+    onPostCreated: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val description by viewModel.description.collectAsStateWithLifecycle()
-    val uploadStatus by viewModel.uploadStatus.collectAsStateWithLifecycle()
+    val isSaving by viewModel.isSaving.collectAsStateWithLifecycle()
+    val isLoading = isSaving is FeatureState.Loading
+
+    val hostState = remember { SnackbarHostState() }
+    val snackBarController = rememberSnackBarController(hostState)
+
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            snackBarController.show(event)
+        }
+    }
+
+    LaunchedEffect(viewModel.navigationEvents) {
+        viewModel.navigationEvents.collect { event ->
+            when (event) {
+                NavigationEvent.NavigateToProfile -> onPostCreated()
+            }
+        }
+    }
 
     val focusManager = LocalFocusManager.current
     val verticalScroll = rememberScrollState()
     val previewHeight = 160.dp
-
-    LaunchedEffect(uploadStatus) {
-        if (uploadStatus is GlobalUploadStatus.Uploading) {
-            onBack()
-        }
-    }
 
     Scaffold(
         topBar = { Header(onBack = onBack) },
         bottomBar = {
             CreatePostBottomBar(
                 onCreate = {
-                    state.selectedUri?.let { uri ->
-                        viewModel.createPost(
-                            description = description,
-                            videoUri = uri
-                        )
-                    }
+                    state.selectedUri?.let { viewModel.createPost(videoUri = it) }
                 },
-                isLoading = false
+                isLoading = isLoading,
+                isDisabled = isLoading
             )
-        }
+        },
+        snackbarHost = { CustomSnackBar(hostState = hostState) }
     ) { innerPadding ->
         Box(modifier = Modifier
             .fillMaxSize()
@@ -79,18 +91,6 @@ fun CreatePostScreen(
                 onDescriptionChange = { viewModel.setDescription(it) },
                 onNavigateToPostPreview = onNavigateToPostPreview
             )
-
-            if (uploadStatus is GlobalUploadStatus.Error) {
-                val errorMessage = (uploadStatus as GlobalUploadStatus.Error).message
-                AlertDialog(
-                    onDismissRequest = {  },
-                    title = { Text("Error starting post") },
-                    text = { Text(errorMessage) },
-                    confirmButton = {
-                        TextButton(onClick = {  }) { Text("OK") }
-                    }
-                )
-            }
         }
     }
 }

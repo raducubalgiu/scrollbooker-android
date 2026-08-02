@@ -12,15 +12,21 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
-import com.example.scrollbooker.core.presentation.UploadManager
+import com.example.scrollbooker.core.snackbar.SnackBarUiEvent
+import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.permission.domain.repository.PermissionRepository
 import com.example.scrollbooker.entity.social.post.domain.useCase.CreateVideoPostUseCase
+import com.example.scrollbooker.navigation.navigators.NavigationEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -28,20 +34,36 @@ import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
+
 
 @HiltViewModel
 class CameraViewModel @Inject constructor(
-    private val uploadManager: UploadManager,
     private val permissionRepository: PermissionRepository,
+    private val createVideoPostUseCase: CreateVideoPostUseCase,
     @ApplicationContext private val context: Context
 ): ViewModel() {
-    val uploadStatus = uploadManager.uploadStatus
+    private val _isSaving = MutableStateFlow<FeatureState<Unit>?>(null)
+    val isSaving: StateFlow<FeatureState<Unit>?> = _isSaving
+
+    private val _navigationEvents = Channel<NavigationEvent>(Channel.BUFFERED)
+    val navigationEvents = _navigationEvents.receiveAsFlow()
 
     private val _description = MutableStateFlow<String>("")
     val description: StateFlow<String> = _description.asStateFlow()
 
+    private val _linkedProductIds = MutableStateFlow<Set<Int>>(emptySet())
+    val linkedProductIds: StateFlow<Set<Int>> = _linkedProductIds.asStateFlow()
+
     private val _mediaThumbUri = MutableStateFlow<String?>(null)
     val mediaThumbUri: StateFlow<String?> = _mediaThumbUri.asStateFlow()
+
+    private val _events = MutableSharedFlow<SnackBarUiEvent.Show>(
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
+    val events = _events.asSharedFlow()
 
     fun setDescription(desc: String) {
         _description.value = desc
@@ -234,26 +256,33 @@ class CameraViewModel @Inject constructor(
         }
     }
 
-    fun createPost(
-        description: String?,
-        videoUri: Uri,
-        businessOrEmployeeId: Int? = null,
-        isVideoReview: Boolean = false,
-        videoReviewMessage: String? = null,
-        rating: Int? = null
-    ) {
-        val coverUri = _uiState.value.coverUri
+    fun createPost(videoUri: Uri) {
+        viewModelScope.launch {
+            _isSaving.value = FeatureState.Loading
 
-        uploadManager.startUpload(
-            videoUri = videoUri,
-            coverUri = coverUri,
-            description = description,
-            businessOrEmployeeId = businessOrEmployeeId,
-            isVideoReview = isVideoReview,
-            videoReviewMessage = videoReviewMessage,
-            rating = rating
-        )
+            val result = withVisibleLoading {
+                createVideoPostUseCase(
+                    videoUri = videoUri,
+                    description = _description.value,
+                    linkedProductIds = _linkedProductIds.value.toList(),
+                    businessOrEmployeeId = null,
+                    isVideoReview = false,
+                    videoReviewMessage = null,
+                    rating = null,
+                    onProgress = {}
+                )
+            }
 
-        pause()
+            result
+                .onFailure { e ->
+                    _isSaving.value = FeatureState.Error(e)
+                    _events.tryEmit(SnackBarUiEvent.somethingWentWrong())
+                    Timber.tag("CreatePost").e(e, "ERROR: on creating video post")
+                }
+                .onSuccess {
+                    _isSaving.value = FeatureState.Success(Unit)
+                    _navigationEvents.send(NavigationEvent.NavigateToProfile)
+                }
+        }
     }
 }

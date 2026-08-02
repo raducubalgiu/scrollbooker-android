@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.camera
+package com.example.scrollbooker.ui.camera.permissions
 
 enum class MediaPermissionState {
     CHECKING,
@@ -7,4 +7,3 @@ enum class MediaPermissionState {
     DENIED,
     DENIED_PERMANENTLY
 }
-

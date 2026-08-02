@@ -16,6 +16,8 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.example.scrollbooker.ui.camera.components.CameraActions
 import com.example.scrollbooker.ui.camera.components.CameraContent
+import com.example.scrollbooker.ui.camera.permissions.MediaPermissionHelper
+import com.example.scrollbooker.ui.camera.permissions.MediaPermissionState
 import com.example.scrollbooker.ui.theme.BackgroundDark
 
 @Composable

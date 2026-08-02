@@ -42,6 +42,8 @@ import androidx.compose.runtime.*
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.example.scrollbooker.ui.camera.permissions.MediaPermissionHelper
+import com.example.scrollbooker.ui.camera.permissions.MediaPermissionState
 
 @Composable
 fun CameraGalleryScreen(
