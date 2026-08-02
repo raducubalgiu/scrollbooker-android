@@ -2,6 +2,7 @@ package com.example.scrollbooker.entity.social.post.data.repository
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.example.scrollbooker.entity.social.post.data.mappers.toDomain
 import com.example.scrollbooker.entity.social.post.data.remote.CreatePostRequest
 import com.example.scrollbooker.entity.social.post.data.remote.PostApiService
 import com.example.scrollbooker.entity.social.post.data.remote.PostExplorePagingSource
@@ -62,6 +63,10 @@ class PostRepositoryImpl @Inject constructor(
 
     override suspend fun unBookmarkPost(postId: Int) {
         return apiService.unBookmarkPost(postId)
+    }
+
+    override suspend fun getPostById(postId: Int): Post {
+        return apiService.getPostById(postId).toDomain()
     }
 
     override suspend fun createPost(request: CreatePostRequest) {

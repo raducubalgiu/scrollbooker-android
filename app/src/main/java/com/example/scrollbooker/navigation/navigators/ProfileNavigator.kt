@@ -27,6 +27,18 @@ class ProfileNavigator (
         }
     }
 
+    fun toEditPost(postId: Int) {
+        navController.navigate("${MainRoute.EditPost.route}/$postId") {
+            launchSingleTop = true
+        }
+    }
+
+    fun toPostStatistics(postId: Int) {
+        navController.navigate("${MainRoute.PostStatistics.route}/$postId") {
+            launchSingleTop = true
+        }
+    }
+
     fun toSocial(socialParam: NavigateSocialParam) {
         navController.navigate(MainRoute.Social.createRoute(socialParam)) {
             launchSingleTop = true

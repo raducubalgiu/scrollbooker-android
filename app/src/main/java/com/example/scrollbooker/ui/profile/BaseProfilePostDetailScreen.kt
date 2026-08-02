@@ -118,7 +118,9 @@ fun BaseProfilePostDetailScreen(
                     }
 
                     profileNavigate.toBookingFromProduct(product, source)
-                }
+                },
+                onNavigateToEditPost = { profileNavigate.toEditPost(it) },
+                onNavigateToStatistics = { profileNavigate.toPostStatistics(it) }
             )
         }
     }

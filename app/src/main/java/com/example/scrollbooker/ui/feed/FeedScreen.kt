@@ -89,7 +89,9 @@ fun FeedScreen(
                         else BookingSourceEnum.FOLLOWING_FEED
 
                     feedNavigate.toBookingFromProduct(product, source)
-                }
+                },
+                onNavigateToEditPost = { feedNavigate.toEditPost(it) },
+                onNavigateToStatistics = { feedNavigate.toPostStatistics(it) }
             )
         }
     }

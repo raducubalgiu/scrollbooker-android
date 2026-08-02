@@ -1,4 +1,6 @@
 package com.example.scrollbooker.navigation.host
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -6,6 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.scrollbooker.navigation.graphs.bookingGraph
+import com.example.scrollbooker.navigation.graphs.postUtilityGraph
 import com.example.scrollbooker.navigation.graphs.socialGraph
 import com.example.scrollbooker.navigation.graphs.userProfileGraph
 import com.example.scrollbooker.navigation.navigators.BookingNavigator
@@ -24,24 +27,32 @@ import com.example.scrollbooker.ui.feed.FollowingFeedViewModel
 
 @Composable
 fun FeedNavHost(navController: NavHostController) {
-    val profileNavigate = remember(navController) {
-        ProfileNavigator(navController)
-    }
-
-    val feedNavigate = remember(navController) {
-        FeedNavigator(navController)
-    }
-
-    val bookingNavigate = remember(navController) {
-        BookingNavigator(navController)
-    }
+    val profileNavigate = remember(navController) { ProfileNavigator(navController) }
+    val feedNavigate = remember(navController) { FeedNavigator(navController) }
+    val bookingNavigate = remember(navController) { BookingNavigator(navController) }
 
     NavHost(
         navController = navController,
         startDestination = MainRoute.Feed.route,
         enterTransition = { slideInFromRight() },
-        exitTransition = { slideOutToLeft() },
-        popEnterTransition = { slideInFromLeft() },
+        exitTransition = {
+            val route = targetState.destination.route
+            if (route?.startsWith(MainRoute.EditPost.route) == true ||
+                route?.startsWith(MainRoute.PostStatistics.route) == true) {
+                ExitTransition.None
+            } else {
+                slideOutToLeft()
+            }
+        },
+        popEnterTransition = {
+            val route = initialState.destination.route
+            if (route?.startsWith(MainRoute.EditPost.route) == true ||
+                route?.startsWith(MainRoute.PostStatistics.route) == true) {
+                EnterTransition.None
+            } else {
+                slideInFromLeft()
+            }
+        },
         popExitTransition = { slideOutToRight() }
     ) {
         composable(route = MainRoute.Feed.route) {
@@ -70,5 +81,6 @@ fun FeedNavHost(navController: NavHostController) {
         userProfileGraph(navController, profileNavigate)
         bookingGraph(navController, bookingNavigate)
         socialGraph(navController, profileNavigate)
+        postUtilityGraph(navController)
     }
 }

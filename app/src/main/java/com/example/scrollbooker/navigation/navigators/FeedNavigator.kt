@@ -32,4 +32,12 @@ class FeedNavigator (
             source = source
         )
     }
+
+    fun toEditPost(postId: Int) {
+        navController.navigate("${MainRoute.EditPost.route}/$postId")
+    }
+
+    fun toPostStatistics(postId: Int) {
+        navController.navigate("${MainRoute.PostStatistics.route}/$postId")
+    }
 }

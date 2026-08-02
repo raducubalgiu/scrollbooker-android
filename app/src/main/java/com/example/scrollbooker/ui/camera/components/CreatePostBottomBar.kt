@@ -28,6 +28,7 @@ fun CreatePostBottomBar(
         MainButton(
             modifier = Modifier
                 .padding(horizontal = BasePadding)
+                .padding(top = BasePadding)
                 .padding(bottom = bottomInset),
             title = stringResource(R.string.postNow),
             onClick = onCreate,

@@ -9,6 +9,7 @@ import com.example.scrollbooker.entity.social.post.domain.useCase.BookmarkPostUs
 import com.example.scrollbooker.entity.social.post.domain.useCase.CreateVideoPostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetExplorePostsUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetFollowingPostsUseCase
+import com.example.scrollbooker.entity.social.post.domain.useCase.GetPostByIdUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetUserPostsUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetUserVideoReviewsPostsUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.LikePostUseCase
@@ -54,6 +55,14 @@ object PostsModule {
         apiService: PostApiService,
     ): PostRepository {
         return PostRepositoryImpl(apiService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetPostByIdUseCase(
+        repository: PostRepository,
+    ): GetPostByIdUseCase {
+        return GetPostByIdUseCase(repository)
     }
 
     @Provides

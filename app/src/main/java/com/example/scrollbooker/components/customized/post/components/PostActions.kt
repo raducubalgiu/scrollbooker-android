@@ -27,6 +27,7 @@ fun PostActions(
     isSavingLike: Boolean,
     isSavingBookmark: Boolean,
     isVideoReview: Boolean,
+    isOwnPost: Boolean,
     counters: PostCounters,
     userActions: UserPostActions,
     onAction: (PostSheetActionEnum) -> Unit,
@@ -100,5 +101,14 @@ fun PostActions(
             tint = Color.White,
             onClick = {}
         )
+
+        if(isOwnPost) {
+            PostAction(
+                isEnabled = true,
+                icon = R.drawable.ic_elipsis_horizontal,
+                tint = Color.White,
+                onClick = { onAction(PostSheetActionEnum.OPEN_MORE) }
+            )
+        }
     }
 }

@@ -19,5 +19,6 @@ interface PostRepository {
     suspend fun bookmarkPost(postId: Int)
     suspend fun unBookmarkPost(postId: Int)
 
+    suspend fun getPostById(postId: Int): Post
     suspend fun createPost(request: CreatePostRequest)
 }

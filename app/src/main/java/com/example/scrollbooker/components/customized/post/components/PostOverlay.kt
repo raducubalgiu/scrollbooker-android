@@ -123,6 +123,7 @@ fun PostOverlay(
                     isSavingLike = isSavingLike,
                     isSavingBookmark = isSavingBookmark,
                     isVideoReview = post.isVideoReview,
+                    isOwnPost = post.isOwnPost,
                     counters = post.counters,
                     userActions = post.userActions,
                     onAction = onAction,

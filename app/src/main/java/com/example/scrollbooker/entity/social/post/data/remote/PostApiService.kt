@@ -14,6 +14,11 @@ interface PostApiService {
         @Body request: CreatePostRequest
     )
 
+    @GET("posts/{postId}")
+    suspend fun getPostById(
+        @Path("postId") postId: Int,
+    ): PostDto
+
     @GET("posts/explore")
     suspend fun getExplorePosts(
         @Query("business_types") selectedBusinessTypes: List<Int?>,

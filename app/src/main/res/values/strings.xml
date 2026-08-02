@@ -439,6 +439,8 @@
     <string name="cancellationPolicy">Politica de anulare</string>
     <string name="cancellationPolicyDescription">Anularea gratuită este disponibilă cu până la 24 de ore înainte de ora programată. Ulterior, se pot aplica taxe conform regulamentului afacerii.</string>
     <string name="recommendedServices">Servicii recomandate</string>
+    <string name="myPost">Postarea mea</string>
+    <string name="statistics">Statistici</string>
 
     <!-- Follow & Social Notifications -->
     <string name="notification_started_following_you">a început să te urmărească</string>

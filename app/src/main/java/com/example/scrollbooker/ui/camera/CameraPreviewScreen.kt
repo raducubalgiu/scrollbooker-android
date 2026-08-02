@@ -55,6 +55,10 @@ fun CameraPreviewScreen(
         viewModel.generateCoverIfNeeded()
     }
 
+    LaunchedEffect(Unit) {
+        viewModel.loadUserProducts()
+    }
+
     val playerView = remember {
         PlayerView(context).apply {
             useController = false

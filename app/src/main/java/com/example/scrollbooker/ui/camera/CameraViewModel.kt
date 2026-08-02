@@ -15,9 +15,13 @@ import androidx.media3.exoplayer.ExoPlayer
 import com.example.scrollbooker.core.snackbar.SnackBarUiEvent
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
+import com.example.scrollbooker.entity.booking.products.domain.model.Product
+import com.example.scrollbooker.entity.booking.products.domain.model.UserProducts
+import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByBusinessIdAndEmployeeIdUseCase
 import com.example.scrollbooker.entity.permission.domain.repository.PermissionRepository
 import com.example.scrollbooker.entity.social.post.domain.useCase.CreateVideoPostUseCase
 import com.example.scrollbooker.navigation.navigators.NavigationEvent
+import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -35,15 +39,20 @@ import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
-
 
 @HiltViewModel
 class CameraViewModel @Inject constructor(
     private val permissionRepository: PermissionRepository,
     private val createVideoPostUseCase: CreateVideoPostUseCase,
+    private val getProductsByBusinessIdAndEmployeeIdUseCase: GetProductsByBusinessIdAndEmployeeIdUseCase,
+    private val authDataStore: AuthDataStore,
     @ApplicationContext private val context: Context
 ): ViewModel() {
+    private val _userProducts = MutableStateFlow<FeatureState<UserProducts>>(FeatureState.Loading)
+    val userProducts: StateFlow<FeatureState<UserProducts>> = _userProducts.asStateFlow()
+
     private val _isSaving = MutableStateFlow<FeatureState<Unit>?>(null)
     val isSaving: StateFlow<FeatureState<Unit>?> = _isSaving
 
@@ -53,8 +62,8 @@ class CameraViewModel @Inject constructor(
     private val _description = MutableStateFlow<String>("")
     val description: StateFlow<String> = _description.asStateFlow()
 
-    private val _linkedProductIds = MutableStateFlow<Set<Int>>(emptySet())
-    val linkedProductIds: StateFlow<Set<Int>> = _linkedProductIds.asStateFlow()
+    private val _linkedProducts = MutableStateFlow<Set<Product>>(emptySet())
+    val linkedProducts: StateFlow<Set<Product>> = _linkedProducts.asStateFlow()
 
     private val _mediaThumbUri = MutableStateFlow<String?>(null)
     val mediaThumbUri: StateFlow<String?> = _mediaThumbUri.asStateFlow()
@@ -67,6 +76,10 @@ class CameraViewModel @Inject constructor(
 
     fun setDescription(desc: String) {
         _description.value = desc
+    }
+
+    fun updateLinkedProducts(products: Set<Product>) {
+        _linkedProducts.value = products
     }
 
     fun loadMediaThumb() {
@@ -256,6 +269,41 @@ class CameraViewModel @Inject constructor(
         }
     }
 
+    fun loadUserProducts() {
+        viewModelScope.launch {
+            _userProducts.value = FeatureState.Loading
+
+            try {
+                val userId = authDataStore.getUserId().firstOrNull()
+                val businessId = authDataStore.getBusinessId().firstOrNull()
+                val businessOwnerId = authDataStore.getBusinessOwnerId().firstOrNull()
+
+                if (businessId == null) {
+                    _userProducts.value = FeatureState.Error(
+                        IllegalStateException("Business ID is missing.")
+                    )
+                    return@launch
+                }
+
+                val resolvedEmployeeId = if (businessOwnerId == userId) null else userId
+
+                val result = getProductsByBusinessIdAndEmployeeIdUseCase(
+                    businessId = businessId,
+                    employeeId = resolvedEmployeeId,
+                    onlyServicesWithProducts = true,
+                    productsLimitPerService = null
+                )
+
+                _userProducts.value = result
+
+            } catch (e: Exception) {
+                Timber.tag("BookingProducts").e(e, "ERROR: Failed to read auth data or fetch products")
+                _userProducts.value = FeatureState.Error(e)
+            }
+        }
+    }
+
+
     fun createPost(videoUri: Uri) {
         viewModelScope.launch {
             _isSaving.value = FeatureState.Loading
@@ -264,7 +312,7 @@ class CameraViewModel @Inject constructor(
                 createVideoPostUseCase(
                     videoUri = videoUri,
                     description = _description.value,
-                    linkedProductIds = _linkedProductIds.value.toList(),
+                    linkedProductIds = _linkedProducts.value.map { it.id },
                     businessOrEmployeeId = null,
                     isVideoReview = false,
                     videoReviewMessage = null,

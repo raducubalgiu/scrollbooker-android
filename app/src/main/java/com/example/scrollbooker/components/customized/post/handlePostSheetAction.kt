@@ -19,5 +19,6 @@ fun handlePostSheetAction(
             val id = if(post.isVideoReview) post.businessOwner.id else post.user.id
             handleOpenSheet(ReviewsSheet(id))
         }
+        PostSheetActionEnum.OPEN_MORE -> handleOpenSheet(PostSheetsContent.MoreSheet(post.id))
     }
 }

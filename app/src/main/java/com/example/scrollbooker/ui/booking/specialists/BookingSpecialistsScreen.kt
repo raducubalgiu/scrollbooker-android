@@ -82,6 +82,7 @@ fun BookingSpecialistsScreen(
             )
 
             if (selectedEmployeeId == null) UnselectedSpecialistOverlay()
+
             else LazyColumn(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
