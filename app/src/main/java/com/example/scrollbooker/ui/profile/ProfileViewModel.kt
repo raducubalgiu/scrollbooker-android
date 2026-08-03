@@ -1,17 +1,14 @@
 package com.example.scrollbooker.ui.profile
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.example.scrollbooker.components.customized.post.PostInteractionStore
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.components.customized.post.VideoPlayerManager
 import com.example.scrollbooker.entity.booking.employee.domain.useCase.GetEmployeesByOwnerUseCase
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByBusinessIdAndEmployeeIdUseCase
 import com.example.scrollbooker.entity.booking.schedule.domain.useCase.GetSchedulesByUserIdUseCase
 import com.example.scrollbooker.entity.social.bookmark.domain.useCase.GetUserBookmarkedPostsUseCase
-import com.example.scrollbooker.entity.social.post.domain.useCase.BookmarkPostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetUserPostsUseCase
-import com.example.scrollbooker.entity.social.post.domain.useCase.LikePostUseCase
-import com.example.scrollbooker.entity.social.post.domain.useCase.UnBookmarkPostUseCase
-import com.example.scrollbooker.entity.social.post.domain.useCase.UnLikePostUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserProfileAboutUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserProfileUseCase
 import com.example.scrollbooker.entity.user.userSocial.domain.useCase.FollowUserUseCase
@@ -39,10 +36,7 @@ class ProfileViewModel @Inject constructor(
     getProductsByBusinessIdAndEmployeeIdUseCase: GetProductsByBusinessIdAndEmployeeIdUseCase,
     getSchedulesByUserIdUseCase: GetSchedulesByUserIdUseCase,
     getUserProfileAboutUseCase: GetUserProfileAboutUseCase,
-    likePostUseCase: LikePostUseCase,
-    unLikePostUseCase: UnLikePostUseCase,
-    bookmarkPostUseCase: BookmarkPostUseCase,
-    unBookmarkPostUseCase: UnBookmarkPostUseCase,
+    postInteractionStore: PostInteractionStore,
     videoPlayerManager: VideoPlayerManager
 ): BaseProfileViewModel(
     shouldShowVisibleLoading = true,
@@ -53,10 +47,7 @@ class ProfileViewModel @Inject constructor(
     getProductsByBusinessIdAndEmployeeIdUseCase = getProductsByBusinessIdAndEmployeeIdUseCase,
     getSchedulesByUserIdUseCase = getSchedulesByUserIdUseCase,
     getUserProfileAboutUseCase = getUserProfileAboutUseCase,
-    likePostUseCase = likePostUseCase,
-    unLikePostUseCase = unLikePostUseCase,
-    bookmarkPostUseCase = bookmarkPostUseCase,
-    unBookmarkPostUseCase = unBookmarkPostUseCase,
+    postInteractionStore = postInteractionStore,
     videoPlayerManager = videoPlayerManager
 ) {
     private val userIdFlowInternal: StateFlow<Int?> = savedStateHandle.getStateFlow("userId", null)

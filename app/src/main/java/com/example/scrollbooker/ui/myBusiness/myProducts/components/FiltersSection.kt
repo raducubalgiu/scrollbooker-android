@@ -46,7 +46,10 @@ fun FiltersSection(
     filters: List<Filter>,
     selectedFilters: Map<Int, FilterSelection>,
     isLoadingFilters: Boolean,
-    actions: FiltersActions
+    onSingleOption: (filterId: Int, subFilterId: Int?) -> Unit,
+    onToggleMultiOption: (filterId: Int, subFilterId: Int) -> Unit,
+    onSetRange: (filterId: Int, from: java.math.BigDecimal?, to: java.math.BigDecimal?) -> Unit,
+    onToggleApplicable: (filterId: Int) -> Unit
 ) {
     AnimatedVisibility(
         visible = isVisible,
@@ -68,7 +71,7 @@ fun FiltersSection(
 
                 Spacer(Modifier.height(BasePadding))
 
-                filters.map { filter ->
+                filters.forEach { filter -> // Înlocuit .map cu .forEach deoarece nu returnăm o listă de UI
                     when(filter.type) {
                         FilterTypeEnum.OPTIONS -> {
                             if(filter.singleSelect) {
@@ -94,14 +97,12 @@ fun FiltersSection(
 
                                     InputSelect(
                                         label = filter.name,
-                                        placeholder = "Selecteaza filtrul",
+                                        placeholder = "Selectează filtrul",
                                         selectedOption = selectedOption,
                                         options = options,
                                         displayLabel = false,
                                         onValueChange = { value ->
-                                            //focusManager.clearFocus()
-
-                                            actions.singleOption(filter.id, value?.toInt())
+                                            onSingleOption(filter.id, value?.toIntOrNull())
                                         },
                                         isLoading = isLoadingFilters,
                                         isEnabled = !isLoadingFilters,
@@ -137,7 +138,7 @@ fun FiltersSection(
                                                 height = 55.dp,
                                                 checked = isChecked,
                                                 headLine = sub.name,
-                                                onCheckedChange = { actions.toggleMultiOption(filter.id, sub.id) }
+                                                onCheckedChange = { onToggleMultiOption(filter.id, sub.id) }
                                             )
 
                                             Spacer(Modifier.height(SpacingS))
@@ -163,16 +164,14 @@ fun FiltersSection(
                                 onMinim = {
                                     val minim = it.toBigDecimalOrNull()
                                     val maxim = (selectedFilters[filter.id] as? FilterSelection.Range)?.maxim
-
-                                    actions.setRange(filter.id, minim, maxim)
+                                    onSetRange(filter.id, minim, maxim)
                                 },
                                 onMaxim = {
                                     val minim = (selectedFilters[filter.id] as? FilterSelection.Range)?.minim
                                     val maxim = it.toBigDecimalOrNull()
-
-                                    actions.setRange(filter.id, minim, maxim)
+                                    onSetRange(filter.id, minim, maxim)
                                 },
-                                onIsApplicable = { actions.toggleApplicable(filter.id) }
+                                onIsApplicable = { onToggleApplicable(filter.id) }
                             )
                         }
                         null -> Unit
@@ -181,6 +180,5 @@ fun FiltersSection(
             }
         }
     }
-
     Spacer(Modifier.height(BasePadding))
 }

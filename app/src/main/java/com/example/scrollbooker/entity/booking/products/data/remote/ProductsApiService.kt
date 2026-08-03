@@ -33,14 +33,14 @@ interface ProductsApiService {
 
     @POST("products")
     suspend fun createProduct(
-        @Body request: ProductCreateRequestDto
+        @Body request: ProductWithFiltersCreateRequest
     ): ProductDto
-
-    @PUT("products/{productId}")
-    suspend fun updateProduct(
-        @Path("productId") productId: Int,
-        @Body request: ProductCreateRequestDto
-    ): ProductDto
+//
+//    @PUT("products/{productId}")
+//    suspend fun updateProduct(
+//        @Path("productId") productId: Int,
+//        @Body request: ProductWithFiltersCreateRequest
+//    ): ProductDto
 
     @DELETE("products/{productId}")
     suspend fun deleteProduct(

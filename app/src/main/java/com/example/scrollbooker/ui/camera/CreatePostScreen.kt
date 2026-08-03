@@ -12,6 +12,7 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.snackbar.rememberSnackBarController
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.navigation.navigators.NavigationEvent
 import com.example.scrollbooker.ui.post.EditPostContent
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,6 +39,16 @@ fun CreatePostScreen(
         }
     }
 
+    LaunchedEffect(viewModel.navigationEvents) {
+        viewModel.navigationEvents.collect { event ->
+            when (event) {
+                NavigationEvent.NavigateToProfile -> {
+                    onPostCreated()
+                }
+            }
+        }
+    }
+
     when (val createState = createUiState) {
         is CreatePostUiState.Loading -> LoadingScreen()
         is CreatePostUiState.Error -> ErrorScreen()
@@ -55,7 +66,11 @@ fun CreatePostScreen(
                 onRemoveProduct = { viewModel.removeLinkedProduct(it) },
                 onNavigateToPostPreview = onNavigateToPostPreview,
                 onConfirmSelection = { viewModel.updateLinkedProducts(it) },
-                onSave = onPostCreated,
+                onSave = {
+                    state.selectedUri?.let { uri ->
+                        viewModel.createPost(videoUri = uri)
+                    }
+                },
                 onBack = onBack
             )
         }

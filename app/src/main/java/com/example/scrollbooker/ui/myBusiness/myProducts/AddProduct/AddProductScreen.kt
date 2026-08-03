@@ -1,9 +1,7 @@
 package com.example.scrollbooker.ui.myBusiness.myProducts.AddProduct
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,14 +12,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -31,49 +31,31 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.accordion.Accordion
-import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.inputs.BasicInput
 import com.example.scrollbooker.components.core.inputs.Input
 import com.example.scrollbooker.components.core.inputs.InputSelect
 import com.example.scrollbooker.components.core.inputs.Option
-import com.example.scrollbooker.core.enums.ProductTypeEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingM
-import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.ui.myBusiness.myProducts.MyProductsViewModel
-import com.example.scrollbooker.ui.myBusiness.myProducts.components.FiltersActions
+import com.example.scrollbooker.ui.myBusiness.myProducts.components.FiltersSection
 import com.example.scrollbooker.ui.theme.Background
-import com.example.scrollbooker.ui.theme.Error
+import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.bodySmall
 import com.example.scrollbooker.ui.theme.labelLarge
 import com.example.scrollbooker.ui.theme.titleLarge
-
-@Immutable
-data class ProductInputsActions(
-    val onSetServiceDomainId: (String) -> Unit,
-    val onSetServiceId: (String) -> Unit,
-    val onSetProductType: (ProductTypeEnum) -> Unit,
-    val onSetSessionsCount: (String) -> Unit,
-    val onSetValidityDays: (String) -> Unit,
-    val onSetName: (String) -> Unit,
-    val onSetDescription: (String) -> Unit,
-    val onSetDuration: (String) -> Unit,
-    val onSetCanBeBooked: (Boolean) -> Unit,
-)
 
 @Composable
 fun AddProductScreen(
@@ -87,18 +69,25 @@ fun AddProductScreen(
 
     val employeesState by viewModel.employees.collectAsStateWithLifecycle()
     val serviceDomains by myProductsViewModel.selectedServices.collectAsStateWithLifecycle()
-
     val productState by viewModel.productState.collectAsStateWithLifecycle()
+    val filters by viewModel.filters.collectAsStateWithLifecycle()
     val selectedFilters by viewModel.selectedFilters.collectAsStateWithLifecycle()
     val isSaving by viewModel.isSaving.collectAsStateWithLifecycle()
 
+    val productValidation by viewModel.productValidation.collectAsStateWithLifecycle()
+    val variantsValidation by viewModel.variantsValidation.collectAsStateWithLifecycle()
+
     var showErrors by rememberSaveable { mutableStateOf(false) }
-    val validation by remember(productState, showErrors, context) {
-        derivedStateOf {
-            if(!showErrors) AddProductValidation(isValid = true)
-            else productState.validate(context)
-        }
-    }
+
+    // Indexul 0 reprezintă varianta și offering-ul implicit pentru MVP
+    val currentVariantIndex = 0
+    val currentOfferingIndex = 0
+
+    val currentVariant = productState.variants.getOrNull(currentVariantIndex)
+    val currentOffering = currentVariant?.offerings?.getOrNull(currentOfferingIndex)
+
+    val variantValidation = variantsValidation.getOrNull(currentVariantIndex)
+    val offeringValidation = variantValidation?.offerings?.getOrNull(currentOfferingIndex)
 
     val isLoadingServiceDomains by remember(serviceDomains) {
         derivedStateOf { serviceDomains is FeatureState.Loading }
@@ -106,23 +95,16 @@ fun AddProductScreen(
 
     val serviceDomainsOptionsList = when(val s = serviceDomains) {
         is FeatureState.Success -> s.data.map { domain ->
-            Option(
-                value = domain.id.toString(),
-                name = domain.name
-            )
+            Option(value = domain.id.toString(), name = domain.name)
         }
         else -> emptyList()
     }
 
     val servicesOptionList = when(val s = serviceDomains) {
         is FeatureState.Success -> {
-            val services = s.data.find {
-                it.id.toString() == productState.serviceDomainId }?.services ?: emptyList()
+            val services = s.data.find { it.id.toString() == productState.serviceDomainId }?.services ?: emptyList()
             services.map { service ->
-                Option(
-                    value = service.id.toString(),
-                    name = service.name
-                )
+                Option(value = service.id.toString(), name = service.name)
             }
         }
         else -> emptyList()
@@ -138,18 +120,30 @@ fun AddProductScreen(
     Scaffold(
         topBar = {
             Header(
-                onBack=onBack,
+                onBack = onBack,
                 title = stringResource(R.string.addNewProduct)
             )
         },
         bottomBar = {
             Button(
-                modifier = Modifier.fillMaxWidth().padding(BasePadding),
-                onClick = {}
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(BasePadding),
+                enabled = !isSaving,
+                onClick = {
+                    showErrors = true
+                    viewModel.createProduct()
+                }
             ) {
-                Text(
-                    text = "Salveaza"
-                )
+                if (isSaving) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Text(text = "Salvează")
+                }
             }
         }
     ) { innerPadding ->
@@ -176,11 +170,16 @@ fun AddProductScreen(
                 placeholder = stringResource(R.string.pickCategory),
                 options = serviceDomainsOptionsList,
                 selectedOption = productState.serviceDomainId,
-                onValueChange = { domainId -> domainId?.let { viewModel.setServiceDomainId(it) } },
+                onValueChange = { domainId ->
+                    domainId?.let {
+                        viewModel.setServiceDomainId(it)
+                        viewModel.setCurrencyId("1")
+                    }
+                },
                 isLoading = isLoadingServiceDomains,
                 isEnabled = !isLoadingServiceDomains,
-                //isError = state.showErrors && !isValidServiceDomainId,
-                //errorMessage = state.validation.serviceDomainIdError.toString()
+                isError = showErrors && productValidation.serviceDomainIdError != null,
+                errorMessage = productValidation.serviceDomainIdError.orEmpty()
             )
 
             Spacer(Modifier.height(BasePadding))
@@ -193,30 +192,27 @@ fun AddProductScreen(
                 onValueChange = { serviceId ->
                     serviceId?.let { viewModel.setServiceId(it) }
                 },
-                //isError = state.showErrors && !isValidServiceId,
-                //errorMessage = state.validation.serviceIdError.toString()
+                isError = showErrors && productValidation.serviceIdError != null,
+                errorMessage = productValidation.serviceIdError.orEmpty()
             )
 
             Spacer(Modifier.height(BasePadding))
 
-//            if(state.serviceId.isNotEmpty() && filters.data.isNotEmpty()) {
-//                FiltersSection(
-//                    isVisible = state.serviceId.isNotEmpty(),
-//                    filters = filters.data,
-//                    selectedFilters = state.selectedFilters,
-//                    isLoadingFilters = false,
-//                    actions = state.filtersActions
-//                )
-//            }
-//
-//            Spacer(Modifier.height(BasePadding))
-
             Input(
                 label = stringResource(R.string.name),
                 value = productState.name,
-                onValueChange = { viewModel.setName(it) },
-                //isError = state.showErrors && !isNameValid,
-                //errorMessage = state.validation.nameError.toString(),
+                onValueChange = {
+                    viewModel.setName(it)
+                    if (currentVariant != null) {
+                        viewModel.updateVariant(
+                            currentVariantIndex,
+                            name = it,
+                            duration = currentVariant.duration
+                        )
+                    }
+                },
+                isError = showErrors && productValidation.nameError != null,
+                errorMessage = productValidation.nameError.orEmpty(),
                 singleLine = false,
                 maxLines = 3
             )
@@ -233,6 +229,40 @@ fun AddProductScreen(
 
             Spacer(Modifier.height(BasePadding))
 
+            when (val state = filters) {
+                is FeatureState.Loading -> {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                    Spacer(Modifier.height(BasePadding))
+                }
+                is FeatureState.Error -> {
+                    Text(text = "Eroare la încărcarea filtrelor", color = MaterialTheme.colorScheme.error)
+                    Spacer(Modifier.height(BasePadding))
+                }
+                is FeatureState.Success -> {
+                    val filtersList = state.data
+
+                    FiltersSection(
+                        isVisible = productState.serviceId.isNotEmpty() && filtersList.isNotEmpty(),
+                        filters = filtersList,
+                        selectedFilters = selectedFilters,
+                        isLoadingFilters = false,
+                        onSingleOption = { filterId, subFilterId ->
+                            viewModel.setSingleOption(filterId, subFilterId)
+                        },
+                        onToggleMultiOption = { filterId, subFilterId ->
+                            viewModel.toggleMultiOption(filterId, subFilterId)
+                        },
+                        onSetRange = { filterId, from, to ->
+                            viewModel.setRange(filterId, from, to)
+                        },
+                        onToggleApplicable = { filterId -> }
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(BasePadding))
+
+
             Text(
                 text = "Variante si preturi",
                 style = titleLarge,
@@ -246,153 +276,120 @@ fun AddProductScreen(
                 isExpanded = true,
                 onSetExpanded = {},
             ) {
-                // ROW NOU PENTRU DURATĂ
+                // 1. INPUT PENTRU DURATĂ (Rămâne neschimbat, se aplică pe Varianta 0)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(16.dp) // Spațiu între texte și input
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Column(
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text(
-                            text = stringResource(R.string.duration),
-                            fontWeight = FontWeight.SemiBold,
-                            style = labelLarge
-                        )
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(text = stringResource(R.string.duration), fontWeight = FontWeight.SemiBold, style = labelLarge)
                         Spacer(modifier = Modifier.height(2.dp))
-                        Text(
-                            text = "Reprezintă durata efectivă a acestui serviciu.",
-                            style = bodySmall,
-                            color = Color.Gray // Culoare secundară pentru a nu încărca vizual
-                        )
+                        Text(text = "Reprezintă durata efectivă a acestui serviciu.", style = bodySmall, color = Color.Gray)
                     }
 
-                    // În dreapta: Inputul de durată (îi dăm o lățime fixă sau maximă ca să nu ocupe tot ecranul)
-                    BasicInput(
-                        value = "",
-                        onValueChange = {},
-                        modifier = Modifier.width(100.dp), // Ajustează lățimea în funcție de design (ex: pentru numere)
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Background,
-                            unfocusedContainerColor = Background,
-                            focusedTextColor = OnBackground,
-                            unfocusedTextColor = OnBackground,
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
+                    Column(horizontalAlignment = Alignment.End) {
+                        BasicInput(
+                            value = currentVariant?.duration.orEmpty(),
+                            onValueChange = { viewModel.updateVariantDuration(it) },
+                            isError = showErrors && variantValidation?.durationError != null,
+                            modifier = Modifier.width(100.dp),
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Background, unfocusedContainerColor = Background,
+                                focusedTextColor = OnBackground, unfocusedTextColor = OnBackground,
+                                focusedIndicatorColor = if (showErrors && variantValidation?.durationError != null) MaterialTheme.colorScheme.error else Color.Transparent,
+                                unfocusedIndicatorColor = if (showErrors && variantValidation?.durationError != null) MaterialTheme.colorScheme.error else Color.Transparent,
+                            )
                         )
-                    )
+                        if (showErrors && variantValidation?.durationError != null) {
+                            Text(text = variantValidation.durationError!!, color = MaterialTheme.colorScheme.error, style = bodySmall)
+                        }
+                    }
                 }
 
                 Spacer(Modifier.height(BasePadding))
 
                 Text(
-                    text = "Preturi per angajat",
+                    text = "Prețuri per angajat",
                     fontWeight = FontWeight.SemiBold,
                     style = labelLarge
                 )
 
                 Spacer(Modifier.height(BasePadding))
 
-                when(employeesState) {
-                    is FeatureState.Loading -> {
-                        Text(
-                            text = "Loading employees...",
-                            style = labelLarge,
-                            color = Color.Gray
-                        )
-                    }
-                    is FeatureState.Error -> {
-                        Text(
-                            text = "Error loading employees",
-                            style = labelLarge,
-                            color = Color.Red
-                        )
-                    }
-                    is FeatureState.Success -> {
-                        val employees = (employeesState as FeatureState.Success).data
-                        if (employees.isEmpty()) {
-                            Text(
-                                text = "No employees found",
-                                style = labelLarge,
-                                color = Color.Gray
-                            )
-                        } else {
-                            employees.forEachIndexed { index, employee ->
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    Row(
-                                        modifier = Modifier.weight(1f),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                    ) {
-                                        Box(modifier = Modifier
-                                            .size(8.dp)
-                                            .clip(CircleShape)
-                                            .background(
-                                                if(index == employees.size - 1) Error else Color.Green)
-                                        )
-
-                                        Avatar(
-                                            url = employee.avatar ?: "",
-                                            size = 30.dp
-                                        )
-
-                                        Text(
-                                            text = employee.fullName,
-                                            fontWeight = FontWeight.SemiBold,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis
-                                        )
+                currentVariant?.offerings?.forEachIndexed { index, offeringState ->
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                                //.padding(vertical = 4.bindDp()),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            // Comutator (Checkbox) în stânga: Activează prețul pentru acest angajat
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Checkbox(
+                                    checked = offeringState.isSelected,
+                                    onCheckedChange = { isChecked ->
+                                        viewModel.toggleOfferingSelection(index, isChecked)
                                     }
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = offeringState.fullName, // Afișăm numele complet al angajatului
+                                    style = bodyMedium,
+                                    fontWeight = if (offeringState.isSelected) FontWeight.SemiBold else FontWeight.Normal
+                                )
+                            }
 
-                                    Text(text = "200 RON")
-                                }
-
-                                Spacer(Modifier.height(SpacingM))
+                            // Input de preț în dreapta (Este activat doar dacă angajatul e bifat)
+                            Column(horizontalAlignment = Alignment.End) {
+                                BasicInput(
+                                    value = offeringState.price,
+                                    //enabled = offeringState.isSelected, // Blocat dacă nu e bifat angajatul
+                                    onValueChange = { newPrice ->
+                                        viewModel.updateOfferingPrices(
+                                            offeringIndex = index,
+                                            price = newPrice,
+                                            discount = offeringState.discount,
+                                            priceWithDiscount = newPrice
+                                        )
+                                    },
+                                    isError = showErrors && offeringValidation?.priceError != null,
+                                    modifier = Modifier.width(100.dp),
+                                    colors = TextFieldDefaults.colors(
+                                        focusedContainerColor = Background,
+                                        unfocusedContainerColor = if (offeringState.isSelected) Background else Background.copy(alpha = 0.5f),
+                                        focusedTextColor = OnBackground,
+                                        unfocusedTextColor = if (offeringState.isSelected) OnBackground else Color.Gray,
+                                        //focusedIndicatorColor = if (showErrors && offeringValidation?.priceError != null) MaterialTheme.colorScheme.error else Color.Transparent,
+                                        //unfocusedIndicatorColor = if (showErrors && offeringValidation?.priceError != null) MaterialTheme.colorScheme.error else Color.Transparent,
+                                    )
+                                )
                             }
                         }
+
+//                        // Dacă utilizatorul a bifat angajatul, dar a lăsat prețul gol la salvare, afișăm eroarea dedesubt
+//                        if (showErrors && offeringValidation?.priceError != null && offeringState.isSelected) {
+//                            Text(
+//                                text = offeringValidation.priceError!!,
+//                                color = MaterialTheme.colorScheme.error,
+//                                style = bodySmall,
+//                                modifier = Modifier.padding(start = 48.dp, bottom = 4.dp)
+//                            )
+//                        }
+
+                        HorizontalDivider(
+                            modifier = Modifier.padding(vertical = 4.dp),
+                            color = Divider.copy(alpha = 0.3f),
+                            thickness = 0.5.dp
+                        )
                     }
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun rememberProductInputsActions(
-    viewModel: AddProductsViewModel
-): ProductInputsActions {
-    return remember(viewModel) {
-        ProductInputsActions(
-            onSetServiceDomainId = viewModel::setServiceDomainId,
-            onSetServiceId = viewModel::setServiceId,
-            onSetProductType = viewModel::setType,
-            onSetSessionsCount = viewModel::setSessionsCount,
-            onSetValidityDays = viewModel::setValidityDays,
-            onSetName = viewModel::setName,
-            onSetDescription = viewModel::setDescription,
-            onSetDuration = viewModel::setDuration,
-//            onSetPrice = viewModel::setPrice,
-//            onSetDiscount = viewModel::setDiscount,
-            onSetCanBeBooked = viewModel::setCanBeBooked
-        )
-    }
-}
-
-@Composable
-private fun rememberFiltersSectionActions(
-    addProductsViewModel: AddProductsViewModel
-): FiltersActions {
-    return remember(addProductsViewModel) {
-        FiltersActions(
-            singleOption = addProductsViewModel::setSingleOption,
-            toggleMultiOption = addProductsViewModel::toggleMultiOption,
-            setRange = addProductsViewModel::setRange,
-            toggleApplicable = addProductsViewModel::setApplicable
-        )
     }
 }

@@ -3,8 +3,10 @@ package com.example.scrollbooker.ui.post
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.scrollbooker.components.customized.post.PostInteractionStore
 import com.example.scrollbooker.core.snackbar.SnackBarUiEvent
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.model.UserProducts
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetPostLinkedProductsUseCase
@@ -47,6 +49,7 @@ class EditPostViewModel @Inject constructor(
     private val getPostLinkedProductsUseCase: GetPostLinkedProductsUseCase,
     private val updatePostUseCase: UpdatePostUseCase,
     private val authDataStore: AuthDataStore,
+    private val postInteractionStore: PostInteractionStore,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
     private val postId: Int = savedStateHandle["postId"] ?: error("Missing postId")
@@ -174,10 +177,13 @@ class EditPostViewModel @Inject constructor(
             val description = _description.value ?: ""
             val linkedProductIds = _linkedProducts.value.map { it.id }
 
-            val result = updatePostUseCase(postId, description, linkedProductIds)
+            val result = withVisibleLoading {
+                updatePostUseCase(postId, description, linkedProductIds)
+            }
 
             result
-                .onSuccess { post ->
+                .onSuccess {
+                    postInteractionStore.updateDescription(postId, description)
                     _isSaving.value = FeatureState.Success(Unit)
                 }
                 .onFailure { e ->

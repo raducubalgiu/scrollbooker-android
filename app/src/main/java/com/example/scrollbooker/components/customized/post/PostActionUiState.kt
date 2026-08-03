@@ -10,7 +10,9 @@ data class PostActionUiState(
     val commentsCount: Int = 0,
 
     val isSavingLike: Boolean = false,
-    val isSavingBookmark: Boolean = false
+    val isSavingBookmark: Boolean = false,
+
+    val description: String? = null
 ) {
     companion object { val EMPTY = PostActionUiState() }
 }

@@ -31,6 +31,12 @@ fun EditPostScreen(
         }
     }
 
+    LaunchedEffect(isSaving) {
+        if (isSaving is FeatureState.Success) {
+            onBack()
+        }
+    }
+
     when (val state = uiState) {
         is EditPostUiState.Loading -> {
             LoadingScreen()

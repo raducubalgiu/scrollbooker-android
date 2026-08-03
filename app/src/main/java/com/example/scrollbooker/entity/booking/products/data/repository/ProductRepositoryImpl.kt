@@ -1,11 +1,10 @@
 package com.example.scrollbooker.entity.booking.products.data.repository
 import com.example.scrollbooker.entity.booking.products.data.mappers.toDomain
-import com.example.scrollbooker.entity.booking.products.data.mappers.toDto
-import com.example.scrollbooker.entity.booking.products.data.remote.AddProductFilterRequest
-import com.example.scrollbooker.entity.booking.products.data.remote.ProductCreateRequestDto
+import com.example.scrollbooker.entity.booking.products.data.remote.ProductCreateRequest
+import com.example.scrollbooker.entity.booking.products.data.remote.ProductFilterRequest
+import com.example.scrollbooker.entity.booking.products.data.remote.ProductWithFiltersCreateRequest
 import com.example.scrollbooker.entity.booking.products.data.remote.ProductsApiService
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
-import com.example.scrollbooker.entity.booking.products.domain.model.ProductCreate
 import com.example.scrollbooker.entity.booking.products.domain.model.UserProducts
 import com.example.scrollbooker.entity.booking.products.domain.repository.ProductRepository
 import javax.inject.Inject
@@ -37,31 +36,21 @@ class ProductRepositoryImpl @Inject constructor(
     }
 
     override suspend fun createProduct(
-        productCreate: ProductCreate,
-        serviceDomainId: Int,
-        filters: List<AddProductFilterRequest>
+        product: ProductCreateRequest,
+        filters: List<ProductFilterRequest>
     ): Product {
-        val request = ProductCreateRequestDto(
-            product = productCreate.toDto(),
-            serviceDomainId = serviceDomainId,
-            filters = filters
-        )
+        val request = ProductWithFiltersCreateRequest(product, filters)
         return api.createProduct(request).toDomain()
     }
 
-    override suspend fun updateProduct(
-        productCreate: ProductCreate,
-        serviceDomainId: Int,
-        filters: List<AddProductFilterRequest>,
-        productId: Int
-    ): Product {
-        val request = ProductCreateRequestDto(
-            product = productCreate.toDto(),
-            serviceDomainId = serviceDomainId,
-            filters = filters
-        )
-        return api.updateProduct(productId, request).toDomain()
-    }
+//    override suspend fun updateProduct(
+//        productId: Int,
+//        product: ProductCreateRequest,
+//        filters: List<ProductFilterRequest>
+//    ): Product {
+//        val request = ProductWithFiltersCreateRequest(product, filters)
+//        return api.updateProduct(product, request).toDomain()
+//    }
 
     override suspend fun deleteProduct(productId: Int) {
         return api.deleteProduct(productId)

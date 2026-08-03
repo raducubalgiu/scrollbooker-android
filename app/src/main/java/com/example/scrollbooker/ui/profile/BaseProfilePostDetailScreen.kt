@@ -210,7 +210,8 @@ fun BaseProfilePostDetailScreen(
                     val postUi = remember(post, postActionState) {
                         post.copy(
                             userActions = post.userActions.applyUiState(postActionState),
-                            counters = post.counters.applyUiState(postActionState)
+                            counters = post.counters.applyUiState(postActionState),
+                            description = postActionState.description ?: post.description
                         )
                     }
 
