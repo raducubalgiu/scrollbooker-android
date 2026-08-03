@@ -64,10 +64,6 @@ data class ProductFilterRequest(
     @SerializedName("sub_filter_ids")
     val subFilterIds: List<Int>,
 
-    val type: String,
-    val minim: BigDecimal? = null,
-    val maxim: BigDecimal? = null,
-
     @SerializedName("is_not_applicable")
     val isNotApplicable: Boolean = false
 )

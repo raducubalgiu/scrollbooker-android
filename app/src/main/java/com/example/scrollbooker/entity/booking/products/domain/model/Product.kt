@@ -1,6 +1,5 @@
 package com.example.scrollbooker.entity.booking.products.domain.model
 
-import com.example.scrollbooker.core.enums.FilterTypeEnum
 import com.example.scrollbooker.core.enums.ProductTypeEnum
 import com.example.scrollbooker.entity.nomenclature.filter.domain.model.SubFilter
 import com.example.scrollbooker.ui.booking.SelectedBookingItem
@@ -70,12 +69,7 @@ data class ProductOfferingUser(
 data class ProductFilter(
     val id: Int,
     val name: String,
-    val subFilters: List<SubFilter>,
-    val type: FilterTypeEnum?,
-    val unit: String?,
-    val minim: BigDecimal?,
-    val maxim: BigDecimal?,
-    val displayAsTab: Boolean
+    val subFilters: List<SubFilter>
 )
 
 fun Product.getDurationText(minutes: Int): String {
@@ -94,24 +88,8 @@ fun Product.getDurationText(minutes: Int): String {
 
 fun Product.getFiltersSummary(): String {
     val filterParts = this.filters.mapNotNull { filter ->
-        when (filter.type) {
-            FilterTypeEnum.OPTIONS -> {
-                filter.subFilters.joinToString(" & ") { it.name }
-            }
-            FilterTypeEnum.RANGE -> {
-                val minim = filter.minim
-                val maxim = filter.maxim
-                val unit = filter.unit ?: ""
-
-                when {
-                    minim != null && maxim == null -> "> $minim $unit".trim()
-                    minim == null && maxim != null -> "< $maxim $unit".trim()
-                    minim != null && maxim != null -> "$minim - $maxim $unit".trim()
-                    else -> null
-                }
-            }
-            else -> null
-        }
+        if (filter.subFilters.isEmpty()) null
+        else filter.subFilters.joinToString(" & ") { it.name }
     }
 
     return filterParts.joinToString(" • ")

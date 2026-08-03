@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.scrollbooker.core.enums.FilterTypeEnum
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
@@ -17,8 +16,6 @@ import com.example.scrollbooker.entity.booking.products.domain.useCase.CreatePro
 import com.example.scrollbooker.entity.nomenclature.filter.domain.model.Filter
 import com.example.scrollbooker.entity.nomenclature.filter.domain.useCase.GetFiltersByServiceUseCase
 import com.example.scrollbooker.store.AuthDataStore
-import com.example.scrollbooker.ui.myBusiness.myProducts.FilterSelection
-import com.example.scrollbooker.ui.myBusiness.myProducts.SelectedFilters
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -59,8 +56,8 @@ class AddProductsViewModel @Inject constructor(
     )
     val productState: StateFlow<ProductState> = _productState.asStateFlow()
 
-    private val _selectedFilters = MutableStateFlow<SelectedFilters>(emptyMap())
-    val selectedFilters: StateFlow<SelectedFilters> = _selectedFilters.asStateFlow()
+    private val _selectedFilters = MutableStateFlow<Map<Int, Set<Int>>>(emptyMap())
+    val selectedFilters: StateFlow<Map<Int, Set<Int>>> = _selectedFilters.asStateFlow()
 
     private val _isSaving = MutableStateFlow<Boolean>(false)
     val isSaving: StateFlow<Boolean> = _isSaving
@@ -121,12 +118,10 @@ class AddProductsViewModel @Inject constructor(
         _productState.update { current ->
             val variantZero = current.variants.getOrNull(0)
 
-            // Punct de control: Dacă lista de oferte conține deja elemente, OPRIM re-inițializarea!
             if (variantZero != null && variantZero.offerings.isNotEmpty()) {
                 return@update current
             }
 
-            // Altfel, dacă e goală (prima deschidere a ecranului), o populăm normal
             val initialOfferings = employees.map { employee ->
                 ProductOfferingState(
                     userId = employee.id,
@@ -142,7 +137,6 @@ class AddProductsViewModel @Inject constructor(
         }
     }
 
-    // Funcție pentru a bifa / debifa un angajat din listă
     fun toggleOfferingSelection(offeringIndex: Int, isSelected: Boolean) {
         _productState.update { current ->
             val updatedVariants = current.variants.mapIndexed { vIndex, variant ->
@@ -229,26 +223,21 @@ class AddProductsViewModel @Inject constructor(
         }
     }
 
-    fun setSingleOption(filterId: Int, subFilterId: Int?) {
+    fun toggleFilterOption(filterId: Int, subFilterId: Int, isSingleSelect: Boolean) {
         _selectedFilters.update { current ->
-            if (subFilterId == null) current - filterId
-            else current + (filterId to FilterSelection.Options(setOf(subFilterId)))
-        }
-    }
+            val currentIds = current[filterId].orEmpty()
 
-    fun toggleMultiOption(filterId: Int, subFilterId: Int) {
-        _selectedFilters.update { current ->
-            val prev = (current[filterId] as? FilterSelection.Options)?.ids.orEmpty()
-            val next = if (subFilterId in prev) prev - subFilterId else prev + subFilterId
-            if (next.isEmpty()) current - filterId
-            else current + (filterId to FilterSelection.Options(next))
-        }
-    }
+            val updatedIds = if (isSingleSelect) {
+                if (subFilterId in currentIds) emptySet() else setOf(subFilterId)
+            } else {
+                if (subFilterId in currentIds) currentIds - subFilterId else currentIds + subFilterId
+            }
 
-    fun setRange(filterId: Int, from: BigDecimal?, to: BigDecimal?) {
-        _selectedFilters.update { current ->
-            if (from == null && to == null) current - filterId
-            else current + (filterId to FilterSelection.Range(minim = from, maxim = to))
+            if (updatedIds.isEmpty()) {
+                current - filterId
+            } else {
+                current + (filterId to updatedIds)
+            }
         }
     }
 
@@ -273,31 +262,14 @@ class AddProductsViewModel @Inject constructor(
                 }
 
                 val filters: List<ProductFilterRequest> =
-                    _selectedFilters.value.entries.mapNotNull { (filterId, selection) ->
-                        when (selection) {
-                            is FilterSelection.Options -> {
-                                if (selection.ids.isEmpty()) return@mapNotNull null
-                                ProductFilterRequest(
-                                    filterId = filterId,
-                                    subFilterIds = selection.ids.toList(),
-                                    type = FilterTypeEnum.OPTIONS.key,
-                                    minim = null,
-                                    maxim = null,
-                                    isNotApplicable = false
-                                )
-                            }
-                            is FilterSelection.Range -> {
-                                if (selection.minim == null && selection.maxim == null) return@mapNotNull null
-                                ProductFilterRequest(
-                                    filterId = filterId,
-                                    subFilterIds = emptyList(),
-                                    type = FilterTypeEnum.RANGE.key,
-                                    minim = selection.minim,
-                                    maxim = selection.maxim,
-                                    isNotApplicable = false
-                                )
-                            }
-                        }
+                    _selectedFilters.value.entries.mapNotNull { (filterId, subFilterIdsSet) ->
+                        if (subFilterIdsSet.isEmpty()) return@mapNotNull null
+
+                        ProductFilterRequest(
+                            filterId = filterId,
+                            subFilterIds = subFilterIdsSet.toList(),
+                            isNotApplicable = false
+                        )
                     }
 
                 val productCreateRequest = ProductCreateRequest(
@@ -337,7 +309,6 @@ class AddProductsViewModel @Inject constructor(
                     }
                     .onFailure { e ->
                         if (e is retrofit2.HttpException) {
-                            // Citim JSON-ul de eroare trimis de server în body
                             val errorBody = e.response()?.errorBody()?.string()
                             Timber.tag("Create Product").e("SERVER VALIDATION ERROR (422): $errorBody")
                         } else {
@@ -352,4 +323,5 @@ class AddProductsViewModel @Inject constructor(
             }
         }
     }
+
 }

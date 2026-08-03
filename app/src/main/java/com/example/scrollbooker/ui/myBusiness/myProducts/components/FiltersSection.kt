@@ -29,11 +29,9 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.inputs.InputCheckbox
 import com.example.scrollbooker.components.core.inputs.InputSelect
 import com.example.scrollbooker.components.core.inputs.Option
-import com.example.scrollbooker.core.enums.FilterTypeEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.nomenclature.filter.domain.model.Filter
-import com.example.scrollbooker.ui.myBusiness.myProducts.FilterSelection
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.SurfaceBG
@@ -44,12 +42,9 @@ import kotlin.collections.orEmpty
 fun FiltersSection(
     isVisible: Boolean,
     filters: List<Filter>,
-    selectedFilters: Map<Int, FilterSelection>,
+    selectedFilters: Map<Int, Set<Int>>,
     isLoadingFilters: Boolean,
-    onSingleOption: (filterId: Int, subFilterId: Int?) -> Unit,
-    onToggleMultiOption: (filterId: Int, subFilterId: Int) -> Unit,
-    onSetRange: (filterId: Int, from: java.math.BigDecimal?, to: java.math.BigDecimal?) -> Unit,
-    onToggleApplicable: (filterId: Int) -> Unit
+    onToggleOption: (filterId: Int, subFilterId: Int, isSingleSelect: Boolean) -> Unit
 ) {
     AnimatedVisibility(
         visible = isVisible,
@@ -71,114 +66,80 @@ fun FiltersSection(
 
                 Spacer(Modifier.height(BasePadding))
 
-                filters.forEach { filter -> // Înlocuit .map cu .forEach deoarece nu returnăm o listă de UI
-                    when(filter.type) {
-                        FilterTypeEnum.OPTIONS -> {
-                            if(filter.singleSelect) {
-                                val options = filter.subFilters.map {
-                                    Option(value = it.id.toString(), name = it.name)
-                                }
+                filters.forEach { filter ->
+                    val selectedSubFilterIds = selectedFilters[filter.id].orEmpty()
 
-                                val selectedSubFilterIds = selectedFilters[filter.id]
-                                val selectedOption = (selectedSubFilterIds as? FilterSelection.Options)
-                                    ?.ids
-                                    ?.firstOrNull()
-                                    ?.toString()
-                                    ?: ""
-
-                                Column {
-                                    Text(
-                                        text = filter.name,
-                                        fontWeight = FontWeight.SemiBold,
-                                        color = Color.Gray
-                                    )
-
-                                    Spacer(Modifier.height(SpacingS))
-
-                                    InputSelect(
-                                        label = filter.name,
-                                        placeholder = "Selectează filtrul",
-                                        selectedOption = selectedOption,
-                                        options = options,
-                                        displayLabel = false,
-                                        onValueChange = { value ->
-                                            onSingleOption(filter.id, value?.toIntOrNull())
-                                        },
-                                        isLoading = isLoadingFilters,
-                                        isEnabled = !isLoadingFilters,
-                                        background = Background,
-                                        color = OnBackground
-                                    )
-                                }
-                            } else {
-                                Column {
-                                    Text(
-                                        text = filter.name,
-                                        fontWeight = FontWeight.SemiBold,
-                                        color = Color.Gray
-                                    )
-
-                                    Spacer(Modifier.height(SpacingS))
-
-                                    Column(
-                                        modifier = Modifier
-                                            .heightIn(max = 110.dp + SpacingS)
-                                            .verticalScroll(rememberScrollState())
-                                    ) {
-                                        filter.subFilters.forEach { sub ->
-                                            val selectedSubFilterIds: Set<Int> =
-                                                (selectedFilters[filter.id] as? FilterSelection.Options)
-                                                    ?.ids
-                                                    .orEmpty()
-
-                                            val isChecked = sub.id in selectedSubFilterIds
-
-                                            InputCheckbox(
-                                                modifier = Modifier.clip(shape = ShapeDefaults.Medium),
-                                                height = 55.dp,
-                                                checked = isChecked,
-                                                headLine = sub.name,
-                                                onCheckedChange = { onToggleMultiOption(filter.id, sub.id) }
-                                            )
-
-                                            Spacer(Modifier.height(SpacingS))
-                                        }
-                                    }
-                                }
-                            }
-
-                            Spacer(Modifier.height(BasePadding))
+                    if (filter.singleSelect) {
+                        val options = filter.subFilters.map {
+                            Option(value = it.id.toString(), name = it.name)
                         }
-                        FilterTypeEnum.RANGE -> {
-                            val range = selectedFilters[filter.id] as? FilterSelection.Range
-                            val fromText = range?.minim?.toString().orEmpty()
-                            val toText = range?.maxim?.toString().orEmpty()
-                            val isNotApplicable = (selectedFilters[filter.id] as? FilterSelection.Range)?.isNotApplicable == true
+                        val selectedOption = selectedSubFilterIds.firstOrNull()?.toString() ?: ""
 
-                            FilterRangeSection(
-                                filterName = filter.name,
-                                unit = filter.unit,
-                                minim = fromText,
-                                maxim = toText,
-                                isNotApplicable = isNotApplicable,
-                                onMinim = {
-                                    val minim = it.toBigDecimalOrNull()
-                                    val maxim = (selectedFilters[filter.id] as? FilterSelection.Range)?.maxim
-                                    onSetRange(filter.id, minim, maxim)
+                        Column {
+                            Text(
+                                text = filter.name,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color.Gray
+                            )
+
+                            Spacer(Modifier.height(SpacingS))
+
+                            InputSelect(
+                                label = filter.name,
+                                placeholder = "Selectează filtrul",
+                                selectedOption = selectedOption,
+                                options = options,
+                                displayLabel = false,
+                                onValueChange = { value ->
+                                    value?.toIntOrNull()?.let { subId ->
+                                        onToggleOption(filter.id, subId, true)
+                                    }
                                 },
-                                onMaxim = {
-                                    val minim = (selectedFilters[filter.id] as? FilterSelection.Range)?.minim
-                                    val maxim = it.toBigDecimalOrNull()
-                                    onSetRange(filter.id, minim, maxim)
-                                },
-                                onIsApplicable = { onToggleApplicable(filter.id) }
+                                isLoading = isLoadingFilters,
+                                isEnabled = !isLoadingFilters,
+                                background = Background,
+                                color = OnBackground
                             )
                         }
-                        null -> Unit
+                    } else {
+                        Column {
+                            Text(
+                                text = filter.name,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color.Gray
+                            )
+
+                            Spacer(Modifier.height(SpacingS))
+
+                            Column(
+                                modifier = Modifier
+                                    .heightIn(max = 110.dp + SpacingS)
+                                    .verticalScroll(rememberScrollState())
+                            ) {
+                                filter.subFilters.forEach { sub ->
+                                    val isChecked = sub.id in selectedSubFilterIds
+
+                                    InputCheckbox(
+                                        modifier = Modifier.clip(shape = ShapeDefaults.Medium),
+                                        height = 55.dp,
+                                        checked = isChecked,
+                                        headLine = sub.name,
+                                        onCheckedChange = {
+                                            onToggleOption(filter.id, sub.id, false)
+                                        }
+                                    )
+
+                                    Spacer(Modifier.height(SpacingS))
+                                }
+                            }
+                        }
                     }
+
+                    Spacer(Modifier.height(BasePadding))
                 }
             }
         }
     }
     Spacer(Modifier.height(BasePadding))
 }
+

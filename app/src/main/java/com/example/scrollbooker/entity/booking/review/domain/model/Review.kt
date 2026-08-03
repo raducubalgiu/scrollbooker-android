@@ -6,8 +6,6 @@ data class Review(
     val review: String,
     val productBusinessOwner: ReviewProductBusinessOwner,
     val customer: ReviewCustomer,
-    val service: ReviewService,
-    val product: ReviewProduct?,
     val likeCount: Int,
     val isLiked: Boolean,
     val isLikedByProductOwner: Boolean,
@@ -26,14 +24,4 @@ data class ReviewCustomer(
     val username: String,
     val fullName: String,
     val avatar: String?,
-)
-
-data class ReviewService(
-    val id: Int,
-    val name: String
-)
-
-data class ReviewProduct(
-    val id: Int,
-    val name: String
 )

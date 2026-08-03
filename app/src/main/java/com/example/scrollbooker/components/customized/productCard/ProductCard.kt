@@ -32,7 +32,6 @@ import com.example.scrollbooker.entity.booking.products.domain.model.getFiltersS
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
-import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.bodySmall
 import com.example.scrollbooker.ui.theme.labelSmall
@@ -54,7 +53,12 @@ fun ProductCard(
     onDeleteProduct: ((productId: Int) -> Unit)? = null,
 ) {
     val productSummaryText = remember(product) {
-        "${product.getDurationText(product.startingOffering.duration)} • ${product.getFiltersSummary()}"
+        val durationText = product.getDurationText(product.startingOffering.duration)
+        val filtersSummary = product.getFiltersSummary()
+
+        listOf(durationText, filtersSummary)
+            .filter { it.isNotBlank() }
+            .joinToString(" • ")
     }
 
     val onCardClick = remember(product, onOpenProductDetail) {

@@ -32,7 +32,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -63,11 +62,9 @@ fun AddProductScreen(
     viewModel: AddProductsViewModel,
     onBack: () -> Unit
 ) {
-    val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     val scrollState = rememberScrollState()
 
-    val employeesState by viewModel.employees.collectAsStateWithLifecycle()
     val serviceDomains by myProductsViewModel.selectedServices.collectAsStateWithLifecycle()
     val productState by viewModel.productState.collectAsStateWithLifecycle()
     val filters by viewModel.filters.collectAsStateWithLifecycle()
@@ -79,13 +76,10 @@ fun AddProductScreen(
 
     var showErrors by rememberSaveable { mutableStateOf(false) }
 
-    // Indexul 0 reprezintă varianta și offering-ul implicit pentru MVP
     val currentVariantIndex = 0
     val currentOfferingIndex = 0
 
     val currentVariant = productState.variants.getOrNull(currentVariantIndex)
-    val currentOffering = currentVariant?.offerings?.getOrNull(currentOfferingIndex)
-
     val variantValidation = variantsValidation.getOrNull(currentVariantIndex)
     val offeringValidation = variantValidation?.offerings?.getOrNull(currentOfferingIndex)
 
@@ -246,16 +240,9 @@ fun AddProductScreen(
                         filters = filtersList,
                         selectedFilters = selectedFilters,
                         isLoadingFilters = false,
-                        onSingleOption = { filterId, subFilterId ->
-                            viewModel.setSingleOption(filterId, subFilterId)
-                        },
-                        onToggleMultiOption = { filterId, subFilterId ->
-                            viewModel.toggleMultiOption(filterId, subFilterId)
-                        },
-                        onSetRange = { filterId, from, to ->
-                            viewModel.setRange(filterId, from, to)
-                        },
-                        onToggleApplicable = { filterId -> }
+                        onToggleOption = { filterId, subFilterId, isSingleSelect ->
+                            viewModel.toggleFilterOption(filterId, subFilterId, isSingleSelect)
+                        }
                     )
                 }
             }
@@ -276,7 +263,6 @@ fun AddProductScreen(
                 isExpanded = true,
                 onSetExpanded = {},
             ) {
-                // 1. INPUT PENTRU DURATĂ (Rămâne neschimbat, se aplică pe Varianta 0)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,

@@ -11,8 +11,6 @@ data class ReviewDto(
     val productBusinessOwner: ReviewProductBusinessOwnerDto,
 
     val customer: ReviewCustomerDto,
-    val service: ReviewServiceDto,
-    val product: ReviewProductDto?,
 
     @SerializedName("like_count")
     val likeCount: Int,
@@ -45,14 +43,4 @@ data class ReviewCustomerDto(
     val fullName: String,
 
     val avatar: String?,
-)
-
-data class ReviewServiceDto(
-    val id: Int,
-    val name: String
-)
-
-data class ReviewProductDto(
-    val id: Int,
-    val name: String
 )

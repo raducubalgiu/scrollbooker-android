@@ -12,7 +12,6 @@ import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.inputs.InputSelect
 import com.example.scrollbooker.components.core.inputs.Option
-import com.example.scrollbooker.core.enums.FilterTypeEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.nomenclature.service.domain.model.ServiceWithFilters
@@ -83,7 +82,7 @@ fun ServiceStep(
                     SearchAdvancedFilters(
                         selectedFilters = selectedFilters,
                         onSetSelectedFilter = onChangeFilter,
-                        filters = it.filters.filter { it.type != FilterTypeEnum.RANGE }
+                        filters = it.filters
                     )
                 }
             }
