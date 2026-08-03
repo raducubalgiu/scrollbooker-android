@@ -13,7 +13,6 @@ data class Post(
     val hashtags: List<Hashtag>,
     val isVideoReview: Boolean,
     val isOwnPost: Boolean,
-    val rating: Int?,
     val businessId: Int,
     val createdAt: String
 )

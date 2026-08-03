@@ -34,7 +34,6 @@ fun PostDto.toDomain(): Post {
         hashtags = hashtags.orEmpty().map { it.toDomain() },
         isVideoReview = isVideoReview,
         isOwnPost = isOwnPost,
-        rating = rating,
         businessId = businessId,
         createdAt = createdAt,
     )

@@ -9,9 +9,6 @@ data class ReviewCreateRequest(
     @SerializedName("user_id")
     val userId: Int,
 
-    @SerializedName("product_id")
-    val productId: Int,
-
     @SerializedName("parent_id")
     val parentId: Int?
 )

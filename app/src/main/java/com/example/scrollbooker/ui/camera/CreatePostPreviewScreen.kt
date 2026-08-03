@@ -239,7 +239,6 @@ fun CreatePostPreviewScreen(
                                 hashtags = emptyList(),
                                 isVideoReview = false,
                                 isOwnPost = false,
-                                rating = null,
                                 businessId = 1,
                                 createdAt = ""
                             ),

@@ -131,14 +131,11 @@ class AppointmentDetailsViewModel @Inject constructor(
             _createReviewState.value = FeatureState.Loading
 
             val userId = appointment.user.id ?: return@launch
-            val firstProduct = appointment.products.firstOrNull() ?: return@launch
-            val firstProductId = firstProduct.id ?: return@launch
 
             val request = ReviewCreateRequest(
                 review = reviewUpdate.review,
                 rating = reviewUpdate.rating,
                 userId = userId,
-                productId = firstProductId,
                 parentId = null
             )
 

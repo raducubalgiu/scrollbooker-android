@@ -29,8 +29,6 @@ data class PostDto(
     @SerializedName("is_own_post")
     val isOwnPost: Boolean,
 
-    val rating: Int?,
-
     @SerializedName("business_id")
     val businessId: Int,
 
