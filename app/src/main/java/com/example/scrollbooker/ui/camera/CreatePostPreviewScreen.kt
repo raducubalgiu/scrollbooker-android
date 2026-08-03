@@ -52,7 +52,6 @@ import com.example.scrollbooker.components.core.iconButton.CustomIconButton
 import com.example.scrollbooker.components.customized.post.components.PostOverlay
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
-import com.example.scrollbooker.entity.social.post.domain.model.LastMinute
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.social.post.domain.model.PostBusinessOwner
 import com.example.scrollbooker.entity.social.post.domain.model.PostCounters
@@ -241,14 +240,7 @@ fun CreatePostPreviewScreen(
                                 isVideoReview = false,
                                 isOwnPost = false,
                                 rating = null,
-                                bookable = false,
                                 businessId = 1,
-                                lastMinute = LastMinute(
-                                    isLastMinute = false,
-                                    lastMinuteEnd = null,
-                                    hasFixedSlots = false,
-                                    fixedSlots = emptyList()
-                                ),
                                 createdAt = ""
                             ),
                             isSavingLike = false,

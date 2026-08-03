@@ -164,8 +164,8 @@ class ProfileNavigator (
 //    }
 
     // Camera
-    fun toCamera() {
-        navController.navigate(MainRoute.Camera.route) {
+    fun toCamera(cameraParams: CameraParams) {
+        navController.navigate(MainRoute.CameraNavigator.createRoute(cameraParams)) {
             launchSingleTop = true
         }
     }

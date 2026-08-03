@@ -17,6 +17,7 @@ import com.example.scrollbooker.components.core.list.ItemList
 import com.example.scrollbooker.components.core.sheet.Sheet
 import com.example.scrollbooker.core.enums.PermissionEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.navigation.navigators.CameraParams
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.UserPermissionsController
 import kotlinx.coroutines.launch
@@ -46,7 +47,7 @@ fun ProfileMenuSheet(
                     sheetState.hide()
 
                     if (!sheetState.isVisible) {
-                        profileNavigate.toCamera()
+                        profileNavigate.toCamera(CameraParams())
                     }
                 }
             },

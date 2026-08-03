@@ -16,3 +16,8 @@ data class NavigateBookingParam(
     val source: BookingSourceEnum,
     val selectedProductId: Int? = null
 )
+
+data class CameraParams(
+    val isVideoReview: Boolean = false,
+    val businessOrEmployeeId: Int? = null
+)

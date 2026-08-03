@@ -6,6 +6,7 @@ import android.media.MediaMetadataRetriever
 import android.net.Uri
 import androidx.core.net.toFile
 import androidx.core.net.toUri
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
@@ -52,9 +53,11 @@ class CameraViewModel @Inject constructor(
     private val createVideoPostUseCase: CreateVideoPostUseCase,
     private val getProductsByBusinessIdAndEmployeeIdUseCase: GetProductsByBusinessIdAndEmployeeIdUseCase,
     private val authDataStore: AuthDataStore,
+    savedStateHandle: SavedStateHandle,
     @ApplicationContext private val context: Context
 ): ViewModel() {
-
+    val isVideoReview: Boolean = savedStateHandle.get<Boolean>("isVideoReview") == true
+    val businessOrEmployeeId: Int = savedStateHandle.get<Int>("businessOrEmployeeId") ?: -1
 
     private val _description = MutableStateFlow<String>("")
     private val _linkedProducts = MutableStateFlow<Set<Product>>(emptySet())
@@ -83,8 +86,6 @@ class CameraViewModel @Inject constructor(
                     catalogProducts = catalog.data
                 )
             }
-
-            else -> EditPostUiState.Loading
         }
         result
     }.stateIn(
@@ -334,8 +335,8 @@ class CameraViewModel @Inject constructor(
                     videoUri = videoUri,
                     description = _description.value,
                     linkedProductIds = _linkedProducts.value.map { it.id },
-                    businessOrEmployeeId = null,
-                    isVideoReview = false,
+                    isVideoReview = isVideoReview,
+                    businessOrEmployeeId = businessOrEmployeeId,
                     videoReviewMessage = null,
                     rating = null,
                     onProgress = {}

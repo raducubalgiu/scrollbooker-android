@@ -13,8 +13,10 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import androidx.navigation.navArgument
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.camera.CameraGalleryScreen
@@ -35,6 +37,16 @@ fun NavGraphBuilder.cameraGraph(
 
     navigation(
         route = MainRoute.CameraNavigator.route,
+        arguments = listOf(
+            navArgument("isVideoReview") {
+                type = NavType.BoolType
+                defaultValue = false
+            },
+            navArgument("businessOrEmployeeId") {
+                type = NavType.IntType
+                defaultValue = -1
+            }
+        ),
         startDestination = MainRoute.Camera.route,
         enterTransition = { slideInVertically(pushSpec) { it } + fadeIn(fadeInSpec) },
         exitTransition = { ExitTransition.None },

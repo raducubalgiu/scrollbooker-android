@@ -2,6 +2,7 @@ package com.example.scrollbooker.navigation.routes
 
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.social.post.domain.model.Post
+import com.example.scrollbooker.navigation.navigators.CameraParams
 import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
 
 sealed class MainRoute(val route: String) {
@@ -56,7 +57,11 @@ sealed class MainRoute(val route: String) {
         }
     }
 
-    object CameraNavigator: MainRoute(route = "cameraNavigator")
+    object CameraNavigator: MainRoute(route = "cameraNavigator?isVideoReview={isVideoReview}&businessOrEmployeeId={businessOrEmployeeId}") {
+        fun createRoute(param: CameraParams): String {
+            return "cameraNavigator?isVideoReview=${param.isVideoReview}&businessOrEmployeeId=${param.businessOrEmployeeId}"
+        }
+    }
     object Camera: MainRoute(route = "camera")
     object CameraGallery: MainRoute(route = "cameraGallery")
     object CameraPreview: MainRoute(route = "cameraPreview")

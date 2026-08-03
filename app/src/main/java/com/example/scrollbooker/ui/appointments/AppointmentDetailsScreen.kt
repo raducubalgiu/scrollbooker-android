@@ -44,6 +44,7 @@ import kotlinx.coroutines.launch
 import com.example.scrollbooker.components.customized.SectionMap
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.navigation.navigators.AppointmentsNavigator
+import com.example.scrollbooker.navigation.navigators.CameraParams
 import com.example.scrollbooker.ui.appointments.sheets.AppointmentSheets
 import com.example.scrollbooker.ui.appointments.sheets.AppointmentSheetsContent
 import com.example.scrollbooker.ui.appointments.sheets.RatingReviewUpdate
@@ -230,7 +231,14 @@ fun AppointmentDetailsScreen(
 
                         if (!a.hasVideoReview && isFinished && a.isCustomer) {
                             VideoReviewCTA(
-                                onNavigateToCamera = { appointmentsNavigate.toCamera() }
+                                onNavigateToCamera = {
+                                    appointmentsNavigate.toCamera(
+                                        CameraParams(
+                                            isVideoReview = true,
+                                            businessOrEmployeeId = a.user.id
+                                        )
+                                    )
+                                }
                             )
                         }
 

@@ -1,8 +1,6 @@
 package com.example.scrollbooker.entity.social.post.data.mappers
 import com.example.scrollbooker.components.customized.post.PostActionUiState
-import com.example.scrollbooker.entity.social.post.data.remote.FixedSlotsDto
 import com.example.scrollbooker.entity.social.post.data.remote.HashtagDto
-import com.example.scrollbooker.entity.social.post.data.remote.LastMinuteDto
 import com.example.scrollbooker.entity.social.post.data.remote.PostBusinessOwnerDto
 import com.example.scrollbooker.entity.social.post.data.remote.PostCountersDto
 import com.example.scrollbooker.entity.social.post.data.remote.PostDto
@@ -12,9 +10,7 @@ import com.example.scrollbooker.entity.social.post.data.remote.PostProductCurren
 import com.example.scrollbooker.entity.social.post.data.remote.PostProductDto
 import com.example.scrollbooker.entity.social.post.data.remote.PostUserDto
 import com.example.scrollbooker.entity.social.post.data.remote.UserPostActionsDto
-import com.example.scrollbooker.entity.social.post.domain.model.FixedSlots
 import com.example.scrollbooker.entity.social.post.domain.model.Hashtag
-import com.example.scrollbooker.entity.social.post.domain.model.LastMinute
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.social.post.domain.model.PostBusinessOwner
 import com.example.scrollbooker.entity.social.post.domain.model.PostCounters
@@ -38,10 +34,8 @@ fun PostDto.toDomain(): Post {
         hashtags = hashtags.orEmpty().map { it.toDomain() },
         isVideoReview = isVideoReview,
         isOwnPost = isOwnPost,
-        bookable = bookable,
         rating = rating,
         businessId = businessId,
-        lastMinute = lastMinute.toDomain(),
         createdAt = createdAt,
     )
 }
@@ -133,23 +127,6 @@ fun PostCountersDto.toDomain(): PostCounters {
         repostCount = repostCount,
         bookingsCount = bookingsCount,
         viewsCount = viewsCount
-    )
-}
-
-fun FixedSlotsDto.toDomain(): FixedSlots {
-    return FixedSlots(
-        startTime = startTime,
-        endTime = endTime,
-        isBooked = isBooked
-    )
-}
-
-fun LastMinuteDto.toDomain(): LastMinute {
-    return LastMinute(
-        isLastMinute = isLastMinute,
-        lastMinuteEnd = lastMinuteEnd,
-        hasFixedSlots = hasFixedSlots,
-        fixedSlots = fixedSlots.orEmpty().map { it.toDomain() }
     )
 }
 

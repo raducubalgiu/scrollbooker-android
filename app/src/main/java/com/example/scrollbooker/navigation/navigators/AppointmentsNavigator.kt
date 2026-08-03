@@ -16,8 +16,14 @@ class AppointmentsNavigator (
         }
     }
 
-    fun toCamera() {
-        navController.navigate(MainRoute.Camera.route) {
+    fun toSocial(socialParam: NavigateSocialParam) {
+        navController.navigate(MainRoute.Social.createRoute(socialParam)) {
+            launchSingleTop = true
+        }
+    }
+
+    fun toCamera(cameraParams: CameraParams) {
+        navController.navigate(MainRoute.CameraNavigator.createRoute(cameraParams)) {
             launchSingleTop = true
         }
     }

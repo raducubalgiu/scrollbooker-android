@@ -13,6 +13,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.navigation.navigators.CameraParams
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.UserPermissionsController
 import com.example.scrollbooker.ui.profile.components.MyProfileHeader
@@ -57,7 +58,7 @@ fun MyProfileScreen(
         topBar = {
             MyProfileHeader(
                 username = userData?.username ?: "",
-                onNavigateToCamera = { profileNavigate.toCamera() },
+                onNavigateToCamera = { profileNavigate.toCamera(CameraParams()) },
                 onOpenMenu = { scope.launch { menuSheetState.show() } }
             )
         },

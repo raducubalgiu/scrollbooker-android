@@ -14,9 +14,7 @@ data class Post(
     val isVideoReview: Boolean,
     val isOwnPost: Boolean,
     val rating: Int?,
-    val bookable: Boolean,
     val businessId: Int,
-    val lastMinute: LastMinute,
     val createdAt: String
 )
 
@@ -90,17 +88,4 @@ data class PostCounters(
     val repostCount: Int,
     val bookingsCount: Int,
     val viewsCount: Int
-)
-
-data class FixedSlots(
-    val startTime: String,
-    val endTime: String,
-    val isBooked: Boolean
-)
-
-data class LastMinute(
-    val isLastMinute: Boolean,
-    val lastMinuteEnd: String?,
-    val hasFixedSlots: Boolean,
-    val fixedSlots: List<FixedSlots>
 )
