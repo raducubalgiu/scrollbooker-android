@@ -13,7 +13,8 @@ import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.snackbar.rememberSnackBarController
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.navigation.navigators.NavigationEvent
-import com.example.scrollbooker.ui.post.EditPostContent
+import com.example.scrollbooker.ui.editPost.EditPostContent
+import com.example.scrollbooker.ui.editPost.EditPostUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedBoxWithConstraintsScope")
@@ -24,8 +25,8 @@ fun CreatePostScreen(
     onNavigateToPostPreview: () -> Unit,
     onPostCreated: () -> Unit
 ) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val createUiState by viewModel.createUiState.collectAsStateWithLifecycle()
+    val cameraVideoUiState by viewModel.cameraVideoUiState.collectAsStateWithLifecycle()
+    val editUiState by viewModel.editUiState.collectAsStateWithLifecycle()
 
     val isSaving by viewModel.isSaving.collectAsStateWithLifecycle()
     val isLoading = isSaving is FeatureState.Loading
@@ -49,17 +50,16 @@ fun CreatePostScreen(
         }
     }
 
-    when (val createState = createUiState) {
-        is CreatePostUiState.Loading -> LoadingScreen()
-        is CreatePostUiState.Error -> ErrorScreen()
-        is CreatePostUiState.Success -> {
+    when (val createState = editUiState) {
+        is EditPostUiState.Loading -> LoadingScreen()
+        is EditPostUiState.Error -> ErrorScreen()
+        is EditPostUiState.Success -> {
             EditPostContent(
                 isEditMode = false,
-                coverUri = state.coverUri.toString(),
-                coverKey = state.coverKey,
-                description = createState.description,
-                linkedProducts = createState.linkedProducts,
-                userProducts = createState.catalogProducts,
+                editPostUiState = createState.copy(
+                    coverUrl = cameraVideoUiState.coverUri?.toString(),
+                    coverKey = cameraVideoUiState.coverKey
+                ),
                 isLoading = isLoading,
                 hostState = hostState,
                 onDescriptionChange = { viewModel.setDescription(it) },
@@ -67,7 +67,7 @@ fun CreatePostScreen(
                 onNavigateToPostPreview = onNavigateToPostPreview,
                 onConfirmSelection = { viewModel.updateLinkedProducts(it) },
                 onSave = {
-                    state.selectedUri?.let { uri ->
+                    cameraVideoUiState.selectedUri?.let { uri ->
                         viewModel.createPost(videoUri = uri)
                     }
                 },

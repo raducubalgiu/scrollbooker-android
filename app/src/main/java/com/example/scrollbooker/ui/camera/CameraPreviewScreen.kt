@@ -48,7 +48,7 @@ fun CameraPreviewScreen(
     onNavigateToCreatePostScreen: () -> Unit
 ) {
     val player by viewModel.player.collectAsState()
-    val state by viewModel.uiState.collectAsState()
+    val state by viewModel.cameraVideoUiState.collectAsState()
 
     val context = LocalContext.current
 

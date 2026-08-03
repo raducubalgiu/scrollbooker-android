@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.post
+package com.example.scrollbooker.ui.editPost
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

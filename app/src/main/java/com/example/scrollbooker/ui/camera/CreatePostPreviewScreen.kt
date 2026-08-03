@@ -23,7 +23,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -59,6 +58,7 @@ import com.example.scrollbooker.entity.social.post.domain.model.PostBusinessOwne
 import com.example.scrollbooker.entity.social.post.domain.model.PostCounters
 import com.example.scrollbooker.entity.social.post.domain.model.PostUser
 import com.example.scrollbooker.entity.social.post.domain.model.UserPostActions
+import com.example.scrollbooker.ui.editPost.EditPostUiState
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import com.example.scrollbooker.ui.theme.titleMedium
 import timber.log.Timber
@@ -71,8 +71,8 @@ fun CreatePostPreviewScreen(
     viewModel: CameraViewModel,
     onBack: () -> Unit
 ) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val createState by viewModel.createUiState.collectAsStateWithLifecycle()
+    val cameraVideoUiState by viewModel.cameraVideoUiState.collectAsStateWithLifecycle()
+    val editUiState by viewModel.editUiState.collectAsStateWithLifecycle()
     val player by viewModel.player.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
@@ -177,9 +177,9 @@ fun CreatePostPreviewScreen(
 
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(state.coverUri)
-                        .memoryCacheKey(state.coverKey)
-                        .diskCacheKey(state.coverKey)
+                        .data(cameraVideoUiState.coverUri)
+                        .memoryCacheKey(cameraVideoUiState.coverKey)
+                        .diskCacheKey(cameraVideoUiState.coverKey)
                         .crossfade(true)
                         .build(),
                     contentDescription = "Post Grid Preview",
@@ -190,7 +190,7 @@ fun CreatePostPreviewScreen(
                     modifier = Modifier.fillMaxSize()
                 )
 
-                if(isSettled && state.isReady && player != null) {
+                if(isSettled && cameraVideoUiState.isReady && player != null) {
                     AndroidView(
                         modifier = Modifier
                             .fillMaxSize()
@@ -200,8 +200,8 @@ fun CreatePostPreviewScreen(
                     )
                 }
 
-                when(val uiState = createState) {
-                    is CreatePostUiState.Success -> {
+                when(val uiState = editUiState) {
+                    is EditPostUiState.Success -> {
                         PostOverlay(
                             post = Post(
                                 id = 1,

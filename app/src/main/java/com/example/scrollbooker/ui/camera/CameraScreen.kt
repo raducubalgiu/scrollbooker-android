@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
@@ -29,16 +30,29 @@ fun CameraScreen(
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    var permissionState by remember { mutableStateOf(MediaPermissionState.CHECKING) }
+    var permissionState by rememberSaveable {
+        mutableStateOf(MediaPermissionHelper.checkMediaPermissionState(context))
+    }
     val mediaThumbUri by viewModel.mediaThumbUri.collectAsState()
+
+    LaunchedEffect(Unit) {
+        if (permissionState == MediaPermissionState.GRANTED ||
+            permissionState == MediaPermissionState.PARTIAL) {
+            viewModel.loadMediaThumb()
+        }
+    }
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
                 val newState = MediaPermissionHelper.checkMediaPermissionState(context)
+                val previousState = permissionState
                 permissionState = newState
 
-                if (newState == MediaPermissionState.GRANTED || newState == MediaPermissionState.PARTIAL) {
+                val canAccessNow = newState == MediaPermissionState.GRANTED ||
+                        newState == MediaPermissionState.PARTIAL
+
+                if (canAccessNow && newState != previousState) {
                     viewModel.loadMediaThumb()
                 }
             }

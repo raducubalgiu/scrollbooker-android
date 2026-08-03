@@ -17,10 +17,10 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.scrollbooker.navigation.routes.MainRoute
-import com.example.scrollbooker.ui.post.EditPostScreen
-import com.example.scrollbooker.ui.post.EditPostViewModel
-import com.example.scrollbooker.ui.post.PostStatisticsScreen
-import com.example.scrollbooker.ui.post.PostStatisticsViewModel
+import com.example.scrollbooker.ui.editPost.EditPostScreen
+import com.example.scrollbooker.ui.editPost.EditPostViewModel
+import com.example.scrollbooker.ui.editPost.PostStatisticsScreen
+import com.example.scrollbooker.ui.editPost.PostStatisticsViewModel
 
 fun NavGraphBuilder.postUtilityGraph(navController: NavHostController) {
     val pushSpec: FiniteAnimationSpec<IntOffset> = tween(320, easing = LinearOutSlowInEasing)

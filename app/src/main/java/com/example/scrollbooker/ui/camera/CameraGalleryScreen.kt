@@ -14,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,9 +38,11 @@ import com.example.scrollbooker.ui.camera.components.MediaLibraryGridItem
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.scrollbooker.ui.camera.permissions.MediaPermissionHelper
 import com.example.scrollbooker.ui.camera.permissions.MediaPermissionState
 
@@ -55,15 +56,21 @@ fun CameraGalleryScreen(
     val galleryViewModel: CameraGalleryViewModel = hiltViewModel()
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    var permissionState by remember { mutableStateOf(MediaPermissionState.CHECKING) }
+    var permissionState by rememberSaveable {
+        mutableStateOf(MediaPermissionHelper.checkMediaPermissionState(context))
+    }
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
                 val newState = MediaPermissionHelper.checkMediaPermissionState(context)
+                val previousState = permissionState
                 permissionState = newState
 
-                if (newState == MediaPermissionState.GRANTED || newState == MediaPermissionState.PARTIAL) {
+                val canAccessNow = newState == MediaPermissionState.GRANTED ||
+                        newState == MediaPermissionState.PARTIAL
+
+                if (canAccessNow && newState != previousState) {
                     galleryViewModel.refreshVideos()
                 }
             }
@@ -100,10 +107,10 @@ fun CameraGalleryScreen(
     }
 
     val videos = galleryViewModel.videos.collectAsLazyPagingItems()
-    val cameraState by viewModel.uiState.collectAsState()
+    val cameraVideoUiState by viewModel.cameraVideoUiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(cameraState.isReady, cameraState.selectedUri) {
-        if (cameraState.isReady && cameraState.selectedUri != null) {
+    LaunchedEffect(cameraVideoUiState.isReady, cameraVideoUiState.selectedUri) {
+        if (cameraVideoUiState.isReady && cameraVideoUiState.selectedUri != null) {
             onNavigateToCameraPreview()
         }
     }
@@ -152,7 +159,7 @@ fun CameraGalleryScreen(
                                     val item = videos[index] ?: return@items
                                     MediaLibraryGridItem(
                                         item = item,
-                                        isPreparing = item.uri == cameraState.preparingUri,
+                                        isPreparing = item.uri == cameraVideoUiState.preparingUri,
                                         onSelect = { viewModel.selectVideo(it) }
                                     )
                                 }

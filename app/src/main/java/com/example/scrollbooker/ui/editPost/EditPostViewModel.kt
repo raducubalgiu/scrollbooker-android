@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.post
+package com.example.scrollbooker.ui.editPost
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -31,17 +31,6 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-sealed interface EditPostUiState {
-    object Loading : EditPostUiState
-    data class Success(
-        val postMedia: PostMediaFile?,
-        val description: String,
-        val linkedProducts: Set<Product>,
-        val catalogProducts: UserProducts
-    ) : EditPostUiState
-    data class Error(val error: Throwable?) : EditPostUiState
-}
-
 @HiltViewModel
 class EditPostViewModel @Inject constructor(
     private val getPostByIdUseCase: GetPostByIdUseCase,
@@ -71,7 +60,8 @@ class EditPostViewModel @Inject constructor(
 
             catalog is FeatureState.Success -> {
                 EditPostUiState.Success(
-                    postMedia = media,
+                    coverUrl = media?.thumbnailUrl,
+                    coverKey = null,
                     description = desc,
                     linkedProducts = linked,
                     catalogProducts = catalog.data

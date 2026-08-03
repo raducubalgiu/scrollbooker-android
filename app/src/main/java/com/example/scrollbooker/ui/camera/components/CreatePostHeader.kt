@@ -47,7 +47,7 @@ const val MAX_LENGTH = 500
 @Composable
 fun CreatePostHeader(
     previewHeight: Dp,
-    coverUri: String?,
+    coverUrl: String?,
     coverKey: String?,
     description: String,
     onDescriptionChange: (String) -> Unit,
@@ -69,7 +69,7 @@ fun CreatePostHeader(
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(coverUri)
+                    .data(coverUrl)
                     .memoryCacheKey(coverKey)
                     .diskCacheKey(coverKey)
                     .crossfade(true)

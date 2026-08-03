@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.post
+package com.example.scrollbooker.ui.editPost
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.post
+package com.example.scrollbooker.ui.editPost
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -47,11 +47,7 @@ fun EditPostScreen(
         is EditPostUiState.Success -> {
             EditPostContent(
                 isEditMode = true,
-                description = state.description,
-                coverUri = state.postMedia?.thumbnailUrl,
-                coverKey = null,
-                linkedProducts = state.linkedProducts,
-                userProducts = state.catalogProducts,
+                editPostUiState = state,
                 isLoading = isLoading,
                 hostState = hostState,
                 onDescriptionChange = { viewModel.setDescription(it) },

@@ -1,9 +1,10 @@
-package com.example.scrollbooker.ui.post
+package com.example.scrollbooker.ui.editPost
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -36,7 +37,6 @@ import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
-import com.example.scrollbooker.entity.booking.products.domain.model.UserProducts
 import com.example.scrollbooker.ui.camera.UserProductsSheet
 import com.example.scrollbooker.ui.camera.components.CreatePostBottomBar
 import com.example.scrollbooker.ui.camera.components.CreatePostHeader
@@ -51,11 +51,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun EditPostContent(
     isEditMode: Boolean,
-    coverUri: String?,
-    coverKey: String?,
-    description: String,
-    linkedProducts: Set<Product>,
-    userProducts: UserProducts,
+    editPostUiState: EditPostUiState.Success,
     isLoading: Boolean,
     hostState: SnackbarHostState,
     onDescriptionChange: (String) -> Unit,
@@ -90,8 +86,8 @@ fun EditPostContent(
     if (showSheet) {
         UserProductsSheet(
             sheetState = sheetState,
-            linkedProducts = linkedProducts,
-            userProducts = FeatureState.Success(userProducts),
+            linkedProducts = editPostUiState.linkedProducts,
+            userProducts = FeatureState.Success(editPostUiState.catalogProducts),
             onConfirmSelection = {
                 onConfirmSelection(it)
                 handleCloseSheet()
@@ -101,17 +97,18 @@ fun EditPostContent(
     }
 
     Scaffold(
+        modifier = Modifier.imePadding(),
         topBar = {
             Header(
                 title = if(isEditMode) stringResource(R.string.edit)
-                        else stringResource(R.string.create),
+                else stringResource(R.string.create),
                 onBack = onBack
             )
         },
         bottomBar = {
             CreatePostBottomBar(
                 title = if(isEditMode) stringResource(R.string.save)
-                        else stringResource(R.string.postNow),
+                else stringResource(R.string.postNow),
                 onCreate = onSave,
                 isLoading = isLoading,
                 isDisabled = isLoading
@@ -131,9 +128,9 @@ fun EditPostContent(
         ) {
             CreatePostHeader(
                 previewHeight = previewHeight,
-                coverUri = coverUri,
-                coverKey = coverKey,
-                description = description,
+                coverUrl = editPostUiState.coverUrl,
+                coverKey = editPostUiState.coverKey,
+                description = editPostUiState.description,
                 onDescriptionChange = onDescriptionChange,
                 onNavigateToPostPreview = onNavigateToPostPreview
             )
@@ -155,7 +152,7 @@ fun EditPostContent(
                     fontWeight = FontWeight.ExtraBold
                 )
 
-                if(linkedProducts.isNotEmpty()) {
+                if(editPostUiState.linkedProducts.isNotEmpty()) {
                     TextButton(onClick = { handleShowSheet() }) {
                         Text(
                             text = stringResource(R.string.change),
@@ -167,16 +164,16 @@ fun EditPostContent(
                 }
             }
 
-            if (linkedProducts.isEmpty()) {
+            if (editPostUiState.linkedProducts.isEmpty()) {
                 LinkedProductsOverlay(onClick = { handleShowSheet() })
             } else {
-                linkedProducts.forEachIndexed { index, product ->
+                editPostUiState.linkedProducts.forEachIndexed { index, product ->
                     LinkedProductRow(
                         product = product,
                         onRemove = { onRemoveProduct(it) },
                     )
 
-                    if(index < linkedProducts.size - 1) {
+                    if(index < editPostUiState.linkedProducts.size - 1) {
                         HorizontalDivider(
                             thickness = 0.55.dp,
                             color = Divider

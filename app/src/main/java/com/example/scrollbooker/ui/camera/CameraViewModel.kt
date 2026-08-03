@@ -22,6 +22,7 @@ import com.example.scrollbooker.entity.permission.domain.repository.PermissionRe
 import com.example.scrollbooker.entity.social.post.domain.useCase.CreateVideoPostUseCase
 import com.example.scrollbooker.navigation.navigators.NavigationEvent
 import com.example.scrollbooker.store.AuthDataStore
+import com.example.scrollbooker.ui.editPost.EditPostUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -45,27 +46,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 
-sealed interface CreatePostUiState {
-    object Loading : CreatePostUiState
-    data class Success(
-        val description: String,
-        val linkedProducts: Set<Product>,
-        val catalogProducts: UserProducts
-    ) : CreatePostUiState
-    data class Error(val error: Throwable?) : CreatePostUiState
-}
-
-data class UiState(
-    val selectedUri: Uri? = null,
-    val selectedKey: String? = null,
-    val preparingUri: Uri? = null,
-    val isReady: Boolean = false,
-    val error: Throwable? = null,
-    val coverUri: Uri? = null,
-    val coverKey: String? = null,
-    val isCoverLoading: Boolean = false
-)
-
 @HiltViewModel
 class CameraViewModel @Inject constructor(
     private val permissionRepository: PermissionRepository,
@@ -81,28 +61,34 @@ class CameraViewModel @Inject constructor(
     private val _mediaThumbUri = MutableStateFlow<String?>(null)
     val mediaThumbUri: StateFlow<String?> = _mediaThumbUri.asStateFlow()
 
-    val createUiState: StateFlow<CreatePostUiState> = combine(
+    private val _cameraVideoUiState = MutableStateFlow(CameraVideoUiState())
+    val cameraVideoUiState: StateFlow<CameraVideoUiState> = _cameraVideoUiState.asStateFlow()
+
+    val editUiState: StateFlow<EditPostUiState> = combine(
         _description,
         _linkedProducts,
         _userProducts
     ) { desc: String, linked: Set<Product>, catalog: FeatureState<UserProducts> ->
-        val result: CreatePostUiState = when {
-            catalog is FeatureState.Error -> CreatePostUiState.Error(catalog.error)
-            catalog is FeatureState.Loading -> CreatePostUiState.Loading
-            catalog is FeatureState.Success -> {
-                CreatePostUiState.Success(
+        val result: EditPostUiState = when (catalog) {
+            is FeatureState.Error -> EditPostUiState.Error(catalog.error)
+            is FeatureState.Loading -> EditPostUiState.Loading
+            is FeatureState.Success -> {
+                EditPostUiState.Success(
+                    coverUrl = null,
+                    coverKey = null,
                     description = desc,
                     linkedProducts = linked,
                     catalogProducts = catalog.data
                 )
             }
-            else -> CreatePostUiState.Loading
+
+            else -> EditPostUiState.Loading
         }
         result
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
-        initialValue = CreatePostUiState.Loading
+        initialValue = EditPostUiState.Loading
     )
 
     private val _isSaving = MutableStateFlow<FeatureState<Unit>?>(null)
@@ -171,9 +157,6 @@ class CameraViewModel @Inject constructor(
     }
 
     // Video Player
-    private val _uiState = MutableStateFlow(UiState())
-    val uiState = _uiState.asStateFlow()
-
     private val _player = MutableStateFlow<Player?>(null)
     val player = _player.asStateFlow()
 
@@ -187,12 +170,12 @@ class CameraViewModel @Inject constructor(
         override fun onPlaybackStateChanged(state: Int) {
             val p = exoPlayer ?: return
             val currentUri = p.currentMediaItem?.localConfiguration?.uri
-            val selectedUri = _uiState.value.selectedUri
+            val selectedUri = _cameraVideoUiState.value.selectedUri
 
             val readyForSelected =
                 state == Player.STATE_READY && currentUri != null && currentUri == selectedUri
 
-            _uiState.update {
+            _cameraVideoUiState.update {
                 it.copy(
                     isReady = readyForSelected,
                     preparingUri = if (readyForSelected) null else it.preparingUri,
@@ -202,7 +185,7 @@ class CameraViewModel @Inject constructor(
         }
 
         override fun onPlayerError(error: PlaybackException) {
-            _uiState.update { it.copy(error = error, preparingUri = null, isReady = false) }
+            _cameraVideoUiState.update { it.copy(error = error, preparingUri = null, isReady = false) }
         }
     }
 
@@ -219,9 +202,9 @@ class CameraViewModel @Inject constructor(
     fun selectVideo(uri: Uri) {
         val key = videoKey(uri)
 
-        if(_uiState.value.selectedKey == key) return
+        if(_cameraVideoUiState.value.selectedKey == key) return
 
-        _uiState.value.coverUri?.let { old ->
+        _cameraVideoUiState.value.coverUri?.let { old ->
             runCatching {
                 val f = old.toFile()
                 if(f.exists()) f.delete()
@@ -230,7 +213,7 @@ class CameraViewModel @Inject constructor(
 
         coverJob?.cancel()
 
-        _uiState.update {
+        _cameraVideoUiState.update {
             it.copy(
                 selectedUri = uri,
                 selectedKey = key,
@@ -242,9 +225,9 @@ class CameraViewModel @Inject constructor(
     }
 
     fun prepareSelected() {
-        val uri = _uiState.value.selectedUri ?: return
+        val uri = _cameraVideoUiState.value.selectedUri ?: return
 
-        _uiState.update { it.copy(preparingUri = uri, isReady = false, error = null) }
+        _cameraVideoUiState.update { it.copy(preparingUri = uri, isReady = false, error = null) }
 
         prepareJob?.cancel()
         prepareJob = viewModelScope.launch(Dispatchers.Main.immediate) {
@@ -266,11 +249,12 @@ class CameraViewModel @Inject constructor(
     fun onBackToGallery() {
         pause()
 
-        _uiState.update {
+        _cameraVideoUiState.update {
             it.copy(
                 isReady = false,
                 preparingUri = null,
                 selectedUri = null,
+                selectedKey = null,
                 error = null
             )
         }
@@ -285,7 +269,7 @@ class CameraViewModel @Inject constructor(
         exoPlayer?.release()
         exoPlayer = null
         _player.value = null
-        _uiState.update { it.copy(isReady = false, preparingUri = null) }
+        _cameraVideoUiState.update { it.copy(isReady = false, preparingUri = null) }
     }
 
     override fun onCleared() {
@@ -294,18 +278,18 @@ class CameraViewModel @Inject constructor(
     }
 
     fun generateCoverIfNeeded() {
-        val uri = _uiState.value.selectedUri ?: return
-        val key = _uiState.value.selectedKey ?: return
+        val uri = _cameraVideoUiState.value.selectedUri ?: return
+        val key = _cameraVideoUiState.value.selectedKey ?: return
 
-        if(_uiState.value.coverKey == key && _uiState.value.coverUri != null) return
+        if(_cameraVideoUiState.value.coverKey == key && _cameraVideoUiState.value.coverUri != null) return
 
         coverJob?.cancel()
         coverJob = viewModelScope.launch(Dispatchers.IO) {
-            _uiState.update { it.copy(isCoverLoading = true) }
+            _cameraVideoUiState.update { it.copy(isCoverLoading = true) }
 
             val cover = runCatching { createVideoCover(context, uri) }.getOrNull()
 
-            _uiState.update {
+            _cameraVideoUiState.update {
                 it.copy(
                     coverUri = cover,
                     coverKey = key,
