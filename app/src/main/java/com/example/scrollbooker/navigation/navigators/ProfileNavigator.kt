@@ -11,6 +11,10 @@ import com.example.scrollbooker.ui.profile.components.SelectedPostUi
 class ProfileNavigator (
     private val navController: NavHostController
 ) {
+    fun back() {
+        navController.popBackStack()
+    }
+
     fun toUserProfile(userId: Int, username: String) {
         navController.navigateToUserProfile(userId, username)
     }

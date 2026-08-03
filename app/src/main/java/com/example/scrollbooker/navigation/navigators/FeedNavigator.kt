@@ -9,6 +9,10 @@ import com.example.scrollbooker.navigation.routes.MainRoute
 class FeedNavigator (
     private val navController: NavHostController
 ) {
+    fun back() {
+        navController.popBackStack()
+    }
+
     fun toFeedSearch() {
         navController.navigate(MainRoute.FeedSearch.route) {
             launchSingleTop = true

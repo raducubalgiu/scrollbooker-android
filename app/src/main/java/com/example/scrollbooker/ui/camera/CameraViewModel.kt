@@ -54,6 +54,8 @@ class CameraViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
     @ApplicationContext private val context: Context
 ): ViewModel() {
+
+
     private val _description = MutableStateFlow<String>("")
     private val _linkedProducts = MutableStateFlow<Set<Product>>(emptySet())
     private val _userProducts = MutableStateFlow<FeatureState<UserProducts>>(FeatureState.Loading)

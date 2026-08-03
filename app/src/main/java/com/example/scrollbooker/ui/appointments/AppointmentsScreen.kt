@@ -17,13 +17,14 @@ import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.core.layout.MessageScreen
+import com.example.scrollbooker.navigation.navigators.AppointmentsNavigator
 import com.example.scrollbooker.ui.appointments.components.AppointmentsList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppointmentsScreen(
     viewModel: AppointmentsViewModel,
-    onNavigateToAppointmentDetails: (appointmentId: Int) -> Unit
+    appointmentsNavigate: AppointmentsNavigator
 ) {
     val appointments = viewModel.appointments.collectAsLazyPagingItems()
     val isRefreshing = appointments.loadState.refresh is LoadState.Loading
@@ -44,7 +45,7 @@ fun AppointmentsScreen(
                         if(appointments.itemCount > 0) {
                             AppointmentsList(
                                 appointments = appointments,
-                                onNavigateToAppointmentDetails = onNavigateToAppointmentDetails,
+                                onNavigateToAppointmentDetails = { appointmentsNavigate.toAppointmentDetails(it) },
                                 isRefreshing = isRefreshing,
                                 onRefresh = {
                                     viewModel.loadAppointments()

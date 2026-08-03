@@ -13,6 +13,7 @@ import com.example.scrollbooker.navigation.graphs.appointmentsGraph
 import com.example.scrollbooker.navigation.graphs.bookingGraph
 import com.example.scrollbooker.navigation.graphs.socialGraph
 import com.example.scrollbooker.navigation.graphs.userProfileGraph
+import com.example.scrollbooker.navigation.navigators.AppointmentsNavigator
 import com.example.scrollbooker.navigation.navigators.BookingNavigator
 import com.example.scrollbooker.navigation.navigators.InboxNavigator
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
@@ -35,6 +36,10 @@ fun InboxNavHost(navController: NavHostController) {
 
     val bookingNavigate = remember(navController) {
         BookingNavigator(navController)
+    }
+
+    val appointmentsNavigate = remember(navController) {
+        AppointmentsNavigator(navController)
     }
 
     NavHost(
@@ -125,7 +130,7 @@ fun InboxNavHost(navController: NavHostController) {
             }
         }
 
-        appointmentsGraph(navController)
+        appointmentsGraph(appointmentsNavigate)
         userProfileGraph(navController, profileNavigate)
         socialGraph(navController, profileNavigate)
         bookingGraph(navController, bookingNavigate)

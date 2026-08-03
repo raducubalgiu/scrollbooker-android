@@ -8,6 +8,7 @@ import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.graphs.cameraGraph
 import com.example.scrollbooker.navigation.graphs.socialGraph
 import com.example.scrollbooker.navigation.graphs.userProfileGraph
+import com.example.scrollbooker.navigation.navigators.AppointmentsNavigator
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
@@ -20,6 +21,10 @@ fun AppointmentsNavHost(navController: NavHostController) {
         ProfileNavigator(navController)
     }
 
+    val appointmentNavigate = remember(navController) {
+        AppointmentsNavigator(navController)
+    }
+
     NavHost(
         navController = navController,
         startDestination = MainRoute.Appointments.route,
@@ -28,7 +33,7 @@ fun AppointmentsNavHost(navController: NavHostController) {
         popEnterTransition = { slideInFromLeft() },
         popExitTransition = { slideOutToRight() }
     ) {
-        appointmentsGraph(navController)
+        appointmentsGraph(appointmentNavigate)
         userProfileGraph(navController, profileNavigate)
         cameraGraph(navController, profileNavigate)
         socialGraph(navController, profileNavigate)

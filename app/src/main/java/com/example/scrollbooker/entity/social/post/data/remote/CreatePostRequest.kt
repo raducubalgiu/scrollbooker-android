@@ -15,11 +15,11 @@ data class CreatePostRequest(
     @SerializedName("linked_product_ids")
     val linkedProductIds: List<Int>,
 
-    @SerializedName("video_review_message")
-    val videoReviewMessage: String?,
-
     @SerializedName("is_video_review")
     val isVideoReview: Boolean,
+
+    @SerializedName("video_review_message")
+    val videoReviewMessage: String?,
 
     val rating: Int?,
 

@@ -43,6 +43,7 @@ import com.example.scrollbooker.ui.theme.titleMedium
 import kotlinx.coroutines.launch
 import com.example.scrollbooker.components.customized.SectionMap
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.navigation.navigators.AppointmentsNavigator
 import com.example.scrollbooker.ui.appointments.sheets.AppointmentSheets
 import com.example.scrollbooker.ui.appointments.sheets.AppointmentSheetsContent
 import com.example.scrollbooker.ui.appointments.sheets.RatingReviewUpdate
@@ -51,8 +52,7 @@ import com.example.scrollbooker.ui.appointments.sheets.RatingReviewUpdate
 @Composable
 fun AppointmentDetailsScreen(
     viewModel: AppointmentDetailsViewModel,
-    onBack: () -> Unit,
-    onNavigateToCamera: () -> Unit
+    appointmentsNavigate: AppointmentsNavigator
 ) {
     val isSaving by viewModel.isSaving.collectAsStateWithLifecycle()
 
@@ -126,7 +126,7 @@ fun AppointmentDetailsScreen(
     }
 
     Scaffold(
-        topBar = { Header(onBack = onBack) },
+        topBar = { Header(onBack = { appointmentsNavigate.back() }) },
         containerColor = Background
     ) { innerPadding ->
         Box(
@@ -229,7 +229,9 @@ fun AppointmentDetailsScreen(
                         }
 
                         if (!a.hasVideoReview && isFinished && a.isCustomer) {
-                            VideoReviewCTA(onNavigateToCamera = onNavigateToCamera)
+                            VideoReviewCTA(
+                                onNavigateToCamera = { appointmentsNavigate.toCamera() }
+                            )
                         }
 
                         a.message?.let { AppointmentDetailsMessage(it) }

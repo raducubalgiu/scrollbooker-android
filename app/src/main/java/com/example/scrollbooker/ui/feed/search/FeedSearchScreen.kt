@@ -37,6 +37,7 @@ import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.bodyMedium
@@ -45,8 +46,7 @@ import com.example.scrollbooker.ui.theme.titleMedium
 @Composable
 fun FeedSearchScreen(
     viewModel: FeedSearchViewModel,
-    onBack: () -> Unit,
-    onNavigateToUserProfile: (Int, String) -> Unit,
+    feedNavigate: FeedNavigator
 ) {
     val currentSearch by viewModel.currentSearch.collectAsState()
     val searchState by viewModel.searchState.collectAsState()
@@ -79,7 +79,7 @@ fun FeedSearchScreen(
             onClick = { keyboardController?.show() },
             onBack = {
                 keyboardController?.hide()
-                onBack()
+                feedNavigate.back()
             },
         )
 
@@ -97,7 +97,7 @@ fun FeedSearchScreen(
                                 .clickable(
                                     interactionSource = interactionSource,
                                     indication = null,
-                                    onClick = { onNavigateToUserProfile(user.id, user.username) }
+                                    onClick = { feedNavigate.toUserProfile(user.id, user.username) }
                                 ),
                             headlineContent = {
                                 Text(

@@ -76,7 +76,6 @@ fun NavGraphBuilder.myProfileGraph(
                 postTabKey = postTabKey,
                 postIndex = postIndex,
                 viewModel = viewModel,
-                onBack = { navController.popBackStack() },
                 profileNavigate = profileNavigate,
             )
         }
