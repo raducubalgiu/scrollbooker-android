@@ -234,7 +234,7 @@ fun AppointmentDetailsScreen(
                                 onNavigateToCamera = {
                                     appointmentsNavigate.toCamera(
                                         CameraParams(
-                                            isVideoReview = true,
+                                            appointmentId = a.id,
                                             businessOrEmployeeId = a.user.id
                                         )
                                     )

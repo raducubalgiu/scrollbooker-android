@@ -48,7 +48,7 @@ import kotlinx.coroutines.launch
 fun UserProductsSheet(
     sheetState: SheetState,
     linkedProducts: Set<Product>,
-    userProducts: FeatureState<UserProducts>,
+    userProducts: FeatureState<UserProducts?>,
     onConfirmSelection: (Set<Product>) -> Unit,
     onClose: () -> Unit
 ) {
@@ -78,25 +78,27 @@ fun UserProductsSheet(
                     is FeatureState.Loading -> ScheduleShimmer()
                     is FeatureState.Error -> ErrorScreen()
                     is FeatureState.Success -> {
-                        SelectableProductsList(
-                            listState = listState,
-                            products = state.data,
-                            selectedProducts = localLinkedProducts,
-                            onSelect = { product ->
-                                localLinkedProducts =
-                                    if (localLinkedProducts.contains(product)) {
-                                        localLinkedProducts - product
-                                    } else {
-                                        localLinkedProducts + product
-                                    }
-                            },
-                            contentPadding = PaddingValues(
-                                start = 16.dp,
-                                top = 16.dp,
-                                end = 16.dp,
-                                bottom = 16.dp + bottomBarHeight
+                        state.data?.let {
+                            SelectableProductsList(
+                                listState = listState,
+                                products = it,
+                                selectedProducts = localLinkedProducts,
+                                onSelect = { product ->
+                                    localLinkedProducts =
+                                        if (localLinkedProducts.contains(product)) {
+                                            localLinkedProducts - product
+                                        } else {
+                                            localLinkedProducts + product
+                                        }
+                                },
+                                contentPadding = PaddingValues(
+                                    start = 16.dp,
+                                    top = 16.dp,
+                                    end = 16.dp,
+                                    bottom = 16.dp + bottomBarHeight
+                                )
                             )
-                        )
+                        }
                     }
                 }
             }

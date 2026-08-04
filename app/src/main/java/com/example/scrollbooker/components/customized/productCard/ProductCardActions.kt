@@ -92,31 +92,29 @@ fun ProductCardActions(
             val contentColor = if (isSelected) OnPrimary else OnBackground
             val shadowElevation = if (isSelected) 1.dp else 4.dp
 
-            Protected(permission = PermissionEnum.BOOK_BUTTON_VIEW) {
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .shadow(
-                            elevation = shadowElevation,
-                            shape = ShapeDefaults.ExtraLarge,
-                            clip = false
-                        )
-                ) {
-                    FilledIconButton(
-                        onClick = handleSelect,
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .shadow(
+                        elevation = shadowElevation,
                         shape = ShapeDefaults.ExtraLarge,
-                        colors = IconButtonDefaults.filledIconButtonColors(
-                            containerColor = containerColor,
-                            contentColor = contentColor
-                        ),
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        Icon(
-                            imageVector = if (isSelected) Icons.Default.Check else Icons.Default.Add,
-                            contentDescription = null,
-                            modifier = Modifier.size(20.dp)
-                        )
-                    }
+                        clip = false
+                    )
+            ) {
+                FilledIconButton(
+                    onClick = handleSelect,
+                    shape = ShapeDefaults.ExtraLarge,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = containerColor,
+                        contentColor = contentColor
+                    ),
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Icon(
+                        imageVector = if (isSelected) Icons.Default.Check else Icons.Default.Add,
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp)
+                    )
                 }
             }
         }

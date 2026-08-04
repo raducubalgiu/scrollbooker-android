@@ -57,7 +57,9 @@ fun CameraPreviewScreen(
     }
 
     LaunchedEffect(Unit) {
-        viewModel.loadUserProducts()
+        if (!viewModel.isVideoReview) {
+            viewModel.loadUserProducts()
+        }
     }
 
     val playerView = remember {

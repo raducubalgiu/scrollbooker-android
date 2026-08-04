@@ -7,6 +7,7 @@ import com.example.scrollbooker.entity.social.post.data.repository.PostRepositor
 import com.example.scrollbooker.entity.social.post.domain.repository.PostRepository
 import com.example.scrollbooker.entity.social.post.domain.useCase.BookmarkPostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.CreateVideoPostUseCase
+import com.example.scrollbooker.entity.social.post.domain.useCase.CreateVideoReviewUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetExplorePostsUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetFollowingPostsUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetPostByIdUseCase
@@ -48,6 +49,16 @@ object PostsModule {
         @ApplicationContext context: Context
     ): CreateVideoPostUseCase {
         return CreateVideoPostUseCase(cloudflareRepository, postRepository, context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCreateVideoReviewPostUseCase(
+        cloudflareRepository: CloudflareRepository,
+        postRepository: PostRepository,
+        @ApplicationContext context: Context
+    ): CreateVideoReviewUseCase {
+        return CreateVideoReviewUseCase(cloudflareRepository, postRepository, context)
     }
 
     @Provides

@@ -2,7 +2,6 @@ package com.example.scrollbooker.entity.social.post.data.remote
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.social.post.data.mappers.toDomain
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import timber.log.Timber
@@ -10,9 +9,9 @@ import java.lang.Exception
 
 class PostExplorePagingSource(
     private val api: PostApiService,
-    private val selectedBusinessTypes: List<Int?>
+    private val serviceIds: List<Int?>,
+    private val onlyVideoReviews: Boolean = false
 ) : PagingSource<Int, Post>() {
-
     override fun getRefreshKey(state: PagingState<Int, Post>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
             val page = state.closestPageToPosition(anchorPosition)
@@ -25,10 +24,7 @@ class PostExplorePagingSource(
         val limit = 10
 
         return try {
-            val response = withVisibleLoading {
-                api.getExplorePosts(selectedBusinessTypes, page, limit)
-            }
-
+            val response = api.getExplorePosts(page, limit, serviceIds, onlyVideoReviews)
             val posts = response.results.map { it.toDomain() }
 
             val totalLoaded = (page - 1) * limit + response.results.size
@@ -40,7 +36,7 @@ class PostExplorePagingSource(
                 nextKey = if(isLastPage) null else page + 1,
             )
         } catch (e: Exception) {
-            Timber.tag("Paging Posts").e(e, "ERROR: on Loading Posts")
+            Timber.tag("Paging Posts").e(e, "ERROR: on Loading Explore Posts")
             e.printStackTrace()
             LoadResult.Error(throwable = e)
         }

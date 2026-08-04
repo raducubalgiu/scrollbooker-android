@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import com.example.scrollbooker.navigation.graphs.appointmentsGraph
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.graphs.cameraGraph
+import com.example.scrollbooker.navigation.graphs.myProfileGraph
 import com.example.scrollbooker.navigation.graphs.socialGraph
 import com.example.scrollbooker.navigation.graphs.userProfileGraph
 import com.example.scrollbooker.navigation.navigators.AppointmentsNavigator
@@ -34,6 +35,7 @@ fun AppointmentsNavHost(navController: NavHostController) {
         popExitTransition = { slideOutToRight() }
     ) {
         appointmentsGraph(appointmentNavigate)
+        myProfileGraph(navController, profileNavigate)
         userProfileGraph(navController, profileNavigate)
         cameraGraph(navController, profileNavigate)
         socialGraph(navController, profileNavigate)

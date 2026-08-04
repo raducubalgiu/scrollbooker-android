@@ -10,7 +10,7 @@ sealed interface EditPostUiState {
         val coverKey: String?,
         val description: String,
         val linkedProducts: Set<Product>,
-        val catalogProducts: UserProducts
+        val catalogProducts: UserProducts?
     ) : EditPostUiState
     data class Error(val error: Throwable?) : EditPostUiState
 }

@@ -4,6 +4,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.example.scrollbooker.entity.social.post.data.mappers.toDomain
 import com.example.scrollbooker.entity.social.post.data.remote.CreatePostRequest
+import com.example.scrollbooker.entity.social.post.data.remote.CreateVideoReviewRequest
 import com.example.scrollbooker.entity.social.post.data.remote.PostApiService
 import com.example.scrollbooker.entity.social.post.data.remote.PostExplorePagingSource
 import com.example.scrollbooker.entity.social.post.data.remote.PostFollowingPagingSource
@@ -19,12 +20,13 @@ class PostRepositoryImpl @Inject constructor(
     private val apiService: PostApiService
 ): PostRepository {
     override fun getExplorePosts(
-        selectedBusinessTypes: List<Int?>
+        serviceIds: List<Int?>,
+        onlyVideoReviews: Boolean
     ): Flow<PagingData<Post>> {
         return Pager(
             config = PagingConfig(pageSize = 10),
             pagingSourceFactory = {
-                PostExplorePagingSource(apiService, selectedBusinessTypes)
+                PostExplorePagingSource(apiService, serviceIds, onlyVideoReviews)
             }
         ).flow
     }
@@ -79,5 +81,9 @@ class PostRepositoryImpl @Inject constructor(
 
     override suspend fun createPost(request: CreatePostRequest) {
         return apiService.createPost(request)
+    }
+
+    override suspend fun createVideoReview(request: CreateVideoReviewRequest) {
+        return apiService.createVideoReview(request)
     }
 }

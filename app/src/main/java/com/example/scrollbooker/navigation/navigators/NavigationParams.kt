@@ -18,6 +18,6 @@ data class NavigateBookingParam(
 )
 
 data class CameraParams(
-    val isVideoReview: Boolean = false,
+    val appointmentId: Int? = null,
     val businessOrEmployeeId: Int? = null
 )

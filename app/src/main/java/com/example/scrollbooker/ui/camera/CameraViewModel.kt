@@ -21,6 +21,7 @@ import com.example.scrollbooker.entity.booking.products.domain.model.UserProduct
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByBusinessIdAndEmployeeIdUseCase
 import com.example.scrollbooker.entity.permission.domain.repository.PermissionRepository
 import com.example.scrollbooker.entity.social.post.domain.useCase.CreateVideoPostUseCase
+import com.example.scrollbooker.entity.social.post.domain.useCase.CreateVideoReviewUseCase
 import com.example.scrollbooker.navigation.navigators.NavigationEvent
 import com.example.scrollbooker.store.AuthDataStore
 import com.example.scrollbooker.ui.editPost.EditPostUiState
@@ -51,13 +52,15 @@ import kotlinx.coroutines.flow.stateIn
 class CameraViewModel @Inject constructor(
     private val permissionRepository: PermissionRepository,
     private val createVideoPostUseCase: CreateVideoPostUseCase,
+    private val createVideoReviewUseCase: CreateVideoReviewUseCase,
     private val getProductsByBusinessIdAndEmployeeIdUseCase: GetProductsByBusinessIdAndEmployeeIdUseCase,
     private val authDataStore: AuthDataStore,
     savedStateHandle: SavedStateHandle,
     @ApplicationContext private val context: Context
 ): ViewModel() {
-    val isVideoReview: Boolean = savedStateHandle.get<Boolean>("isVideoReview") == true
+    val appointmentId: Int = savedStateHandle.get<Int>("appointmentId") ?: -1
     val businessOrEmployeeId: Int = savedStateHandle.get<Int>("businessOrEmployeeId") ?: -1
+    val isVideoReview: Boolean = appointmentId > 0 && businessOrEmployeeId > 0
 
     private val _description = MutableStateFlow<String>("")
     private val _linkedProducts = MutableStateFlow<Set<Product>>(emptySet())
@@ -73,12 +76,20 @@ class CameraViewModel @Inject constructor(
         _description,
         _linkedProducts,
         _userProducts
-    ) { desc: String, linked: Set<Product>, catalog: FeatureState<UserProducts> ->
-        val result: EditPostUiState = when (catalog) {
-            is FeatureState.Error -> EditPostUiState.Error(catalog.error)
-            is FeatureState.Loading -> EditPostUiState.Loading
-            is FeatureState.Success -> {
-                EditPostUiState.Success(
+    ) { desc, linked, catalog ->
+        if (isVideoReview) {
+            EditPostUiState.Success(
+                coverUrl = null,
+                coverKey = null,
+                description = desc,
+                linkedProducts = emptySet(),
+                catalogProducts = null
+            )
+        } else {
+            when (catalog) {
+                is FeatureState.Error -> EditPostUiState.Error(catalog.error)
+                is FeatureState.Loading -> EditPostUiState.Loading
+                is FeatureState.Success -> EditPostUiState.Success(
                     coverUrl = null,
                     coverKey = null,
                     description = desc,
@@ -87,7 +98,6 @@ class CameraViewModel @Inject constructor(
                 )
             }
         }
-        result
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
@@ -330,13 +340,27 @@ class CameraViewModel @Inject constructor(
         viewModelScope.launch {
             _isSaving.value = FeatureState.Loading
 
-            val result = withVisibleLoading {
-                createVideoPostUseCase(
-                    videoUri = videoUri,
-                    description = _description.value,
-                    linkedProductIds = _linkedProducts.value.map { it.id },
-                    onProgress = {}
-                )
+            val result = if (appointmentId > 0 && businessOrEmployeeId > 0) {
+                withVisibleLoading {
+                    createVideoReviewUseCase(
+                        businessOrEmployeeId = businessOrEmployeeId,
+                        appointmentId = appointmentId,
+                        videoUri = videoUri,
+                        description = _description.value,
+                        review = "Totul a fost excelent!",
+                        rating = 5,
+                        onProgress = {},
+                    )
+                }
+            } else {
+                withVisibleLoading {
+                    createVideoPostUseCase(
+                        videoUri = videoUri,
+                        description = _description.value,
+                        linkedProductIds = _linkedProducts.value.map { it.id },
+                        onProgress = {}
+                    )
+                }
             }
 
             result

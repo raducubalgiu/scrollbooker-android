@@ -56,6 +56,7 @@ fun CreatePostScreen(
         is EditPostUiState.Success -> {
             EditPostContent(
                 isEditMode = false,
+                isVideoReview = viewModel.isVideoReview,
                 editPostUiState = createState.copy(
                     coverUrl = cameraVideoUiState.coverUri?.toString(),
                     coverKey = cameraVideoUiState.coverKey

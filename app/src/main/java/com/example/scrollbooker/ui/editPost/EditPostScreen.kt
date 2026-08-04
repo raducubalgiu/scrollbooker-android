@@ -47,6 +47,7 @@ fun EditPostScreen(
         is EditPostUiState.Success -> {
             EditPostContent(
                 isEditMode = true,
+                isVideoReview = false,
                 editPostUiState = state,
                 isLoading = isLoading,
                 hostState = hostState,

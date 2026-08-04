@@ -445,6 +445,7 @@
     <string name="linkedServices">Servicii atașate</string>
     <string name="change">Modifică</string>
     <string name="linkServices">Atașează servicii</string>
+    <string name="videoReview">Recenzie video</string>
 
     <!-- Follow & Social Notifications -->
     <string name="notification_started_following_you">a început să te urmărească</string>

@@ -15,6 +15,11 @@ interface PostApiService {
         @Body request: CreatePostRequest
     )
 
+    @POST("posts/video-reviews")
+    suspend fun createVideoReview(
+        @Body request: CreateVideoReviewRequest
+    )
+
     @PUT("posts/{postId}")
     suspend fun updatePostById(
         @Path("postId") postId: Int,
@@ -28,9 +33,10 @@ interface PostApiService {
 
     @GET("posts/explore")
     suspend fun getExplorePosts(
-        @Query("business_types") selectedBusinessTypes: List<Int?>,
         @Query("page") page: Int,
-        @Query("limit") limit: Int
+        @Query("limit") limit: Int,
+        @Query("service_ids") serviceIds: List<Int?>,
+        @Query("only_video_reviews") onlyVideoReviews: Boolean = false,
     ): PaginatedResponseDto<PostDto>
 
     @GET("posts/following")

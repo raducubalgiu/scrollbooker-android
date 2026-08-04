@@ -38,9 +38,9 @@ fun NavGraphBuilder.cameraGraph(
     navigation(
         route = MainRoute.CameraNavigator.route,
         arguments = listOf(
-            navArgument("isVideoReview") {
-                type = NavType.BoolType
-                defaultValue = false
+            navArgument("appointmentId") {
+                type = NavType.IntType
+                defaultValue = -1
             },
             navArgument("businessOrEmployeeId") {
                 type = NavType.IntType

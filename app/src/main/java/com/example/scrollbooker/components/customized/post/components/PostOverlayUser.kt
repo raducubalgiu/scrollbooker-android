@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -20,10 +21,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
-import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.social.post.domain.model.PostUser
 import com.example.scrollbooker.ui.theme.OnBackground
@@ -42,18 +42,19 @@ fun PostOverlayUser(
     when {
         isVideoReview -> {
             Button(
+                modifier = Modifier.padding(bottom = SpacingM),
                 onClick = {},
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.White.copy(alpha = 0.1f),
                     contentColor = OnBackground
                 ),
                 contentPadding = PaddingValues(
-                    vertical = 10.dp,
-                    horizontal = BasePadding
+                    vertical = SpacingS,
+                    horizontal = SpacingM
                 )
             ) {
                 Text(
-                    text = "Recenzie video",
+                    text = stringResource(R.string.videoReview),
                     style = bodyMedium,
                     fontWeight = FontWeight.SemiBold,
                     color = Color.White

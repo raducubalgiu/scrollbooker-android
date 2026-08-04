@@ -57,9 +57,9 @@ sealed class MainRoute(val route: String) {
         }
     }
 
-    object CameraNavigator: MainRoute(route = "cameraNavigator?isVideoReview={isVideoReview}&businessOrEmployeeId={businessOrEmployeeId}") {
+    object CameraNavigator: MainRoute(route = "cameraNavigator?appointmentId={appointmentId}&businessOrEmployeeId={businessOrEmployeeId}") {
         fun createRoute(param: CameraParams): String {
-            return "cameraNavigator?isVideoReview=${param.isVideoReview}&businessOrEmployeeId=${param.businessOrEmployeeId}"
+            return "cameraNavigator?appointmentId=${param.appointmentId}&businessOrEmployeeId=${param.businessOrEmployeeId}"
         }
     }
     object Camera: MainRoute(route = "camera")

@@ -52,6 +52,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun EditPostContent(
     isEditMode: Boolean,
+    isVideoReview: Boolean,
     editPostUiState: EditPostUiState.Success,
     isLoading: Boolean,
     hostState: SnackbarHostState,
@@ -69,6 +70,7 @@ fun EditPostContent(
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showSheet by remember { mutableStateOf(false) }
+    val userProducts = FeatureState.Success(editPostUiState.catalogProducts)
 
     fun handleShowSheet() {
         showSheet = true
@@ -91,7 +93,7 @@ fun EditPostContent(
         UserProductsSheet(
             sheetState = sheetState,
             linkedProducts = editPostUiState.linkedProducts,
-            userProducts = FeatureState.Success(editPostUiState.catalogProducts),
+            userProducts = userProducts,
             onConfirmSelection = {
                 onConfirmSelection(it)
                 handleCloseSheet()
