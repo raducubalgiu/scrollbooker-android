@@ -81,12 +81,7 @@ fun MyProductsScreen(
                 }
             )
         },
-        snackbarHost = {
-            CustomSnackBar(
-                hostState = hostState,
-                type = snackBarController.currentType
-            )
-        }
+        snackbarHost = { CustomSnackBar(hostState = hostState) }
     ) { innerPadding ->
         Box(Modifier.fillMaxSize().padding(innerPadding)) {
             when(val state = productsState) {

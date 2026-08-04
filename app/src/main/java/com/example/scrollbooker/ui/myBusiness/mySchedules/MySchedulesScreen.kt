@@ -41,10 +41,7 @@ fun MySchedulesScreen(
         onHandleSave = onNextOrSave,
         onBack = onBack,
         snackBarHost = {
-            CustomSnackBar(
-                hostState = hostState,
-                type = snackBarController.currentType
-            )
+            CustomSnackBar(hostState = hostState)
         }
     )
 }

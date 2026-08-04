@@ -101,7 +101,7 @@ class MySchedulesViewModel @Inject constructor(
 
                 _events.tryEmit(
                     SnackBarUiEvent.Show(
-                        message = UiText.Resource(R.string.servicesSaved)
+                        message = UiText.Resource(R.string.scheduleSaved)
                     )
                 )
             }

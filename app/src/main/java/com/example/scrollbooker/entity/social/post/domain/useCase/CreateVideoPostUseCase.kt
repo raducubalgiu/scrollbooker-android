@@ -23,10 +23,6 @@ class CreateVideoPostUseCase @Inject constructor(
         videoUri: Uri,
         description: String?,
         linkedProductIds: List<Int>,
-        businessOrEmployeeId: Int?,
-        isVideoReview: Boolean,
-        videoReviewMessage: String?,
-        rating: Int?,
         onProgress: (Double) -> Unit
     ): Result<Unit> {
         return runCatching {
@@ -55,11 +51,7 @@ class CreateVideoPostUseCase @Inject constructor(
                     description = description,
                     provider = "cloudflare_stream",
                     providerUid = direct.providerUid,
-                    linkedProductIds = linkedProductIds,
-                    businessOrEmployeeId = businessOrEmployeeId,
-                    isVideoReview = isVideoReview,
-                    videoReviewMessage = videoReviewMessage,
-                    rating = rating
+                    linkedProductIds = linkedProductIds
                 )
             )
         }

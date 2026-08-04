@@ -65,12 +65,7 @@ fun MyServicesScreen(
         onNext = onNextOrSave,
         isEnabled = isEnabled,
         isLoading = isLoading,
-        snackBarHost = {
-            CustomSnackBar(
-                hostState = hostState,
-                type = snackBarController.currentType
-            )
-        }
+        snackBarHost = { CustomSnackBar(hostState = hostState) }
     ) {
         when (val result = state) {
             is FeatureState.Loading -> LoadingScreen()

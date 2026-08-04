@@ -40,50 +40,53 @@ fun FormLayout(
     snackBarHost: @Composable (() -> Unit) = {},
     content: @Composable () -> Unit
 ) {
-    Scaffold(
-        topBar = {
-            Header(title = headerTitle ?: "", onBack = onBack)
-        },
-        bottomBar = {
-            if(enableBottomAction) {
-                FormLayoutBottomBar(
-                    buttonTitle = buttonTitle,
-                    onNext = onNext,
-                    isEnabled = isEnabled,
-                    isLoading = isLoading
-                )
-            }
-        },
-        snackbarHost = snackBarHost,
-    ) { innerPadding ->
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding)
-            .then(modifier)
-        ) {
-            Column(Modifier.fillMaxSize()) {
-                Column(Modifier.padding(horizontal = SpacingXXL)) {
-                    Text(
-                        style = headlineLarge,
-                        color = OnBackground,
-                        fontWeight = FontWeight.ExtraBold,
-                        text = headLine
+    Box(Modifier.fillMaxSize()) {
+        Scaffold(
+            topBar = {
+                Header(title = headerTitle ?: "", onBack = onBack)
+            },
+            bottomBar = {
+                if(enableBottomAction) {
+                    FormLayoutBottomBar(
+                        buttonTitle = buttonTitle,
+                        onNext = onNext,
+                        isEnabled = isEnabled,
+                        isLoading = isLoading
                     )
-                    if(subHeadLine?.isNotEmpty() == true) {
-                        Spacer(Modifier.height(SpacingXXS))
-                        Text(
-                            style = bodyLarge,
-                            fontWeight = FontWeight.Normal,
-                            color = Color.Gray,
-                            text = subHeadLine,
-                        )
-                    }
                 }
-                Spacer(Modifier.height(BasePadding))
-                content()
+            }
+        ) { innerPadding ->
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .then(modifier)
+            ) {
+                Column(Modifier.fillMaxSize()) {
+                    Column(Modifier.padding(horizontal = SpacingXXL)) {
+                        Text(
+                            style = headlineLarge,
+                            color = OnBackground,
+                            fontWeight = FontWeight.ExtraBold,
+                            text = headLine
+                        )
+                        if(subHeadLine?.isNotEmpty() == true) {
+                            Spacer(Modifier.height(SpacingXXS))
+                            Text(
+                                style = bodyLarge,
+                                fontWeight = FontWeight.Normal,
+                                color = Color.Gray,
+                                text = subHeadLine,
+                            )
+                        }
+                    }
+                    Spacer(Modifier.height(BasePadding))
+                    content()
+                }
             }
         }
     }
+
+    snackBarHost()
 }
 
 @Composable

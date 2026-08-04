@@ -335,10 +335,6 @@ class CameraViewModel @Inject constructor(
                     videoUri = videoUri,
                     description = _description.value,
                     linkedProductIds = _linkedProducts.value.map { it.id },
-                    isVideoReview = isVideoReview,
-                    businessOrEmployeeId = businessOrEmployeeId,
-                    videoReviewMessage = null,
-                    rating = null,
                     onProgress = {}
                 )
             }
@@ -347,6 +343,7 @@ class CameraViewModel @Inject constructor(
                 .onFailure { e ->
                     _isSaving.value = FeatureState.Error(e)
                     _events.tryEmit(SnackBarUiEvent.somethingWentWrong())
+
                     Timber.tag("CreatePost").e(e, "ERROR: on creating video post")
                 }
                 .onSuccess {

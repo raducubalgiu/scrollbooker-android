@@ -1,6 +1,7 @@
 package com.example.scrollbooker.ui.editPost
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -70,8 +71,8 @@ fun EditPostContent(
     var showSheet by remember { mutableStateOf(false) }
 
     fun handleShowSheet() {
+        showSheet = true
         scope.launch {
-            showSheet = true
             sheetState.show()
         }
     }
@@ -79,7 +80,10 @@ fun EditPostContent(
     fun handleCloseSheet() {
         scope.launch {
             sheetState.hide()
-            showSheet = false
+        }.invokeOnCompletion {
+            if (!sheetState.isVisible) {
+                showSheet = false
+            }
         }
     }
 
@@ -96,91 +100,94 @@ fun EditPostContent(
         )
     }
 
-    Scaffold(
-        modifier = Modifier.imePadding(),
-        topBar = {
-            Header(
-                title = if(isEditMode) stringResource(R.string.edit)
-                else stringResource(R.string.create),
-                onBack = onBack
-            )
-        },
-        bottomBar = {
-            CreatePostBottomBar(
-                title = if(isEditMode) stringResource(R.string.save)
-                else stringResource(R.string.postNow),
-                onCreate = onSave,
-                isLoading = isLoading,
-                isDisabled = isLoading
-            )
-        },
-        containerColor = Background,
-        snackbarHost = { CustomSnackBar(hostState = hostState) }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .verticalScroll(verticalScroll)
-                .pointerInput(Unit) {
-                    detectTapGestures(onTap = { focusManager.clearFocus() })
-                }
-        ) {
-            CreatePostHeader(
-                previewHeight = previewHeight,
-                coverUrl = editPostUiState.coverUrl,
-                coverKey = editPostUiState.coverKey,
-                description = editPostUiState.description,
-                onDescriptionChange = onDescriptionChange,
-                onNavigateToPostPreview = onNavigateToPostPreview
-            )
-
-            Row(
-                modifier = Modifier.padding(
-                    top = SpacingXL,
-                    bottom = SpacingM,
-                    start = BasePadding,
-                    end = BasePadding
-                ),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+    Box(Modifier.fillMaxSize()) {
+        Scaffold(
+            modifier = Modifier.imePadding(),
+            topBar = {
+                Header(
+                    title = if(isEditMode) stringResource(R.string.edit)
+                    else stringResource(R.string.create),
+                    onBack = onBack
+                )
+            },
+            bottomBar = {
+                CreatePostBottomBar(
+                    title = if(isEditMode) stringResource(R.string.save)
+                    else stringResource(R.string.postNow),
+                    onCreate = onSave,
+                    isLoading = isLoading,
+                    isDisabled = isLoading
+                )
+            },
+            containerColor = Background,
+        ) { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .verticalScroll(verticalScroll)
+                    .pointerInput(Unit) {
+                        detectTapGestures(onTap = { focusManager.clearFocus() })
+                    }
             ) {
-                Text(
-                    text = stringResource(R.string.linkedServices),
-                    style = titleLarge,
-                    fontSize = 23.sp,
-                    fontWeight = FontWeight.ExtraBold
+                CreatePostHeader(
+                    previewHeight = previewHeight,
+                    coverUrl = editPostUiState.coverUrl,
+                    coverKey = editPostUiState.coverKey,
+                    description = editPostUiState.description,
+                    onDescriptionChange = onDescriptionChange,
+                    onNavigateToPostPreview = onNavigateToPostPreview
                 )
 
-                if(editPostUiState.linkedProducts.isNotEmpty()) {
-                    TextButton(onClick = { handleShowSheet() }) {
-                        Text(
-                            text = stringResource(R.string.change),
-                            style = labelLarge,
-                            color = Primary,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
-            }
-
-            if (editPostUiState.linkedProducts.isEmpty()) {
-                LinkedProductsOverlay(onClick = { handleShowSheet() })
-            } else {
-                editPostUiState.linkedProducts.forEachIndexed { index, product ->
-                    LinkedProductRow(
-                        product = product,
-                        onRemove = { onRemoveProduct(it) },
+                Row(
+                    modifier = Modifier.padding(
+                        top = SpacingXL,
+                        bottom = SpacingM,
+                        start = BasePadding,
+                        end = BasePadding
+                    ),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = stringResource(R.string.linkedServices),
+                        style = titleLarge,
+                        fontSize = 23.sp,
+                        fontWeight = FontWeight.ExtraBold
                     )
 
-                    if(index < editPostUiState.linkedProducts.size - 1) {
-                        HorizontalDivider(
-                            thickness = 0.55.dp,
-                            color = Divider
+                    if(editPostUiState.linkedProducts.isNotEmpty()) {
+                        TextButton(onClick = { handleShowSheet() }) {
+                            Text(
+                                text = stringResource(R.string.change),
+                                style = labelLarge,
+                                color = Primary,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                }
+
+                if (editPostUiState.linkedProducts.isEmpty()) {
+                    LinkedProductsOverlay(onClick = { handleShowSheet() })
+                } else {
+                    editPostUiState.linkedProducts.forEachIndexed { index, product ->
+                        LinkedProductRow(
+                            product = product,
+                            onRemove = { onRemoveProduct(it) },
                         )
+
+                        if(index < editPostUiState.linkedProducts.size - 1) {
+                            HorizontalDivider(
+                                thickness = 0.55.dp,
+                                color = Divider
+                            )
+                        }
                     }
                 }
             }
         }
+
+        CustomSnackBar(hostState = hostState)
     }
 }
