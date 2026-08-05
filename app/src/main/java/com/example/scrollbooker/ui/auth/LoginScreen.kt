@@ -80,8 +80,8 @@ fun LoginScreen(
                 .padding(
                     top = 50.dp,
                     bottom = BasePadding,
-                    start = SpacingXL,
-                    end = SpacingXL
+                    start = BasePadding,
+                    end = BasePadding
                 ),
             verticalArrangement = Arrangement.SpaceBetween
         ) {

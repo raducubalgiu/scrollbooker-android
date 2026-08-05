@@ -2,13 +2,13 @@ package com.example.scrollbooker.components.customized.post.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
+
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ShapeDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -21,15 +21,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
-import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.social.post.domain.model.PostUser
-import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge
-import com.example.scrollbooker.ui.theme.bodyMedium
+import com.example.scrollbooker.ui.theme.bodySmall
 
 @Composable
 fun PostOverlayUser(
@@ -41,26 +40,24 @@ fun PostOverlayUser(
 
     when {
         isVideoReview -> {
-            Button(
-                modifier = Modifier.padding(bottom = SpacingM),
-                onClick = {},
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White.copy(alpha = 0.1f),
-                    contentColor = OnBackground
-                ),
-                contentPadding = PaddingValues(
-                    vertical = SpacingS,
-                    horizontal = SpacingM
-                )
+            Surface(
+                modifier = Modifier.padding(bottom = SpacingS),
+                shape = ShapeDefaults.ExtraLarge,
+                color = Color.White.copy(alpha = 0.1f),
+                contentColor = Color.White
             ) {
                 Text(
                     text = stringResource(R.string.videoReview),
-                    style = bodyMedium,
+                    style = bodySmall,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color.White
+                    modifier = Modifier.padding(
+                        vertical = 10.dp,
+                        horizontal = 12.dp
+                    )
                 )
             }
         }
+
     }
 
     Column(

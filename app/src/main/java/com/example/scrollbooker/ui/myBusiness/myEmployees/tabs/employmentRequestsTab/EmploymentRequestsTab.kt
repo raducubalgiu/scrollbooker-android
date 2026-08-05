@@ -95,8 +95,8 @@ fun EmploymentRequestsTab(
             Spacer(Modifier.height(BasePadding))
             MainButton(
                 modifier = Modifier.padding(
-                    start = SpacingXL,
-                    end = SpacingXL,
+                    start = BasePadding,
+                    end = BasePadding,
                     bottom = BasePadding
                 ),
                 title = stringResource(R.string.sendAnEmploymentRequest),

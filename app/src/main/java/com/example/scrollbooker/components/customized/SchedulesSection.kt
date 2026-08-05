@@ -18,7 +18,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.extensions.formatTime
 import com.example.scrollbooker.core.util.Dimens.BasePadding
@@ -90,7 +89,6 @@ fun SchedulesSection(
                 Text(
                     style = titleMedium,
                     fontWeight = if(isToday) FontWeight.ExtraBold else FontWeight.Normal,
-                    fontSize = 18.sp,
                     text = translateDayOfWeek(dayOfWeek) ?: dayOfWeek,
                     color = OnBackground,
                 )

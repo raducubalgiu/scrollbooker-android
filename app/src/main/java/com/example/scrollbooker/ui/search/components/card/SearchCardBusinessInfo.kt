@@ -24,6 +24,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.ui.theme.Rating
 import com.example.scrollbooker.ui.theme.bodyLarge
+import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
@@ -45,7 +46,6 @@ fun SearchCardBusinessInfo(
             Text(
                 text = fullName,
                 style = titleMedium.copy(fontWeight = FontWeight.SemiBold),
-                fontSize = 18.sp
             )
 
             Row(
@@ -72,7 +72,7 @@ fun SearchCardBusinessInfo(
 
         Text(
             text = profession,
-            style = bodyLarge,
+            style = bodyMedium,
             color = Color.Gray,
         )
 
@@ -96,6 +96,7 @@ fun SearchCardBusinessInfo(
 
             Text(
                 modifier = Modifier.fillMaxWidth(fraction = 0.8f),
+                style = bodyMedium,
                 text = address,
                 color = Color.Gray,
                 maxLines = 1,

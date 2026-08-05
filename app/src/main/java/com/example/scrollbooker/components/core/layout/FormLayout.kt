@@ -3,7 +3,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -18,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
@@ -62,7 +60,7 @@ fun FormLayout(
                 .then(modifier)
             ) {
                 Column(Modifier.fillMaxSize()) {
-                    Column(Modifier.padding(horizontal = SpacingXXL)) {
+                    Column(Modifier.padding(horizontal = BasePadding)) {
                         Text(
                             style = headlineLarge,
                             color = OnBackground,
@@ -100,19 +98,14 @@ private fun FormLayoutBottomBar(
         color = Divider,
         thickness = 0.55.dp
     )
-    Column(
+
+    MainButton(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = BasePadding)
-    ) {
-        MainButton(
-            modifier = Modifier
-                .padding(horizontal = SpacingXXL)
-                .navigationBarsPadding(),
-            title = buttonTitle ?: "",
-            onClick = { onNext?.invoke() },
-            enabled = isEnabled,
-            isLoading = isLoading
-        )
-    }
+            .padding(14.dp)
+            .navigationBarsPadding(),
+        title = buttonTitle ?: "",
+        onClick = { onNext?.invoke() },
+        enabled = isEnabled,
+        isLoading = isLoading
+    )
 }

@@ -110,7 +110,7 @@ fun ScheduleRow(
                 )
                 Spacer(Modifier.width(SpacingS))
                 Text(
-                    text = "Data de start nu poate fi mai mare decat data de sfarsit",
+                    text = stringResource(R.string.startDateLowerThanEndDateValidation),
                     color = Error,
                     style = bodyMedium
                 )

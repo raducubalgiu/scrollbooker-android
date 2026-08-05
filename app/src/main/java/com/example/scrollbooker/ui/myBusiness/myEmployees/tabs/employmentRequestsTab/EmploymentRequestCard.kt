@@ -62,8 +62,8 @@ fun EmploymentRequestCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                start = SpacingXL,
-                end = SpacingXL,
+                start = BasePadding,
+                end = BasePadding,
                 bottom = BasePadding
             )
             .clip(shape = ShapeDefaults.Medium)

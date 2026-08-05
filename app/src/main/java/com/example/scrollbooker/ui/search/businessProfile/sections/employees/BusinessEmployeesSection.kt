@@ -68,7 +68,7 @@ fun BusinessEmployeesSection(
                         verticalArrangement = Arrangement.Center
                     ) {
                         AvatarWithRating(
-                            size = 90.dp,
+                            size = 80.dp,
                             url = "${employee.avatar}",
                             rating = employee.ratingsAverage,
                             onClick = {}

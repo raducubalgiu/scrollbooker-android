@@ -20,7 +20,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.core.extensions.toTwoDecimals
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
@@ -32,7 +31,6 @@ import com.example.scrollbooker.entity.booking.products.domain.model.getFiltersS
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.SurfaceBG
-import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
 import java.math.BigDecimal
@@ -71,7 +69,6 @@ fun SearchCardProductRow(
                 modifier = Modifier.weight(1f),
                 text = product.name,
                 style = titleMedium,
-                fontSize = 16.sp,
                 color = OnBackground,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
@@ -86,7 +83,6 @@ fun SearchCardProductRow(
                 Text(
                     text = "${startingOffering.priceWithDiscount.toTwoDecimals()} RON",
                     style = titleMedium,
-                    fontSize = 17.sp,
                     fontWeight = FontWeight.Bold,
                     color = OnBackground
                 )
@@ -115,7 +111,7 @@ fun SearchCardProductRow(
 
         Text(
             text = productSummaryText,
-            style = bodyLarge,
+            style = bodyMedium,
             color = Color.Gray
         )
     }

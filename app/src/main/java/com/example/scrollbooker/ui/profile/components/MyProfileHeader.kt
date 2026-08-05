@@ -13,12 +13,12 @@ import com.example.scrollbooker.core.util.Dimens.IconSizeXL
 
 @Composable
 fun MyProfileHeader(
-    username: String,
+    username: String?,
     onNavigateToCamera: () -> Unit,
     onOpenMenu: () -> Unit
 ) {
     Header(
-        title = "@$username",
+        title = username?.let { "@$it" } ?: "",
         actions = {
             Row {
                 Protected(permission = PermissionEnum.POST_CREATE) {

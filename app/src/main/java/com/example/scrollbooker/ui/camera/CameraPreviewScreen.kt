@@ -4,6 +4,7 @@ import android.view.ViewGroup
 import androidx.annotation.OptIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -36,6 +37,7 @@ import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.iconButton.CustomIconButton
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
+import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import kotlin.math.max
 
@@ -113,11 +115,12 @@ fun CameraPreviewScreen(
     Scaffold(
         containerColor = BackgroundDark,
         bottomBar = {
-            Box(Modifier.padding(SpacingM)) {
+            Box(Modifier.padding(SpacingS)) {
                 MainButton(
                     modifier = Modifier.navigationBarsPadding(),
                     onClick = onNavigateToCreatePostScreen,
                     title = stringResource(R.string.nextStep),
+                    contentPadding = PaddingValues(SpacingM)
                 )
             }
         },
@@ -141,11 +144,19 @@ fun CameraPreviewScreen(
                 AndroidView(
                     modifier = Modifier
                         .fillMaxSize()
-                        .clip(RoundedCornerShape(BasePadding))
+                        .clip(
+                            RoundedCornerShape(
+                                topStart = BasePadding,
+                                topEnd = BasePadding,
+                                bottomStart = 0.dp,
+                                bottomEnd = 0.dp
+                            )
+                        )
                         .background(BackgroundDark.copy(alpha = 0.6f)),
                     factory = { playerView },
                     update = { playerView },
                 )
+
             }
         }
     }

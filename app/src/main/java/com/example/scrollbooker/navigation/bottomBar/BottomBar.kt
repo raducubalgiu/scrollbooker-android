@@ -30,7 +30,7 @@ fun BottomBar() {
     val allTabs = MainTab.allTabs
     val isFeedTab = currentTab == MainTab.Feed
 
-    val dividerColor = if (isFeedTab) Color(0xFF3A3A3A) else Divider
+    val dividerColor = if (isFeedTab) Color(0xFF1E1E1E) else Color(0xFFE5E5E5)
     val containerColor = if(isFeedTab) BackgroundDark else Background
 
     Column(modifier = Modifier.height(90.dp)) {

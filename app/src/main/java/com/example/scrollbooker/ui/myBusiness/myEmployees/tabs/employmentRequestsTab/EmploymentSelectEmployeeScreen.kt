@@ -114,8 +114,8 @@ fun EmploymentSelectEmployeeScreen(
             Column(
                 modifier = Modifier
                     .padding(
-                        start = SpacingXL,
-                        end = SpacingXXL,
+                        start = BasePadding,
+                        end = BasePadding,
                         bottom = SpacingS
                     )
             ) {

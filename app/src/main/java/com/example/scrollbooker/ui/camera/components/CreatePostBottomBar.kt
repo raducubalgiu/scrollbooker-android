@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.buttons.MainButton
-import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.ui.theme.Divider
 
 @Composable
@@ -32,8 +32,8 @@ fun CreatePostBottomBar(
         HorizontalDivider(color = Divider, thickness = 0.55.dp)
         MainButton(
             modifier = Modifier
-                .padding(horizontal = BasePadding)
-                .padding(top = BasePadding)
+                .padding(horizontal = SpacingS)
+                .padding(top = SpacingS)
                 .padding(bottom = bottomInset),
             title = title,
             onClick = onCreate,

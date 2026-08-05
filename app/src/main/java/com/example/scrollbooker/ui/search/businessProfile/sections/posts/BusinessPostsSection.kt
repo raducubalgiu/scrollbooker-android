@@ -27,6 +27,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileLatestPost
+import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleLarge
 
 @Composable
@@ -49,7 +50,9 @@ fun BusinessPostsSection(
         if(posts.isEmpty()) {
             Text(
                 modifier = Modifier.padding(start = BasePadding),
-                text = stringResource(R.string.notFoundPosts)
+                text = stringResource(R.string.notFoundPosts),
+                color = Color.Gray,
+                style = bodyMedium
             )
         } else {
             LazyRow(

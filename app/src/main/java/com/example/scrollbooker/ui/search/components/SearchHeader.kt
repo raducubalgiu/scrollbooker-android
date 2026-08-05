@@ -35,6 +35,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.ui.search.sheets.filters.SearchFiltersButton
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.bodyLarge
+import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -75,7 +76,7 @@ fun SearchHeader(
                     Icon(
                         modifier = Modifier
                             .padding(SpacingM)
-                            .size(35.dp),
+                            .size(25.dp),
                         painter = painterResource(R.drawable.ic_search_solid),
                         contentDescription = null
                     )
@@ -91,7 +92,6 @@ fun SearchHeader(
                         text = headline,
                         fontWeight = FontWeight.SemiBold,
                         style = titleMedium,
-                        fontSize = 18.sp,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -99,7 +99,7 @@ fun SearchHeader(
                     Text(
                         text = subHeadline,
                         color = Color.Gray,
-                        style = bodyLarge,
+                        style = bodyMedium,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )

@@ -70,7 +70,7 @@ fun MySchedulesSection(
     ) {
         Column(modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = SpacingXXL)
+            .padding(horizontal = BasePadding)
         ) {
             when(val schedules = state) {
                 is FeatureState.Loading -> LoadingScreen()

@@ -115,7 +115,7 @@ fun EditPostContent(
             bottomBar = {
                 CreatePostBottomBar(
                     title = if(isEditMode) stringResource(R.string.save)
-                    else stringResource(R.string.postNow),
+                            else stringResource(R.string.postNow),
                     onCreate = onSave,
                     isLoading = isLoading,
                     isDisabled = isLoading

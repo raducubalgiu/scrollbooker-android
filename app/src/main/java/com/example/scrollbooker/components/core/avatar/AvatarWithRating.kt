@@ -52,7 +52,11 @@ fun AvatarWithRating(
 ) {
     val isSystemInDarkMode = isSystemInDarkTheme()
 
-    val resolvedBadgeColor = badgeBackgroundColor ?: if (isSystemInDarkMode) SurfaceBG else Background
+    val resolvedBadgeColor = when {
+        badgeBackgroundColor != null -> badgeBackgroundColor
+        isSystemInDarkMode -> SurfaceBG
+        else -> Background
+    }
 
     val resolvedTextColor = when {
         badgeBackgroundColor != null -> Color(0xFF1C1B1F)

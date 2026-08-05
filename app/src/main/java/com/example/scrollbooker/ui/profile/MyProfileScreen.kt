@@ -57,7 +57,7 @@ fun MyProfileScreen(
     Scaffold(
         topBar = {
             MyProfileHeader(
-                username = userData?.username ?: "",
+                username = userData?.username,
                 onNavigateToCamera = { profileNavigate.toCamera(CameraParams()) },
                 onOpenMenu = { scope.launch { menuSheetState.show() } }
             )

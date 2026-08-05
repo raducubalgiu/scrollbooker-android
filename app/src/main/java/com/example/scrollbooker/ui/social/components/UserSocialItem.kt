@@ -78,7 +78,7 @@ fun UserSocialItem(
         trailingContent = {
             MainButtonSmall(
                 title = stringResource(if(isFollowed) R.string.following else R.string.follow),
-                modifier = Modifier.width(110.dp),
+                modifier = Modifier.width(100.dp),
                 border = BorderStroke(
                     width = 1.dp,
                     color = if(isFollowed) Divider else Primary
@@ -97,14 +97,14 @@ fun UserSocialItem(
                 AvatarWithRating(
                     url = userSocial.avatar ?: "",
                     rating = userSocial.ratingsAverage,
-                    size = 60.dp,
+                    size = 55.dp,
                     onClick = {},
                     elevation = 2.dp
                 )
             } else {
                 Avatar(
                     url = userSocial.avatar ?: "",
-                    size = 60.dp
+                    size = 55.dp
                 )
             }
         },

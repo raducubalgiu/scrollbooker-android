@@ -34,6 +34,7 @@ import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge
+import com.example.scrollbooker.ui.theme.bodyMedium
 
 @Composable
 fun PostOverlay(
@@ -72,7 +73,7 @@ fun PostOverlay(
                 .padding(
                     start = SpacingM,
                     end = SpacingXXS,
-                    bottom = BasePadding
+                    bottom = SpacingM
                 ),
             verticalArrangement = Arrangement.Bottom
         ) {
@@ -107,8 +108,9 @@ fun PostOverlay(
                             contentPadding = PaddingValues(vertical = 12.dp)
                         ) {
                             Text(
-                                text = stringResource(R.string.bookNow),
-                                style = bodyLarge,
+                                text = if(isVideoReview) stringResource(R.string.bookYours)
+                                       else stringResource(R.string.bookNow),
+                                style = bodyMedium,
                                 fontWeight = FontWeight.SemiBold,
                                 color = OnPrimary,
                                 maxLines = 1,

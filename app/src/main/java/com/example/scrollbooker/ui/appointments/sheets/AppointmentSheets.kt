@@ -1,5 +1,6 @@
 package com.example.scrollbooker.ui.appointments.sheets
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -10,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -23,11 +25,13 @@ fun AppointmentSheets(
     onDeleteReview: () -> Unit,
     onCancelAppointment: (String) -> Unit
 ) {
+    val isSystemInDarkMode = isSystemInDarkTheme()
+
     ModalBottomSheet(
         modifier = Modifier.statusBarsPadding(),
         sheetState = sheetState,
         onDismissRequest = onClose,
-        containerColor = Background,
+        containerColor = if(isSystemInDarkMode) SurfaceBG else Background,
         contentColor = OnBackground,
         dragHandle = {},
         contentWindowInsets = { BottomSheetDefaults.windowInsets },

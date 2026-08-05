@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -43,7 +44,6 @@ fun ProfileTabRow(
                     Modifier
                         .height(2.5.dp)
                         .width(40.dp)
-                        //.padding(horizontal = 20.dp)
                         .background(OnBackground, shape = ShapeDefaults.Large)
                 )
             }
@@ -59,6 +59,7 @@ fun ProfileTabRow(
                 onClick = { onChangeTab(index) },
                 icon = {
                     Icon(
+                        modifier = Modifier.size(22.5.dp),
                         painter = painterResource(tab.icon),
                         contentDescription = null,
                         tint = if (isSelected) OnBackground else Color.Gray

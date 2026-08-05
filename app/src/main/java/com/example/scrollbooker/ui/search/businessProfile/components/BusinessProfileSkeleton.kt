@@ -135,7 +135,6 @@ fun BusinessProfileSkeleton() {
                     ) {
                         ProfileActionButton(
                             modifier = Modifier.weight(5f),
-                            height = 40.dp,
                             containerColor = SurfaceBG,
                             contentColor = OnBackground,
                             shape = ShapeDefaults.ExtraLarge,
@@ -153,7 +152,6 @@ fun BusinessProfileSkeleton() {
 
                         ProfileActionButton(
                             modifier = Modifier.weight(5f),
-                            height = 40.dp,
                             shape = ShapeDefaults.ExtraLarge,
                             containerColor = SurfaceBG,
                             contentColor = OnBackground,

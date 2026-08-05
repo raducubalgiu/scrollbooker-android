@@ -31,6 +31,9 @@ import com.example.scrollbooker.core.snackbar.rememberSnackBarController
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.ui.myBusiness.myServices.MyServicesViewModel
 import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.OnSurfaceBG
+import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable
 fun MyServicesScreen(
@@ -87,10 +90,12 @@ fun MyServicesScreen(
                         ) {
                             it.services.forEachIndexed { index, service ->
                                 InputCheckbox(
-                                    height = 60.dp,
+                                    height = 55.dp,
                                     checked = service.id in selectedIds,
                                     onCheckedChange = { viewModel.toggleService(service.id) },
-                                    headLine = service.name
+                                    headLine = service.name,
+                                    containerColor = SurfaceBG,
+                                    contentColor = OnBackground
                                 )
 
                                 if(index < result.data.lastIndex) {
