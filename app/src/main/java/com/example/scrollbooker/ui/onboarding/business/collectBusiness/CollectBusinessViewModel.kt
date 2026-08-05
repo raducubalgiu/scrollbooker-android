@@ -1,6 +1,5 @@
-package com.example.scrollbooker.ui.onboarding.business
+package com.example.scrollbooker.ui.onboarding.business.collectBusiness
 
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -8,11 +7,11 @@ import androidx.paging.cachedIn
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessAddress
-import com.example.scrollbooker.entity.booking.business.domain.model.BusinessCreateResponse
-import com.example.scrollbooker.entity.booking.business.domain.useCase.CreateBusinessUseCase
 import com.example.scrollbooker.entity.booking.business.domain.useCase.SearchBusinessAddressUseCase
 import com.example.scrollbooker.entity.nomenclature.businessType.domain.model.BusinessType
 import com.example.scrollbooker.entity.nomenclature.businessType.domain.useCase.GetAllPaginatedBusinessTypesUseCase
+import com.example.scrollbooker.entity.onboarding.domain.model.BusinessCreateResponse
+import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectBusinessUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -28,13 +27,8 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.update
 import timber.log.Timber
 import javax.inject.Inject
-
-data class BusinessPhotoUIState(
-    val images: List<Uri?> = List(5) { null }
-)
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 @HiltViewModel
@@ -42,11 +36,8 @@ class CollectBusinessViewModel @Inject constructor(
     private val authDataStore: AuthDataStore,
     private val getAllBusinessTypesUseCase: GetAllPaginatedBusinessTypesUseCase,
     private val searchBusinessAddressUseCase: SearchBusinessAddressUseCase,
-    private val createBusinessUseCase: CreateBusinessUseCase
+    private val collectBusinessUseCase: CollectBusinessUseCase
 ): ViewModel() {
-    private val _photosState = MutableStateFlow(BusinessPhotoUIState())
-    val photosState: StateFlow<BusinessPhotoUIState> = _photosState
-
     private val _businessTypes: Flow<PagingData<BusinessType>> by lazy {
         getAllBusinessTypesUseCase().cachedIn(viewModelScope)
     }
@@ -115,15 +106,6 @@ class CollectBusinessViewModel @Inject constructor(
         _selectedBusinessType.value = businessType
     }
 
-    fun setImage(slot: Int, uri: Uri?) {
-        if(slot !in 0..4) return
-        _photosState.update { s ->
-            s.copy(images = s.images.toMutableList().also { it[slot] = uri })
-        }
-    }
-
-    fun clearImage(slot: Int) = setImage(slot, null)
-
     suspend fun createBusiness(): Result<BusinessCreateResponse> {
         _isSaving.value = FeatureState.Loading
         val placeId = _selectedAddress.value?.placeId
@@ -135,12 +117,11 @@ class CollectBusinessViewModel @Inject constructor(
         }
 
         val result = withVisibleLoading {
-            createBusinessUseCase(
+            collectBusinessUseCase(
                 description = _currentDescription.value,
                 placeId = placeId,
                 businessTypeId = businessTypeId,
-                ownerFullName = _currentName.value,
-                photos = _photosState.value.images
+                ownerFullName = _currentName.value
             )
         }
 

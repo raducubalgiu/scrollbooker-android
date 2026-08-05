@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.onboarding.business
+package com.example.scrollbooker.ui.onboarding.business.collectGallery
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -35,7 +35,6 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.FormLayout
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.headlineSmall
 import androidx.compose.runtime.getValue
@@ -46,10 +45,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.util.UnstableApi
 import coil.compose.AsyncImage
-import com.example.scrollbooker.components.customized.BusinessMediaLauncher
-import com.example.scrollbooker.components.customized.BusinessMediaTypeEnum
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.SurfaceBG
@@ -57,12 +55,12 @@ import com.example.scrollbooker.ui.theme.SurfaceBG
 @OptIn(UnstableApi::class)
 @Composable
 fun CollectBusinessGalleryScreen(
-    viewModel: CollectBusinessViewModel,
+    viewModel: CollectBusinessGalleryViewModel,
     onBack: () -> Unit,
     onNext: () -> Unit
 ) {
     val verticalScroll = rememberScrollState()
-    val photosState by viewModel.photosState.collectAsState()
+    val photosState by viewModel.photosState.collectAsStateWithLifecycle()
     val isSaving by viewModel.isSaving.collectAsState()
 
     var pendingSlotIndex by rememberSaveable { mutableStateOf<Int?>(null) }
@@ -90,7 +88,7 @@ fun CollectBusinessGalleryScreen(
         isLoading = isLoading
     ) {
         Column(modifier = Modifier
-            .padding(horizontal = SpacingXXL)
+            .padding(horizontal = BasePadding)
             .verticalScroll(verticalScroll)
         ) {
             BusinessMediaTitle(

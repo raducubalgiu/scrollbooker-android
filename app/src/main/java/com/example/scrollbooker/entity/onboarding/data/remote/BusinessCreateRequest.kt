@@ -1,7 +1,8 @@
-package com.example.scrollbooker.entity.booking.business.data.remote
+package com.example.scrollbooker.entity.onboarding.data.remote
+
 import com.google.gson.annotations.SerializedName
 
-data class BusinessCreateDto(
+data class BusinessCreateRequest(
     val description: String?,
 
     @SerializedName("place_id")

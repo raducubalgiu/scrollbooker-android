@@ -2,12 +2,10 @@ package com.example.scrollbooker.entity.booking.business.domain.repository
 
 import android.net.Uri
 import androidx.paging.PagingData
-import com.example.scrollbooker.core.util.PaginatedResponseDto
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.booking.business.data.remote.SearchBusinessRequest
 import com.example.scrollbooker.entity.booking.business.domain.model.Business
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessAddress
-import com.example.scrollbooker.entity.booking.business.domain.model.BusinessCreateResponse
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMarker
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfile
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessSheet
@@ -23,13 +21,6 @@ interface BusinessRepository {
     suspend fun getBusiness(userId: Int): Business
     suspend fun getBusinessProfileByOwnerUsername(ownerUsername: String): BusinessProfile
     suspend fun updateBusinessHasEmployees(hasEmployees: Boolean): AuthState
-    suspend fun createBusiness(
-        description: String?,
-        placeId: String,
-        businessTypeId: Int,
-        ownerFullName: String,
-        photos: List<Uri?>
-    ): BusinessCreateResponse
 
     suspend fun updateBusinessGallery(
         businessId: Int,

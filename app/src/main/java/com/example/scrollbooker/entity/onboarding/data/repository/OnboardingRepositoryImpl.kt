@@ -1,21 +1,29 @@
 package com.example.scrollbooker.entity.onboarding.data.repository
 
+import android.content.Context
+import android.net.Uri
 import com.example.scrollbooker.entity.auth.data.mappers.toDomain
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessHasEmployeesUpdateRequest
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessServicesUpdateRequest
+import com.example.scrollbooker.entity.booking.business.data.repository.processAndUploadPhotos
 import com.example.scrollbooker.entity.booking.schedule.data.mappers.toDto
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
 import com.example.scrollbooker.entity.nomenclature.currency.data.remote.UserCurrencyUpdateRequest
+import com.example.scrollbooker.entity.onboarding.data.mappers.toDomain
+import com.example.scrollbooker.entity.onboarding.data.remote.BusinessCreateRequest
 import com.example.scrollbooker.entity.onboarding.data.remote.OnboardingApiService
+import com.example.scrollbooker.entity.onboarding.domain.model.BusinessCreateResponse
 import com.example.scrollbooker.entity.onboarding.domain.repository.OnboardingRepository
 import com.example.scrollbooker.entity.user.userProfile.data.remote.UpdateBirthDateRequest
 import com.example.scrollbooker.entity.user.userProfile.data.remote.UpdateGenderRequest
 import com.example.scrollbooker.entity.user.userProfile.data.remote.UpdateUsernameRequest
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class OnboardingRepositoryImpl @Inject constructor(
-    private val apiService: OnboardingApiService
+    private val apiService: OnboardingApiService,
+    @ApplicationContext private val context: Context
 ): OnboardingRepository {
     override suspend fun collectUserUsername(username: String): AuthState {
         val request = UpdateUsernameRequest(username)
@@ -34,6 +42,17 @@ class OnboardingRepositoryImpl @Inject constructor(
 
     override suspend fun collectUserLocationPermission(): AuthState {
         return apiService.collectUserLocationPermission().toDomain()
+    }
+
+    override suspend fun collectBusiness(request: BusinessCreateRequest): BusinessCreateResponse {
+        return apiService.collectBusiness(request).toDomain()
+    }
+
+    override suspend fun collectBusinessGallery(
+        businessId: Int,
+        photos: List<Uri?>
+    ): AuthState = processAndUploadPhotos(context, photos) { parts ->
+        apiService.collectBusinessGallery(businessId, parts).toDomain()
     }
 
     override suspend fun collectBusinessServices(serviceIds: List<Int>): AuthState {

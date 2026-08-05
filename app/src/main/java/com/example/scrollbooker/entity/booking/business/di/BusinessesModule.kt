@@ -5,7 +5,6 @@ import com.example.scrollbooker.BuildConfig
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessApiService
 import com.example.scrollbooker.entity.booking.business.data.repository.BusinessRepositoryImpl
 import com.example.scrollbooker.entity.booking.business.domain.repository.BusinessRepository
-import com.example.scrollbooker.entity.booking.business.domain.useCase.CreateBusinessUseCase
 import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessByUserUseCase
 import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessProfileUseCase
 import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessesMarkersUseCase
@@ -87,14 +86,6 @@ object BusinessModule {
         repository: BusinessRepository,
     ): UpdateBusinessHasEmployeesUseCase {
         return UpdateBusinessHasEmployeesUseCase(repository)
-    }
-
-    @Provides
-    @Singleton
-    fun provideCreateBusinessUseCase(
-        repository: BusinessRepository,
-    ): CreateBusinessUseCase {
-        return CreateBusinessUseCase(repository)
     }
 
     @Provides

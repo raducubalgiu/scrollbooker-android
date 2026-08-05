@@ -14,12 +14,10 @@ sealed class OnboardingRoute(val route: String) {
     object CollectBusinessType: AuthRoute(route = "collect_business_type")
     object CollectBusinessDetails: AuthRoute(route = "collect_business_details")
     object CollectBusinessLocation: AuthRoute(route = "collect_business_location")
-    object CollectBusinessGallery: AuthRoute(route = "collect_business_gallery")
-    object CollectBusinessGalleryPreview: AuthRoute(route = "collect_business_gallery_preview")
 
+    object CollectBusinessGallery: AuthRoute(route = RegistrationStepEnum.COLLECT_BUSINESS_GALLERY.key)
     object CollectBusinessServices: AuthRoute(route = RegistrationStepEnum.COLLECT_BUSINESS_SERVICES.key)
     object CollectBusinessSchedules: AuthRoute(route = RegistrationStepEnum.COLLECT_BUSINESS_SCHEDULES.key)
     object CollectBusinessHasEmployees: AuthRoute(route = RegistrationStepEnum.COLLECT_BUSINESS_HAS_EMPLOYEES.key)
-    object CollectBusinessCurrencies: AuthRoute(route = RegistrationStepEnum.COLLECT_BUSINESS_CURRENCIES.key)
     object CollectBusinessValidation: AuthRoute(route = RegistrationStepEnum.COLLECT_BUSINESS_VALIDATION.key)
 }

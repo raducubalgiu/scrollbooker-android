@@ -13,6 +13,7 @@ enum class RegistrationStepEnum(val key: String) {
 
     // Business
     COLLECT_BUSINESS("collect_business"),
+    COLLECT_BUSINESS_GALLERY("collect_business_gallery"),
     COLLECT_BUSINESS_SERVICES("collect_business_services"),
     COLLECT_BUSINESS_SCHEDULES("collect_business_schedules"),
     COLLECT_BUSINESS_HAS_EMPLOYEES("collect_business_has_employees"),

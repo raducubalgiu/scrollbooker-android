@@ -3,7 +3,6 @@ import com.example.scrollbooker.core.util.PaginatedResponseDto
 import com.example.scrollbooker.entity.auth.data.remote.AuthStateDto
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.data.remote.SelectedServiceDomainsWithServicesDto
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
@@ -40,16 +39,6 @@ interface BusinessApiService {
     suspend fun updateBusinessHasEmployees(
         @Body request: BusinessHasEmployeesUpdateRequest
     ): AuthStateDto
-
-    @Multipart
-    @POST("/businesses")
-    suspend fun createBusiness(
-        @Part("description") description: RequestBody?,
-        @Part("place_id") placeId: RequestBody,
-        @Part("business_type_id") businessTypeId: RequestBody,
-        @Part("owner_fullname") ownerFullName: RequestBody,
-        @Part photos: List<MultipartBody.Part>
-    ): BusinessCreateResponseDto
 
     @Multipart
     @PATCH("/businesses/{businessId}/gallery")

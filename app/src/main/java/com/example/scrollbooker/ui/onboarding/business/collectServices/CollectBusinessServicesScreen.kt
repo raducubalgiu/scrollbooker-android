@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.onboarding.business
+package com.example.scrollbooker.ui.onboarding.business.collectServices
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,6 +24,7 @@ import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
+import com.example.scrollbooker.ui.onboarding.business.collectServices.CollectBusinessServicesViewModel
 import com.example.scrollbooker.ui.theme.Divider
 
 @Composable

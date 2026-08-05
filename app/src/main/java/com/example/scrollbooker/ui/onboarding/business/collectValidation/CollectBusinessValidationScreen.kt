@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.onboarding.business
+package com.example.scrollbooker.ui.onboarding.business.collectValidation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

@@ -10,20 +10,21 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.example.scrollbooker.R
 import com.example.scrollbooker.navigation.routes.OnboardingRoute
+import com.example.scrollbooker.navigation.routes.RootRoute
 import com.example.scrollbooker.ui.auth.AuthViewModel
-import com.example.scrollbooker.ui.onboarding.business.CollectBusinessDetailsScreen
-import com.example.scrollbooker.ui.onboarding.business.CollectBusinessGalleryPreviewScreen
-import com.example.scrollbooker.ui.onboarding.business.CollectBusinessGalleryScreen
-import com.example.scrollbooker.ui.onboarding.business.CollectBusinessHasEmployeesScreen
-import com.example.scrollbooker.ui.onboarding.business.CollectBusinessHasEmployeesViewModel
-import com.example.scrollbooker.ui.onboarding.business.CollectBusinessLocationScreen
-import com.example.scrollbooker.ui.onboarding.business.CollectBusinessSchedulesScreen
-import com.example.scrollbooker.ui.onboarding.business.CollectBusinessSchedulesViewModel
-import com.example.scrollbooker.ui.onboarding.business.CollectBusinessServicesScreen
-import com.example.scrollbooker.ui.onboarding.business.CollectBusinessServicesViewModel
-import com.example.scrollbooker.ui.onboarding.business.CollectBusinessTypeScreen
-import com.example.scrollbooker.ui.onboarding.business.CollectBusinessValidationScreen
-import com.example.scrollbooker.ui.onboarding.business.CollectBusinessViewModel
+import com.example.scrollbooker.ui.onboarding.business.collectBusiness.CollectBusinessDetailsScreen
+import com.example.scrollbooker.ui.onboarding.business.collectGallery.CollectBusinessGalleryScreen
+import com.example.scrollbooker.ui.onboarding.business.collectHasEmployees.CollectBusinessHasEmployeesScreen
+import com.example.scrollbooker.ui.onboarding.business.collectHasEmployees.CollectBusinessHasEmployeesViewModel
+import com.example.scrollbooker.ui.onboarding.business.collectBusiness.CollectBusinessLocationScreen
+import com.example.scrollbooker.ui.onboarding.business.collectSchedules.CollectBusinessSchedulesScreen
+import com.example.scrollbooker.ui.onboarding.business.collectSchedules.CollectBusinessSchedulesViewModel
+import com.example.scrollbooker.ui.onboarding.business.collectServices.CollectBusinessServicesScreen
+import com.example.scrollbooker.ui.onboarding.business.collectServices.CollectBusinessServicesViewModel
+import com.example.scrollbooker.ui.onboarding.business.collectBusiness.CollectBusinessTypeScreen
+import com.example.scrollbooker.ui.onboarding.business.collectValidation.CollectBusinessValidationScreen
+import com.example.scrollbooker.ui.onboarding.business.collectBusiness.CollectBusinessViewModel
+import com.example.scrollbooker.ui.onboarding.business.collectGallery.CollectBusinessGalleryViewModel
 import com.example.scrollbooker.ui.onboarding.client.CollectClientBirthDateScreen
 import com.example.scrollbooker.ui.onboarding.client.CollectClientBirthDateViewModel
 import com.example.scrollbooker.ui.onboarding.client.CollectClientGenderScreen
@@ -127,19 +128,6 @@ fun NavGraphBuilder.onBoardingGraph(
             )
         }
 
-        composable(route = OnboardingRoute.CollectBusinessGallery.route) { backStackEntry ->
-            val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(OnboardingRoute.CollectBusiness.route)
-            }
-            val viewModel: CollectBusinessViewModel = hiltViewModel(parentEntry)
-
-            CollectBusinessGalleryScreen(
-                viewModel = viewModel,
-                onBack = {},
-                onNext = { navController.navigate(OnboardingRoute.CollectBusinessDetails.route) },
-            )
-        }
-
         composable(route = OnboardingRoute.CollectBusinessDetails.route) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
                 navController.getBackStackEntry(OnboardingRoute.CollectBusiness.route)
@@ -163,48 +151,30 @@ fun NavGraphBuilder.onBoardingGraph(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
                 onNextOrSave = {
-                    navController.navigate(OnboardingRoute.CollectBusinessGallery.route)
-                }
-            )
-        }
-
-        composable(route = OnboardingRoute.CollectBusinessGallery.route) { backStackEntry ->
-            val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(OnboardingRoute.CollectBusiness.route)
-            }
-            val viewModel: CollectBusinessViewModel = hiltViewModel(parentEntry)
-
-            CollectBusinessGalleryScreen(
-                viewModel = viewModel,
-                onBack = { navController.popBackStack() },
-                onNext = {
                     navController.currentBackStackEntry?.lifecycleScope?.launch {
                         val business = viewModel.createBusiness()
 
-                        business.onSuccess { authViewModel.updateAuthState(it.authState) }
+                        business.onSuccess { authViewModel.updateAuthState(it.onboardingState) }
                     }
                 }
             )
         }
+    }
 
-        composable(route = OnboardingRoute.CollectBusinessGalleryPreview.route) { backStackEntry ->
-            val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(OnboardingRoute.CollectBusiness.route)
-            }
-            val viewModel: CollectBusinessViewModel = hiltViewModel(parentEntry)
+    composable(route = OnboardingRoute.CollectBusinessGallery.route) {
+        val viewModel: CollectBusinessGalleryViewModel = hiltViewModel()
 
-            CollectBusinessGalleryPreviewScreen(
-                viewModel = viewModel,
-                onBack = { navController.popBackStack() },
-                onNext = {
-                    navController.currentBackStackEntry?.lifecycleScope?.launch {
-                        val business = viewModel.createBusiness()
+        CollectBusinessGalleryScreen(
+            viewModel = viewModel,
+            onBack = { navController.popBackStack() },
+            onNext = {
+                navController.currentBackStackEntry?.lifecycleScope?.launch {
+                    val authState = viewModel.collectBusinessGallery()
 
-                        business.onSuccess { authViewModel.updateAuthState(it.authState) }
-                    }
+                    authState.onSuccess { authViewModel.updateAuthState(it) }
                 }
-            )
-        }
+            }
+        )
     }
 
     composable(OnboardingRoute.CollectBusinessServices.route) { backStackEntry ->

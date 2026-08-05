@@ -8,8 +8,13 @@ import com.example.scrollbooker.entity.nomenclature.currency.data.remote.UserCur
 import com.example.scrollbooker.entity.user.userProfile.data.remote.UpdateBirthDateRequest
 import com.example.scrollbooker.entity.user.userProfile.data.remote.UpdateGenderRequest
 import com.example.scrollbooker.entity.user.userProfile.data.remote.UpdateUsernameRequest
+import okhttp3.MultipartBody
 import retrofit2.http.Body
+import retrofit2.http.Multipart
 import retrofit2.http.PATCH
+import retrofit2.http.POST
+import retrofit2.http.Part
+import retrofit2.http.Path
 
 interface OnboardingApiService {
     // Shared
@@ -33,6 +38,18 @@ interface OnboardingApiService {
     ): AuthStateDto
 
     // Business
+    @POST("/onboarding/collect-business")
+    suspend fun collectBusiness(
+        @Body request: BusinessCreateRequest
+    ): BusinessCreateResponseDto
+
+    @Multipart
+    @PATCH("/onboarding/collect-business-gallery/{business_id}/update")
+    suspend fun collectBusinessGallery(
+        @Path("business_id") businessId: Int,
+        @Part photos: List<MultipartBody.Part>
+    ): AuthStateDto
+
     @PATCH("/onboarding/collect-business-services")
     suspend fun collectBusinessServices(
         @Body request: BusinessServicesUpdateRequest

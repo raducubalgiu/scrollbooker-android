@@ -4,6 +4,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.navigation
@@ -16,13 +17,14 @@ import com.example.scrollbooker.navigation.routes.OnboardingRoute
 import com.example.scrollbooker.navigation.routes.RootRoute
 import com.example.scrollbooker.ui.auth.AuthViewModel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @Composable
 fun RootNavHost(
     rootNavController: NavHostController,
     authViewModel: AuthViewModel
 ) {
-    val authState by authViewModel.authState.collectAsState()
+    val authState by authViewModel.authState.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
 
     val startDestination = when (val s = authState) {
@@ -34,9 +36,13 @@ fun RootNavHost(
         else -> RootRoute.AUTH
     }
 
+    Timber.tag("ONBOARDING").e("authState: $authState")
+
     val onboardingStepKey =
         (authState as? FeatureState.Success)?.data?.registrationStep?.key
             ?: OnboardingRoute.CollectEmailVerification.route
+
+    Timber.tag("ONBOARDING").e("onboardingStepKey: $onboardingStepKey")
 
     key(startDestination) {
         NavHost(

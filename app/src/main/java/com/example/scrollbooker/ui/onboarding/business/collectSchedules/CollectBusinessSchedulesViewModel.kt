@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.onboarding.business
+package com.example.scrollbooker.ui.onboarding.business.collectSchedules
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -42,7 +42,7 @@ class CollectBusinessSchedulesViewModel @Inject constructor(
             val userId = authDataStore.getUserId().firstOrNull()
 
             if(userId == null) {
-                Timber.tag("Schedules").e("User Id not found in datastore")
+                Timber.Forest.tag("Schedules").e("User Id not found in datastore")
                 _schedulesState.value = FeatureState.Error()
                 return@launch
             }

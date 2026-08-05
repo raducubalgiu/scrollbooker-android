@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.onboarding.business
+package com.example.scrollbooker.ui.onboarding.business.collectBusiness
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

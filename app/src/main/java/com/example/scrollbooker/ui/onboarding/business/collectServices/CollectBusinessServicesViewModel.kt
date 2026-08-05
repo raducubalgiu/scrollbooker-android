@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.onboarding.business
+package com.example.scrollbooker.ui.onboarding.business.collectServices
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,7 +25,8 @@ class CollectBusinessServicesViewModel @Inject constructor(
     private val getSelectedServiceDomainsWithServicesByBusinessIdUseCase: GetSelectedServiceDomainsWithServicesByBusinessIdUseCase,
     private val collectBusinessServicesUseCase: CollectBusinessServicesUseCase
 ): ViewModel() {
-    private val _state = MutableStateFlow<FeatureState<List<SelectedServiceDomainsWithServices>>>(FeatureState.Loading)
+    private val _state =
+        MutableStateFlow<FeatureState<List<SelectedServiceDomainsWithServices>>>(FeatureState.Loading)
     val state: StateFlow<FeatureState<List<SelectedServiceDomainsWithServices>>> = _state
 
     private val _defaultSelectedServiceIds = MutableStateFlow<Set<Int>>(emptySet())
@@ -92,7 +93,7 @@ class CollectBusinessServicesViewModel @Inject constructor(
         result
             .onFailure { e ->
                 _isSaving.value = FeatureState.Error(e)
-                Timber.tag("Update Services").e("ERROR: on Collecting Business Services $e")
+                Timber.Forest.tag("Update Services").e("ERROR: on Collecting Business Services $e")
             }
             .onSuccess {
                 _isSaving.value = FeatureState.Success(Unit)

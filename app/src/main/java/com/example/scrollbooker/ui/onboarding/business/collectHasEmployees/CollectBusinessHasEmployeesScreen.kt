@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.onboarding.business
+package com.example.scrollbooker.ui.onboarding.business.collectHasEmployees
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

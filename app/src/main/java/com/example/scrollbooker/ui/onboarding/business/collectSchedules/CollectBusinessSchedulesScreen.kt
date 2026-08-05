@@ -1,8 +1,9 @@
-package com.example.scrollbooker.ui.onboarding.business
+package com.example.scrollbooker.ui.onboarding.business.collectSchedules
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.example.scrollbooker.ui.myBusiness.mySchedules.components.MySchedulesSection
+import com.example.scrollbooker.ui.onboarding.business.collectSchedules.CollectBusinessSchedulesViewModel
 
 @Composable
 fun CollectBusinessSchedulesScreen(

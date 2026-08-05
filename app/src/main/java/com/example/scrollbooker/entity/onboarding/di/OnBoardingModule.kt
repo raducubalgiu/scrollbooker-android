@@ -1,13 +1,16 @@
 package com.example.scrollbooker.entity.onboarding.di
 
+import android.content.Context
 import com.example.scrollbooker.BuildConfig
 import com.example.scrollbooker.entity.onboarding.data.remote.OnboardingApiService
 import com.example.scrollbooker.entity.onboarding.data.repository.OnboardingRepositoryImpl
 import com.example.scrollbooker.entity.onboarding.domain.repository.OnboardingRepository
 import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectBusinessCurrenciesUseCase
+import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectBusinessGalleryUseCase
 import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectBusinessHasEmployeesUseCase
 import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectBusinessSchedulesUseCase
 import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectBusinessServicesUseCase
+import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectBusinessUseCase
 import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectClientBirthdateUseCase
 import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectClientGenderUseCase
 import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectUserLocationPermissionUseCase
@@ -15,6 +18,7 @@ import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectUserUser
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -37,8 +41,11 @@ object BusinessModule {
 
     @Provides
     @Singleton
-    fun provideOnboardingRepository(apiService: OnboardingApiService): OnboardingRepository {
-        return OnboardingRepositoryImpl(apiService)
+    fun provideOnboardingRepository(
+        apiService: OnboardingApiService,
+        @ApplicationContext context: Context
+    ): OnboardingRepository {
+        return OnboardingRepositoryImpl(apiService, context)
     }
 
     @Provides
@@ -75,6 +82,14 @@ object BusinessModule {
 
     @Provides
     @Singleton
+    fun provideCollectBusinessUseCase(
+        repository: OnboardingRepository,
+    ): CollectBusinessUseCase {
+        return CollectBusinessUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
     fun provideCollectBusinessServicesUseCase(
         repository: OnboardingRepository,
     ): CollectBusinessServicesUseCase {
@@ -103,5 +118,13 @@ object BusinessModule {
         repository: OnboardingRepository,
     ): CollectBusinessCurrenciesUseCase {
         return CollectBusinessCurrenciesUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCollectBusinessGalleryUseCase(
+        repository: OnboardingRepository,
+    ): CollectBusinessGalleryUseCase {
+        return CollectBusinessGalleryUseCase(repository)
     }
 }
