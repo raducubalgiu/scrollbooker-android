@@ -54,9 +54,9 @@ fun SearchNavHost(
         composable(
             route = MainRoute.BusinessProfile.route,
             arguments = listOf(
-                navArgument(MainRoute.BusinessProfile.ARG_BUSINESS_OWNER_USERNAME) {
+                navArgument("ownerUsername") {
                     type = NavType.StringType
-                }
+                },
             )
         ) {
             val viewModel: BusinessProfileViewModel = hiltViewModel()
@@ -64,7 +64,10 @@ fun SearchNavHost(
             BusinessProfileScreen(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
-                searchNavigate = searchNavigate
+                searchNavigate = searchNavigate,
+                onNavigateToBusinessProfile = {
+                    navController.navigate(MainRoute.BusinessProfile.createRoute(it))
+                }
             )
         }
 

@@ -18,9 +18,10 @@ sealed class MainRoute(val route: String) {
     object EmploymentRespondConsent: MainRoute(route = "employmentRespondConsent")
 
     object Search: MainRoute(route = "search")
-    object BusinessProfile: MainRoute(route = "businessProfile/{businessOwnerUsername}") {
-        const val ARG_BUSINESS_OWNER_USERNAME = "businessOwnerUsername"
-        fun createRoute(businessOwnerUsername: String) = "businessProfile/$businessOwnerUsername"
+    object BusinessProfile: MainRoute(route = "businessProfile?ownerUsername={ownerUsername}") {
+        fun createRoute(ownerUsername: String): String {
+            return "businessProfile?ownerUsername=$ownerUsername"
+        }
     }
 
     object BookingServices: MainRoute(route = "bookingServices")

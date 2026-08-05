@@ -9,7 +9,6 @@ import com.example.scrollbooker.entity.booking.business.domain.model.BusinessPro
 import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessProfileUseCase
 import com.example.scrollbooker.entity.user.userSocial.domain.useCase.FollowUserUseCase
 import com.example.scrollbooker.entity.user.userSocial.domain.useCase.UnfollowUserUseCase
-import com.example.scrollbooker.navigation.routes.MainRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,7 +25,9 @@ class BusinessProfileViewModel @Inject constructor(
     private val followUserUseCase: FollowUserUseCase,
     private val unfollowUserUseCase: UnfollowUserUseCase,
 ): ViewModel() {
-    private val businessOwnerUsername: String = checkNotNull(savedStateHandle[MainRoute.BusinessProfile.ARG_BUSINESS_OWNER_USERNAME])
+    private val ownerUsername: String = checkNotNull(savedStateHandle["ownerUsername"]) {
+        "BusinessProfileViewModel: ownerUsername is missing in savedStateHandle"
+    }
 
     private val _isFollowState = MutableStateFlow<Boolean?>(null)
     val isFollowState: StateFlow<Boolean?> = _isFollowState.asStateFlow()
@@ -41,7 +42,9 @@ class BusinessProfileViewModel @Inject constructor(
         viewModelScope.launch {
             _businessProfileState.value = FeatureState.Loading
 
-            val response = withVisibleLoading { getBusinessProfileUseCase(businessOwnerUsername) }
+            val response = withVisibleLoading {
+                getBusinessProfileUseCase(ownerUsername)
+            }
 
             if(response is FeatureState.Success) {
                 val businessProfile = response.data

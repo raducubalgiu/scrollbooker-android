@@ -51,6 +51,7 @@ import kotlinx.coroutines.launch
 fun BusinessProfileScreen(
     viewModel: BusinessProfileViewModel,
     searchNavigate: SearchNavigator,
+    onNavigateToBusinessProfile: (String) -> Unit,
     onBack: () -> Unit
 ) {
     val state by viewModel.businessProfileState.collectAsState()
@@ -277,7 +278,8 @@ fun BusinessProfileScreen(
                             fullName = profile.owner.fullName,
                             nearbyBusinesses = profile.nearbyBusinesses,
                             onNavigateToBusinessProfile = { username ->
-                                searchNavigate.toBusinessProfile(username)
+                                //searchNavigate.toBusinessProfile(username)
+                                onNavigateToBusinessProfile(username)
                             }
                         )
                     }
