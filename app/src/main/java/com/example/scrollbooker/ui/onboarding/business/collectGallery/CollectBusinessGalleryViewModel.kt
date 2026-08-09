@@ -39,7 +39,7 @@ class CollectBusinessGalleryViewModel @Inject constructor(
 
     fun clearImage(slot: Int) = setImage(slot, null)
 
-    suspend fun collectBusinessGallery(): Result<AuthState> {
+    suspend fun collectBusinessGallery(skipUpdateGallery: Boolean): Result<AuthState> {
         val businessId = authDataStore.getBusinessId().firstOrNull()
             ?: return Result.failure(Exception("Business ID not found"))
 
@@ -48,7 +48,7 @@ class CollectBusinessGalleryViewModel @Inject constructor(
         val photos = _photosState.value.images
 
         val result = withVisibleLoading {
-            collectBusinessGalleryUseCase(businessId, photos)
+            collectBusinessGalleryUseCase(businessId, skipUpdateGallery, photos)
         }
 
         result

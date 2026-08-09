@@ -15,6 +15,7 @@ import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface OnboardingApiService {
     // Shared
@@ -47,6 +48,7 @@ interface OnboardingApiService {
     @PATCH("/onboarding/collect-business-gallery/{business_id}/update")
     suspend fun collectBusinessGallery(
         @Path("business_id") businessId: Int,
+        @Query("skip_update_gallery") skipUpdateGallery: Boolean,
         @Part photos: List<MultipartBody.Part>
     ): AuthStateDto
 

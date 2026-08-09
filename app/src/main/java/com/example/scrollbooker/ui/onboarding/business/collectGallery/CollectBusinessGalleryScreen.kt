@@ -8,13 +8,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -22,6 +20,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircleOutline
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -29,14 +29,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.FormLayout
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.ui.theme.bodyLarge
-import com.example.scrollbooker.ui.theme.headlineSmall
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -48,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.util.UnstableApi
 import coil.compose.AsyncImage
+import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.SurfaceBG
@@ -57,7 +54,7 @@ import com.example.scrollbooker.ui.theme.SurfaceBG
 fun CollectBusinessGalleryScreen(
     viewModel: CollectBusinessGalleryViewModel,
     onBack: () -> Unit,
-    onNext: () -> Unit
+    onNext: (Boolean) -> Unit
 ) {
     val verticalScroll = rememberScrollState()
     val photosState by viewModel.photosState.collectAsStateWithLifecycle()
@@ -76,25 +73,37 @@ fun CollectBusinessGalleryScreen(
     }
 
     val isLoading = isSaving == FeatureState.Loading
-    val isEnabled = photosState.images.any { it != null }
+    val hasPhotos = photosState.images.any { it != null }
 
     FormLayout(
         headLine = stringResource(R.string.visualPresentation),
         subHeadLine = stringResource(R.string.photoGalleryDescription),
         buttonTitle = stringResource(R.string.nextStep),
         onBack = onBack,
-        onNext = onNext,
-        isEnabled = isEnabled && !isLoading,
+        onNext = { onNext(!hasPhotos) },
+        isEnabled = !isLoading,
         isLoading = isLoading
     ) {
         Column(modifier = Modifier
             .padding(horizontal = BasePadding)
             .verticalScroll(verticalScroll)
         ) {
-            BusinessMediaTitle(
-                title = "${stringResource(R.string.images)}*",
-                description = stringResource(R.string.addImagesDescription)
-            )
+            if (!hasPhotos) {
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = SpacingM),
+                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                    shape = RoundedCornerShape(BasePadding)
+                ) {
+                    Text(
+                        modifier = Modifier.padding(BasePadding),
+                        text = "💡 ${stringResource(R.string.skipUpdateBusinessGalleryMessage)}.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
 
             repeat(5) { i ->
                 val uri = photosState.images[i]
@@ -146,39 +155,4 @@ fun CollectBusinessGalleryScreen(
             }
         }
     }
-}
-
-@Composable
-private fun BusinessMediaTitle(
-    title: String,
-    description: String
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = SpacingS),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            style = bodyLarge,
-            fontWeight = FontWeight.Bold,
-            text = "\u2022",
-            fontSize = 25.sp
-        )
-        Spacer(Modifier.width(BasePadding))
-        Text(
-            style = headlineSmall,
-            fontWeight = FontWeight.Bold,
-            text = title
-        )
-    }
-
-    Spacer(Modifier.height(SpacingS))
-
-    Text(
-        color = Color.Gray,
-        text = description
-    )
-
-    Spacer(Modifier.height(SpacingS))
 }

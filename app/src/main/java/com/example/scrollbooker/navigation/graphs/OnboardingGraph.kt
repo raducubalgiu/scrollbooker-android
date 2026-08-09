@@ -10,7 +10,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.example.scrollbooker.R
 import com.example.scrollbooker.navigation.routes.OnboardingRoute
-import com.example.scrollbooker.navigation.routes.RootRoute
 import com.example.scrollbooker.ui.auth.AuthViewModel
 import com.example.scrollbooker.ui.onboarding.business.collectBusiness.CollectBusinessDetailsScreen
 import com.example.scrollbooker.ui.onboarding.business.collectGallery.CollectBusinessGalleryScreen
@@ -167,9 +166,9 @@ fun NavGraphBuilder.onBoardingGraph(
         CollectBusinessGalleryScreen(
             viewModel = viewModel,
             onBack = { navController.popBackStack() },
-            onNext = {
+            onNext = { skipUpdateGallery ->
                 navController.currentBackStackEntry?.lifecycleScope?.launch {
-                    val authState = viewModel.collectBusinessGallery()
+                    val authState = viewModel.collectBusinessGallery(skipUpdateGallery)
 
                     authState.onSuccess { authViewModel.updateAuthState(it) }
                 }

@@ -19,6 +19,9 @@ import com.example.scrollbooker.entity.user.userProfile.data.remote.UpdateBirthD
 import com.example.scrollbooker.entity.user.userProfile.data.remote.UpdateGenderRequest
 import com.example.scrollbooker.entity.user.userProfile.data.remote.UpdateUsernameRequest
 import dagger.hilt.android.qualifiers.ApplicationContext
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import javax.inject.Inject
 
 class OnboardingRepositoryImpl @Inject constructor(
@@ -50,10 +53,20 @@ class OnboardingRepositoryImpl @Inject constructor(
 
     override suspend fun collectBusinessGallery(
         businessId: Int,
+        skipUpdateGallery: Boolean,
         photos: List<Uri?>
     ): AuthState = processAndUploadPhotos(context, photos) { parts ->
-        apiService.collectBusinessGallery(businessId, parts).toDomain()
+        val finalParts = if (skipUpdateGallery && parts.isEmpty()) {
+            val dummyBody = "".toRequestBody("text/plain".toMediaTypeOrNull())
+            val dummyPart = MultipartBody.Part.createFormData("photos", "", dummyBody)
+            listOf(dummyPart)
+        } else {
+            parts
+        }
+
+        apiService.collectBusinessGallery(businessId, skipUpdateGallery, finalParts).toDomain()
     }
+
 
     override suspend fun collectBusinessServices(serviceIds: List<Int>): AuthState {
         val request = BusinessServicesUpdateRequest(serviceIds)

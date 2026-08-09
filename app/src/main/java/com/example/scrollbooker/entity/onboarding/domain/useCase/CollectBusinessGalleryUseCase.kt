@@ -8,9 +8,13 @@ import javax.inject.Inject
 class CollectBusinessGalleryUseCase @Inject constructor(
     private val repository: OnboardingRepository
 ) {
-    suspend operator fun invoke(businessId: Int, photos: List<Uri?>): Result<AuthState> {
+    suspend operator fun invoke(
+        businessId: Int,
+        skipUpdateGallery: Boolean,
+        photos: List<Uri?>
+    ): Result<AuthState> {
         return runCatching {
-            repository.collectBusinessGallery(businessId, photos)
+            repository.collectBusinessGallery(businessId, skipUpdateGallery, photos)
         }
     }
 }

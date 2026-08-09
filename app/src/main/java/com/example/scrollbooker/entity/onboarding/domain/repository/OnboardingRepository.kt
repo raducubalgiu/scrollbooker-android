@@ -18,6 +18,7 @@ interface OnboardingRepository {
     suspend fun collectBusiness(request: BusinessCreateRequest): BusinessCreateResponse
     suspend fun collectBusinessGallery(
         businessId: Int,
+        skipUpdateGallery: Boolean,
         photos: List<Uri?>
     ): AuthState
     suspend fun collectBusinessServices(serviceIds: List<Int>): AuthState

@@ -36,6 +36,7 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.ByteArrayOutputStream
 import javax.inject.Inject
+import androidx.core.graphics.scale
 
 class BusinessRepositoryImpl @Inject constructor(
     private val apiService: BusinessApiService,
@@ -96,15 +97,9 @@ class BusinessRepositoryImpl @Inject constructor(
     }
 }
 
-// ----------------------------------------------------------------------------
-// Config
-// ----------------------------------------------------------------------------
-private const val MAX_IMAGE_DIMENSION = 1920 // px, latura lungă
+private const val MAX_IMAGE_DIMENSION = 1920
 private const val JPEG_QUALITY = 85
 
-// ----------------------------------------------------------------------------
-// Funcția generică, refolosită în ambele endpoint-uri
-// ----------------------------------------------------------------------------
 suspend fun <T> processAndUploadPhotos(
     context: Context,
     photos: List<Uri?>,
@@ -117,14 +112,10 @@ suspend fun <T> processAndUploadPhotos(
     uploadBlock(parts)
 }
 
-// ----------------------------------------------------------------------------
-// Conversie Uri -> MultipartBody.Part, în memorie, fără fișiere temporare
-// ----------------------------------------------------------------------------
 private fun uriToMultipartPart(context: Context, uri: Uri): MultipartBody.Part {
     val resolver = context.contentResolver
     val originalMime = resolver.getType(uri) ?: "image/jpeg"
 
-    // Comprimăm + redimensionăm în memorie -> byte array final, mereu JPEG
     val compressedBytes = compressImage(context, uri)
 
     val mediaType = "image/jpeg".toMediaTypeOrNull()
@@ -136,24 +127,18 @@ private fun uriToMultipartPart(context: Context, uri: Uri): MultipartBody.Part {
     return MultipartBody.Part.createFormData("photos", fileName, body)
 }
 
-// ----------------------------------------------------------------------------
-// Downscale + compresie, folosind inSampleSize ca să nu umfle memoria
-// ----------------------------------------------------------------------------
 private fun compressImage(context: Context, uri: Uri): ByteArray {
     val resolver = context.contentResolver
 
-    // Citim bytes o singură dată
     val rawBytes = resolver.openInputStream(uri)?.use { it.readBytes() }
         ?: error("Cannot open input stream for uri=$uri")
 
-    // Bounds din byte array, nu re-deschidem Uri-ul
     val boundsOptions = BitmapFactory.Options().apply { inJustDecodeBounds = true }
     BitmapFactory.decodeByteArray(rawBytes, 0, rawBytes.size, boundsOptions)
 
     val sampleSize = calculateInSampleSize(
         boundsOptions.outWidth,
-        boundsOptions.outHeight,
-        MAX_IMAGE_DIMENSION
+        boundsOptions.outHeight
     )
 
     val decodeOptions = BitmapFactory.Options().apply { inSampleSize = sampleSize }
@@ -161,7 +146,7 @@ private fun compressImage(context: Context, uri: Uri): ByteArray {
         ?: error("Cannot decode bitmap for uri=$uri")
 
     return try {
-        val scaled = scaleToMaxDimension(bitmap, MAX_IMAGE_DIMENSION)
+        val scaled = scaleToMaxDimension(bitmap)
         ByteArrayOutputStream().use { output ->
             scaled.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, output)
             if (scaled !== bitmap) scaled.recycle()
@@ -172,23 +157,23 @@ private fun compressImage(context: Context, uri: Uri): ByteArray {
     }
 }
 
-private fun calculateInSampleSize(width: Int, height: Int, maxDimension: Int): Int {
+private fun calculateInSampleSize(width: Int, height: Int): Int {
     var sampleSize = 1
     var longestSide = maxOf(width, height)
-    while (longestSide / (sampleSize * 2) >= maxDimension) {
+    while (longestSide / (sampleSize * 2) >= MAX_IMAGE_DIMENSION) {
         sampleSize *= 2
     }
     return sampleSize
 }
 
-private fun scaleToMaxDimension(bitmap: Bitmap, maxDimension: Int): Bitmap {
+private fun scaleToMaxDimension(bitmap: Bitmap): Bitmap {
     val longestSide = maxOf(bitmap.width, bitmap.height)
-    if (longestSide <= maxDimension) return bitmap
+    if (longestSide <= MAX_IMAGE_DIMENSION) return bitmap
 
-    val scale = maxDimension.toFloat() / longestSide
+    val scale = MAX_IMAGE_DIMENSION.toFloat() / longestSide
     val newWidth = (bitmap.width * scale).toInt().coerceAtLeast(1)
     val newHeight = (bitmap.height * scale).toInt().coerceAtLeast(1)
 
-    return Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true)
+    return bitmap.scale(newWidth, newHeight)
 }
 
