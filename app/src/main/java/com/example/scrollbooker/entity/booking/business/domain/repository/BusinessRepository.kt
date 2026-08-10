@@ -9,6 +9,7 @@ import com.example.scrollbooker.entity.booking.business.domain.model.BusinessAdd
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMarker
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfile
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessSheet
+import com.example.scrollbooker.entity.booking.business.domain.model.UnapprovedBusiness
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.SelectedServiceDomainsWithServices
 import kotlinx.coroutines.flow.Flow
 
@@ -21,11 +22,14 @@ interface BusinessRepository {
     suspend fun getBusiness(userId: Int): Business
     suspend fun getBusinessProfileByOwnerUsername(ownerUsername: String): BusinessProfile
     suspend fun updateBusinessHasEmployees(hasEmployees: Boolean): AuthState
+    suspend fun approveBusiness(userId: Int)
 
     suspend fun updateBusinessGallery(
         businessId: Int,
         photos: List<Uri?>
     )
+
+    fun getUnapprovedBusinesses(): Flow<PagingData<UnapprovedBusiness>>
 
     suspend fun getBusinessesMarkers(request: SearchBusinessRequest): List<BusinessMarker>
     fun getBusinessesSheet(

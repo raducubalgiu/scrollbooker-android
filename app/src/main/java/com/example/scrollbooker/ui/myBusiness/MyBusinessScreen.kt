@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AddBusiness
 import androidx.compose.material.icons.outlined.Book
 import androidx.compose.material.icons.outlined.CalendarToday
 import androidx.compose.material.icons.outlined.LocationOn
@@ -48,6 +49,13 @@ fun MyBusinessScreen(
     val isEmployee by viewModel.isEmployee.collectAsStateWithLifecycle()
 
     val pages = listOf(
+        BusinessCard(
+            title = stringResource(R.string.unapprovedBusinesses),
+            description = stringResource(R.string.unapprovedBusinessesDescription),
+            icon = Icons.Outlined.AddBusiness,
+            permission = PermissionEnum.NOMENCLATURES_VIEW,
+            navigate = { profileNavigate.toUnapprovedBusinesses() },
+        ),
         BusinessCard(
             title = stringResource(R.string.businessDetails),
             description = stringResource(R.string.businessDetailsDescription),

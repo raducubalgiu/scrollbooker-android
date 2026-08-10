@@ -17,6 +17,8 @@ import com.example.scrollbooker.screens.auth.collectBusinessDetails.collectBusin
 import com.example.scrollbooker.ui.LocalUserPermissions
 import com.example.scrollbooker.ui.myBusiness.MyBusinessScreen
 import com.example.scrollbooker.ui.myBusiness.MyBusinessViewModel
+import com.example.scrollbooker.ui.myBusiness.unapprovedBusinesses.UnapprovedBusinessesScreen
+import com.example.scrollbooker.ui.myBusiness.unapprovedBusinesses.UnapprovedBusinessesViewModel
 import com.example.scrollbooker.ui.myBusiness.myBusinessDetails.MyBusinessDetailsScreen
 import com.example.scrollbooker.ui.myBusiness.myBusinessDetails.MyBusinessDetailsViewModel
 import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarScreen
@@ -58,6 +60,15 @@ fun NavGraphBuilder.myBusinessGraph(
             )
         }
 
+        composable(MainRoute.UnapprovedBusinesses.route) {
+            val viewModel = hiltViewModel<UnapprovedBusinessesViewModel>()
+
+            UnapprovedBusinessesScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
         composable(MainRoute.MyBusinessDetails.route) {
             val viewModel = hiltViewModel<MyBusinessDetailsViewModel>()
 
@@ -69,15 +80,6 @@ fun NavGraphBuilder.myBusinessGraph(
                 }
             )
         }
-//
-//        composable(MainRoute.MyBusinessEditGallery.route) {
-//            val viewModel = hiltViewModel<MyBusinessLocationViewModel>()
-//
-//            MyBusinessEditGalleryScreen(
-//                viewModel = viewModel,
-//                onBack = { navController.popBackStack() }
-//            )
-//        }
 
         navigation(
             route = MainRoute.MyEmployeesNavigator.route,

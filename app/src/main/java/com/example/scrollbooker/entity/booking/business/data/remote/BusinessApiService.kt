@@ -29,6 +29,12 @@ interface BusinessApiService {
         @Path("userId") userId: Int
     ): BusinessDto
 
+    @GET("/businesses/unapproved-businesses")
+    suspend fun getUnapprovedBusinesses(
+        @Query("page") page: Int,
+        @Query("limit") limit: Int
+    ): PaginatedResponseDto<UnapprovedBusinessDto>
+
     @PUT("/businesses/{businessId}/update-services")
     suspend fun updateBusinessServices(
         @Path("businessId") businessId: Int,
@@ -51,6 +57,11 @@ interface BusinessApiService {
     suspend fun getBusinessesMarkers(
         @Body request: SearchBusinessRequest
     ): List<BusinessMarkerDto>
+
+    @POST("/users/{userId}/approve")
+    suspend fun approveBusiness(
+        @Path("userId") userId: Int,
+    )
 
     @POST("businesses/locations")
     suspend fun getBusinessesSheet(

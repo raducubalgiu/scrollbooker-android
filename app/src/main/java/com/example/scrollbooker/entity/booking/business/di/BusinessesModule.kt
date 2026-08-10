@@ -5,10 +5,12 @@ import com.example.scrollbooker.BuildConfig
 import com.example.scrollbooker.entity.booking.business.data.remote.BusinessApiService
 import com.example.scrollbooker.entity.booking.business.data.repository.BusinessRepositoryImpl
 import com.example.scrollbooker.entity.booking.business.domain.repository.BusinessRepository
+import com.example.scrollbooker.entity.booking.business.domain.useCase.ApproveBusinessUseCase
 import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessByUserUseCase
 import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessProfileUseCase
 import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessesMarkersUseCase
 import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessesSheetUseCase
+import com.example.scrollbooker.entity.booking.business.domain.useCase.GetUnapprovedBusinessesUseCase
 import com.example.scrollbooker.entity.booking.business.domain.useCase.SearchBusinessAddressUseCase
 import com.example.scrollbooker.entity.booking.business.domain.useCase.UpdateBusinessGalleryUseCase
 import com.example.scrollbooker.entity.booking.business.domain.useCase.UpdateBusinessHasEmployeesUseCase
@@ -86,6 +88,22 @@ object BusinessModule {
         repository: BusinessRepository,
     ): UpdateBusinessHasEmployeesUseCase {
         return UpdateBusinessHasEmployeesUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetUnapprovedBusinessesUseCase(
+        repository: BusinessRepository,
+    ): GetUnapprovedBusinessesUseCase {
+        return GetUnapprovedBusinessesUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideApproveBusinessUseCase(
+        repository: BusinessRepository,
+    ): ApproveBusinessUseCase {
+        return ApproveBusinessUseCase(repository)
     }
 
     @Provides

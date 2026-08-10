@@ -448,6 +448,9 @@
     <string name="linkServices">Atașează servicii</string>
     <string name="videoReview">Recenzie video</string>
     <string name="startDateLowerThanEndDateValidation">Data de start nu poate fi mai mare decat data de sfârșit</string>
+    <string name="unapprovedBusinesses">Afaceri în aprobare</string>
+    <string name="unapprovedBusinessesDescription">Lista de afaceri ce urmează a fi revizuite</string>
+    <string name="notFoundUnapprovedBusinesses">Nu au fost găsite afaceri in aprobare</string>
 
     <!-- Follow & Social Notifications -->
     <string name="notification_started_following_you">a început să te urmărească</string>

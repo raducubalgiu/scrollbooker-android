@@ -49,10 +49,6 @@ class ProfileNavigator (
         }
     }
 
-    fun toBookingFromPost(post: Post, source: BookingSourceEnum) {
-        navController.navigateToBookingFromPost(post, source)
-    }
-
     fun toBookingFromProduct(product: Product, source: BookingSourceEnum) {
         navController.navigateToBookingFromProduct(product, source)
     }
@@ -107,6 +103,10 @@ class ProfileNavigator (
         navController.navigate(MainRoute.MyBusinessNavigator.route) {
             launchSingleTop = true
         }
+    }
+
+    fun toUnapprovedBusinesses() {
+        navController.navigate(MainRoute.UnapprovedBusinesses.route)
     }
 
     fun toMyBusinessDetails() {

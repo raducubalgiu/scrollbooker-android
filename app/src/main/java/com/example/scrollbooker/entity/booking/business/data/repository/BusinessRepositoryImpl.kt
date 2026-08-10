@@ -37,6 +37,8 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 import androidx.core.graphics.scale
+import com.example.scrollbooker.entity.booking.business.data.remote.UnapprovedBusinessPagingSource
+import com.example.scrollbooker.entity.booking.business.domain.model.UnapprovedBusiness
 
 class BusinessRepositoryImpl @Inject constructor(
     private val apiService: BusinessApiService,
@@ -47,6 +49,13 @@ class BusinessRepositoryImpl @Inject constructor(
         photos: List<Uri?>
     ): Unit = processAndUploadPhotos(context, photos) { parts ->
         apiService.updateBusinessGallery(businessId, parts)
+    }
+
+    override fun getUnapprovedBusinesses(): Flow<PagingData<UnapprovedBusiness>> {
+        return Pager(
+            config = PagingConfig(pageSize = 10),
+            pagingSourceFactory = { UnapprovedBusinessPagingSource(apiService) }
+        ).flow
     }
 
     override suspend fun searchBusinessAddress(query: String): List<BusinessAddress> {
@@ -74,6 +83,10 @@ class BusinessRepositoryImpl @Inject constructor(
         val request = BusinessHasEmployeesUpdateRequest(hasEmployees)
 
         return apiService.updateBusinessHasEmployees(request).toDomain()
+    }
+
+    override suspend fun approveBusiness(userId: Int) {
+        return apiService.approveBusiness(userId)
     }
 
     override suspend fun getBusinessesMarkers(request: SearchBusinessRequest): List<BusinessMarker> {

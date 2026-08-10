@@ -3,9 +3,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.components.customized.LoadMoreSpinner
@@ -22,8 +22,8 @@ fun NotificationsList(
     onFollow: (Boolean, Int) -> Unit,
     inboxNavigate: InboxNavigator
 ) {
-    val followState by viewModel.followState.collectAsState()
-    val isFollowSaving by viewModel.isFollowSaving.collectAsState()
+    val followState by viewModel.followState.collectAsStateWithLifecycle()
+    val isFollowSaving by viewModel.isFollowSaving.collectAsStateWithLifecycle()
     val appendState = notifications.loadState.append
 
     Refresh(
