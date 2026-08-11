@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.scrollbooker.R
+import com.example.scrollbooker.components.customized.placeholderActionBox.PlaceholderActionBox
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.products.domain.model.ProductOffering
@@ -81,7 +82,11 @@ fun BookingSpecialistsScreen(
                 }
             )
 
-            if (selectedEmployeeId == null) UnselectedSpecialistOverlay()
+            if (selectedEmployeeId == null) {
+                PlaceholderActionBox(
+                    description = stringResource(R.string.chooseSpecialistDescription)
+                )
+            }
 
             else LazyColumn(
                     modifier = Modifier.fillMaxWidth(),

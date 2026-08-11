@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
@@ -32,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.headers.Header
+import com.example.scrollbooker.components.customized.placeholderActionBox.PlaceholderActionBox
 import com.example.scrollbooker.core.snackbar.CustomSnackBar
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
@@ -171,7 +174,11 @@ fun EditPostContent(
                 }
 
                 if (editPostUiState.linkedProducts.isEmpty()) {
-                    LinkedProductsOverlay(onClick = { handleShowSheet() })
+                    PlaceholderActionBox(
+                        description = stringResource(R.string.linkedServicesDescription),
+                        icon = Icons.Default.Add,
+                        onClick = { handleShowSheet() }
+                    )
                 } else {
                     editPostUiState.linkedProducts.forEachIndexed { index, product ->
                         LinkedProductRow(

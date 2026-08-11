@@ -1,26 +1,20 @@
 package com.example.scrollbooker.ui.myBusiness.myProducts.AddProduct
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -31,29 +25,21 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.core.accordion.Accordion
+import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.headers.Header
-import com.example.scrollbooker.components.core.inputs.BasicInput
 import com.example.scrollbooker.components.core.inputs.Input
 import com.example.scrollbooker.components.core.inputs.InputSelect
 import com.example.scrollbooker.components.core.inputs.Option
+import com.example.scrollbooker.components.customized.placeholderActionBox.PlaceholderActionBox
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.ui.myBusiness.myProducts.MyProductsViewModel
 import com.example.scrollbooker.ui.myBusiness.myProducts.components.FiltersSection
-import com.example.scrollbooker.ui.theme.Background
-import com.example.scrollbooker.ui.theme.Divider
-import com.example.scrollbooker.ui.theme.OnBackground
-import com.example.scrollbooker.ui.theme.bodyMedium
-import com.example.scrollbooker.ui.theme.bodySmall
-import com.example.scrollbooker.ui.theme.labelLarge
 import com.example.scrollbooker.ui.theme.titleLarge
 
 @Composable
@@ -65,23 +51,15 @@ fun AddProductScreen(
     val focusManager = LocalFocusManager.current
     val scrollState = rememberScrollState()
 
-    val serviceDomains by myProductsViewModel.selectedServices.collectAsStateWithLifecycle()
     val productState by viewModel.productState.collectAsStateWithLifecycle()
+    val productValidation by viewModel.productValidation.collectAsStateWithLifecycle()
+
+    val serviceDomains by myProductsViewModel.selectedServices.collectAsStateWithLifecycle()
     val filters by viewModel.filters.collectAsStateWithLifecycle()
     val selectedFilters by viewModel.selectedFilters.collectAsStateWithLifecycle()
     val isSaving by viewModel.isSaving.collectAsStateWithLifecycle()
 
-    val productValidation by viewModel.productValidation.collectAsStateWithLifecycle()
-    val variantsValidation by viewModel.variantsValidation.collectAsStateWithLifecycle()
-
     var showErrors by rememberSaveable { mutableStateOf(false) }
-
-    val currentVariantIndex = 0
-    val currentOfferingIndex = 0
-
-    val currentVariant = productState.variants.getOrNull(currentVariantIndex)
-    val variantValidation = variantsValidation.getOrNull(currentVariantIndex)
-    val offeringValidation = variantValidation?.offerings?.getOrNull(currentOfferingIndex)
 
     val isLoadingServiceDomains by remember(serviceDomains) {
         derivedStateOf { serviceDomains is FeatureState.Loading }
@@ -119,26 +97,18 @@ fun AddProductScreen(
             )
         },
         bottomBar = {
-            Button(
+            MainButton(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(BasePadding),
+                    .padding(horizontal = BasePadding)
+                    .navigationBarsPadding(),
+                title = stringResource(R.string.save),
+                isLoading = isSaving,
                 enabled = !isSaving,
                 onClick = {
                     showErrors = true
                     viewModel.createProduct()
                 }
-            ) {
-                if (isSaving) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(24.dp),
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        strokeWidth = 2.dp
-                    )
-                } else {
-                    Text(text = "Salvează")
-                }
-            }
+            )
         }
     ) { innerPadding ->
         Column(modifier = Modifier
@@ -152,7 +122,7 @@ fun AddProductScreen(
             ) { focusManager.clearFocus() }
         ) {
             Text(
-                text = "Informatii de baza",
+                text = stringResource(R.string.baseInfo),
                 style = titleLarge,
                 fontWeight = FontWeight.Bold
             )
@@ -183,9 +153,7 @@ fun AddProductScreen(
                 placeholder = stringResource(R.string.pickService),
                 options = servicesOptionList,
                 selectedOption = productState.serviceId,
-                onValueChange = { serviceId ->
-                    serviceId?.let { viewModel.setServiceId(it) }
-                },
+                onValueChange = { serviceId -> serviceId?.let { viewModel.setServiceId(it) } },
                 isError = showErrors && productValidation.serviceIdError != null,
                 errorMessage = productValidation.serviceIdError.orEmpty()
             )
@@ -193,18 +161,9 @@ fun AddProductScreen(
             Spacer(Modifier.height(BasePadding))
 
             Input(
-                label = stringResource(R.string.name),
+                label = stringResource(R.string.serviceName),
                 value = productState.name,
-                onValueChange = {
-                    viewModel.setName(it)
-                    if (currentVariant != null) {
-                        viewModel.updateVariant(
-                            currentVariantIndex,
-                            name = it,
-                            duration = currentVariant.duration
-                        )
-                    }
-                },
+                onValueChange = { viewModel.setName(it) },
                 isError = showErrors && productValidation.nameError != null,
                 errorMessage = productValidation.nameError.orEmpty(),
                 singleLine = false,
@@ -247,135 +206,17 @@ fun AddProductScreen(
                 }
             }
 
-            Spacer(Modifier.height(BasePadding))
-
-
             Text(
-                text = "Variante si preturi",
+                text = stringResource(R.string.variantAndPrices),
                 style = titleLarge,
                 fontWeight = FontWeight.Bold
             )
 
-            Spacer(Modifier.height(BasePadding))
-
-            Accordion(
-                title = productState.name.ifEmpty { "--" },
-                isExpanded = true,
-                onSetExpanded = {},
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(text = stringResource(R.string.duration), fontWeight = FontWeight.SemiBold, style = labelLarge)
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Text(text = "Reprezintă durata efectivă a acestui serviciu.", style = bodySmall, color = Color.Gray)
-                    }
-
-                    Column(horizontalAlignment = Alignment.End) {
-                        BasicInput(
-                            value = currentVariant?.duration.orEmpty(),
-                            onValueChange = { viewModel.updateVariantDuration(it) },
-                            isError = showErrors && variantValidation?.durationError != null,
-                            modifier = Modifier.width(100.dp),
-                            colors = TextFieldDefaults.colors(
-                                focusedContainerColor = Background, unfocusedContainerColor = Background,
-                                focusedTextColor = OnBackground, unfocusedTextColor = OnBackground,
-                                focusedIndicatorColor = if (showErrors && variantValidation?.durationError != null) MaterialTheme.colorScheme.error else Color.Transparent,
-                                unfocusedIndicatorColor = if (showErrors && variantValidation?.durationError != null) MaterialTheme.colorScheme.error else Color.Transparent,
-                            )
-                        )
-                        if (showErrors && variantValidation?.durationError != null) {
-                            Text(text = variantValidation.durationError!!, color = MaterialTheme.colorScheme.error, style = bodySmall)
-                        }
-                    }
-                }
-
-                Spacer(Modifier.height(BasePadding))
-
-                Text(
-                    text = "Prețuri per angajat",
-                    fontWeight = FontWeight.SemiBold,
-                    style = labelLarge
-                )
-
-                Spacer(Modifier.height(BasePadding))
-
-                currentVariant?.offerings?.forEachIndexed { index, offeringState ->
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                                //.padding(vertical = 4.bindDp()),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            // Comutator (Checkbox) în stânga: Activează prețul pentru acest angajat
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                Checkbox(
-                                    checked = offeringState.isSelected,
-                                    onCheckedChange = { isChecked ->
-                                        viewModel.toggleOfferingSelection(index, isChecked)
-                                    }
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    text = offeringState.fullName, // Afișăm numele complet al angajatului
-                                    style = bodyMedium,
-                                    fontWeight = if (offeringState.isSelected) FontWeight.SemiBold else FontWeight.Normal
-                                )
-                            }
-
-                            // Input de preț în dreapta (Este activat doar dacă angajatul e bifat)
-                            Column(horizontalAlignment = Alignment.End) {
-                                BasicInput(
-                                    value = offeringState.price,
-                                    //enabled = offeringState.isSelected, // Blocat dacă nu e bifat angajatul
-                                    onValueChange = { newPrice ->
-                                        viewModel.updateOfferingPrices(
-                                            offeringIndex = index,
-                                            price = newPrice,
-                                            discount = offeringState.discount,
-                                            priceWithDiscount = newPrice
-                                        )
-                                    },
-                                    isError = showErrors && offeringValidation?.priceError != null,
-                                    modifier = Modifier.width(100.dp),
-                                    colors = TextFieldDefaults.colors(
-                                        focusedContainerColor = Background,
-                                        unfocusedContainerColor = if (offeringState.isSelected) Background else Background.copy(alpha = 0.5f),
-                                        focusedTextColor = OnBackground,
-                                        unfocusedTextColor = if (offeringState.isSelected) OnBackground else Color.Gray,
-                                        //focusedIndicatorColor = if (showErrors && offeringValidation?.priceError != null) MaterialTheme.colorScheme.error else Color.Transparent,
-                                        //unfocusedIndicatorColor = if (showErrors && offeringValidation?.priceError != null) MaterialTheme.colorScheme.error else Color.Transparent,
-                                    )
-                                )
-                            }
-                        }
-
-//                        // Dacă utilizatorul a bifat angajatul, dar a lăsat prețul gol la salvare, afișăm eroarea dedesubt
-//                        if (showErrors && offeringValidation?.priceError != null && offeringState.isSelected) {
-//                            Text(
-//                                text = offeringValidation.priceError!!,
-//                                color = MaterialTheme.colorScheme.error,
-//                                style = bodySmall,
-//                                modifier = Modifier.padding(start = 48.dp, bottom = 4.dp)
-//                            )
-//                        }
-
-                        HorizontalDivider(
-                            modifier = Modifier.padding(vertical = 4.dp),
-                            color = Divider.copy(alpha = 0.3f),
-                            thickness = 0.5.dp
-                        )
-                    }
-                }
-            }
+            PlaceholderActionBox(
+                description = stringResource(R.string.addVariantAndPricesDescription),
+                icon = Icons.Default.Add,
+                onClick = {}
+            )
         }
     }
 }
