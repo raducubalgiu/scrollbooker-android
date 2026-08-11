@@ -21,7 +21,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
@@ -39,7 +38,8 @@ import com.example.scrollbooker.ui.theme.titleLarge
 fun ProfileEmployeesTab(
     isOwnProfile: Boolean,
     employees: LazyPagingItems<Employee>,
-    onNavigateToEmployeeProfile: (userId: Int, username: String) -> Unit
+    onNavigateToEmployeeProfile: (userId: Int, username: String) -> Unit,
+    onNavigateToBooking: (employee: Employee) -> Unit
 ) {
     val refreshState = employees.loadState.refresh
     val appendState = employees.loadState.append
@@ -82,7 +82,8 @@ fun ProfileEmployeesTab(
                                 ProfileEmployee(
                                     isOwnProfile = isOwnProfile,
                                     employee = employee,
-                                    onNavigateToEmployeeProfile = onNavigateToEmployeeProfile
+                                    onNavigateToEmployeeProfile = onNavigateToEmployeeProfile,
+                                    onNavigateToBooking = onNavigateToBooking
                                 )
 
                                 if(index < employees.itemCount - 1) {

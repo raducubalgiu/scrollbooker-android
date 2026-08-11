@@ -61,7 +61,7 @@ fun ProfileProductsTab(
                     ScrollableTabRow(
                         selectedTabIndex = pagerState.currentPage,
                         containerColor = Background,
-                        edgePadding = 0.dp,
+                        edgePadding = BasePadding,
                         divider = {},
                         indicator = { _ -> Box(Modifier.size(0.dp)) },
                         modifier = Modifier

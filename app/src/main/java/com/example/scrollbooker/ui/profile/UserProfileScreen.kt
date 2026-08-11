@@ -8,6 +8,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.scrollbooker.components.core.headers.Header
@@ -20,6 +21,7 @@ import com.example.scrollbooker.ui.profile.components.userInfo.components.MyProf
 import com.example.scrollbooker.ui.profile.components.userInfo.components.UserProfileActions
 import com.example.scrollbooker.ui.profile.sheets.UserScheduleSheet
 import com.example.scrollbooker.ui.theme.Background
+import kotlinx.coroutines.launch
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -36,6 +38,7 @@ fun UserProfileScreen(
     val isFollow by viewModel.isFollowState.collectAsStateWithLifecycle()
     val isSaving by viewModel.isSaving.collectAsStateWithLifecycle()
 
+    val scope = rememberCoroutineScope()
     val scheduleSheetState = rememberModalBottomSheetState()
     if(scheduleSheetState.isVisible) {
         UserScheduleSheet(
@@ -68,7 +71,8 @@ fun UserProfileScreen(
                 onNavigateToPost = {
                     val userId = userData?.id ?: return@ProfileLayout
                     profileNavigate.toUserPostDetail(PostTabEnum.POSTS, it, userId)
-                }
+                },
+                onOpenScheduleSheet = { scope.launch { scheduleSheetState.show() } }
             ) {
                 if(userData?.isOwnProfile == true) {
                     MyProfileActions(

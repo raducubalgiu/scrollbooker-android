@@ -74,10 +74,7 @@ fun NavGraphBuilder.myBusinessGraph(
 
             MyBusinessDetailsScreen(
                 viewModel = viewModel,
-                onBack = { navController.popBackStack() },
-                onNavigateToEditGallery = {
-                    navController.navigate(MainRoute.MyBusinessDetails.route)
-                }
+                onBack = { navController.popBackStack() }
             )
         }
 

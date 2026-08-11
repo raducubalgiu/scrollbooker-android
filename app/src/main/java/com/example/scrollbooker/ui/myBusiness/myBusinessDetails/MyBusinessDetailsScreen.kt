@@ -1,4 +1,5 @@
 package com.example.scrollbooker.ui.myBusiness.myBusinessDetails
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -8,7 +9,9 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -30,13 +33,14 @@ import androidx.compose.runtime.getValue
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.core.tabs.ServiceTab
+import com.example.scrollbooker.core.snackbar.CustomSnackBar
+import com.example.scrollbooker.core.snackbar.rememberSnackBarController
 import com.example.scrollbooker.core.util.FeatureState
 
 @Composable
 fun MyBusinessDetailsScreen(
     viewModel: MyBusinessDetailsViewModel,
-    onBack: () -> Unit,
-    onNavigateToEditGallery: () -> Unit
+    onBack: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val tabs = remember { MyBusinessDetailsTab.getTabs }
@@ -45,62 +49,83 @@ fun MyBusinessDetailsScreen(
     val selectedTabIndex = pagerState.currentPage
 
     val business by viewModel.business.collectAsStateWithLifecycle()
+    val photosState by viewModel.photosState.collectAsStateWithLifecycle()
+    val isSaving by viewModel.isSaving.collectAsStateWithLifecycle()
 
-    Scaffold(
-        topBar = { Header(
-            onBack = onBack,
-            title = stringResource(R.string.myBusiness)
-        ) }
-    ) { innerPadding ->
-        Column(Modifier.fillMaxSize().padding(innerPadding)) {
-            when(business) {
-                is FeatureState.Loading -> LoadingScreen()
-                is FeatureState.Error -> ErrorScreen()
-                is FeatureState.Success -> {
-                    val businessData = (business as FeatureState.Success).data
+    val hostState = remember { SnackbarHostState() }
+    val snackBarController = rememberSnackBarController(hostState)
 
-                    ScrollableTabRow(
-                        containerColor = Background,
-                        contentColor = OnSurfaceBG,
-                        edgePadding = BasePadding,
-                        selectedTabIndex = pagerState.currentPage,
-                        indicator = {},
-                        divider = {
-                            HorizontalDivider(
-                                modifier = Modifier.padding(top = 5.dp),
-                                color = Divider,
-                                thickness = 0.55.dp
-                            )
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            snackBarController.show(event)
+        }
+    }
+
+    Box(Modifier.fillMaxSize()) {
+        Scaffold(
+            topBar = { Header(
+                onBack = onBack,
+                title = stringResource(R.string.myBusiness)
+            ) }
+        ) { innerPadding ->
+            Column(Modifier.fillMaxSize().padding(innerPadding)) {
+                when(business) {
+                    is FeatureState.Loading -> LoadingScreen()
+                    is FeatureState.Error -> ErrorScreen()
+                    is FeatureState.Success -> {
+                        val businessData = (business as FeatureState.Success).data
+
+                        ScrollableTabRow(
+                            containerColor = Background,
+                            contentColor = OnSurfaceBG,
+                            edgePadding = BasePadding,
+                            selectedTabIndex = pagerState.currentPage,
+                            indicator = {},
+                            divider = {
+                                HorizontalDivider(
+                                    modifier = Modifier.padding(top = 5.dp),
+                                    color = Divider,
+                                    thickness = 0.55.dp
+                                )
+                            }
+                        ) {
+                            tabs.forEachIndexed { index, tab ->
+                                val isSelected = selectedTabIndex == index
+
+                                ServiceTab(
+                                    isSelected = isSelected,
+                                    serviceName = stringResource(tab.label),
+                                    onClick = {
+                                        scope.launch { pagerState.animateScrollToPage(index) }
+                                    }
+                                )
+                            }
                         }
-                    ) {
-                        tabs.forEachIndexed { index, tab ->
-                            val isSelected = selectedTabIndex == index
 
-                            ServiceTab(
-                                isSelected = isSelected,
-                                serviceName = stringResource(tab.label),
-                                onClick = {
-                                    scope.launch { pagerState.animateScrollToPage(index) }
-                                }
-                            )
-                        }
-                    }
-
-                    HorizontalPager(
-                        state = pagerState,
-                        beyondViewportPageCount = 0,
-                        modifier = Modifier.fillMaxSize(),
-                        pageSize = PageSize.Fill,
-                        key = { it }
-                    ) { page ->
-                        when(page) {
-                            0 -> MyBusinessSummaryTab()
-                            1 -> MyBusinessGalleryTab(onNavigateToEditGallery)
-                            2 -> MyBusinessSchedulesTab()
+                        HorizontalPager(
+                            state = pagerState,
+                            beyondViewportPageCount = 0,
+                            modifier = Modifier.fillMaxSize(),
+                            pageSize = PageSize.Fill,
+                            key = { it }
+                        ) { page ->
+                            when(page) {
+                                0 -> MyBusinessSummaryTab()
+                                1 -> MyBusinessGalleryTab(
+                                    isSaving = isSaving,
+                                    photosState = photosState,
+                                    onClearImage = { index -> viewModel.clearImage(index) },
+                                    onSetImage = { index, uri -> viewModel.setImage(index, uri) },
+                                    onSaveGallery = { viewModel.saveBusinessGallery() }
+                                )
+                                2 -> MyBusinessSchedulesTab()
+                            }
                         }
                     }
                 }
             }
         }
+
+        CustomSnackBar(hostState = hostState)
     }
 }

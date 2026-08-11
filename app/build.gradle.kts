@@ -33,14 +33,11 @@ android {
         }
 
         debug {
-            // URL-ul pentru Local Development (Emulator)
             buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:8000\"")
         }
 
         create("staging") {
             initWith(getByName("debug"))
-
-            // CORECT: URL-ul exact pentru mediul vostru de Staging din Cloud
             buildConfigField("String", "BASE_URL", "\"https://api-staging.scrollbooker.com\"")
 
             applicationIdSuffix = ".staging"
@@ -116,10 +113,6 @@ dependencies {
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.compose)
 
-    // Google Maps
-    implementation(libs.play.services.maps)
-    implementation(libs.maps.compose)
-
     // Foundation
     implementation(libs.androidx.foundation)
 
@@ -152,23 +145,5 @@ dependencies {
     testImplementation(libs.mockk)
     testImplementation(libs.androidx.paging.testing)
 
-    // The following line is optional, as the core library is included indirectly by camera-camera2
-    implementation(libs.androidx.camera.core)
-    implementation(libs.androidx.camera.camera2)
-
-    // If you want to additionally use the CameraX Lifecycle library
-    implementation(libs.androidx.camera.lifecycle)
-
-    // If you want to additionally use the CameraX VideoCapture library
-    implementation(libs.androidx.camera.video)
-
-    // If you want to additionally use the CameraX View class
-    implementation(libs.androidx.camera.view)
-
-    // If you want to additionally add CameraX ML Kit Vision Integration
-    implementation(libs.androidx.camera.mlkit.vision)
-
-    // If you want to additionally use the CameraX Extensions library
-    implementation(libs.androidx.camera.extensions)
     testImplementation(kotlin("test"))
 }

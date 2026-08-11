@@ -201,6 +201,7 @@
     <string name="addImagesDescription">Încarcă câteva fotografii prin care să le arăți clienților cum arată locația ta. Minim o fotografie.</string>
     <string name="photoGalleryDescription">"Încarcă câteva imagini de la locație - o prezentare vizuală bună atrage mai mulți clienți"</string>
     <string name="skipUpdateBusinessGalleryMessage">Poți continua înregistrarea acum și poți adăuga galeria foto mai târziu din setările profilului</string>
+    <string name="businessGalleryUpdatedSuccessfully">Galeria foto a fost editată cu success</string>
     <string name="doYouHaveEmployees">Ai angajați care primesc programări?</string>
     <string name="ifHaveEmployeesDescription">Daca da, fiecare angajat va avea propriul calendar și își va gestiona propriile produse separat.</string>
     <string name="ifNotHaveEmployeesDescription">Daca nu, toate programările vor fi gestionate direct în numele business-ului tău, intr-un singur calendar.</string>

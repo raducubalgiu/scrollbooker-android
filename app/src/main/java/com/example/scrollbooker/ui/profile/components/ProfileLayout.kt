@@ -8,7 +8,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -61,13 +60,12 @@ fun ProfileLayout(
     bookmarksState: Flow<PagingData<Post>>,
     aboutState: StateFlow<FeatureState<UserProfileAbout>>,
     onNavigateToPost: (SelectedPostUi) -> Unit,
+    onOpenScheduleSheet: () -> Unit,
     actions: @Composable () -> Unit
 ) {
     val scope = rememberCoroutineScope()
     var headerHeightPx by remember { mutableIntStateOf(0) }
     var headerOffset by remember { mutableFloatStateOf(0f) }
-
-    val scheduleSheetState = rememberModalBottomSheetState()
 
     val nestedScrollConnection = rememberCollapsingNestedScroll(
         headerHeightPx = headerHeightPx,
@@ -106,9 +104,7 @@ fun ProfileLayout(
                         ) {
                             ProfileTabRow(
                                 selectedTabIndex = pagerState.currentPage,
-                                onChangeTab = {
-                                    scope.launch { pagerState.animateScrollToPage(it) }
-                                },
+                                onChangeTab = { scope.launch { pagerState.animateScrollToPage(it) } },
                                 tabs = tabs
                             )
 
@@ -156,7 +152,22 @@ fun ProfileLayout(
                                         ProfileEmployeesTab(
                                             isOwnProfile = user.isOwnProfile,
                                             employees = employees,
-                                            onNavigateToEmployeeProfile = { userId, username -> profileNavigate.toUserProfile(userId, username) },
+                                            onNavigateToEmployeeProfile = { userId, username ->
+                                                profileNavigate.toUserProfile(userId, username)
+                                            },
+                                            onNavigateToBooking = { employee ->
+                                                if(user.businessId != null && user.businessOwner != null) {
+                                                    profileNavigate.toBookingFromProfile(
+                                                        NavigateBookingParam(
+                                                            businessId = user.businessId,
+                                                            userId = employee.id,
+                                                            businessOwnerId = user.businessOwner.id,
+                                                            source = BookingSourceEnum.PROFILE,
+                                                            selectedProductId = null
+                                                        )
+                                                    )
+                                                }
+                                            }
                                         )
                                     }
 
@@ -198,7 +209,7 @@ fun ProfileLayout(
                             ) {
                                 ProfileUserInfo(
                                     user = user,
-                                    onOpenScheduleSheet = { scope.launch { scheduleSheetState.show() } },
+                                    onOpenScheduleSheet = onOpenScheduleSheet,
                                     onNavigateToSocial = { profileNavigate.toSocial(it) },
                                     onNavigateToBusinessOwner = {
                                         user.businessOwner?.let {

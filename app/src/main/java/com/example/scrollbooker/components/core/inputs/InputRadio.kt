@@ -23,9 +23,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
-import com.example.scrollbooker.ui.theme.LastMinute
 import com.example.scrollbooker.ui.theme.OnBackground
-import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge
 
 @Composable
@@ -77,7 +75,7 @@ fun InputRadio(
             selected = selected,
             onClick = null,
             colors = RadioButtonColors(
-                selectedColor = LastMinute,
+                selectedColor = OnBackground,
                 unselectedColor = Divider,
                 disabledSelectedColor = Divider,
                 disabledUnselectedColor = Divider

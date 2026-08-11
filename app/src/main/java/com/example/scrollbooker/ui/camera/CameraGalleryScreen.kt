@@ -36,7 +36,6 @@ import com.example.scrollbooker.ui.camera.components.GalleryHeader
 import com.example.scrollbooker.ui.camera.components.LimitedAccessWarningBanner
 import com.example.scrollbooker.ui.camera.components.MediaLibraryGridItem
 import com.example.scrollbooker.ui.theme.Background
-import com.example.scrollbooker.ui.theme.BackgroundDark
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.lifecycle.Lifecycle
@@ -45,6 +44,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.scrollbooker.ui.camera.permissions.MediaPermissionHelper
 import com.example.scrollbooker.ui.camera.permissions.MediaPermissionState
+import com.example.scrollbooker.ui.theme.BackgroundDark
 
 @Composable
 fun CameraGalleryScreen(
@@ -116,7 +116,6 @@ fun CameraGalleryScreen(
     }
 
     Scaffold(
-        modifier = Modifier,
         containerColor = BackgroundDark
     ) { innerPadding ->
         Column(

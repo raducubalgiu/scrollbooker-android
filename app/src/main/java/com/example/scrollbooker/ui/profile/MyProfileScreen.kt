@@ -77,7 +77,8 @@ fun MyProfileScreen(
                 employeesState = viewModel.employees,
                 bookmarksState = viewModel.bookmarks,
                 aboutState = viewModel.about,
-                onNavigateToPost = { profileNavigate.toMyPostDetail(PostTabEnum.POSTS, it) }
+                onNavigateToPost = { profileNavigate.toMyPostDetail(PostTabEnum.POSTS, it) },
+                onOpenScheduleSheet = { scope.launch { scheduleSheetState.show() } },
             ) {
                 MyProfileActions(
                     isBusinessOrEmployee = userData?.isBusinessOrEmployee == true,

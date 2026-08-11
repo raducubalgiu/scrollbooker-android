@@ -1,121 +1,125 @@
 package com.example.scrollbooker.ui.myBusiness.myBusinessDetails.tabs
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircleOutline
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.entity.booking.appointment.domain.model.BusinessCoordinates
-import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMediaFile
-import com.example.scrollbooker.entity.booking.business.domain.model.BusinessOwner
-import com.example.scrollbooker.entity.booking.business.domain.model.BusinessSheet
-import com.example.scrollbooker.ui.search.components.card.SearchCard
+import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.ui.onboarding.business.collectGallery.BusinessPhotoUIState
+import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.SurfaceBG
 
 @Composable
 fun MyBusinessGalleryTab(
-    onNavigateToEditGallery: () -> Unit
+    photosState: BusinessPhotoUIState,
+    isSaving: FeatureState<Unit>?,
+    onSetImage: (Int, Uri) -> Unit,
+    onClearImage: (Int) -> Unit,
+    onSaveGallery: () -> Unit
 ) {
+    var pendingSlotIndex by rememberSaveable { mutableStateOf<Int?>(null) }
+
+    val pickImage = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri: Uri? ->
+        val idx = pendingSlotIndex
+        if(uri != null && idx != null) {
+            onSetImage(idx, uri)
+        }
+        pendingSlotIndex = null
+    }
+
+    val isLoading = isSaving == FeatureState.Loading
+    val hasPhotos = photosState.images.any { it != null }
+
     Column(Modifier.fillMaxSize()) {
-        Column(Modifier.weight(1f)) {
-            SearchCard(
-                modifier = Modifier.padding(top = BasePadding),
-                business = BusinessSheet(
-                    owner = BusinessOwner(
-                        id = 1,
-                        fullName = "Walter Studio",
-                        username = "walter_studio",
-                        avatar = "",
-                        profession = "Frizerie",
-                        ratingsAverage = 4.5f,
-                        ratingsCount = 100
-                    ),
-                    businessShortDomain = "Beauty",
-                    address = "Strada Oarecare, nr 31",
-                    coordinates = BusinessCoordinates(
-                        lat = 45.234f,
-                        lng = 25.234f
-                    ),
-                    hasVideo = false,
-                    mediaFiles = listOf(
-                        BusinessMediaFile(
-                            type = "photo",
-                            thumbnailUrl = "",
-                            url = "",
-                            urlKey = "",
-                            thumbnailKey = "",
-                            orderIndex = 0
+        LazyColumn(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(SpacingS),
+            contentPadding = PaddingValues(BasePadding)
+        ) {
+            items(5) { i ->
+                val uri = photosState.images[i]
+
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .clip(RoundedCornerShape(BasePadding))
+                    .background(SurfaceBG)
+                    .clickable {
+                        pendingSlotIndex = i
+                        pickImage.launch(
+                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                         )
-                    ),
-                    products = emptyList(),
-//                    products = listOf(
-//                        Product(
-//                            id = 1,
-//                            name = "Serviciul 1",
-//                            description = "",
-//                            duration = 30,
-//                            price = BigDecimal(100),
-//                            priceWithDiscount = BigDecimal(100),
-//                            discount = BigDecimal(0),
-//                            userId = 1,
-//                            serviceId = 1,
-//                            businessId = 1,
-//                            currencyId = 1,
-//                            filters = emptyList(),
-//                            type = ProductTypeEnum.SINGLE,
-//                            sessionsCount = null,
-//                            validityDays = null,
-//                            canBeBooked = true
-//                        ),
-//                        Product(
-//                            id = 1,
-//                            name = "Serviciul 2",
-//                            description = "",
-//                            duration = 30,
-//                            price = BigDecimal(100),
-//                            priceWithDiscount = BigDecimal(100),
-//                            discount = BigDecimal(0),
-//                            userId = 1,
-//                            serviceId = 1,
-//                            businessId = 1,
-//                            currencyId = 1,
-//                            filters = emptyList(),
-//                            type = ProductTypeEnum.SINGLE,
-//                            sessionsCount = null,
-//                            validityDays = null,
-//                            canBeBooked = true
-//                        ),
-//                        Product(
-//                            id = 1,
-//                            name = "Serviciul 3",
-//                            description = "",
-//                            duration = 30,
-//                            price = BigDecimal(100),
-//                            priceWithDiscount = BigDecimal(100),
-//                            discount = BigDecimal(0),
-//                            userId = 1,
-//                            serviceId = 1,
-//                            businessId = 1,
-//                            currencyId = 1,
-//                            filters = emptyList(),
-//                            type = ProductTypeEnum.SINGLE,
-//                            sessionsCount = null,
-//                            validityDays = null,
-//                            canBeBooked = true
-//                        )
-//                    ),
-                    id = 1,
-                    distance = null,
-                ),
-                onNavigateToBusinessProfile = { businessId -> {} },
-                onSelectProduct = { product -> {}}
-            )
+                    },
+                    contentAlignment = Alignment.Center
+                ) {
+                    if(uri == null) {
+                        Icon(
+                            modifier = Modifier.size(35.dp),
+                            imageVector = Icons.Default.AddCircleOutline,
+                            contentDescription = "Add",
+                            tint = Divider
+                        )
+                    } else {
+                        AsyncImage(
+                            model = uri,
+                            contentDescription = "Selected image",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(200.dp),
+                            contentScale = ContentScale.Crop
+                        )
+
+                        IconButton(
+                            modifier = Modifier.align(Alignment.TopEnd),
+                            onClick = { onClearImage(i) }
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_close_circle_solid),
+                                contentDescription = "Remove Image",
+                                tint = Color.White
+                            )
+                        }
+                    }
+                }
+            }
         }
 
         Row(
@@ -124,8 +128,10 @@ fun MyBusinessGalleryTab(
         ) {
             MainButton(
                 modifier = Modifier.padding(BasePadding),
-                onClick = onNavigateToEditGallery,
-                title = stringResource(R.string.editImages)
+                onClick = onSaveGallery,
+                isLoading = isLoading,
+                enabled = !isLoading && hasPhotos,
+                title = stringResource(R.string.save)
             )
         }
     }

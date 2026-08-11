@@ -34,7 +34,9 @@ import com.example.scrollbooker.ui.search.sheets.SearchSheetInfo
 import com.example.scrollbooker.ui.search.sheets.SearchSheetsHeader
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
+import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.headlineLarge
 import java.math.BigDecimal
 
@@ -138,7 +140,9 @@ fun SearchFiltersSheet(
                     selected = sheetState.sort == option,
                     onSelect = { sheetState = sheetState.copy(sort = option) },
                     headLine = stringResource(option.labelRes),
-                    paddingHorizontal = BasePadding
+                    paddingHorizontal = BasePadding,
+                    containerColor = SurfaceBG,
+                    contentColor = OnSurfaceBG
                 )
             }
         }

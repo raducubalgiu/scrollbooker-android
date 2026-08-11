@@ -29,7 +29,8 @@ import com.example.scrollbooker.ui.theme.titleMedium
 fun ProfileEmployee(
     isOwnProfile: Boolean,
     employee: Employee,
-    onNavigateToEmployeeProfile: (userId: Int, username: String) -> Unit
+    onNavigateToEmployeeProfile: (userId: Int, username: String) -> Unit,
+    onNavigateToBooking: (employee: Employee) -> Unit
 ) {
     ListItem(
         modifier = Modifier
@@ -59,7 +60,7 @@ fun ProfileEmployee(
                     MainButtonSmall(
                         modifier = Modifier.clip(shape = ShapeDefaults.ExtraLarge),
                         title = stringResource(R.string.pick),
-                        onClick = {}
+                        onClick = { onNavigateToBooking(employee) }
                     )
                 }
             }
@@ -68,7 +69,7 @@ fun ProfileEmployee(
             AvatarWithRating(
                 url = employee.avatar ?: "",
                 rating = employee.ratingsAverage,
-                size = 60.dp,
+                size = 55.dp,
                 onClick = { onNavigateToEmployeeProfile(employee.id, employee.username) }
             )
         },

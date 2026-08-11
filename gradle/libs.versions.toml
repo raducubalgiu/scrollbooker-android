@@ -1,9 +1,6 @@
 [versions]
 agp = "8.10.1"
-android = "11.9.0"
 appcompat = "1.7.0"
-cameraCore = "1.5.1"
-cameraLifecycle = "1.5.1"
 coilCompose = "2.4.0"
 coilVideoVersion = "2.7.0"
 converterGson = "2.11.0"
@@ -25,31 +22,21 @@ activityCompose = "1.10.0"
 composeBom = "2024.10.00"
 loggingInterceptor = "4.12.0"
 mapboxMapsCompose = "11.9.0"
-mapsCompose = "6.1.0"
 materialIconsExtendedAndroid = "1.7.8"
 media3Exoplayer = "1.8.0"
 mockk = "1.13.10"
 navigationCompose = "2.9.5"
 pagingRuntime = "3.3.6"
 playServicesLocationVersion = "21.3.0"
-playServicesMaps = "19.2.0"
 retrofit = "2.11.0"
 threetenabp = "1.4.5"
 timber = "5.0.1"
 turbine = "1.1.0"
-tusAndroidClient = "0.1.10"
-tusJavaClient = "0.4.5"
 
 [libraries]
-android = { module = "com.mapbox.maps:android", version.ref = "android" }
+android = { module = "com.mapbox.maps:android-ndk27", version.ref = "mapboxMapsCompose" }
+maps-compose-v1190 = { module = "com.mapbox.extension:maps-compose-ndk27", version.ref = "mapboxMapsCompose" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
-androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraCore" }
-androidx-camera-core = { module = "androidx.camera:camera-core", version.ref = "cameraCore" }
-androidx-camera-extensions = { module = "androidx.camera:camera-extensions", version.ref = "cameraCore" }
-androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraLifecycle" }
-androidx-camera-mlkit-vision = { module = "androidx.camera:camera-mlkit-vision", version.ref = "cameraCore" }
-androidx-camera-video = { module = "androidx.camera:camera-video", version.ref = "cameraCore" }
-androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "cameraCore" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferencesCore" }
@@ -87,16 +74,12 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
-maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "mapsCompose" }
-maps-compose-v1190 = { module = "com.mapbox.extension:maps-compose", version.ref = "mapboxMapsCompose" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
-play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
+
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 threetenabp = { module = "com.jakewharton.threetenabp:threetenabp", version.ref = "threetenabp" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
-tus-android-client = { module = "io.tus.android.client:tus-android-client", version.ref = "tusAndroidClient" }
-tus-java-client = { module = "io.tus.java.client:tus-java-client", version.ref = "tusJavaClient" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
