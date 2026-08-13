@@ -69,8 +69,11 @@ fun MyEmployeesScreen(
                 }
             }
 
-            HorizontalPager(state = pagerState) { index ->
-                when(index) {
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.weight(1f)
+            ) { index ->
+                when (index) {
                     0 -> EmployeesTab(viewModel)
                     1 -> EmploymentRequestsTab(viewModel, onNavigateToSearchUser)
                 }

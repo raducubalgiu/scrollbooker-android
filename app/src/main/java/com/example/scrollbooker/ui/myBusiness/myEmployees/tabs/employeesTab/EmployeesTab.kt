@@ -1,6 +1,6 @@
 package com.example.scrollbooker.ui.myBusiness.myEmployees.tabs.employeesTab
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -28,36 +28,36 @@ fun EmployeesTab(
     val employees = viewModel.employees.collectAsLazyPagingItems()
     val refreshState = employees.loadState.refresh
 
-    Column(Modifier.fillMaxSize()) {
-        when(refreshState) {
+    Box(Modifier.fillMaxSize()) {
+        when (refreshState) {
             is LoadState.Loading -> LoadingScreen()
             is LoadState.Error -> ErrorScreen()
             is LoadState.NotLoading -> {
-                LazyColumn(Modifier.fillMaxSize()) {
-                    item { Spacer(Modifier.height(BasePadding)) }
+                if (employees.itemCount == 0) {
+                    EmptyScreen(
+                        message = stringResource(R.string.notFoundEmployees),
+                        icon = painterResource(R.drawable.ic_users_outline)
+                    )
+                } else {
+                    LazyColumn(Modifier.fillMaxSize()) {
+                        item { Spacer(Modifier.height(BasePadding)) }
 
-                    items(employees.itemCount) { index ->
-                        employees[index]?.let {
-                            EmployeeCard(it, onNavigateToDismissalScreen = {})
+                        items(employees.itemCount) { index ->
+                            employees[index]?.let {
+                                EmployeeCard(it, onNavigateToDismissalScreen = {})
+                            }
                         }
-                    }
 
-                    item {
-                        when(employees.loadState.append) {
-                            is LoadState.Loading -> LoadMoreSpinner()
-                            is LoadState.Error -> { Text("Ceva nu a mers cum trebuie") }
-                            is LoadState.NotLoading -> Unit
+                        item {
+                            when (employees.loadState.append) {
+                                is LoadState.Loading -> LoadMoreSpinner()
+                                is LoadState.Error -> Text("Ceva nu a mers cum trebuie")
+                                is LoadState.NotLoading -> Unit
+                            }
                         }
                     }
                 }
             }
-        }
-
-        if(refreshState is LoadState.NotLoading && employees.itemCount == 0) {
-            EmptyScreen(
-                message = stringResource(R.string.notFoundEmployees),
-                icon = painterResource(R.drawable.ic_users_outline)
-            )
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.scrollbooker.ui.myBusiness.myEmployees.tabs.employmentRequestsTab
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,8 +26,6 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.core.layout.MessageScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.ui.myBusiness.myEmployees.MyEmployeesViewModel
 import com.example.scrollbooker.ui.theme.Divider
@@ -41,7 +40,7 @@ fun EmploymentRequestsTab(
     var employmentRequestId by remember { mutableStateOf<Int?>(null) }
     var openModal by remember { mutableStateOf(false) }
 
-    if(openModal) {
+    if (openModal) {
         DialogConfirm(
             onDismissRequest = {
                 if (!isSaving) {
@@ -63,28 +62,30 @@ fun EmploymentRequestsTab(
     }
 
     Column(Modifier.fillMaxSize()) {
-        when(val result = state) {
-            is FeatureState.Loading -> LoadingScreen()
-            is FeatureState.Error -> ErrorScreen()
-            is FeatureState.Success -> {
-                if(result.data.isEmpty()) {
-                    MessageScreen(
-                        icon = painterResource(R.drawable.ic_business_outline),
-                        message = stringResource(R.string.notFoundEmploymentRequests),
-                    )
-                }
-
-                LazyColumn(Modifier.weight(1f)) {
-                    item { Spacer(Modifier.height(BasePadding)) }
-
-                    itemsIndexed(result.data) { index, employmentRequest ->
-                        EmploymentRequestCard(
-                            employmentRequest = employmentRequest,
-                            onClick = {
-                                openModal = true
-                                employmentRequestId = it
-                            }
+        Box(Modifier.weight(1f)) {
+            when (val result = state) {
+                is FeatureState.Loading -> LoadingScreen()
+                is FeatureState.Error -> ErrorScreen()
+                is FeatureState.Success -> {
+                    if (result.data.isEmpty()) {
+                        MessageScreen(
+                            icon = painterResource(R.drawable.ic_business_outline),
+                            message = stringResource(R.string.notFoundEmploymentRequests),
                         )
+                    } else {
+                        LazyColumn(Modifier.fillMaxSize()) {
+                            item { Spacer(Modifier.height(BasePadding)) }
+
+                            itemsIndexed(result.data) { index, employmentRequest ->
+                                EmploymentRequestCard(
+                                    employmentRequest = employmentRequest,
+                                    onClick = {
+                                        openModal = true
+                                        employmentRequestId = it
+                                    }
+                                )
+                            }
+                        }
                     }
                 }
             }
