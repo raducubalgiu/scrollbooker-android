@@ -9,9 +9,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.sp
+import com.example.scrollbooker.R
 import com.example.scrollbooker.core.extensions.toTwoDecimals
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.ui.theme.Error
@@ -21,6 +23,7 @@ import java.math.BigDecimal
 
 @Composable
 fun ProductCardRowPrice(
+    hasDifferentOfferings: Boolean = false,
     price: BigDecimal,
     priceWithDiscount: BigDecimal,
     discount: BigDecimal
@@ -35,6 +38,16 @@ fun ProductCardRowPrice(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
+                if(hasDifferentOfferings) {
+                    Text(
+                        text = stringResource(R.string.from),
+                        style = bodyMedium,
+                        fontWeight = FontWeight.SemiBold
+                    )
+
+                    Spacer(Modifier.width(SpacingS))
+                }
+
                 Text(
                     text = "${priceWithDiscount.toTwoDecimals()} RON",
                     style = titleMedium,

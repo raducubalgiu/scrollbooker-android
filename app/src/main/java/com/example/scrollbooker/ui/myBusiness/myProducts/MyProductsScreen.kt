@@ -187,6 +187,7 @@ fun MyProductsScreen(
                                         onDeleteProduct = { viewModel.deleteProduct(it) },
                                         isLoadingDelete = isSaving,
                                         onOpenProductDetail = {},
+                                        onNavigateToEdit = {},
                                         displayEditableActions = true
                                     )
 

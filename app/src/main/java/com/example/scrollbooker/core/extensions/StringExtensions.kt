@@ -2,6 +2,7 @@ package com.example.scrollbooker.core.extensions
 import org.threeten.bp.LocalTime
 import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
+import java.math.BigDecimal
 
 fun String.toLocalTimeOrNull(): LocalTime? {
     return try {
@@ -13,3 +14,6 @@ fun String.toLocalTimeOrNull(): LocalTime? {
         null
     }
 }
+
+fun String.toBigDecimalOrNull(): BigDecimal? =
+    try { BigDecimal(this.replace(",", ".")) } catch (e: NumberFormatException) { null }

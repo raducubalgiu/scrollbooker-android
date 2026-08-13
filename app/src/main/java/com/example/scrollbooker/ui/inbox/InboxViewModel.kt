@@ -92,7 +92,7 @@ class InboxViewModel @Inject constructor(
         }
     }
 
-    private val consentKey = ConsentEnum.EMPLOYMENT_REQUESTS_INITIATION.key
+    private val consentKey = ConsentEnum.EMPLOYMENT_REQUESTS_ACCEPTANCE.key
 
     private val cachedConsent = cachedByKey(
         scope = viewModelScope,

@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.myBusiness.myProducts
+package com.example.scrollbooker.ui.myBusiness.myProducts.editProduct
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel

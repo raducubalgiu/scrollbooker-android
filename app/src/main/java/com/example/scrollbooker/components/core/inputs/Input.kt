@@ -25,11 +25,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextOverflow
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.LastMinute
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
+import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
@@ -60,14 +62,23 @@ fun Input(
     colors: TextFieldColors = TextFieldDefaults.colors(
         focusedContainerColor = inputColor,
         unfocusedContainerColor = inputColor,
-        cursorColor = LastMinute,
+        cursorColor = Primary,
         focusedIndicatorColor = Color.Transparent,
         unfocusedIndicatorColor = Color.Transparent,
-        focusedLabelColor = LastMinute,
+        focusedLabelColor = Primary,
         unfocusedLabelColor = Color.Gray,
         focusedTextColor = OnSurfaceBG,
         unfocusedTextColor = OnSurfaceBG,
         errorContainerColor = SurfaceBG,
+        disabledContainerColor = inputColor,
+        disabledIndicatorColor = Color.Transparent,
+        disabledTextColor = OnSurfaceBG.copy(alpha = 0.4f),
+        disabledLabelColor = Color.Gray.copy(alpha = 0.6f),
+        disabledLeadingIconColor = OnSurfaceBG.copy(alpha = 0.4f),
+        disabledTrailingIconColor = OnSurfaceBG.copy(alpha = 0.4f),
+        disabledPlaceholderColor = Color.Gray.copy(alpha = 0.4f),
+        disabledPrefixColor = OnSurfaceBG.copy(alpha = 0.4f),
+        disabledSuffixColor = OnSurfaceBG.copy(alpha = 0.4f),
     )
 ) {
     TextField(
@@ -86,7 +97,9 @@ fun Input(
             {
                 Text(
                     text = label,
-                    style = labelLarge
+                    style = labelLarge,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         } else {

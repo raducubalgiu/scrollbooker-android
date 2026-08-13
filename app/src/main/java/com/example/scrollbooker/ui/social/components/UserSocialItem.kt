@@ -98,13 +98,14 @@ fun UserSocialItem(
                     url = userSocial.avatar ?: "",
                     rating = userSocial.ratingsAverage,
                     size = 55.dp,
-                    onClick = {},
+                    onClick = { onNavigateUserProfile(userSocial.id, userSocial.username) },
                     elevation = 2.dp
                 )
             } else {
                 Avatar(
                     url = userSocial.avatar ?: "",
-                    size = 55.dp
+                    size = 55.dp,
+                    onClick = { onNavigateUserProfile(userSocial.id, userSocial.username) }
                 )
             }
         },

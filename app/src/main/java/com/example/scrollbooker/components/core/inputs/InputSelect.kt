@@ -44,8 +44,8 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.ui.theme.Error
-import com.example.scrollbooker.ui.theme.LastMinute
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
+import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.bodySmall
@@ -77,14 +77,14 @@ fun InputSelect(
     )
 
     val selected: Option? = remember(selectedOption, options) {
-        options.firstOrNull() { it.value == selectedOption }
+        options.firstOrNull { it.value == selectedOption }
     }
 
     val hasValue = selected != null
 
     val placeholderColor = when {
         isError -> MaterialTheme.colorScheme.error
-        expanded -> LastMinute
+        expanded -> Primary
         else -> Color.Gray
     }
 
@@ -198,7 +198,7 @@ fun InputSelect(
                     DropdownMenuItem(
                         enabled = isEnabled,
                         modifier = Modifier
-                            .background(if(isSelected) LastMinute.copy(alpha = 0.2f) else Color.Transparent),
+                            .background(if(isSelected) Primary.copy(alpha = 0.2f) else Color.Transparent),
                         text = {
                             val hasDescription = option.description?.isNotEmpty() == true
 

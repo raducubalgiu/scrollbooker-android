@@ -28,10 +28,10 @@ import com.example.scrollbooker.ui.myBusiness.myEmployees.MyEmployeesScreen
 import com.example.scrollbooker.ui.myBusiness.myEmployees.tabs.employmentRequestsTab.EmploymentAcceptTermsScreen
 import com.example.scrollbooker.ui.myBusiness.myEmployees.tabs.employmentRequestsTab.EmploymentAssignJobScreen
 import com.example.scrollbooker.ui.myBusiness.myEmployees.tabs.employmentRequestsTab.EmploymentSelectEmployeeScreen
-import com.example.scrollbooker.ui.myBusiness.myProducts.AddProduct.AddProductScreen
-import com.example.scrollbooker.ui.myBusiness.myProducts.AddProduct.AddProductsViewModel
-import com.example.scrollbooker.ui.myBusiness.myProducts.EditProductScreen
-import com.example.scrollbooker.ui.myBusiness.myProducts.EditProductsViewModel
+import com.example.scrollbooker.ui.myBusiness.myProducts.addProduct.AddProductScreen
+import com.example.scrollbooker.ui.myBusiness.myProducts.addProduct.AddProductsViewModel
+import com.example.scrollbooker.ui.myBusiness.myProducts.editProduct.EditProductScreen
+import com.example.scrollbooker.ui.myBusiness.myProducts.editProduct.EditProductsViewModel
 import com.example.scrollbooker.ui.myBusiness.myProducts.MyProductsScreen
 import com.example.scrollbooker.ui.myBusiness.myProducts.MyProductsViewModel
 import com.example.scrollbooker.ui.myBusiness.mySchedules.MySchedulesScreen

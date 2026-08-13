@@ -76,7 +76,11 @@ fun UserListItem(
                 modifier = Modifier.wrapContentSize(),
                 contentAlignment = Alignment.BottomEnd
             ) {
-                Avatar(url = avatar, size = 48.dp)
+                Avatar(
+                    url = avatar,
+                    size = 48.dp,
+                    onClick = onNavigateUserProfile
+                )
 
                 if (badgeConfig != null) {
                     Box(

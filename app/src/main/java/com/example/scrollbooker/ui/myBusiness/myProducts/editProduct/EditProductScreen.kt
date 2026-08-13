@@ -1,6 +1,8 @@
-package com.example.scrollbooker.ui.myBusiness.myProducts
+package com.example.scrollbooker.ui.myBusiness.myProducts.editProduct
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
+import com.example.scrollbooker.ui.myBusiness.myProducts.editProduct.EditProductsViewModel
+import com.example.scrollbooker.ui.myBusiness.myProducts.MyProductsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

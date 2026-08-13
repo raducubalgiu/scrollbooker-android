@@ -17,6 +17,8 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.bodyLarge
+import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
@@ -34,7 +36,7 @@ fun MyProfileActions(
         ) {
             Text(
                 text = stringResource(R.string.editProfile),
-                style = titleMedium,
+                style = bodyLarge,
                 fontWeight = FontWeight.Bold,
                 color = OnBackground
             )
@@ -57,7 +59,7 @@ fun MyProfileActions(
                     Spacer(Modifier.width(SpacingM))
                     Text(
                         text = stringResource(R.string.calendar),
-                        style = titleMedium,
+                        style = bodyLarge,
                         fontWeight = FontWeight.Bold,
                         color = OnBackground
                     )
@@ -70,7 +72,7 @@ fun MyProfileActions(
             ) {
                 Text(
                     text = stringResource(R.string.shareProfile),
-                    style = titleMedium,
+                    style = bodyLarge,
                     fontWeight = FontWeight.Bold,
                     color = OnBackground
                 )

@@ -57,12 +57,13 @@
     <string name="added">Adăugat</string>
     <string name="buy">Cumpără</string>
     <string name="products">Produse</string>
-    <string name="addNewProduct">Adaugă un produs nou</string>
+    <string name="addNewService">Adaugă un serviciu nou</string>
     <string name="myProducts">Produsele mele</string>
     <string name="myServices">Serviciile mele</string>
     <string name="mySchedule">Programul meu de lucru</string>
     <string name="name">Nume</string>
     <string name="serviceName">Numele serviciului</string>
+    <string name="variantName">Numele variantei</string>
     <string name="editProfile">Editează profilul</string>
     <string name="somethingWentWrong">Ceva nu a mers cum trebuie. Încearcă mai târziu</string>
     <string name="yourBio">Biografia ta</string>
@@ -456,7 +457,8 @@
     <string name="linkedServicesDescription">Niciun produs atașat. Adaugă produse pentru a le permite utilizatorilor să rezerve direct din postare.</string>
     <string name="baseInfo">Informații de bază</string>
     <string name="variantAndPrices">Variante și prețuri</string>
-    <string name="addVariantAndPricesDescription">Niciun preț adăugat încă. Definește opțiunile disponibile pentru acest serviciu și prețul fiecăreia.</string>
+    <string name="optionsAndPrices">Opțiuni și prețuri</string>
+    <string name="addVariantAndPricesDescription">Poti adauga mai multe variante in functie de durata</string>
 
     <!-- Follow & Social Notifications -->
     <string name="notification_started_following_you">a început să te urmărească</string>

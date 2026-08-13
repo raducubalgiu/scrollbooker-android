@@ -28,16 +28,23 @@ import com.example.scrollbooker.ui.theme.bodyMedium
 
 @Composable
 fun PlaceholderActionBox(
+    modifier: Modifier = Modifier,
     description: String,
     icon: ImageVector? = null,
+    enabled: Boolean = true,
     onClick: (() -> Unit)? = null
 ) {
+    val alphaFactor = if (enabled) 1f else 0.4f
+
+    val backgroundColor = OnSurfaceBG.copy(alpha = if (enabled) 0.02f else 0.01f)
+    val strokeColor = Color.Gray.copy(alpha = if (enabled) 0.6f else 0.25f)
+    val contentColor = OnSurfaceBG.copy(alpha = alphaFactor)
+
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .padding(24.dp)
             .background(
-                color = OnSurfaceBG.copy(alpha = 0.02f),
+                color = backgroundColor,
                 shape = RoundedCornerShape(16.dp)
             )
             .drawBehind {
@@ -46,7 +53,7 @@ fun PlaceholderActionBox(
                 val dashEffect = PathEffect.dashPathEffect(floatArrayOf(12f, 12f), 0f)
 
                 drawRoundRect(
-                    color = Color.Gray.copy(alpha = 0.6f),
+                    color = strokeColor,
                     style = Stroke(
                         width = strokeWidth,
                         pathEffect = dashEffect
@@ -54,7 +61,7 @@ fun PlaceholderActionBox(
                     cornerRadius = CornerRadius(cornerRadius, cornerRadius)
                 )
             }
-            .clickable {
+            .clickable(enabled = enabled && onClick != null) {
                 onClick?.invoke()
             }
             .padding(horizontal = 24.dp, vertical = 32.dp),
@@ -68,7 +75,7 @@ fun PlaceholderActionBox(
                 Icon(
                     imageVector = it,
                     contentDescription = null,
-                    tint = OnSurfaceBG,
+                    tint = contentColor,
                     modifier = Modifier.size(28.dp)
                 )
             }
@@ -76,10 +83,11 @@ fun PlaceholderActionBox(
             Text(
                 text = description,
                 style = bodyMedium,
-                color = OnSurfaceBG,
+                color = contentColor,
                 fontWeight = FontWeight.Medium,
                 textAlign = TextAlign.Center
             )
         }
     }
 }
+
