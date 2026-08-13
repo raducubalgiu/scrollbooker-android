@@ -1,8 +1,10 @@
 package com.example.scrollbooker.components.customized.post
 
+import com.example.scrollbooker.core.enums.ShareChannelEnum
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.social.post.domain.useCase.BookmarkPostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.LikePostUseCase
+import com.example.scrollbooker.entity.social.post.domain.useCase.SharePostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.UnBookmarkPostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.UnLikePostUseCase
 import kotlinx.coroutines.CoroutineScope
@@ -25,7 +27,8 @@ class PostInteractionStore @Inject constructor(
     private val likePostUseCase: LikePostUseCase,
     private val unLikePostUseCase: UnLikePostUseCase,
     private val bookmarkPostUseCase: BookmarkPostUseCase,
-    private val unBookmarkPostUseCase: UnBookmarkPostUseCase
+    private val unBookmarkPostUseCase: UnBookmarkPostUseCase,
+    private val sharePostUseCase: SharePostUseCase
 ) {
     private val storeScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private val _postUi = MutableStateFlow<Map<Int, PostActionUiState>>(emptyMap())
@@ -121,6 +124,25 @@ class PostInteractionStore @Inject constructor(
             doOn = { bookmarkPostUseCase(post.id) },
             doOff = { unBookmarkPostUseCase(post.id) }
         )
+    }
+
+    fun sharePost(post: Post, channel: ShareChannelEnum) {
+        _postUi.edit(post.id) { s -> s.copy(isSavingShare = true) }
+
+        storeScope.launch {
+            val result = sharePostUseCase(post.id, channel)
+
+            _postUi.edit(post.id) { s ->
+                if (result.isSuccess) {
+                    s.copy(
+                        shareCount = s.shareCount + 1,
+                        isSavingShare = false
+                    )
+                } else {
+                    s.copy(isSavingShare = false)
+                }
+            }
+        }
     }
 
     fun updateDescription(postId: Int, newDescription: String) {

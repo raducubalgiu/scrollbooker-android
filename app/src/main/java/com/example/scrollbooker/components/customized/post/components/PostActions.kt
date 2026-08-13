@@ -33,6 +33,7 @@ fun PostActions(
     onAction: (PostSheetActionEnum) -> Unit,
     onLike: () -> Unit,
     onBookmark: () -> Unit,
+    onShare: () -> Unit,
     onNavigateToUser: () -> Unit,
 ) {
     Column(
@@ -96,10 +97,10 @@ fun PostActions(
 
         PostAction(
             isEnabled = true,
-            counter = 100,
+            counter = counters.shareCount,
             icon = R.drawable.ic_share,
             tint = Color.White,
-            onClick = {}
+            onClick = onShare
         )
 
         if(isOwnPost) {

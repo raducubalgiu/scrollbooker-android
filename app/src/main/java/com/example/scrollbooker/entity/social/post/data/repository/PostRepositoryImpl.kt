@@ -2,6 +2,7 @@ package com.example.scrollbooker.entity.social.post.data.repository
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.example.scrollbooker.core.enums.ShareChannelEnum
 import com.example.scrollbooker.entity.social.post.data.mappers.toDomain
 import com.example.scrollbooker.entity.social.post.data.remote.CreatePostRequest
 import com.example.scrollbooker.entity.social.post.data.remote.CreateVideoReviewRequest
@@ -9,6 +10,7 @@ import com.example.scrollbooker.entity.social.post.data.remote.PostApiService
 import com.example.scrollbooker.entity.social.post.data.remote.PostExplorePagingSource
 import com.example.scrollbooker.entity.social.post.data.remote.PostFollowingPagingSource
 import com.example.scrollbooker.entity.social.post.data.remote.PostPagingSource
+import com.example.scrollbooker.entity.social.post.data.remote.PostShareRequest
 import com.example.scrollbooker.entity.social.post.data.remote.PostVideoReviewsPagingSource
 import com.example.scrollbooker.entity.social.post.data.remote.UpdatePostRequest
 import com.example.scrollbooker.entity.social.post.domain.model.Post
@@ -66,6 +68,14 @@ class PostRepositoryImpl @Inject constructor(
 
     override suspend fun unBookmarkPost(postId: Int) {
         return apiService.unBookmarkPost(postId)
+    }
+
+    override suspend fun sharePost(
+        postId: Int,
+        channel: ShareChannelEnum
+    ) {
+        val request = PostShareRequest(channel = channel.value)
+        return apiService.sharePost(postId, request)
     }
 
     override suspend fun updatePostById(

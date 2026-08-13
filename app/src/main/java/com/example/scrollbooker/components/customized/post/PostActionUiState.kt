@@ -8,9 +8,11 @@ data class PostActionUiState(
     val likesCount: Int = 0,
     val bookmarksCount: Int = 0,
     val commentsCount: Int = 0,
+    val shareCount: Int = 0,
 
     val isSavingLike: Boolean = false,
     val isSavingBookmark: Boolean = false,
+    val isSavingShare: Boolean = false,
 
     val description: String? = null
 ) {

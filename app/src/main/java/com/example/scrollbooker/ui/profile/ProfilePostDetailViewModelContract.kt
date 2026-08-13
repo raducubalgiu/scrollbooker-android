@@ -2,6 +2,7 @@ package com.example.scrollbooker.ui.profile
 
 import androidx.paging.PagingData
 import com.example.scrollbooker.components.customized.post.PostActionUiState
+import com.example.scrollbooker.core.enums.ShareChannelEnum
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
 import com.example.scrollbooker.entity.booking.products.domain.model.UserProducts
@@ -30,4 +31,5 @@ interface ProfilePostDetailViewModelContract {
     fun togglePlayPause(scopeKey: String, index: Int)
     fun toggleLike(post: Post)
     fun toggleBookmark(post: Post)
+    fun sharePost(post: Post, channel: ShareChannelEnum)
 }

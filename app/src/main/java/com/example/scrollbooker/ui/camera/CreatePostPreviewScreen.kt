@@ -233,6 +233,7 @@ fun CreatePostPreviewScreen(
                                     likeCount = 0,
                                     bookmarkCount = 0,
                                     repostCount = 0,
+                                    shareCount = 0,
                                     bookingsCount = 0,
                                     viewsCount = 0
                                 ),
@@ -248,7 +249,8 @@ fun CreatePostPreviewScreen(
                             onNavigateToUserProfile = { _, _ -> {} },
                             onLike = {},
                             onBookmark = {},
-                            showBookButton = false
+                            onShare = {},
+                            showBookButton = false,
                         )
                     }
                     else -> Unit

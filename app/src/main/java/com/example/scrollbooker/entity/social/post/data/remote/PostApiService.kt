@@ -78,4 +78,10 @@ interface PostApiService {
     suspend fun unBookmarkPost(
         @Path("postId") postId: Int
     )
+
+    @POST("posts/{postId}/shares")
+    suspend fun sharePost(
+        @Path("postId") postId: Int,
+        @Body request: PostShareRequest
+    )
 }

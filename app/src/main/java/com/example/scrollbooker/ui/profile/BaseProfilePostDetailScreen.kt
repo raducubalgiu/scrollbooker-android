@@ -32,6 +32,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -55,6 +56,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
+import com.example.scrollbooker.ui.feed.sharePostWithChannelDetection
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import kotlinx.coroutines.launch
 
@@ -68,6 +70,7 @@ fun BaseProfilePostDetailScreen(
     onBack: () -> Unit,
     profileNavigate: ProfileNavigator,
 ) {
+    val context = LocalContext.current
     val userPausedSet by viewModel.userPausedPostIds.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
     val postTab = PostTabEnum.fromKey(postTabKey)
@@ -246,6 +249,15 @@ fun BaseProfilePostDetailScreen(
                             onAction = { action -> handlePostSheetAction(action, post, ::handleOpenSheet) },
                             onLike = { viewModel.toggleLike(post) },
                             onBookmark = { viewModel.toggleBookmark(post) },
+                            onShare = {
+                                sharePostWithChannelDetection(
+                                    context = context,
+                                    postUrl = "https://scrollbooker-web.vercel.app/posts/${post.id}",
+                                    postTitle = post.description
+                                ) { channel ->
+                                    viewModel.sharePost(post, channel)
+                                }
+                            },
                             onNavigateToUserProfile = { userId, username -> profileNavigate.toUserProfile(userId, username) },
                             showBookButton = false
                         )

@@ -5,6 +5,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import com.example.scrollbooker.components.customized.post.PostActionUiState
 import com.example.scrollbooker.components.customized.post.PostInteractionStore
 import com.example.scrollbooker.components.customized.post.VideoPlayerManager
+import com.example.scrollbooker.core.enums.ShareChannelEnum
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import kotlinx.coroutines.flow.StateFlow
 
@@ -29,6 +30,10 @@ abstract class BaseFeedViewModel(
 
     override fun getPlayerForIndex(index: Int): ExoPlayer? {
         return videoPlayerManager.getPlayerForIndex(feedScopeKey, index)
+    }
+
+    override fun sharePost(post: Post, channel: ShareChannelEnum) {
+        postInteractionStore.sharePost(post, channel)
     }
 
     override fun ensureWindow(centerIndex: Int, getPost: (Int) -> Post?) {

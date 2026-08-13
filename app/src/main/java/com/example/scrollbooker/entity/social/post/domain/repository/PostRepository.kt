@@ -1,6 +1,7 @@
 package com.example.scrollbooker.entity.social.post.domain.repository
 
 import androidx.paging.PagingData
+import com.example.scrollbooker.core.enums.ShareChannelEnum
 import com.example.scrollbooker.entity.social.post.data.remote.CreatePostRequest
 import com.example.scrollbooker.entity.social.post.data.remote.CreateVideoReviewRequest
 import com.example.scrollbooker.entity.social.post.data.remote.UpdatePostRequest
@@ -21,6 +22,7 @@ interface PostRepository {
     suspend fun unLikePost(postId: Int)
     suspend fun bookmarkPost(postId: Int)
     suspend fun unBookmarkPost(postId: Int)
+    suspend fun sharePost(postId: Int, channel: ShareChannelEnum)
 
     suspend fun updatePostById(postId: Int, request: UpdatePostRequest): Post
     suspend fun getPostById(postId: Int): Post

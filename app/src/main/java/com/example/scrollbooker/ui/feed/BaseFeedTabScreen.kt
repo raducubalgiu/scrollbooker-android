@@ -25,6 +25,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -57,6 +58,7 @@ fun BaseFeedTabScreen(
     onAction: (PostSheetActionEnum, Post) -> Unit,
     onNavigateToUserProfile: (Int, String) -> Unit
 ) {
+    val context = LocalContext.current
     val userPausedSet by viewModel.userPausedPostIds.collectAsStateWithLifecycle()
 
     val verticalPagerState = rememberPagerState { posts.itemCount }
@@ -191,6 +193,15 @@ fun BaseFeedTabScreen(
                             onAction = { onAction(it, post) },
                             onLike = { viewModel.toggleLike(post) },
                             onBookmark = { viewModel.toggleBookmark(post) },
+                            onShare = {
+                                sharePostWithChannelDetection(
+                                    context = context,
+                                    postUrl = "https://scrollbooker-web.vercel.app/posts/${post.id}",
+                                    postTitle = post.description
+                                ) { channel ->
+                                    viewModel.sharePost(post, channel)
+                                }
+                            },
                             onNavigateToUserProfile = onNavigateToUserProfile,
                         )
                     }

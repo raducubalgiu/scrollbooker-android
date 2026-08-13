@@ -8,6 +8,7 @@ import androidx.paging.cachedIn
 import com.example.scrollbooker.components.customized.post.PostActionUiState
 import com.example.scrollbooker.components.customized.post.PostInteractionStore
 import com.example.scrollbooker.components.customized.post.VideoPlayerManager
+import com.example.scrollbooker.core.enums.ShareChannelEnum
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
@@ -184,6 +185,10 @@ abstract class BaseProfileViewModel(
 
     override fun toggleBookmark(post: Post) {
         postInteractionStore.toggleBookmark(post)
+    }
+
+    override fun sharePost(post: Post, channel: ShareChannelEnum) {
+        postInteractionStore.sharePost(post, channel)
     }
 
     override val userPausedPostIds: StateFlow<Set<Int>> = videoPlayerManager.userPausedPostIds
