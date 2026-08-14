@@ -28,7 +28,7 @@ fun PostPlayerView(
     displayThumbnail: Boolean,
     thumbnailUrl: String,
 ) {
-    var isVideoRendered by remember(player) { mutableStateOf(false) }
+    var isVideoRendered by remember(player, player.currentMediaItem) { mutableStateOf(false) }
     val context = LocalContext.current
 
     val playerView = remember {
@@ -58,13 +58,6 @@ fun PostPlayerView(
 
         onDispose {
             player.removeListener(listener)
-            playerView.player = null
-        }
-    }
-
-    DisposableEffect(player) {
-        playerView.player = player
-        onDispose {
             playerView.player = null
         }
     }

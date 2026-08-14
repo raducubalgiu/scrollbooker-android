@@ -2,8 +2,6 @@ package com.example.scrollbooker.navigation.graphs
 
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
@@ -65,7 +63,7 @@ fun NavGraphBuilder.userProfileGraph(
 
         composable(
             route = MainRoute.UserProfilePostDetail.route,
-            enterTransition = { fadeIn(animationSpec = tween(durationMillis = 200)) },
+            enterTransition = { EnterTransition.None },
             exitTransition = { ExitTransition.None },
             popEnterTransition = { EnterTransition.None },
             popExitTransition = { ExitTransition.None },
