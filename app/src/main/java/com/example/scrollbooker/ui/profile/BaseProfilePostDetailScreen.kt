@@ -54,9 +54,9 @@ import com.example.scrollbooker.core.enums.BookingSourceEnum
 import com.example.scrollbooker.core.extensions.getOrNull
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.core.util.sharePost
 import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
-import com.example.scrollbooker.ui.feed.sharePostWithChannelDetection
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import kotlinx.coroutines.launch
 
@@ -250,11 +250,7 @@ fun BaseProfilePostDetailScreen(
                             onLike = { viewModel.toggleLike(post) },
                             onBookmark = { viewModel.toggleBookmark(post) },
                             onShare = {
-                                sharePostWithChannelDetection(
-                                    context = context,
-                                    postUrl = "https://scrollbooker-web.vercel.app/posts/${post.id}",
-                                    postTitle = post.description
-                                ) { channel ->
+                                sharePost(context, post) { channel ->
                                     viewModel.sharePost(post, channel)
                                 }
                             },

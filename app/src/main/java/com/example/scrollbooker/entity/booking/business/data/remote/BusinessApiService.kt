@@ -58,6 +58,13 @@ interface BusinessApiService {
         @Body request: SearchBusinessRequest
     ): List<BusinessMarkerDto>
 
+
+    @POST("/businesses/{businessId}/share-profile")
+    suspend fun shareBusinessProfile(
+        @Path("businessId") businessId: Int,
+        @Body request: ShareBusinessProfileRequest
+    )
+
     @POST("/users/{userId}/approve")
     suspend fun approveBusiness(
         @Path("userId") userId: Int,

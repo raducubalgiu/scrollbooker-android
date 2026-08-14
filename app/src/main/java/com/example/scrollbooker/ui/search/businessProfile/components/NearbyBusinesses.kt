@@ -18,7 +18,7 @@ import com.example.scrollbooker.ui.theme.titleLarge
 @Composable
 fun NearbyBusinesses(
     businesses: List<NearbyBusiness>?,
-    onNavigateToBusinessProfile: (username: String) -> Unit
+    onNavigateToBusinessProfile: (username: String, profession: String) -> Unit
 ) {
     if (businesses.isNullOrEmpty()) return
 

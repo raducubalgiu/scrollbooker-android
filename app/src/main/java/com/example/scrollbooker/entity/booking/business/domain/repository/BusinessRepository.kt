@@ -2,6 +2,7 @@ package com.example.scrollbooker.entity.booking.business.domain.repository
 
 import android.net.Uri
 import androidx.paging.PagingData
+import com.example.scrollbooker.core.enums.ShareChannelEnum
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.booking.business.data.remote.SearchBusinessRequest
 import com.example.scrollbooker.entity.booking.business.domain.model.Business
@@ -23,6 +24,7 @@ interface BusinessRepository {
     suspend fun getBusinessProfileByOwnerUsername(ownerUsername: String): BusinessProfile
     suspend fun updateBusinessHasEmployees(hasEmployees: Boolean): AuthState
     suspend fun approveBusiness(userId: Int)
+    suspend fun shareBusinessProfile(businessId: Int, channel: ShareChannelEnum)
 
     suspend fun updateBusinessGallery(
         businessId: Int,

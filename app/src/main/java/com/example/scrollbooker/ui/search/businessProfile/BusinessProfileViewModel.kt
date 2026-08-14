@@ -3,10 +3,12 @@ package com.example.scrollbooker.ui.search.businessProfile
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.scrollbooker.core.enums.ShareChannelEnum
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfile
 import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessProfileUseCase
+import com.example.scrollbooker.entity.booking.business.domain.useCase.ShareBusinessProfileUseCase
 import com.example.scrollbooker.entity.user.userSocial.domain.useCase.FollowUserUseCase
 import com.example.scrollbooker.entity.user.userSocial.domain.useCase.UnfollowUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,6 +26,7 @@ class BusinessProfileViewModel @Inject constructor(
     private val getBusinessProfileUseCase: GetBusinessProfileUseCase,
     private val followUserUseCase: FollowUserUseCase,
     private val unfollowUserUseCase: UnfollowUserUseCase,
+    private val shareBusinessProfileUseCase: ShareBusinessProfileUseCase
 ): ViewModel() {
     private val ownerUsername: String = checkNotNull(savedStateHandle["ownerUsername"]) {
         "BusinessProfileViewModel: ownerUsername is missing in savedStateHandle"
@@ -101,6 +104,20 @@ class BusinessProfileViewModel @Inject constructor(
             } finally {
                 _isSaving.value = false
             }
+        }
+    }
+
+    fun shareBusinessProfile(businessId: Int, channelEnum: ShareChannelEnum) {
+        viewModelScope.launch {
+            val result = shareBusinessProfileUseCase(businessId, channelEnum)
+
+            result
+                .onSuccess {
+                    Timber.tag("ShareBusinessProfile").d("Successfully shared business profile with ID: $businessId on channel: $channelEnum")
+                }
+                .onFailure { e ->
+                    Timber.tag("ShareBusinessProfile").e(e, "Failed to share business profile with ID: $businessId on channel: $channelEnum")
+                }
         }
     }
 }

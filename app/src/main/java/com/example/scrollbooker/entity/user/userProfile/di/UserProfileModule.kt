@@ -7,6 +7,7 @@ import com.example.scrollbooker.entity.user.userProfile.domain.repository.UserPr
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserProfileAboutUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserProfileUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.SearchUsernameUseCase
+import com.example.scrollbooker.entity.user.userProfile.domain.usecase.ShareUserProfileUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateBioUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateBirthDateUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.UpdateFullNameUseCase
@@ -121,5 +122,13 @@ object UserProfileModule {
         repository: UserProfileRepository
     ): UpdateWebsiteUseCase {
         return UpdateWebsiteUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideShareUserProfileUseCase(
+        repository: UserProfileRepository
+    ): ShareUserProfileUseCase {
+        return ShareUserProfileUseCase(repository)
     }
 }

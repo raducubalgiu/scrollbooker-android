@@ -1,4 +1,5 @@
 package com.example.scrollbooker.entity.user.userProfile.domain.repository
+import com.example.scrollbooker.core.enums.ShareChannelEnum
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.user.userProfile.data.remote.UserAvatarRequest
 import com.example.scrollbooker.entity.user.userProfile.domain.model.SearchUsernameResponse
@@ -6,6 +7,7 @@ import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfileAbout
 
 interface UserProfileRepository {
+    suspend fun shareUserProfile(userId: Int, channel: ShareChannelEnum)
     suspend fun getUserProfile(username: String, lat: Float?, lng: Float?): UserProfile
     suspend fun updateFullName(fullName: String)
 

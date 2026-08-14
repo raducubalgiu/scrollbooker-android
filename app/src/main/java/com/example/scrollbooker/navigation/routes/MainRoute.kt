@@ -18,9 +18,9 @@ sealed class MainRoute(val route: String) {
     object EmploymentRespondConsent: MainRoute(route = "employmentRespondConsent")
 
     object Search: MainRoute(route = "search")
-    object BusinessProfile: MainRoute(route = "businessProfile?ownerUsername={ownerUsername}") {
-        fun createRoute(ownerUsername: String): String {
-            return "businessProfile?ownerUsername=$ownerUsername"
+    object BusinessProfile : MainRoute(route = "businessProfile?ownerUsername={ownerUsername}&profession={profession}") {
+        fun createRoute(ownerUsername: String, profession: String): String {
+            return "businessProfile?ownerUsername=$ownerUsername&profession=$profession"
         }
     }
 
@@ -39,6 +39,7 @@ sealed class MainRoute(val route: String) {
     object MyProfilePostDetail: MainRoute(route = "myProfilePostDetail")
 
     object UserProfile: MainRoute(route = "userProfile")
+
     object UserProfilePostDetail: MainRoute(route = "userProfilePostDetail")
 
     object EditProfileNavigator: MainRoute(route = "editProfileNavigator")

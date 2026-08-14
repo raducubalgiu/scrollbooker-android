@@ -13,7 +13,7 @@ class SharePostUseCase @Inject constructor(
             Result.success(Unit)
 
         } catch (e: Exception) {
-            Timber.tag("Share Post").e("ERROR: on Sharing post: $e")
+            Timber.tag("Share Post").e(e, "ERROR: on Sharing post")
             Result.failure(e)
         }
     }

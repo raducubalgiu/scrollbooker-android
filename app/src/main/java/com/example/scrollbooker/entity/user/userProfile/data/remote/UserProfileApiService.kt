@@ -6,6 +6,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.PATCH
+import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -17,6 +18,12 @@ interface UserProfileApiService {
         @Query("lat") lat: Float?,
         @Query("lng") lng: Float?
     ): UserProfileDto
+
+    @POST("users/{userId}/share-profile")
+    suspend fun shareUserProfile(
+        @Path("userId") userId: Int,
+        @Body request: ShareUserProfileRequest
+    )
 
     @PATCH("users/user-info/fullname")
     suspend fun updateFullName(

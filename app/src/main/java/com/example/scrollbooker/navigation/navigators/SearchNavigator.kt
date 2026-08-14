@@ -8,8 +8,8 @@ import com.example.scrollbooker.navigation.routes.MainRoute
 class SearchNavigator (
     private val navController: NavHostController
 ) {
-    fun toBusinessProfile(ownerUsername: String) {
-        navController.navigate((MainRoute.BusinessProfile.createRoute(ownerUsername))) {
+    fun toBusinessProfile(ownerUsername: String, ownerProfession: String) {
+        navController.navigate((MainRoute.BusinessProfile.createRoute(ownerUsername, ownerProfession))) {
             launchSingleTop = true
         }
     }

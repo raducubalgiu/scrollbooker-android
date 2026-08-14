@@ -45,6 +45,7 @@ import com.example.scrollbooker.components.customized.post.components.PostOverla
 import com.example.scrollbooker.components.customized.post.components.PostShimmer
 import com.example.scrollbooker.components.customized.post.sheets.PostSheetActionEnum
 import com.example.scrollbooker.core.extensions.getOrNull
+import com.example.scrollbooker.core.util.sharePost
 import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import kotlinx.coroutines.flow.collectLatest
@@ -194,11 +195,7 @@ fun BaseFeedTabScreen(
                             onLike = { viewModel.toggleLike(post) },
                             onBookmark = { viewModel.toggleBookmark(post) },
                             onShare = {
-                                sharePostWithChannelDetection(
-                                    context = context,
-                                    postUrl = "https://scrollbooker-web.vercel.app/posts/${post.id}",
-                                    postTitle = post.description
-                                ) { channel ->
+                                sharePost(context, post) { channel ->
                                     viewModel.sharePost(post, channel)
                                 }
                             },

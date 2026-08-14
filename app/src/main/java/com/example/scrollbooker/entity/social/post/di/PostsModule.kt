@@ -14,6 +14,7 @@ import com.example.scrollbooker.entity.social.post.domain.useCase.GetPostByIdUse
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetUserPostsUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetUserVideoReviewsPostsUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.LikePostUseCase
+import com.example.scrollbooker.entity.social.post.domain.useCase.SharePostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.UnBookmarkPostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.UnLikePostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.UpdatePostUseCase
@@ -147,5 +148,13 @@ object PostsModule {
         repository: PostRepository,
     ): UnBookmarkPostUseCase {
         return UnBookmarkPostUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSharePostUseCase(
+        repository: PostRepository,
+    ): SharePostUseCase {
+        return SharePostUseCase(repository)
     }
 }

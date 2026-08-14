@@ -1,7 +1,6 @@
 package com.example.scrollbooker.ui.search.businessProfile.components
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -26,13 +25,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import com.example.scrollbooker.R
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMediaFile
 import com.example.scrollbooker.ui.search.components.card.SearchCardCarousel
 import com.example.scrollbooker.ui.theme.Background
@@ -43,6 +40,7 @@ fun BusinessProfileHeader(
     mediaFiles: List<BusinessMediaFile>,
     fullName: String,
     onBack: () -> Unit,
+    onShare: () -> Unit,
     imageAlpha: Float,
     imageHeight: Dp,
     imageTranslationY: Float
@@ -101,7 +99,7 @@ fun BusinessProfileHeader(
         }
 
         IconButton(
-            onClick = {},
+            onClick = onShare,
             modifier = Modifier
                 .clip(CircleShape)
                 .background(Background)

@@ -25,6 +25,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -33,6 +34,7 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.enums.BookingSourceEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.util.shareBusinessProfile
 import com.example.scrollbooker.navigation.navigators.SearchNavigator
 import com.example.scrollbooker.ui.search.businessProfile.components.BusinessProfileHeader
 import com.example.scrollbooker.ui.search.businessProfile.components.BusinessProfileSkeleton
@@ -51,9 +53,10 @@ import kotlinx.coroutines.launch
 fun BusinessProfileScreen(
     viewModel: BusinessProfileViewModel,
     searchNavigate: SearchNavigator,
-    onNavigateToBusinessProfile: (String) -> Unit,
+    onNavigateToBusinessProfile: (username: String, profession: String) -> Unit,
     onBack: () -> Unit
 ) {
+    val context = LocalContext.current
     val state by viewModel.businessProfileState.collectAsState()
     val isFollow by viewModel.isFollowState.collectAsState()
     val isSaving by viewModel.isSaving.collectAsState()
@@ -160,7 +163,17 @@ fun BusinessProfileScreen(
                     onBack = onBack,
                     imageAlpha = imageAlpha,
                     imageHeight = imageHeight,
-                    imageTranslationY = imageTranslationY
+                    imageTranslationY = imageTranslationY,
+                    onShare = {
+                        shareBusinessProfile(
+                            context = context,
+                            businessOwnerUsername = businessProfile.data.owner.username,
+                            businessOwnerProfession = businessProfile.data.owner.profession,
+                            businessDescription = businessProfile.data.description,
+                        ) { channel ->
+                            viewModel.shareBusinessProfile(businessProfile.data.id, channel)
+                        }
+                    }
                 )
 
                 LazyColumn(
@@ -202,7 +215,9 @@ fun BusinessProfileScreen(
                             formattedAddress = profile.location.formattedAddress,
                             distance = profile.distanceKm,
                             openingHours = profile.openingHours,
-                            onNavigateToOwnerProfile = { searchNavigate.toBusinessProfile(it) },
+                            onNavigateToOwnerProfile = { username, profession ->
+                                searchNavigate.toBusinessProfile(username, profession)
+                            },
                             onFlyToReviewsSection = {},
                             isFollow = isFollow,
                             isFollowEnabled = !isSaving,
@@ -277,9 +292,8 @@ fun BusinessProfileScreen(
                             location = profile.location,
                             fullName = profile.owner.fullName,
                             nearbyBusinesses = profile.nearbyBusinesses,
-                            onNavigateToBusinessProfile = { username ->
-                                //searchNavigate.toBusinessProfile(username)
-                                onNavigateToBusinessProfile(username)
+                            onNavigateToBusinessProfile = { username, profession ->
+                                onNavigateToBusinessProfile(username, profession)
                             }
                         )
                     }

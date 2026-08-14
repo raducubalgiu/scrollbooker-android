@@ -10,6 +10,8 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
+import com.example.scrollbooker.core.util.SHARE_BASE_URL
 import com.example.scrollbooker.navigation.graphs.bookingGraph
 import com.example.scrollbooker.navigation.graphs.socialGraph
 import com.example.scrollbooker.navigation.graphs.userProfileGraph
@@ -57,6 +59,14 @@ fun SearchNavHost(
                 navArgument("ownerUsername") {
                     type = NavType.StringType
                 },
+                navArgument("profession") {
+                    type = NavType.StringType
+                },
+            ),
+            deepLinks = listOf(
+                navDeepLink {
+                    uriPattern = "$SHARE_BASE_URL/business/{profession}/{ownerUsername}"
+                }
             )
         ) {
             val viewModel: BusinessProfileViewModel = hiltViewModel()
@@ -65,8 +75,8 @@ fun SearchNavHost(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
                 searchNavigate = searchNavigate,
-                onNavigateToBusinessProfile = {
-                    navController.navigate(MainRoute.BusinessProfile.createRoute(it))
+                onNavigateToBusinessProfile = { username, profession ->
+                    navController.navigate(MainRoute.BusinessProfile.createRoute(username, profession))
                 }
             )
         }

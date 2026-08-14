@@ -12,7 +12,6 @@ import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.components.customized.LoadMoreSpinner
-import com.example.scrollbooker.entity.booking.business.domain.model.BusinessOwner
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessSheet
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.ui.search.components.card.SearchCard
@@ -22,7 +21,7 @@ fun SearchList(
     appendState: LoadState,
     listState: LazyListState,
     businessesSheet: LazyPagingItems<BusinessSheet>,
-    onNavigateToBusinessProfile: (String) -> Unit,
+    onNavigateToBusinessProfile: (username: String, profession: String) -> Unit,
     onSelectProduct: (product: Product) -> Unit
 ) {
     val isAppending = appendState is LoadState.Loading

@@ -28,7 +28,7 @@ import com.example.scrollbooker.ui.theme.titleMedium
 @Composable
 fun NearbyBusinessItem(
     business: NearbyBusiness,
-    onNavigateToBusinessProfile: (username: String) -> Unit,
+    onNavigateToBusinessProfile: (username: String, profession: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val owner = business.owner
@@ -40,7 +40,7 @@ fun NearbyBusinessItem(
             .padding(bottom = SpacingS)
             .width(300.dp)
             .clickable(
-                onClick = { onNavigateToBusinessProfile(business.owner.username) },
+                onClick = { onNavigateToBusinessProfile(business.owner.username, business.owner.profession) },
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() }
             ),

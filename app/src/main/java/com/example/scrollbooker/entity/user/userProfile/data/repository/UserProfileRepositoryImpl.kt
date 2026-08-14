@@ -1,7 +1,9 @@
 package com.example.scrollbooker.entity.user.userProfile.data.repository
+import com.example.scrollbooker.core.enums.ShareChannelEnum
 import com.example.scrollbooker.entity.auth.data.mappers.toDomain
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.user.userProfile.data.mappers.toDomain
+import com.example.scrollbooker.entity.user.userProfile.data.remote.ShareUserProfileRequest
 import com.example.scrollbooker.entity.user.userProfile.data.remote.UserProfileApiService
 import com.example.scrollbooker.entity.user.userProfile.domain.model.SearchUsernameResponse
 import com.example.scrollbooker.entity.user.userProfile.data.remote.UpdateBioRequest
@@ -18,12 +20,19 @@ import com.example.scrollbooker.entity.user.userProfile.domain.repository.UserPr
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import retrofit2.http.Multipart
 import javax.inject.Inject
 
 class UserProfileRepositoryImpl @Inject constructor(
     private val apiService: UserProfileApiService
 ): UserProfileRepository {
+    override suspend fun shareUserProfile(
+        userId: Int,
+        channel: ShareChannelEnum
+    ) {
+        val request = ShareUserProfileRequest(channel.value)
+        return apiService.shareUserProfile(userId, request)
+    }
+
     override suspend fun getUserProfile(username: String, lat: Float?, lng: Float?): UserProfile {
         return apiService.getUserProfile(username, lat, lng).toDomain()
     }

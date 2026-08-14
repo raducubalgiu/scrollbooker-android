@@ -235,7 +235,9 @@ fun SearchScreen(
                 isMapLoading = isMapLoading,
                 onSheetExpand = { scope.launch { scaffoldState.bottomSheetState.expand() } },
                 paddingBottom = paddingBottom,
-                onNavigateToBusinessProfile = { searchNavigate.toBusinessProfile(it) }
+                onNavigateToBusinessProfile = { username, profession ->
+                    searchNavigate.toBusinessProfile(username, profession)
+                }
             )
         }
 
@@ -278,7 +280,9 @@ fun SearchScreen(
                         appendState = appendState,
                         listState = listState,
                         businessesSheet = businessesSheet,
-                        onNavigateToBusinessProfile = { searchNavigate.toBusinessProfile(it) },
+                        onNavigateToBusinessProfile = { username, profession ->
+                            searchNavigate.toBusinessProfile(username, profession)
+                        },
                         onSelectProduct = { searchNavigate.toBookingFromProduct(
                             it,
                             source = BookingSourceEnum.SEARCH

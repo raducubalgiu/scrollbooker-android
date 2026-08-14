@@ -37,6 +37,8 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 import androidx.core.graphics.scale
+import com.example.scrollbooker.core.enums.ShareChannelEnum
+import com.example.scrollbooker.entity.booking.business.data.remote.ShareBusinessProfileRequest
 import com.example.scrollbooker.entity.booking.business.data.remote.UnapprovedBusinessPagingSource
 import com.example.scrollbooker.entity.booking.business.domain.model.UnapprovedBusiness
 
@@ -87,6 +89,14 @@ class BusinessRepositoryImpl @Inject constructor(
 
     override suspend fun approveBusiness(userId: Int) {
         return apiService.approveBusiness(userId)
+    }
+
+    override suspend fun shareBusinessProfile(
+        businessId: Int,
+        channel: ShareChannelEnum
+    ) {
+        val request = ShareBusinessProfileRequest(channel.value)
+        return apiService.shareBusinessProfile(businessId, request)
     }
 
     override suspend fun getBusinessesMarkers(request: SearchBusinessRequest): List<BusinessMarker> {

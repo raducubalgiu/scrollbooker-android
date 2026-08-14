@@ -30,7 +30,7 @@ fun BusinessAboutSection(
     schedules: List<Schedule>,
     location: BusinessLocation,
     fullName: String,
-    onNavigateToBusinessProfile: (username: String) -> Unit
+    onNavigateToBusinessProfile: (username: String, profession: String) -> Unit
 ) {
     Column(modifier = Modifier
         .fillMaxWidth()

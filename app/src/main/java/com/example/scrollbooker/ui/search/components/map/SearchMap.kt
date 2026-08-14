@@ -50,7 +50,7 @@ fun SearchMap(
     userLocation: GeoPoint?,
     isMapLoading: Boolean,
     onSheetExpand: () -> Unit,
-    onNavigateToBusinessProfile: (String) -> Unit,
+    onNavigateToBusinessProfile: (username: String, profession: String) -> Unit,
     paddingBottom: Dp
 ) {
     val density = LocalDensity.current

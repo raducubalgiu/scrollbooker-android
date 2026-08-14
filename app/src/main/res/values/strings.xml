@@ -98,6 +98,7 @@
     <string name="service">Serviciu</string>
     <string name="description">Descriere</string>
     <string name="shareProfile">Distribuie profilul</string>
+    <string name="sharePost">Distribuie postarea</string>
     <string name="scheduleShort">Program</string>
     <string name="employees">Angajați</string>
     <string name="employmentRequests">Cereri de angajare</string>
