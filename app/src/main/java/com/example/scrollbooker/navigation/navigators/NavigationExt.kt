@@ -6,8 +6,10 @@ import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.routes.MainRoute
 
-fun NavHostController.navigateToUserProfile(userId: Int, username: String) {
-    this.navigate("${MainRoute.UserProfile.route}/${userId}/${username}") {
+fun NavHostController.navigateToUserProfile(param: UserProfileParam) {
+    val route = MainRoute.UserProfile.createRoute(param)
+
+    this.navigate(route) {
         launchSingleTop = true
     }
 }

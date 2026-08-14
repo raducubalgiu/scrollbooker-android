@@ -12,6 +12,8 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
+import com.example.scrollbooker.core.util.SHARE_BASE_URL
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.profile.ProfileViewModel
@@ -24,10 +26,10 @@ fun NavGraphBuilder.userProfileGraph(
 ) {
     navigation(
         route = MainRoute.ProfileNavigator.route,
-        startDestination = "${MainRoute.UserProfile.route}/{userId}/{username}"
+        startDestination = MainRoute.UserProfile.route
     ) {
         composable(
-            route = "${MainRoute.UserProfile.route}/{userId}/{username}",
+            route = MainRoute.UserProfile.route,
             exitTransition = {
                 if (targetState.destination.route?.startsWith(MainRoute.UserProfilePostDetail.route) == true) {
                     ExitTransition.None
@@ -44,20 +46,25 @@ fun NavGraphBuilder.userProfileGraph(
             },
             arguments = listOf(
                 navArgument("userId") { type = NavType.IntType },
-                navArgument("username") { type = NavType.StringType }
+                navArgument("username") { type = NavType.StringType },
+                navArgument("profession") { type = NavType.StringType }
+            ),
+            deepLinks = listOf(
+                navDeepLink {
+                    uriPattern = "$SHARE_BASE_URL/user/{userId}/{username}/{profession}"
+                }
             )
         ) { backStackEntry ->
             val viewModel = hiltViewModel<ProfileViewModel>(backStackEntry)
 
             UserProfileScreen(
                 viewModel = viewModel,
-                onBack = { navController.popBackStack() },
                 profileNavigate = profileNavigate,
             )
         }
 
         composable(
-            route = "${MainRoute.UserProfilePostDetail.route}/{postTab}/{postIndex}/{userId}",
+            route = MainRoute.UserProfilePostDetail.route,
             enterTransition = { fadeIn(animationSpec = tween(durationMillis = 200)) },
             exitTransition = { ExitTransition.None },
             popEnterTransition = { EnterTransition.None },
@@ -86,7 +93,6 @@ fun NavGraphBuilder.userProfileGraph(
                 postTabKey = postTabKey,
                 postIndex = postIndex,
                 viewModel = viewModel,
-                onBack = { navController.popBackStack() },
                 profileNavigate = profileNavigate
             )
         }

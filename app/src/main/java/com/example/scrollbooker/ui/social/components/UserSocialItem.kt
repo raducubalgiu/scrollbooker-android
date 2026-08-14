@@ -14,7 +14,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -25,6 +24,7 @@ import com.example.scrollbooker.components.core.avatar.AvatarWithRating
 import com.example.scrollbooker.components.core.buttons.MainButtonSmall
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
+import com.example.scrollbooker.navigation.navigators.UserProfileParam
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
@@ -40,7 +40,7 @@ fun UserSocialItem(
     userSocial: UserSocial,
     enabled: Boolean,
     onFollow: (Boolean) -> Unit,
-    onNavigateUserProfile: (userId: Int, username: String) -> Unit
+    onNavigateUserProfile: (param: UserProfileParam) -> Unit
 ) {
     val isFollowed = isFollowedOverrides ?: userSocial.isFollow
     val isBusinessOrEmployee = userSocial.isBusinessOrEmployee
@@ -53,7 +53,11 @@ fun UserSocialItem(
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
-                onClick = { onNavigateUserProfile(userSocial.id, userSocial.username) }
+                onClick = {
+                    onNavigateUserProfile(
+                        UserProfileParam(userSocial.id, userSocial.username, userSocial.profession)
+                    )
+                }
             )
             .then(modifier),
         headlineContent = {
@@ -98,14 +102,22 @@ fun UserSocialItem(
                     url = userSocial.avatar ?: "",
                     rating = userSocial.ratingsAverage,
                     size = 55.dp,
-                    onClick = { onNavigateUserProfile(userSocial.id, userSocial.username) },
+                    onClick = {
+                        onNavigateUserProfile(
+                            UserProfileParam(userSocial.id, userSocial.username, userSocial.profession)
+                        )
+                    },
                     elevation = 2.dp
                 )
             } else {
                 Avatar(
                     url = userSocial.avatar ?: "",
                     size = 55.dp,
-                    onClick = { onNavigateUserProfile(userSocial.id, userSocial.username) }
+                    onClick = {
+                        onNavigateUserProfile(
+                            UserProfileParam(userSocial.id, userSocial.username, userSocial.profession)
+                        )
+                    }
                 )
             }
         },

@@ -246,7 +246,7 @@ fun CreatePostPreviewScreen(
                             isSavingLike = false,
                             isSavingBookmark = false,
                             onAction = {},
-                            onNavigateToUserProfile = { _, _ -> {} },
+                            onNavigateToUserProfile = { _ -> {} },
                             onLike = {},
                             onBookmark = {},
                             onShare = {},

@@ -30,6 +30,7 @@ data class BusinessOwner(
     val id: Int,
     val fullName: String,
     val username: String,
+    val profession: String,
     val avatar: String?,
 )
 

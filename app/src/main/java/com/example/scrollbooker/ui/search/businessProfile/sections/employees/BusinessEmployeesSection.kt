@@ -27,13 +27,14 @@ import com.example.scrollbooker.components.core.avatar.AvatarWithRating
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileEmployee
+import com.example.scrollbooker.navigation.navigators.UserProfileParam
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.headlineSmall
 
 @Composable
 fun BusinessEmployeesSection(
     employees: List<BusinessProfileEmployee>,
-    onNavigateToEmployeeProfile: (userId: Int, username: String) -> Unit
+    onNavigateToEmployeeProfile: (param: UserProfileParam) -> Unit
 ) {
     Column(modifier = Modifier
         .fillMaxWidth()
@@ -57,7 +58,9 @@ fun BusinessEmployeesSection(
                         .width(90.dp)
                         .clickable(
                             onClick = {
-                                onNavigateToEmployeeProfile(employee.id, employee.username)
+                                onNavigateToEmployeeProfile(
+                                    UserProfileParam(employee.id, employee.username, employee.profession)
+                                )
                             },
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null

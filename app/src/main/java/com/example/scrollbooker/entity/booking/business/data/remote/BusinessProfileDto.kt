@@ -133,6 +133,7 @@ data class BusinessProfileReviewerDto(
     val fullName: String,
 
     val username: String,
+    val profession: String,
     val avatar: String?
 )
 

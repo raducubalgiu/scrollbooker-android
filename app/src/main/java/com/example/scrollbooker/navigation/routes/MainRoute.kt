@@ -4,6 +4,8 @@ import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.CameraParams
 import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
+import com.example.scrollbooker.navigation.navigators.ProfilePostDetailParam
+import com.example.scrollbooker.navigation.navigators.UserProfileParam
 
 sealed class MainRoute(val route: String) {
     object Shell: MainRoute(route = "shell")
@@ -33,14 +35,25 @@ sealed class MainRoute(val route: String) {
     object AppointmentDetails: MainRoute(route = "appointmentDetails")
 
     object ProfileNavigator: MainRoute(route = "profileNavigator")
-
     object MyProfileNavigator: MainRoute(route = "myProfileNavigator")
     object MyProfile: MainRoute(route = "myProfile")
-    object MyProfilePostDetail: MainRoute(route = "myProfilePostDetail")
 
-    object UserProfile: MainRoute(route = "userProfile")
+    object MyProfilePostDetail: MainRoute(route = "myProfilePostDetail/{postTab}/{postIndex}") {
+        fun createRoute(param: ProfilePostDetailParam): String {
+            return "myProfilePostDetail/${param.postTab}/${param.postIndex}"
+        }
+    }
 
-    object UserProfilePostDetail: MainRoute(route = "userProfilePostDetail")
+    object UserProfile: MainRoute(route = "userProfile/{userId}/{username}/{profession}") {
+        fun createRoute(param: UserProfileParam): String {
+            return "userProfile/${param.userId}/${param.username}/${param.profession}"
+        }
+    }
+    object UserProfilePostDetail: MainRoute(route = "userProfilePostDetail/{postTab}/{postIndex}/{userId}") {
+        fun createRoute(param: ProfilePostDetailParam): String {
+            return "userProfilePostDetail/${param.postTab}/${param.postIndex}/${param.userId}"
+        }
+    }
 
     object EditProfileNavigator: MainRoute(route = "editProfileNavigator")
     object EditProfile: MainRoute(route = "editProfile")

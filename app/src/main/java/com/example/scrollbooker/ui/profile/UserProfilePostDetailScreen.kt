@@ -9,7 +9,6 @@ fun UserProfilePostDetailScreen(
     postTabKey: String,
     postIndex: Int,
     viewModel: ProfileViewModel,
-    onBack: () -> Unit,
     profileNavigate: ProfileNavigator,
 ) {
     val detailScopeKey = "USER_PROFILE_DETAIL_${postTabKey}_${viewModel.userId}"
@@ -19,7 +18,6 @@ fun UserProfilePostDetailScreen(
         viewModel = viewModel,
         postTabKey = postTabKey,
         postIndex = postIndex,
-        onBack = onBack,
         profileNavigate = profileNavigate
     )
 }

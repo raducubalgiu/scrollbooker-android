@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.social.post.domain.model.PostUser
+import com.example.scrollbooker.navigation.navigators.UserProfileParam
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodySmall
@@ -34,7 +35,7 @@ import com.example.scrollbooker.ui.theme.bodySmall
 fun PostOverlayUser(
     user: PostUser,
     isVideoReview: Boolean,
-    onNavigateToUser: (userId: Int, username: String) -> Unit
+    onNavigateToUser: (param: UserProfileParam) -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -63,7 +64,7 @@ fun PostOverlayUser(
     Column(
         modifier = Modifier
             .clickable(
-                onClick = { onNavigateToUser(user.id, user.username) },
+                onClick = { onNavigateToUser(UserProfileParam(user.id, user.username, user.profession)) },
                 interactionSource = interactionSource,
                 indication = null
             ),

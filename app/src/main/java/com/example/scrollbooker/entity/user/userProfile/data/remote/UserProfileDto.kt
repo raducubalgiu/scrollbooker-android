@@ -64,6 +64,7 @@ data class BusinessOwnerDto(
     val fullName: String,
 
     val username: String,
+    val profession: String,
     val avatar: String?,
 )
 

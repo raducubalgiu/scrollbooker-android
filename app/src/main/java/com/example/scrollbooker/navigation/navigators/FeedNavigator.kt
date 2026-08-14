@@ -19,8 +19,8 @@ class FeedNavigator (
         }
     }
 
-    fun toUserProfile(userId: Int, username: String) {
-        navController.navigateToUserProfile(userId, username)
+    fun toUserProfile(param: UserProfileParam) {
+        navController.navigateToUserProfile(param)
     }
 
     fun toBookingFromPost(post: Post, source: BookingSourceEnum) {

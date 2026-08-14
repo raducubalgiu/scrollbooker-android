@@ -45,9 +45,7 @@ fun NavGraphBuilder.socialGraph(
             viewModal = viewModel,
             socialParam = socialParams,
             onBack = { navController.popBackStack() },
-            onNavigateUserProfile = { userId, username ->
-                profileNavigate.toUserProfile(userId, username)
-            }
+            onNavigateUserProfile = { profileNavigate.toUserProfile(it) }
         )
     }
 }

@@ -48,6 +48,7 @@ import com.example.scrollbooker.core.extensions.getOrNull
 import com.example.scrollbooker.core.util.sharePost
 import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
+import com.example.scrollbooker.navigation.navigators.UserProfileParam
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 
@@ -57,7 +58,7 @@ fun BaseFeedTabScreen(
     isTabActive: Boolean,
     viewModel: FeedViewModelContract,
     onAction: (PostSheetActionEnum, Post) -> Unit,
-    onNavigateToUserProfile: (Int, String) -> Unit
+    onNavigateToUserProfile: (param: UserProfileParam) -> Unit
 ) {
     val context = LocalContext.current
     val userPausedSet by viewModel.userPausedPostIds.collectAsStateWithLifecycle()

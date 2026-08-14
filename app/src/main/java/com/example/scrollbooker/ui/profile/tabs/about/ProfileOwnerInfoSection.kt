@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfileAboutOwner
+import com.example.scrollbooker.navigation.navigators.UserProfileParam
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.SurfaceBG
@@ -46,7 +47,7 @@ import com.example.scrollbooker.ui.theme.titleMedium
 @Composable
 fun ProfileInfoOwnerSection(
     owner: UserProfileAboutOwner,
-    onNavigateToUserProfile: (userId: Int, username: String) -> Unit
+    onNavigateToUserProfile: (param: UserProfileParam) -> Unit
 ) {
     Card(
         colors = CardDefaults.cardColors(
@@ -123,7 +124,9 @@ fun ProfileInfoOwnerSection(
             }
 
             OutlinedButton(
-                onClick = { onNavigateToUserProfile(owner.id, owner.username) },
+                onClick = { onNavigateToUserProfile(
+                    UserProfileParam(owner.id, owner.username, owner.profession)
+                )},
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),

@@ -34,6 +34,8 @@ import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfileAbout
 import com.example.scrollbooker.navigation.navigators.NavigateBookingParam
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
+import com.example.scrollbooker.navigation.navigators.ProfilePostDetailParam
+import com.example.scrollbooker.navigation.navigators.UserProfileParam
 import com.example.scrollbooker.ui.profile.PostTabEnum
 import com.example.scrollbooker.ui.profile.components.userInfo.ProfileShimmer
 import com.example.scrollbooker.ui.profile.components.userInfo.ProfileUserInfo
@@ -59,7 +61,7 @@ fun ProfileLayout(
     employeesState: Flow<PagingData<Employee>>,
     bookmarksState: Flow<PagingData<Post>>,
     aboutState: StateFlow<FeatureState<UserProfileAbout>>,
-    onNavigateToPost: (SelectedPostUi) -> Unit,
+    onNavigateToPost: (postIndex: Int, userId: Int) -> Unit,
     onOpenScheduleSheet: () -> Unit,
     actions: @Composable () -> Unit
 ) {
@@ -152,9 +154,7 @@ fun ProfileLayout(
                                         ProfileEmployeesTab(
                                             isOwnProfile = user.isOwnProfile,
                                             employees = employees,
-                                            onNavigateToEmployeeProfile = { userId, username ->
-                                                profileNavigate.toUserProfile(userId, username)
-                                            },
+                                            onNavigateToEmployeeProfile = { profileNavigate.toUserProfile(it) },
                                             onNavigateToBooking = { employee ->
                                                 if(user.businessId != null && user.businessOwner != null) {
                                                     profileNavigate.toBookingFromProfile(
@@ -176,8 +176,14 @@ fun ProfileLayout(
 
                                         ProfileBookmarksTab(
                                             posts = bookmarks,
-                                            onNavigateToPost = { clickData ->
-                                                profileNavigate.toMyPostDetail(PostTabEnum.BOOKMARKS, clickData)
+                                            onNavigateToPost = { postIndex, userId ->
+                                                profileNavigate.toMyPostDetail(
+                                                    ProfilePostDetailParam(
+                                                        postTab = PostTabEnum.BOOKMARKS.key,
+                                                        postIndex = postIndex,
+                                                        userId = userId,
+                                                    )
+                                                )
                                             }
                                         )
                                     }
@@ -188,9 +194,7 @@ fun ProfileLayout(
                                         ProfileAboutTab(
                                             isEmployee = isEmployee,
                                             about = about,
-                                            onNavigateToUserProfile = { userId, username ->
-                                                profileNavigate.toUserProfile(userId, username)
-                                            },
+                                            onNavigateToUserProfile = { profileNavigate.toUserProfile(it) },
                                         )
                                     }
                                 }
@@ -213,7 +217,9 @@ fun ProfileLayout(
                                     onNavigateToSocial = { profileNavigate.toSocial(it) },
                                     onNavigateToBusinessOwner = {
                                         user.businessOwner?.let {
-                                            profileNavigate.toUserProfile(it.id, it.username)
+                                            profileNavigate.toUserProfile(
+                                                UserProfileParam(it.id, it.username, it.profession)
+                                            )
                                         }
                                     },
                                     actions = actions

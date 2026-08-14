@@ -54,7 +54,7 @@ fun NavGraphBuilder.myProfileGraph(
         }
 
         composable(
-            route = "${MainRoute.MyProfilePostDetail.route}/{postTab}/{postIndex}",
+            route = MainRoute.MyProfilePostDetail.route,
             enterTransition = { fadeIn(animationSpec = tween(durationMillis = 200)) },
             exitTransition = { ExitTransition.None },
             popEnterTransition = { EnterTransition.None },

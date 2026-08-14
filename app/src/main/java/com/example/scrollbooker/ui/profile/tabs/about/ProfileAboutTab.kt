@@ -30,13 +30,14 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfileAbout
+import com.example.scrollbooker.navigation.navigators.UserProfileParam
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun ProfileAboutTab(
     isEmployee: Boolean,
     about: FeatureState<UserProfileAbout>,
-    onNavigateToUserProfile: (userId: Int, username: String) -> Unit
+    onNavigateToUserProfile: (param: UserProfileParam) -> Unit
 ) {
     val scrollState = rememberScrollState()
 

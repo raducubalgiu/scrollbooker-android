@@ -20,14 +20,12 @@ import timber.log.Timber
 @Composable
 fun PostGrid(
     post: Post,
-    onNavigateToPost: (Int) -> Unit
+    onNavigateToPost: () -> Unit
 ) {
     Box(modifier = Modifier
         .aspectRatio(9f / 12f)
         .background(SurfaceBG)
-        .clickable(onClick = {
-            onNavigateToPost(post.id)
-        })
+        .clickable(onClick = onNavigateToPost)
     ) {
         AsyncImage(
             model = post.mediaFiles.first().thumbnailUrl,

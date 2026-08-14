@@ -23,6 +23,7 @@ import com.example.scrollbooker.entity.user.notification.domain.model.Employment
 import com.example.scrollbooker.entity.user.notification.domain.model.Notification
 import com.example.scrollbooker.entity.user.notification.domain.model.resolveDescription
 import com.example.scrollbooker.navigation.navigators.InboxNavigator
+import com.example.scrollbooker.navigation.navigators.UserProfileParam
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
@@ -140,7 +141,13 @@ fun NotificationItem(
         titleMaxLines = 1,
         descriptionMaxLines = descMaxLines,
         onNavigateUserProfile = {
-            inboxNavigate.toUserProfile(notification.sender.id, notification.sender.username)
+            inboxNavigate.toUserProfile(
+                UserProfileParam(
+                    notification.sender.id,
+                    notification.sender.username,
+                    notification.sender.profession
+                )
+            )
         },
         badgeConfig = badgeConfig,
         trailingContent = trailingContent

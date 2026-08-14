@@ -17,6 +17,7 @@ import com.example.scrollbooker.components.core.buttons.MainButtonOutlined
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfileReviews
+import com.example.scrollbooker.navigation.navigators.UserProfileParam
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleLarge
 
@@ -25,7 +26,7 @@ fun BusinessReviewsSection(
     reviews: BusinessProfileReviews,
     ratingsAverage: Float,
     ratingsCount: Int,
-    onNavigateToReviewerProfile: (userId: Int, username: String) -> Unit
+    onNavigateToReviewerProfile: (param: UserProfileParam) -> Unit
 ) {
     Column(modifier = Modifier
         .fillMaxWidth()

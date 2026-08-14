@@ -5,7 +5,6 @@ import com.example.scrollbooker.core.enums.BookingSourceEnum
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.profile.PostTabEnum
-import com.example.scrollbooker.ui.profile.components.SelectedPostUi
 
 class ProfileNavigator (
     private val navController: NavHostController
@@ -14,18 +13,22 @@ class ProfileNavigator (
         navController.popBackStack()
     }
 
-    fun toUserProfile(userId: Int, username: String) {
-        navController.navigateToUserProfile(userId, username)
+    fun toUserProfile(param: UserProfileParam) {
+        navController.navigateToUserProfile(param)
     }
 
-    fun toMyPostDetail(postTab: PostTabEnum, selectedPostUi: SelectedPostUi) {
-        navController.navigate("${MainRoute.MyProfilePostDetail.route}/${postTab.key}/${selectedPostUi.index}") {
+    fun toMyPostDetail(param: ProfilePostDetailParam) {
+        val route = MainRoute.MyProfilePostDetail.createRoute(param)
+
+        navController.navigate(route) {
             launchSingleTop = true
         }
     }
 
-    fun toUserPostDetail(postTab: PostTabEnum, selectedPostUi: SelectedPostUi, userId: Int) {
-        navController.navigate("${MainRoute.UserProfilePostDetail.route}/${postTab.key}/${selectedPostUi.index}/$userId") {
+    fun toUserPostDetail(param: ProfilePostDetailParam) {
+        val route = MainRoute.UserProfilePostDetail.createRoute(param)
+
+        navController.navigate(route) {
             launchSingleTop = true
         }
     }

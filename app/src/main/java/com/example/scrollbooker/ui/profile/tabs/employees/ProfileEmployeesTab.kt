@@ -31,6 +31,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.core.util.rememberFlingBehavior
 import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
+import com.example.scrollbooker.navigation.navigators.UserProfileParam
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.titleLarge
 
@@ -38,7 +39,7 @@ import com.example.scrollbooker.ui.theme.titleLarge
 fun ProfileEmployeesTab(
     isOwnProfile: Boolean,
     employees: LazyPagingItems<Employee>,
-    onNavigateToEmployeeProfile: (userId: Int, username: String) -> Unit,
+    onNavigateToEmployeeProfile: (param: UserProfileParam) -> Unit,
     onNavigateToBooking: (employee: Employee) -> Unit
 ) {
     val refreshState = employees.loadState.refresh

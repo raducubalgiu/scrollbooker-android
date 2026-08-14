@@ -20,6 +20,7 @@ import com.example.scrollbooker.components.customized.protected.Protected
 import com.example.scrollbooker.core.enums.PermissionEnum
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
+import com.example.scrollbooker.navigation.navigators.UserProfileParam
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.bodyMedium
@@ -29,13 +30,17 @@ import com.example.scrollbooker.ui.theme.titleMedium
 fun ProfileEmployee(
     isOwnProfile: Boolean,
     employee: Employee,
-    onNavigateToEmployeeProfile: (userId: Int, username: String) -> Unit,
+    onNavigateToEmployeeProfile: (param: UserProfileParam) -> Unit,
     onNavigateToBooking: (employee: Employee) -> Unit
 ) {
     ListItem(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = { onNavigateToEmployeeProfile(employee.id, employee.username) }),
+            .clickable(onClick = {
+                onNavigateToEmployeeProfile(
+                    UserProfileParam(employee.id, employee.username, employee.job)
+                )}
+            ),
         headlineContent = {
             Text(
                 maxLines = 1,
@@ -70,7 +75,9 @@ fun ProfileEmployee(
                 url = employee.avatar ?: "",
                 rating = employee.ratingsAverage,
                 size = 55.dp,
-                onClick = { onNavigateToEmployeeProfile(employee.id, employee.username) }
+                onClick = { onNavigateToEmployeeProfile(
+                    UserProfileParam(employee.id, employee.username, employee.job)
+                )}
             )
         },
         colors = ListItemDefaults.colors(

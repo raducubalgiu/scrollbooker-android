@@ -10,14 +10,14 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.core.layout.MessageScreen
-import com.example.scrollbooker.ui.inbox.components.NotificationsList
+import com.example.scrollbooker.navigation.navigators.UserProfileParam
 import com.example.scrollbooker.ui.social.SocialViewModel
 import com.example.scrollbooker.ui.social.components.UserSocialList
 
 @Composable
 fun UserFollowersTab(
     viewModel: SocialViewModel,
-    onNavigateUserProfile: (userId: Int, username: String) -> Unit
+    onNavigateUserProfile: (param: UserProfileParam) -> Unit
 ) {
     val userFollowers = viewModel.userFollowers.collectAsLazyPagingItems()
     val refreshState = userFollowers.loadState.refresh

@@ -16,6 +16,7 @@ import androidx.paging.compose.LazyPagingItems
 import com.example.scrollbooker.components.customized.LoadMoreSpinner
 import com.example.scrollbooker.components.customized.Refresh
 import com.example.scrollbooker.entity.user.userSocial.domain.model.UserSocial
+import com.example.scrollbooker.navigation.navigators.UserProfileParam
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -25,7 +26,7 @@ fun UserSocialList(
     followedOverrides: Map<Int, Boolean>,
     followRequestLocks: Set<Int>,
     onFollow: (Boolean, Int) -> Unit,
-    onNavigateUserProfile: (userId: Int, username: String) -> Unit
+    onNavigateUserProfile: (param: UserProfileParam) -> Unit
 ) {
     val appendState = users.loadState.append
 

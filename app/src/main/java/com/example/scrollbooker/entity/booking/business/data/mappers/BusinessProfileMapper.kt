@@ -131,6 +131,7 @@ fun BusinessProfileReviewerDto.toDomain(): BusinessProfileReviewer {
         id = id,
         fullName = fullName,
         username = username,
+        profession = profession,
         avatar = avatar
     )
 }

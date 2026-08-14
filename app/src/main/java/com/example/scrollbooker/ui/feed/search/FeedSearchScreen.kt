@@ -38,6 +38,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.navigation.navigators.FeedNavigator
+import com.example.scrollbooker.navigation.navigators.UserProfileParam
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.bodyMedium
@@ -97,7 +98,11 @@ fun FeedSearchScreen(
                                 .clickable(
                                     interactionSource = interactionSource,
                                     indication = null,
-                                    onClick = { feedNavigate.toUserProfile(user.id, user.username) }
+                                    onClick = {
+                                        feedNavigate.toUserProfile(
+                                            UserProfileParam(user.id, user.username, user.profession)
+                                        )
+                                    }
                                 ),
                             headlineContent = {
                                 Text(

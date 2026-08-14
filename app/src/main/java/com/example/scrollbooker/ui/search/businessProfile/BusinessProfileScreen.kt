@@ -267,9 +267,7 @@ fun BusinessProfileScreen(
                         item(key = BusinessProfileSection.Employees.key) {
                             BusinessEmployeesSection(
                                 employees = employees,
-                                onNavigateToEmployeeProfile = { userId, username ->
-                                    searchNavigate.toUserProfile(userId, username)
-                                }
+                                onNavigateToEmployeeProfile = { searchNavigate.toUserProfile(it) }
                             )
                         }
                     }
@@ -279,9 +277,7 @@ fun BusinessProfileScreen(
                             reviews = profile.reviews,
                             ratingsAverage = profile.owner.counters.ratingsAverage,
                             ratingsCount = profile.owner.counters.ratingsCount,
-                            onNavigateToReviewerProfile = { userId, username ->
-                                searchNavigate.toUserProfile(userId, username)
-                            }
+                            onNavigateToReviewerProfile = { searchNavigate.toUserProfile(it) }
                         )
                     }
 

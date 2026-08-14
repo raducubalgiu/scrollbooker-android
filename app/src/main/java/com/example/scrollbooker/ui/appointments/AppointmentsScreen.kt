@@ -47,9 +47,7 @@ fun AppointmentsScreen(
                                 appointments = appointments,
                                 onNavigateToAppointmentDetails = { appointmentsNavigate.toAppointmentDetails(it) },
                                 isRefreshing = isRefreshing,
-                                onRefresh = {
-                                    viewModel.loadAppointments()
-                                }
+                                onRefresh = { viewModel.loadAppointments() }
                             )
                         }
                     }

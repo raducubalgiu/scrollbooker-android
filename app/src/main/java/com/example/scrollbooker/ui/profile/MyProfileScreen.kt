@@ -15,6 +15,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.navigation.navigators.CameraParams
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
+import com.example.scrollbooker.navigation.navigators.ProfilePostDetailParam
 import com.example.scrollbooker.ui.UserPermissionsController
 import com.example.scrollbooker.ui.profile.components.MyProfileHeader
 import com.example.scrollbooker.ui.profile.components.ProfileLayout
@@ -77,7 +78,15 @@ fun MyProfileScreen(
                 employeesState = viewModel.employees,
                 bookmarksState = viewModel.bookmarks,
                 aboutState = viewModel.about,
-                onNavigateToPost = { profileNavigate.toMyPostDetail(PostTabEnum.POSTS, it) },
+                onNavigateToPost = { postIndex, userId ->
+                    profileNavigate.toMyPostDetail(
+                        ProfilePostDetailParam(
+                            postTab = PostTabEnum.POSTS.key,
+                            postIndex = postIndex,
+                            userId = userId
+                        )
+                    )
+                },
                 onOpenScheduleSheet = { scope.launch { scheduleSheetState.show() } },
             ) {
                 MyProfileActions(

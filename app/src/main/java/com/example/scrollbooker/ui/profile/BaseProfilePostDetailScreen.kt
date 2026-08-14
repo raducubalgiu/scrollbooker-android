@@ -67,7 +67,6 @@ fun BaseProfilePostDetailScreen(
     viewModel: ProfilePostDetailViewModelContract,
     postTabKey: String,
     postIndex: Int,
-    onBack: () -> Unit,
     profileNavigate: ProfileNavigator,
 ) {
     val context = LocalContext.current
@@ -180,7 +179,7 @@ fun BaseProfilePostDetailScreen(
             containerColor = BackgroundDark,
             topBar = {
                 Header(
-                    onBack = onBack,
+                    onBack = { profileNavigate.back() },
                     title = title,
                     icon = Icons.Default.Close,
                     iconSize = 30.dp,
@@ -254,7 +253,7 @@ fun BaseProfilePostDetailScreen(
                                     viewModel.sharePost(post, channel)
                                 }
                             },
-                            onNavigateToUserProfile = { userId, username -> profileNavigate.toUserProfile(userId, username) },
+                            onNavigateToUserProfile = { profileNavigate.toUserProfile(it) },
                             showBookButton = false
                         )
                     }

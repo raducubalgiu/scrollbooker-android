@@ -22,7 +22,6 @@ fun MyProfilePostDetailScreen(
         viewModel = viewModel,
         postTabKey = postTabKey,
         postIndex = postIndex,
-        onBack = { profileNavigate.back() },
         profileNavigate = profileNavigate
     )
 }

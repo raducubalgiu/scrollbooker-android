@@ -19,6 +19,7 @@ import com.example.scrollbooker.core.enums.BookingSourceEnum
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.navigation.navigators.NavigateBookingParam
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
+import com.example.scrollbooker.navigation.navigators.ProfilePostDetailParam
 import com.example.scrollbooker.ui.profile.components.ProfileLayout
 import com.example.scrollbooker.ui.profile.components.userInfo.components.MyProfileActions
 import com.example.scrollbooker.ui.profile.components.userInfo.components.UserProfileActions
@@ -31,7 +32,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun UserProfileScreen(
     viewModel: ProfileViewModel,
-    onBack: () -> Unit,
     profileNavigate: ProfileNavigator
 ) {
     val profile by viewModel.profile.collectAsStateWithLifecycle()
@@ -54,7 +54,7 @@ fun UserProfileScreen(
         topBar = {
             Header(
                 title = userData?.username ?: "",
-                onBack = onBack,
+                onBack = { profileNavigate.back() },
                 actions = {
                     CustomIconButton(
                         imageVector = Icons.Outlined.IosShare,
@@ -77,9 +77,14 @@ fun UserProfileScreen(
                 employeesState = viewModel.employees,
                 bookmarksState = viewModel.bookmarks,
                 aboutState = viewModel.about,
-                onNavigateToPost = {
-                    val userId = userData?.id ?: return@ProfileLayout
-                    profileNavigate.toUserPostDetail(PostTabEnum.POSTS, it, userId)
+                onNavigateToPost = { postIndex, userId ->
+                    profileNavigate.toUserPostDetail(
+                        ProfilePostDetailParam(
+                            postTab = PostTabEnum.POSTS.key,
+                            postIndex = postIndex,
+                            userId = userId
+                        )
+                    )
                 },
                 onOpenScheduleSheet = { scope.launch { scheduleSheetState.show() } }
             ) {
