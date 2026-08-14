@@ -12,7 +12,7 @@ class UnBookmarkPostUseCase @Inject constructor(
             Result.success(Unit)
 
         } catch (e: Exception) {
-            Timber.tag("UnBookmark Post").e("ERROR: on UnBookmarking post: $e")
+            Timber.tag("UnBookmark Post").e(e, "ERROR: on UnBookmarking post")
             Result.failure(e)
         }
     }

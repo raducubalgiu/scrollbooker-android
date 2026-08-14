@@ -12,7 +12,7 @@ class UnLikePostUseCase @Inject constructor(
             Result.success(Unit)
 
         } catch (e: Exception) {
-            Timber.tag("Unlike Post").e("ERROR: on UnLiking post: $e")
+            Timber.tag("Unlike Post").e(e, "ERROR: on UnLiking post")
             Result.failure(e)
         }
     }

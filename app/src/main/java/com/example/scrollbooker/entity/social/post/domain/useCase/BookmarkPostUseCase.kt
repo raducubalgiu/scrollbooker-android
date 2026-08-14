@@ -12,7 +12,7 @@ class BookmarkPostUseCase @Inject constructor(
             Result.success(Unit)
 
         } catch (e: Exception) {
-            Timber.tag("Bookmark Post").e("ERROR: on Bookmarking post: $e")
+            Timber.tag("Bookmark Post").e(e, "ERROR: on Bookmarking post")
             Result.failure(e)
         }
     }
