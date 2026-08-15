@@ -20,7 +20,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.ui.search.businessProfile.sections.BusinessProfileSection
 import com.example.scrollbooker.ui.theme.Background
@@ -78,8 +77,7 @@ fun BusinessProfileTabRow(
                             modifier = Modifier.alpha(animatedAlpha),
                             text = stringResource(section.label),
                             fontWeight = FontWeight.Bold,
-                            style = bodyLarge,
-                            fontSize = 17.sp
+                            style = bodyLarge
                         )
                     }
                 )

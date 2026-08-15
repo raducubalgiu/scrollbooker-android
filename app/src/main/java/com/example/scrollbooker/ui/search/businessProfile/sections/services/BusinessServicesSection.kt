@@ -83,7 +83,7 @@ fun BusinessServicesSection(
                             }
                         },
                         modifier = Modifier
-                            .clip(ShapeDefaults.Medium)
+                            .clip(ShapeDefaults.ExtraLarge)
                             .background(if (isSelected) SurfaceBG else Background)
                             .height(42.dp),
                         text = {

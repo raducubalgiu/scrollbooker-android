@@ -21,14 +21,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.ui.search.sheets.SearchSheetActions
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.SurfaceBG
+import com.example.scrollbooker.ui.theme.bodyLarge
+import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
@@ -86,31 +91,28 @@ private fun DateTimeButton(
         color = if (isActive) SurfaceBG.copy(alpha = 0.8f) else SurfaceBG
     ) {
         Row(
-            modifier = Modifier
-                .padding(
-                    horizontal = SpacingXL,
-                    vertical = BasePadding
-                ),
+            modifier = Modifier.padding(BasePadding),
             verticalAlignment = Alignment.CenterVertically
         ) {
             icon?.let {
                 Icon(
                     painter = painterResource(R.drawable.ic_clock_outline),
                     contentDescription = null,
-                    tint = Color.Gray
+                    tint = OnSurfaceBG
                 )
                 Spacer(Modifier.width(8.dp))
             }
 
-            Spacer(Modifier.width(BasePadding))
+            Spacer(Modifier.width(SpacingM))
 
             Text(
                 text = title,
-                style = titleMedium,
-                color = OnBackground
+                style = bodyMedium,
+                color = OnSurfaceBG,
+                fontWeight = FontWeight.SemiBold
             )
 
-            Spacer(Modifier.width(SpacingXL))
+            Spacer(Modifier.width(SpacingM))
 
             if(isActive) {
                 Box(
@@ -120,14 +122,14 @@ private fun DateTimeButton(
                     Icon(
                         painter = painterResource(R.drawable.ic_close_circle_solid),
                         contentDescription = null,
-                        tint = Color.Gray
+                        tint = OnSurfaceBG
                     )
                 }
             } else {
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowDown,
                     contentDescription = null,
-                    tint = Color.Gray
+                    tint = OnSurfaceBG
                 )
             }
         }

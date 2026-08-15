@@ -20,8 +20,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.ui.theme.Divider
-import com.example.scrollbooker.ui.theme.LastMinute
-import com.example.scrollbooker.ui.theme.titleMedium
+import com.example.scrollbooker.ui.theme.Primary
+import com.example.scrollbooker.ui.theme.bodyMedium
 
 @Composable
 fun TimeIntervalCard(
@@ -39,7 +39,7 @@ fun TimeIntervalCard(
             .widthIn(min = 130.dp)
             .border(
                 width = if(isSelected) 2.dp else 1.dp,
-                color = if(isSelected) LastMinute else Divider,
+                color = if(isSelected) Primary else Divider,
                 shape = ShapeDefaults.Medium
             )
             .clickable(
@@ -51,7 +51,7 @@ fun TimeIntervalCard(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            style = titleMedium,
+            style = bodyMedium,
             fontWeight = FontWeight.SemiBold,
             text = title
         )

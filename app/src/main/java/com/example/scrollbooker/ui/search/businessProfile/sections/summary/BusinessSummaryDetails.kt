@@ -22,6 +22,7 @@ import com.example.scrollbooker.core.util.formatOpeningHours
 import com.example.scrollbooker.entity.user.userProfile.domain.model.OpeningHours
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.bodyLarge
+import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleLarge
 import com.example.scrollbooker.ui.theme.titleMedium
 
@@ -34,9 +35,8 @@ fun BusinessSummaryDetails(
 ) {
     Text(
         text = fullName,
-        style = titleLarge,
-        fontWeight = FontWeight.Bold,
-        fontSize = 20.sp
+        style = titleMedium,
+        fontWeight = FontWeight.ExtraBold
     )
 
     Spacer(Modifier.height(SpacingXS))
@@ -47,13 +47,15 @@ fun BusinessSummaryDetails(
                 text = "${it}km",
                 color = Color.Gray,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                style = bodyMedium
             )
 
             Text(
                 modifier = Modifier.padding(horizontal = 5.dp),
                 text = "\u2022",
-                color = Color.Gray
+                color = Color.Gray,
+                style = bodyMedium
             )
         }
 

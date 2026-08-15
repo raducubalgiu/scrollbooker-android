@@ -63,7 +63,6 @@ fun BusinessReviewsList(
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.padding(bottom = SpacingXXS),
                         style = titleMedium,
-                        fontSize = 18.sp,
                         color = OnBackground,
                         text = r.reviewer.fullName
                     )

@@ -21,9 +21,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.ui.theme.Divider
-import com.example.scrollbooker.ui.theme.LastMinute
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnPrimary
+import com.example.scrollbooker.ui.theme.bodyMedium
 import org.threeten.bp.LocalDate
 import org.threeten.bp.YearMonth
 import java.util.Locale
@@ -65,7 +65,7 @@ fun PickerMonthGrid(
                         .clip(CircleShape)
                         .background(
                             when {
-                                isSelected -> LastMinute
+                                isSelected -> OnBackground
                                 else -> Color.Transparent
                             }
                         )
@@ -76,12 +76,13 @@ fun PickerMonthGrid(
                 ) {
                     Text(
                         text = date.dayOfMonth.toString(),
+                        style = bodyMedium,
                         color = when {
                             isPast -> Divider
                             isSelected -> OnPrimary
                             else -> OnBackground
                         },
-                        fontWeight = if(isSelected) FontWeight.SemiBold else FontWeight.Normal
+                        fontWeight = if(isSelected) FontWeight.Bold else FontWeight.SemiBold
                     )
                 }
             }

@@ -32,6 +32,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.LastMinute
 import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.titleMedium
 import org.threeten.bp.LocalTime
 import org.threeten.bp.format.DateTimeFormatter
@@ -117,7 +118,7 @@ fun TimeSection(
                             disabledTextColor = OnBackground,
                             disabledBorderColor = Divider,
                             disabledLabelColor = Color.Gray,
-                            focusedBorderColor = LastMinute,
+                            focusedBorderColor = Primary,
                             unfocusedBorderColor = Divider
                         )
                     )

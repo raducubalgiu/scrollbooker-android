@@ -34,6 +34,7 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.enums.BookingSourceEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.util.rememberFlingBehavior
 import com.example.scrollbooker.core.util.shareBusinessProfile
 import com.example.scrollbooker.navigation.navigators.SearchNavigator
 import com.example.scrollbooker.ui.search.businessProfile.components.BusinessProfileHeader
@@ -179,7 +180,7 @@ fun BusinessProfileScreen(
                 LazyColumn(
                     state = lazyListState,
                     modifier = Modifier.fillMaxSize(),
-                    overscrollEffect = null
+                    overscrollEffect = null,
                 ) {
                     stickyHeader {
                         Spacer(Modifier

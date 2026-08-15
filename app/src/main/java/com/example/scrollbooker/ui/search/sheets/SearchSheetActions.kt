@@ -18,12 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
-import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
@@ -57,12 +56,9 @@ fun SearchSheetActions(
         }
 
         Button(
-            contentPadding = PaddingValues(
-                vertical = BasePadding,
-                horizontal = SpacingXXL
-            ),
             onClick = onConfirm,
-            enabled = isConfirmEnabled
+            enabled = isConfirmEnabled,
+            contentPadding = PaddingValues(BasePadding)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -79,9 +75,8 @@ fun SearchSheetActions(
 
                 Text(
                     text = stringResource(primaryActionText),
-                    style = titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp
+                    style = bodyLarge,
+                    fontWeight = FontWeight.Bold
                 )
             }
         }

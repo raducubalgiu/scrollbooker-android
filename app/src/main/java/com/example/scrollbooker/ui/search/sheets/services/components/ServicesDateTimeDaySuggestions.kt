@@ -26,7 +26,9 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.LastMinute
+import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
+import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
 import org.threeten.bp.LocalDate
 import toPrettyDate
@@ -80,7 +82,7 @@ private fun DaySuggestion(
         modifier = modifier
             .border(
                 width = if(isSelected) 2.dp else 1.dp,
-                color = if(isSelected) LastMinute else Divider,
+                color = if(isSelected) Primary else Divider,
                 shape = ShapeDefaults.Medium
             )
             .clickable(
@@ -94,7 +96,6 @@ private fun DaySuggestion(
         Column(modifier = Modifier.padding(BasePadding)) {
             Text(
                 text = title,
-                style = titleMedium,
                 fontWeight = FontWeight.ExtraBold
             )
 
@@ -102,7 +103,8 @@ private fun DaySuggestion(
 
             Text(
                 text = description,
-                color = Color.Gray
+                color = Color.Gray,
+                style = bodyMedium
             )
         }
     }

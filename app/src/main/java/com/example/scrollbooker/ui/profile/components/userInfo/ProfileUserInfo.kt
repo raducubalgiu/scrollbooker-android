@@ -40,6 +40,7 @@ import com.example.scrollbooker.ui.profile.components.userInfo.components.Profil
 import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileOpeningHours
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Rating
+import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
 
 // V2 - Intent Actions logic will be added in next iterations, for now it's hidden in the code
@@ -136,7 +137,7 @@ fun ProfileUserInfo(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = user.profession,
-                        style = titleMedium,
+                        style = bodyMedium,
                         modifier = Modifier.weight(1f, fill = false),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,

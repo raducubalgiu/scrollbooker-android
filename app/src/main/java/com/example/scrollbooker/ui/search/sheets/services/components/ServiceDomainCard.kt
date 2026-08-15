@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.ui.theme.SurfaceBG
+import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
@@ -54,7 +55,7 @@ fun ServiceDomainCard(
 
         Text(
             text = name,
-            style = titleMedium,
+            style = bodyLarge,
             fontWeight = FontWeight.Bold
         )
     }

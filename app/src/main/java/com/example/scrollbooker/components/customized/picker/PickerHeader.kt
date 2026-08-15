@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.ui.theme.headlineSmall
+import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun PickerHeader(
@@ -43,7 +44,6 @@ fun PickerHeader(
     ) {
         Text(
             text = title,
-            style = headlineSmall,
             fontWeight = FontWeight.SemiBold
         )
 

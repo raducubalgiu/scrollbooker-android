@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMediaFile
 import com.example.scrollbooker.ui.search.components.card.SearchCardCarousel
 import com.example.scrollbooker.ui.theme.Background
@@ -67,7 +68,7 @@ fun BusinessProfileHeader(
         modifier = Modifier
             .fillMaxWidth()
             .statusBarsPadding()
-            .padding(8.dp)
+            .padding(SpacingM)
             .size(36.dp)
             .zIndex(3f),
         verticalAlignment = Alignment.CenterVertically,
@@ -93,8 +94,7 @@ fun BusinessProfileHeader(
             Text(
                 text = fullName,
                 style = titleMedium,
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp
+                fontWeight = FontWeight.Bold
             )
         }
 
