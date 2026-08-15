@@ -84,4 +84,10 @@ interface PostApiService {
         @Path("postId") postId: Int,
         @Body request: PostShareRequest
     )
+
+    @POST("posts/{postId}/analytics/views")
+    suspend fun createPostViewEvent(
+        @Path("postId") postId: Int,
+        @Body request: PostViewEventRequest
+    )
 }

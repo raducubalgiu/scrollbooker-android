@@ -6,6 +6,7 @@ import com.example.scrollbooker.entity.social.post.data.remote.PostApiService
 import com.example.scrollbooker.entity.social.post.data.repository.PostRepositoryImpl
 import com.example.scrollbooker.entity.social.post.domain.repository.PostRepository
 import com.example.scrollbooker.entity.social.post.domain.useCase.BookmarkPostUseCase
+import com.example.scrollbooker.entity.social.post.domain.useCase.CreatePostViewEventUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.CreateVideoPostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.CreateVideoReviewUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetExplorePostsUseCase
@@ -156,5 +157,13 @@ object PostsModule {
         repository: PostRepository,
     ): SharePostUseCase {
         return SharePostUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCreatePostViewEventUseCase(
+        repository: PostRepository,
+    ): CreatePostViewEventUseCase {
+        return CreatePostViewEventUseCase(repository)
     }
 }
