@@ -1,7 +1,6 @@
 package com.example.scrollbooker.ui.feed
 
 import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.clickable
@@ -100,27 +99,45 @@ fun BaseFeedTabScreen(
         }
     }
 
-    LaunchedEffect(settledPage, isTabActive) {
+    // Old Implementation
+//    LaunchedEffect(settledPage, isTabActive) {
+//        if (!isTabActive) return@LaunchedEffect
+//
+//        snapshotFlow { posts.getOrNull(settledPage)?.id }
+//            .distinctUntilChanged()
+//            .collectLatest { postId ->
+//                if (postId == null) return@collectLatest
+//
+//                viewModel.ensureWindow(
+//                    centerIndex = settledPage,
+//                    getPost = { idx -> posts.getOrNull(idx) }
+//                )
+//                viewModel.onPageSettled(settledPage)
+//            }
+//    }
+
+    LaunchedEffect(isTabActive, posts) {
         if (!isTabActive) return@LaunchedEffect
 
-        snapshotFlow { posts.getOrNull(settledPage)?.id }
+        snapshotFlow { posts.getOrNull(verticalPagerState.settledPage)?.id }
             .distinctUntilChanged()
             .collectLatest { postId ->
                 if (postId == null) return@collectLatest
 
+                val currentPage = verticalPagerState.settledPage
                 viewModel.ensureWindow(
-                    centerIndex = settledPage,
+                    centerIndex = currentPage,
                     getPost = { idx -> posts.getOrNull(idx) }
                 )
-                viewModel.onPageSettled(settledPage)
+                viewModel.onPageSettled(currentPage)
             }
     }
 
     val decay = rememberSplineBasedDecay<Float>()
-    val snapSpec: SpringSpec<Float> = spring(
-        dampingRatio = Spring.DampingRatioNoBouncy,
-        stiffness = Spring.StiffnessHigh,
-    )
+    val snapSpec = remember {
+        spring<Float>(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessHigh)
+    }
+
     val fling = PagerDefaults.flingBehavior(
         state = verticalPagerState,
         pagerSnapDistance = PagerSnapDistance.atMost(1),

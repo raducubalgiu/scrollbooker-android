@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.components.customized.post.PostInteractionStore
+import com.example.scrollbooker.components.customized.post.PostViewHeartbeatTracker
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.components.customized.post.VideoPlayerManager
 import com.example.scrollbooker.core.util.withVisibleLoading
@@ -68,6 +69,7 @@ class MyProfileViewModel @Inject constructor(
     getSchedulesByUserIdUseCase: GetSchedulesByUserIdUseCase,
     postInteractionStore: PostInteractionStore,
     videoPlayerManager: VideoPlayerManager,
+    postViewHeartbeatTracker: PostViewHeartbeatTracker
 ):  BaseProfileViewModel(
     shouldShowVisibleLoading = false,
     getUserProfileUseCase = getUserProfileUseCase,
@@ -78,7 +80,8 @@ class MyProfileViewModel @Inject constructor(
     getUserProfileAboutUseCase = getUserProfileAboutUseCase,
     getSchedulesByUserIdUseCase = getSchedulesByUserIdUseCase,
     postInteractionStore = postInteractionStore,
-    videoPlayerManager = videoPlayerManager
+    videoPlayerManager = videoPlayerManager,
+    postViewHeartbeatTracker = postViewHeartbeatTracker
 ) {
     override val userIdFlow: Flow<Int?> = authDataStore.getUserId().distinctUntilChanged()
     override val usernameFlow: Flow<String?> = authDataStore.getUserUsername().distinctUntilChanged()

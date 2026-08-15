@@ -90,4 +90,9 @@ interface PostApiService {
         @Path("postId") postId: Int,
         @Body request: PostViewEventRequest
     )
+
+    @POST("posts/analytics/views/bulk")
+    suspend fun createPostViewEventsBulk(
+        @Body request: PostsViewEventsBulkRequest
+    ): PostsViewEventsBulkResponse
 }

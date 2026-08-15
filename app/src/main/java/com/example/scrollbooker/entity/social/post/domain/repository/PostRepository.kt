@@ -5,6 +5,8 @@ import com.example.scrollbooker.core.enums.ShareChannelEnum
 import com.example.scrollbooker.entity.social.post.data.remote.CreatePostRequest
 import com.example.scrollbooker.entity.social.post.data.remote.CreateVideoReviewRequest
 import com.example.scrollbooker.entity.social.post.data.remote.PostViewEventRequest
+import com.example.scrollbooker.entity.social.post.data.remote.PostsViewEventsBulkRequest
+import com.example.scrollbooker.entity.social.post.data.remote.PostsViewEventsBulkResponse
 import com.example.scrollbooker.entity.social.post.data.remote.UpdatePostRequest
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import kotlinx.coroutines.flow.Flow
@@ -31,4 +33,5 @@ interface PostRepository {
     suspend fun createVideoReview(request: CreateVideoReviewRequest)
 
     suspend fun createPostViewEvent(postId: Int, request: PostViewEventRequest)
+    suspend fun createPostViewEventsBulk(request: PostsViewEventsBulkRequest): PostsViewEventsBulkResponse
 }

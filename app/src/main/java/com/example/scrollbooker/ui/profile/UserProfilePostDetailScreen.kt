@@ -1,6 +1,7 @@
 package com.example.scrollbooker.ui.profile
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
+import com.example.scrollbooker.core.enums.PostViewSourceEnum
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -11,7 +12,7 @@ fun UserProfilePostDetailScreen(
     viewModel: ProfileViewModel,
     profileNavigate: ProfileNavigator,
 ) {
-    val detailScopeKey = "USER_PROFILE_DETAIL_${postTabKey}_${viewModel.userId}"
+    val detailScopeKey = "user_profile_${PostViewSourceEnum.POST_DETAIL.key}"
 
     BaseProfilePostDetailScreen(
         detailScopeKey = detailScopeKey,

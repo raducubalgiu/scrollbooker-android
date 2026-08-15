@@ -13,6 +13,8 @@ import com.example.scrollbooker.entity.social.post.data.remote.PostPagingSource
 import com.example.scrollbooker.entity.social.post.data.remote.PostShareRequest
 import com.example.scrollbooker.entity.social.post.data.remote.PostVideoReviewsPagingSource
 import com.example.scrollbooker.entity.social.post.data.remote.PostViewEventRequest
+import com.example.scrollbooker.entity.social.post.data.remote.PostsViewEventsBulkRequest
+import com.example.scrollbooker.entity.social.post.data.remote.PostsViewEventsBulkResponse
 import com.example.scrollbooker.entity.social.post.data.remote.UpdatePostRequest
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.social.post.domain.repository.PostRepository
@@ -100,5 +102,9 @@ class PostRepositoryImpl @Inject constructor(
 
     override suspend fun createPostViewEvent(postId: Int, request: PostViewEventRequest) {
         return apiService.createPostViewEvent(postId, request)
+    }
+
+    override suspend fun createPostViewEventsBulk(request: PostsViewEventsBulkRequest): PostsViewEventsBulkResponse {
+        return apiService.createPostViewEventsBulk(request)
     }
 }

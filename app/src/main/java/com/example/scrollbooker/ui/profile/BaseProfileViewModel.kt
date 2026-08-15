@@ -7,6 +7,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.scrollbooker.components.customized.post.PostActionUiState
 import com.example.scrollbooker.components.customized.post.PostInteractionStore
+import com.example.scrollbooker.components.customized.post.PostViewHeartbeatTracker
 import com.example.scrollbooker.components.customized.post.VideoPlayerManager
 import com.example.scrollbooker.core.enums.ShareChannelEnum
 import com.example.scrollbooker.core.util.FeatureState
@@ -49,7 +50,8 @@ abstract class BaseProfileViewModel(
     private val getSchedulesByUserIdUseCase: GetSchedulesByUserIdUseCase,
     private val getUserProfileAboutUseCase: GetUserProfileAboutUseCase,
     private val postInteractionStore: PostInteractionStore,
-    protected val videoPlayerManager: VideoPlayerManager
+    protected val videoPlayerManager: VideoPlayerManager,
+    @Suppress("UNUSED_PARAMETER") postViewHeartbeatTracker: PostViewHeartbeatTracker
 ) : ViewModel(), ProfilePostDetailViewModelContract {
     abstract val userIdFlow: Flow<Int?>
     abstract val usernameFlow: Flow<String?>

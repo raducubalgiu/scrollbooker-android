@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.media3.exoplayer.ExoPlayer
 import com.example.scrollbooker.components.customized.post.PostActionUiState
 import com.example.scrollbooker.components.customized.post.PostInteractionStore
+import com.example.scrollbooker.components.customized.post.PostViewHeartbeatTracker
 import com.example.scrollbooker.components.customized.post.VideoPlayerManager
 import com.example.scrollbooker.core.enums.ShareChannelEnum
 import com.example.scrollbooker.entity.social.post.domain.model.Post
@@ -11,10 +12,10 @@ import kotlinx.coroutines.flow.StateFlow
 
 abstract class BaseFeedViewModel(
     private val postInteractionStore: PostInteractionStore,
-    protected val videoPlayerManager: VideoPlayerManager
+    protected val videoPlayerManager: VideoPlayerManager,
+    @Suppress("UNUSED_PARAMETER") postViewHeartbeatTracker: PostViewHeartbeatTracker
 ) : ViewModel(), FeedViewModelContract {
     abstract val feedScopeKey: String
-
     override val userPausedPostIds: StateFlow<Set<Int>> = videoPlayerManager.userPausedPostIds
 
     override fun observePostUi(postId: Int): StateFlow<PostActionUiState> =
@@ -62,3 +63,4 @@ abstract class BaseFeedViewModel(
         videoPlayerManager.onPageSettled(feedScopeKey, index, isScreenActive = true)
     }
 }
+

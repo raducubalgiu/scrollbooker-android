@@ -3,7 +3,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.scrollbooker.components.customized.post.PostInteractionStore
+import com.example.scrollbooker.components.customized.post.PostViewHeartbeatTracker
 import com.example.scrollbooker.components.customized.post.VideoPlayerManager
+import com.example.scrollbooker.core.enums.PostViewSourceEnum
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetExplorePostsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,12 +18,14 @@ import javax.inject.Inject
 class ExploreFeedViewModel @Inject constructor(
     getExplorePostsUseCase: GetExplorePostsUseCase,
     postInteractionStore: PostInteractionStore,
-    videoPlayerManager: VideoPlayerManager
+    videoPlayerManager: VideoPlayerManager,
+    postViewHeartbeatTracker: PostViewHeartbeatTracker
 ) : BaseFeedViewModel(
     postInteractionStore,
-    videoPlayerManager
+    videoPlayerManager,
+    postViewHeartbeatTracker
 ) {
-    override val feedScopeKey: String = "FEED_EXPLORE"
+    override val feedScopeKey: String = PostViewSourceEnum.EXPLORE_FEED.key
 
     private val _selectedServiceIds: MutableStateFlow<Set<Int>> = MutableStateFlow(emptySet())
     val selectedServiceIds: Flow<Set<Int>> = _selectedServiceIds.asStateFlow()

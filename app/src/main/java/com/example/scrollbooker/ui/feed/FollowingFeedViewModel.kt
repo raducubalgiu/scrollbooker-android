@@ -4,7 +4,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.scrollbooker.components.customized.post.PostInteractionStore
+import com.example.scrollbooker.components.customized.post.PostViewHeartbeatTracker
 import com.example.scrollbooker.components.customized.post.VideoPlayerManager
+import com.example.scrollbooker.core.enums.PostViewSourceEnum
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetFollowingPostsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,12 +17,14 @@ import javax.inject.Inject
 class FollowingFeedViewModel @Inject constructor(
     getFollowingPostsUseCase: GetFollowingPostsUseCase,
     postInteractionStore: PostInteractionStore,
-    videoPlayerManager: VideoPlayerManager
+    videoPlayerManager: VideoPlayerManager,
+    postViewHeartbeatTracker: PostViewHeartbeatTracker
 ) : BaseFeedViewModel(
     postInteractionStore,
-    videoPlayerManager
+    videoPlayerManager,
+    postViewHeartbeatTracker
 ) {
-    override val feedScopeKey: String = "FEED_FOLLOWING"
+    override val feedScopeKey: String = PostViewSourceEnum.FOLLOWING_FEED.key
 
     override val posts: Flow<PagingData<Post>> =
         getFollowingPostsUseCase()

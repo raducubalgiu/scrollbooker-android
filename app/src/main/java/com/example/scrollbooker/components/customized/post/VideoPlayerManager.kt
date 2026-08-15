@@ -17,14 +17,18 @@ import com.example.scrollbooker.entity.social.post.domain.model.Post
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import java.util.IdentityHashMap
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -38,8 +42,11 @@ class VideoPlayerManager @Inject constructor(
     private val indexToPlayer: SnapshotStateMap<String, ExoPlayer> = mutableStateMapOf()
     private val indexToPostId: SnapshotStateMap<String, Int> = mutableStateMapOf()
 
-    private val windowMutex = Mutex()
+    private val playerToKey = IdentityHashMap<ExoPlayer, String>()
+    private val _playbackEvents = MutableSharedFlow<PlaybackEvent>(extraBufferCapacity = 64)
+    val playbackEvents: SharedFlow<PlaybackEvent> = _playbackEvents.asSharedFlow()
 
+    private val windowMutex = Mutex()
     private val managerScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     private val _userPausedPostIds = MutableStateFlow<Set<Int>>(emptySet())
@@ -81,6 +88,24 @@ class VideoPlayerManager @Inject constructor(
             .apply {
                 repeatMode = Player.REPEAT_MODE_ONE
                 playWhenReady = false
+
+                // ADD — sursă unică de adevăr pentru heartbeat, indiferent din ce call site vine play/pause
+                addListener(object : Player.Listener {
+                    override fun onIsPlayingChanged(isPlaying: Boolean) {
+                        val key = playerToKey[this@apply] ?: return
+                        val postId = indexToPostId[key] ?: return
+
+                        _playbackEvents.tryEmit(
+                            PlaybackEvent(
+                                scopeKey = key.substringBefore("#"),
+                                postId = postId,
+                                isPlaying = isPlaying,
+                                positionMs = this@apply.currentPosition,
+                                durationMs = this@apply.duration.takeIf { it > 0 }
+                            )
+                        )
+                    }
+                })
             }
     }
 
@@ -136,6 +161,7 @@ class VideoPlayerManager @Inject constructor(
                 val player = indexToPlayer.remove(key)
                 if (player != null) {
                     indexToPostId.remove(key)
+                    playerToKey.remove(player) // ADD
                     player.playWhenReady = false
                     player.stop()
                     player.clearMediaItems()
@@ -179,6 +205,7 @@ class VideoPlayerManager @Inject constructor(
                     if (key.startsWith("$scopeKey#") && key != keyM1 && key != keyC && key != keyP1) {
                         indexToPlayer.remove(key)?.let { player ->
                             indexToPostId.remove(key)
+                            playerToKey.remove(player) // ADD — la fel, înainte de reset, ca să nu emitem eveniment fals
                             resetPlayerFull(player)
                             if (!pool.contains(player)) pool.addLast(player)
                         }
@@ -219,6 +246,7 @@ class VideoPlayerManager @Inject constructor(
 
                     indexToPlayer[currentKey] = player
                     indexToPostId[currentKey] = post.id
+                    playerToKey[player] = currentKey // ADD — trebuie setat ÎNAINTE de setMediaItem/prepare, ca listener-ul să găsească deja key-ul corect
 
                     val mediaItem = MediaItem.fromUri(post.mediaFiles.first().url)
                     player.setMediaItem(mediaItem)
@@ -261,6 +289,14 @@ class VideoPlayerManager @Inject constructor(
         }
     }
 
+    suspend fun currentPositionMs(scopeKey: String, postId: Int): Long? =
+        withContext(Dispatchers.Main.immediate) {
+            val key = indexToPostId.entries
+                .firstOrNull { it.key.startsWith("$scopeKey#") && it.value == postId }
+                ?.key ?: return@withContext null
+            indexToPlayer[key]?.currentPosition
+        }
+
     /**
      * OPTIMIZAT: Adăugat .clearVideoSurface() obligatoriu pentru a preveni memory leaks hardware
      */
@@ -270,6 +306,7 @@ class VideoPlayerManager @Inject constructor(
             if (key.startsWith("$scopeKey#")) {
                 indexToPlayer.remove(key)?.let { player ->
                     indexToPostId.remove(key)
+                    playerToKey.remove(player) // ADD — înainte de pause(), din același motiv
 
                     player.playWhenReady = false
                     player.pause()

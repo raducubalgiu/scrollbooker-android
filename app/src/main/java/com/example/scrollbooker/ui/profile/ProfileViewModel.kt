@@ -2,6 +2,7 @@ package com.example.scrollbooker.ui.profile
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.components.customized.post.PostInteractionStore
+import com.example.scrollbooker.components.customized.post.PostViewHeartbeatTracker
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.components.customized.post.VideoPlayerManager
 import com.example.scrollbooker.entity.booking.employee.domain.useCase.GetEmployeesByOwnerUseCase
@@ -37,7 +38,8 @@ class ProfileViewModel @Inject constructor(
     getSchedulesByUserIdUseCase: GetSchedulesByUserIdUseCase,
     getUserProfileAboutUseCase: GetUserProfileAboutUseCase,
     postInteractionStore: PostInteractionStore,
-    videoPlayerManager: VideoPlayerManager
+    videoPlayerManager: VideoPlayerManager,
+    postViewHeartbeatTracker: PostViewHeartbeatTracker
 ): BaseProfileViewModel(
     shouldShowVisibleLoading = true,
     getUserProfileUseCase = getUserProfileUseCase,
@@ -48,7 +50,8 @@ class ProfileViewModel @Inject constructor(
     getSchedulesByUserIdUseCase = getSchedulesByUserIdUseCase,
     getUserProfileAboutUseCase = getUserProfileAboutUseCase,
     postInteractionStore = postInteractionStore,
-    videoPlayerManager = videoPlayerManager
+    videoPlayerManager = videoPlayerManager,
+    postViewHeartbeatTracker = postViewHeartbeatTracker
 ) {
     private val userIdFlowInternal: StateFlow<Int?> = savedStateHandle.getStateFlow("userId", null)
     private val usernameInternal: StateFlow<String?> = savedStateHandle.getStateFlow("username", null)
