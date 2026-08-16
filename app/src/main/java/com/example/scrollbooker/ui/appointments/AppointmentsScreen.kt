@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
@@ -18,7 +20,9 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.core.layout.MessageScreen
 import com.example.scrollbooker.navigation.navigators.AppointmentsNavigator
+import com.example.scrollbooker.ui.LocalBottomBarController
 import com.example.scrollbooker.ui.appointments.components.AppointmentsList
+import androidx.compose.runtime.getValue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,6 +35,16 @@ fun AppointmentsScreen(
 
     val refreshState = appointments.loadState.refresh
     val isInitialLoading = refreshState is LoadState.Loading && appointments.itemCount == 0
+
+    val bottomBarController = LocalBottomBarController.current
+    val shouldRefresh by bottomBarController.shouldRefreshAppointments.collectAsStateWithLifecycle()
+
+    LaunchedEffect(shouldRefresh) {
+        if (shouldRefresh) {
+            viewModel.loadAppointments()
+            bottomBarController.triggerAppointmentsRefresh(false)
+        }
+    }
 
     Scaffold(
         topBar = { Header(title = stringResource(R.string.bookings)) },

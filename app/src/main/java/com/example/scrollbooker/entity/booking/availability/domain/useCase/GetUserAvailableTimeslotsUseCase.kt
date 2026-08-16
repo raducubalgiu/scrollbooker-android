@@ -1,4 +1,5 @@
 package com.example.scrollbooker.entity.booking.availability.domain.useCase
+import com.example.scrollbooker.core.util.runSuspendCatching
 import com.example.scrollbooker.entity.booking.availability.domain.model.AvailableDay
 import com.example.scrollbooker.entity.booking.availability.domain.repository.AvailabilityRepository
 import javax.inject.Inject
@@ -11,12 +12,14 @@ class GetUserAvailableTimeslotsUseCase @Inject constructor(
         employeeId: Int?,
         slotDuration: Int,
         day: String,
-    ): AvailableDay {
-        return repository.getUserAvailableTimeSlots(
-            businessId = businessId,
-            employeeId = employeeId,
-            slotDuration = slotDuration,
-            day = day
-        )
+    ): Result<AvailableDay> {
+        return runSuspendCatching {
+            repository.getUserAvailableTimeSlots(
+                businessId = businessId,
+                employeeId = employeeId,
+                slotDuration = slotDuration,
+                day = day
+            )
+        }
     }
 }

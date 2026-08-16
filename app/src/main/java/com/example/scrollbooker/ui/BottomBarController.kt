@@ -8,6 +8,8 @@ import kotlinx.coroutines.flow.StateFlow
 data class BottomBarController(
     val appointments: StateFlow<Int>,
     val notifications: StateFlow<Int>,
+    val shouldRefreshAppointments: StateFlow<Boolean> = MutableStateFlow(false),
+    val triggerAppointmentsRefresh: (Boolean) -> Unit = {},
     val currentTab: StateFlow<MainTab> = MutableStateFlow(MainTab.Feed),
     val setTab: (MainTab) -> Unit = {},
     val incAppointments: () -> Unit = {},

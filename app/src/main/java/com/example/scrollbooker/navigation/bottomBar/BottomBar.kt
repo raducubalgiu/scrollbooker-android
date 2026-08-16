@@ -15,7 +15,6 @@ import com.example.scrollbooker.navigation.bottomBar.BottomBarItem
 import com.example.scrollbooker.navigation.bottomBar.MainTab
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.BackgroundDark
-import com.example.scrollbooker.ui.theme.Divider
 import androidx.compose.runtime.getValue
 import com.example.scrollbooker.ui.LocalBottomBarController
 

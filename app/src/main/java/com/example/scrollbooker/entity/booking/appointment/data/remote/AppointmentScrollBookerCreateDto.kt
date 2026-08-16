@@ -14,6 +14,9 @@ data class AppointmentScrollBookerCreateDto(
 
     @SerializedName("payment_currency_id")
     val paymentCurrencyId: Int,
+
+    @SerializedName("post_id")
+    val postId: Int?
 )
 
 data class AppointmentProductVariantCreateDto(

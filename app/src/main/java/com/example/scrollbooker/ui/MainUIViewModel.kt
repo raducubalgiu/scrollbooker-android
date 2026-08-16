@@ -31,11 +31,8 @@ class MainUIViewModel @Inject constructor(
     )
     val currentTab: StateFlow<MainTab> = _currentTab.asStateFlow()
 
-    fun setTab(tab: MainTab) {
-        if (_currentTab.value == tab) return
-        _currentTab.value = tab
-        savedStateHandle[KEY_TAB] = tab.route
-    }
+    private val _shouldRefreshAppointments = MutableStateFlow(false)
+    val shouldRefreshAppointments: StateFlow<Boolean> = _shouldRefreshAppointments.asStateFlow()
 
     private val _appointments = MutableStateFlow<Int>(0)
     val appointments: StateFlow<Int> = _appointments.asStateFlow()
@@ -45,6 +42,16 @@ class MainUIViewModel @Inject constructor(
 
     private val _permissions = MutableStateFlow<Set<String>>(emptySet())
     val permissions: StateFlow<Set<String>> = _permissions.asStateFlow()
+
+    fun setTab(tab: MainTab) {
+        if (_currentTab.value == tab) return
+        _currentTab.value = tab
+        savedStateHandle[KEY_TAB] = tab.route
+    }
+
+    fun triggerAppointmentsRefresh(shouldRefresh: Boolean) {
+        _shouldRefreshAppointments.value = shouldRefresh
+    }
 
     init {
         loadAppointmentsNumber()

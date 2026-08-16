@@ -118,13 +118,13 @@ sealed class MainRoute(val route: String) {
     object TermsAndConditions: MainRoute(route = "termsAndConditions")
 
     object BookingNavigator : MainRoute(
-        route = "bookingNavigator/{businessId}/{userId}/{businessOwnerId}/{source}?selectedProductId={selectedProductId}"
+        route = "bookingNavigator/{businessId}/{userId}/{businessOwnerId}/{source}?selectedProductId={selectedProductId}&postId={postId}"
     ) {
         fun createRouteFromPost(
             post: Post,
             source: String
         ): String {
-            return "bookingNavigator/${post.businessId}/${post.user.id}/${post.businessOwner.id}/$source"
+            return "bookingNavigator/${post.businessId}/${post.user.id}/${post.businessOwner.id}/$source?postId=${post.id}"
         }
 
         fun createRouteFromProfile(

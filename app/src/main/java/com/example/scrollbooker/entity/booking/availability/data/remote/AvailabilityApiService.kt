@@ -10,7 +10,8 @@ interface AvailabilityApiService {
         @Path("businessId") businessId: Int,
         @Query("employee_id") employeeId: Int?,
         @Query("start_date") startDate: String,
-        @Query("end_date") endDate: String
+        @Query("end_date") endDate: String,
+        @Query("slot_duration") slotDuration: Int
     ): List<String>
 
     @GET("businesses/{businessId}/availability/timeslots")

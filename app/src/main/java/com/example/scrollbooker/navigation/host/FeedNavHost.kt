@@ -7,10 +7,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.scrollbooker.navigation.graphs.appointmentsGraph
 import com.example.scrollbooker.navigation.graphs.bookingGraph
 import com.example.scrollbooker.navigation.graphs.postUtilityGraph
 import com.example.scrollbooker.navigation.graphs.socialGraph
 import com.example.scrollbooker.navigation.graphs.userProfileGraph
+import com.example.scrollbooker.navigation.navigators.AppointmentsNavigator
 import com.example.scrollbooker.navigation.navigators.BookingNavigator
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.feed.FeedScreen
@@ -30,6 +32,7 @@ fun FeedNavHost(navController: NavHostController) {
     val profileNavigate = remember(navController) { ProfileNavigator(navController) }
     val feedNavigate = remember(navController) { FeedNavigator(navController) }
     val bookingNavigate = remember(navController) { BookingNavigator(navController) }
+    val appointmentNavigate = remember(navController) { AppointmentsNavigator(navController) }
 
     NavHost(
         navController = navController,
@@ -73,6 +76,7 @@ fun FeedNavHost(navController: NavHostController) {
             )
         }
 
+        appointmentsGraph(appointmentNavigate)
         userProfileGraph(navController, profileNavigate)
         bookingGraph(navController, bookingNavigate)
         socialGraph(navController, profileNavigate)

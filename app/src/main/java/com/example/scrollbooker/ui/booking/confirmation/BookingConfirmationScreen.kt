@@ -7,13 +7,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.headers.Header
@@ -27,8 +28,9 @@ import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.headlineLarge
 import com.example.scrollbooker.R
+import com.example.scrollbooker.core.snackbar.CustomSnackBar
+import com.example.scrollbooker.core.snackbar.rememberSnackBarController
 import com.example.scrollbooker.core.util.AppLocaleProvider
-import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
 
@@ -37,6 +39,7 @@ import org.threeten.bp.format.DateTimeFormatter
 fun BookingConfirmationScreen(
     viewModel: BookingViewModel,
     bookingNavigate: BookingNavigator,
+    onCreateAppointment: () -> Unit
 ) {
     val totals by viewModel.bookingTotals.collectAsStateWithLifecycle()
     val bookingFlowState by viewModel.bookingFlowState.collectAsStateWithLifecycle()
@@ -44,9 +47,16 @@ fun BookingConfirmationScreen(
     val selectedItems by viewModel.selectedBookingItems.collectAsStateWithLifecycle()
     val isSaving by viewModel.isSaving.collectAsStateWithLifecycle()
 
-    val scope = rememberCoroutineScope()
-
     val bookingFlow = (bookingFlowState as FeatureState.Success).data
+
+    val hostState = remember { SnackbarHostState() }
+    val snackBarController = rememberSnackBarController(hostState)
+
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            snackBarController.show(event)
+        }
+    }
 
     fun formatBookingInterval(dateLocaleStr: String, durationMinutes: Int): String {
         return try {
@@ -68,71 +78,71 @@ fun BookingConfirmationScreen(
         }
     }
 
-    Scaffold(
-        topBar = { Header(onBack = { bookingNavigate.back() }) },
-        bottomBar = {
-            MainButton(
-                modifier = Modifier.padding(BasePadding).navigationBarsPadding(),
-                title = stringResource(R.string.confirmReservation),
-                isLoading = isSaving,
-                enabled = !isSaving,
-                onClick = {
-                    scope.launch {
-                        viewModel.createAppointment()
-                    }
-                }
-            )
-        }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .background(Background)
-                .verticalScroll(rememberScrollState())
-                .padding(BasePadding),
-            verticalArrangement = Arrangement.spacedBy(BasePadding)
-        ) {
-            Column {
-                Text(
-                    style = headlineLarge,
-                    color = OnBackground,
-                    fontWeight = FontWeight.ExtraBold,
-                    text = stringResource(R.string.checkDetails)
-                )
+   Box(Modifier.fillMaxSize()) {
+       Scaffold(
+           topBar = { Header(onBack = { bookingNavigate.back() }) },
+           bottomBar = {
+               MainButton(
+                   modifier = Modifier.padding(BasePadding).navigationBarsPadding(),
+                   title = stringResource(R.string.confirmReservation),
+                   isLoading = isSaving,
+                   enabled = !isSaving,
+                   onClick = onCreateAppointment
+               )
+           }
+       ) { innerPadding ->
+           Column(
+               modifier = Modifier
+                   .fillMaxSize()
+                   .padding(innerPadding)
+                   .background(Background)
+                   .verticalScroll(rememberScrollState())
+                   .padding(BasePadding),
+               verticalArrangement = Arrangement.spacedBy(BasePadding)
+           ) {
+               Column {
+                   Text(
+                       style = headlineLarge,
+                       color = OnBackground,
+                       fontWeight = FontWeight.ExtraBold,
+                       text = stringResource(R.string.checkDetails)
+                   )
 
-                Spacer(Modifier.height(SpacingXXS))
+                   Spacer(Modifier.height(SpacingXXS))
 
-                Text(
-                    style = bodyLarge,
-                    fontWeight = FontWeight.Normal,
-                    color = Color.Gray,
-                    text = stringResource(R.string.confirmReservationDetails),
-                )
-            }
+                   Text(
+                       style = bodyLarge,
+                       fontWeight = FontWeight.Normal,
+                       color = Color.Gray,
+                       text = stringResource(R.string.confirmReservationDetails),
+                   )
+               }
 
-            BookingSummary(
-                startDate = formatBookingInterval(
-                    dateLocaleStr = selectedSlot?.startDateLocale ?: "",
-                    durationMinutes = totals.totalDuration
-                ),
-                totalDuration = totals.totalDuration,
-                owner = bookingFlow.business.owner,
-                address = bookingFlow.business.formattedAddress
-            )
+               BookingSummary(
+                   startDate = formatBookingInterval(
+                       dateLocaleStr = selectedSlot?.startDateLocale ?: "",
+                       durationMinutes = totals.totalDuration
+                   ),
+                   totalDuration = totals.totalDuration,
+                   owner = bookingFlow.business.owner,
+                   address = bookingFlow.business.formattedAddress
+               )
 
-            Text(
-                text = stringResource(R.string.services),
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Gray
-            )
+               Text(
+                   text = stringResource(R.string.services),
+                   fontSize = 14.sp,
+                   fontWeight = FontWeight.Bold,
+                   color = Color.Gray
+               )
 
-            ConfirmServicesSection(
-                totals = totals
-            )
+               ConfirmServicesSection(
+                   totals = totals
+               )
 
-            CancellationPolicy()
-        }
-    }
+               CancellationPolicy()
+           }
+       }
+   }
+
+    CustomSnackBar(hostState = hostState)
 }

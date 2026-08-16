@@ -8,7 +8,8 @@ interface AvailabilityRepository {
         businessId: Int,
         employeeId: Int?,
         startDate: String,
-        endDate: String
+        endDate: String,
+        slotDuration: Int
     ): List<String>
 
     suspend fun getUserAvailableTimeSlots(

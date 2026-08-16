@@ -2,7 +2,6 @@ package com.example.scrollbooker.navigation.graphs
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
@@ -43,12 +42,14 @@ fun NavGraphBuilder.mainGraph(onLogout: () -> Unit) {
             val mainUiViewModel: MainUIViewModel = hiltViewModel()
 
             val permissions by mainUiViewModel.permissions.collectAsStateWithLifecycle()
-            val currentTab by mainUiViewModel.currentTab.collectAsState()
+            val currentTab by mainUiViewModel.currentTab.collectAsStateWithLifecycle()
 
             val bottomBarController = remember(mainUiViewModel) {
                 BottomBarController(
                     appointments = mainUiViewModel.appointments,
                     notifications = mainUiViewModel.notifications,
+                    shouldRefreshAppointments = mainUiViewModel.shouldRefreshAppointments,
+                    triggerAppointmentsRefresh = mainUiViewModel::triggerAppointmentsRefresh,
                     currentTab = mainUiViewModel.currentTab,
                     setTab = mainUiViewModel::setTab,
                     incAppointments = mainUiViewModel::incAppointmentsNumber,

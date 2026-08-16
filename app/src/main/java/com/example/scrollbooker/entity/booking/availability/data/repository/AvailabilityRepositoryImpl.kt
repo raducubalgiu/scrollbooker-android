@@ -13,13 +13,15 @@ class AvailabilityRepositoryImpl @Inject constructor(
         businessId: Int,
         employeeId: Int?,
         startDate: String,
-        endDate: String
+        endDate: String,
+        slotDuration: Int
     ): List<String> {
         return apiService.getUserCalendarAvailableDays(
             businessId = businessId,
             employeeId = employeeId,
             startDate = startDate,
-            endDate = endDate
+            endDate = endDate,
+            slotDuration = slotDuration
         )
     }
 
