@@ -37,8 +37,7 @@ fun FeedNavHost(navController: NavHostController) {
         enterTransition = { slideInFromRight() },
         exitTransition = {
             val route = targetState.destination.route
-            if (route?.startsWith(MainRoute.EditPost.route) == true ||
-                route?.startsWith(MainRoute.PostStatistics.route) == true) {
+            if (route?.startsWith(MainRoute.EditPost.route) == true) {
                 ExitTransition.None
             } else {
                 slideOutToLeft()
@@ -46,8 +45,7 @@ fun FeedNavHost(navController: NavHostController) {
         },
         popEnterTransition = {
             val route = initialState.destination.route
-            if (route?.startsWith(MainRoute.EditPost.route) == true ||
-                route?.startsWith(MainRoute.PostStatistics.route) == true) {
+            if (route?.startsWith(MainRoute.EditPost.route) == true) {
                 EnterTransition.None
             } else {
                 slideInFromLeft()

@@ -26,6 +26,7 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.components.customized.post.handlePostSheetAction
+import com.example.scrollbooker.components.customized.post.sheets.PostSheetActionEnum
 import com.example.scrollbooker.components.customized.post.sheets.PostSheets
 import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent
 import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent.None
@@ -91,7 +92,9 @@ fun FeedScreen(
                     feedNavigate.toBookingFromProduct(product, source)
                 },
                 onNavigateToEditPost = { feedNavigate.toEditPost(it) },
-                onNavigateToStatistics = { feedNavigate.toPostStatistics(it) }
+                onOpenStatisticsSheet = {
+                    sheetContent = PostSheetsContent.StatisticsSheet(it)
+                }
             )
         }
     }

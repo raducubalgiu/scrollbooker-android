@@ -19,8 +19,6 @@ import androidx.navigation.navArgument
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.editPost.EditPostScreen
 import com.example.scrollbooker.ui.editPost.EditPostViewModel
-import com.example.scrollbooker.ui.editPost.PostStatisticsScreen
-import com.example.scrollbooker.ui.editPost.PostStatisticsViewModel
 
 fun NavGraphBuilder.postUtilityGraph(navController: NavHostController) {
     val pushSpec: FiniteAnimationSpec<IntOffset> = tween(320, easing = LinearOutSlowInEasing)
@@ -38,21 +36,6 @@ fun NavGraphBuilder.postUtilityGraph(navController: NavHostController) {
     ) {
         val viewModel = hiltViewModel<EditPostViewModel>()
         EditPostScreen(
-            viewModel = viewModel,
-            onBack = { navController.popBackStack() }
-        )
-    }
-
-    composable(
-        route = "${MainRoute.PostStatistics.route}/{postId}",
-        arguments = listOf(navArgument("postId") { type = NavType.IntType }),
-        enterTransition = { slideInVertically(pushSpec) { it } + fadeIn(fadeInSpec) },
-        exitTransition = { ExitTransition.None },
-        popEnterTransition = { EnterTransition.None },
-        popExitTransition = { slideOutVertically(popSpec) { it } + fadeOut(fadeOutSpec) }
-    ) {
-        val viewModel = hiltViewModel<PostStatisticsViewModel>()
-        PostStatisticsScreen(
             viewModel = viewModel,
             onBack = { navController.popBackStack() }
         )

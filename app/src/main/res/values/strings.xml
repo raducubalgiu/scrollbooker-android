@@ -487,4 +487,12 @@
     <string name="notification_business_validation_approved">Afacerea ta a fost validată cu succes de administratori.</string>
     <string name="notification_business_validation_rejected">Afacerea ta a fost respinsă. Motiv: %1$s</string>
     <string name="notification_reason_not_specified">Nespecificat</string>
+
+    <!-- Post analytics summary -->
+    <string name="analytics_source_search">Căutare</string>
+    <string name="analytics_source_explore">Explorează</string>
+    <string name="analytics_source_following">Urmărești</string>
+    <string name="analytics_source_profile">Din profil</string>
+    <string name="analytics_source_reviews">Recenzii video</string>
+    <string name="analytics_source_other">Altele</string>
 </resources>

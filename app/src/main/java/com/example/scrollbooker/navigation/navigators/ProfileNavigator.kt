@@ -4,7 +4,6 @@ import androidx.navigation.NavHostController
 import com.example.scrollbooker.core.enums.BookingSourceEnum
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.navigation.routes.MainRoute
-import com.example.scrollbooker.ui.profile.PostTabEnum
 
 class ProfileNavigator (
     private val navController: NavHostController
@@ -35,12 +34,6 @@ class ProfileNavigator (
 
     fun toEditPost(postId: Int) {
         navController.navigate("${MainRoute.EditPost.route}/$postId") {
-            launchSingleTop = true
-        }
-    }
-
-    fun toPostStatistics(postId: Int) {
-        navController.navigate("${MainRoute.PostStatistics.route}/$postId") {
             launchSingleTop = true
         }
     }

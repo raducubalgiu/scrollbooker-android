@@ -1,11 +1,11 @@
-package com.example.scrollbooker.components.customized.post.sheets.linkedProducts
+package com.example.scrollbooker.components.customized.post.sheets.statistics
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
-import com.example.scrollbooker.entity.booking.products.domain.model.Product
-import com.example.scrollbooker.entity.booking.products.domain.useCase.GetPostLinkedProductsUseCase
+import com.example.scrollbooker.entity.social.post.domain.model.PostAnalyticsSummary
+import com.example.scrollbooker.entity.social.post.domain.useCase.GetPostAnalyticsSummaryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,33 +21,32 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class LinkedProductsViewModel @Inject constructor(
-    private val getPostLinkedProductsUseCase: GetPostLinkedProductsUseCase
-) : ViewModel() {
+class PostStatisticsViewModel @Inject constructor(
+    private val getPostAnalyticsSummaryUseCase: GetPostAnalyticsSummaryUseCase
+): ViewModel() {
+    private val _postId: MutableStateFlow<Int?> = MutableStateFlow<Int?>(null)
+    val postId: StateFlow<Int?> = _postId.asStateFlow()
 
-    private val _postId = MutableStateFlow<Int?>(null)
-    val postId = _postId.asStateFlow()
-
-    fun setPostId(newPostId: Int) {
-        if (_postId.value != newPostId) _postId.value = newPostId
+    fun setPostId(postId: Int) {
+        _postId.value = postId
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val productsState: StateFlow<FeatureState<List<Product>>> = _postId
+    val analyticsState: StateFlow<FeatureState<PostAnalyticsSummary>> = _postId
         .filterNotNull()
         .distinctUntilChanged()
         .flatMapLatest { id ->
             flow {
                 emit(FeatureState.Loading)
 
-                val result = withVisibleLoading { getPostLinkedProductsUseCase(id) }
+                val result = withVisibleLoading { getPostAnalyticsSummaryUseCase(id) }
 
                 result
                     .onSuccess { products ->
                         emit(FeatureState.Success(products))
                     }
                     .onFailure { error ->
-                        Timber.tag("Linked Products").e(error, "ERROR: on Fetching Post Linked Products")
+                        Timber.tag("Post Analytics Summary").e(error, "ERROR: on Fetching Post Analytics Summary")
                         emit(FeatureState.Error(error))
                     }
             }

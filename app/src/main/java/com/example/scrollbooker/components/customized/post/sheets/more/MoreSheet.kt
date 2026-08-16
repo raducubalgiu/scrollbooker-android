@@ -14,7 +14,7 @@ import com.example.scrollbooker.components.core.sheet.SheetHeader
 fun MoreSheet(
     postId: Int,
     onClose: () -> Unit,
-    onNavigateToStatistics: (Int) -> Unit,
+    onOpenStatistics: (Int) -> Unit,
     onNavigateToEditPost: (Int) -> Unit
 ) {
     val viewModel: MoreViewModel = hiltViewModel()
@@ -33,7 +33,7 @@ fun MoreSheet(
             headLine = stringResource(R.string.statistics),
             leftIcon = painterResource(R.drawable.ic_clipboard_outline),
             displayRightIcon = false,
-            onClick = { onNavigateToStatistics(postId) }
+            onClick = { onOpenStatistics(postId) }
         )
 
         ItemList(

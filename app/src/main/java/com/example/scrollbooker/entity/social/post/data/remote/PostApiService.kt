@@ -85,6 +85,11 @@ interface PostApiService {
         @Body request: PostShareRequest
     )
 
+    @GET("posts/{post_id}/analytics/summary")
+    suspend fun getPostAnalyticsSummary(
+        @Path("post_id") postId: Int,
+    ): PostAnalyticsSummaryDto
+
     @POST("posts/{postId}/analytics/views")
     suspend fun createPostViewEvent(
         @Path("postId") postId: Int,

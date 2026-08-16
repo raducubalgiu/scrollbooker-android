@@ -84,7 +84,6 @@ sealed class MainRoute(val route: String) {
     object CreatePostPreview: MainRoute(route = "createPostPreview")
 
     object EditPost: MainRoute(route = "editPost")
-    object PostStatistics: MainRoute(route = "postStatistics")
 
     object MyBusinessNavigator: MainRoute(route = "myBusinessNavigator")
     object MyBusiness: MainRoute(route = "myBusiness")

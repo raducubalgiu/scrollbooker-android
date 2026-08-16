@@ -13,10 +13,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.example.scrollbooker.components.customized.post.sheets.PendingPostAction.*
 import com.example.scrollbooker.components.customized.post.sheets.comments.CommentsSheet
 import com.example.scrollbooker.components.customized.post.sheets.linkedProducts.LinkedProductsSheet
 import com.example.scrollbooker.components.customized.post.sheets.more.MoreSheet
 import com.example.scrollbooker.components.customized.post.sheets.reviews.ReviewsSheet
+import com.example.scrollbooker.components.customized.post.sheets.statistics.PostStatisticsSheet
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
@@ -24,7 +26,6 @@ import kotlinx.coroutines.launch
 
 sealed interface PendingPostAction {
     data class Book(val product: Product) : PendingPostAction
-    data class Statistics(val postId: Int) : PendingPostAction
     data class Edit(val postId: Int) : PendingPostAction
 }
 
@@ -34,8 +35,8 @@ fun PostSheets(
     sheetState: SheetState,
     sheetContent: PostSheetsContent,
     onNavigateToBooking: (product: Product) -> Unit,
-    onNavigateToStatistics: (Int) -> Unit,
     onNavigateToEditPost: (Int) -> Unit,
+    onOpenStatisticsSheet: (postId: Int) -> Unit,
     onClose: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
@@ -44,9 +45,8 @@ fun PostSheets(
     LaunchedEffect(sheetState.isVisible) {
         if (!sheetState.isVisible && pendingAction != null) {
             when (val action = pendingAction) {
-                is PendingPostAction.Book -> onNavigateToBooking(action.product)
-                is PendingPostAction.Statistics -> onNavigateToStatistics(action.postId)
-                is PendingPostAction.Edit -> onNavigateToEditPost(action.postId)
+                is Book -> onNavigateToBooking(action.product)
+                is Edit -> onNavigateToEditPost(action.postId)
                 else -> Unit
             }
             pendingAction = null
@@ -85,7 +85,7 @@ fun PostSheets(
                     onClose = onClose,
                     postId = content.postId,
                     onNavigateToBooking = { product ->
-                        pendingAction = PendingPostAction.Book(product)
+                        pendingAction = Book(product)
                         scope.launch { sheetState.hide() }
                     }
                 )
@@ -95,13 +95,16 @@ fun PostSheets(
                     postId = content.postId,
                     onClose = onClose,
                     onNavigateToEditPost = { postId ->
-                        pendingAction = PendingPostAction.Edit(postId)
+                        pendingAction = Edit(postId)
                         scope.launch { sheetState.hide() }
                     },
-                    onNavigateToStatistics = { postId ->
-                        pendingAction = PendingPostAction.Statistics(postId)
-                        scope.launch { sheetState.hide() }
-                    }
+                    onOpenStatistics = { onOpenStatisticsSheet(it) },
+                )
+            }
+            is PostSheetsContent.StatisticsSheet -> {
+                PostStatisticsSheet(
+                    postId = content.postId,
+                    onClose = onClose
                 )
             }
             is PostSheetsContent.None -> Unit

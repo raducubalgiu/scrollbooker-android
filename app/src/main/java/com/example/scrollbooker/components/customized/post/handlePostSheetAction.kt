@@ -2,6 +2,7 @@ package com.example.scrollbooker.components.customized.post
 
 import com.example.scrollbooker.components.customized.post.sheets.PostSheetActionEnum
 import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent
+import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent.*
 import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent.CommentsSheet
 import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent.LinkedProductsSheet
 import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent.ReviewsSheet
@@ -15,10 +16,7 @@ fun handlePostSheetAction(
     when(action) {
         PostSheetActionEnum.OPEN_LINKED_PRODUCTS -> handleOpenSheet(LinkedProductsSheet(post.id))
         PostSheetActionEnum.OPEN_COMMENTS -> handleOpenSheet(CommentsSheet(post.id))
-        PostSheetActionEnum.OPEN_REVIEWS -> {
-            val id = if(post.isVideoReview) post.businessOwner.id else post.user.id
-            handleOpenSheet(ReviewsSheet(id))
-        }
-        PostSheetActionEnum.OPEN_MORE -> handleOpenSheet(PostSheetsContent.MoreSheet(post.id))
+        PostSheetActionEnum.OPEN_REVIEWS -> handleOpenSheet(ReviewsSheet(post.user.id))
+        PostSheetActionEnum.OPEN_MORE -> handleOpenSheet(MoreSheet(post.id))
     }
 }

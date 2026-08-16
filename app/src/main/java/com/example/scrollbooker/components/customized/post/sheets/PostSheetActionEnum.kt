@@ -4,5 +4,5 @@ enum class PostSheetActionEnum {
     OPEN_LINKED_PRODUCTS,
     OPEN_REVIEWS,
     OPEN_COMMENTS,
-    OPEN_MORE
+    OPEN_MORE,
 }

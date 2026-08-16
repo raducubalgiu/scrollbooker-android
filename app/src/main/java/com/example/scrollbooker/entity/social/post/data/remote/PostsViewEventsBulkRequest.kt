@@ -1,5 +1,6 @@
 package com.example.scrollbooker.entity.social.post.data.remote
 
+import com.example.scrollbooker.core.enums.PostViewPlatformEnum
 import com.example.scrollbooker.core.enums.PostViewSourceEnum
 import com.google.gson.annotations.SerializedName
 
@@ -28,7 +29,9 @@ data class PostViewEventBulkItemRequest(
     val capturedAt: Long,
 
     @SerializedName("viewer_fingerprint_hash")
-    val viewerFingerprintHash: String? = null
+    val viewerFingerprintHash: String? = null,
+
+    val platform: PostViewPlatformEnum = PostViewPlatformEnum.ANDROID
 )
 
 data class PostsViewEventsBulkRequest(
