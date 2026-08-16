@@ -27,7 +27,7 @@ interface AppointmentsApiService {
     @POST("appointments/create-scrollbooker-appointment")
     suspend fun createScrollBookerAppointment(
         @Body request: AppointmentScrollBookerCreateDto
-    )
+    ): AppointmentDto
 
     @POST("appointments/create-own-client-appointment")
     suspend fun createOwnClientAppointment(

@@ -37,12 +37,11 @@ fun AppointmentsScreen(
     val isInitialLoading = refreshState is LoadState.Loading && appointments.itemCount == 0
 
     val bottomBarController = LocalBottomBarController.current
-    val shouldRefresh by bottomBarController.shouldRefreshAppointments.collectAsStateWithLifecycle()
+    val newAppointments by bottomBarController.newCreatedAppointments.collectAsStateWithLifecycle()
 
-    LaunchedEffect(shouldRefresh) {
-        if (shouldRefresh) {
-            viewModel.loadAppointments()
-            bottomBarController.triggerAppointmentsRefresh(false)
+    LaunchedEffect(isRefreshing) {
+        if (isRefreshing && appointments.itemCount > 0 && newAppointments.isNotEmpty()) {
+            bottomBarController.clearNewCreatedAppointments()
         }
     }
 
@@ -56,19 +55,20 @@ fun AppointmentsScreen(
                     isInitialLoading -> LoadingScreen()
                     refreshState is LoadState.Error -> ErrorScreen()
                     else -> {
-                        if(appointments.itemCount > 0) {
+                        if (appointments.itemCount > 0 || newAppointments.isNotEmpty()) {
                             AppointmentsList(
+                                newAppointments = newAppointments,
                                 appointments = appointments,
                                 onNavigateToAppointmentDetails = { appointmentsNavigate.toAppointmentDetails(it) },
                                 isRefreshing = isRefreshing,
-                                onRefresh = { viewModel.loadAppointments() }
+                                onRefresh = { viewModel.loadAppointments() },
                             )
                         }
                     }
                 }
             }
 
-            if(appointments.itemCount == 0 && refreshState is LoadState.NotLoading) {
+            if(appointments.itemCount == 0 && newAppointments.isEmpty() && refreshState is LoadState.NotLoading) {
                 MessageScreen(
                     message = stringResource(R.string.dontHaveAppointmentsYet),
                     icon = painterResource(R.drawable.ic_calendar_outline)

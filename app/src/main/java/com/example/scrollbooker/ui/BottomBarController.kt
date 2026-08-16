@@ -1,6 +1,7 @@
 package com.example.scrollbooker.ui
 
 import androidx.compose.runtime.staticCompositionLocalOf
+import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointment
 import com.example.scrollbooker.navigation.bottomBar.MainTab
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -8,8 +9,11 @@ import kotlinx.coroutines.flow.StateFlow
 data class BottomBarController(
     val appointments: StateFlow<Int>,
     val notifications: StateFlow<Int>,
-    val shouldRefreshAppointments: StateFlow<Boolean> = MutableStateFlow(false),
-    val triggerAppointmentsRefresh: (Boolean) -> Unit = {},
+
+    val newCreatedAppointments: StateFlow<Set<Appointment>> = MutableStateFlow(emptySet()),
+    val addNewCreatedAppointment: (Appointment) -> Unit = {},
+    val clearNewCreatedAppointments: () -> Unit = {},
+
     val currentTab: StateFlow<MainTab> = MutableStateFlow(MainTab.Feed),
     val setTab: (MainTab) -> Unit = {},
     val incAppointments: () -> Unit = {},

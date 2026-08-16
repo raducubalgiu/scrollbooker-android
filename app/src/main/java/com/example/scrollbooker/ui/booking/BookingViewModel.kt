@@ -7,6 +7,7 @@ import com.example.scrollbooker.core.snackbar.SnackBarUiEvent
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentScrollBookerCreateDto
+import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointment
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.CreateScrollBookerAppointmentUseCase
 import com.example.scrollbooker.entity.booking.availability.domain.model.AvailableDay
 import com.example.scrollbooker.entity.booking.availability.domain.model.Slot
@@ -315,7 +316,7 @@ class BookingViewModel @Inject constructor(
             FeatureState.Loading
         )
 
-    suspend fun createAppointment(): Result<Unit> {
+    suspend fun createAppointment(): Result<Appointment> {
         _isSaving.value = true
 
         val startDate = _selectedSlot.value?.startDateUtc

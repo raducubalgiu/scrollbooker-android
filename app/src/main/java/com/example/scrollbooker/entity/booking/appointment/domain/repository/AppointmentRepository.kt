@@ -11,7 +11,7 @@ interface AppointmentRepository {
     fun getUserAppointments(asCustomer: Boolean?): Flow<PagingData<Appointment>>
     suspend fun getUserAppointmentsNumber(): Int
     suspend fun getAppointmentById(appointmentId: Int): Appointment
-    suspend fun createScrollBookerAppointment(appointmentCreate: AppointmentScrollBookerCreateDto)
+    suspend fun createScrollBookerAppointment(appointmentCreate: AppointmentScrollBookerCreateDto): Appointment
     suspend fun createOwnClientAppointment(appointmentCreate: AppointmentOwnClientCreate)
     suspend fun createLastMinuteAppointment(lastMinuteRequest: AppointmentLastMinuteRequest)
     suspend fun blockAppointments(request: AppointmentBlockRequest)

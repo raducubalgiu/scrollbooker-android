@@ -48,8 +48,9 @@ fun NavGraphBuilder.mainGraph(onLogout: () -> Unit) {
                 BottomBarController(
                     appointments = mainUiViewModel.appointments,
                     notifications = mainUiViewModel.notifications,
-                    shouldRefreshAppointments = mainUiViewModel.shouldRefreshAppointments,
-                    triggerAppointmentsRefresh = mainUiViewModel::triggerAppointmentsRefresh,
+                    newCreatedAppointments = mainUiViewModel.newCreatedAppointments,
+                    addNewCreatedAppointment = mainUiViewModel::addNewCreatedAppointment,
+                    clearNewCreatedAppointments = mainUiViewModel::clearNewCreatedAppointments,
                     currentTab = mainUiViewModel.currentTab,
                     setTab = mainUiViewModel::setTab,
                     incAppointments = mainUiViewModel::incAppointmentsNumber,

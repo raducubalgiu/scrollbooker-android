@@ -2,6 +2,7 @@ package com.example.scrollbooker.ui
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointment
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.GetUserAppointmentsNumberUseCase
 import com.example.scrollbooker.entity.user.notification.domain.useCase.GetUserNotificationsNumberUseCase
 import com.example.scrollbooker.navigation.bottomBar.MainTab
@@ -31,8 +32,8 @@ class MainUIViewModel @Inject constructor(
     )
     val currentTab: StateFlow<MainTab> = _currentTab.asStateFlow()
 
-    private val _shouldRefreshAppointments = MutableStateFlow(false)
-    val shouldRefreshAppointments: StateFlow<Boolean> = _shouldRefreshAppointments.asStateFlow()
+    private val _newCreatedAppointments = MutableStateFlow<Set<Appointment>>(emptySet())
+    val newCreatedAppointments: StateFlow<Set<Appointment>> = _newCreatedAppointments.asStateFlow()
 
     private val _appointments = MutableStateFlow<Int>(0)
     val appointments: StateFlow<Int> = _appointments.asStateFlow()
@@ -49,8 +50,12 @@ class MainUIViewModel @Inject constructor(
         savedStateHandle[KEY_TAB] = tab.route
     }
 
-    fun triggerAppointmentsRefresh(shouldRefresh: Boolean) {
-        _shouldRefreshAppointments.value = shouldRefresh
+    fun addNewCreatedAppointment(appointment: Appointment) {
+        _newCreatedAppointments.value = _newCreatedAppointments.value + appointment
+    }
+
+    fun clearNewCreatedAppointments() {
+        _newCreatedAppointments.value = emptySet()
     }
 
     init {

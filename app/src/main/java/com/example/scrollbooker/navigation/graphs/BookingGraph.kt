@@ -113,10 +113,10 @@ fun NavGraphBuilder.bookingGraph(
                     backStackEntry.lifecycleScope.launch {
                         val result = viewModel.createAppointment()
 
-                        result.onSuccess {
+                        result.onSuccess { appointment ->
                             bottomBarController.setTab(MainTab.Appointments)
                             bottomBarController.incAppointments()
-                            bottomBarController.triggerAppointmentsRefresh(true)
+                            bottomBarController.addNewCreatedAppointment(appointment)
 
                             navController.popBackStack(
                                 route = MainRoute.Feed.route,
