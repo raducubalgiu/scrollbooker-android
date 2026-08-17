@@ -460,6 +460,8 @@
     <string name="variantAndPrices">Variante și prețuri</string>
     <string name="optionsAndPrices">Opțiuni și prețuri</string>
     <string name="addVariantAndPricesDescription">Poti adauga mai multe variante in functie de durata</string>
+    <string name="pickOption">Alege %1$s</string>
+    <string name="filterRequired">Filtrele sunt obligatorii</string>
 
     <!-- Follow & Social Notifications -->
     <string name="notification_started_following_you">a început să te urmărească</string>

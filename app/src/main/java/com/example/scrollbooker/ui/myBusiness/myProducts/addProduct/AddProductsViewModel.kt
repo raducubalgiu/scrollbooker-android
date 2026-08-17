@@ -31,7 +31,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -56,9 +55,7 @@ class AddProductsViewModel @Inject constructor(
     private val _productState = MutableStateFlow(ProductState())
     val productState: StateFlow<ProductState> = _productState.asStateFlow()
 
-    val productValidation: StateFlow<AddProductValidation> = _productState
-        .map { it.validate(context) }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AddProductValidation())
+    private val _currentServiceId = MutableStateFlow<Int?>(null)
 
     private val _selectedFilters = MutableStateFlow<Map<Int, Set<Int>>>(emptyMap())
     val selectedFilters: StateFlow<Map<Int, Set<Int>>> = _selectedFilters.asStateFlow()
@@ -95,8 +92,6 @@ class AddProductsViewModel @Inject constructor(
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), FeatureState.Loading)
 
-    private val _currentServiceId = MutableStateFlow<Int?>(null)
-
     @OptIn(ExperimentalCoroutinesApi::class)
     val filters: StateFlow<FeatureState<List<Filter>>> = _currentServiceId
         .flatMapLatest { serviceId ->
@@ -116,6 +111,15 @@ class AddProductsViewModel @Inject constructor(
             initialValue = FeatureState.Success(emptyList())
         )
 
+    val productValidation: StateFlow<AddProductValidation> = combine(
+        _productState,
+        filters,
+        _selectedFilters
+    ) { state, filtersState, selectedFilters ->
+        val filtersList = (filtersState as? FeatureState.Success)?.data.orEmpty()
+        state.validate(context, filtersList, selectedFilters)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AddProductValidation())
+
     fun setName(name: String) {
         _productState.update { current -> current.copy(name = name) }
     }
@@ -134,26 +138,14 @@ class AddProductsViewModel @Inject constructor(
         _currentServiceId.value = serviceId.toIntOrNull()
     }
 
-    fun toggleFilterOption(filterId: Int, subFilterId: Int, isSingleSelect: Boolean) {
+    fun setFilterOptions(filterId: Int, subFilterIds: Set<Int>) {
         _selectedFilters.update { current ->
-            val currentIds = current[filterId].orEmpty()
-
-            val updatedIds = if (isSingleSelect) {
-                if (subFilterId in currentIds) emptySet() else setOf(subFilterId)
-            } else {
-                if (subFilterId in currentIds) currentIds - subFilterId else currentIds + subFilterId
-            }
-
-            if (updatedIds.isEmpty()) {
+            if (subFilterIds.isEmpty()) {
                 current - filterId
             } else {
-                current + (filterId to updatedIds)
+                current + (filterId to subFilterIds)
             }
         }
-    }
-
-    fun setVariantName(variantName: String) {
-
     }
 
     fun addVariant(variant: ProductVariantState) {

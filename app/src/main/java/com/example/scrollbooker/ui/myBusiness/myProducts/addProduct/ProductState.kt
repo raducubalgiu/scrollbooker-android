@@ -6,6 +6,7 @@ import com.example.scrollbooker.core.extensions.toBigDecimalOrNull
 import com.example.scrollbooker.core.util.checkLength
 import com.example.scrollbooker.core.util.checkMinMax
 import com.example.scrollbooker.core.util.checkRequired
+import com.example.scrollbooker.entity.nomenclature.filter.domain.model.Filter
 import java.math.BigDecimal
 
 @Immutable
@@ -96,7 +97,8 @@ data class AddProductValidation(
     val serviceDomainIdError: String? = null,
     val serviceIdError: String? = null,
     val variantsError: String? = null,
-    val variantValidations: List<ProductVariantValidation> = emptyList()
+    val variantValidations: List<ProductVariantValidation> = emptyList(),
+    val missingFilterIds: Set<Int> = emptySet()
 )
 
 @Immutable
@@ -108,7 +110,11 @@ data class ProductState(
     val currencyId: String = "1",
     val variants: List<ProductVariantState> = emptyList()
 ) {
-    fun validate(context: Context): AddProductValidation {
+    fun validate(
+        context: Context,
+        filters: List<Filter> = emptyList(),
+        selectedFilters: Map<Int, Set<Int>> = emptyMap()
+    ): AddProductValidation {
         val nameError = checkLength(context, name, minLength = 3, maxLength = 100)
         val serviceDomainIdError = checkRequired(context, serviceDomainId)
         val serviceIdError = checkRequired(context, serviceId)
@@ -119,21 +125,23 @@ data class ProductState(
             else -> null
         }
 
-        val allFields = listOf(
-            nameError,
-            serviceDomainIdError,
-            serviceIdError,
-            variantsError
-        )
+        val missingFilterIds = filters
+            .filter { filter -> selectedFilters[filter.id].isNullOrEmpty() }
+            .map { it.id }
+            .toSet()
+
+        val allFields = listOf(nameError, serviceDomainIdError, serviceIdError, variantsError)
         val variantsValid = variantValidations.all { it.isValid }
+        val filtersValid = missingFilterIds.isEmpty()
 
         return AddProductValidation(
-            isValid = allFields.all { it == null } && variantsValid,
+            isValid = allFields.all { it == null } && variantsValid && filtersValid,
             nameError = nameError,
             serviceDomainIdError = serviceDomainIdError,
             serviceIdError = serviceIdError,
             variantsError = variantsError,
-            variantValidations = variantValidations
+            variantValidations = variantValidations,
+            missingFilterIds = missingFilterIds
         )
     }
 }

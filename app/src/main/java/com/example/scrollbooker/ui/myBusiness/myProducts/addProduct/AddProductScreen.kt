@@ -175,8 +175,8 @@ fun AddProductScreen(
                 onServiceChanged = { serviceId -> serviceId?.let { viewModel.setServiceId(it) } },
                 onNameChanged = { viewModel.setName(it) },
                 onDescriptionChanged = { viewModel.setDescription(it) },
-                onToggleFilterOption = { filterId, subFilterId, isSingleSelect ->
-                    viewModel.toggleFilterOption(filterId, subFilterId, isSingleSelect)
+                onFilterOptionsChanged = { filterId, subFilterIds ->
+                    viewModel.setFilterOptions(filterId, subFilterIds)
                 }
             )
 
@@ -214,6 +214,8 @@ fun AddProductScreen(
                     description = stringResource(R.string.addVariantAndPricesDescription),
                     icon = Icons.Default.Add,
                     enabled = isVariantsEnabled,
+                    isError = showErrors && productValidation.variantsError != null,
+                    errorMessage = productValidation.variantsError.orEmpty(),
                     onClick = {
                         focusManager.clearFocus()
                         scope.launch { sheetState.show() }
