@@ -43,8 +43,10 @@ import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.inputs.Option
 import com.example.scrollbooker.components.customized.placeholderActionBox.PlaceholderActionBox
 import com.example.scrollbooker.components.customized.productCard.ProductVariantCard
+import com.example.scrollbooker.core.extensions.formatDuration
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
+import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.ui.myBusiness.myProducts.MyProductsViewModel
 import com.example.scrollbooker.ui.theme.Divider
@@ -222,22 +224,22 @@ fun AddProductScreen(
                     val cheapest = v.cheapestOffering
 
                     ProductVariantCard(
-                        variantName = v.name,
-                        variantDuration = v.duration.toIntOrNull() ?: 0,
-                        hasDifferentOfferings = v.hasDifferentOfferings,
+                        name = v.name,
+                        durationText = (v.duration.toIntOrNull() ?: 0).formatDuration(),
+                        hasDifferentPrices = v.hasDifferentOfferings,
                         price = cheapest?.price?.toBigDecimalOrNull() ?: BigDecimal.ZERO,
                         discount = cheapest?.discount?.toBigDecimalOrNull() ?: BigDecimal.ZERO,
                         priceWithDiscount = cheapest?.priceWithDiscount?.toBigDecimalOrNull() ?: BigDecimal.ZERO,
-                        onEdit = {},
-                        onRemove = { viewModel.removeVariant(index) }
+                        isSelected = false,
+                        isSelectable = false,
+                        isEditable = true,
+                        isDeletable = true,
+                        onEdit = {  },
+                        onDelete = { viewModel.removeVariant(index) }
                     )
 
                     if (index < productState.variants.lastIndex) {
-                        HorizontalDivider(
-                            modifier = Modifier.padding(vertical = BasePadding),
-                            thickness = 0.55.dp,
-                            color = Divider
-                        )
+                        Spacer(Modifier.height(SpacingS))
                     }
                 }
             }

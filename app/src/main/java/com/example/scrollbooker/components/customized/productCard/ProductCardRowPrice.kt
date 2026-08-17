@@ -9,21 +9,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.extensions.toTwoDecimals
-import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.ui.theme.Error
+import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
-import com.example.scrollbooker.ui.theme.titleMedium
 import java.math.BigDecimal
 
 @Composable
 fun ProductCardRowPrice(
-    hasDifferentOfferings: Boolean = false,
+    hasDifferentOfferings: Boolean,
     price: BigDecimal,
     priceWithDiscount: BigDecimal,
     discount: BigDecimal
@@ -42,19 +42,19 @@ fun ProductCardRowPrice(
                     Text(
                         text = stringResource(R.string.from),
                         style = bodyMedium,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.Normal,
+                        color = Color.Gray
                     )
 
-                    Spacer(Modifier.width(SpacingS))
+                    Spacer(Modifier.width(SpacingXS))
                 }
 
                 Text(
                     text = "${priceWithDiscount.toTwoDecimals()} RON",
-                    style = titleMedium,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold
+                    style = bodyLarge,
+                    fontWeight = FontWeight.Bold
                 )
-                Spacer(Modifier.width(SpacingS))
+                Spacer(Modifier.width(SpacingXS))
 
                 if(discount > BigDecimal.ZERO) {
                     Text(
@@ -62,12 +62,11 @@ fun ProductCardRowPrice(
                         style = bodyMedium,
                         textDecoration = TextDecoration.LineThrough
                     )
-                    Spacer(Modifier.width(SpacingS))
+                    Spacer(Modifier.width(SpacingXS))
                     Text(
                         text = "(-${discount.toTwoDecimals()}%)",
                         color = Error,
-                        style = titleMedium,
-                        fontSize = 16.sp,
+                        style = bodyLarge
                     )
                 }
             }

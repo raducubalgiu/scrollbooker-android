@@ -65,6 +65,7 @@ fun LinkedProductRow(
             Spacer(Modifier.height(SpacingS))
 
             ProductCardRowPrice(
+                hasDifferentOfferings = product.hasDifferentPrices,
                 price = product.startingOffering.price,
                 priceWithDiscount = product.startingOffering.priceWithDiscount,
                 discount = product.startingOffering.discount

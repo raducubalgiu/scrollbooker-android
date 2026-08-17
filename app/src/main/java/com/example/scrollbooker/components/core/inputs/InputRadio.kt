@@ -1,6 +1,7 @@
 package com.example.scrollbooker.components.core.inputs
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,6 +33,7 @@ fun InputRadio(
     selected: Boolean,
     onSelect: () -> Unit,
     headLine: String,
+    subHeadline: String? = null,
     containerColor: Color = Background,
     contentColor: Color = OnBackground,
     paddingHorizontal: Dp = SpacingXXL,
@@ -62,11 +64,23 @@ fun InputRadio(
                 Spacer(Modifier.width(SpacingS))
             }
 
-            Text(
-                text = headLine,
-                style = bodyLarge,
-                color = contentColor,
-            )
+            Column(
+                verticalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
+                Text(
+                    text = headLine,
+                    style = bodyLarge,
+                    color = contentColor,
+                )
+
+                subHeadline?.let {
+                    Text(
+                        text = it,
+                        style = bodyLarge,
+                        color = Color.Gray,
+                    )
+                }
+            }
         }
         RadioButton(
             modifier = Modifier

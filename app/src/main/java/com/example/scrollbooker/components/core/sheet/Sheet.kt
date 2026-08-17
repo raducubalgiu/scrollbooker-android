@@ -1,6 +1,7 @@
 package com.example.scrollbooker.components.core.sheet
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
@@ -19,7 +20,6 @@ fun Sheet(
     onClose: () -> Unit,
     content: @Composable () -> Unit
 ) {
-
     val isDarkTheme = isSystemInDarkTheme()
     val containerColor = if(isDarkTheme) SurfaceBG else Background
     val contentColor = if(isDarkTheme) OnSurfaceBG else OnBackground
@@ -31,6 +31,7 @@ fun Sheet(
         containerColor = containerColor,
         contentColor = contentColor,
         sheetState = sheetState,
+        contentWindowInsets = { BottomSheetDefaults.windowInsets },
     ) {
         content()
     }

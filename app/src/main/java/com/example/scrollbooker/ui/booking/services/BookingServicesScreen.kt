@@ -23,7 +23,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
-import com.example.scrollbooker.components.customized.productCard.ProductDetailSheet
+import com.example.scrollbooker.components.customized.productCard.detailSheet.ProductDetailSheet
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.booking.domain.model.BookingFlow
 import com.example.scrollbooker.entity.booking.products.domain.model.Product

@@ -1,28 +1,20 @@
 package com.example.scrollbooker.components.customized.productCard
-
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.scrollbooker.core.enums.ProductTypeEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
@@ -31,10 +23,8 @@ import com.example.scrollbooker.entity.booking.products.domain.model.getDuration
 import com.example.scrollbooker.entity.booking.products.domain.model.getFiltersSummary
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
-import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.bodySmall
-import com.example.scrollbooker.ui.theme.labelSmall
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
@@ -65,20 +55,8 @@ fun ProductCard(
         { onOpenProductDetail(product) }
     }
 
-    Column(
-        modifier = modifier
-            .clickable(onClick = onCardClick)
-            //.padding(vertical = BasePadding)
-    ) {
+    Column(modifier.clickable { onCardClick }) {
         Column {
-            if (product.filters.isNotEmpty() &&
-                product.type == ProductTypeEnum.PACK &&
-                product.sessionsCount != null
-            ) {
-                ProductPackageBadge(sessionsCount = product.sessionsCount)
-                Spacer(Modifier.height(BasePadding))
-            }
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
@@ -107,6 +85,7 @@ fun ProductCard(
                     Spacer(Modifier.height(SpacingS))
 
                     ProductCardRowPrice(
+                        hasDifferentOfferings = product.hasDifferentPrices,
                         price = product.startingOffering.price,
                         priceWithDiscount = product.startingOffering.priceWithDiscount,
                         discount = product.startingOffering.discount
@@ -153,28 +132,5 @@ fun ProductCard(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun ProductPackageBadge(sessionsCount: Int?) {
-    if (sessionsCount == null) return
-
-    Box(
-        modifier = Modifier
-            .background(
-                color = Primary.copy(alpha = 0.12f),
-                shape = RoundedCornerShape(6.dp)
-            )
-            .padding(horizontal = 8.dp, vertical = 4.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "Pachet - $sessionsCount ședințe",
-            style = labelSmall,
-            color = Primary,
-            fontSize = 11.sp,
-            fontWeight = FontWeight.SemiBold
-        )
     }
 }
