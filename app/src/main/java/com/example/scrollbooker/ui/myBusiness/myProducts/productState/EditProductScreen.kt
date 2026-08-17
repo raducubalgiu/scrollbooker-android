@@ -54,7 +54,6 @@ fun EditProductScreen(
         }
     }
 
-
     Scaffold(
         topBar = {
             Header(
