@@ -26,7 +26,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
@@ -34,7 +33,6 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.ui.search.sheets.filters.SearchFiltersButton
 import com.example.scrollbooker.ui.theme.Background
-import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
 
@@ -111,19 +109,5 @@ fun SearchHeader(
                 )
             }
         }
-
-//        when(permissionStatus) {
-//            LocationPermissionStatus.NOT_DETERMINED,
-//            LocationPermissionStatus.DENIED_CAN_ASK_AGAIN -> {
-//                SearchEnableLocationBanner(
-//                    modifier = Modifier.statusBarsPadding(),
-//                    onEnableClick = {
-//                        permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-//                    },
-//                    onCancel = {}
-//                )
-//            }
-//            else -> Unit
-//        }
     }
 }

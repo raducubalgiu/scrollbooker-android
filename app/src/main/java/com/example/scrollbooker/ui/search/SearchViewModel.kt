@@ -223,7 +223,17 @@ class SearchViewModel @Inject constructor(
     fun loadAllBusinessDomains() {
         viewModelScope.launch {
             _businessDomains.value = FeatureState.Loading
-            _businessDomains.value = withVisibleLoading { getAllBusinessDomainsUseCase() }
+
+            val result = getAllBusinessDomainsUseCase()
+
+            result.fold(
+                onSuccess = { domains ->
+                    _businessDomains.value = FeatureState.Success(domains)
+                },
+                onFailure = { error ->
+                    _businessDomains.value = FeatureState.Error(error)
+                }
+            )
         }
     }
 

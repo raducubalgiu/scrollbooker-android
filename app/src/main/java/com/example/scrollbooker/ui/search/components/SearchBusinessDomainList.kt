@@ -19,8 +19,6 @@ import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.BusinessDomain
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
-import com.example.scrollbooker.ui.theme.OnPrimary
-import com.example.scrollbooker.ui.theme.Primary
 
 @Composable
 fun SearchBusinessDomainList(
@@ -40,33 +38,36 @@ fun SearchBusinessDomainList(
         is FeatureState.Error -> Unit
         is FeatureState.Loading -> Unit
         is FeatureState.Success -> {
-            LazyRow(
-                modifier = Modifier.padding(bottom = SpacingS),
-                contentPadding = PaddingValues(horizontal = BasePadding)
-            ) {
-                item {
-                    SearchBusinessDomainLabel(
-                        onClick = { onClick(null) },
-                        isSelected = selectedBusinessDomain == null,
-                        name = stringResource(R.string.all),
-                        shadowElevation = shadowElevation,
-                        inactiveContainerColor = inactiveContainerColor,
-                        inactiveContentColor = inactiveContentColor,
-                        paddingValues = paddingValues,
-                        shape = shape
-                    )
-                }
-                items(bDomains.data) { bd ->
-                    SearchBusinessDomainLabel(
-                        onClick = { onClick(bd.id) },
-                        isSelected = selectedBusinessDomain == bd.id,
-                        name = bd.shortName,
-                        shadowElevation = shadowElevation,
-                        inactiveContainerColor = inactiveContainerColor,
-                        inactiveContentColor = inactiveContentColor,
-                        paddingValues = paddingValues,
-                        shape = shape
-                    )
+            if(businessDomains.data.size > 1) {
+                LazyRow(
+                    modifier = Modifier.padding(bottom = SpacingS),
+                    contentPadding = PaddingValues(horizontal = BasePadding)
+                ) {
+                    item {
+                        SearchBusinessDomainLabel(
+                            onClick = { onClick(null) },
+                            isSelected = selectedBusinessDomain == null,
+                            name = stringResource(R.string.all),
+                            shadowElevation = shadowElevation,
+                            inactiveContainerColor = inactiveContainerColor,
+                            inactiveContentColor = inactiveContentColor,
+                            paddingValues = paddingValues,
+                            shape = shape
+                        )
+                    }
+
+                    items(bDomains.data) { bd ->
+                        SearchBusinessDomainLabel(
+                            onClick = { onClick(bd.id) },
+                            isSelected = selectedBusinessDomain == bd.id,
+                            name = bd.shortName,
+                            shadowElevation = shadowElevation,
+                            inactiveContainerColor = inactiveContainerColor,
+                            inactiveContentColor = inactiveContentColor,
+                            paddingValues = paddingValues,
+                            shape = shape
+                        )
+                    }
                 }
             }
         }
