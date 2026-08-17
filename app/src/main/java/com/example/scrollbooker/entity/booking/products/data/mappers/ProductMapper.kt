@@ -19,6 +19,7 @@ fun ProductDto.toDomain(): Product {
         id = id,
         name = name,
         description = description,
+        serviceDomainId = serviceDomainId,
         serviceId = serviceId,
         businessId = businessId,
         businessOwnerId = businessOwnerId,

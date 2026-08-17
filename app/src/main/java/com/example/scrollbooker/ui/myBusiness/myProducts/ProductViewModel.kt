@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.myBusiness.myProducts.addProduct
+package com.example.scrollbooker.ui.myBusiness.myProducts
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
@@ -7,15 +7,13 @@ import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
 import com.example.scrollbooker.entity.booking.employee.domain.useCase.GetAllEmployeesByOwnerUseCase
-import com.example.scrollbooker.entity.booking.products.data.remote.ProductCreateRequest
-import com.example.scrollbooker.entity.booking.products.data.remote.ProductFilterRequest
-import com.example.scrollbooker.entity.booking.products.data.remote.ProductOfferingRequest
-import com.example.scrollbooker.entity.booking.products.data.remote.ProductVariantRequest
-import com.example.scrollbooker.entity.booking.products.domain.useCase.CreateProductUseCase
 import com.example.scrollbooker.entity.nomenclature.filter.domain.model.Filter
 import com.example.scrollbooker.entity.nomenclature.filter.domain.useCase.GetFiltersByServiceUseCase
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.useCase.GetSelectedServiceDomainsWithServicesByBusinessIdUseCase
 import com.example.scrollbooker.store.AuthDataStore
-import dagger.hilt.android.lifecycle.HiltViewModel
+import com.example.scrollbooker.ui.myBusiness.myProducts.productState.AddProductValidation
+import com.example.scrollbooker.ui.myBusiness.myProducts.productState.ProductState
+import com.example.scrollbooker.ui.myBusiness.myProducts.productState.ProductVariantState
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -27,44 +25,58 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.math.BigDecimal
-import javax.inject.Inject
 
-@HiltViewModel
-class AddProductsViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
+@Suppress("PropertyName")
+abstract class ProductViewModel(
+    @ApplicationContext protected val context: Context,
     private val getAllEmployeesByOwnerUseCase: GetAllEmployeesByOwnerUseCase,
     private val getFiltersByServiceUseCase: GetFiltersByServiceUseCase,
-    private val createProductUseCase: CreateProductUseCase,
-    private val authDataStore: AuthDataStore
-): ViewModel() {
+    private val getSelectedServiceDomainsWithServicesByBusinessIdUseCase: GetSelectedServiceDomainsWithServicesByBusinessIdUseCase,
+    protected val authDataStore: AuthDataStore
+) : ViewModel() {
+
     val hasEmployees: StateFlow<Boolean?> = authDataStore.getHasEmployees()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
     val ownerId: StateFlow<Int?> = authDataStore.getBusinessOwnerId()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
-    private val _productState = MutableStateFlow(ProductState())
+    protected val _productState = MutableStateFlow(ProductState())
     val productState: StateFlow<ProductState> = _productState.asStateFlow()
 
-    private val _currentServiceId = MutableStateFlow<Int?>(null)
+    protected val _currentServiceId = MutableStateFlow<Int?>(null)
 
-    private val _selectedFilters = MutableStateFlow<Map<Int, Set<Int>>>(emptyMap())
+    protected val _selectedFilters = MutableStateFlow<Map<Int, Set<Int>>>(emptyMap())
     val selectedFilters: StateFlow<Map<Int, Set<Int>>> = _selectedFilters.asStateFlow()
 
-    private val _isSaving = MutableStateFlow<Boolean>(false)
-    val isSaving: StateFlow<Boolean> = _isSaving
+    protected val _isSaving = MutableStateFlow(false)
+    val isSaving: StateFlow<Boolean> = _isSaving.asStateFlow()
 
-    private val _createSuccessEvent = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+    protected val _createSuccessEvent = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
     val createSuccessEvent = _createSuccessEvent.asSharedFlow()
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val selectedServices = authDataStore.getBusinessId()
+        .filterNotNull()
+        .distinctUntilChanged()
+        .flatMapLatest { businessId ->
+            flow {
+                emit(FeatureState.Loading)
+                val result = getSelectedServiceDomainsWithServicesByBusinessIdUseCase(businessId)
+                emit(result)
+            }
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = FeatureState.Loading
+        )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val employees: StateFlow<FeatureState<List<Employee>>> = combine(
@@ -159,88 +171,4 @@ class AddProductsViewModel @Inject constructor(
             current.copy(variants = current.variants.filterIndexed { i, _ -> i != index })
         }
     }
-
-    fun createProduct() {
-        viewModelScope.launch {
-            val state = _productState.value
-            val globalValidation = state.validate(context)
-
-            if (!globalValidation.isValid) {
-                Timber.tag("Create Product").w("Formularul conține erori de validare.")
-                return@launch
-            }
-
-            _isSaving.value = true
-
-            try {
-                val businessId = authDataStore.getBusinessId().firstOrNull()
-                val currentUserId = authDataStore.getUserId().firstOrNull()
-
-                if (businessId == null || currentUserId == null) {
-                    throw IllegalStateException("Business Id or User Id not found in Auth Data Store")
-                }
-
-                val filters: List<ProductFilterRequest> =
-                    _selectedFilters.value.entries.mapNotNull { (filterId, subFilterIdsSet) ->
-                        if (subFilterIdsSet.isEmpty()) return@mapNotNull null
-
-                        ProductFilterRequest(
-                            filterId = filterId,
-                            subFilterIds = subFilterIdsSet.toList(),
-                            isNotApplicable = false
-                        )
-                    }
-
-                val productCreateRequest = ProductCreateRequest(
-                    name = state.name,
-                    description = state.description.ifBlank { null },
-                    serviceDomainId = state.serviceDomainId.toIntOrNull() ?: 0,
-                    serviceId = state.serviceId.toIntOrNull() ?: 0,
-                    businessId = businessId,
-                    currencyId = state.currencyId.toIntOrNull() ?: 0,
-                    variants = state.variants.map { variantState ->
-                        ProductVariantRequest(
-                            name = variantState.name,
-                            duration = variantState.duration.toIntOrNull() ?: 0,
-                            offerings = variantState.offerings
-                                .filter { it.isSelected }
-                                .distinctBy { it.userId }
-                                .map { offeringState ->
-                                    ProductOfferingRequest(
-                                        userId = offeringState.userId.toInt(),
-                                        price = offeringState.price.toBigDecimalOrNull() ?: BigDecimal.ZERO,
-                                        discount = offeringState.discount.toBigDecimalOrNull() ?: BigDecimal.ZERO,
-                                        priceWithDiscount = offeringState.priceWithDiscount.toBigDecimalOrNull() ?: BigDecimal.ZERO
-                                    )
-                                }
-                        )
-                    }
-                )
-
-                val response = withVisibleLoading {
-                    createProductUseCase(productCreateRequest, filters)
-                }
-
-                response
-                    .onSuccess {
-                        _isSaving.value = false
-                        _createSuccessEvent.tryEmit(Unit)
-                    }
-                    .onFailure { e ->
-                        if (e is retrofit2.HttpException) {
-                            val errorBody = e.response()?.errorBody()?.string()
-                            Timber.tag("Create Product").e("SERVER VALIDATION ERROR (422): $errorBody")
-                        } else {
-                            Timber.tag("Create Product").e(e, "ERROR: on Creating Product via API")
-                        }
-                        _isSaving.value = false
-                    }
-
-            } catch (e: Exception) {
-                Timber.tag("Create Product").e(e, "ERROR: Unexpected exception during assembly")
-                _isSaving.value = false
-            }
-        }
-    }
-
 }

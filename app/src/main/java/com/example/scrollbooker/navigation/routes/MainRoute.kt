@@ -98,7 +98,11 @@ sealed class MainRoute(val route: String) {
     object MyProductsNavigator: MainRoute(route = "myProductsNavigator")
     object MyProducts: MainRoute(route = "myProducts")
     object AddProduct: MainRoute(route = "addProduct")
-    object EditProduct: MainRoute(route = "editProduct")
+    object EditProduct: MainRoute(route = "editProduct/{productId}") {
+        fun createRoute(productId: Int): String {
+            return "editProduct/$productId"
+        }
+    }
 
     object MyEmployeesNavigator: MainRoute(route = "myEmployeesNavigator/{tabIndex}")
     object MyEmployees: MainRoute(route = "myEmployees")

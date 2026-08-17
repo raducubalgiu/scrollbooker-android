@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.myBusiness.myProducts.addProduct
+package com.example.scrollbooker.ui.myBusiness.myProducts.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -17,6 +17,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.inputs.Input
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.ui.myBusiness.myProducts.productState.ProductOfferingState
+import com.example.scrollbooker.ui.myBusiness.myProducts.productState.ProductOfferingValidation
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.SurfaceBG
 

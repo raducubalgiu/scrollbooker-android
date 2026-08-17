@@ -9,6 +9,9 @@ data class ProductDto(
     val name: String,
     val description: String?,
 
+    @SerializedName("service_domain_id")
+    val serviceDomainId: Int,
+
     @SerializedName("service_id")
     val serviceId: Int,
 

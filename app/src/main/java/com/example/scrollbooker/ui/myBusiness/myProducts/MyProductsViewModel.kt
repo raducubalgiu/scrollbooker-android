@@ -62,26 +62,6 @@ class MyProductsViewModel @Inject constructor(
     val isSaving: StateFlow<Boolean> = _isSaving.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val selectedServices = authDataStore.getBusinessId()
-        .filterNotNull()
-        .distinctUntilChanged()
-        .flatMapLatest { businessId ->
-            flow {
-                emit(FeatureState.Loading)
-
-                val result = withVisibleLoading {
-                    getSelectedServiceDomainsWithServicesByBusinessIdUseCase(businessId)
-                }
-                emit(result)
-            }
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = FeatureState.Loading
-        )
-
-    @OptIn(ExperimentalCoroutinesApi::class)
     val productsState: StateFlow<FeatureState<UserProducts>> = combine(
         authConfigFlow,
         refreshTrigger

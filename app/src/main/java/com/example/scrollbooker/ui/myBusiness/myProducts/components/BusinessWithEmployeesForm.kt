@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.myBusiness.myProducts.addProduct
+package com.example.scrollbooker.ui.myBusiness.myProducts.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
@@ -34,6 +34,8 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
+import com.example.scrollbooker.ui.myBusiness.myProducts.productState.ProductVariantState
+import com.example.scrollbooker.ui.myBusiness.myProducts.productState.ProductVariantValidation
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.bodyMedium

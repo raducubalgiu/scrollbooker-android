@@ -9,6 +9,7 @@ data class Product(
     val id: Int,
     val name: String,
     val description: String?,
+    val serviceDomainId: Int,
     val serviceId: Int,
     val businessId: Int,
     val businessOwnerId: Int,

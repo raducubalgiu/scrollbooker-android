@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.myBusiness.myProducts.addProduct
+package com.example.scrollbooker.ui.myBusiness.myProducts.productState
 
 import android.content.Context
 import androidx.compose.runtime.Immutable

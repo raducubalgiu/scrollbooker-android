@@ -113,6 +113,18 @@ class ProfileNavigator (
     fun toMyProducts() {
         navController.navigate(MainRoute.MyProducts.route)
     }
+    fun toAddProduct() {
+        navController.navigate(MainRoute.AddProduct.route)
+    }
+
+    fun toEditProduct(productId: Int) {
+        val route = MainRoute.EditProduct.createRoute(productId)
+
+        navController.navigate(route) {
+            launchSingleTop = true
+        }
+    }
+
     fun toMyServices() {
         navController.navigate(MainRoute.MyServices.route)
     }

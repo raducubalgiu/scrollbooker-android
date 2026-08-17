@@ -103,6 +103,7 @@
     <string name="employees">Angajați</string>
     <string name="employmentRequests">Cereri de angajare</string>
     <string name="selectOneService">Selectează un serviciu</string>
+    <string name="editService">Editează serviciul</string>
     <string name="areYouSureYouWantDeleteService">Ești sigur că dorești să ștergi acest serviciu?</string>
     <string name="addServices">Adaugă Servicii</string>
     <string name="noServicesFound">Nu s-au găsit servicii</string>

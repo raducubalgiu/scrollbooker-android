@@ -40,6 +40,7 @@ import com.example.scrollbooker.components.customized.productCard.ProductCard
 import com.example.scrollbooker.core.snackbar.CustomSnackBar
 import com.example.scrollbooker.core.snackbar.rememberSnackBarController
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.titleLarge
@@ -47,9 +48,7 @@ import com.example.scrollbooker.ui.theme.titleLarge
 @Composable
 fun MyProductsScreen(
     viewModel: MyProductsViewModel,
-    onBack: () -> Unit,
-    onNavigateAddProduct: () -> Unit,
-    onNavigateEditProduct: (Int, Int) -> Unit
+    profileNavigate: ProfileNavigator
 ) {
     val productsState by viewModel.productsState.collectAsStateWithLifecycle()
     val isSaving by viewModel.isSaving.collectAsStateWithLifecycle()
@@ -70,9 +69,9 @@ fun MyProductsScreen(
         topBar = {
             Header(
                 title = stringResource(R.string.myServices),
-                onBack = onBack,
+                onBack = { profileNavigate.back() },
                 actions = {
-                    IconButton(onClick = onNavigateAddProduct) {
+                    IconButton(onClick = { profileNavigate.toAddProduct() }) {
                         Icon(
                             imageVector = Icons.Default.Add,
                             contentDescription = null
@@ -187,7 +186,7 @@ fun MyProductsScreen(
                                         onDeleteProduct = { viewModel.deleteProduct(it) },
                                         isLoadingDelete = isSaving,
                                         onOpenProductDetail = {},
-                                        onNavigateToEdit = {},
+                                        onNavigateToEdit = { profileNavigate.toEditProduct(it) },
                                         displayEditableActions = true
                                     )
 

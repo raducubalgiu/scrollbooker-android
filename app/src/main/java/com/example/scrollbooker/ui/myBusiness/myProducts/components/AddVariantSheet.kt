@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.myBusiness.myProducts.addProduct
+package com.example.scrollbooker.ui.myBusiness.myProducts.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,10 +35,10 @@ import com.example.scrollbooker.components.core.sheet.Sheet
 import com.example.scrollbooker.components.core.sheet.SheetHeader
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
-import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
-import com.example.scrollbooker.ui.myBusiness.myProducts.components.calculatePriceWithDiscount
+import com.example.scrollbooker.ui.myBusiness.myProducts.productState.ProductOfferingState
+import com.example.scrollbooker.ui.myBusiness.myProducts.productState.ProductVariantState
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.titleMedium
 import kotlinx.coroutines.launch

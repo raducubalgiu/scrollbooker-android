@@ -28,10 +28,10 @@ import com.example.scrollbooker.ui.myBusiness.myEmployees.MyEmployeesScreen
 import com.example.scrollbooker.ui.myBusiness.myEmployees.tabs.employmentRequestsTab.EmploymentAcceptTermsScreen
 import com.example.scrollbooker.ui.myBusiness.myEmployees.tabs.employmentRequestsTab.EmploymentAssignJobScreen
 import com.example.scrollbooker.ui.myBusiness.myEmployees.tabs.employmentRequestsTab.EmploymentSelectEmployeeScreen
-import com.example.scrollbooker.ui.myBusiness.myProducts.addProduct.AddProductScreen
-import com.example.scrollbooker.ui.myBusiness.myProducts.addProduct.AddProductsViewModel
-import com.example.scrollbooker.ui.myBusiness.myProducts.editProduct.EditProductScreen
-import com.example.scrollbooker.ui.myBusiness.myProducts.editProduct.EditProductsViewModel
+import com.example.scrollbooker.ui.myBusiness.myProducts.productState.AddProductScreen
+import com.example.scrollbooker.ui.myBusiness.myProducts.productState.AddProductViewModel
+import com.example.scrollbooker.ui.myBusiness.myProducts.productState.EditProductScreen
+import com.example.scrollbooker.ui.myBusiness.myProducts.productState.EditProductViewModel
 import com.example.scrollbooker.ui.myBusiness.myProducts.MyProductsScreen
 import com.example.scrollbooker.ui.myBusiness.myProducts.MyProductsViewModel
 import com.example.scrollbooker.ui.myBusiness.mySchedules.MySchedulesScreen
@@ -214,13 +214,7 @@ fun NavGraphBuilder.myBusinessGraph(
 
                 MyProductsScreen(
                     viewModel = viewModel,
-                    onBack = { navController.popBackStack() },
-                    onNavigateEditProduct = { serviceDomainId, productId ->
-                        navController.navigate("${MainRoute.EditProduct.route}/$serviceDomainId/$productId")
-                    },
-                    onNavigateAddProduct = {
-                        navController.navigate(MainRoute.AddProduct.route)
-                    },
+                    profileNavigate = profileNavigate,
                 )
             }
 
@@ -230,7 +224,7 @@ fun NavGraphBuilder.myBusinessGraph(
                 }
 
                 val myProductsViewModel: MyProductsViewModel = hiltViewModel(parentEntry)
-                val viewModel: AddProductsViewModel = hiltViewModel()
+                val viewModel: AddProductViewModel = hiltViewModel()
 
                 AddProductScreen(
                     myProductsViewModel = myProductsViewModel,
@@ -240,9 +234,8 @@ fun NavGraphBuilder.myBusinessGraph(
             }
 
             composable(
-                route = "${MainRoute.EditProduct.route}/{serviceDomainId}/{productId}",
+                route = MainRoute.EditProduct.route,
                 arguments = listOf(
-                    navArgument("serviceDomainId") { type = NavType.IntType },
                     navArgument("productId") { type = NavType.IntType }
                 )
             ) { backStackEntry ->
@@ -251,7 +244,7 @@ fun NavGraphBuilder.myBusinessGraph(
                 }
 
                 val myProductsViewModel: MyProductsViewModel = hiltViewModel(parentEntry)
-                val viewModel: EditProductsViewModel = hiltViewModel()
+                val viewModel: EditProductViewModel = hiltViewModel()
 
                 EditProductScreen(
                     myProductsViewModel = myProductsViewModel,
