@@ -6,8 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.employee.domain.useCase.GetAllEmployeesByOwnerUseCase
+import com.example.scrollbooker.entity.booking.products.data.remote.ProductBaseInfoUpdateRequest
+import com.example.scrollbooker.entity.booking.products.data.remote.ProductFilterRequest
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductByIdUseCase
+import com.example.scrollbooker.entity.booking.products.domain.useCase.UpdateProductBaseInfoUseCase
 import com.example.scrollbooker.entity.nomenclature.filter.domain.useCase.GetFiltersByServiceUseCase
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.useCase.GetSelectedServiceDomainsWithServicesByBusinessIdUseCase
 import com.example.scrollbooker.store.AuthDataStore
@@ -26,6 +29,7 @@ import javax.inject.Inject
 class EditProductViewModel @Inject constructor(
     @ApplicationContext context: Context,
     private val getProductByIdUseCase: GetProductByIdUseCase,
+    private val updateProductBaseInfoUseCase: UpdateProductBaseInfoUseCase,
     getAllEmployeesByOwnerUseCase: GetAllEmployeesByOwnerUseCase,
     getFiltersByServiceUseCase: GetFiltersByServiceUseCase,
     getSelectedServiceDomainsWithServicesByBusinessIdUseCase: GetSelectedServiceDomainsWithServicesByBusinessIdUseCase,
@@ -42,6 +46,10 @@ class EditProductViewModel @Inject constructor(
 
     private val _loadingProductState = MutableStateFlow<FeatureState<Product>>(FeatureState.Loading)
     val loadingProductState: StateFlow<FeatureState<Product>> = _loadingProductState.asStateFlow()
+
+    init {
+        loadProduct()
+    }
 
     fun loadProduct() {
         viewModelScope.launch {
@@ -95,11 +103,46 @@ class EditProductViewModel @Inject constructor(
         }
     }
 
-    init {
-        loadProduct()
+    fun editProductBaseInfo() {
+        viewModelScope.launch {
+            val id = productId.value ?: return@launch
+
+            _isSaving.value = true
+
+            val filters: List<ProductFilterRequest> =
+                _selectedFilters.value.entries.mapNotNull { (filterId, subFilterIdsSet) ->
+                    if (subFilterIdsSet.isEmpty()) return@mapNotNull null
+
+                    ProductFilterRequest(
+                        filterId = filterId,
+                        subFilterIds = subFilterIdsSet.toList(),
+                        isNotApplicable = false
+                    )
+                }
+
+            val request = ProductBaseInfoUpdateRequest(
+                name = _productState.value.name,
+                description = _productState.value.description,
+                serviceDomainId = _productState.value.serviceDomainId.toInt(),
+                serviceId = _productState.value.serviceId.toInt(),
+                filters = filters
+            )
+
+            val result = withVisibleLoading {
+                updateProductBaseInfoUseCase(productId = id, request = request)
+            }
+
+            result.fold(
+                onSuccess = {
+                    _isSaving.value = false
+                    _createSuccessEvent.tryEmit(Unit)
+                },
+                onFailure = { error ->
+                    Timber.Forest.tag("Edit Product").e(error, "ERROR: on Updating Product with id: $id")
+                    _isSaving.value = false
+                }
+            )
+        }
     }
 
-    fun editProduct() {
-
-    }
 }

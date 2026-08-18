@@ -29,6 +29,7 @@ import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.util.FormMode
 import com.example.scrollbooker.ui.myBusiness.myProducts.MyProductsViewModel
 import com.example.scrollbooker.ui.theme.Divider
 
@@ -74,7 +75,7 @@ fun EditProductScreen(
                     enabled = !isSaving,
                     onClick = {
                         showErrors = true
-                        viewModel.editProduct()
+                        viewModel.editProductBaseInfo()
                     },
                 )
             }
@@ -85,6 +86,7 @@ fun EditProductScreen(
                 is FeatureState.Loading -> LoadingScreen()
                 is FeatureState.Error -> ErrorScreen()
                 else -> ProductFormContent(
+                    formMode = FormMode.Edit,
                     viewModel = viewModel,
                     serviceDomains = serviceDomains,
                     showErrors = showErrors,

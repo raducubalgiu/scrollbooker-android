@@ -1,5 +1,6 @@
 package com.example.scrollbooker.entity.booking.products.data.repository
 import com.example.scrollbooker.entity.booking.products.data.mappers.toDomain
+import com.example.scrollbooker.entity.booking.products.data.remote.ProductBaseInfoUpdateRequest
 import com.example.scrollbooker.entity.booking.products.data.remote.ProductCreateRequest
 import com.example.scrollbooker.entity.booking.products.data.remote.ProductFilterRequest
 import com.example.scrollbooker.entity.booking.products.data.remote.ProductWithFiltersCreateRequest
@@ -43,16 +44,14 @@ class ProductRepositoryImpl @Inject constructor(
         return api.createProduct(request).toDomain()
     }
 
-//    override suspend fun updateProduct(
-//        productId: Int,
-//        product: ProductCreateRequest,
-//        filters: List<ProductFilterRequest>
-//    ): Product {
-//        val request = ProductWithFiltersCreateRequest(product, filters)
-//        return api.updateProduct(product, request).toDomain()
-//    }
-
     override suspend fun deleteProduct(productId: Int) {
         return api.deleteProduct(productId)
+    }
+
+    override suspend fun updateProductBaseInfo(
+        productId: Int,
+        product: ProductBaseInfoUpdateRequest
+    ): Product {
+        return api.updateProduct(productId, product).toDomain()
     }
 }

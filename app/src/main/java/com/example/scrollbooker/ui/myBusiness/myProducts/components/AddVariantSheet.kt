@@ -36,6 +36,7 @@ import com.example.scrollbooker.components.core.sheet.SheetHeader
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.util.FormMode
 import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
 import com.example.scrollbooker.ui.myBusiness.myProducts.productState.ProductOfferingState
 import com.example.scrollbooker.ui.myBusiness.myProducts.productState.ProductVariantState
@@ -46,6 +47,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddVariantSheet(
+    formMode: FormMode,
     sheetState: SheetState,
     employees: FeatureState<List<Employee>>,
     hasEmployees: Boolean?,
@@ -113,13 +115,19 @@ fun AddVariantSheet(
         variantState = variantState.copy(offerings = updated)
     }
 
+    val buttonText = when (formMode) {
+        FormMode.Create -> stringResource(R.string.add)
+        FormMode.Edit -> stringResource(R.string.save)
+        else -> ""
+    }
+
     Sheet(
         modifier = Modifier.statusBarsPadding(),
         sheetState = sheetState,
         onClose = onClose
     ) {
         SheetHeader(
-            title = "Adauga varianta",
+            title = stringResource(R.string.addAnOption),
             onClose = onClose
         )
 
@@ -131,7 +139,7 @@ fun AddVariantSheet(
                     .padding(horizontal = BasePadding)
             ) {
                 Text(
-                    text = "Detalii Optiune",
+                    text = stringResource(R.string.optionDetails),
                     style = titleMedium,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
@@ -140,7 +148,7 @@ fun AddVariantSheet(
                 Spacer(Modifier.height(BasePadding))
 
                 Input(
-                    label = stringResource(R.string.variantName),
+                    label = stringResource(R.string.optionName),
                     value = variantState.name,
                     onValueChange = { variantState = variantState.copy(name = it) },
                     isError = showErrors && validation.nameError != null,
@@ -164,7 +172,7 @@ fun AddVariantSheet(
                 Spacer(Modifier.height(BasePadding))
 
                 Text(
-                    text = "Preturi",
+                    text = stringResource(R.string.prices),
                     style = titleMedium,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
@@ -238,10 +246,11 @@ fun AddVariantSheet(
                 Spacer(Modifier.height(SpacingM))
                 MainButton(
                     modifier = Modifier.padding(horizontal = BasePadding),
-                    title = stringResource(R.string.add),
-                    enabled = true,
+                    title = buttonText,
+                    enabled = validation.isValid,
                     onClick = {
                         showErrors = true
+
                         if (validation.isValid) {
                             onSave(variantState)
                             scope.launch { sheetState.hide() }

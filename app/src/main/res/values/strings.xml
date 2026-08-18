@@ -63,7 +63,6 @@
     <string name="mySchedule">Programul meu de lucru</string>
     <string name="name">Nume</string>
     <string name="serviceName">Numele serviciului</string>
-    <string name="variantName">Numele variantei</string>
     <string name="editProfile">Editează profilul</string>
     <string name="somethingWentWrong">Ceva nu a mers cum trebuie. Încearcă mai târziu</string>
     <string name="yourBio">Biografia ta</string>
@@ -460,9 +459,14 @@
     <string name="baseInfo">Informații de bază</string>
     <string name="variantAndPrices">Variante și prețuri</string>
     <string name="optionsAndPrices">Opțiuni și prețuri</string>
-    <string name="addVariantAndPricesDescription">Poti adauga mai multe variante in functie de durata</string>
+    <string name="prices">Prețuri</string>
+    <string name="addAnOption">Adaugă o opțiune</string>
+    <string name="optionDetails">Detalii opțiune</string>
+    <string name="optionName">Numele opțiunii</string>
+    <string name="addOptionsAndPricesDescription">Configurează prețul serviciului tău. Dacă este necesar, poți adăuga mai multe opțiuni personalizate.</string>
     <string name="pickOption">Alege %1$s</string>
     <string name="filterRequired">Filtrele sunt obligatorii</string>
+    <string name="createService">Creează serviciul</string>
 
     <!-- Follow & Social Notifications -->
     <string name="notification_started_following_you">a început să te urmărească</string>

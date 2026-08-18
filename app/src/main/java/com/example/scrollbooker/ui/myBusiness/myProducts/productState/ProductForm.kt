@@ -38,6 +38,7 @@ import com.example.scrollbooker.core.extensions.formatDuration
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.util.FormMode
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.SelectedServiceDomainsWithServices
 import com.example.scrollbooker.ui.myBusiness.myProducts.ProductViewModel
 import com.example.scrollbooker.ui.myBusiness.myProducts.components.AddProductBaseInfo
@@ -49,6 +50,7 @@ import java.math.BigDecimal
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductFormContent(
+    formMode: FormMode,
     viewModel: ProductViewModel,
     serviceDomains: FeatureState<List<SelectedServiceDomainsWithServices>>,
     showErrors: Boolean,
@@ -89,6 +91,7 @@ fun ProductFormContent(
 
     if (sheetState.isVisible) {
         AddVariantSheet(
+            formMode = formMode,
             sheetState = sheetState,
             hasEmployees = hasEmployees,
             employees = employees,
@@ -162,7 +165,7 @@ fun ProductFormContent(
 
         if (productState.variants.isEmpty()) {
             PlaceholderActionBox(
-                description = stringResource(R.string.addVariantAndPricesDescription),
+                description = stringResource(R.string.addOptionsAndPricesDescription),
                 icon = Icons.Default.Add,
                 enabled = isVariantsEnabled,
                 isError = showErrors && productValidation.variantsError != null,

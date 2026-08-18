@@ -24,6 +24,7 @@ import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
+import com.example.scrollbooker.core.util.FormMode
 import com.example.scrollbooker.ui.myBusiness.myProducts.MyProductsViewModel
 import com.example.scrollbooker.ui.theme.Divider
 
@@ -63,7 +64,7 @@ fun AddProductScreen(
                     modifier = Modifier
                         .padding(horizontal = BasePadding)
                         .navigationBarsPadding(),
-                    title = stringResource(R.string.save),
+                    title = stringResource(R.string.createService),
                     isLoading = isSaving,
                     enabled = !isSaving,
                     onClick = {
@@ -75,6 +76,7 @@ fun AddProductScreen(
         }
     ) { innerPadding ->
         ProductFormContent(
+            formMode = FormMode.Create,
             viewModel = viewModel,
             serviceDomains = serviceDomains,
             showErrors = showErrors,
