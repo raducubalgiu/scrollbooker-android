@@ -83,41 +83,37 @@ class BookingViewModel @Inject constructor(
         _selectedEmployeeId.value = employeeId
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val bookingFlowState: StateFlow<FeatureState<BookingFlow>> = _selectedEmployeeId
-        .flatMapLatest { currentEmployeeId ->
-            flow {
-                emit(FeatureState.Loading)
+    val bookingFlowState: StateFlow<FeatureState<BookingFlow>> = flow {
+        emit(FeatureState.Loading)
 
-                val result = withVisibleLoading {
-                    getBookingFlowUseCase(
-                        businessId = businessId,
-                        employeeId = currentEmployeeId,
-                    )
-                }
+        val result = withVisibleLoading {
+            getBookingFlowUseCase(
+                businessId = businessId,
+                employeeId = _selectedEmployeeId.value,
+            )
+        }
 
-                val state = result.fold(
-                    onSuccess = { bookingFlow ->
-                        FeatureState.Success(bookingFlow)
-                    },
-                    onFailure = { throwable ->
-                        Timber.tag("Booking Flow").e(throwable, "ERROR: on Fetching Booking Flow")
-                        FeatureState.Error(throwable as? Exception ?: Exception(throwable))
-                    }
-                )
-
-                emit(state)
+        val state = result.fold(
+            onSuccess = { bookingFlow ->
+                FeatureState.Success(bookingFlow)
+            },
+            onFailure = { throwable ->
+                Timber.tag("Booking Flow").e(throwable, "ERROR: on Fetching Booking Flow")
+                FeatureState.Error(throwable as? Exception ?: Exception(throwable))
             }
-        }
-        .catch { e ->
-            Timber.tag("Booking Flow").e(e, "ERROR: Fatal Flow Exception")
-            emit(FeatureState.Error(e as? Exception ?: Exception(e)))
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Lazily,
-            initialValue = FeatureState.Loading
         )
+
+        emit(state)
+    }
+    .catch { e ->
+        Timber.tag("Booking Flow").e(e, "ERROR: Fatal Flow Exception")
+        emit(FeatureState.Error(e as? Exception ?: Exception(e)))
+    }
+    .stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Lazily,
+        initialValue = FeatureState.Loading
+    )
 
     private val _isInitialProductProcessed = MutableStateFlow(false)
     val isInitialProductProcessed = _isInitialProductProcessed.asStateFlow()
@@ -173,6 +169,12 @@ class BookingViewModel @Inject constructor(
             currentItems.add(item)
         }
 
+        _selectedBookingItems.value = currentItems
+    }
+
+    fun removeBookingItem(item: SelectedBookingItem) {
+        val currentItems = _selectedBookingItems.value.toMutableList()
+        currentItems.removeAll { it.productId == item.productId }
         _selectedBookingItems.value = currentItems
     }
 
@@ -352,10 +354,6 @@ class BookingViewModel @Inject constructor(
         )
 
         return result
-    }
-
-    fun clearSlotsCache() {
-        slotsCache.clear()
     }
 
     fun onDaySelected(date: LocalDate) {

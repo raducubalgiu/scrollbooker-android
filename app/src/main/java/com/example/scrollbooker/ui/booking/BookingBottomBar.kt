@@ -25,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
+import com.example.scrollbooker.core.extensions.formatDuration
 import com.example.scrollbooker.core.extensions.toTwoDecimals
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
@@ -74,7 +75,7 @@ fun BookingBottomBar(
                 Spacer(Modifier.height(SpacingXXS))
 
                 Text(
-                    text = "${bookingTotals.totalDuration}min",
+                    text = bookingTotals.totalDuration.formatDuration(),
                     style = bodyMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,

@@ -162,8 +162,7 @@ fun BookingServicesScreen(
                             serviceGroups = serviceGroups,
                             selectedBookingItems = selectedBookingItems,
                             onSelect = { product ->
-                                val existingSelectedItem =
-                                    selectedBookingItems.find { it.productId == product.id }
+                                val existingSelectedItem = selectedBookingItems.find { it.productId == product.id }
 
                                 if (existingSelectedItem != null) {
                                     viewModel.selectBookingItem(existingSelectedItem)

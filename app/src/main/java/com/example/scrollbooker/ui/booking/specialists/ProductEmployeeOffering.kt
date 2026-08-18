@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.Avatar
+import com.example.scrollbooker.core.extensions.toTwoDecimals
 import com.example.scrollbooker.entity.booking.booking.domain.model.BookingFlowUser
 import com.example.scrollbooker.entity.booking.products.domain.model.ProductOffering
 
@@ -55,7 +56,7 @@ fun ProductEmployeeOffering(
         }
 
         Text(
-            text = offering?.let { "${it.priceWithDiscount} RON" } ?: "N/A",
+            text = offering?.let { "${it.priceWithDiscount.toTwoDecimals()} RON" } ?: "N/A",
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold
         )

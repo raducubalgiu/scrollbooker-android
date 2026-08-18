@@ -21,7 +21,6 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.model.getDurationText
 import com.example.scrollbooker.entity.booking.products.domain.model.getFiltersSummary
-import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.bodySmall
@@ -32,7 +31,6 @@ fun ProductCard(
     modifier: Modifier = Modifier,
     product: Product,
     displayEditableActions: Boolean = false,
-    displayDescription: Boolean = true,
     isSelected: Boolean = false,
     isSelectable: Boolean = false,
     isLoadingDelete: Boolean = false,
@@ -55,7 +53,7 @@ fun ProductCard(
         { onOpenProductDetail(product) }
     }
 
-    Column(modifier.clickable { onCardClick }) {
+    Column(modifier.clickable { onCardClick() }) {
         Column {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -107,10 +105,7 @@ fun ProductCard(
                 )
             }
 
-            if (product.description != null &&
-                product.description.isNotEmpty() &&
-                displayDescription
-            ) {
+            if (product.description != null && product.description.isNotEmpty()) {
                 Spacer(Modifier.height(BasePadding))
 
                 Text(
@@ -119,16 +114,6 @@ fun ProductCard(
                     style = bodySmall,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
-                )
-            }
-
-            if (!product.canBeBooked) {
-                Spacer(Modifier.height(BasePadding))
-
-                Text(
-                    text = "Acest serviciu poate fi rezervat doar în urma unei discuții telefonice",
-                    color = Error,
-                    style = bodySmall
                 )
             }
         }

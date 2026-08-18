@@ -28,6 +28,8 @@ import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.headlineLarge
 import com.example.scrollbooker.R
+import com.example.scrollbooker.components.core.layout.ErrorScreen
+import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.snackbar.CustomSnackBar
 import com.example.scrollbooker.core.snackbar.rememberSnackBarController
 import com.example.scrollbooker.core.util.AppLocaleProvider
@@ -41,13 +43,13 @@ fun BookingConfirmationScreen(
     bookingNavigate: BookingNavigator,
     onCreateAppointment: () -> Unit
 ) {
-    val totals by viewModel.bookingTotals.collectAsStateWithLifecycle()
     val bookingFlowState by viewModel.bookingFlowState.collectAsStateWithLifecycle()
     val selectedSlot by viewModel.selectedSlot.collectAsStateWithLifecycle()
-    val selectedItems by viewModel.selectedBookingItems.collectAsStateWithLifecycle()
-    val isSaving by viewModel.isSaving.collectAsStateWithLifecycle()
 
-    val bookingFlow = (bookingFlowState as FeatureState.Success).data
+    val bookingTotals by viewModel.bookingTotals.collectAsStateWithLifecycle()
+    val selectedBookingItems by viewModel.selectedBookingItems.collectAsStateWithLifecycle()
+
+    val isSaving by viewModel.isSaving.collectAsStateWithLifecycle()
 
     val hostState = remember { SnackbarHostState() }
     val snackBarController = rememberSnackBarController(hostState)
@@ -100,46 +102,55 @@ fun BookingConfirmationScreen(
                    .padding(BasePadding),
                verticalArrangement = Arrangement.spacedBy(BasePadding)
            ) {
-               Column {
-                   Text(
-                       style = headlineLarge,
-                       color = OnBackground,
-                       fontWeight = FontWeight.ExtraBold,
-                       text = stringResource(R.string.checkDetails)
-                   )
+               when(val state = bookingFlowState) {
+                   is FeatureState.Error -> ErrorScreen()
+                   is FeatureState.Loading -> LoadingScreen()
+                   is FeatureState.Success -> {
+                       val bookingFlow = state.data
 
-                   Spacer(Modifier.height(SpacingXXS))
+                       Column {
+                           Text(
+                               style = headlineLarge,
+                               color = OnBackground,
+                               fontWeight = FontWeight.ExtraBold,
+                               text = stringResource(R.string.checkDetails)
+                           )
 
-                   Text(
-                       style = bodyLarge,
-                       fontWeight = FontWeight.Normal,
-                       color = Color.Gray,
-                       text = stringResource(R.string.confirmReservationDetails),
-                   )
+                           Spacer(Modifier.height(SpacingXXS))
+
+                           Text(
+                               style = bodyLarge,
+                               fontWeight = FontWeight.Normal,
+                               color = Color.Gray,
+                               text = stringResource(R.string.confirmReservationDetails),
+                           )
+                       }
+
+                       BookingSummary(
+                           startDate = formatBookingInterval(
+                               dateLocaleStr = selectedSlot?.startDateLocale ?: "",
+                               durationMinutes = bookingTotals.totalDuration
+                           ),
+                           totalDuration = bookingTotals.totalDuration,
+                           owner = bookingFlow.business.owner,
+                           address = bookingFlow.business.formattedAddress
+                       )
+
+                       Text(
+                           text = stringResource(R.string.services),
+                           fontSize = 14.sp,
+                           fontWeight = FontWeight.Bold,
+                           color = Color.Gray
+                       )
+
+                       ConfirmServicesSection(
+                           totals = bookingTotals,
+                           selectedBookingItems = selectedBookingItems
+                       )
+
+                       CancellationPolicy()
+                   }
                }
-
-               BookingSummary(
-                   startDate = formatBookingInterval(
-                       dateLocaleStr = selectedSlot?.startDateLocale ?: "",
-                       durationMinutes = totals.totalDuration
-                   ),
-                   totalDuration = totals.totalDuration,
-                   owner = bookingFlow.business.owner,
-                   address = bookingFlow.business.formattedAddress
-               )
-
-               Text(
-                   text = stringResource(R.string.services),
-                   fontSize = 14.sp,
-                   fontWeight = FontWeight.Bold,
-                   color = Color.Gray
-               )
-
-               ConfirmServicesSection(
-                   totals = totals
-               )
-
-               CancellationPolicy()
            }
        }
    }

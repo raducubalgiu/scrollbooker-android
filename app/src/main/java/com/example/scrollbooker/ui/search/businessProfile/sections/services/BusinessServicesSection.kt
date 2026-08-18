@@ -123,7 +123,6 @@ fun BusinessServicesSection(
                     currentGroupProducts.forEachIndexed { index, product ->
                         ProductCard(
                             product = product,
-                            displayDescription = false,
                             onOpenProductDetail = {},
                             onNavigateToBooking = onNavigateToBookingFromProduct
                         )
