@@ -8,8 +8,8 @@ data class PostAnalyticsSummaryDto(
     @SerializedName("views_count")
     val viewsCount: Int,
 
-    @SerializedName("unique_views_count")
-    val uniqueViewsCount: Int,
+    @SerializedName("unique_viewers_count")
+    val uniqueViewersCount: Int,
 
     @SerializedName("watch_time_ms")
     val watchTimeMs: Long,

@@ -107,7 +107,7 @@ private fun StatisticsContent(summary: PostAnalyticsSummary) {
                 StatCard(
                     modifier = Modifier.weight(1f),
                     label = "Vizitatori Unici",
-                    value = summary.uniqueViewsCount.toString()
+                    value = summary.uniqueViewersCount.toString()
                 )
             }
         }

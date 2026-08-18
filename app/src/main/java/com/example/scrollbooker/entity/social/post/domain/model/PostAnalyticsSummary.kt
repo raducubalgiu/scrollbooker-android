@@ -5,7 +5,7 @@ import com.example.scrollbooker.core.enums.PostViewSourceEnum
 data class PostAnalyticsSummary(
     val postId: Int,
     val viewsCount: Int,
-    val uniqueViewsCount: Int,
+    val uniqueViewersCount: Int,
     val watchTimeMs: Long,
     val averageWatchTimeMs: Long,
     val completionsCount: Int,

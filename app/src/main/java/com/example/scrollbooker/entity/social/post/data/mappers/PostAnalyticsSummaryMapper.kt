@@ -10,7 +10,7 @@ fun PostAnalyticsSummaryDto.toDomain(): PostAnalyticsSummary {
     return PostAnalyticsSummary(
         postId = this.postId,
         viewsCount = this.viewsCount,
-        uniqueViewsCount = this.uniqueViewsCount,
+        uniqueViewersCount = this.uniqueViewersCount,
         watchTimeMs = this.watchTimeMs,
         averageWatchTimeMs = this.averageWatchTimeMs,
         completionsCount = this.completionsCount,
