@@ -22,11 +22,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.components.customized.post.handlePostSheetAction
-import com.example.scrollbooker.components.customized.post.sheets.PostSheetActionEnum
 import com.example.scrollbooker.components.customized.post.sheets.PostSheets
 import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent
 import com.example.scrollbooker.components.customized.post.sheets.PostSheetsContent.None
@@ -48,6 +48,8 @@ fun FeedScreen(
     feedNavigate: FeedNavigator,
 ) {
     val explorePosts = exploreViewModel.posts.collectAsLazyPagingItems()
+    val serviceDomains by exploreViewModel.serviceDomains.collectAsStateWithLifecycle()
+    val selectedServiceIds by exploreViewModel.selectedServiceIds.collectAsStateWithLifecycle()
     val isFollowingTabOpened = rememberSaveable { mutableStateOf(false) }
 
     val horizontalPagerState = rememberPagerState { 2 }
@@ -71,6 +73,7 @@ fun FeedScreen(
     }
 
     var isDrawerOpen by rememberSaveable { mutableStateOf(false) }
+    var temporarySelectedIds by rememberSaveable { mutableStateOf(emptySet<Int>()) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var sheetContent by remember { mutableStateOf<PostSheetsContent>(None) }
 
@@ -113,9 +116,22 @@ fun FeedScreen(
         FeedDrawerLayout(
             isOpen = isDrawerOpen,
             onOpenChange = { isDrawerOpen = it },
-            scrimColor = BackgroundDark.copy(alpha = 0.7f)
+            scrimColor = BackgroundDark.copy(alpha = 0.7f),
+            onAnimationFinished = { currentOpenState ->
+                if (!currentOpenState) {
+                    exploreViewModel.setSelectedServiceIds(temporarySelectedIds)
+                }
+            },
         ) {
-            FeedDrawer(isDrawerOpen = isDrawerOpen, onClose = { isDrawerOpen = false })
+            FeedDrawer(
+                serviceDomains = serviceDomains,
+                selectedServiceIds = selectedServiceIds,
+                isDrawerOpen = isDrawerOpen,
+                onConfirm = {
+                    temporarySelectedIds = it
+                    isDrawerOpen = false
+                }
+            )
         }
 
         FeedTabs(

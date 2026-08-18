@@ -3,6 +3,9 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface ServiceDomainApiService {
+    @GET("/service-domains")
+    suspend fun getAllServiceDomains(): List<ServiceDomainDto>
+
     @GET("/business-domains/{businessDomainId}/service-domains")
     suspend fun getAllServiceDomainsByBusinessDomain(
         @Path("businessDomainId") businessDomainId: Int

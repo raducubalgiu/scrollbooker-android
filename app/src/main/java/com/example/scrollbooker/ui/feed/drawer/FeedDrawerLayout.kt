@@ -36,6 +36,7 @@ fun FeedDrawerLayout(
     onOpenChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     scrimColor: Color = Color.Black.copy(alpha = 0.7f),
+    onAnimationFinished: (Boolean) -> Unit,
     drawerContent: @Composable ColumnScope.() -> Unit,
 ) {
     val scope = rememberCoroutineScope()
@@ -56,6 +57,8 @@ fun FeedDrawerLayout(
             val target = if (isOpen) 0f else closedOffsetX
             if (offsetX.targetValue != target) {
                 offsetX.animateTo(target)
+
+                onAnimationFinished(isOpen)
             }
         }
 

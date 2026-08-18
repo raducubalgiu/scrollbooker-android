@@ -9,6 +9,10 @@ import javax.inject.Inject
 class ServiceDomainRepositoryImpl @Inject constructor(
     private val apiService: ServiceDomainApiService
 ): ServiceDomainRepository {
+    override suspend fun getAllServiceDomains(): List<ServiceDomain> {
+        return apiService.getAllServiceDomains().map { it.toDomain() }
+    }
+
     override suspend fun getServiceDomainsByBusinessDomain(
         businessDomainId: Int
     ): List<ServiceDomain> {

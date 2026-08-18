@@ -6,12 +6,20 @@ import com.example.scrollbooker.components.customized.post.PostInteractionStore
 import com.example.scrollbooker.components.customized.post.PostViewHeartbeatTracker
 import com.example.scrollbooker.components.customized.post.VideoPlayerManager
 import com.example.scrollbooker.core.enums.PostViewSourceEnum
+import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomain
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.useCase.GetAllServiceDomainsUseCase
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetExplorePostsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,7 +27,8 @@ class ExploreFeedViewModel @Inject constructor(
     getExplorePostsUseCase: GetExplorePostsUseCase,
     postInteractionStore: PostInteractionStore,
     videoPlayerManager: VideoPlayerManager,
-    postViewHeartbeatTracker: PostViewHeartbeatTracker
+    postViewHeartbeatTracker: PostViewHeartbeatTracker,
+    private val getAllServiceDomainsUseCase: GetAllServiceDomainsUseCase
 ) : BaseFeedViewModel(
     postInteractionStore,
     videoPlayerManager,
@@ -27,16 +36,50 @@ class ExploreFeedViewModel @Inject constructor(
 ) {
     override val feedScopeKey: String = PostViewSourceEnum.EXPLORE_FEED.key
 
+    private val _serviceDomains = MutableStateFlow<FeatureState<List<ServiceDomain>>>(FeatureState.Loading)
+    val serviceDomains: StateFlow<FeatureState<List<ServiceDomain>>> = _serviceDomains.asStateFlow()
+
     private val _selectedServiceIds: MutableStateFlow<Set<Int>> = MutableStateFlow(emptySet())
-    val selectedServiceIds: Flow<Set<Int>> = _selectedServiceIds.asStateFlow()
+    val selectedServiceIds: StateFlow<Set<Int>> = _selectedServiceIds.asStateFlow()
 
     private val _onlyVideoReviews: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val onlyVideoReviews: Flow<Boolean> = _onlyVideoReviews.asStateFlow()
 
-    override val posts: Flow<PagingData<Post>> =
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override val posts: Flow<PagingData<Post>> = combine(
+        _selectedServiceIds,
+        _onlyVideoReviews
+    ) { ids, onlyVideos ->
+        Pair(ids.toList(), onlyVideos)
+    }.flatMapLatest { (idsList, onlyVideos) ->
         getExplorePostsUseCase(
-            serviceIds = _selectedServiceIds.value.toList(),
-            onlyVideoReviews = _onlyVideoReviews.value
+            serviceIds = idsList,
+            onlyVideoReviews = onlyVideos
         )
-            .cachedIn(viewModelScope)
+    }.cachedIn(viewModelScope)
+
+    fun loadAllServiceDomains() {
+        viewModelScope.launch {
+            _serviceDomains.value = FeatureState.Loading
+
+            val result = getAllServiceDomainsUseCase()
+
+            result.fold(
+                onSuccess = { domains ->
+                    _serviceDomains.value = FeatureState.Success(domains)
+                },
+                onFailure = { error ->
+                    _serviceDomains.value = FeatureState.Error(error)
+                }
+            )
+        }
+    }
+
+    fun setSelectedServiceIds(newServiceIds: Set<Int>) {
+        _selectedServiceIds.value = newServiceIds
+    }
+
+    init {
+        loadAllServiceDomains()
+    }
 }

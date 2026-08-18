@@ -3,6 +3,7 @@ import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.S
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomain
 
 interface ServiceDomainRepository {
+    suspend fun getAllServiceDomains(): List<ServiceDomain>
     suspend fun getServiceDomainsByBusinessDomain(businessDomainId: Int): List<ServiceDomain>
     suspend fun getSelectedServiceDomainsWithServicesByBusinessDomainId(businessId: Int): List<SelectedServiceDomainsWithServices>
 }
