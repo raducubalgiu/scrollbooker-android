@@ -454,6 +454,8 @@
     <string name="startDateLowerThanEndDateValidation">Data de start nu poate fi mai mare decat data de sfârșit</string>
     <string name="unapprovedBusinesses">Afaceri în aprobare</string>
     <string name="unapprovedBusinessesDescription">Lista de afaceri ce urmează a fi revizuite</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="myDashboardDescription">Statistici despre rezervări și postări</string>
     <string name="notFoundUnapprovedBusinesses">Nu au fost găsite afaceri in aprobare</string>
     <string name="linkedServicesDescription">Niciun produs atașat. Adaugă produse pentru a le permite utilizatorilor să rezerve direct din postare.</string>
     <string name="baseInfo">Informații de bază</string>

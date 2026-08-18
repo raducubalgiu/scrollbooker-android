@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AddBusiness
 import androidx.compose.material.icons.outlined.Book
 import androidx.compose.material.icons.outlined.CalendarToday
+import androidx.compose.material.icons.outlined.Dashboard
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.PeopleOutline
 import androidx.compose.material.icons.outlined.Schedule
@@ -41,14 +42,20 @@ data class BusinessCard(
 fun MyBusinessScreen(
     viewModel: MyBusinessViewModel,
     permissionsController: UserPermissionsController,
-    profileNavigate: ProfileNavigator,
-    onBack: () -> Unit
+    profileNavigate: ProfileNavigator
 ) {
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
     val hasEmployees by viewModel.hasEmployees.collectAsStateWithLifecycle()
     val isEmployee by viewModel.isEmployee.collectAsStateWithLifecycle()
 
     val pages = listOf(
+        BusinessCard(
+            title = stringResource(R.string.dashboard),
+            description = stringResource(R.string.myDashboardDescription),
+            icon = Icons.Outlined.Dashboard,
+            permission = PermissionEnum.MY_DASHBOARD_VIEW,
+            navigate = { profileNavigate.toMyDashboard() },
+        ),
         BusinessCard(
             title = stringResource(R.string.unapprovedBusinesses),
             description = stringResource(R.string.unapprovedBusinessesDescription),
@@ -118,7 +125,7 @@ fun MyBusinessScreen(
 
     Layout(
         headerTitle = stringResource(R.string.myBusiness),
-        onBack = onBack
+        onBack = { profileNavigate.back() }
     ) {
         if(isLoading) {
             LoadingScreen()

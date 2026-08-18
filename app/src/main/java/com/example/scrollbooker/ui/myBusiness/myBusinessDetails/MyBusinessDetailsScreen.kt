@@ -36,11 +36,12 @@ import com.example.scrollbooker.components.core.tabs.ServiceTab
 import com.example.scrollbooker.core.snackbar.CustomSnackBar
 import com.example.scrollbooker.core.snackbar.rememberSnackBarController
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 
 @Composable
 fun MyBusinessDetailsScreen(
     viewModel: MyBusinessDetailsViewModel,
-    onBack: () -> Unit
+    profileNavigate: ProfileNavigator
 ) {
     val scope = rememberCoroutineScope()
     val tabs = remember { MyBusinessDetailsTab.getTabs }
@@ -64,7 +65,7 @@ fun MyBusinessDetailsScreen(
     Box(Modifier.fillMaxSize()) {
         Scaffold(
             topBar = { Header(
-                onBack = onBack,
+                onBack = { profileNavigate.back() },
                 title = stringResource(R.string.myBusiness)
             ) }
         ) { innerPadding ->

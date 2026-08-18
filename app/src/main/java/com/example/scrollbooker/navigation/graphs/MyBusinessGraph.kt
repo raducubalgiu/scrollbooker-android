@@ -23,6 +23,8 @@ import com.example.scrollbooker.ui.myBusiness.myBusinessDetails.MyBusinessDetail
 import com.example.scrollbooker.ui.myBusiness.myBusinessDetails.MyBusinessDetailsViewModel
 import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarScreen
 import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarViewModel
+import com.example.scrollbooker.ui.myBusiness.myDashboard.MyDashboardScreen
+import com.example.scrollbooker.ui.myBusiness.myDashboard.MyDashboardViewModel
 import com.example.scrollbooker.ui.myBusiness.myEmployees.MyEmployeesViewModel
 import com.example.scrollbooker.ui.myBusiness.myEmployees.MyEmployeesScreen
 import com.example.scrollbooker.ui.myBusiness.myEmployees.tabs.employmentRequestsTab.EmploymentAcceptTermsScreen
@@ -49,14 +51,21 @@ fun NavGraphBuilder.myBusinessGraph(
     ) {
         composable(MainRoute.MyBusiness.route) {
             val permissionController = LocalUserPermissions.current
-
             val viewModel: MyBusinessViewModel = hiltViewModel()
 
             MyBusinessScreen(
                 viewModel = viewModel,
                 permissionsController = permissionController,
-                profileNavigate = profileNavigate,
-                onBack = { navController.popBackStack() }
+                profileNavigate = profileNavigate
+            )
+        }
+
+        composable(MainRoute.MyDashboard.route) {
+            val viewModel = hiltViewModel<MyDashboardViewModel>()
+
+            MyDashboardScreen(
+                viewModel = viewModel,
+                profileNavigate = profileNavigate
             )
         }
 
@@ -65,7 +74,7 @@ fun NavGraphBuilder.myBusinessGraph(
 
             UnapprovedBusinessesScreen(
                 viewModel = viewModel,
-                onBack = { navController.popBackStack() }
+                profileNavigate = profileNavigate
             )
         }
 
@@ -74,7 +83,7 @@ fun NavGraphBuilder.myBusinessGraph(
 
             MyBusinessDetailsScreen(
                 viewModel = viewModel,
-                onBack = { navController.popBackStack() }
+                profileNavigate = profileNavigate
             )
         }
 
@@ -95,14 +104,12 @@ fun NavGraphBuilder.myBusinessGraph(
                 }
 
                 val tabIndex = parentEntry.arguments?.getInt("tabIndex") ?: 0
-
                 val viewModel = hiltViewModel<MyEmployeesViewModel>(parentEntry)
 
                 MyEmployeesScreen(
                     viewModel = viewModel,
                     tabIndex = tabIndex,
-                    onBack = { navController.popBackStack() },
-                    onNavigateToSearchUser = { navController.navigate(MainRoute.EmploymentSelectEmployee.route) }
+                    profileNavigate = profileNavigate
                 )
             }
 
@@ -115,8 +122,7 @@ fun NavGraphBuilder.myBusinessGraph(
 
                 EmploymentSelectEmployeeScreen(
                     viewModel = viewModel,
-                    onBack = { navController.popBackStack() },
-                    onNext = { navController.navigate(MainRoute.EmploymentAssignJob.route) }
+                    profileNavigate = profileNavigate,
                 )
             }
 
@@ -129,8 +135,7 @@ fun NavGraphBuilder.myBusinessGraph(
 
                 EmploymentAssignJobScreen(
                     viewModel = viewModel,
-                    onBack = { navController.popBackStack() },
-                    onNext = { navController.navigate(MainRoute.EmploymentAcceptTerms.route) }
+                    profileNavigate = profileNavigate
                 )
             }
 

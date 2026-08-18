@@ -17,14 +17,14 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.myBusiness.myEmployees.MyEmployeesViewModel
 import com.example.scrollbooker.ui.theme.Divider
 
 @Composable
 fun EmploymentAssignJobScreen(
     viewModel: MyEmployeesViewModel,
-    onBack: () -> Unit,
-    onNext: () -> Unit
+    profileNavigate: ProfileNavigator
 ) {
     val professionsState by viewModel.professionsState.collectAsState()
     val selectedProfession by viewModel.selectedProfession.collectAsState()
@@ -32,8 +32,8 @@ fun EmploymentAssignJobScreen(
     FormLayout(
         headLine = stringResource(R.string.assignJob),
         subHeadLine = stringResource(R.string.chooseProfessionsFromTheList),
-        onBack = onBack,
-        onNext = onNext,
+        onBack = { profileNavigate.back() },
+        onNext = { profileNavigate.toEmploymentAcceptTerms() },
         isEnabled = selectedProfession != null,
         buttonTitle = stringResource(R.string.nextStep)
     ) {

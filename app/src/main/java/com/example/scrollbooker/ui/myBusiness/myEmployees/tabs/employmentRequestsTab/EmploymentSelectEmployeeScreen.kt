@@ -23,8 +23,6 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.FormLayout
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.core.util.Dimens.SpacingXL
-import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.FeatureState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -39,6 +37,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.myBusiness.myEmployees.MyEmployeesViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -46,8 +45,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun EmploymentSelectEmployeeScreen(
     viewModel: MyEmployeesViewModel,
-    onBack: () -> Unit,
-    onNext: () -> Unit
+    profileNavigate: ProfileNavigator
 ) {
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
@@ -82,7 +80,7 @@ fun EmploymentSelectEmployeeScreen(
                 focusManager.clearFocus()
                 keyboardController?.hide()
                 delay(150)
-                onBack()
+                profileNavigate.back()
             }
         },
         buttonTitle = stringResource(R.string.nextStep),
@@ -91,7 +89,7 @@ fun EmploymentSelectEmployeeScreen(
                 focusManager.clearFocus()
                 keyboardController?.hide()
                 delay(150)
-                onNext()
+                profileNavigate.toEmploymentAssignJob()
             }
         },
         enableBottomAction = selectedEmployee != null

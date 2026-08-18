@@ -99,11 +99,12 @@ class ProfileNavigator (
             launchSingleTop = true
         }
     }
-
+    fun toMyDashboard() {
+        navController.navigate(MainRoute.MyDashboard.route)
+    }
     fun toUnapprovedBusinesses() {
         navController.navigate(MainRoute.UnapprovedBusinesses.route)
     }
-
     fun toMyBusinessDetails() {
         navController.navigate(MainRoute.MyBusinessDetails.route)
     }
@@ -134,12 +135,19 @@ class ProfileNavigator (
     fun toMyEmployees() {
         navController.navigate(MainRoute.MyEmployees.route)
     }
+    fun toEmploymentSelectEmployee() {
+        navController.navigate(MainRoute.EmploymentSelectEmployee.route)
+    }
+    fun toEmploymentAssignJob() {
+        navController.navigate(MainRoute.EmploymentAssignJob.route)
+    }
+    fun toEmploymentAcceptTerms() {
+        navController.navigate(MainRoute.EmploymentAcceptTerms.route)
+    }
 
     // Settings
     fun toSettings () {
-        navController.navigate(MainRoute.Settings.route) {
-            launchSingleTop = true
-        }
+        navController.navigate(MainRoute.Settings.route)
     }
 
     fun toDisplay() {

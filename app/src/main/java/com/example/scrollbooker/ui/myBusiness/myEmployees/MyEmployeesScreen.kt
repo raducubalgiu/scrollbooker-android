@@ -16,6 +16,7 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.Layout
 import com.example.scrollbooker.components.core.tabs.ServiceTab
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.ui.myBusiness.myEmployees.tabs.MyEmployeesTab
 import com.example.scrollbooker.ui.myBusiness.myEmployees.tabs.employeesTab.EmployeesTab
 import com.example.scrollbooker.ui.myBusiness.myEmployees.tabs.employmentRequestsTab.EmploymentRequestsTab
@@ -28,8 +29,7 @@ import kotlinx.coroutines.launch
 fun MyEmployeesScreen(
     viewModel: MyEmployeesViewModel,
     tabIndex: Int,
-    onBack: () -> Unit,
-    onNavigateToSearchUser: () -> Unit
+    profileNavigate: ProfileNavigator
 ) {
     val pagerState = rememberPagerState(initialPage = tabIndex) { 2 }
     val tabs = remember { MyEmployeesTab.getTabs }
@@ -38,7 +38,7 @@ fun MyEmployeesScreen(
 
     Layout(
         headerTitle = stringResource(R.string.employees),
-        onBack = onBack,
+        onBack = { profileNavigate.back() },
         enablePaddingH = false
     ) {
         Column(Modifier.fillMaxSize()) {
@@ -75,7 +75,10 @@ fun MyEmployeesScreen(
             ) { index ->
                 when (index) {
                     0 -> EmployeesTab(viewModel)
-                    1 -> EmploymentRequestsTab(viewModel, onNavigateToSearchUser)
+                    1 -> EmploymentRequestsTab(
+                        viewModel = viewModel,
+                        onNavigateToSearchUser = { profileNavigate.toEmploymentSelectEmployee() }
+                    )
                 }
             }
         }

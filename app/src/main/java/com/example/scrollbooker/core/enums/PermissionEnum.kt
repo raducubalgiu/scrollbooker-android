@@ -17,6 +17,7 @@ enum class PermissionEnum(val key: String) {
 
     // My Business
     MY_BUSINESS_ROUTES_VIEW("MY_BUSINESS_ROUTES_VIEW"),
+    MY_DASHBOARD_VIEW("MY_DASHBOARD_VIEW"),
 
     MY_SUBSCRIPTION_VIEW("MY_SUBSCRIPTION_VIEW"),
 

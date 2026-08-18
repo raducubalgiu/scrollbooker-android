@@ -17,11 +17,12 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.core.layout.MessageScreen
 import androidx.compose.runtime.getValue
+import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 
 @Composable
 fun UnapprovedBusinessesScreen(
     viewModel: UnapprovedBusinessesViewModel,
-    onBack: () -> Unit
+    profileNavigate: ProfileNavigator,
 ) {
     val isSaving by viewModel.isSaving.collectAsStateWithLifecycle()
     val unapprovedBusinesses = viewModel.unapprovedBusinesses.collectAsLazyPagingItems()
@@ -32,7 +33,7 @@ fun UnapprovedBusinessesScreen(
         topBar = {
             Header(
                 title = stringResource(R.string.unapprovedBusinesses),
-                onBack = onBack
+                onBack = { profileNavigate.back() }
             )
         }
     ) { innerPadding ->
