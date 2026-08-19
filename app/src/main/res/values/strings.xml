@@ -355,7 +355,7 @@
     <string name="deleteRequest">Ștergere cerere</string>
     <string name="areYouSureDeleteEmploymentRequest">Ești sigur că vrei să ștergi această cerere de angajare?</string>
     <string name="youCanAddVideoReview">Poți adăuga un review video</string>
-    <string name="addVideoReview">Adaugă un review video</string>
+    <string name="addVideoReview">Adaugă o recenzie video</string>
     <string name="discountForTheNextBooking">reducere pentru următoarea rezervare</string>
     <string name="youGet">Primești</string>
     <string name="yourReview">Recenzia ta</string>
@@ -480,6 +480,7 @@
     <string name="earnings">Încasări</string>
     <string name="fromvideo">Din clipuri video</string>
     <string name="scrollBookerCommission">Comision ScrollBooker</string>
+    <string name="bookingsSources">Surse rezervări</string>
 
     <!-- Period -->
     <string name="period_seven_days">7 zile</string>

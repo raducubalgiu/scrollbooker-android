@@ -31,7 +31,9 @@ import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointm
 import com.example.scrollbooker.entity.booking.appointment.domain.model.getStatusColor
 import com.example.scrollbooker.entity.booking.appointment.domain.model.getStatusRes
 import com.example.scrollbooker.ui.theme.bodyLarge
+import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.headlineMedium
+import com.example.scrollbooker.ui.theme.titleLarge
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
@@ -47,7 +49,7 @@ fun AppointmentDetailsHeader(
             Text(
                 text = stringResource(appointment.getStatusRes()),
                 color = appointment.getStatusColor(),
-                style = titleMedium,
+                style = bodyMedium,
                 fontWeight = FontWeight.SemiBold
             )
         }
@@ -57,7 +59,7 @@ fun AppointmentDetailsHeader(
         Column(modifier = Modifier.fillMaxWidth()) {
             Text(
                 text = appointment.startDate.display(),
-                style = headlineMedium,
+                style = titleLarge,
                 fontWeight = FontWeight.SemiBold
             )
 
@@ -65,7 +67,7 @@ fun AppointmentDetailsHeader(
 
             Text(
                 text = "(${appointment.totalDuration} min)",
-                style = bodyLarge,
+                style = bodyMedium,
                 color = Color.Gray
             )
         }
@@ -98,6 +100,7 @@ fun AppointmentDetailsHeader(
                 )
                 Text(
                     text = "${appointment.user.profession} • ${appointment.user.ratingsCount} ${stringResource(R.string.reviews)}",
+                    style = bodyMedium,
                     color = Color.Gray,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis

@@ -16,7 +16,10 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.headlineMedium
+import com.example.scrollbooker.ui.theme.titleLarge
+import com.example.scrollbooker.ui.theme.titleMedium
 import com.example.scrollbooker.ui.theme.titleSmall
 
 @Composable
@@ -44,14 +47,14 @@ fun AppointmentCardDate(
         ) {
             Text(
                 text = day,
-                style = headlineMedium,
+                style = titleLarge,
                 fontWeight = FontWeight.Bold
             )
             Text(
                 modifier = Modifier.padding(vertical = SpacingXS),
                 text = month,
                 color = Color.Gray,
-                style = titleSmall,
+                style = bodyMedium,
             )
             Text(
                 text = startTime,

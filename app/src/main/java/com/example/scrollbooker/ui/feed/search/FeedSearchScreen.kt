@@ -24,6 +24,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -41,6 +42,7 @@ import com.example.scrollbooker.navigation.navigators.FeedNavigator
 import com.example.scrollbooker.navigation.navigators.UserProfileParam
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
 
@@ -109,9 +111,10 @@ fun FeedSearchScreen(
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                     modifier = Modifier.padding(bottom = SpacingXXS),
-                                    style = titleMedium,
+                                    style = bodyLarge,
+                                    fontWeight = FontWeight.SemiBold,
                                     color = OnBackground,
-                                    text = user.fullName
+                                    text = user.fullName,
                                 )
                             },
                             supportingContent = {

@@ -41,6 +41,7 @@ import com.example.scrollbooker.entity.booking.appointment.domain.model.getStatu
 import com.example.scrollbooker.entity.booking.appointment.domain.model.getStatusRes
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Primary
+import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodySmall
 import com.example.scrollbooker.ui.theme.titleMedium
 
@@ -72,8 +73,8 @@ fun AppointmentCard(
                 Text(
                     text = stringResource(appointment.getStatusRes()),
                     color = appointment.getStatusColor(),
-                    style = titleMedium,
-                    fontWeight = FontWeight.SemiBold
+                    style = bodyLarge,
+                    fontWeight = FontWeight.Bold
                 )
                 if (isNew) {
                     Box(

@@ -18,7 +18,11 @@ data class DashboardDateRange(
         val formatter = DateTimeFormatter.ofPattern(pattern, locale)
         return "${startDate.format(formatter)} - ${endDate.format(formatter)}"
     }
+
+    fun toApiStartDate(): String = startDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
+    fun toApiEndDate(): String = endDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
 }
+
 enum class DashboardPeriod(val label: String, @StringRes val titleRes: Int) {
     SEVEN_DAYS("7 days", R.string.period_seven_days),
     ONE_MONTH("1 month", R.string.period_one_month),
@@ -27,13 +31,13 @@ enum class DashboardPeriod(val label: String, @StringRes val titleRes: Int) {
     ONE_YEAR("1 year", R.string.period_one_year);
 
     fun getDateRange(referenceDate: LocalDate = LocalDate.now()): DashboardDateRange {
-        val startDate = referenceDate
-        val endDate = when (this) {
-            SEVEN_DAYS -> referenceDate.plusDays(7)
-            ONE_MONTH -> referenceDate.plusMonths(1)
-            THREE_MONTHS -> referenceDate.plusMonths(3)
-            SIX_MONTHS -> referenceDate.plusMonths(6)
-            ONE_YEAR -> referenceDate.plusYears(1)
+        val endDate = referenceDate
+        val startDate = when (this) {
+            SEVEN_DAYS -> referenceDate.minusDays(7)
+            ONE_MONTH -> referenceDate.minusMonths(1)
+            THREE_MONTHS -> referenceDate.minusMonths(3)
+            SIX_MONTHS -> referenceDate.minusMonths(6)
+            ONE_YEAR -> referenceDate.minusYears(1)
         }
         return DashboardDateRange(startDate, endDate)
     }

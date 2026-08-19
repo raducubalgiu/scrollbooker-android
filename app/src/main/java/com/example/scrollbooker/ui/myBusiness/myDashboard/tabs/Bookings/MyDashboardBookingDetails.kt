@@ -20,18 +20,20 @@ import com.example.scrollbooker.components.customized.stats.DonutChart
 import com.example.scrollbooker.components.customized.stats.DonutChartEntry
 import com.example.scrollbooker.components.customized.stats.StatCard
 import com.example.scrollbooker.components.customized.stats.StatTitle
+import com.example.scrollbooker.core.extensions.toTwoDecimals
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
+import com.example.scrollbooker.entity.dashboard.domain.model.DashboardBooking
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
-import com.example.scrollbooker.ui.theme.SurfaceBG
 import com.example.scrollbooker.ui.theme.bodyMedium
 
 @Composable
 fun MyDashboardBookingDetails(
+    dashboardBooking: DashboardBooking,
     periodText: String
 ) {
     Column(
@@ -61,7 +63,7 @@ fun MyDashboardBookingDetails(
             StatCard(
                 modifier = Modifier.weight(1f),
                 label = stringResource(R.string.bookings),
-                value = "100",
+                value = dashboardBooking.bookingsNo.toString(),
                 containerColor = Color.Transparent,
                 contentColor = OnBackground,
                 borderColor = Divider
@@ -69,7 +71,7 @@ fun MyDashboardBookingDetails(
             StatCard(
                 modifier = Modifier.weight(1f),
                 label = stringResource(R.string.earnings),
-                value = "1,200 RON",
+                value = "${dashboardBooking.revenue.toTwoDecimals()} RON",
                 containerColor = Color.Transparent,
                 contentColor = OnBackground,
                 borderColor = Divider
@@ -85,7 +87,7 @@ fun MyDashboardBookingDetails(
             StatCard(
                 modifier = Modifier.weight(1f),
                 label = stringResource(R.string.finished),
-                value = "90",
+                value = dashboardBooking.finishedBookingsNo.toString(),
                 containerColor = Color.Transparent,
                 contentColor = OnBackground,
                 borderColor = Divider
@@ -93,7 +95,7 @@ fun MyDashboardBookingDetails(
             StatCard(
                 modifier = Modifier.weight(1f),
                 label = stringResource(R.string.canceled),
-                value = "10",
+                value = dashboardBooking.cancelledBookingsNo.toString(),
                 containerColor = Color.Transparent,
                 contentColor = OnBackground,
                 borderColor = Divider
@@ -109,7 +111,7 @@ fun MyDashboardBookingDetails(
             StatCard(
                 modifier = Modifier.weight(1f),
                 label = stringResource(R.string.fromvideo),
-                value = "200 RON",
+                value = "${dashboardBooking.revenueFromVideo} RON",
                 containerColor = Color.Transparent,
                 contentColor = OnBackground,
                 borderColor = Divider
@@ -131,10 +133,13 @@ fun MyDashboardBookingDetails(
 
         DonutChart(
             title = stringResource(R.string.channel),
-            entries = listOf(
-                DonutChartEntry(label = "Scrollbooker", value = 30, color = Primary),
-                DonutChartEntry(label = "Client Propriu", value = 200, color = SurfaceBG)
-            )
+            entries = dashboardBooking.channels.map { channel ->
+                DonutChartEntry(
+                    label = channel.channel?.key ?: "",
+                    value = channel.bookingsNo,
+                    color = Primary
+                )
+            }
         )
     }
 }

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -30,6 +31,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointment
 import com.example.scrollbooker.entity.booking.appointment.domain.model.getProductNames
 import com.example.scrollbooker.ui.theme.Error
+import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
 import java.math.BigDecimal
@@ -47,12 +49,12 @@ fun AppointmentCardInfo(appointment: Appointment) {
                     url = user.avatar ?: "",
                     onClick = {},
                     rating = ratingsAverage,
-                    size = 60.dp,
+                    size = 55.dp,
                 )
             } else {
                 Avatar(
                     url = customer.avatar ?: "",
-                    size = 60.dp,
+                    size = 55.dp,
                 )
             }
             Spacer(Modifier.width(SpacingM))
@@ -60,13 +62,14 @@ fun AppointmentCardInfo(appointment: Appointment) {
             Column {
                 Text(
                     text = if(appointment.isCustomer) user.fullName else customer.fullName,
-                    style = titleMedium,
+                    style = bodyLarge,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     text = (if(appointment.isCustomer) user.profession else customer.profession).toString(),
+                    style = bodyMedium,
                     color = Color.Gray,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -78,7 +81,7 @@ fun AppointmentCardInfo(appointment: Appointment) {
 
         Text(
             text = appointment.getProductNames(),
-            style = titleMedium,
+            style = bodyLarge,
             fontWeight = FontWeight.Normal,
             color = Color.Gray,
             maxLines = 1,
@@ -89,6 +92,7 @@ fun AppointmentCardInfo(appointment: Appointment) {
 
         Row {
             Icon(
+                modifier = Modifier.size(20.dp),
                 painter = painterResource(R.drawable.ic_clock_outline),
                 contentDescription = null,
                 tint = Color.Gray
@@ -98,6 +102,7 @@ fun AppointmentCardInfo(appointment: Appointment) {
             Text(
                 color = Color.Gray,
                 text = appointment.totalDuration.formatDuration(),
+                style = bodyMedium
             )
         }
 

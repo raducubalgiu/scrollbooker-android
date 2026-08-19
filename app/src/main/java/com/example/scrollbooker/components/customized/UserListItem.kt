@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.avatar.Avatar
@@ -26,6 +27,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.ui.inbox.components.NotificationBadgeConfig
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
 
@@ -58,7 +60,8 @@ fun UserListItem(
                 maxLines = titleMaxLines,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.padding(bottom = SpacingXXS),
-                style = titleMedium,
+                style = bodyLarge,
+                fontWeight = FontWeight.SemiBold,
                 color = OnBackground
             )
         },

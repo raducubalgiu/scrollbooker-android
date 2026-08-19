@@ -49,6 +49,7 @@ import com.example.scrollbooker.core.extensions.toDecimals
 import com.example.scrollbooker.core.extensions.toTwoDecimals
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnPrimary
+import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodySmall
 import com.example.scrollbooker.ui.theme.titleMedium
 
@@ -167,7 +168,7 @@ fun VideoReviewCTA(
                     Text(
                         text = stringResource(R.string.addVideoReview),
                         color = textColor,
-                        style = titleMedium.copy(fontWeight = FontWeight.SemiBold),
+                        style = bodyLarge.copy(fontWeight = FontWeight.SemiBold),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         fontWeight = FontWeight.SemiBold

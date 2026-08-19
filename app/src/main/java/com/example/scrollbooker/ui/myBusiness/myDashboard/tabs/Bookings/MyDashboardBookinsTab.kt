@@ -10,21 +10,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.scrollbooker.core.enums.BookingSourceEnum
+import com.example.scrollbooker.components.core.layout.ErrorScreen
+import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.ui.myBusiness.myDashboard.MyDashboardViewModel
 import com.example.scrollbooker.ui.myBusiness.myDashboard.components.PeriodSelector
-
-data class AppointmentSource(
-    val source: BookingSourceEnum,
-    val value: String,
-    val progress: Float
-)
 
 @Composable
 fun MyDashboardBookingsTab(
     viewModel: MyDashboardViewModel
 ) {
+    val dashboardState by viewModel.dashboardBookingState.collectAsStateWithLifecycle()
     val selectedPeriod by viewModel.selectedPeriod.collectAsStateWithLifecycle()
     val selectedDateRange by viewModel.selectedDateRange.collectAsStateWithLifecycle()
 
@@ -34,15 +31,25 @@ fun MyDashboardBookingsTab(
             onPeriodSelected = viewModel::onPeriodSelected
         )
 
-        Column(
-            verticalArrangement = Arrangement.spacedBy(SpacingS),
-            modifier = Modifier
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = SpacingS)
-        ) {
-            MyDashboardBookingDetails(periodText = selectedDateRange.format())
-            MyDashboardBookingSource()
+        when(val state = dashboardState) {
+            is FeatureState.Error -> ErrorScreen()
+            is FeatureState.Loading -> LoadingScreen()
+            is FeatureState.Success -> {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(SpacingS),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = SpacingS)
+                ) {
+                    MyDashboardBookingDetails(
+                        dashboardBooking = state.data,
+                        periodText = selectedDateRange.format()
+                    )
+
+                    MyDashboardBookingSource(sources = state.data.sources)
+                }
+            }
         }
     }
 }

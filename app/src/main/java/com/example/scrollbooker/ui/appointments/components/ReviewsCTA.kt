@@ -22,11 +22,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.ui.theme.SurfaceBG
+import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
@@ -44,7 +46,8 @@ fun ReviewCTA(
     ) {
         Text(
             text = stringResource(R.string.clickOnRatingToEvaluate),
-            style = titleMedium,
+            style = bodyLarge,
+            fontWeight = FontWeight.SemiBold,
             color = Color.Gray
         )
 
@@ -60,7 +63,7 @@ fun ReviewCTA(
 
                 Box(
                     modifier = Modifier
-                        .size(50.dp)
+                        .size(45.dp)
                         .clickable { onRatingClick(rating) },
                     contentAlignment = Alignment.Center
                 ) {
