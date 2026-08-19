@@ -455,7 +455,7 @@
     <string name="unapprovedBusinesses">Afaceri în aprobare</string>
     <string name="unapprovedBusinessesDescription">Lista de afaceri ce urmează a fi revizuite</string>
     <string name="dashboard">Dashboard</string>
-    <string name="myDashboardDescription">Statistici despre rezervări și postări</string>
+    <string name="myDashboardDescription">Statistici despre rezervări și postări</string>"
     <string name="notFoundUnapprovedBusinesses">Nu au fost găsite afaceri in aprobare</string>
     <string name="linkedServicesDescription">Niciun produs atașat. Adaugă produse pentru a le permite utilizatorilor să rezerve direct din postare.</string>
     <string name="baseInfo">Informații de bază</string>
@@ -469,6 +469,19 @@
     <string name="pickOption">Alege %1$s</string>
     <string name="filterRequired">Filtrele sunt obligatorii</string>
     <string name="createService">Creează serviciul</string>
+    <string name="postStatistics">Statistici postare</string>
+    <string name="views">Vizualizări</string>
+    <string name="uniqueViewers">Vizitatori unici</string>
+    <string name="watchTime">Timp total</string>
+    <string name="averageWatchTime">Medie vizualizare</string>
+    <string name="trafficSources">Surse de trafic</string>
+
+    <!-- Period -->
+    <string name="period_seven_days">7 zile</string>
+    <string name="period_one_month">1 lună</string>
+    <string name="period_three_months">3 luni</string>
+    <string name="period_six_months">6 luni</string>
+    <string name="period_one_year">1 an</string>
 
     <!-- Follow & Social Notifications -->
     <string name="notification_started_following_you">a început să te urmărească</string>

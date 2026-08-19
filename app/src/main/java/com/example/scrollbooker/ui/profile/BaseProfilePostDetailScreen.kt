@@ -31,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -188,7 +189,8 @@ fun BaseProfilePostDetailScreen(
                     title = title,
                     icon = Icons.Default.Close,
                     iconSize = 30.dp,
-                    withBackground = false
+                    containerColor = Color.Transparent,
+                    contentColor = Color.White
                 )
             }
         ) { innerPadding ->

@@ -24,15 +24,13 @@ fun Header(
     modifier: Modifier = Modifier,
     onBack: (() -> Unit)? = null,
     title: String = "",
-    withBackground: Boolean = true,
+    containerColor: Color = Background,
+    contentColor: Color = OnBackground,
     customTitle: (@Composable () -> Unit)? = null,
     icon: ImageVector = Icons.Default.ArrowBackIosNew,
     iconSize: Dp = 24.dp,
     actions:  @Composable (RowScope.() -> Unit) = {},
 ) {
-    val containerColor = if(withBackground) Background else Color.Transparent
-    val contentColor = if(withBackground) OnBackground else Color.White
-
     CenterAlignedTopAppBar(
         modifier = modifier,
         title = {
