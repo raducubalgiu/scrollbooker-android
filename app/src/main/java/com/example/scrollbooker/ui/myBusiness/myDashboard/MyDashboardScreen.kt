@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
-import com.example.scrollbooker.ui.myBusiness.myDashboard.tabs.MyDashboardAppointmentsTab
+import com.example.scrollbooker.ui.myBusiness.myDashboard.tabs.Bookings.MyDashboardBookingsTab
 import com.example.scrollbooker.ui.myBusiness.myDashboard.tabs.MyDashboardPostsTab
 import com.example.scrollbooker.ui.myBusiness.myDashboard.tabs.MyDashboardTab
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
@@ -96,7 +96,7 @@ fun MyDashboardScreen(
                 modifier = Modifier.fillMaxSize()
             ) { page ->
                 when (page) {
-                    0 -> MyDashboardAppointmentsTab()
+                    0 -> MyDashboardBookingsTab(viewModel)
                     1 -> MyDashboardPostsTab()
                 }
             }

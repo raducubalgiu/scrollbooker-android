@@ -1,10 +1,30 @@
 package com.example.scrollbooker.ui.myBusiness.myDashboard
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
-class MyDashboardViewModel @Inject constructor(): ViewModel() {
+class MyDashboardViewModel @Inject constructor() : ViewModel() {
+    private val _selectedPeriod = MutableStateFlow(DashboardPeriod.SEVEN_DAYS)
+    val selectedPeriod: StateFlow<DashboardPeriod> = _selectedPeriod.asStateFlow()
 
+    val selectedDateRange: StateFlow<DashboardDateRange> = _selectedPeriod
+        .map { it.getDateRange() }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = _selectedPeriod.value.getDateRange()
+        )
+
+    fun onPeriodSelected(period: DashboardPeriod) {
+        _selectedPeriod.value = period
+    }
 }
