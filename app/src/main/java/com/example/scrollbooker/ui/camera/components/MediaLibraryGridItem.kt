@@ -38,6 +38,32 @@ fun MediaLibraryGridItem(
     onSelect: (Uri) -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+    val context = LocalContext.current
+
+    val imageRequest = remember(item.uri) {
+        ImageRequest.Builder(context)
+            .data(item.uri)
+            .videoFrameMillis(500)
+            .decoderFactory { result, options, _ ->
+                VideoFrameDecoder(result.source, options)
+            }
+            .crossfade(true)
+            .build()
+    }
+
+    val gradientBrush = remember {
+        Brush.verticalGradient(
+            colors = listOf(
+                Color.Black.copy(alpha = 0.2f),
+                Color.Transparent,
+                Color.Black.copy(alpha = 0.4f)
+            )
+        )
+    }
+
+    val formattedDuration = remember(item.durationMs) {
+        formatDuration(item.durationMs)
+    }
 
     Box(modifier = Modifier
         .aspectRatio(9f / 12f)
@@ -49,24 +75,14 @@ fun MediaLibraryGridItem(
         )
     ) {
         AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(item.uri)
-                .videoFrameMillis(500)
-                .decoderFactory { result, options, _ ->
-                    VideoFrameDecoder(
-                        result.source,
-                        options
-                    )
-                }
-                .crossfade(true)
-                .build(),
+            model = imageRequest,
             contentDescription = "Post Grid",
             contentScale = ContentScale.Crop,
             onError = { Timber.tag("Post Grid Error").e("ERROR: ${it.result.throwable.message}") },
             modifier = Modifier.matchParentSize()
         )
 
-        if(isPreparing) {
+        if (isPreparing) {
             Box(modifier = Modifier
                 .matchParentSize()
                 .background(Color.Black.copy(alpha = 0.5f)),
@@ -82,19 +98,11 @@ fun MediaLibraryGridItem(
 
         Box(modifier = Modifier
             .matchParentSize()
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color.Black.copy(alpha = 0.2f),
-                        Color.Transparent,
-                        Color.Black.copy(alpha = 0.4f)
-                    )
-                )
-            )
+            .background(brush = gradientBrush)
         )
 
         Text(
-            text = formatDuration(item.durationMs),
+            text = formattedDuration,
             style = labelSmall,
             color = Color.White,
             modifier = Modifier
@@ -110,6 +118,7 @@ fun MediaLibraryGridItem(
         )
     }
 }
+
 
 private fun formatDuration(durationMs: Long): String {
     val totalSec = durationMs / 1000

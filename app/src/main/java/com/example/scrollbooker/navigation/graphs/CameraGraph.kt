@@ -72,7 +72,7 @@ fun NavGraphBuilder.cameraGraph(
 
         composable(
             route = MainRoute.CameraGallery.route,
-            enterTransition = { fadeIn() },
+            enterTransition = { EnterTransition.None },
             popExitTransition = { ExitTransition.None }
         ) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {

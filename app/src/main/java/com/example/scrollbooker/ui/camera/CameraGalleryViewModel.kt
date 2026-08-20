@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,6 +28,7 @@ class CameraGalleryViewModel @Inject constructor(
             try {
                 permissionRepository.videosPagingSource(pageSize = 60).flow
             } catch (e: Exception) {
+                Timber.tag("MediaVideoPagingSource").e(e, "Error fetching videos")
                 flowOf(PagingData.empty())
             }
         }

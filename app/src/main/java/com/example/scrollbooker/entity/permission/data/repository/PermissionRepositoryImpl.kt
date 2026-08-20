@@ -1,14 +1,12 @@
 package com.example.scrollbooker.entity.permission.data.repository
 
 import android.Manifest
-import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
-import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
 import androidx.core.content.ContextCompat
@@ -28,8 +26,6 @@ import kotlinx.coroutines.withContext
 class PermissionRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ): PermissionRepository {
-    private val resolver: ContentResolver = context.contentResolver
-
     private val prefs by lazy {
         context.getSharedPreferences("permissions_prefs", Context.MODE_PRIVATE)
     }

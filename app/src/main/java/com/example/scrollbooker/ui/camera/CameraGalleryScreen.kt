@@ -45,6 +45,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.scrollbooker.ui.camera.permissions.MediaPermissionHelper
 import com.example.scrollbooker.ui.camera.permissions.MediaPermissionState
 import com.example.scrollbooker.ui.theme.BackgroundDark
+import timber.log.Timber
 
 @Composable
 fun CameraGalleryScreen(
@@ -156,6 +157,8 @@ fun CameraGalleryScreen(
                             ) {
                                 items(videos.itemCount) { index ->
                                     val item = videos[index] ?: return@items
+                                    Timber.tag("GalleryOrder")
+                                        .d("index=$index date=${item.dateAddedSec} name=${item.displayName}")
                                     MediaLibraryGridItem(
                                         item = item,
                                         isPreparing = item.uri == cameraVideoUiState.preparingUri,

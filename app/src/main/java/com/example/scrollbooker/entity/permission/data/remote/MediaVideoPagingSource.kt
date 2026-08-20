@@ -1,10 +1,7 @@
 package com.example.scrollbooker.entity.permission.data.remote
-
-import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.Context
 import android.os.Build
-import android.os.Bundle
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import androidx.paging.PagingSource
@@ -40,31 +37,16 @@ class VideosPagingSource(
                 MediaStore.Video.Media.SIZE
             )
 
-            val sortColumns = arrayOf(
-                MediaStore.Video.Media.DATE_ADDED,
-                MediaStore.Video.Media._ID
-            )
-            val sortDirection = intArrayOf(
-                ContentResolver.QUERY_SORT_DIRECTION_DESCENDING,
-                ContentResolver.QUERY_SORT_DIRECTION_DESCENDING
-            )
-
             val items = withContext(Dispatchers.IO) {
-                val cursor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    val args = Bundle().apply {
-                        putInt(ContentResolver.QUERY_ARG_LIMIT, limit)
-                        putInt(ContentResolver.QUERY_ARG_OFFSET, offset)
-                        putStringArray(ContentResolver.QUERY_ARG_SORT_COLUMNS, sortColumns)
-                        putIntArray(ContentResolver.QUERY_ARG_SORT_DIRECTION, sortDirection)
-                    }
-                    context.contentResolver.query(collection, projection, args, null)
-                } else {
-                    // Fallback vechi (dacă îți pasă)
-                    val sortOrder =
-                        "${MediaStore.Video.Media.DATE_ADDED} DESC, ${MediaStore.Video.Media._ID} DESC " +
-                                "LIMIT $limit OFFSET $offset"
-                    context.contentResolver.query(collection, projection, null, null, sortOrder)
-                }
+                val sortOrder = "${MediaStore.Video.Media.DATE_ADDED} DESC, ${MediaStore.Video.Media._ID} DESC"
+
+                val cursor = context.contentResolver.query(
+                    collection,
+                    projection,
+                    null,
+                    null,
+                    sortOrder
+                )
 
                 cursor?.use { c ->
                     val idCol = c.getColumnIndexOrThrow(MediaStore.Video.Media._ID)
@@ -73,21 +55,28 @@ class VideosPagingSource(
                     val dateCol = c.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_ADDED)
                     val sizeCol = c.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE)
 
-                    val list = ArrayList<MediaVideo>(c.count)
-                    while (c.moveToNext()) {
-                        val id = c.getLong(idCol)
-                        val uri = ContentUris.withAppendedId(collection, id)
-                        list.add(
-                            MediaVideo(
-                                id = id,
-                                uri = uri,
-                                displayName = c.getString(nameCol),
-                                durationMs = c.getLong(durCol),
-                                dateAddedSec = c.getLong(dateCol),
-                                sizeBytes = c.getLong(sizeCol)
+                    val list = ArrayList<MediaVideo>(limit)
+
+                    if (c.moveToPosition(offset)) {
+                        var count = 0
+                        while (count < limit && !c.isAfterLast) {
+                            val id = c.getLong(idCol)
+                            val uri = ContentUris.withAppendedId(collection, id)
+                            list.add(
+                                MediaVideo(
+                                    id = id,
+                                    uri = uri,
+                                    displayName = c.getString(nameCol),
+                                    durationMs = c.getLong(durCol),
+                                    dateAddedSec = c.getLong(dateCol),
+                                    sizeBytes = c.getLong(sizeCol)
+                                )
                             )
-                        )
+                            count++
+                            if (!c.moveToNext()) break
+                        }
                     }
+
                     list
                 } ?: emptyList()
             }
