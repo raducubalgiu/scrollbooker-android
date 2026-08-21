@@ -2,7 +2,6 @@ package com.example.scrollbooker.entity.social.comment.data.remote
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.social.comment.data.mappers.toDomain
 import com.example.scrollbooker.entity.social.comment.domain.model.Comment
 import timber.log.Timber
@@ -25,7 +24,9 @@ class CommentsPagingSource(
         val limit = 10
 
         return try {
-            val response = withVisibleLoading {
+            val response = if(page == 1) {
+                api.getCommentsByPostId(postId, page, limit)
+            } else {
                 api.getCommentsByPostId(postId, page, limit)
             }
             val comments = response.results.map { it.toDomain() }

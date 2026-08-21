@@ -76,7 +76,6 @@ fun PostSheets(
             is PostSheetsContent.CommentsSheet -> {
                 CommentsSheet(
                     postId = content.postId,
-                    isSheetVisible = sheetState.isVisible,
                     onClose = onClose
                 )
             }

@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -25,25 +23,16 @@ import com.example.scrollbooker.components.customized.post.sheets.comments.compo
 @Composable
 fun CommentsSheet(
     postId: Int,
-    isSheetVisible: Boolean,
     onClose: () -> Unit
 ) {
     val viewModel: CommentsViewModel = hiltViewModel()
+    val comments = viewModel.commentsState.collectAsLazyPagingItems()
+
+    val refreshState = comments.loadState.refresh
+    val isInitialLoading = refreshState is LoadState.Loading && comments.itemCount == 0
 
     LaunchedEffect(postId) {
         viewModel.setPostId(newPostId = postId)
-    }
-
-    val comments = viewModel.commentsState.collectAsLazyPagingItems()
-    val newComments by viewModel.newCommentsFor(postId).collectAsState()
-    val patches by viewModel.commentPatches.collectAsState()
-    val inFlight by viewModel.inFlight.collectAsState()
-
-    LaunchedEffect(comments.loadState.refresh, comments.itemCount) {
-        if(comments.loadState.refresh is LoadState.NotLoading) {
-            val ids = comments.itemSnapshotList.items.map { it.id }.toSet()
-            viewModel.reconciliateNewWithPaging(postId, ids)
-        }
     }
 
     Column(modifier = Modifier
@@ -60,32 +49,27 @@ fun CommentsSheet(
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column(Modifier.weight(1f)) {
-                if(isSheetVisible) {
-                    when (comments.loadState.refresh) {
-                        is LoadState.Loading -> LoadingScreen()
-                        is LoadState.Error -> ErrorScreen()
-                        is LoadState.NotLoading -> {
-                            CommentsList(
-                                comments = comments,
-                                newComments = newComments,
-                                inFlight = inFlight,
-                                patches = patches,
-                                onToggleLike = { comment, action ->
-                                    viewModel.toggleLikeComment(comment, action)
-                                },
-                            )
-                        }
+                when {
+                    isInitialLoading -> LoadingScreen()
+                    refreshState is LoadState.Error -> ErrorScreen()
+                    else -> {
+                        CommentsList(
+                            comments = comments,
+                            onLikeClick = { comment, action -> },
+                        )
                     }
                 }
             }
 
-            CommentFooter(onCreateComment = {
-                viewModel.createComment(
-                    postId = postId,
-                    text = it.text,
-                    parentId = it.parentId
-                )
-            })
+            CommentFooter(
+                onCreateComment = {
+                    viewModel.createComment(
+                        postId = postId,
+                        text = it.text,
+                        parentId = it.parentId
+                    )
+                }
+            )
         }
     }
 }

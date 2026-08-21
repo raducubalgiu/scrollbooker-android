@@ -134,8 +134,10 @@ fun MyDashboardBookingDetails(
         DonutChart(
             title = stringResource(R.string.channel),
             entries = dashboardBooking.channels.map { channel ->
+                val channelLabel = channel.channel?.titleRes?.let { stringResource(it) } ?: ""
+
                 DonutChartEntry(
-                    label = channel.channel?.key ?: "",
+                    label = channelLabel,
                     value = channel.bookingsNo,
                     color = Primary
                 )

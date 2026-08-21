@@ -11,7 +11,9 @@ enum class BookingSourceEnum(val key: String) {
     PROFILE_BOOKMARKS_POST_DETAIL("profile_bookmarks_post_detail"),
 
     SEARCH("search"),
-    SEARCH_BUSINESS_PROFILE("search_business_profile");
+    SEARCH_BUSINESS_PROFILE("search_business_profile"),
+
+    OTHER("other");
 
     companion object {
         fun fromKey(key: String): BookingSourceEnum? =

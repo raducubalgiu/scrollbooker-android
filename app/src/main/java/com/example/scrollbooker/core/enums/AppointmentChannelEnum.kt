@@ -1,8 +1,14 @@
 package com.example.scrollbooker.core.enums
 
-enum class AppointmentChannelEnum(val key: String) {
-    SCROLL_BOOKER("scroll_booker"),
-    OWN_CLIENT("own_client");
+import androidx.annotation.StringRes
+import com.example.scrollbooker.R
+
+enum class AppointmentChannelEnum(
+    val key: String,
+    @StringRes val titleRes: Int
+) {
+    SCROLL_BOOKER("scroll_booker", R.string.scrollbooker),
+    OWN_CLIENT("own_client", R.string.ownClient);
 
     companion object {
         fun fromKey(key: String): AppointmentChannelEnum? =

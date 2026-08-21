@@ -12,12 +12,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
-import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.ui.theme.headlineLarge
 import com.example.scrollbooker.ui.theme.titleLarge
-import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun FeedDrawerHeader() {
@@ -42,13 +40,4 @@ fun FeedDrawerHeader() {
     )
 
     Spacer(Modifier.height(40.dp))
-
-    Text(
-        modifier = Modifier.padding(bottom = BasePadding),
-        style = titleMedium,
-        fontSize = 18.sp,
-        fontWeight = FontWeight.SemiBold,
-        color = Color.White.copy(0.8f),
-        text = stringResource(R.string.categories)
-    )
 }

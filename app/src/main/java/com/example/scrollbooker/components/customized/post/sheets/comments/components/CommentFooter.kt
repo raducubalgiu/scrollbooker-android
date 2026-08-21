@@ -19,7 +19,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.components.customized.TextFieldComment
@@ -34,7 +36,7 @@ fun CommentFooter(onCreateComment: (CreateComment) -> Unit) {
     val emoticons = listOf(
         "\uD83D\uDC4C", "\uD83D\uDE01", "\uD83D\uDE07", "\uD83E\uDD23", "\uD83D\uDE0D", "\uD83E\uDD70"
     )
-    var text by remember { mutableStateOf("") }
+    var fieldValue by remember { mutableStateOf(TextFieldValue("")) }
     var parentId by remember { mutableStateOf<Int?>(null) }
 
     Column {
@@ -42,24 +44,25 @@ fun CommentFooter(onCreateComment: (CreateComment) -> Unit) {
 
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
-            contentPadding = PaddingValues(
-                horizontal = BasePadding,
-                vertical = SpacingXS
-            ),
+            contentPadding = PaddingValues(horizontal = BasePadding, vertical = SpacingXS),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             items(emoticons) { emoji ->
                 Box(
                     modifier = Modifier
                         .clip(CircleShape)
-                        .clickable { text = text + emoji }
+                        .clickable {
+                            val newText = fieldValue.text + emoji
+                            fieldValue = TextFieldValue(
+                                text = newText,
+                                selection = TextRange(newText.length)
+                            )
+                        }
                 ) {
                     Text(
                         modifier = Modifier.padding(vertical = SpacingM),
                         text = emoji,
-                        style = TextStyle(
-                            fontSize = 24.sp
-                        )
+                        style = TextStyle(fontSize = 24.sp)
                     )
                 }
             }
@@ -67,12 +70,12 @@ fun CommentFooter(onCreateComment: (CreateComment) -> Unit) {
 
         TextFieldComment(
             avatar = "",
-            value = text,
-            isEnabled = text.isNotEmpty(),
-            onValueChange = { text = it },
+            value = fieldValue,
+            isEnabled = fieldValue.text.isNotEmpty(),
+            onValueChange = { fieldValue = it },
             onSubmit = {
-                onCreateComment(CreateComment(text, parentId))
-                text = ""
+                onCreateComment(CreateComment(fieldValue.text, parentId))
+                fieldValue = TextFieldValue("")
             }
         )
     }

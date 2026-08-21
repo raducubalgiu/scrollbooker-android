@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -27,7 +28,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,46 +35,30 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.avatar.Avatar
-import com.example.scrollbooker.core.util.Dimens.AvatarSizeXS
 import com.example.scrollbooker.core.util.Dimens.AvatarSizeXXS
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
+import com.example.scrollbooker.entity.social.comment.data.remote.LikeCommentEnum
 import com.example.scrollbooker.entity.social.comment.domain.model.Comment
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.bodyLarge
-import timber.log.Timber
 
 @Composable
 fun CommentItem(
     comment: Comment,
-    likedInFlight: Boolean,
-    onLikeClick: () -> Unit
+    onLikeClick: (comment: Comment, action: LikeCommentEnum) -> Unit
 ) {
-    Timber.tag("PATCH!!!").e("IS LIKED!! ${comment.isLiked}")
-
-    val scope = rememberCoroutineScope()
     var scale by remember { mutableFloatStateOf(1f) }
-
     val animatedScale by animateFloatAsState(
         targetValue = scale,
         animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing),
         label = "iconScale"
     )
-
-//    fun handleLike() {
-//        val action = if(comment.isLiked) LikeCommentEnum.UNLIKE else LikeCommentEnum.LIKE
-//        onLikeClick(action)
-//
-//        scope.launch {
-//            scale = if(comment.isLiked) 0.8f else 1.2f
-//            delay(100)
-//            scale = 1f
-//        }
-//    }
 
     Row(
         modifier = Modifier
@@ -83,9 +67,9 @@ fun CommentItem(
     ) {
         Avatar(
             url = comment.user.avatar ?: "",
-            size = AvatarSizeXS
+            size = 35.dp
         )
-        Spacer(Modifier.width(SpacingS))
+        Spacer(Modifier.width(BasePadding))
         Column {
             Spacer(Modifier.height(SpacingXXS))
             Text(
@@ -136,7 +120,7 @@ fun CommentItem(
 
                     Row(
                         modifier = Modifier.clickable(
-                            onClick = { if(!likedInFlight) onLikeClick() },
+                            onClick = {  },
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null),
                         verticalAlignment = Alignment.CenterVertically
@@ -155,8 +139,11 @@ fun CommentItem(
                         }
                         Spacer(Modifier.width(SpacingXS))
                         Icon(
-                            modifier = Modifier.scale(animatedScale),
-                            imageVector = if(comment.isLiked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                            modifier = Modifier
+                                .size(20.dp)
+                                .scale(animatedScale),
+                            imageVector = if(comment.isLiked) Icons.Default.Favorite
+                                          else Icons.Default.FavoriteBorder,
                             contentDescription = null,
                             tint = if(comment.isLiked) Error else Color.Gray
                         )
