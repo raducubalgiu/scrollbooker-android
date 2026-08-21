@@ -482,6 +482,7 @@
     <string name="fromvideo">Din clipuri video</string>
     <string name="scrollBookerCommission">Comision ScrollBooker</string>
     <string name="bookingsSources">Surse rezervări</string>
+    <string name="continueWithGoogle">Continuă cu Google</string>
 
     <!-- Period -->
     <string name="period_seven_days">7 zile</string>

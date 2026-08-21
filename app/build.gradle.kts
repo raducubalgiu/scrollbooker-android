@@ -5,6 +5,7 @@ plugins {
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
     id("kotlin-parcelize")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -147,4 +148,6 @@ dependencies {
     testImplementation(libs.androidx.paging.testing)
 
     testImplementation(kotlin("test"))
+
+    implementation(platform(libs.firebase.bom))
 }

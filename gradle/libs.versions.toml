@@ -6,6 +6,7 @@ coilVideoVersion = "2.7.0"
 converterGson = "2.11.0"
 coreSplashscreen = "1.0.1"
 datastorePreferencesCore = "1.1.7"
+firebaseBom = "34.18.0"
 foundation = "1.9.4"
 gson = "2.11.0"
 hiltAndroid = "2.50"
@@ -36,6 +37,7 @@ turbine = "1.1.0"
 
 [libraries]
 android = { module = "com.mapbox.maps:android-ndk27", version.ref = "mapboxMapsCompose" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 maps-compose-v1190 = { module = "com.mapbox.extension:maps-compose-ndk27", version.ref = "mapboxMapsCompose" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }

@@ -1,4 +1,5 @@
 package com.example.scrollbooker.ui.auth
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.network.tokenProvider.TokenProvider
@@ -42,6 +43,49 @@ class AuthViewModel @Inject constructor(
             _authState.value = FeatureState.Loading
             _authState.value = isLoggedInUseCase()
         }
+    }
+
+    fun loginWithGoogle(context: Context, webClientId: String) {
+//        viewModelScope.launch {
+//            _authState.value = FeatureState.Loading
+//
+//            val credentialManager = CredentialManager.create(context)
+//
+//            // Configurăm opțiunea de autentificare cu Google
+//            val googleIdOption = GetGoogleIdOption.Builder()
+//                .setFilterByAuthorizedAccounts(false) // Permite utilizatorului să aleagă orice cont
+//                .setServerClientId(webClientId)       // ID-ul de server din Firebase/Google Cloud
+//                .setAutoSelectEnabled(false)
+//                .build()
+//
+//            val request = GetCredentialRequest.Builder()
+//                .addCredentialOption(googleIdOption)
+//                .build()
+//
+//            try {
+//                // Această linie deschide fereastra nativă Google pe ecran
+//                val result = credentialManager.getCredential(context = context, request = request)
+//                val credential = result.credential
+//
+//                if (credential is GoogleIdTokenCredential) {
+//                    val idToken = credential.idToken
+//
+//                    // 🚀 SUCCES! Avem token-ul de la Google.
+//                    // Aici vei apela UseCase-ul tău pentru a trimite idToken către FastAPI!
+//                    // Exemplu: _authState.value = loginWithGoogleUseCase(idToken)
+//
+//                    // Momentan, simulăm succesul schimbând starea:
+//                    // updateAuthState(AuthState(isValidated = true, registrationStep = null))
+//
+//                } else {
+//                    _authState.value = FeatureState.Error(Exception("Tip de credential neașteptat"))
+//                }
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//                // Dacă utilizatorul apasă „Back” sau închide fereastra, ajunge aici
+//                _authState.value = FeatureState.Error(e)
+//            }
+//        }
     }
 
     fun login(username: String, password: String) {

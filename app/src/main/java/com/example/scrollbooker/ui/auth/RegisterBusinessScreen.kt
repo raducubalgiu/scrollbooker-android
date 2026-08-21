@@ -40,6 +40,7 @@ import com.example.scrollbooker.core.util.checkEmail
 import com.example.scrollbooker.core.util.checkPassword
 import com.example.scrollbooker.ui.auth.components.AuthErrorMessage
 import com.example.scrollbooker.ui.auth.components.AuthHeader
+import com.example.scrollbooker.ui.auth.components.GoogleSection
 import com.example.scrollbooker.ui.auth.components.PasswordRequirement
 import com.example.scrollbooker.ui.theme.Background
 
@@ -135,6 +136,15 @@ fun RegisterBusinessScreen(
                     }
                     wasSubmitted = true
                 }
+            )
+
+            GoogleSection(
+                onClick = {
+                    focusManager.clearFocus()
+                    // Apelăm funcția din ViewModel pe care am creat-o mai sus
+                    //viewModel.loginWithGoogle(context, webClientId)
+                },
+                isLoading = isLoading
             )
         }
     }

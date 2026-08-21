@@ -34,7 +34,6 @@ import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.inputs.Input
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.checkEmail
 import com.example.scrollbooker.core.util.checkPassword
@@ -42,6 +41,7 @@ import com.example.scrollbooker.ui.auth.components.AuthBodyNavigation
 import com.example.scrollbooker.ui.auth.components.AuthErrorMessage
 import com.example.scrollbooker.ui.auth.components.AuthFooterBusinessNavigation
 import com.example.scrollbooker.ui.auth.components.AuthHeader
+import com.example.scrollbooker.ui.auth.components.GoogleSection
 import com.example.scrollbooker.ui.auth.components.PasswordRequirement
 import com.example.scrollbooker.ui.theme.Background
 
@@ -148,6 +148,15 @@ fun RegisterClientScreen(
                         }
                         wasSubmitted = true
                     }
+                )
+
+                GoogleSection(
+                    onClick = {
+                        focusManager.clearFocus()
+                        // Apelăm funcția din ViewModel pe care am creat-o mai sus
+                        //viewModel.loginWithGoogle(context, webClientId)
+                    },
+                    isLoading = isLoading
                 )
 
                 AuthBodyNavigation(
