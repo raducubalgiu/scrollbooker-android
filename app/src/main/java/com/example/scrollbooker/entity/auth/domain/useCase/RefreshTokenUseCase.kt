@@ -1,7 +1,7 @@
 package com.example.scrollbooker.entity.auth.domain.useCase
 
 import com.example.scrollbooker.core.network.tokenProvider.TokenProvider
-import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.util.runSuspendCatching
 import com.example.scrollbooker.entity.auth.data.remote.AuthApiService
 import com.example.scrollbooker.entity.auth.data.remote.AuthRequestDto
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
@@ -16,8 +16,8 @@ class RefreshTokenUseCase @Inject constructor(
     private val tokenProvider: TokenProvider,
     private val getUserInfoUseCase: GetUserInfoUseCase
 ) {
-    suspend operator fun invoke(refreshToken: String): FeatureState<AuthState> {
-        return try {
+    suspend operator fun invoke(refreshToken: String): Result<AuthState> =
+        runSuspendCatching {
             val response = apiService.refresh(AuthRequestDto.RefreshRequestDto(refreshToken))
 
             authDataStore.refreshTokens(response.accessToken, response.refreshToken)
@@ -25,16 +25,13 @@ class RefreshTokenUseCase @Inject constructor(
 
             val userInfo = getUserInfoUseCase()
 
-            return FeatureState.Success(AuthState(
+            AuthState(
                 isValidated = userInfo.isValidated,
                 registrationStep = userInfo.registrationStep
-            ))
-        } catch (e: Exception) {
+            )
+        }.onFailure { e ->
             Timber.tag("Refresh Token").e(e, "ERROR: on attempting to refresh token")
             authDataStore.clearUserSession()
             tokenProvider.clearTokens()
-
-            return FeatureState.Error()
         }
-    }
 }

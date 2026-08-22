@@ -85,6 +85,10 @@ threetenabp = { module = "com.jakewharton.threetenabp:threetenabp", version.ref 
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
+androidx-credentials = { module = "androidx.credentials:credentials", version = "1.2.2" }
+androidx-credentials-play-services = { module = "androidx.credentials:credentials-play-services-auth", version = "1.2.2" }
+googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version = "1.1.1" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

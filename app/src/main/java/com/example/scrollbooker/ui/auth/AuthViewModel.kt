@@ -1,15 +1,18 @@
 package com.example.scrollbooker.ui.auth
-import android.content.Context
+import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.scrollbooker.core.extensions.toFeatureState
 import com.example.scrollbooker.core.network.tokenProvider.TokenProvider
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.util.GoogleCredentialProvider
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.auth.data.remote.RoleNameEnum
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.auth.domain.useCase.IsLoggedInUseCase
 import com.example.scrollbooker.entity.auth.domain.useCase.LoginUseCase
 import com.example.scrollbooker.entity.auth.domain.useCase.RegisterUseCase
+import com.example.scrollbooker.entity.auth.domain.useCase.SignInWithGoogleUseCase
 import com.example.scrollbooker.entity.user.userEmailVerify.domain.useCase.VerifyUserEmailUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,10 +29,18 @@ class AuthViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
     private val registerUseCase: RegisterUseCase,
     private val isLoggedInUseCase: IsLoggedInUseCase,
-    private val verifyUserEmailUseCase: VerifyUserEmailUseCase
+    private val verifyUserEmailUseCase: VerifyUserEmailUseCase,
+    private val signInWithGoogleUseCase: SignInWithGoogleUseCase,
+    private val googleCredentialProvider: GoogleCredentialProvider
 ): ViewModel() {
     private val _authState = MutableStateFlow<FeatureState<AuthState>>(FeatureState.Loading)
     val authState: StateFlow<FeatureState<AuthState>> = _authState.asStateFlow()
+
+    private val _isCredentialsAuthLoading = MutableStateFlow(false)
+    val isCredentialsAuthLoading: StateFlow<Boolean> = _isCredentialsAuthLoading.asStateFlow()
+
+    private val _isGoogleAuthLoading = MutableStateFlow(false)
+    val isGoogleAuthLoading: StateFlow<Boolean> = _isGoogleAuthLoading.asStateFlow()
 
     private val _verifyEmailState = MutableStateFlow<FeatureState<Unit>>(FeatureState.Loading)
     val verifyEmailState: StateFlow<FeatureState<Unit>> = _verifyEmailState.asStateFlow()
@@ -41,78 +52,46 @@ class AuthViewModel @Inject constructor(
     fun checkIsLoggedIn() {
         viewModelScope.launch {
             _authState.value = FeatureState.Loading
-            _authState.value = isLoggedInUseCase()
+            _authState.value = isLoggedInUseCase().toFeatureState()
         }
     }
 
-    fun loginWithGoogle(context: Context, webClientId: String) {
-//        viewModelScope.launch {
-//            _authState.value = FeatureState.Loading
-//
-//            val credentialManager = CredentialManager.create(context)
-//
-//            // Configurăm opțiunea de autentificare cu Google
-//            val googleIdOption = GetGoogleIdOption.Builder()
-//                .setFilterByAuthorizedAccounts(false) // Permite utilizatorului să aleagă orice cont
-//                .setServerClientId(webClientId)       // ID-ul de server din Firebase/Google Cloud
-//                .setAutoSelectEnabled(false)
-//                .build()
-//
-//            val request = GetCredentialRequest.Builder()
-//                .addCredentialOption(googleIdOption)
-//                .build()
-//
-//            try {
-//                // Această linie deschide fereastra nativă Google pe ecran
-//                val result = credentialManager.getCredential(context = context, request = request)
-//                val credential = result.credential
-//
-//                if (credential is GoogleIdTokenCredential) {
-//                    val idToken = credential.idToken
-//
-//                    // 🚀 SUCCES! Avem token-ul de la Google.
-//                    // Aici vei apela UseCase-ul tău pentru a trimite idToken către FastAPI!
-//                    // Exemplu: _authState.value = loginWithGoogleUseCase(idToken)
-//
-//                    // Momentan, simulăm succesul schimbând starea:
-//                    // updateAuthState(AuthState(isValidated = true, registrationStep = null))
-//
-//                } else {
-//                    _authState.value = FeatureState.Error(Exception("Tip de credential neașteptat"))
-//                }
-//            } catch (e: Exception) {
-//                e.printStackTrace()
-//                // Dacă utilizatorul apasă „Back” sau închide fereastra, ajunge aici
-//                _authState.value = FeatureState.Error(e)
-//            }
-//        }
-    }
-
-    fun login(username: String, password: String) {
+    fun sigInWithGoogle(activity: Activity, webClientId: String, roleName: RoleNameEnum) {
         viewModelScope.launch {
-            _authState.value = FeatureState.Loading
-
-            _authState.value = withVisibleLoading {
-                loginUseCase(username, password)
+            _isGoogleAuthLoading.value = true
+            try {
+                _authState.value = googleCredentialProvider.getIdToken(activity, webClientId)
+                    .mapCatching { idToken -> signInWithGoogleUseCase(idToken, roleName).getOrThrow() }
+                    .toFeatureState()
+            } finally {
+                _isGoogleAuthLoading.value = false
             }
         }
     }
 
-    fun register(
-        email: String,
-        password: String,
-        roleName: RoleNameEnum
-    ) {
+    fun login(username: String, password: String) {
         viewModelScope.launch {
-            _authState.value = FeatureState.Loading
-            _authState.value =
-                withVisibleLoading {
-                    registerUseCase(
-                        email,
-                        password,
-                        roleName
-                    )
+            _isCredentialsAuthLoading.value = true
+            try {
+                _authState.value = withVisibleLoading {
+                    loginUseCase(username, password).toFeatureState()
                 }
+            } finally {
+                _isCredentialsAuthLoading.value = false
+            }
+        }
+    }
+
+    fun register(email: String, password: String, roleName: RoleNameEnum) {
+        viewModelScope.launch {
+            _isCredentialsAuthLoading.value = true
+            try {
+                _authState.value = withVisibleLoading {
+                    registerUseCase(email, password, roleName).toFeatureState()
+                }
+            } finally {
+                _isCredentialsAuthLoading.value = false
+            }
         }
     }
 

@@ -37,7 +37,7 @@ import com.example.scrollbooker.ui.theme.bodySmall
 @Composable
 fun GoogleSection(
     onClick: () -> Unit,
-    isLoading: Boolean
+    enabled: Boolean
 ) {
     Column {
         Row(
@@ -63,7 +63,7 @@ fun GoogleSection(
             onClick = onClick,
             contentPadding = PaddingValues(BasePadding),
             modifier = Modifier.fillMaxWidth().height(50.dp),
-            enabled = !isLoading,
+            enabled = enabled,
             shape = ShapeDefaults.ExtraLarge,
             border = BorderStroke(1.dp, Divider),
             colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Black)

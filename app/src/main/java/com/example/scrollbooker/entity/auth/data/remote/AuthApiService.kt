@@ -13,6 +13,11 @@ interface AuthApiService {
         @Part("password") password: RequestBody,
     ): AuthResponseDto
 
+    @POST("auth/google")
+    suspend fun signInWithGoogle(
+        @Body request: LoginWithGoogleRequest
+    ): AuthResponseDto
+
     @POST("auth/register")
     suspend fun register(@Body request: AuthRequestDto.RegisterDto): AuthResponseDto
 

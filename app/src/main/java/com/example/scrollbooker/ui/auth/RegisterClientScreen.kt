@@ -16,12 +16,12 @@ import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -29,14 +29,16 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.inputs.Input
+import com.example.scrollbooker.core.extensions.findActivity
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.checkEmail
 import com.example.scrollbooker.core.util.checkPassword
+import com.example.scrollbooker.entity.auth.data.remote.RoleNameEnum
 import com.example.scrollbooker.ui.auth.components.AuthBodyNavigation
 import com.example.scrollbooker.ui.auth.components.AuthErrorMessage
 import com.example.scrollbooker.ui.auth.components.AuthFooterBusinessNavigation
@@ -44,6 +46,7 @@ import com.example.scrollbooker.ui.auth.components.AuthHeader
 import com.example.scrollbooker.ui.auth.components.GoogleSection
 import com.example.scrollbooker.ui.auth.components.PasswordRequirement
 import com.example.scrollbooker.ui.theme.Background
+import timber.log.Timber
 
 @Composable
 fun RegisterClientScreen(
@@ -52,8 +55,10 @@ fun RegisterClientScreen(
     onNavigateToRegisterBusiness: () -> Unit,
     onSubmit: (email: String, password: String) -> Unit,
 ) {
-    val authState by viewModel.authState.collectAsState()
-    val isLoading = authState is FeatureState.Loading
+
+    val isCredentialsAuthLoading by viewModel.isCredentialsAuthLoading.collectAsStateWithLifecycle()
+    val isGoogleAuthLoading by viewModel.isGoogleAuthLoading.collectAsStateWithLifecycle()
+    val isAnyAuthLoading = isCredentialsAuthLoading || isGoogleAuthLoading
     val focusManager = LocalFocusManager.current
 
     var email by remember { mutableStateOf("") }
@@ -66,6 +71,9 @@ fun RegisterClientScreen(
     val isValidPassword = checkPassword(password)
 
     val isEnabled = email.isNotEmpty() && password.isNotEmpty()
+
+    val context = LocalContext.current
+    val webClientId = "596516500254-k2smqkd2e42urfhbad7e66q6bpcqfmei.apps.googleusercontent.com"
 
     Column(
         modifier = Modifier
@@ -139,8 +147,8 @@ fun RegisterClientScreen(
 
                 MainButton(
                     modifier = Modifier.padding(vertical = BasePadding),
-                    isLoading = isLoading,
-                    enabled = !isLoading && isEnabled,
+                    isLoading = isCredentialsAuthLoading,
+                    enabled = !isAnyAuthLoading && isEnabled,
                     title = stringResource(id = R.string.register),
                     onClick = {
                         if(emailError == null) {
@@ -153,10 +161,15 @@ fun RegisterClientScreen(
                 GoogleSection(
                     onClick = {
                         focusManager.clearFocus()
-                        // Apelăm funcția din ViewModel pe care am creat-o mai sus
-                        //viewModel.loginWithGoogle(context, webClientId)
+                        val activity = context.findActivity()
+
+                        if (activity != null) {
+                            viewModel.sigInWithGoogle(activity, webClientId, RoleNameEnum.CLIENT)
+                        } else {
+                            Timber.tag("Google Sign in").e("Could not find Activity from Context.")
+                        }
                     },
-                    isLoading = isLoading
+                    enabled = !isAnyAuthLoading
                 )
 
                 AuthBodyNavigation(

@@ -76,12 +76,11 @@ class CollectUserUsernameViewModel @Inject constructor(
             .onSuccess {
                 val refreshToken = authDataStore.getRefreshToken().firstOrNull()
 
-                if(isTokenValid(refreshToken) && !refreshToken.isNullOrBlank()) {
-                    val response = refreshTokenUseCase(refreshToken)
-
-                    if(response is FeatureState.Error) {
-                        Timber.tag("Collect Username").e("ERROR: on Collecting User Username. Token could not be refreshed.")
-                        return Result.failure(Throwable("Token could not be refreshed"))
+                if (isTokenValid(refreshToken) && !refreshToken.isNullOrBlank()) {
+                    refreshTokenUseCase(refreshToken).onFailure { e ->
+                        Timber.tag("Collect Username").e(e, "ERROR: on Collecting User Username. Token could not be refreshed.")
+                        _isSaving.value = FeatureState.Error(e)
+                        return Result.failure(e)
                     }
                 }
 

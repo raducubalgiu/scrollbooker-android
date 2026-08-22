@@ -1,13 +1,12 @@
 package com.example.scrollbooker.entity.auth.domain.useCase
 
 import com.example.scrollbooker.core.network.tokenProvider.TokenProvider
-import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.util.runSuspendCatching
 import com.example.scrollbooker.entity.auth.domain.model.AuthResponse
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.user.userInfo.domain.useCase.GetUserInfoUseCase
 import com.example.scrollbooker.entity.user.userPermissions.domain.useCase.GetUserPermissionsUseCase
 import com.example.scrollbooker.store.AuthDataStore
-import timber.log.Timber
 import javax.inject.Inject
 
 class SaveSessionUseCase @Inject constructor(
@@ -16,13 +15,12 @@ class SaveSessionUseCase @Inject constructor(
     private val getUserInfoUseCase: GetUserInfoUseCase,
     private val getUserPermissionsUseCase: GetUserPermissionsUseCase
 ) {
-    suspend operator fun invoke(authResponse: AuthResponse): FeatureState<AuthState> {
-        return try {
+    suspend operator fun invoke(authResponse: AuthResponse): Result<AuthState> =
+        runSuspendCatching {
             tokenProvider.updateTokens(
                 accessToken = authResponse.accessToken,
                 refreshToken = authResponse.refreshToken
             )
-
             val userInfo = getUserInfoUseCase()
             val userPermissions = getUserPermissionsUseCase()
 
@@ -39,15 +37,9 @@ class SaveSessionUseCase @Inject constructor(
                 permissions = userPermissions
             )
 
-            FeatureState.Success(
-                AuthState(
-                    isValidated = userInfo.isValidated,
-                    registrationStep = userInfo.registrationStep
-                )
+            AuthState(
+                isValidated = userInfo.isValidated,
+                registrationStep = userInfo.registrationStep
             )
-        } catch (e: Exception) {
-            Timber.tag("Save Session").e(e, "ERROR: on Saving Session")
-            FeatureState.Error(e)
         }
-    }
 }

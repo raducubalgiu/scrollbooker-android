@@ -1,19 +1,20 @@
 package com.example.scrollbooker.entity.auth.domain.useCase
 import com.example.scrollbooker.core.util.runSuspendCatching
+import com.example.scrollbooker.entity.auth.data.remote.RoleNameEnum
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.auth.domain.repository.AuthRepository
 import timber.log.Timber
 import javax.inject.Inject
 
-class LoginUseCase @Inject constructor(
+class SignInWithGoogleUseCase @Inject constructor(
     private val repository: AuthRepository,
     private val saveSessionUseCase: SaveSessionUseCase
 ) {
-    suspend operator fun invoke(username: String, password: String): Result<AuthState> =
+    suspend operator fun invoke(idToken: String, roleName: RoleNameEnum): Result<AuthState> =
         runSuspendCatching {
-            val loginResponse = repository.login(username, password)
-            saveSessionUseCase(loginResponse).getOrThrow()
+            val response = repository.signInWithGoogle(idToken, roleName)
+            saveSessionUseCase(response).getOrThrow()
         }.onFailure { e ->
-            Timber.tag("Login").e(e, "ERROR: on Login User")
+            Timber.tag("Sign in with Google").e(e, "ERROR: on Sign In With Google")
         }
 }

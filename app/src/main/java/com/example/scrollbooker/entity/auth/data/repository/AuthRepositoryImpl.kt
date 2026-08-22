@@ -5,6 +5,7 @@ import com.example.scrollbooker.entity.auth.data.mappers.toDomain
 import com.example.scrollbooker.entity.auth.domain.repository.AuthRepository
 import com.example.scrollbooker.entity.auth.data.remote.AuthApiService
 import com.example.scrollbooker.entity.auth.data.remote.AuthRequestDto
+import com.example.scrollbooker.entity.auth.data.remote.LoginWithGoogleRequest
 import com.example.scrollbooker.entity.auth.data.remote.RoleNameEnum
 import com.example.scrollbooker.entity.auth.domain.model.AuthResponse
 import com.example.scrollbooker.store.AuthDataStore
@@ -17,6 +18,11 @@ class AuthRepositoryImpl @Inject constructor(
     private val tokenProvider: TokenProvider,
     private val authDataStore: AuthDataStore
 ): AuthRepository {
+    override suspend fun signInWithGoogle(idToken: String, roleName: RoleNameEnum): AuthResponse {
+        val request = LoginWithGoogleRequest(idToken = idToken, roleName = roleName.key )
+        return authApi.signInWithGoogle(request).toDomain()
+    }
+
     override suspend fun login(username: String, password: String): AuthResponse {
         val usernamePart = username.toRequestBody("text/plain".toMediaType())
         val passwordPart = password.toRequestBody("text/plain".toMediaType())

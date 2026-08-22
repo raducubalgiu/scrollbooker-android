@@ -150,4 +150,8 @@ dependencies {
     testImplementation(kotlin("test"))
 
     implementation(platform(libs.firebase.bom))
+
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services)
+    implementation(libs.googleid)
 }
