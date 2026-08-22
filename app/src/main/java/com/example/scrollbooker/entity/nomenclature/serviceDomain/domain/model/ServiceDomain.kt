@@ -8,5 +8,5 @@ data class ServiceDomain(
     val description: String?,
     val url: String?,
     val thumbnailUrl: String?,
-    val services: List<Service>
+    val services: List<Service>? = emptyList()
 )

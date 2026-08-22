@@ -85,7 +85,7 @@ fun FeedDrawer(
                                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                                     verticalArrangement = Arrangement.spacedBy(8.dp)
                                 ) {
-                                    serviceDomain.services.forEach { s ->
+                                    serviceDomain.services?.forEach { s ->
                                         val isSelected = selected.contains(s.id)
 
                                         val backgroundColor = if (isSelected) Primary else Color(0xFF1C1C1C)

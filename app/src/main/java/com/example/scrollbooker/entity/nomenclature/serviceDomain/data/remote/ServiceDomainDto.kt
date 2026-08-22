@@ -12,5 +12,5 @@ data class ServiceDomainDto(
     @SerializedName("thumbnail_url")
     val thumbnailUrl: String?,
 
-    val services: List<Service> = emptyList()
+    val services: List<Service>? = emptyList()
 )

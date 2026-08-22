@@ -231,6 +231,7 @@ class SearchViewModel @Inject constructor(
                     _businessDomains.value = FeatureState.Success(domains)
                 },
                 onFailure = { error ->
+                    Timber.tag("Business Domains").e("ERROR: on Fetching business domains: ${error.message}")
                     _businessDomains.value = FeatureState.Error(error)
                 }
             )
