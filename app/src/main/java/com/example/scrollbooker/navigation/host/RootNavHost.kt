@@ -1,6 +1,5 @@
 package com.example.scrollbooker.navigation.host
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.rememberCoroutineScope
@@ -17,7 +16,6 @@ import com.example.scrollbooker.navigation.routes.OnboardingRoute
 import com.example.scrollbooker.navigation.routes.RootRoute
 import com.example.scrollbooker.ui.auth.AuthViewModel
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @Composable
 fun RootNavHost(
@@ -36,13 +34,9 @@ fun RootNavHost(
         else -> RootRoute.AUTH
     }
 
-    Timber.tag("ONBOARDING").e("authState: $authState")
-
     val onboardingStepKey =
         (authState as? FeatureState.Success)?.data?.registrationStep?.key
             ?: OnboardingRoute.CollectEmailVerification.route
-
-    Timber.tag("ONBOARDING").e("onboardingStepKey: $onboardingStepKey")
 
     key(startDestination) {
         NavHost(

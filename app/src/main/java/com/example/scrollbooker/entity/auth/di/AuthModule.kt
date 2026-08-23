@@ -142,10 +142,12 @@ object AuthModule {
     fun provideSaveSessionUseCase(
         tokenProvider: TokenProvider,
         saveUserSessionUseCase: SaveUserSessionUseCase,
+        authDataStore: AuthDataStore,
     ): SaveSessionUseCase {
         return SaveSessionUseCase(
             tokenProvider = tokenProvider,
-            saveUserSessionUseCase = saveUserSessionUseCase
+            saveUserSessionUseCase = saveUserSessionUseCase,
+            authDataStore = authDataStore
         )
     }
 
