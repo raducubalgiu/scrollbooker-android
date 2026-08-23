@@ -19,6 +19,7 @@ import com.example.scrollbooker.entity.booking.business.domain.model.BusinessShe
 import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessProfileUseCase
 import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessesMarkersUseCase
 import com.example.scrollbooker.entity.booking.business.domain.useCase.GetBusinessesSheetUseCase
+import com.example.scrollbooker.entity.search.domain.model.RecentSearch
 import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.BusinessDomain
 import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.useCase.GetAllBusinessDomainsUseCase
 import com.example.scrollbooker.entity.nomenclature.businessType.domain.model.BusinessType
@@ -32,6 +33,7 @@ import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
 import com.example.scrollbooker.entity.nomenclature.service.domain.useCase.GetServicesByServiceDomainUseCase
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomain
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.useCase.GetAllServiceDomainsByBusinessDomainUseCase
+import com.example.scrollbooker.entity.search.domain.useCase.GetRecentSearchUseCase
 import com.example.scrollbooker.ui.search.sheets.filters.SearchFiltersSheetState
 import com.example.scrollbooker.ui.search.sheets.services.SearchServicesFiltersSheetState
 import com.mapbox.geojson.Feature
@@ -47,6 +49,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
@@ -165,8 +168,11 @@ class SearchViewModel @Inject constructor(
     private val getBusinessesMarkersUseCase: GetBusinessesMarkersUseCase,
     private val getBusinessesSheetUseCase: GetBusinessesSheetUseCase,
     private val getAllBusinessDomainsUseCase: GetAllBusinessDomainsUseCase,
-    private val getServicesByServiceDomainUseCase: GetServicesByServiceDomainUseCase
+    private val getServicesByServiceDomainUseCase: GetServicesByServiceDomainUseCase,
+    private val getRecentSearchUseCase: GetRecentSearchUseCase
 ): ViewModel() {
+    private val _refreshRecentTrigger = MutableStateFlow(0)
+
     private val _request = MutableStateFlow(SearchRequestState())
     val request: StateFlow<SearchRequestState> = _request.asStateFlow()
 
@@ -243,6 +249,40 @@ class SearchViewModel @Inject constructor(
 
     fun setSelectedServiceDomain(serviceDomain: ServiceDomain) {
         _selectedServiceDomain.value = serviceDomain
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val recentSearches: StateFlow<FeatureState<List<RecentSearch>>> = combine(
+        _refreshRecentTrigger,
+        isMapMounted
+    ) { trigger, mounted -> trigger to mounted }
+        .filter { (_, mounted) -> mounted }
+        .flatMapLatest { (_, _) ->
+            flow {
+                emit(FeatureState.Loading)
+
+                val result = withVisibleLoading { getRecentSearchUseCase() }
+
+                val featureState: FeatureState<List<RecentSearch>> =
+                    result.fold(
+                        onSuccess = { searches -> FeatureState.Success(searches) },
+                        onFailure = { e ->
+                            Timber.tag("Recent Searches").e("ERROR: on Fetching recent searches: ${e.message}")
+                            FeatureState.Error(e)
+                        }
+                    )
+
+                emit(featureState)
+            }
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = FeatureState.Loading
+        )
+
+    fun setRefreshTrigger() {
+        _refreshRecentTrigger.value += 1
     }
 
     val services: StateFlow<FeatureState<List<ServiceWithFilters>>> =
@@ -345,6 +385,11 @@ class SearchViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     val sheetPagingFlow: Flow<PagingData<BusinessSheet>> =
         sharedRequestFlow
+            .onEach { req ->
+                if (req.serviceDomainId != null) {
+                    setRefreshTrigger()
+                }
+            }
             .flatMapLatest { req ->
                 getBusinessesSheetUseCase(
                     request = req,

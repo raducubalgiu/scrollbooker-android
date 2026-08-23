@@ -1,6 +1,7 @@
 package com.example.scrollbooker.entity.search.data.repository
 import com.example.scrollbooker.entity.search.data.mappers.toDomain
 import com.example.scrollbooker.entity.search.data.remote.SearchApiService
+import com.example.scrollbooker.entity.search.domain.model.RecentSearch
 import com.example.scrollbooker.entity.search.domain.model.SearchUser
 import com.example.scrollbooker.entity.search.domain.repository.SearchRepository
 import javax.inject.Inject
@@ -13,5 +14,9 @@ class SearchRepositoryImpl @Inject constructor(
         roleClient: Boolean?
     ): List<SearchUser> {
         return apiService.searchUsers(query, roleClient).map { it.toDomain() }
+    }
+
+    override suspend fun getRecentSearch(limit: Int): List<RecentSearch> {
+        return apiService.recentSearch(limit).map { it.toDomain() }
     }
 }

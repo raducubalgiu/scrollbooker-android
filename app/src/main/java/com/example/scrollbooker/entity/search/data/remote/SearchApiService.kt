@@ -8,4 +8,9 @@ interface SearchApiService {
         @Query("query") query: String,
         @Query("role_client") roleClient: Boolean? = null
     ): List<SearchUserDto>
+
+    @GET("search/recent-searches")
+    suspend fun recentSearch(
+        @Query("limit") limit: Int = 10
+    ): List<RecentSearchDto>
 }

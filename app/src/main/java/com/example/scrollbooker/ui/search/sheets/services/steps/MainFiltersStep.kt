@@ -1,61 +1,42 @@
 package com.example.scrollbooker.ui.search.sheets.services.steps
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.Icon
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.BusinessDomain
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomain
+import com.example.scrollbooker.entity.search.domain.model.RecentSearch
 import com.example.scrollbooker.ui.search.components.SearchBusinessDomainLabel
 import com.example.scrollbooker.ui.search.sheets.SearchSheetsHeader
 import com.example.scrollbooker.ui.search.sheets.services.components.ServiceDomainsList
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.SurfaceBG
-import com.example.scrollbooker.ui.theme.bodySmall
 import com.example.scrollbooker.ui.theme.headlineLarge
-import com.example.scrollbooker.ui.theme.headlineSmall
 import kotlinx.coroutines.launch
-
-data class SearchRecent(
-    val id: Int,
-    val name: String,
-    val description: String
-)
 
 @Composable
 fun MainFiltersStep(
+    recentSearches: FeatureState<List<RecentSearch>>,
     businessDomains: FeatureState<List<BusinessDomain>>,
     selectedBusinessDomainId: Int?,
     onSetSelectedBusinessDomainId: (Int?) -> Unit,
@@ -63,34 +44,7 @@ fun MainFiltersStep(
     onClose: () -> Unit,
 ) {
     val scope = rememberCoroutineScope()
-
-    val recentSearches = listOf(
-        SearchRecent(
-            id = 1,
-            name = "Tuns",
-            description = "Barbati"
-        ),
-        SearchRecent(
-            id = 1,
-            name = "Consultatie veterinara",
-            description = "Caini \u2022 Mascul"
-        ),
-        SearchRecent(
-            id = 2,
-            name = "Vopsit",
-            description = "Barbati"
-        ),
-        SearchRecent(
-            id = 3,
-            name = "ITP",
-            description = "Autoturisme"
-        ),
-        SearchRecent(
-            id = 3,
-            name = "Consultatie stomatologica",
-            description = "Adult"
-        )
-    )
+    val recentSearchesList = (recentSearches as? FeatureState.Success)?.data ?: emptyList()
 
     Column(Modifier.fillMaxSize()) {
         SearchSheetsHeader(onClose = onClose)
@@ -163,59 +117,8 @@ fun MainFiltersStep(
                         ) { index ->
                             Column(modifier = Modifier.fillMaxSize()) {
                                 if(index == 0) {
-                                    LazyVerticalGrid(
-                                        contentPadding = PaddingValues(bottom = BasePadding),
-                                        columns = GridCells.Fixed(4),
-                                        verticalArrangement = Arrangement.spacedBy(BasePadding)
-                                    ) {
-                                        item(span = { GridItemSpan(maxLineSpan) }) {
-                                            Text(
-                                                modifier = Modifier.padding(
-                                                    top = BasePadding,
-                                                    start = BasePadding,
-                                                    end = BasePadding,
-                                                    bottom = SpacingM
-                                                ),
-                                                style = headlineSmall,
-                                                color = OnBackground,
-                                                fontSize = 18.sp,
-                                                fontWeight = FontWeight.Bold,
-                                                text = "Cautari recente"
-                                            )
-                                        }
-
-                                        items(
-                                            recentSearches,
-                                            span = { GridItemSpan(maxLineSpan) }
-                                        ) { search ->
-                                            Row(
-                                                modifier = Modifier.padding(horizontal = BasePadding),
-                                                verticalAlignment = Alignment.CenterVertically
-                                            ) {
-                                                Icon(
-                                                    painter = painterResource(R.drawable.ic_search),
-                                                    contentDescription = null
-                                                )
-
-                                                Spacer(Modifier.width(BasePadding))
-
-                                                Column {
-                                                    Text(
-                                                        text = search.name,
-                                                        fontWeight = FontWeight.SemiBold
-                                                    )
-
-                                                    Text(
-                                                        text = search.description,
-                                                        color = Color.Gray,
-                                                        style = bodySmall
-                                                    )
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                else {
+                                    RecentSearchesList(recentSearchesList)
+                                } else {
                                     ServiceDomainsList(
                                         serviceDomains = list[index].serviceDomains,
                                         onSetServiceDomain = onSetServiceDomain

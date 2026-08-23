@@ -4,6 +4,8 @@ import com.example.scrollbooker.BuildConfig
 import com.example.scrollbooker.entity.search.data.remote.SearchApiService
 import com.example.scrollbooker.entity.search.data.repository.SearchRepositoryImpl
 import com.example.scrollbooker.entity.search.domain.repository.SearchRepository
+import com.example.scrollbooker.entity.search.domain.useCase.GetRecentSearchUseCase
+import com.example.scrollbooker.entity.search.domain.useCase.SearchUsersUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,5 +33,21 @@ object SearchModule {
     @Singleton
     fun provideSearchRepository(apiService: SearchApiService): SearchRepository {
         return SearchRepositoryImpl(apiService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSearchUsersUseCase(
+        repository: SearchRepository,
+    ): SearchUsersUseCase {
+        return SearchUsersUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetRecentSearchUseCase(
+        repository: SearchRepository,
+    ): GetRecentSearchUseCase {
+        return GetRecentSearchUseCase(repository)
     }
 }

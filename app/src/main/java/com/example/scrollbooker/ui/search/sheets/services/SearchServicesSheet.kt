@@ -12,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.nomenclature.businessDomain.domain.model.BusinessDomain
 import com.example.scrollbooker.entity.nomenclature.service.domain.model.ServiceWithFilters
@@ -38,6 +39,7 @@ fun SearchServicesSheet(
     onClose: () -> Unit,
     onFilter: (SearchServicesFiltersSheetState) -> Unit
 ) {
+    val recentSearches by viewModel.recentSearches.collectAsStateWithLifecycle()
     var state by rememberSaveable {
         mutableStateOf(
             SearchServicesFiltersSheetState(
@@ -80,6 +82,7 @@ fun SearchServicesSheet(
                             ServicesSheetStep.MAIN_FILTERS -> {
                                 MainFiltersStep(
                                     onClose = onClose,
+                                    recentSearches = recentSearches,
                                     businessDomains = businessDomains,
                                     selectedBusinessDomainId = state.businessDomainId,
                                     onSetSelectedBusinessDomainId = { state = state.copy(businessDomainId = it) },

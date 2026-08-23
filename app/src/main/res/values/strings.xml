@@ -483,6 +483,8 @@
     <string name="scrollBookerCommission">Comision ScrollBooker</string>
     <string name="bookingsSources">Surse rezervări</string>
     <string name="continueWithGoogle">Continuă cu Google</string>
+    <string name="recentSearches">Căutări recente</string>
+    <string name="notFoundRecentSearches">Încă nu ai efectuat nici o căutare</string>
 
     <!-- Period -->
     <string name="period_seven_days">7 zile</string>
