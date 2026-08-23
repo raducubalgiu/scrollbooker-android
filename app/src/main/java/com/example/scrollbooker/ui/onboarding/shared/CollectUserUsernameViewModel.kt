@@ -2,11 +2,12 @@ package com.example.scrollbooker.ui.onboarding.shared
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.scrollbooker.core.network.util.decodeJwtExpiry
+import com.example.scrollbooker.core.network.util.isTokenValid
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.auth.domain.useCase.RefreshTokenUseCase
+import com.example.scrollbooker.entity.auth.domain.useCase.SaveUserSessionUseCase
 import com.example.scrollbooker.entity.onboarding.domain.useCase.CollectUserUsernameUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.model.SearchUsernameResponse
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.SearchUsernameUseCase
@@ -27,6 +28,7 @@ class CollectUserUsernameViewModel @Inject constructor(
     private val searchUsernameUseCase: SearchUsernameUseCase,
     private val authDataStore: AuthDataStore,
     private val refreshTokenUseCase: RefreshTokenUseCase,
+    private val saveUserSessionUseCase: SaveUserSessionUseCase
 ): ViewModel() {
     private val _searchState = MutableStateFlow<FeatureState<SearchUsernameResponse>?>(null)
     val searchState: StateFlow<FeatureState<SearchUsernameResponse>?> = _searchState
@@ -78,18 +80,19 @@ class CollectUserUsernameViewModel @Inject constructor(
 
                 if (isTokenValid(refreshToken) && !refreshToken.isNullOrBlank()) {
                     refreshTokenUseCase(refreshToken).onFailure { e ->
-                        Timber.tag("Collect Username").e(e, "ERROR: on Collecting User Username. Token could not be refreshed.")
+                        Timber.tag("Collect Username").e(e, "ERROR: Token could not be refreshed.")
                         _isSaving.value = FeatureState.Error(e)
                         return Result.failure(e)
                     }
                 }
 
+                saveUserSessionUseCase().onFailure { e ->
+                    Timber.tag("Collect Username").e(e, "ERROR: Session could not be saved.")
+                    _isSaving.value = FeatureState.Error(e)
+                    return Result.failure(e)
+                }
+
                 _isSaving.value = FeatureState.Success(Unit)
             }
-    }
-
-    private fun isTokenValid(token: String?): Boolean {
-        val expiry = token?.let { decodeJwtExpiry(it) }
-        return expiry != null && System.currentTimeMillis() < expiry
     }
 }

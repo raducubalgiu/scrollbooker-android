@@ -5,9 +5,12 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.scrollbooker.core.enums.ConsentEnum
 import com.example.scrollbooker.core.enums.EmploymentRequestStatusEnum
+import com.example.scrollbooker.core.network.util.isTokenValid
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.cachedByKey
 import com.example.scrollbooker.core.util.withVisibleLoading
+import com.example.scrollbooker.entity.auth.domain.useCase.RefreshTokenUseCase
+import com.example.scrollbooker.entity.auth.domain.useCase.SaveUserSessionUseCase
 import com.example.scrollbooker.entity.booking.employmentRequest.domain.model.EmploymentRequest
 import com.example.scrollbooker.entity.booking.employmentRequest.domain.useCase.GetEmploymentRequestByIdUseCase
 import com.example.scrollbooker.entity.booking.employmentRequest.domain.useCase.RespondEmploymentRequestUseCase
@@ -17,12 +20,14 @@ import com.example.scrollbooker.entity.user.notification.domain.model.Notificati
 import com.example.scrollbooker.entity.user.notification.domain.useCase.GetNotificationsUseCase
 import com.example.scrollbooker.entity.user.userSocial.domain.useCase.FollowUserUseCase
 import com.example.scrollbooker.entity.user.userSocial.domain.useCase.UnfollowUserUseCase
+import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
@@ -39,7 +44,10 @@ class InboxViewModel @Inject constructor(
     private val unfollowUserUseCase: UnfollowUserUseCase,
     private val respondEmploymentRequestUseCase: RespondEmploymentRequestUseCase,
     private val getConsentsByNameUseCase: GetConsentsByNameUseCase,
-    private val getEmploymentRequestByIdUseCase: GetEmploymentRequestByIdUseCase
+    private val getEmploymentRequestByIdUseCase: GetEmploymentRequestByIdUseCase,
+    private val authDataStore: AuthDataStore,
+    private val refreshTokenUseCase: RefreshTokenUseCase,
+    private val saveUserSessionUseCase: SaveUserSessionUseCase
 ): ViewModel() {
     private val _notificationRefreshTrigger = MutableStateFlow(0)
 
@@ -135,7 +143,8 @@ class InboxViewModel @Inject constructor(
         _isSaving.value = true
         val employmentId = _employmentRequestId.value
 
-        if(employmentId == null) {
+        if (employmentId == null) {
+            _isSaving.value = false
             return Result.failure(IllegalStateException("EmploymentId is not defined"))
         }
 
@@ -143,16 +152,36 @@ class InboxViewModel @Inject constructor(
             respondEmploymentRequestUseCase(status, employmentId)
         }
 
-        response
-            .onFailure { e ->
-                Timber.tag("Employment Request").e("ERROR: on Responding Employment Request $e")
-                _isSaving.value = false
-            }
-            .onSuccess {
-                refreshNotifications()
-                _isSaving.value = false
+        response.onFailure { e ->
+            Timber.tag("Employment Request").e("ERROR: on Responding Employment Request $e")
+            _isSaving.value = false
+        }
+
+        if (response.isFailure) {
+            return response
+        }
+
+        if (status == EmploymentRequestStatusEnum.ACCEPTED) {
+            val refreshToken = authDataStore.getRefreshToken().firstOrNull()
+
+            if (isTokenValid(refreshToken) && !refreshToken.isNullOrBlank()) {
+                refreshTokenUseCase(refreshToken).onFailure { e ->
+                    Timber.tag("Employment Request").e(e, "ERROR: Token could not be refreshed.")
+                    _isSaving.value = false
+                    return Result.failure(e)
+                }
             }
 
-        return response
+            saveUserSessionUseCase().onFailure { e ->
+                Timber.tag("Employment Request").e(e, "ERROR: Session could not be saved.")
+                _isSaving.value = false
+                return Result.failure(e)
+            }
+        }
+
+        refreshNotifications()
+        _isSaving.value = false
+
+        return Result.success(Unit)
     }
 }

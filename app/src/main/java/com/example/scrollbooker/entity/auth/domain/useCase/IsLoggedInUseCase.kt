@@ -2,7 +2,7 @@ package com.example.scrollbooker.entity.auth.domain.useCase
 
 import android.os.SystemClock
 import com.example.scrollbooker.core.network.tokenProvider.TokenProvider
-import com.example.scrollbooker.core.network.util.decodeJwtExpiry
+import com.example.scrollbooker.core.network.util.isTokenValid
 import com.example.scrollbooker.core.util.runSuspendCatching
 import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.user.userInfo.domain.useCase.GetUserInfoUseCase
@@ -60,9 +60,4 @@ class IsLoggedInUseCase @Inject constructor(
         }.onFailure { e ->
             Timber.tag("Is Logged In").e(e, "ERROR: on Trying to get loggedIn Status")
         }
-
-    private fun isTokenValid(token: String?): Boolean {
-        val expiry = token?.let { decodeJwtExpiry(it) }
-        return expiry != null && System.currentTimeMillis() < expiry
-    }
 }

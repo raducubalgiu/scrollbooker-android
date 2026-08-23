@@ -14,6 +14,7 @@ import com.example.scrollbooker.entity.auth.domain.useCase.LoginUseCase
 import com.example.scrollbooker.entity.auth.domain.useCase.RefreshTokenUseCase
 import com.example.scrollbooker.entity.auth.domain.useCase.RegisterUseCase
 import com.example.scrollbooker.entity.auth.domain.useCase.SaveSessionUseCase
+import com.example.scrollbooker.entity.auth.domain.useCase.SaveUserSessionUseCase
 import com.example.scrollbooker.entity.user.userInfo.domain.useCase.GetUserInfoUseCase
 import com.example.scrollbooker.entity.user.userPermissions.domain.useCase.GetUserPermissionsUseCase
 import com.example.scrollbooker.store.AuthDataStore
@@ -124,17 +125,27 @@ object AuthModule {
 
     @Provides
     @Singleton
-    fun provideSaveSessionUseCase(
-        tokenProvider: TokenProvider,
+    fun provideSaveUserSessionUseCase(
         authDataStore: AuthDataStore,
         getUserInfoUseCase: GetUserInfoUseCase,
         getUserPermissionsUseCase: GetUserPermissionsUseCase,
-    ): SaveSessionUseCase {
-        return SaveSessionUseCase(
-            tokenProvider = tokenProvider,
+    ): SaveUserSessionUseCase {
+        return SaveUserSessionUseCase(
             authDataStore = authDataStore,
             getUserInfoUseCase = getUserInfoUseCase,
             getUserPermissionsUseCase = getUserPermissionsUseCase
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideSaveSessionUseCase(
+        tokenProvider: TokenProvider,
+        saveUserSessionUseCase: SaveUserSessionUseCase,
+    ): SaveSessionUseCase {
+        return SaveSessionUseCase(
+            tokenProvider = tokenProvider,
+            saveUserSessionUseCase = saveUserSessionUseCase
         )
     }
 
