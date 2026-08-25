@@ -9,8 +9,8 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.sheet.SheetHeader
-import com.example.scrollbooker.ui.shared.reviews.ReviewsScreen
-import com.example.scrollbooker.ui.shared.reviews.ReviewsViewModel
+import com.example.scrollbooker.ui.reviews.ReviewsScreen
+import com.example.scrollbooker.ui.reviews.ReviewsViewModel
 import com.example.scrollbooker.ui.theme.Background
 
 @Composable

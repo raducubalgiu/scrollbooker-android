@@ -17,8 +17,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
 import com.example.scrollbooker.navigation.navigators.UserProfileParam
-import com.example.scrollbooker.ui.shared.reviews.ReviewsScreen
-import com.example.scrollbooker.ui.shared.reviews.ReviewsViewModel
+import com.example.scrollbooker.ui.reviews.ReviewsScreen
+import com.example.scrollbooker.ui.reviews.ReviewsViewModel
 import com.example.scrollbooker.ui.social.tab.UserFollowersTab
 import com.example.scrollbooker.ui.social.tab.UserFollowingsTab
 

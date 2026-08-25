@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.reviews.components
+package com.example.scrollbooker.ui.reviews.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -36,7 +36,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.avatar.Avatar
@@ -47,14 +46,12 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
-import com.example.scrollbooker.entity.booking.review.data.remote.ReviewLabel
 import com.example.scrollbooker.entity.booking.review.domain.model.Review
-import com.example.scrollbooker.ui.shared.reviews.ReviewActionUiState
+import com.example.scrollbooker.ui.reviews.ReviewActionUiState
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.bodySmall
-import com.example.scrollbooker.ui.theme.titleMedium
 import org.threeten.bp.OffsetDateTime
 import org.threeten.bp.format.DateTimeFormatter
 

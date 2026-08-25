@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.reviews.components
+package com.example.scrollbooker.ui.reviews.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

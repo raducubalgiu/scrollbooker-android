@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.reviews.tabs
+package com.example.scrollbooker.ui.reviews.tabs
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize

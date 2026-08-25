@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.reviews
+package com.example.scrollbooker.ui.reviews
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.gestures.scrollable
@@ -36,10 +36,10 @@ import com.example.scrollbooker.components.core.layout.MessageScreen
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.rememberCollapsingNestedScroll
 import com.example.scrollbooker.entity.booking.review.domain.model.ReviewsSummary
-import com.example.scrollbooker.ui.shared.reviews.components.ReviewsSummarySection
-import com.example.scrollbooker.ui.shared.reviews.tabs.ReviewsTabRow
-import com.example.scrollbooker.ui.shared.reviews.tabs.VideoReviewsTab
-import com.example.scrollbooker.ui.shared.reviews.tabs.WrittenReviewsTab
+import com.example.scrollbooker.ui.reviews.components.ReviewsSummarySection
+import com.example.scrollbooker.ui.reviews.tabs.ReviewsTabRow
+import com.example.scrollbooker.ui.reviews.tabs.VideoReviewsTab
+import com.example.scrollbooker.ui.reviews.tabs.WrittenReviewsTab
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch

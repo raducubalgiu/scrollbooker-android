@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -26,7 +25,8 @@ fun BusinessReviewsSection(
     reviews: BusinessProfileReviews,
     ratingsAverage: Float,
     ratingsCount: Int,
-    onNavigateToReviewerProfile: (param: UserProfileParam) -> Unit
+    onNavigateToReviewerProfile: (param: UserProfileParam) -> Unit,
+    onNavigateToReviews: (userId: Int) -> Unit
 ) {
     Column(modifier = Modifier
         .fillMaxWidth()
@@ -70,7 +70,6 @@ fun BusinessReviewsSection(
                 contentPadding = PaddingValues(
                     vertical = BasePadding
                 ),
-                shape = ShapeDefaults.Medium,
                 title = stringResource(R.string.seeAllReviews),
                 onClick = {  }
             )

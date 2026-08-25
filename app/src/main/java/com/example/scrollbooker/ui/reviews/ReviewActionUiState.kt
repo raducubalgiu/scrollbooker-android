@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.reviews
+package com.example.scrollbooker.ui.reviews
 
 data class ReviewActionUiState(
     val likeCount: Int = 0,

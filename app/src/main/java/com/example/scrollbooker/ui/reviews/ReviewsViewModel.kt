@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.reviews
+package com.example.scrollbooker.ui.reviews
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData

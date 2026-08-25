@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.reviews.tabs
+package com.example.scrollbooker.ui.reviews.tabs
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -19,8 +19,8 @@ import com.example.scrollbooker.components.core.layout.MessageScreen
 import com.example.scrollbooker.components.customized.LoadMoreSpinner
 import com.example.scrollbooker.core.util.rememberFlingBehavior
 import com.example.scrollbooker.entity.booking.review.domain.model.Review
-import com.example.scrollbooker.ui.shared.reviews.ReviewsViewModel
-import com.example.scrollbooker.ui.shared.reviews.components.ReviewCard
+import com.example.scrollbooker.ui.reviews.ReviewsViewModel
+import com.example.scrollbooker.ui.reviews.components.ReviewCard
 
 @Composable
 fun WrittenReviewsTab(

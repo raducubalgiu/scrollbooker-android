@@ -39,6 +39,6 @@ fun RecentSearch.displayLabel(): String? {
     return if (subFilterNames.isNotEmpty()) {
         "${service.name} • ${subFilterNames.joinToString(" & ")}"
     } else {
-        null
+        service.name
     }
 }

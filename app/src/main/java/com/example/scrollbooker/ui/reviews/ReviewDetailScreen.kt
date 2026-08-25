@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.reviews
+package com.example.scrollbooker.ui.reviews
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
