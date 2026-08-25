@@ -241,6 +241,7 @@ fun CreatePostPreviewScreen(
                                 isVideoReview = false,
                                 isOwnPost = false,
                                 businessId = 1,
+                                review = null,
                                 createdAt = ""
                             ),
                             isSavingLike = false,

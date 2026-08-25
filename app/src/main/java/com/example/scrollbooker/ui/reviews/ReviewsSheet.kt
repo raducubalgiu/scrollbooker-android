@@ -1,4 +1,4 @@
-package com.example.scrollbooker.components.customized.post.sheets.reviews
+package com.example.scrollbooker.ui.reviews
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,13 +9,12 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.sheet.SheetHeader
-import com.example.scrollbooker.ui.reviews.ReviewsScreen
-import com.example.scrollbooker.ui.reviews.ReviewsViewModel
 import com.example.scrollbooker.ui.theme.Background
 
 @Composable
 fun ReviewsSheet(
-    userId: Int,
+    businessId: Int,
+    employeeId: Int?,
     onClose: () -> Unit
 ) {
     val viewModel: ReviewsViewModel = hiltViewModel()
@@ -29,10 +28,10 @@ fun ReviewsSheet(
             onClose = onClose
         )
 
-        ReviewsScreen(
+        ReviewsSection(
             viewModel = viewModel,
-            userId = userId,
-            onNavigateToReviewDetail = {}
+            businessId = businessId,
+            employeeId = employeeId
         )
     }
 }

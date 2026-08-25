@@ -8,9 +8,9 @@ import javax.inject.Inject
 class GetReviewsSummaryUseCase @Inject constructor(
     private val repository: ReviewRepository
 ) {
-    suspend operator fun invoke(userId: Int): FeatureState<ReviewsSummary> {
+    suspend operator fun invoke(businessId: Int, employeeId: Int?): FeatureState<ReviewsSummary> {
         return try {
-            val response = repository.getReviewsSummary(userId)
+            val response = repository.getReviewsSummary(businessId, employeeId)
             FeatureState.Success(response)
 
         } catch (e: Exception) {

@@ -16,7 +16,15 @@ fun handlePostSheetAction(
     when(action) {
         PostSheetActionEnum.OPEN_LINKED_PRODUCTS -> handleOpenSheet(LinkedProductsSheet(post.id))
         PostSheetActionEnum.OPEN_COMMENTS -> handleOpenSheet(CommentsSheet(post.id))
-        PostSheetActionEnum.OPEN_REVIEWS -> handleOpenSheet(ReviewsSheet(post.user.id))
         PostSheetActionEnum.OPEN_MORE -> handleOpenSheet(MoreSheet(post.id))
+        PostSheetActionEnum.OPEN_REVIEWS -> {
+            val isEmployee = post.user.id != post.businessOwner.id
+            val employeeId = if (isEmployee) post.user.id else null
+
+            handleOpenSheet(ReviewsSheet(
+                businessId = post.businessId,
+                employeeId = employeeId
+            ))
+        }
     }
 }

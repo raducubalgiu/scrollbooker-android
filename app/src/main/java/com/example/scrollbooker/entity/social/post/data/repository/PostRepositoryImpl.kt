@@ -51,10 +51,14 @@ class PostRepositoryImpl @Inject constructor(
         ).flow
     }
 
-    override fun getUserVideoReviewsPosts(userId: Int): Flow<PagingData<Post>> {
+    override fun getUserVideoReviewsPosts(
+        businessId: Int,
+        employeeId: Int?,
+        ratings: Set<Int>?
+    ): Flow<PagingData<Post>> {
         return Pager(
             config = PagingConfig(pageSize = 10),
-            pagingSourceFactory = { PostVideoReviewsPagingSource(apiService, userId) }
+            pagingSourceFactory = { PostVideoReviewsPagingSource(apiService, businessId, employeeId, ratings) }
         ).flow
     }
 

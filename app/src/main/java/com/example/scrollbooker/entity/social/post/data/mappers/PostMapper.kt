@@ -8,6 +8,7 @@ import com.example.scrollbooker.entity.social.post.data.remote.PostEmployeeDto
 import com.example.scrollbooker.entity.social.post.data.remote.PostMediaFileDto
 import com.example.scrollbooker.entity.social.post.data.remote.PostProductCurrencyDto
 import com.example.scrollbooker.entity.social.post.data.remote.PostProductDto
+import com.example.scrollbooker.entity.social.post.data.remote.PostReviewDto
 import com.example.scrollbooker.entity.social.post.data.remote.PostUserDto
 import com.example.scrollbooker.entity.social.post.data.remote.UserPostActionsDto
 import com.example.scrollbooker.entity.social.post.domain.model.Hashtag
@@ -18,6 +19,7 @@ import com.example.scrollbooker.entity.social.post.domain.model.PostEmployee
 import com.example.scrollbooker.entity.social.post.domain.model.PostMediaFile
 import com.example.scrollbooker.entity.social.post.domain.model.PostProduct
 import com.example.scrollbooker.entity.social.post.domain.model.PostProductCurrency
+import com.example.scrollbooker.entity.social.post.domain.model.PostReview
 import com.example.scrollbooker.entity.social.post.domain.model.PostUser
 import com.example.scrollbooker.entity.social.post.domain.model.UserPostActions
 
@@ -35,6 +37,7 @@ fun PostDto.toDomain(): Post {
         isVideoReview = isVideoReview,
         isOwnPost = isOwnPost,
         businessId = businessId,
+        review = review?.toDomain(),
         createdAt = createdAt,
     )
 }
@@ -143,3 +146,11 @@ fun PostCounters.applyUiState(ui: PostActionUiState): PostCounters =
         bookmarkCount = bookmarkCount + ui.bookmarksCount,
         commentCount = commentCount + ui.commentsCount
     )
+
+fun PostReviewDto.toDomain(): PostReview {
+    return PostReview(
+        id = id,
+        review = review,
+        rating = rating
+    )
+}

@@ -8,8 +8,8 @@ import com.example.scrollbooker.entity.booking.review.domain.model.ReviewsSummar
 import kotlinx.coroutines.flow.Flow
 
 interface ReviewRepository {
-    fun getReviews(userId: Int, ratings: Set<Int>?): Flow<PagingData<Review>>
-    suspend fun getReviewsSummary(userId: Int): ReviewsSummary
+    fun getReviews(businessId: Int, employeeId: Int?, ratings: Set<Int>?): Flow<PagingData<Review>>
+    suspend fun getReviewsSummary(businessId: Int, employeeId: Int?): ReviewsSummary
     suspend fun createWrittenReview(appointmentId: Int, request: ReviewCreateRequest): ReviewMini
     suspend fun updateWrittenRequest(
         reviewId: Int,

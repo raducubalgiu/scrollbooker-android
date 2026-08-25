@@ -81,6 +81,7 @@ fun ProfileUserInfo(
 ) {
     val isBusinessOrEmployee = user.isBusinessOrEmployee
     val isOpenNow = user.openingHours.openNow
+    val isEmployee = user.businessOwner?.id != user.id && user.businessId != null
 
 //    val intentActions = rememberIntentActions(user)
 //
@@ -95,6 +96,8 @@ fun ProfileUserInfo(
                 tabIndex = it,
                 userId = user.id,
                 username = user.username,
+                businessId = user.businessId ?: -1,
+                employeeId = if(isEmployee) user.id else -1,
                 isBusinessOrEmployee = user.isBusinessOrEmployee
             )
         )}

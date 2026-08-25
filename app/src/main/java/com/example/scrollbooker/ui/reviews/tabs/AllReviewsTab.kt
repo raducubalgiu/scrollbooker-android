@@ -23,15 +23,14 @@ import com.example.scrollbooker.ui.reviews.ReviewsViewModel
 import com.example.scrollbooker.ui.reviews.components.ReviewCard
 
 @Composable
-fun WrittenReviewsTab(
+fun AllReviewsTab(
     viewModel: ReviewsViewModel,
-    writtenReviews: LazyPagingItems<Review>,
-    onNavigateToReviewDetail: () -> Unit
+    allReviews: LazyPagingItems<Review>
 ) {
 
     val flingBehavior = rememberFlingBehavior()
 
-    when (writtenReviews.loadState.refresh) {
+    when (allReviews.loadState.refresh) {
         is LoadState.Loading -> {
             LoadingScreen(
                 modifier = Modifier.padding(top = 50.dp),
@@ -45,7 +44,7 @@ fun WrittenReviewsTab(
             )
         }
         is LoadState.NotLoading -> {
-            if(writtenReviews.itemCount == 0) {
+            if(allReviews.itemCount == 0) {
                 MessageScreen(
                     modifier = Modifier.padding(top = 50.dp),
                     arrangement = Arrangement.Top,
@@ -58,15 +57,14 @@ fun WrittenReviewsTab(
                 modifier = Modifier.fillMaxSize(),
                 flingBehavior = flingBehavior
             ) {
-                items(writtenReviews.itemCount) { index ->
-                    writtenReviews[index]?.let { review ->
+                items(allReviews.itemCount) { index ->
+                    allReviews[index]?.let { review ->
                         val reviewUi by viewModel.observeReviewUi(review.id)
                             .collectAsStateWithLifecycle()
 
                         ReviewCard(
                             review = review,
                             reviewUi = reviewUi,
-                            onNavigateToReviewDetail = onNavigateToReviewDetail,
                             onLike = {
                                 viewModel.toggleLike(review.id, review.productBusinessOwner.id)
                             }
@@ -75,7 +73,7 @@ fun WrittenReviewsTab(
                 }
 
                 item {
-                    when(writtenReviews.loadState.append) {
+                    when(allReviews.loadState.append) {
                         is LoadState.Loading -> LoadMoreSpinner()
                         else -> Unit
                     }

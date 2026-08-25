@@ -26,7 +26,7 @@ fun BusinessReviewsSection(
     ratingsAverage: Float,
     ratingsCount: Int,
     onNavigateToReviewerProfile: (param: UserProfileParam) -> Unit,
-    onNavigateToReviews: (userId: Int) -> Unit
+    onOpenReviewsSheet: () -> Unit
 ) {
     Column(modifier = Modifier
         .fillMaxWidth()
@@ -71,7 +71,7 @@ fun BusinessReviewsSection(
                     vertical = BasePadding
                 ),
                 title = stringResource(R.string.seeAllReviews),
-                onClick = {  }
+                onClick = onOpenReviewsSheet
             )
         }
     }

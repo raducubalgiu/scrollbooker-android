@@ -5,13 +5,13 @@ import androidx.paging.PagingState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.review.data.mappers.toDomain
 import com.example.scrollbooker.entity.booking.review.domain.model.Review
-import kotlinx.coroutines.delay
 import timber.log.Timber
 import java.lang.Exception
 
 class ReviewPagingSource(
     private val api: ReviewsApiService,
-    private val userId: Int,
+    private val businessId: Int,
+    private val employeeId: Int?,
     private val ratings: Set<Int>?
 ) : PagingSource<Int, Review>() {
 
@@ -29,9 +29,10 @@ class ReviewPagingSource(
         return try {
             val response = withVisibleLoading {
                 api.getReviews(
-                    userId,
-                    page,
-                    limit,
+                    businessId = businessId,
+                    employeeId = employeeId,
+                    page = page,
+                    limit = limit,
                     ratings = ratings?.toList()
                 )
             }

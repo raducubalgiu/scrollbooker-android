@@ -14,6 +14,7 @@ data class Post(
     val isVideoReview: Boolean,
     val isOwnPost: Boolean,
     val businessId: Int,
+    val review: PostReview?,
     val createdAt: String
 )
 
@@ -88,4 +89,11 @@ data class PostCounters(
     val shareCount: Int,
     val bookingsCount: Int,
     val viewsCount: Int
+)
+
+data class PostReview(
+    val id: Int,
+
+    val review: String,
+    val rating: Int
 )

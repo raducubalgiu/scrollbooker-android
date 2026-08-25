@@ -37,9 +37,9 @@ import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.rememberCollapsingNestedScroll
 import com.example.scrollbooker.entity.booking.review.domain.model.ReviewsSummary
 import com.example.scrollbooker.ui.reviews.components.ReviewsSummarySection
+import com.example.scrollbooker.ui.reviews.tabs.AllReviewsTab
 import com.example.scrollbooker.ui.reviews.tabs.ReviewsTabRow
 import com.example.scrollbooker.ui.reviews.tabs.VideoReviewsTab
-import com.example.scrollbooker.ui.reviews.tabs.WrittenReviewsTab
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -47,30 +47,29 @@ import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReviewsScreen(
+fun ReviewsSection(
     viewModel: ReviewsViewModel,
-    userId: Int,
-    onNavigateToReviewDetail: () -> Unit
+    businessId: Int,
+    employeeId: Int?
 ) {
     val scope = rememberCoroutineScope()
     val tabs = listOf(stringResource(R.string.all), stringResource(R.string.video))
     val pagerState = rememberPagerState { 2 }
 
-    LaunchedEffect(userId) {
-        viewModel.setUserId(userId)
+    LaunchedEffect(businessId, employeeId) {
+        viewModel.setBusinessIdAndEmployeeId(businessId, employeeId)
         viewModel.clearRatings()
         viewModel.setTab(ReviewsViewModel.ReviewsTab.ALL)
         pagerState.scrollToPage(0)
     }
 
     val summaryState by viewModel.userReviewsSummary.collectAsState()
-    val writtenReviews = viewModel.writeReviews.collectAsLazyPagingItems()
+    val allReviews = viewModel.allReviews.collectAsLazyPagingItems()
     val videoReviews = viewModel.videoReviews.collectAsLazyPagingItems()
     val selectedRatings by viewModel.selectedRatings.collectAsState()
 
     val isSummaryLoading by viewModel.summaryIsLoading.collectAsState()
-    val isFirstPageLoading =
-        writtenReviews.loadState.refresh is LoadState.Loading && writtenReviews.itemCount == 0
+    val isFirstPageLoading = allReviews.loadState.refresh is LoadState.Loading && allReviews.itemCount == 0
     val isInitialLoading = isSummaryLoading || isFirstPageLoading
 
     if(isInitialLoading) {
@@ -139,10 +138,9 @@ fun ReviewsScreen(
                         ) { page ->
                             when(page) {
                                 0 -> {
-                                    WrittenReviewsTab(
+                                    AllReviewsTab(
                                         viewModel = viewModel,
-                                        writtenReviews = writtenReviews,
-                                        onNavigateToReviewDetail = onNavigateToReviewDetail
+                                        allReviews = allReviews
                                     )
                                 }
                                 1 -> VideoReviewsTab(videoReviews)

@@ -34,6 +34,7 @@ import androidx.paging.map
 import com.example.scrollbooker.entity.booking.review.domain.useCase.LikeWrittenReviewUseCase
 import com.example.scrollbooker.entity.booking.review.domain.useCase.UnlikeWrittenReviewUseCase
 import com.example.scrollbooker.store.AuthDataStore
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.firstOrNull
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -48,8 +49,11 @@ class ReviewsViewModel @Inject constructor(
 ): ViewModel() {
     enum class ReviewsTab { ALL, VIDEO }
 
-    private val _userId = MutableStateFlow<Int?>(null)
-    val userId: StateFlow<Int?> = _userId.asStateFlow()
+    private val _businessId = MutableStateFlow<Int?>(null)
+    val businessId: StateFlow<Int?> = _businessId.asStateFlow()
+
+    private val _employeeId = MutableStateFlow<Int?>(null)
+    val employeeId: StateFlow<Int?> = _employeeId.asStateFlow()
 
     private val _selectedRatings = MutableStateFlow<Set<Int>>(emptySet())
     val selectedRatings: StateFlow<Set<Int>> = _selectedRatings.asStateFlow()
@@ -68,7 +72,10 @@ class ReviewsViewModel @Inject constructor(
         }
     }
 
-    fun setUserId(id: Int) { if (_userId.value != id) _userId.value = id }
+    fun setBusinessIdAndEmployeeId(businessId: Int, employeeId: Int?) {
+        _businessId.value = businessId
+        _employeeId.value = employeeId
+    }
 
     fun setTab(tab: ReviewsTab) {
         _currentTab.value = tab
@@ -101,23 +108,29 @@ class ReviewsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            userId.filterNotNull()
+            combine(_businessId, _employeeId) { businessId, employeeId -> businessId to employeeId }
+                .filter { (businessId, _) -> businessId != null }
                 .distinctUntilChanged()
                 .onEach { _userReviewsSummary.value = FeatureState.Loading }
-                .mapLatest { id -> getReviewsSummaryUseCase(id) }
+                .mapLatest { (businessId, employeeId) ->
+                    getReviewsSummaryUseCase(businessId = businessId!!, employeeId = employeeId)
+                }
                 .catch { _userReviewsSummary.value = FeatureState.Error() }
                 .collect { _userReviewsSummary.value = it }
         }
     }
 
-    val writeReviews: Flow<PagingData<Review>> =
+    val allReviews: Flow<PagingData<Review>> =
         combine(
-            userId.filterNotNull(),
+            _businessId.filterNotNull(),
+            _employeeId,
             _appliedRatingsByTab.map { it[ReviewsTab.ALL] ?: emptySet<Int>() }.distinctUntilChanged()
-        ) { uid, ratingsSet -> uid to ratingsSet }
-            .flatMapLatest { (uid, ratingsSet) ->
+        ) { businessId, employeeId, ratingsSet -> Triple(businessId, employeeId, ratingsSet) }
+            .distinctUntilChanged()
+            .flatMapLatest { (businessId, employeeId, ratingsSet) ->
                 getReviewsUseCase(
-                    userId = uid,
+                    businessId = businessId,
+                    employeeId = employeeId,
                     ratings = ratingsSet.ifEmpty { null }
                 )
             }
@@ -131,14 +144,17 @@ class ReviewsViewModel @Inject constructor(
 
     val videoReviews: Flow<PagingData<Post>> =
         combine(
-            userId.filterNotNull(),
+            _businessId.filterNotNull(),
+            _employeeId,
             _appliedRatingsByTab.map { it[ReviewsTab.VIDEO] ?: emptySet<Int>() }
                 .distinctUntilChanged()
-        ) { uid, ratingsSet -> uid to ratingsSet }
-            .flatMapLatest { (uid, ratingsSet) ->
+        ) { businessId, employeeId, ratingsSet -> Triple(businessId, employeeId, ratingsSet) }
+            .distinctUntilChanged()
+            .flatMapLatest { (businessId, employeeId, ratingsSet) ->
                 getUserVideoReviewsPostsUseCase(
-                    userId = uid,
-                    //ratings = ratings.ifEmpty { null }
+                    businessId = businessId,
+                    employeeId = employeeId,
+                    ratings = ratingsSet.ifEmpty { null }
                 )
             }
             .cachedIn(viewModelScope)

@@ -17,6 +17,8 @@ data class ProfilePostDetailParam(
 data class NavigateSocialParam(
     val tabIndex: Int,
     val userId: Int,
+    val businessId: Int?,
+    val employeeId: Int?,
     val username: String,
     val isBusinessOrEmployee: Boolean
 )

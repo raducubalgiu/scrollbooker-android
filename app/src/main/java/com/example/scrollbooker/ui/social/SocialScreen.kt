@@ -12,12 +12,16 @@ import com.example.scrollbooker.components.core.tabs.Tabs
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.headers.Header
+import com.example.scrollbooker.components.core.layout.MessageScreen
 import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
 import com.example.scrollbooker.navigation.navigators.UserProfileParam
-import com.example.scrollbooker.ui.reviews.ReviewsScreen
+import com.example.scrollbooker.ui.reviews.ReviewsSection
 import com.example.scrollbooker.ui.reviews.ReviewsViewModel
 import com.example.scrollbooker.ui.social.tab.UserFollowersTab
 import com.example.scrollbooker.ui.social.tab.UserFollowingsTab
@@ -67,11 +71,20 @@ fun SocialScreen(
 
                 key(post) {
                     when(post) {
-                        SocialTab.Reviews -> ReviewsScreen(
-                            userId = socialParam.userId,
-                            viewModel = reviewsViewModel,
-                            onNavigateToReviewDetail = {}
-                        )
+                        SocialTab.Reviews -> {
+                            if(socialParam.businessId != null) {
+                                ReviewsSection(
+                                    businessId = socialParam.businessId,
+                                    employeeId = socialParam.employeeId,
+                                    viewModel = reviewsViewModel
+                                )
+                            } else {
+                                MessageScreen(
+                                    icon = painterResource(R.drawable.ic_clipboard_check_outline),
+                                    message = stringResource(R.string.notFoundReviews),
+                                )
+                            }
+                        }
                         SocialTab.Followers -> UserFollowersTab(viewModal, onNavigateUserProfile)
                         SocialTab.Followings -> UserFollowingsTab(viewModal, onNavigateUserProfile)
                     }

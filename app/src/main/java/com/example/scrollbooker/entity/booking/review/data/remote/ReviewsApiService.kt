@@ -10,17 +10,19 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ReviewsApiService {
-    @GET("users/{userId}/reviews")
+    @GET("businesses/{businessId}/reviews")
     suspend fun getReviews(
-        @Path("userId") userId: Int,
+        @Path("businessId") businessId: Int,
         @Query("page") page: Int,
         @Query("limit") limit: Int,
+        @Query("employee_id") employeeId: Int?,
         @Query("ratings") ratings: List<Int>?
     ): PaginatedResponseDto<ReviewDto>
 
-    @GET("users/{userId}/reviews-summary")
+    @GET("businesses/{businessId}/reviews-summary")
     suspend fun getReviewsSummary(
-        @Path("userId") userId: Int
+        @Path("businessId") businessId: Int,
+        @Query("employee_id") employeeId: Int?
     ): ReviewsSummaryDto
 
     @POST("appointments/{appointmentId}/create-review")

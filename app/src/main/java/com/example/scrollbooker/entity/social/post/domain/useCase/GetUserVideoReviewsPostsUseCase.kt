@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 class GetUserVideoReviewsPostsUseCase(
     private val repository: PostRepository
 ) {
-    operator fun invoke(userId: Int): Flow<PagingData<Post>> {
-        return repository.getUserVideoReviewsPosts(userId)
+    operator fun invoke(businessId: Int, employeeId: Int?, ratings: Set<Int>?): Flow<PagingData<Post>> {
+        return repository.getUserVideoReviewsPosts(businessId, employeeId, ratings)
     }
 }

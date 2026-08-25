@@ -66,9 +66,9 @@ sealed class MainRoute(val route: String) {
     object EditWebsite: MainRoute(route = "website")
     object EditPublicEmail: MainRoute(route = "publicEmail")
 
-    object Social: MainRoute(route = "social/{tabIndex}/{userId}/{username}/{isBusinessOrEmployee}") {
+    object Social: MainRoute(route = "social/{tabIndex}/{userId}/{username}/{businessId}/{employeeId}/{isBusinessOrEmployee}") {
         fun createRoute(param: NavigateSocialParam): String {
-            return "social/${param.tabIndex}/${param.userId}/${param.username}/${param.isBusinessOrEmployee}"
+            return "social/${param.tabIndex}/${param.userId}/${param.username}/${param.businessId}/${param.employeeId}/${param.isBusinessOrEmployee}"
         }
     }
 

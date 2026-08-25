@@ -9,9 +9,9 @@ import kotlinx.coroutines.flow.flowOf
 class GetReviewsUseCase(
     private val repository: ReviewRepository
 ) {
-    operator fun invoke(userId: Int?, ratings: Set<Int>?): Flow<PagingData<Review>> {
-        return if (userId != null) {
-            repository.getReviews(userId, ratings)
+    operator fun invoke(businessId: Int?, employeeId: Int?, ratings: Set<Int>?): Flow<PagingData<Review>> {
+        return if (businessId != null) {
+            repository.getReviews(businessId, employeeId, ratings)
         } else {
             flowOf(PagingData.empty())
         }

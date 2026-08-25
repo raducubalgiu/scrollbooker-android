@@ -28,6 +28,14 @@ fun NavGraphBuilder.socialGraph(
             navArgument("username") {
                 type = NavType.StringType
             },
+            navArgument("businessId") {
+                type = NavType.IntType
+                defaultValue = -1
+            },
+            navArgument("employeeId") {
+                type = NavType.IntType
+                defaultValue = -1
+            },
             navArgument("isBusinessOrEmployee") {
                 type = NavType.BoolType
             }
@@ -38,8 +46,18 @@ fun NavGraphBuilder.socialGraph(
         val username = backStackEntry.arguments?.getString("username") ?: return@composable
         val isBusinessOrEmployee = backStackEntry.arguments?.getBoolean("isBusinessOrEmployee") ?: return@composable
 
+        val businessId = backStackEntry.arguments?.getInt("businessId").takeIf { it != -1 }
+        val employeeId = backStackEntry.arguments?.getInt("employeeId").takeIf { it != -1 }
+
         val viewModel = hiltViewModel<SocialViewModel>(backStackEntry)
-        val socialParams = NavigateSocialParam(tabIndex, userId, username, isBusinessOrEmployee)
+        val socialParams = NavigateSocialParam(
+            tabIndex = tabIndex,
+            userId = userId,
+            businessId = businessId,
+            employeeId = employeeId,
+            username = username,
+            isBusinessOrEmployee = isBusinessOrEmployee
+        )
 
         SocialScreen(
             viewModal = viewModel,

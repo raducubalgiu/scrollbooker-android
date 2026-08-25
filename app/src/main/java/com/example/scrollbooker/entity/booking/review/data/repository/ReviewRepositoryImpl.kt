@@ -18,15 +18,15 @@ import javax.inject.Inject
 class ReviewRepositoryImpl @Inject constructor(
     private val apiService: ReviewsApiService
 ): ReviewRepository {
-    override fun getReviews(userId: Int, ratings: Set<Int>?): Flow<PagingData<Review>> {
+    override fun getReviews(businessId: Int, employeeId: Int?, ratings: Set<Int>?): Flow<PagingData<Review>> {
         return Pager(
             config = PagingConfig(pageSize = 10),
-            pagingSourceFactory = { ReviewPagingSource(apiService, userId, ratings) }
+            pagingSourceFactory = { ReviewPagingSource(apiService, businessId, employeeId, ratings) }
         ).flow
     }
 
-    override suspend fun getReviewsSummary(userId: Int): ReviewsSummary {
-        return apiService.getReviewsSummary(userId).toDomain()
+    override suspend fun getReviewsSummary(businessId: Int, employeeId: Int?): ReviewsSummary {
+        return apiService.getReviewsSummary(businessId, employeeId).toDomain()
     }
 
     override suspend fun createWrittenReview(

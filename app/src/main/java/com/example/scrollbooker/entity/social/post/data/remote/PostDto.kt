@@ -32,6 +32,8 @@ data class PostDto(
     @SerializedName("business_id")
     val businessId: Int,
 
+    val review: PostReviewDto?,
+
     @SerializedName("created_at")
     val createdAt: String
 )
@@ -158,4 +160,11 @@ data class PostCountersDto(
 
     @SerializedName("views_count")
     val viewsCount: Int
+)
+
+data class PostReviewDto(
+    val id: Int,
+
+    val review: String,
+    val rating: Int
 )

@@ -59,7 +59,6 @@ import org.threeten.bp.format.DateTimeFormatter
 fun ReviewCard(
     review: Review,
     reviewUi: ReviewActionUiState,
-    onNavigateToReviewDetail: () -> Unit,
     onLike: () -> Unit
 ) {
     var scale by remember { mutableFloatStateOf(1f) }
@@ -78,9 +77,7 @@ fun ReviewCard(
 
     Column(Modifier.padding(horizontal = BasePadding, vertical = BasePadding)) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { onNavigateToReviewDetail() },
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Avatar(

@@ -52,9 +52,11 @@ interface PostApiService {
         @Query("limit") limit: Int
     ): PaginatedResponseDto<PostDto>
 
-    @GET("users/{userId}/posts/video-reviews")
+    @GET("businesses/{businessId}/posts/video-reviews")
     suspend fun getUserVideoReviewsPosts(
-        @Path("userId") userId: Int,
+        @Path("businessId") businessId: Int,
+        @Query("employee_id") employeeId: Int?,
+        @Query("ratings") ratings: List<Int>?,
         @Query("page") page: Int,
         @Query("limit") limit: Int
     ): PaginatedResponseDto<PostDto>

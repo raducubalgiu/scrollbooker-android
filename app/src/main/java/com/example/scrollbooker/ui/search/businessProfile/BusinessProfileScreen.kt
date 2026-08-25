@@ -11,14 +11,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -31,12 +35,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.layout.ErrorScreen
+import com.example.scrollbooker.components.core.sheet.Sheet
 import com.example.scrollbooker.core.enums.BookingSourceEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.core.util.rememberFlingBehavior
 import com.example.scrollbooker.core.util.shareBusinessProfile
 import com.example.scrollbooker.navigation.navigators.SearchNavigator
+import com.example.scrollbooker.ui.reviews.ReviewsSheet
 import com.example.scrollbooker.ui.search.businessProfile.components.BusinessProfileHeader
 import com.example.scrollbooker.ui.search.businessProfile.components.BusinessProfileSkeleton
 import com.example.scrollbooker.ui.search.businessProfile.components.BusinessProfileTabRow
@@ -50,6 +55,13 @@ import com.example.scrollbooker.ui.search.businessProfile.sections.summary.Busin
 import com.example.scrollbooker.ui.theme.Background
 import kotlinx.coroutines.launch
 
+data class ReviewsSheetParams(
+    val businessId: Int,
+    val employeeId: Int?
+)
+
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BusinessProfileScreen(
     viewModel: BusinessProfileViewModel,
@@ -61,6 +73,33 @@ fun BusinessProfileScreen(
     val state by viewModel.businessProfileState.collectAsState()
     val isFollow by viewModel.isFollowState.collectAsState()
     val isSaving by viewModel.isSaving.collectAsState()
+
+    val scope = rememberCoroutineScope()
+
+    var reviewsSheetParams by remember { mutableStateOf<ReviewsSheetParams?>(null) }
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    if(sheetState.isVisible) {
+        Sheet(
+            modifier = Modifier.statusBarsPadding(),
+            sheetState = sheetState,
+            onClose = {
+                scope.launch { sheetState.hide() }
+                reviewsSheetParams = null
+            }
+        ) {
+            reviewsSheetParams?.let {
+                ReviewsSheet(
+                    businessId = it.businessId,
+                    employeeId = it.employeeId,
+                    onClose = {
+                        reviewsSheetParams = null
+                        scope.launch { sheetState.hide() }
+                    }
+                )
+            }
+        }
+    }
 
     when(val businessProfile = state) {
         is FeatureState.Error -> {
@@ -278,7 +317,14 @@ fun BusinessProfileScreen(
                             reviews = profile.reviews,
                             ratingsAverage = profile.owner.counters.ratingsAverage,
                             ratingsCount = profile.owner.counters.ratingsCount,
-                            onNavigateToReviewerProfile = { searchNavigate.toUserProfile(it) }
+                            onNavigateToReviewerProfile = { searchNavigate.toUserProfile(it) },
+                            onOpenReviewsSheet = {
+                                reviewsSheetParams = ReviewsSheetParams(
+                                    businessId = profile.id,
+                                    employeeId = null
+                                )
+                                scope.launch { sheetState.show() }
+                            }
                         )
                     }
 

@@ -17,7 +17,7 @@ import com.example.scrollbooker.components.customized.post.sheets.PendingPostAct
 import com.example.scrollbooker.components.customized.post.sheets.comments.CommentsSheet
 import com.example.scrollbooker.components.customized.post.sheets.linkedProducts.LinkedProductsSheet
 import com.example.scrollbooker.components.customized.post.sheets.more.MoreSheet
-import com.example.scrollbooker.components.customized.post.sheets.reviews.ReviewsSheet
+import com.example.scrollbooker.ui.reviews.ReviewsSheet
 import com.example.scrollbooker.components.customized.post.sheets.statistics.PostStatisticsSheet
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.ui.theme.Background
@@ -69,7 +69,8 @@ fun PostSheets(
         when (val content = sheetContent) {
             is PostSheetsContent.ReviewsSheet -> {
                 ReviewsSheet(
-                    userId = content.userId,
+                    businessId = content.businessId,
+                    employeeId = content.employeeId,
                     onClose = onClose,
                 )
             }
