@@ -17,5 +17,6 @@ data class CommentUser(
     val id: Int,
     val username: String,
     val fullname: String,
-    val avatar: String?
+    val avatar: String?,
+    val profession: String
 )

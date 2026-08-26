@@ -97,7 +97,8 @@ fun FeedScreen(
                 onNavigateToEditPost = { feedNavigate.toEditPost(it) },
                 onOpenStatisticsSheet = {
                     sheetContent = PostSheetsContent.StatisticsSheet(it)
-                }
+                },
+                onNavigateToUserProfile = { feedNavigate.toUserProfile(it) }
             )
         }
     }

@@ -20,6 +20,7 @@ import com.example.scrollbooker.components.customized.post.sheets.more.MoreSheet
 import com.example.scrollbooker.ui.reviews.ReviewsSheet
 import com.example.scrollbooker.components.customized.post.sheets.statistics.PostStatisticsSheet
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
+import com.example.scrollbooker.navigation.navigators.UserProfileParam
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
 import kotlinx.coroutines.launch
@@ -34,6 +35,7 @@ sealed interface PendingPostAction {
 fun PostSheets(
     sheetState: SheetState,
     sheetContent: PostSheetsContent,
+    onNavigateToUserProfile: (param: UserProfileParam) -> Unit,
     onNavigateToBooking: (product: Product) -> Unit,
     onNavigateToEditPost: (Int) -> Unit,
     onOpenStatisticsSheet: (postId: Int) -> Unit,
@@ -77,7 +79,8 @@ fun PostSheets(
             is PostSheetsContent.CommentsSheet -> {
                 CommentsSheet(
                     postId = content.postId,
-                    onClose = onClose
+                    onClose = onClose,
+                    onNavigateToUserProfile = onNavigateToUserProfile
                 )
             }
             is PostSheetsContent.LinkedProductsSheet -> {

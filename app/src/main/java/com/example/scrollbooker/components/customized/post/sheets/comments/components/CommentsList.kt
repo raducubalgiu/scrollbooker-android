@@ -15,12 +15,14 @@ import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.components.customized.LoadMoreSpinner
 import com.example.scrollbooker.entity.social.comment.data.remote.LikeCommentEnum
 import com.example.scrollbooker.entity.social.comment.domain.model.Comment
+import com.example.scrollbooker.navigation.navigators.UserProfileParam
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun CommentsList(
     comments: LazyPagingItems<Comment>,
-    onLikeClick: (comment: Comment, action: LikeCommentEnum) -> Unit
+    onLikeClick: (comment: Comment, action: LikeCommentEnum) -> Unit,
+    onNavigateToUserProfile: (param: UserProfileParam) -> Unit
 ) {
     Box(Modifier.fillMaxSize()) {
         if(comments.itemCount == 0) {
@@ -34,7 +36,8 @@ fun CommentsList(
                     comments[index]?.let { comment ->
                         CommentItem(
                             comment = comment,
-                            onLikeClick = onLikeClick
+                            onLikeClick = onLikeClick,
+                            onNavigateToUserProfile = onNavigateToUserProfile
                         )
                     }
                 }

@@ -24,6 +24,7 @@ fun CommentUserDto.toDomain(): CommentUser {
         id = id,
         username = username,
         fullname = fullName,
-        avatar = avatar
+        avatar = avatar,
+        profession = profession
     )
 }

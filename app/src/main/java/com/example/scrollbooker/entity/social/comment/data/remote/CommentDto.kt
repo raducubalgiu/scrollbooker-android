@@ -1,6 +1,4 @@
 package com.example.scrollbooker.entity.social.comment.data.remote
-
-import com.example.scrollbooker.entity.user.userSocial.data.remote.UserSocialDto
 import com.google.gson.annotations.SerializedName
 
 data class CommentDto(
@@ -38,5 +36,7 @@ data class CommentUserDto(
     @SerializedName("fullname")
     val fullName: String,
 
-    val avatar: String?
+    val avatar: String?,
+
+    val profession: String
 )

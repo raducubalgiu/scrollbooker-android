@@ -128,7 +128,8 @@ fun BaseProfilePostDetailScreen(
                         sheetState.hide()
                         sheetContent = PostSheetsContent.StatisticsSheet(it)
                     }
-                }
+                },
+                onNavigateToUserProfile = { profileNavigate.toUserProfile(it) }
             )
         }
     }

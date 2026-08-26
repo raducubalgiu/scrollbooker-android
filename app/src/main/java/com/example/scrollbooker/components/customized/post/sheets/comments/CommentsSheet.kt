@@ -18,12 +18,14 @@ import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.core.sheet.SheetHeader
 import com.example.scrollbooker.components.customized.post.sheets.comments.components.CommentFooter
 import com.example.scrollbooker.components.customized.post.sheets.comments.components.CommentsList
+import com.example.scrollbooker.navigation.navigators.UserProfileParam
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun CommentsSheet(
     postId: Int,
-    onClose: () -> Unit
+    onClose: () -> Unit,
+    onNavigateToUserProfile: (param: UserProfileParam) -> Unit
 ) {
     val viewModel: CommentsViewModel = hiltViewModel()
     val comments = viewModel.commentsState.collectAsLazyPagingItems()
@@ -56,6 +58,7 @@ fun CommentsSheet(
                         CommentsList(
                             comments = comments,
                             onLikeClick = { comment, action -> },
+                            onNavigateToUserProfile = onNavigateToUserProfile
                         )
                     }
                 }

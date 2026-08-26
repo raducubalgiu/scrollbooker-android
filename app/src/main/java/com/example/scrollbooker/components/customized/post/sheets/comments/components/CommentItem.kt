@@ -44,6 +44,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.entity.social.comment.data.remote.LikeCommentEnum
 import com.example.scrollbooker.entity.social.comment.domain.model.Comment
+import com.example.scrollbooker.navigation.navigators.UserProfileParam
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.bodyLarge
@@ -51,7 +52,8 @@ import com.example.scrollbooker.ui.theme.bodyLarge
 @Composable
 fun CommentItem(
     comment: Comment,
-    onLikeClick: (comment: Comment, action: LikeCommentEnum) -> Unit
+    onLikeClick: (comment: Comment, action: LikeCommentEnum) -> Unit,
+    onNavigateToUserProfile: (param: UserProfileParam) -> Unit
 ) {
     var scale by remember { mutableFloatStateOf(1f) }
     val animatedScale by animateFloatAsState(
@@ -67,7 +69,14 @@ fun CommentItem(
     ) {
         Avatar(
             url = comment.user.avatar ?: "",
-            size = 35.dp
+            size = 35.dp,
+            onClick = { onNavigateToUserProfile(
+                UserProfileParam(
+                    userId = comment.user.id,
+                    username = comment.user.username,
+                    profession = comment.user.profession
+                )
+            ) }
         )
         Spacer(Modifier.width(BasePadding))
         Column {

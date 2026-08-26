@@ -13,13 +13,14 @@ import com.example.scrollbooker.ui.theme.Background
 
 @Composable
 fun ReviewsSheet(
+    modifier: Modifier = Modifier,
     businessId: Int,
     employeeId: Int?,
     onClose: () -> Unit
 ) {
     val viewModel: ReviewsViewModel = hiltViewModel()
 
-    Column(Modifier.fillMaxSize()) {
+    Column(modifier = modifier.fillMaxSize()) {
         SheetHeader(
             modifier = Modifier
                 .background(Background)

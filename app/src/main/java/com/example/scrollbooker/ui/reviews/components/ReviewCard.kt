@@ -40,7 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.components.customized.RatingsStars
-import com.example.scrollbooker.core.util.Dimens.AvatarSizeM
+import com.example.scrollbooker.core.util.Dimens.AvatarSizeXS
 import com.example.scrollbooker.core.util.Dimens.AvatarSizeXXS
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
@@ -82,7 +82,7 @@ fun ReviewCard(
         ) {
             Avatar(
                 url = review.customer.avatar ?: "",
-                size = AvatarSizeM
+                size = AvatarSizeXS
             )
 
             Spacer(modifier = Modifier.width(SpacingM))
