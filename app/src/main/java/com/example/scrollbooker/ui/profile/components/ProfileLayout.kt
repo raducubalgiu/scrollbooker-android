@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -124,6 +123,10 @@ fun ProfileLayout(
                     dispatchHeaderScroll(delta)
                 }
 
+                val tabsColumnScrollableState = rememberScrollableState { delta ->
+                    0f
+                }
+
                 var isRefreshing by remember { mutableStateOf(false) }
 
                 Refresh(
@@ -147,6 +150,11 @@ fun ProfileLayout(
                                 .graphicsLayer {
                                     translationY = headerHeightPx + headerOffset
                                 }
+                                .scrollable(
+                                    orientation = Orientation.Vertical,
+                                    state = tabsColumnScrollableState,
+                                    flingBehavior = flingBehavior
+                                )
                         ) {
                             ProfileTabRow(
                                 selectedTabIndex = pagerState.currentPage,
@@ -156,7 +164,8 @@ fun ProfileLayout(
 
                             HorizontalPager(
                                 state = pagerState,
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier.weight(1f),
+                                beyondViewportPageCount = 0
                             ) { page ->
                                 when (tabs[page]) {
                                     ProfileTab.Posts -> {
