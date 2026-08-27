@@ -75,10 +75,10 @@ fun MyProfileNavHost(
                 }
             }
         ) {
-            myProfileGraph(navController, profileNavigate)
+            myProfileGraph(viewModel, profileNavigate)
+            editProfileGraph(navController, viewModel, profileNavigate)
             userProfileGraph(navController, profileNavigate)
 
-            editProfileGraph(navController, viewModel, profileNavigate)
             myBusinessGraph(navController, profileNavigate)
             settingsGraph(
                 navController = navController,

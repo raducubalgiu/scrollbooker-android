@@ -1,12 +1,5 @@
 package com.example.scrollbooker.navigation.graphs
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.runtime.remember
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
@@ -19,7 +12,7 @@ import com.example.scrollbooker.ui.profile.MyProfileScreen
 import com.example.scrollbooker.ui.profile.MyProfileViewModel
 
 fun NavGraphBuilder.myProfileGraph(
-    navController: NavHostController,
+    viewModel: MyProfileViewModel,
     profileNavigate: ProfileNavigator
 ) {
     navigation(
@@ -28,22 +21,7 @@ fun NavGraphBuilder.myProfileGraph(
     ) {
         composable(
             route = MainRoute.MyProfile.route,
-            exitTransition = {
-                if (targetState.destination.route?.startsWith(MainRoute.MyProfilePostDetail.route) == true) {
-                    ExitTransition.None
-                } else {
-                    null
-                }
-            },
-            popEnterTransition = {
-                if (initialState.destination.route?.startsWith(MainRoute.MyProfilePostDetail.route) == true) {
-                    EnterTransition.None
-                } else {
-                    null
-                }
-            },
         ) { backStackEntry ->
-            val viewModel = hiltViewModel<MyProfileViewModel>(backStackEntry)
             val permissionController = LocalUserPermissions.current
 
             MyProfileScreen(
@@ -55,10 +33,6 @@ fun NavGraphBuilder.myProfileGraph(
 
         composable(
             route = MainRoute.MyProfilePostDetail.route,
-            enterTransition = { EnterTransition.None },
-            exitTransition = { ExitTransition.None },
-            popEnterTransition = { EnterTransition.None },
-            popExitTransition = { ExitTransition.None },
             arguments = listOf(
                 navArgument("postTab") { type = NavType.StringType },
                 navArgument("postIndex") { type = NavType.IntType }
@@ -66,11 +40,6 @@ fun NavGraphBuilder.myProfileGraph(
         ) { backStackEntry ->
             val postTabKey = backStackEntry.arguments?.getString("postTab") ?: return@composable
             val postIndex = backStackEntry.arguments?.getInt("postIndex") ?: return@composable
-
-            val parentBackStackEntry = remember(backStackEntry) {
-                navController.getBackStackEntry(MainRoute.MyProfileNavigator.route)
-            }
-            val viewModel = hiltViewModel<MyProfileViewModel>(parentBackStackEntry)
 
             MyProfilePostDetailScreen(
                 postTabKey = postTabKey,
