@@ -1,7 +1,10 @@
 package com.example.scrollbooker.ui.feed
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -19,11 +22,13 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -46,6 +51,7 @@ import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.customized.post.PostPlayerWithThumbnail
 import com.example.scrollbooker.components.customized.post.components.EndOfFeedPager
 import com.example.scrollbooker.components.customized.post.components.PostOverlay
+import com.example.scrollbooker.components.customized.post.components.VideoScrubber
 import com.example.scrollbooker.components.customized.post.sheets.PostSheetActionEnum
 import com.example.scrollbooker.core.extensions.getOrNull
 import com.example.scrollbooker.core.util.sharePost
@@ -184,6 +190,7 @@ fun BaseFeedTabScreen(
                         }
 
                         val player = viewModel.getPlayerForIndex(page)
+                        var isSeeking by remember { mutableStateOf(false) }
 
                         Box(modifier = Modifier
                             .fillMaxSize()
@@ -208,20 +215,35 @@ fun BaseFeedTabScreen(
                                 )
                             }
 
-                            PostOverlay(
-                                post = postUi,
-                                isSavingLike = postActionState.isSavingLike,
-                                isSavingBookmark = postActionState.isSavingBookmark,
-                                onAction = { onAction(it, post) },
-                                onLike = { viewModel.toggleLike(post) },
-                                onBookmark = { viewModel.toggleBookmark(post) },
-                                onShare = {
-                                    sharePost(context, post) { channel ->
-                                        viewModel.sharePost(post, channel)
-                                    }
-                                },
-                                onNavigateToUserProfile = onNavigateToUserProfile,
-                            )
+                            AnimatedVisibility(
+                                visible = !isSeeking,
+                                enter = fadeIn(),
+                                exit = fadeOut()
+                            ) {
+                                PostOverlay(
+                                    post = postUi,
+                                    isSavingLike = postActionState.isSavingLike,
+                                    isSavingBookmark = postActionState.isSavingBookmark,
+                                    onAction = { onAction(it, post) },
+                                    onLike = { viewModel.toggleLike(post) },
+                                    onBookmark = { viewModel.toggleBookmark(post) },
+                                    onShare = {
+                                        sharePost(context, post) { channel ->
+                                            viewModel.sharePost(post, channel)
+                                        }
+                                    },
+                                    onNavigateToUserProfile = onNavigateToUserProfile,
+                                )
+                            }
+
+                            if (player != null) {
+                                VideoScrubber(
+                                    player = player,
+                                    isFocused = page == settledPage,
+                                    onSeekingChanged = { isSeeking = it },
+                                    modifier = Modifier.align(Alignment.BottomCenter)
+                                )
+                            }
                         }
                     }
                 }

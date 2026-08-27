@@ -1,6 +1,8 @@
 package com.example.scrollbooker.ui.profile
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,6 +32,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -48,6 +51,7 @@ import com.example.scrollbooker.components.customized.post.PostPlayerWithThumbna
 import com.example.scrollbooker.components.customized.post.components.EndOfFeedPager
 import com.example.scrollbooker.components.customized.post.components.PostOverlay
 import com.example.scrollbooker.components.customized.post.components.PostShimmer
+import com.example.scrollbooker.components.customized.post.components.VideoScrubber
 import com.example.scrollbooker.components.customized.post.handlePostSheetAction
 import com.example.scrollbooker.components.customized.post.sheets.PostSheetActionEnum
 import com.example.scrollbooker.components.customized.post.sheets.PostSheets
@@ -232,6 +236,8 @@ fun BaseProfilePostDetailScreen(
                             )
                         }
 
+                        var isSeeking by remember(post.id) { mutableStateOf(false) }
+
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -256,21 +262,36 @@ fun BaseProfilePostDetailScreen(
                                 )
                             }
 
-                            PostOverlay(
-                                post = postUi,
-                                isSavingLike = postActionState.isSavingLike,
-                                isSavingBookmark = postActionState.isSavingBookmark,
-                                onAction = { action -> handlePostSheetAction(action, post, ::handleOpenSheet) },
-                                onLike = { viewModel.toggleLike(post) },
-                                onBookmark = { viewModel.toggleBookmark(post) },
-                                onShare = {
-                                    sharePost(context, post) { channel ->
-                                        viewModel.sharePost(post, channel)
-                                    }
-                                },
-                                onNavigateToUserProfile = { profileNavigate.toUserProfile(it) },
-                                showBookButton = false
-                            )
+                            androidx.compose.animation.AnimatedVisibility(
+                                visible = !isSeeking,
+                                enter = fadeIn(),
+                                exit = fadeOut()
+                            ) {
+                                PostOverlay(
+                                    post = postUi,
+                                    isSavingLike = postActionState.isSavingLike,
+                                    isSavingBookmark = postActionState.isSavingBookmark,
+                                    onAction = { action -> handlePostSheetAction(action, post, ::handleOpenSheet) },
+                                    onLike = { viewModel.toggleLike(post) },
+                                    onBookmark = { viewModel.toggleBookmark(post) },
+                                    onShare = {
+                                        sharePost(context, post) { channel ->
+                                            viewModel.sharePost(post, channel)
+                                        }
+                                    },
+                                    onNavigateToUserProfile = { profileNavigate.toUserProfile(it) },
+                                    showBookButton = false
+                                )
+                            }
+
+                            if (player != null) {
+                                VideoScrubber(
+                                    player = player!! as ExoPlayer,
+                                    isFocused = page == pagerState.settledPage,
+                                    onSeekingChanged = { isSeeking = it },
+                                    modifier = Modifier.align(Alignment.BottomCenter)
+                                )
+                            }
                         }
                     }
                 }
