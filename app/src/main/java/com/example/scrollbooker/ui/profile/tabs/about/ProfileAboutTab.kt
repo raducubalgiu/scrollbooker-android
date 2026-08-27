@@ -1,6 +1,5 @@
 package com.example.scrollbooker.ui.profile.tabs.about
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,8 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,6 +27,7 @@ import com.example.scrollbooker.components.customized.SectionMap
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.util.rememberFlingBehavior
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfileAbout
 import com.example.scrollbooker.navigation.navigators.UserProfileParam
 import com.example.scrollbooker.ui.theme.titleMedium
@@ -39,107 +38,118 @@ fun ProfileAboutTab(
     about: FeatureState<UserProfileAbout>,
     onNavigateToUserProfile: (param: UserProfileParam) -> Unit
 ) {
-    val scrollState = rememberScrollState()
+    val flingBehavior = rememberFlingBehavior()
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(horizontal = BasePadding)
-        .verticalScroll(scrollState)
-    ) {
-        when(val aboutState = about) {
-            is FeatureState.Error -> ErrorScreen()
-            is FeatureState.Loading -> {
-                LoadingScreen(
-                    modifier = Modifier.padding(top = 50.dp),
-                    arrangement = Arrangement.Top
-                )
-            }
-            is FeatureState.Success -> {
-                val data = aboutState.data
+    when (val aboutState = about) {
+        is FeatureState.Error -> ErrorScreen()
 
-                if(isEmployee) {
-                    ProfileInfoOwnerSection(
-                        owner = about.data.owner,
-                        onNavigateToUserProfile = onNavigateToUserProfile
-                    )
+        is FeatureState.Loading -> {
+            LoadingScreen(
+                modifier = Modifier.padding(top = 50.dp),
+                arrangement = Arrangement.Top
+            )
+        }
+
+        is FeatureState.Success -> {
+            val data = aboutState.data
+
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = BasePadding),
+                flingBehavior = flingBehavior
+            ) {
+                if (isEmployee) {
+                    item(key = "profile_owner_section") {
+                        ProfileInfoOwnerSection(
+                            owner = data.owner,
+                            onNavigateToUserProfile = onNavigateToUserProfile
+                        )
+                    }
                 }
 
-                Text(
-                    modifier = Modifier.padding(vertical = BasePadding),
-                    text = stringResource(R.string.address),
-                    fontWeight = FontWeight.SemiBold,
-                    style = titleMedium,
-                    fontSize = 18.sp
-                )
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_location_outline),
-                        contentDescription = null
+                item(key = "address_section") {
+                    Text(
+                        modifier = Modifier.padding(vertical = BasePadding),
+                        text = stringResource(R.string.address),
+                        fontWeight = FontWeight.SemiBold,
+                        style = titleMedium,
+                        fontSize = 18.sp
                     )
 
-                    Spacer(Modifier.width(BasePadding))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_location_outline),
+                            contentDescription = null
+                        )
 
-                    Text(text = data.location.address)
+                        Spacer(Modifier.width(BasePadding))
+
+                        Text(text = data.location.address)
+                    }
                 }
 
-                Text(
-                    modifier = Modifier.padding(
-                        top = SpacingXXL,
-                        bottom = BasePadding
-                    ),
-                    text = stringResource(R.string.description),
-                    style = titleMedium,
-                    fontSize = 18.sp
-                )
-
-                data.description?.let {
-                    Text(text = it)
+                data.description?.let { descriptionText ->
+                    item(key = "description_section") {
+                        Text(
+                            modifier = Modifier.padding(
+                                top = SpacingXXL,
+                                bottom = BasePadding
+                            ),
+                            text = stringResource(R.string.description),
+                            style = titleMedium,
+                            fontSize = 18.sp
+                        )
+                        Text(text = descriptionText)
+                    }
                 }
 
-                Spacer(Modifier.height(BasePadding))
-
-                data.location.let { location ->
-                    location.mapUrl?.let {
+                data.location.mapUrl?.let { url ->
+                    item(key = "map_section") {
+                        Spacer(Modifier.height(BasePadding))
                         SectionMap(
-                            mapUrl = it,
-                            coordinates = location.coordinates,
+                            mapUrl = url,
+                            coordinates = data.location.coordinates,
                             fullName = data.owner.fullName,
                             displayDirectionsButton = false
                         )
                     }
                 }
 
-                Spacer(Modifier.height(SpacingXL))
+                item(key = "schedule_section") {
+                    Spacer(Modifier.height(SpacingXL))
 
-                Text(
-                    text = stringResource(R.string.schedule),
-                    fontWeight = FontWeight.SemiBold,
-                    style = titleMedium,
-                    fontSize = 18.sp
-                )
+                    Text(
+                        text = stringResource(R.string.schedule),
+                        fontWeight = FontWeight.SemiBold,
+                        style = titleMedium,
+                        fontSize = 18.sp
+                    )
 
-                Spacer(Modifier.height(BasePadding))
+                    Spacer(Modifier.height(BasePadding))
 
-                SchedulesSection(schedules = data.schedules)
+                    SchedulesSection(schedules = data.schedules)
+                }
 
-                Spacer(Modifier.height(SpacingXL))
+                item(key = "gallery_section") {
+                    Spacer(Modifier.height(SpacingXL))
 
-                Text(
-                    text = stringResource(R.string.photoGallery),
-                    fontWeight = FontWeight.SemiBold,
-                    style = titleMedium,
-                    fontSize = 18.sp
-                )
+                    Text(
+                        text = stringResource(R.string.photoGallery),
+                        fontWeight = FontWeight.SemiBold,
+                        style = titleMedium,
+                        fontSize = 18.sp
+                    )
 
-                Spacer(Modifier.height(BasePadding))
+                    Spacer(Modifier.height(BasePadding))
 
-                BusinessMediaGallery(mediaFiles = about.data.businessMedia)
+                    BusinessMediaGallery(mediaFiles = data.businessMedia)
 
-                Spacer(Modifier.height(BasePadding))
+                    Spacer(Modifier.height(BasePadding))
+                }
             }
         }
     }

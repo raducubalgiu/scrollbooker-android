@@ -1,4 +1,7 @@
 package com.example.scrollbooker.ui.profile.components
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,11 +15,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollDispatcher
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntOffset
@@ -24,9 +33,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.components.core.layout.ErrorScreen
+import com.example.scrollbooker.components.customized.Refresh
 import com.example.scrollbooker.core.enums.BookingSourceEnum
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.rememberCollapsingNestedScroll
+import com.example.scrollbooker.core.util.rememberFlingBehavior
 import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
 import com.example.scrollbooker.entity.booking.products.domain.model.UserProducts
 import com.example.scrollbooker.entity.social.post.domain.model.Post
@@ -46,6 +57,7 @@ import com.example.scrollbooker.ui.profile.tabs.bookmarks.ProfileBookmarksTab
 import com.example.scrollbooker.ui.profile.tabs.employees.ProfileEmployeesTab
 import com.example.scrollbooker.ui.profile.tabs.posts.ProfilePostsTab
 import com.example.scrollbooker.ui.profile.tabs.products.ProfileProductsTab
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -66,14 +78,33 @@ fun ProfileLayout(
     actions: @Composable () -> Unit
 ) {
     val scope = rememberCoroutineScope()
-    var headerHeightPx by remember { mutableIntStateOf(0) }
-    var headerOffset by remember { mutableFloatStateOf(0f) }
+    var headerHeightPx by rememberSaveable { mutableIntStateOf(0) }
+    var headerOffset by rememberSaveable { mutableFloatStateOf(0f) }
 
     val nestedScrollConnection = rememberCollapsingNestedScroll(
         headerHeightPx = headerHeightPx,
         headerOffset = headerOffset,
         onHeaderOffsetChanged = { headerOffset = it }
     )
+
+    val headerNestedScrollDispatcher = remember { NestedScrollDispatcher() }
+    val headerNestedScrollConnection = remember { object : NestedScrollConnection {} }
+
+    fun dispatchHeaderScroll(delta: Float): Float {
+        val preConsumed = headerNestedScrollDispatcher.dispatchPreScroll(
+            available = Offset(0f, delta),
+            source = NestedScrollSource.UserInput
+        )
+        val remaining = delta - preConsumed.y
+        val postConsumed = headerNestedScrollDispatcher.dispatchPostScroll(
+            consumed = Offset.Zero,
+            available = Offset(0f, remaining),
+            source = NestedScrollSource.UserInput
+        )
+        return preConsumed.y + postConsumed.y
+    }
+
+    val flingBehavior = rememberFlingBehavior()
 
     Box(modifier = Modifier.fillMaxSize()) {
         when (val profileData = profile) {
@@ -83,15 +114,27 @@ fun ProfileLayout(
                 val user = profileData.data
                 val isEmployee = user.isBusinessOrEmployee && user.id != user.businessOwner?.id
 
-                val tabs = remember(user.isBusinessOrEmployee, isEmployee,  user.isOwnProfile) {
+                val tabs = remember(user.isBusinessOrEmployee, isEmployee, user.isOwnProfile) {
                     ProfileTab.getTabs(user.isBusinessOrEmployee, isEmployee, user.isOwnProfile)
                 }
 
                 val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
 
-                PullToRefreshBox(
-                    isRefreshing = false,
-                    onRefresh = {  }
+                val headerScrollableState = rememberScrollableState { delta ->
+                    dispatchHeaderScroll(delta)
+                }
+
+                var isRefreshing by remember { mutableStateOf(false) }
+
+                Refresh(
+                    isRefreshing = isRefreshing,
+                    onRefresh = {
+                        scope.launch {
+                            isRefreshing = true
+                            delay(300)
+                            isRefreshing = false
+                        }
+                    }
                 ) {
                     Box(
                         modifier = Modifier
@@ -100,6 +143,7 @@ fun ProfileLayout(
                     ) {
                         Column(
                             modifier = Modifier
+                                .fillMaxSize()
                                 .graphicsLayer {
                                     translationY = headerHeightPx + headerOffset
                                 }
@@ -110,8 +154,11 @@ fun ProfileLayout(
                                 tabs = tabs
                             )
 
-                            HorizontalPager(state = pagerState) { page ->
-                                when(tabs[page]) {
+                            HorizontalPager(
+                                state = pagerState,
+                                modifier = Modifier.weight(1f)
+                            ) { page ->
+                                when (tabs[page]) {
                                     ProfileTab.Posts -> {
                                         val posts = postsState.collectAsLazyPagingItems()
 
@@ -133,7 +180,7 @@ fun ProfileLayout(
                                                 )
                                             },
                                             onNavigateToBookingFromProfile = {
-                                                if(user.businessId != null && user.businessOwner != null) {
+                                                if (user.businessId != null && user.businessOwner != null) {
                                                     profileNavigate.toBookingFromProfile(
                                                         NavigateBookingParam(
                                                             businessId = user.businessId,
@@ -156,7 +203,7 @@ fun ProfileLayout(
                                             employees = employees,
                                             onNavigateToEmployeeProfile = { profileNavigate.toUserProfile(it) },
                                             onNavigateToBooking = { employee ->
-                                                if(user.businessId != null && user.businessOwner != null) {
+                                                if (user.businessId != null && user.businessOwner != null) {
                                                     profileNavigate.toBookingFromProfile(
                                                         NavigateBookingParam(
                                                             businessId = user.businessId,
@@ -194,7 +241,7 @@ fun ProfileLayout(
                                         ProfileAboutTab(
                                             isEmployee = isEmployee,
                                             about = about,
-                                            onNavigateToUserProfile = { profileNavigate.toUserProfile(it) },
+                                            onNavigateToUserProfile = { profileNavigate.toUserProfile(it) }
                                         )
                                     }
                                 }
@@ -205,6 +252,15 @@ fun ProfileLayout(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .offset { IntOffset(0, headerOffset.roundToInt()) }
+                                .nestedScroll(
+                                    connection = headerNestedScrollConnection,
+                                    dispatcher = headerNestedScrollDispatcher
+                                )
+                                .scrollable(
+                                    orientation = Orientation.Vertical,
+                                    state = headerScrollableState,
+                                    flingBehavior = flingBehavior
+                                )
                         ) {
                             Column(
                                 modifier = Modifier
