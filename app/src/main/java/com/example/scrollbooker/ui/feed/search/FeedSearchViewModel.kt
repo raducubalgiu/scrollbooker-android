@@ -43,16 +43,32 @@ class FeedSearchViewModel @Inject constructor(
                     return@onEach
                 }
 
-                _searchState.value = FeatureState.Loading
+                if (_searchState.value !is FeatureState.Success) {
+                    _searchState.value = FeatureState.Loading
+                }
             }
             .filter { it.length >= 2 }
             .mapLatest { query ->
-                withVisibleLoading {
+                val hasPreviousResults = _searchState.value is FeatureState.Success
+
+                if (hasPreviousResults) {
                     searchUsersUseCase(query, roleClient = null)
+                } else {
+                    withVisibleLoading { searchUsersUseCase(query, roleClient = null) }
                 }
             }
-            .onEach { result -> _searchState.value = result }
-            .catch { e -> _searchState.value = FeatureState.Error(e) }
+            .onEach { result ->
+                if (result is FeatureState.Error && _searchState.value is FeatureState.Success) {
+                    return@onEach
+                }
+
+                _searchState.value = result
+            }
+            .catch { e ->
+                if (_searchState.value !is FeatureState.Success) {
+                    _searchState.value = FeatureState.Error(e)
+                }
+            }
             .launchIn(viewModelScope)
     }
 

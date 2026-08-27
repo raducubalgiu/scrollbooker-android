@@ -111,7 +111,7 @@ fun MyDashboardBookingDetails(
             StatCard(
                 modifier = Modifier.weight(1f),
                 label = stringResource(R.string.fromvideo),
-                value = "${dashboardBooking.revenueFromVideo} RON",
+                value = "${dashboardBooking.revenueFromVideo.toTwoDecimals()} RON",
                 containerColor = Color.Transparent,
                 contentColor = OnBackground,
                 borderColor = Divider

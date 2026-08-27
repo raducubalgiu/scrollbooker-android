@@ -34,7 +34,6 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.components.core.avatar.AvatarWithRating
 import com.example.scrollbooker.components.core.layout.ErrorScreen
-import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.core.util.FeatureState
@@ -44,7 +43,6 @@ import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
-import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun FeedSearchScreen(
@@ -88,7 +86,7 @@ fun FeedSearchScreen(
 
         when(searchState) {
             is FeatureState.Error -> ErrorScreen()
-            is FeatureState.Loading -> LoadingScreen()
+            is FeatureState.Loading -> FeedSearchResultsSkeleton()
             is FeatureState.Success -> {
                 val users = (searchState as FeatureState.Success).data
 
