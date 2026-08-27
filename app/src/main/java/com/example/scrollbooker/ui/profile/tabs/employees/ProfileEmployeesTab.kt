@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -42,23 +43,30 @@ fun ProfileEmployeesTab(
     isOwnProfile: Boolean,
     employees: LazyPagingItems<Employee>,
     onNavigateToEmployeeProfile: (param: UserProfileParam) -> Unit,
-    onNavigateToBooking: (employee: Employee) -> Unit
+    onNavigateToBooking: (employee: Employee) -> Unit,
+    onLoadFinished: () -> Unit
 ) {
     val refreshState = employees.loadState.refresh
     val appendState = employees.loadState.append
 
+    LaunchedEffect(refreshState) {
+        if (refreshState !is LoadState.Loading) {
+            onLoadFinished()
+        }
+    }
+
     val flingBehaviour = rememberFlingBehavior()
 
     Column(modifier = Modifier.fillMaxSize()) {
-        when(refreshState) {
-            is LoadState.Loading -> {
+        when {
+            refreshState is LoadState.Loading && employees.itemCount == 0 -> {
                 LoadingScreen(
                     modifier = Modifier.padding(top = 50.dp),
                     arrangement = Arrangement.Top
                 )
             }
-            is LoadState.Error -> ErrorScreen()
-            is LoadState.NotLoading -> {
+            refreshState is LoadState.Error && employees.itemCount == 0 -> ErrorScreen()
+            else -> {
                 if(employees.itemCount == 0) {
                     MessageScreen(
                         modifier = Modifier.padding(top = 50.dp),

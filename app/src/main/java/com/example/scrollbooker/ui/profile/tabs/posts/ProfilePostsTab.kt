@@ -28,7 +28,7 @@ fun ProfilePostsTab(
     onLoadFinished: () -> Unit
 ) {
     val refreshState = posts.loadState.refresh
-    val appendState = posts.loadState.refresh
+    val appendState = posts.loadState.append
 
     LaunchedEffect(refreshState) {
         if (refreshState !is LoadState.Loading) {
@@ -38,10 +38,10 @@ fun ProfilePostsTab(
 
     val flingBehavior = rememberFlingBehavior()
 
-    when(refreshState) {
-        is LoadState.Error -> ErrorScreen()
-        is LoadState.Loading -> Unit
-        is LoadState.NotLoading -> {
+    when {
+        refreshState is LoadState.Error && posts.itemCount == 0 -> ErrorScreen()
+        refreshState is LoadState.Loading && posts.itemCount == 0 -> Unit
+        else -> {
             Box(Modifier.fillMaxSize()) {
                 if(posts.itemCount == 0) {
                     EmptyScreen(

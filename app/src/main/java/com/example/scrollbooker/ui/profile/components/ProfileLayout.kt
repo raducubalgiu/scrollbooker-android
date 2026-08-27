@@ -227,7 +227,8 @@ fun ProfileLayout(
                                                         )
                                                     )
                                                 }
-                                            }
+                                            },
+                                            onLoadFinished = onLoadFinished
                                         )
                                     }
 
@@ -244,7 +245,8 @@ fun ProfileLayout(
                                                         userId = userId,
                                                     )
                                                 )
-                                            }
+                                            },
+                                            onLoadFinished = onLoadFinished
                                         )
                                     }
 

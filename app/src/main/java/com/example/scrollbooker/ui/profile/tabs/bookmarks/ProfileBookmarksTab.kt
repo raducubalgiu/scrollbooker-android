@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -26,22 +27,29 @@ import com.example.scrollbooker.entity.social.post.domain.model.Post
 @Composable
 fun ProfileBookmarksTab(
     posts: LazyPagingItems<Post>,
-    onNavigateToPost: (postIndex: Int, userId: Int) -> Unit
+    onNavigateToPost: (postIndex: Int, userId: Int) -> Unit,
+    onLoadFinished: () -> Unit
 ) {
     val refreshState = posts.loadState.refresh
-    val appendState = posts.loadState.refresh
+    val appendState = posts.loadState.append
+
+    LaunchedEffect(refreshState) {
+        if (refreshState !is LoadState.Loading) {
+            onLoadFinished()
+        }
+    }
 
     val flingBehavior = rememberFlingBehavior()
 
-    when(refreshState) {
-        is LoadState.Error -> ErrorScreen()
-        is LoadState.Loading -> {
+    when {
+        refreshState is LoadState.Error && posts.itemCount == 0 -> ErrorScreen()
+        refreshState is LoadState.Loading && posts.itemCount == 0 -> {
             LoadingScreen(
                 modifier = Modifier.padding(top = 50.dp),
                 arrangement = Arrangement.Top
             )
         }
-        is LoadState.NotLoading -> {
+        else -> {
             Box(Modifier.fillMaxSize()) {
                 if(posts.itemCount == 0) {
                     EmptyScreen(
