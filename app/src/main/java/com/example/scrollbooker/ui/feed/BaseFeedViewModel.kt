@@ -8,7 +8,9 @@ import com.example.scrollbooker.components.customized.post.PostViewHeartbeatTrac
 import com.example.scrollbooker.components.customized.post.VideoPlayerManager
 import com.example.scrollbooker.core.enums.ShareChannelEnum
 import com.example.scrollbooker.entity.social.post.domain.model.Post
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 abstract class BaseFeedViewModel(
     private val postInteractionStore: PostInteractionStore,
@@ -17,6 +19,13 @@ abstract class BaseFeedViewModel(
 ) : ViewModel(), FeedViewModelContract {
     abstract val feedScopeKey: String
     override val userPausedPostIds: StateFlow<Set<Int>> = videoPlayerManager.userPausedPostIds
+
+    private val _scrollToTopSignal = MutableStateFlow(0)
+    override val scrollToTopSignal: StateFlow<Int> = _scrollToTopSignal.asStateFlow()
+
+    protected fun requestScrollToTop() {
+        _scrollToTopSignal.value++
+    }
 
     override fun observePostUi(postId: Int): StateFlow<PostActionUiState> =
         postInteractionStore.observePostUi(postId)

@@ -119,6 +119,10 @@ fun FeedScreen(
             onAnimationFinished = { currentOpenState ->
                 if (!currentOpenState) {
                     exploreViewModel.setSelectedServiceIds(temporarySelectedIds)
+
+                    if (horizontalPagerState.currentPage == 1) {
+                        scope.launch { horizontalPagerState.scrollToPage(0) }
+                    }
                 }
             },
         ) {

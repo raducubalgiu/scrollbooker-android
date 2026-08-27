@@ -89,7 +89,6 @@ class VideoPlayerManager @Inject constructor(
                 repeatMode = Player.REPEAT_MODE_ONE
                 playWhenReady = false
 
-                // ADD — sursă unică de adevăr pentru heartbeat, indiferent din ce call site vine play/pause
                 addListener(object : Player.Listener {
                     override fun onIsPlayingChanged(isPlaying: Boolean) {
                         val key = playerToKey[this@apply] ?: return
@@ -193,29 +192,36 @@ class VideoPlayerManager @Inject constructor(
                 val desiredIndices =
                     listOf(centerIndex - 1, centerIndex, centerIndex + 1).filter { it >= 0 }
 
-                // Înlocuim .map { buildMapKey(...) } cu o listă simplă alocată manual rapid
                 val keyM1 = buildMapKey(scopeKey, centerIndex - 1)
                 val keyC = buildMapKey(scopeKey, centerIndex)
                 val keyP1 = buildMapKey(scopeKey, centerIndex + 1)
 
-                // Curățare fără .filter() -> Iterează direct și sigur pe chei pentru eficiență GC
                 val currentKeys =
-                    indexToPlayer.keys.toTypedArray() // Alocare fixă unică pentru iterație stabilă
+                    indexToPlayer.keys.toTypedArray()
                 for (key in currentKeys) {
                     if (key.startsWith("$scopeKey#") && key != keyM1 && key != keyC && key != keyP1) {
                         indexToPlayer.remove(key)?.let { player ->
                             indexToPostId.remove(key)
-                            playerToKey.remove(player) // ADD — la fel, înainte de reset, ca să nu emitem eveniment fals
+                            playerToKey.remove(player)
                             resetPlayerFull(player)
                             if (!pool.contains(player)) pool.addLast(player)
                         }
                     }
                 }
 
-                // Alocare sau actualizare ferestre
                 for (idx in desiredIndices) {
-                    val post = getPost(idx) ?: continue
                     val currentKey = buildMapKey(scopeKey, idx)
+                    val post = getPost(idx)
+
+                    if (post == null) {
+                        indexToPlayer.remove(currentKey)?.let { player ->
+                            indexToPostId.remove(currentKey)
+                            playerToKey.remove(player)
+                            resetPlayerFull(player)
+                            if (!pool.contains(player)) pool.addLast(player)
+                        }
+                        continue
+                    }
 
                     val existing = indexToPlayer[currentKey]
                     val existingPostId = indexToPostId[currentKey]
@@ -246,7 +252,7 @@ class VideoPlayerManager @Inject constructor(
 
                     indexToPlayer[currentKey] = player
                     indexToPostId[currentKey] = post.id
-                    playerToKey[player] = currentKey // ADD — trebuie setat ÎNAINTE de setMediaItem/prepare, ca listener-ul să găsească deja key-ul corect
+                    playerToKey[player] = currentKey
 
                     val mediaItem = MediaItem.fromUri(post.mediaFiles.first().url)
                     player.setMediaItem(mediaItem)

@@ -66,6 +66,13 @@ fun BaseFeedTabScreen(
     val verticalPagerState = rememberPagerState { posts.itemCount }
     val settledPage by remember { derivedStateOf { verticalPagerState.settledPage } }
 
+    val scrollToTopSignal by viewModel.scrollToTopSignal.collectAsStateWithLifecycle()
+    LaunchedEffect(scrollToTopSignal) {
+        if (scrollToTopSignal > 0 && verticalPagerState.pageCount > 0) {
+            verticalPagerState.scrollToPage(0)
+        }
+    }
+
     val currentSettledPage by rememberUpdatedState(settledPage)
     val currentViewModel by rememberUpdatedState(viewModel)
 
@@ -106,14 +113,16 @@ fun BaseFeedTabScreen(
         snapshotFlow { posts.getOrNull(verticalPagerState.settledPage)?.id }
             .distinctUntilChanged()
             .collectLatest { postId ->
-                if (postId == null) return@collectLatest
-
                 val currentPage = verticalPagerState.settledPage
+
                 viewModel.ensureWindow(
                     centerIndex = currentPage,
                     getPost = { idx -> posts.getOrNull(idx) }
                 )
-                viewModel.onPageSettled(currentPage)
+
+                if (postId != null) {
+                    viewModel.onPageSettled(currentPage)
+                }
             }
     }
 

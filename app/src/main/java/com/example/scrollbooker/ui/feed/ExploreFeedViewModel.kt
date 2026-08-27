@@ -76,7 +76,10 @@ class ExploreFeedViewModel @Inject constructor(
     }
 
     fun setSelectedServiceIds(newServiceIds: Set<Int>) {
+        if (newServiceIds == _selectedServiceIds.value) return
+
         _selectedServiceIds.value = newServiceIds
+        requestScrollToTop()
     }
 
     init {

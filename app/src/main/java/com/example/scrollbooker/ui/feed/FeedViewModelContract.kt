@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 interface FeedViewModelContract {
     val posts: Flow<PagingData<Post>>
     val userPausedPostIds: StateFlow<Set<Int>>
+    val scrollToTopSignal: StateFlow<Int>
 
     fun observePostUi(postId: Int): StateFlow<PostActionUiState>
     fun toggleLike(post: Post)
