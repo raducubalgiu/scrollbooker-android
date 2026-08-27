@@ -1,6 +1,4 @@
 package com.example.scrollbooker.entity.user.notification.data.remote
-
-import com.example.scrollbooker.entity.user.notification.domain.model.NotificationData
 import com.example.scrollbooker.entity.user.userSocial.data.remote.UserSocialDto
 import com.google.gson.annotations.SerializedName
 

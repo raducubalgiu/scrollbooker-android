@@ -69,7 +69,7 @@ object NotificationsModule {
                     "appointment_reminder" -> AppointmentReminderNotificationDataDto::class.java
                     "appointment_reviewed" -> AppointmentReviewedNotificationDataDto::class.java
                     "employment_request" -> EmploymentRequestNotificationDataDto::class.java
-                    "employment_request_accept" -> EmploymentRequestAcceptedNotificationDataDto::class.java
+                    "employment_request_accepted" -> EmploymentRequestAcceptedNotificationDataDto::class.java
                     "employment_request_denied" -> EmploymentRequestDeniedNotificationDataDto::class.java
                     "business_validation" -> BusinessValidationNotificationDataDto::class.java
                     else -> null
