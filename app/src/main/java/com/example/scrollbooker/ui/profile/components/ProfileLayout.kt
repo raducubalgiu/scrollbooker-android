@@ -41,7 +41,7 @@ import com.example.scrollbooker.entity.booking.products.domain.model.UserProduct
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfileAbout
-import com.example.scrollbooker.navigation.navigators.NavigateBookingParam
+import com.example.scrollbooker.navigation.navigators.BookingParam
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.navigation.navigators.ProfilePostDetailParam
 import com.example.scrollbooker.navigation.navigators.UserProfileParam
@@ -195,7 +195,7 @@ fun ProfileLayout(
                                             onNavigateToBookingFromProfile = {
                                                 if (user.businessId != null && user.businessOwner != null) {
                                                     profileNavigate.toBookingFromProfile(
-                                                        NavigateBookingParam(
+                                                        BookingParam(
                                                             businessId = user.businessId,
                                                             userId = user.id,
                                                             businessOwnerId = user.businessOwner.id,
@@ -218,7 +218,7 @@ fun ProfileLayout(
                                             onNavigateToBooking = { employee ->
                                                 if (user.businessId != null && user.businessOwner != null) {
                                                     profileNavigate.toBookingFromProfile(
-                                                        NavigateBookingParam(
+                                                        BookingParam(
                                                             businessId = user.businessId,
                                                             userId = employee.id,
                                                             businessOwnerId = user.businessOwner.id,

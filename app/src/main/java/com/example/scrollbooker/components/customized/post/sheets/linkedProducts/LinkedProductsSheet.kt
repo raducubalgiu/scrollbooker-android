@@ -25,6 +25,8 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.core.sheet.SheetHeader
 import com.example.scrollbooker.components.customized.productCard.ProductCard
+import com.example.scrollbooker.components.customized.protected.Protected
+import com.example.scrollbooker.core.enums.PermissionEnum
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.FeatureState
@@ -93,11 +95,13 @@ fun LinkedProductsSheet(
                         }
 
                         item {
-                            MainButtonOutlined(
-                                modifier = Modifier.padding(BasePadding),
-                                title = stringResource(R.string.seeAllServices),
-                                onClick = {  }
-                            )
+                            Protected(permission = PermissionEnum.BOOK_BUTTON_VIEW) {
+                                MainButtonOutlined(
+                                    modifier = Modifier.padding(BasePadding),
+                                    title = stringResource(R.string.seeAllServices),
+                                    onClick = {  }
+                                )
+                            }
                         }
                     }
                 }

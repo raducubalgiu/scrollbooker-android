@@ -38,7 +38,7 @@ class ProfileNavigator (
         }
     }
 
-    fun toSocial(socialParam: NavigateSocialParam) {
+    fun toSocial(socialParam: SocialParam) {
         navController.navigate(MainRoute.Social.createRoute(socialParam)) {
             launchSingleTop = true
         }
@@ -48,7 +48,7 @@ class ProfileNavigator (
         navController.navigateToBookingFromProduct(product, source)
     }
 
-    fun toBookingFromProfile(params: NavigateBookingParam) {
+    fun toBookingFromProfile(params: BookingParam) {
         navController.navigateToBookingFromProfile(
             businessId = params.businessId,
             userId = params.userId,

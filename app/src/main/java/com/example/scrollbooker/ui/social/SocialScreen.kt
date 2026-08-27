@@ -19,7 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.layout.MessageScreen
-import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
+import com.example.scrollbooker.navigation.navigators.SocialParam
 import com.example.scrollbooker.navigation.navigators.UserProfileParam
 import com.example.scrollbooker.ui.reviews.ReviewsSection
 import com.example.scrollbooker.ui.reviews.ReviewsViewModel
@@ -29,7 +29,7 @@ import com.example.scrollbooker.ui.social.tab.UserFollowingsTab
 @Composable
 fun SocialScreen(
     viewModal: SocialViewModel,
-    socialParam: NavigateSocialParam,
+    socialParam: SocialParam,
     onBack: () -> Unit,
     onNavigateUserProfile: (param: UserProfileParam) -> Unit
 ) {

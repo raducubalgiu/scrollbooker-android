@@ -39,6 +39,7 @@ import coil.compose.AsyncImage
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.components.core.layout.ErrorScreen
+import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.customized.post.PostPlayerWithThumbnail
 import com.example.scrollbooker.components.customized.post.components.PostOverlay
 import com.example.scrollbooker.components.customized.post.components.PostShimmer
@@ -99,23 +100,6 @@ fun BaseFeedTabScreen(
         }
     }
 
-    // Old Implementation
-//    LaunchedEffect(settledPage, isTabActive) {
-//        if (!isTabActive) return@LaunchedEffect
-//
-//        snapshotFlow { posts.getOrNull(settledPage)?.id }
-//            .distinctUntilChanged()
-//            .collectLatest { postId ->
-//                if (postId == null) return@collectLatest
-//
-//                viewModel.ensureWindow(
-//                    centerIndex = settledPage,
-//                    getPost = { idx -> posts.getOrNull(idx) }
-//                )
-//                viewModel.onPageSettled(settledPage)
-//            }
-//    }
-
     LaunchedEffect(isTabActive, posts) {
         if (!isTabActive) return@LaunchedEffect
 
@@ -147,7 +131,7 @@ fun BaseFeedTabScreen(
 
     when (posts.loadState.refresh) {
         is LoadState.Error -> ErrorScreen()
-        is LoadState.Loading -> PostShimmer()
+        is LoadState.Loading -> LoadingScreen()
         is LoadState.NotLoading -> {
             if (posts.itemCount == 0) {
                 EmptyScreen(

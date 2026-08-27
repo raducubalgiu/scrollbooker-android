@@ -6,8 +6,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
+import com.example.scrollbooker.navigation.navigators.SocialParam
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.ui.social.SocialScreen
 import com.example.scrollbooker.ui.social.SocialViewModel
@@ -50,7 +50,7 @@ fun NavGraphBuilder.socialGraph(
         val employeeId = backStackEntry.arguments?.getInt("employeeId").takeIf { it != -1 }
 
         val viewModel = hiltViewModel<SocialViewModel>(backStackEntry)
-        val socialParams = NavigateSocialParam(
+        val socialParams = SocialParam(
             tabIndex = tabIndex,
             userId = userId,
             businessId = businessId,

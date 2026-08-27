@@ -16,7 +16,7 @@ class AppointmentsNavigator (
         }
     }
 
-    fun toSocial(socialParam: NavigateSocialParam) {
+    fun toSocial(socialParam: SocialParam) {
         navController.navigate(MainRoute.Social.createRoute(socialParam)) {
             launchSingleTop = true
         }

@@ -3,7 +3,6 @@ package com.example.scrollbooker.navigation.navigators
 import androidx.navigation.NavHostController
 import com.example.scrollbooker.core.enums.BookingSourceEnum
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
-import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.routes.MainRoute
 
 fun NavHostController.navigateToUserProfile(param: UserProfileParam) {
@@ -14,10 +13,12 @@ fun NavHostController.navigateToUserProfile(param: UserProfileParam) {
     }
 }
 
-fun NavHostController.navigateToBookingFromPost(post: Post, source: BookingSourceEnum) {
-    val route = MainRoute.BookingNavigator.createRouteFromPost(
-        post = post,
-        source = source.key
+fun NavHostController.navigateToBooking(param: BookingParam) {
+    val route = MainRoute.BookingNavigator.createRoute(
+        businessId = param.businessId,
+        userId = param.userId,
+        businessOwnerId = param.businessOwnerId,
+        source = param.source.key
     )
 
     this.navigate(route) {

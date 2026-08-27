@@ -3,7 +3,6 @@ package com.example.scrollbooker.navigation.navigators
 import androidx.navigation.NavHostController
 import com.example.scrollbooker.core.enums.BookingSourceEnum
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
-import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.routes.MainRoute
 
 class FeedNavigator (
@@ -23,11 +22,8 @@ class FeedNavigator (
         navController.navigateToUserProfile(param)
     }
 
-    fun toBookingFromPost(post: Post, source: BookingSourceEnum) {
-        navController.navigateToBookingFromPost(
-            post = post,
-            source = source
-        )
+    fun toBooking(param: BookingParam) {
+        navController.navigateToBooking(param)
     }
 
     fun toBookingFromProduct(product: Product, source: BookingSourceEnum) {

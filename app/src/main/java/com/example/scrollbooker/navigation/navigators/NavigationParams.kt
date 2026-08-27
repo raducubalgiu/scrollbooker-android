@@ -14,7 +14,7 @@ data class ProfilePostDetailParam(
     val userId: Int,
 )
 
-data class NavigateSocialParam(
+data class SocialParam(
     val tabIndex: Int,
     val userId: Int,
     val businessId: Int?,
@@ -23,7 +23,7 @@ data class NavigateSocialParam(
     val isBusinessOrEmployee: Boolean
 )
 
-data class NavigateBookingParam(
+data class BookingParam(
     val userId: Int,
     val businessId: Int,
     val businessOwnerId: Int,

@@ -26,7 +26,11 @@ class PostPagingSource(
         val limit = 10
 
         return try {
-            val response = api.getUserPosts(userId, page, limit)
+            val response = if(page == 1) {
+                withVisibleLoading { api.getUserPosts(userId, page, limit) }
+            } else {
+                api.getUserPosts(userId, page, limit)
+            }
             val posts = response.results.map { it.toDomain() }
 
             val totalLoaded = (page - 1) * limit + response.results.size

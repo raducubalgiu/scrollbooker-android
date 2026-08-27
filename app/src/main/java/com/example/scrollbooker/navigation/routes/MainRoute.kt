@@ -1,10 +1,9 @@
 package com.example.scrollbooker.navigation.routes
 
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
-import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.CameraParams
-import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
 import com.example.scrollbooker.navigation.navigators.ProfilePostDetailParam
+import com.example.scrollbooker.navigation.navigators.SocialParam
 import com.example.scrollbooker.navigation.navigators.UserProfileParam
 
 sealed class MainRoute(val route: String) {
@@ -67,7 +66,7 @@ sealed class MainRoute(val route: String) {
     object EditPublicEmail: MainRoute(route = "publicEmail")
 
     object Social: MainRoute(route = "social/{tabIndex}/{userId}/{username}/{businessId}/{employeeId}/{isBusinessOrEmployee}") {
-        fun createRoute(param: NavigateSocialParam): String {
+        fun createRoute(param: SocialParam): String {
             return "social/${param.tabIndex}/${param.userId}/${param.username}/${param.businessId}/${param.employeeId}/${param.isBusinessOrEmployee}"
         }
     }
@@ -125,11 +124,15 @@ sealed class MainRoute(val route: String) {
     object BookingNavigator : MainRoute(
         route = "bookingNavigator/{businessId}/{userId}/{businessOwnerId}/{source}?selectedProductId={selectedProductId}&postId={postId}"
     ) {
-        fun createRouteFromPost(
-            post: Post,
-            source: String
+        fun createRoute(
+            businessId: Int,
+            userId: Int,
+            businessOwnerId: Int,
+            source: String,
+            selectedProductId: Int? = null,
+            postId: Int? = null
         ): String {
-            return "bookingNavigator/${post.businessId}/${post.user.id}/${post.businessOwner.id}/$source?postId=${post.id}"
+            return "bookingNavigator/${businessId}/${userId}/${businessOwnerId}/${source}?selectedProductId=${selectedProductId}&postId=${postId}"
         }
 
         fun createRouteFromProfile(

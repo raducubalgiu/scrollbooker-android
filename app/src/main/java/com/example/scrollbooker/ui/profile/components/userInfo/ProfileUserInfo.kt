@@ -32,7 +32,7 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
-import com.example.scrollbooker.navigation.navigators.NavigateSocialParam
+import com.example.scrollbooker.navigation.navigators.SocialParam
 import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileBio
 import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileBusinessOwner
 import com.example.scrollbooker.ui.profile.components.userInfo.components.ProfileCounters
@@ -76,7 +76,7 @@ fun ProfileUserInfo(
     user: UserProfile,
     onOpenScheduleSheet: () -> Unit,
     onNavigateToBusinessOwner: () -> Unit,
-    onNavigateToSocial: (NavigateSocialParam) -> Unit,
+    onNavigateToSocial: (SocialParam) -> Unit,
     actions: @Composable () -> Unit
 ) {
     val isBusinessOrEmployee = user.isBusinessOrEmployee
@@ -92,7 +92,7 @@ fun ProfileUserInfo(
     ProfileCounters(
         counters = user.counters,
         onNavigateToSocial = { onNavigateToSocial(
-            NavigateSocialParam(
+            SocialParam(
                 tabIndex = it,
                 userId = user.id,
                 username = user.username,

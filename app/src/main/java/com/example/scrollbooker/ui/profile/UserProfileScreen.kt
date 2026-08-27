@@ -17,7 +17,7 @@ import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.iconButton.CustomIconButton
 import com.example.scrollbooker.core.enums.BookingSourceEnum
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.navigation.navigators.NavigateBookingParam
+import com.example.scrollbooker.navigation.navigators.BookingParam
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.navigation.navigators.ProfilePostDetailParam
 import com.example.scrollbooker.ui.profile.components.ProfileLayout
@@ -109,7 +109,7 @@ fun UserProfileScreen(
                             val businessOwnerId = userData.businessOwner?.id ?: return@UserProfileActions
 
                             profileNavigate.toBookingFromProfile(
-                                NavigateBookingParam(
+                                BookingParam(
                                     userId = userId,
                                     businessId = businessId,
                                     businessOwnerId = businessOwnerId,

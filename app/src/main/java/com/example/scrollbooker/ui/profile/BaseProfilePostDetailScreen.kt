@@ -43,6 +43,7 @@ import coil.compose.AsyncImage
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.headers.Header
+import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.customized.post.PostPlayerWithThumbnail
 import com.example.scrollbooker.components.customized.post.components.PostOverlay
 import com.example.scrollbooker.components.customized.post.components.PostShimmer
@@ -149,7 +150,7 @@ fun BaseProfilePostDetailScreen(
                 .fillMaxSize()
                 .background(BackgroundDark)
         ) {
-            PostShimmer()
+            LoadingScreen()
         }
         return
     }
