@@ -25,6 +25,7 @@ import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfile
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfileAbout
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserProfileAboutUseCase
 import com.example.scrollbooker.entity.user.userProfile.domain.usecase.GetUserProfileUseCase
+import com.example.scrollbooker.ui.profile.tabs.ProfileTab
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -32,13 +33,18 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 abstract class BaseProfileViewModel(
     private val shouldShowVisibleLoading: Boolean,
@@ -56,25 +62,28 @@ abstract class BaseProfileViewModel(
     abstract val userIdFlow: Flow<Int?>
     abstract val usernameFlow: Flow<String?>
 
+    private val profileRefreshTrigger = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+    private val aboutRefreshTrigger = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+    private val productsRefreshTrigger = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+    private val pagingRefreshTrigger = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+
     protected val _isFollowState = MutableStateFlow<Boolean?>(null)
     val isFollowState: StateFlow<Boolean?> = _isFollowState.asStateFlow()
+
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
 
     protected val profileMutations = MutableSharedFlow<FeatureState<UserProfile>>()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override val profile: StateFlow<FeatureState<UserProfile>> by lazy {
         merge(
-            usernameFlow
-                .filterNotNull()
-                .distinctUntilChanged()
+            combine(usernameFlow.filterNotNull().distinctUntilChanged(), profileRefreshTrigger.onStart { emit(Unit) }) { username, _ -> username }
                 .flatMapLatest { currentUsername ->
                     flow {
                         emit(FeatureState.Loading)
-
                         val response = if (shouldShowVisibleLoading) {
-                            withVisibleLoading {
-                                getUserProfileUseCase(currentUsername, lat = null, lng = null)
-                            }
+                            withVisibleLoading { getUserProfileUseCase(currentUsername, lat = null, lng = null) }
                         } else {
                             getUserProfileUseCase(currentUsername, lat = null, lng = null)
                         }
@@ -95,42 +104,46 @@ abstract class BaseProfileViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override val posts: Flow<PagingData<Post>> by lazy {
-        userIdFlow
-            .filterNotNull()
-            .distinctUntilChanged()
+        combine(
+            userIdFlow.filterNotNull().distinctUntilChanged(),
+            pagingRefreshTrigger.onStart { emit(Unit) }
+        ) { userId, _ -> userId }
             .flatMapLatest { currentUserId -> getUserPostsUseCase(currentUserId) }
             .cachedIn(viewModelScope)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override val employees: Flow<PagingData<Employee>> by lazy {
-        userIdFlow
-            .filterNotNull()
-            .distinctUntilChanged()
+        combine(
+            userIdFlow.filterNotNull().distinctUntilChanged(),
+            pagingRefreshTrigger.onStart { emit(Unit) }
+        ) { userId, _ -> userId }
             .flatMapLatest { currentUserId -> getEmployeesByOwnerUseCase(currentUserId) }
             .cachedIn(viewModelScope)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override val bookmarks: Flow<PagingData<Post>> by lazy {
-        userIdFlow
-            .filterNotNull()
-            .distinctUntilChanged()
+        combine(
+            userIdFlow.filterNotNull().distinctUntilChanged(),
+            pagingRefreshTrigger.onStart { emit(Unit) }
+        ) { userId, _ -> userId }
             .flatMapLatest { currentUserId -> getUserBookmarkedPostsUseCase(currentUserId) }
             .cachedIn(viewModelScope)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override val products: StateFlow<FeatureState<UserProducts>> by lazy {
-        profile
-            .mapNotNull { state -> if (state is FeatureState.Success) state.data else null }
-            .mapNotNull { userProfile ->
-                val businessId = userProfile.businessId ?: return@mapNotNull null
-                val isEmployee = userProfile.businessOwner?.id != userProfile.id
-                val employeeId = if (isEmployee) userProfile.id else null
-                Pair(businessId, employeeId)
-            }
-            .distinctUntilChanged()
+        combine(
+            profile.mapNotNull { state -> if (state is FeatureState.Success) state.data else null }
+                .mapNotNull { userProfile ->
+                    val businessId = userProfile.businessId ?: return@mapNotNull null
+                    val isEmployee = userProfile.businessOwner?.id != userProfile.id
+                    val employeeId = if (isEmployee) userProfile.id else null
+                    Pair(businessId, employeeId)
+                }.distinctUntilChanged(),
+            productsRefreshTrigger.onStart { emit(Unit) }
+        ) { data, _ -> data }
             .flatMapLatest { (businessId, employeeId) ->
                 flow {
                     emit(FeatureState.Loading)
@@ -143,18 +156,12 @@ abstract class BaseProfileViewModel(
                     emit(result)
                 }
             }
-            .stateIn(
-                viewModelScope,
-                SharingStarted.Lazily,
-                FeatureState.Loading
-            )
+            .stateIn(viewModelScope, SharingStarted.Lazily, FeatureState.Loading)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override val about: StateFlow<FeatureState<UserProfileAbout>> by lazy {
-        userIdFlow
-            .filterNotNull()
-            .distinctUntilChanged()
+        combine(userIdFlow.filterNotNull().distinctUntilChanged(), aboutRefreshTrigger.onStart { emit(Unit) }) { userId, _ -> userId }
             .flatMapLatest { currentUserId ->
                 flow {
                     emit(FeatureState.Loading)
@@ -176,6 +183,43 @@ abstract class BaseProfileViewModel(
                 }
             }
             .stateIn(viewModelScope, SharingStarted.Lazily, FeatureState.Loading)
+    }
+
+    fun refreshProfileAndTab(currentTab: ProfileTab) {
+        viewModelScope.launch {
+            _isRefreshing.value = true
+
+            profileRefreshTrigger.emit(Unit)
+
+            when (currentTab) {
+                is ProfileTab.Posts,
+                is ProfileTab.Bookmarks,
+                is ProfileTab.Employees -> {
+                    pagingRefreshTrigger.emit(Unit)
+                }
+                is ProfileTab.Products -> {
+                    productsRefreshTrigger.emit(Unit)
+                    observeFinishedState(products)
+                }
+                is ProfileTab.About -> {
+                    aboutRefreshTrigger.emit(Unit)
+                    observeFinishedState(about)
+                }
+            }
+        }
+    }
+
+    fun notifyPagingFinished() {
+        _isRefreshing.value = false
+    }
+
+    private fun <T> observeFinishedState(stateFlow: StateFlow<FeatureState<T>>) {
+        viewModelScope.launch {
+            stateFlow
+                .filter { it !is FeatureState.Loading }
+                .firstOrNull()
+            _isRefreshing.value = false
+        }
     }
 
     override fun observePostUi(postId: Int): StateFlow<PostActionUiState> =

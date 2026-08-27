@@ -78,6 +78,9 @@ fun MyProfileScreen(
                 employeesState = viewModel.employees,
                 bookmarksState = viewModel.bookmarks,
                 aboutState = viewModel.about,
+                isRefreshingState = viewModel.isRefreshing,
+                onRefreshProfileAndTab = { viewModel.refreshProfileAndTab(it) },
+                onLoadFinished = { viewModel.notifyPagingFinished() },
                 onNavigateToPost = { postIndex, userId ->
                     profileNavigate.toMyPostDetail(
                         ProfilePostDetailParam(

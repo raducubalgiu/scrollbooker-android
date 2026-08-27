@@ -1,4 +1,6 @@
 package com.example.scrollbooker.navigation.graphs
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
@@ -21,6 +23,20 @@ fun NavGraphBuilder.myProfileGraph(
     ) {
         composable(
             route = MainRoute.MyProfile.route,
+            exitTransition = {
+                if (targetState.destination.route?.startsWith(MainRoute.MyProfilePostDetail.route) == true) {
+                    ExitTransition.None
+                } else {
+                    null
+                }
+            },
+            popEnterTransition = {
+                if (initialState.destination.route?.startsWith(MainRoute.MyProfilePostDetail.route) == true) {
+                    EnterTransition.None
+                } else {
+                    null
+                }
+            },
         ) { backStackEntry ->
             val permissionController = LocalUserPermissions.current
 

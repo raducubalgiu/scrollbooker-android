@@ -14,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -56,7 +55,6 @@ import com.example.scrollbooker.ui.profile.tabs.bookmarks.ProfileBookmarksTab
 import com.example.scrollbooker.ui.profile.tabs.employees.ProfileEmployeesTab
 import com.example.scrollbooker.ui.profile.tabs.posts.ProfilePostsTab
 import com.example.scrollbooker.ui.profile.tabs.products.ProfileProductsTab
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -72,11 +70,16 @@ fun ProfileLayout(
     employeesState: Flow<PagingData<Employee>>,
     bookmarksState: Flow<PagingData<Post>>,
     aboutState: StateFlow<FeatureState<UserProfileAbout>>,
+    isRefreshingState: StateFlow<Boolean>,
+    onRefreshProfileAndTab: (currentTab: ProfileTab) -> Unit,
+    onLoadFinished: () -> Unit,
     onNavigateToPost: (postIndex: Int, userId: Int) -> Unit,
     onOpenScheduleSheet: () -> Unit,
     actions: @Composable () -> Unit
 ) {
     val scope = rememberCoroutineScope()
+    val isRefreshing by isRefreshingState.collectAsStateWithLifecycle()
+
     var headerHeightPx by rememberSaveable { mutableIntStateOf(0) }
     var headerOffset by rememberSaveable { mutableFloatStateOf(0f) }
 
@@ -113,11 +116,19 @@ fun ProfileLayout(
                 val user = profileData.data
                 val isEmployee = user.isBusinessOrEmployee && user.id != user.businessOwner?.id
 
-                val tabs = remember(user.isBusinessOrEmployee, isEmployee, user.isOwnProfile) {
-                    ProfileTab.getTabs(user.isBusinessOrEmployee, isEmployee, user.isOwnProfile)
+                val tabs = remember(user.id) {
+                    ProfileTab.getTabs(
+                        isBusinessOrEmployee = user.isBusinessOrEmployee,
+                        isEmployee = isEmployee,
+                        isMyProfile = user.isOwnProfile
+                    )
                 }
 
                 val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
+
+                val currentTab = remember(pagerState.currentPage, tabs) {
+                    tabs.getOrNull(pagerState.currentPage)
+                }
 
                 val headerScrollableState = rememberScrollableState { delta ->
                     dispatchHeaderScroll(delta)
@@ -127,17 +138,9 @@ fun ProfileLayout(
                     0f
                 }
 
-                var isRefreshing by remember { mutableStateOf(false) }
-
                 Refresh(
                     isRefreshing = isRefreshing,
-                    onRefresh = {
-                        scope.launch {
-                            isRefreshing = true
-                            delay(300)
-                            isRefreshing = false
-                        }
-                    }
+                    onRefresh = { currentTab?.let { onRefreshProfileAndTab(it) } }
                 ) {
                     Box(
                         modifier = Modifier
@@ -173,7 +176,8 @@ fun ProfileLayout(
 
                                         ProfilePostsTab(
                                             posts = posts,
-                                            onNavigateToPost = onNavigateToPost
+                                            onNavigateToPost = onNavigateToPost,
+                                            onLoadFinished = onLoadFinished
                                         )
                                     }
 
