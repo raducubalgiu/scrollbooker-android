@@ -28,7 +28,16 @@ fun PostPlayerView(
     displayThumbnail: Boolean,
     thumbnailUrl: String,
 ) {
-    var isVideoRendered by remember(player, player.currentMediaItem) { mutableStateOf(false) }
+    // A fresh post is seekTo(0)'d before being prepared, so position stays 0 until
+    // real playback progress happens — that takes longer than a single Compose
+    // frame, so position > 0 here reliably means this player is being reattached
+    // to a new surface mid-playback (e.g. after navigating away and back), not
+    // starting cold. Skipping the thumbnail in that case avoids a stale-frame
+    // flash; keeping it for a genuinely fresh player avoids a black screen while
+    // the video is still loading.
+    var isVideoRendered by remember(player, player.currentMediaItem) {
+        mutableStateOf(player.currentPosition > 0)
+    }
     val context = LocalContext.current
 
     val playerView = remember {

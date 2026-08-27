@@ -197,7 +197,6 @@ fun BaseFeedTabScreen(
                                 PostPlayerWithThumbnail(
                                     player = player as ExoPlayer,
                                     showPlayIcon = userPausedSet.contains(postId),
-                                    displayThumbnail = false,
                                     thumbnailUrl = post.mediaFiles.first().thumbnailUrl
                                 )
                             } else {
