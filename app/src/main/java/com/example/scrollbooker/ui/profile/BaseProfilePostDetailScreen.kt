@@ -45,6 +45,7 @@ import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.customized.post.PostPlayerWithThumbnail
+import com.example.scrollbooker.components.customized.post.components.EndOfFeedPager
 import com.example.scrollbooker.components.customized.post.components.PostOverlay
 import com.example.scrollbooker.components.customized.post.components.PostShimmer
 import com.example.scrollbooker.components.customized.post.handlePostSheetAction
@@ -202,69 +203,75 @@ fun BaseProfilePostDetailScreen(
                     .background(BackgroundDark)
                     .padding(bottom = innerPadding.calculateBottomPadding())
             ) {
-                VerticalPager(
-                    state = pagerState,
-                    overscrollEffect = null,
-                    flingBehavior = fling,
-                    pageSize = PageSize.Fill,
-                    pageSpacing = 0.dp,
-                    beyondViewportPageCount = 1,
-                    modifier = Modifier.weight(1f),
-                ) { page ->
-                    val post = posts.getOrNull(page) ?: return@VerticalPager
+                EndOfFeedPager(
+                    pagerState = pagerState,
+                    isAtLastPage = { posts.itemCount > 0 && pagerState.currentPage == posts.itemCount - 1 },
+                    modifier = Modifier.weight(1f)
+                ) { pagerModifier ->
+                    VerticalPager(
+                        state = pagerState,
+                        overscrollEffect = null,
+                        flingBehavior = fling,
+                        pageSize = PageSize.Fill,
+                        pageSpacing = 0.dp,
+                        beyondViewportPageCount = 1,
+                        modifier = pagerModifier,
+                    ) { page ->
+                        val post = posts.getOrNull(page) ?: return@VerticalPager
 
-                    val player by remember(detailScopeKey, page) {
-                        derivedStateOf { viewModel.getPlayerForIndex(detailScopeKey, page) }
-                    }
+                        val player by remember(detailScopeKey, page) {
+                            derivedStateOf { viewModel.getPlayerForIndex(detailScopeKey, page) }
+                        }
 
-                    val postActionState by viewModel.observePostUi(post.id).collectAsStateWithLifecycle()
-                    val postUi = remember(post, postActionState) {
-                        post.copy(
-                            userActions = post.userActions.applyUiState(postActionState),
-                            counters = post.counters.applyUiState(postActionState),
-                            description = postActionState.description ?: post.description
-                        )
-                    }
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null,
-                                onClick = { viewModel.togglePlayPause(detailScopeKey, page) }
-                            )
-                    ) {
-                        if (player != null) {
-                            PostPlayerWithThumbnail(
-                                player = player!! as ExoPlayer,
-                                showPlayIcon = userPausedSet.contains(post.id),
-                                thumbnailUrl = post.mediaFiles.first().thumbnailUrl
-                            )
-                        } else {
-                            AsyncImage(
-                                modifier = Modifier.fillMaxSize(),
-                                model = post.mediaFiles.first().thumbnailUrl,
-                                contentScale = ContentScale.Crop,
-                                contentDescription = null
+                        val postActionState by viewModel.observePostUi(post.id).collectAsStateWithLifecycle()
+                        val postUi = remember(post, postActionState) {
+                            post.copy(
+                                userActions = post.userActions.applyUiState(postActionState),
+                                counters = post.counters.applyUiState(postActionState),
+                                description = postActionState.description ?: post.description
                             )
                         }
 
-                        PostOverlay(
-                            post = postUi,
-                            isSavingLike = postActionState.isSavingLike,
-                            isSavingBookmark = postActionState.isSavingBookmark,
-                            onAction = { action -> handlePostSheetAction(action, post, ::handleOpenSheet) },
-                            onLike = { viewModel.toggleLike(post) },
-                            onBookmark = { viewModel.toggleBookmark(post) },
-                            onShare = {
-                                sharePost(context, post) { channel ->
-                                    viewModel.sharePost(post, channel)
-                                }
-                            },
-                            onNavigateToUserProfile = { profileNavigate.toUserProfile(it) },
-                            showBookButton = false
-                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clickable(
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = null,
+                                    onClick = { viewModel.togglePlayPause(detailScopeKey, page) }
+                                )
+                        ) {
+                            if (player != null) {
+                                PostPlayerWithThumbnail(
+                                    player = player!! as ExoPlayer,
+                                    showPlayIcon = userPausedSet.contains(post.id),
+                                    thumbnailUrl = post.mediaFiles.first().thumbnailUrl
+                                )
+                            } else {
+                                AsyncImage(
+                                    modifier = Modifier.fillMaxSize(),
+                                    model = post.mediaFiles.first().thumbnailUrl,
+                                    contentScale = ContentScale.Crop,
+                                    contentDescription = null
+                                )
+                            }
+
+                            PostOverlay(
+                                post = postUi,
+                                isSavingLike = postActionState.isSavingLike,
+                                isSavingBookmark = postActionState.isSavingBookmark,
+                                onAction = { action -> handlePostSheetAction(action, post, ::handleOpenSheet) },
+                                onLike = { viewModel.toggleLike(post) },
+                                onBookmark = { viewModel.toggleBookmark(post) },
+                                onShare = {
+                                    sharePost(context, post) { channel ->
+                                        viewModel.sharePost(post, channel)
+                                    }
+                                },
+                                onNavigateToUserProfile = { profileNavigate.toUserProfile(it) },
+                                showBookButton = false
+                            )
+                        }
                     }
                 }
 

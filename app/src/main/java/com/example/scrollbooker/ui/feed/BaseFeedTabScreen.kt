@@ -18,8 +18,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,8 +44,8 @@ import com.example.scrollbooker.components.core.layout.EmptyScreen
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.customized.post.PostPlayerWithThumbnail
+import com.example.scrollbooker.components.customized.post.components.EndOfFeedPager
 import com.example.scrollbooker.components.customized.post.components.PostOverlay
-import com.example.scrollbooker.components.customized.post.components.PostShimmer
 import com.example.scrollbooker.components.customized.post.sheets.PostSheetActionEnum
 import com.example.scrollbooker.core.extensions.getOrNull
 import com.example.scrollbooker.core.util.sharePost
@@ -67,9 +70,13 @@ fun BaseFeedTabScreen(
     val settledPage by remember { derivedStateOf { verticalPagerState.settledPage } }
 
     val scrollToTopSignal by viewModel.scrollToTopSignal.collectAsStateWithLifecycle()
+    var lastHandledScrollToTopSignal by rememberSaveable { mutableIntStateOf(scrollToTopSignal) }
     LaunchedEffect(scrollToTopSignal) {
-        if (scrollToTopSignal > 0 && verticalPagerState.pageCount > 0) {
-            verticalPagerState.scrollToPage(0)
+        if (scrollToTopSignal != lastHandledScrollToTopSignal) {
+            lastHandledScrollToTopSignal = scrollToTopSignal
+            if (verticalPagerState.pageCount > 0) {
+                verticalPagerState.scrollToPage(0)
+            }
         }
     }
 
@@ -150,68 +157,73 @@ fun BaseFeedTabScreen(
                 )
             }
 
-            VerticalPager(
-                state = verticalPagerState,
-                overscrollEffect = null,
-                flingBehavior = fling,
-                pageSize = PageSize.Fill,
-                pageSpacing = 0.dp,
-                beyondViewportPageCount = 1,
-                modifier = Modifier.fillMaxSize(),
-            ) { page ->
-                val post = posts.getOrNull(page) ?: return@VerticalPager
-                val postId = post.id
+            EndOfFeedPager(
+                pagerState = verticalPagerState,
+                isAtLastPage = { posts.itemCount > 0 && verticalPagerState.currentPage == posts.itemCount - 1 }
+            ) { pagerModifier ->
+                VerticalPager(
+                    state = verticalPagerState,
+                    overscrollEffect = null,
+                    flingBehavior = fling,
+                    pageSize = PageSize.Fill,
+                    pageSpacing = 0.dp,
+                    beyondViewportPageCount = 1,
+                    modifier = pagerModifier,
+                ) { page ->
+                    val post = posts.getOrNull(page) ?: return@VerticalPager
+                    val postId = post.id
 
-                key(postId) {
-                    val postActionState by viewModel.observePostUi(postId).collectAsStateWithLifecycle()
-                    val postUi = remember(post, postActionState) {
-                        post.copy(
-                            userActions = post.userActions.applyUiState(postActionState),
-                            counters = post.counters.applyUiState(postActionState),
-                            description = postActionState.description ?: post.description
-                        )
-                    }
-
-                    val player = viewModel.getPlayerForIndex(page)
-
-                    Box(modifier = Modifier
-                        .fillMaxSize()
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
-                            onClick = { viewModel.togglePlayer(page) }
-                        )
-                    ) {
-                        if (player != null) {
-                            PostPlayerWithThumbnail(
-                                player = player as ExoPlayer,
-                                showPlayIcon = userPausedSet.contains(postId),
-                                displayThumbnail = false,
-                                thumbnailUrl = post.mediaFiles.first().thumbnailUrl
-                            )
-                        } else {
-                            AsyncImage(
-                                modifier = Modifier.fillMaxSize(),
-                                model = post.mediaFiles.first().thumbnailUrl,
-                                contentDescription = null,
-                                contentScale = ContentScale.Crop
+                    key(postId) {
+                        val postActionState by viewModel.observePostUi(postId).collectAsStateWithLifecycle()
+                        val postUi = remember(post, postActionState) {
+                            post.copy(
+                                userActions = post.userActions.applyUiState(postActionState),
+                                counters = post.counters.applyUiState(postActionState),
+                                description = postActionState.description ?: post.description
                             )
                         }
 
-                        PostOverlay(
-                            post = postUi,
-                            isSavingLike = postActionState.isSavingLike,
-                            isSavingBookmark = postActionState.isSavingBookmark,
-                            onAction = { onAction(it, post) },
-                            onLike = { viewModel.toggleLike(post) },
-                            onBookmark = { viewModel.toggleBookmark(post) },
-                            onShare = {
-                                sharePost(context, post) { channel ->
-                                    viewModel.sharePost(post, channel)
-                                }
-                            },
-                            onNavigateToUserProfile = onNavigateToUserProfile,
-                        )
+                        val player = viewModel.getPlayerForIndex(page)
+
+                        Box(modifier = Modifier
+                            .fillMaxSize()
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                                onClick = { viewModel.togglePlayer(page) }
+                            )
+                        ) {
+                            if (player != null) {
+                                PostPlayerWithThumbnail(
+                                    player = player as ExoPlayer,
+                                    showPlayIcon = userPausedSet.contains(postId),
+                                    displayThumbnail = false,
+                                    thumbnailUrl = post.mediaFiles.first().thumbnailUrl
+                                )
+                            } else {
+                                AsyncImage(
+                                    modifier = Modifier.fillMaxSize(),
+                                    model = post.mediaFiles.first().thumbnailUrl,
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+
+                            PostOverlay(
+                                post = postUi,
+                                isSavingLike = postActionState.isSavingLike,
+                                isSavingBookmark = postActionState.isSavingBookmark,
+                                onAction = { onAction(it, post) },
+                                onLike = { viewModel.toggleLike(post) },
+                                onBookmark = { viewModel.toggleBookmark(post) },
+                                onShare = {
+                                    sharePost(context, post) { channel ->
+                                        viewModel.sharePost(post, channel)
+                                    }
+                                },
+                                onNavigateToUserProfile = onNavigateToUserProfile,
+                            )
+                        }
                     }
                 }
             }
