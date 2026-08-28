@@ -63,9 +63,12 @@ fun CreatePostScreen(
                     coverKey = cameraVideoUiState.coverKey
                 ),
                 isLoading = isLoading,
+                isSaveDisabled = viewModel.isVideoReview && createState.rating <= 0,
                 hostState = hostState,
                 onDescriptionChange = { viewModel.setDescription(it) },
                 onRemoveProduct = { viewModel.removeLinkedProduct(it) },
+                onRatingChange = { viewModel.setRating(it) },
+                onReviewChange = { viewModel.setReview(it) },
                 onNavigateToPostPreview = onNavigateToPostPreview,
                 onConfirmSelection = { viewModel.updateLinkedProducts(it) },
                 onNavigateToPostCover = onNavigateToCoverScreen,

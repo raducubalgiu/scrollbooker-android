@@ -44,6 +44,7 @@ import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.ui.camera.UserProductsSheet
 import com.example.scrollbooker.ui.camera.components.CreatePostBottomBar
 import com.example.scrollbooker.ui.camera.components.CreatePostHeader
+import com.example.scrollbooker.ui.camera.components.PostReviewSection
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
 import com.example.scrollbooker.ui.theme.Primary
@@ -58,10 +59,13 @@ fun EditPostContent(
     isVideoReview: Boolean,
     editPostUiState: EditPostUiState.Success,
     isLoading: Boolean,
+    isSaveDisabled: Boolean = false,
     hostState: SnackbarHostState,
     onDescriptionChange: (String) -> Unit,
     onRemoveProduct: (Product) -> Unit,
     onConfirmSelection: (Set<Product>) -> Unit,
+    onRatingChange: (Int) -> Unit = {},
+    onReviewChange: (String) -> Unit = {},
     onNavigateToPostPreview: () -> Unit,
     onNavigateToPostCover: () -> Unit,
     onSave: () -> Unit,
@@ -122,7 +126,7 @@ fun EditPostContent(
                             else stringResource(R.string.postNow),
                     onCreate = onSave,
                     isLoading = isLoading,
-                    isDisabled = isLoading
+                    isDisabled = isLoading || isSaveDisabled
                 )
             },
             containerColor = Background,
@@ -145,53 +149,68 @@ fun EditPostContent(
                     onNavigateToPostPreview = onNavigateToPostCover
                 )
 
-                Row(
-                    modifier = Modifier.padding(
+                if (isVideoReview) {
+                    Box(modifier = Modifier.padding(
                         top = SpacingXL,
-                        bottom = SpacingM,
                         start = BasePadding,
                         end = BasePadding
-                    ),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = stringResource(R.string.linkedServices),
-                        style = titleLarge,
-                        fontSize = 23.sp,
-                        fontWeight = FontWeight.ExtraBold
-                    )
-
-                    if(editPostUiState.linkedProducts.isNotEmpty()) {
-                        TextButton(onClick = { handleShowSheet() }) {
-                            Text(
-                                text = stringResource(R.string.change),
-                                style = labelLarge,
-                                color = Primary,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
+                    )) {
+                        PostReviewSection(
+                            rating = editPostUiState.rating,
+                            review = editPostUiState.review,
+                            onRatingChange = onRatingChange,
+                            onReviewChange = onReviewChange
+                        )
                     }
-                }
-
-                if (editPostUiState.linkedProducts.isEmpty()) {
-                    PlaceholderActionBox(
-                        description = stringResource(R.string.linkedServicesDescription),
-                        icon = Icons.Default.Add,
-                        onClick = { handleShowSheet() }
-                    )
                 } else {
-                    editPostUiState.linkedProducts.forEachIndexed { index, product ->
-                        LinkedProductRow(
-                            product = product,
-                            onRemove = { onRemoveProduct(it) },
+                    Row(
+                        modifier = Modifier.padding(
+                            top = SpacingXL,
+                            bottom = SpacingM,
+                            start = BasePadding,
+                            end = BasePadding
+                        ),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = stringResource(R.string.linkedServices),
+                            style = titleLarge,
+                            fontSize = 23.sp,
+                            fontWeight = FontWeight.ExtraBold
                         )
 
-                        if(index < editPostUiState.linkedProducts.size - 1) {
-                            HorizontalDivider(
-                                thickness = 0.55.dp,
-                                color = Divider
+                        if(editPostUiState.linkedProducts.isNotEmpty()) {
+                            TextButton(onClick = { handleShowSheet() }) {
+                                Text(
+                                    text = stringResource(R.string.change),
+                                    style = labelLarge,
+                                    color = Primary,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+                    }
+
+                    if (editPostUiState.linkedProducts.isEmpty()) {
+                        PlaceholderActionBox(
+                            description = stringResource(R.string.linkedServicesDescription),
+                            icon = Icons.Default.Add,
+                            onClick = { handleShowSheet() }
+                        )
+                    } else {
+                        editPostUiState.linkedProducts.forEachIndexed { index, product ->
+                            LinkedProductRow(
+                                product = product,
+                                onRemove = { onRemoveProduct(it) },
                             )
+
+                            if(index < editPostUiState.linkedProducts.size - 1) {
+                                HorizontalDivider(
+                                    thickness = 0.55.dp,
+                                    color = Divider
+                                )
+                            }
                         }
                     }
                 }

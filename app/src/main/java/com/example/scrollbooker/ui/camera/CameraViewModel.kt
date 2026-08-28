@@ -73,6 +73,9 @@ class CameraViewModel @Inject constructor(
     private val _linkedProducts = MutableStateFlow<Set<Product>>(emptySet())
     private val _userProducts = MutableStateFlow<FeatureState<UserProducts>>(FeatureState.Loading)
 
+    private val _rating = MutableStateFlow(0)
+    private val _review = MutableStateFlow("")
+
     private val _mediaThumbUri = MutableStateFlow<String?>(null)
     val mediaThumbUri: StateFlow<String?> = _mediaThumbUri.asStateFlow()
 
@@ -82,15 +85,19 @@ class CameraViewModel @Inject constructor(
     val editUiState: StateFlow<EditPostUiState> = combine(
         _description,
         _linkedProducts,
-        _userProducts
-    ) { desc, linked, catalog ->
+        _userProducts,
+        _rating,
+        _review
+    ) { desc, linked, catalog, rating, review ->
         if (isVideoReview) {
             EditPostUiState.Success(
                 coverUrl = null,
                 coverKey = null,
                 description = desc,
                 linkedProducts = emptySet(),
-                catalogProducts = null
+                catalogProducts = null,
+                rating = rating,
+                review = review
             )
         } else {
             when (catalog) {
@@ -157,6 +164,14 @@ class CameraViewModel @Inject constructor(
 
     fun setDescription(desc: String) {
         _description.value = desc
+    }
+
+    fun setRating(rating: Int) {
+        _rating.value = rating
+    }
+
+    fun setReview(review: String) {
+        _review.value = review
     }
 
     fun updateLinkedProducts(products: Set<Product>) {
@@ -505,8 +520,8 @@ class CameraViewModel @Inject constructor(
                         appointmentId = appointmentId,
                         videoUri = videoUri,
                         description = _description.value,
-                        review = "Totul a fost excelent!",
-                        rating = 5,
+                        review = _review.value.ifBlank { null },
+                        rating = _rating.value,
                         customCover = customCover,
                         onProgress = {},
                     )

@@ -58,28 +58,30 @@ fun AddReviewRatingSection(
         }
     }
 
-    Spacer(Modifier.height(SpacingM))
+    if (selectedRating != null) {
+        Spacer(Modifier.height(SpacingM))
 
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = "$selectedRating ${stringResource(R.string.from5)}",
-            color = Color.Gray
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "$selectedRating ${stringResource(R.string.from5)}",
+                color = Color.Gray
+            )
 
-        Text(
-            modifier = Modifier.padding(horizontal = SpacingM),
-            text = "•"
-        )
+            Text(
+                modifier = Modifier.padding(horizontal = SpacingM),
+                text = "•"
+            )
 
-        Text(
-            text = ratingLabel,
-            style = titleMedium,
-            fontWeight = FontWeight.SemiBold
+            Text(
+                text = ratingLabel,
+                style = titleMedium,
+                fontWeight = FontWeight.SemiBold
 
-        )
+            )
+        }
     }
 }
