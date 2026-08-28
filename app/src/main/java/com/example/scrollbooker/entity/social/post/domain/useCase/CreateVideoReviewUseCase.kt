@@ -26,6 +26,7 @@ class CreateVideoReviewUseCase @Inject constructor(
         appointmentId: Int,
         review: String?,
         rating: Int,
+        customCover: String?,
         onProgress: (Double) -> Unit
     ): Result<Unit> {
         return runCatching {
@@ -57,7 +58,8 @@ class CreateVideoReviewUseCase @Inject constructor(
                     businessOrEmployeeId = businessOrEmployeeId,
                     appointmentId = appointmentId,
                     review = review,
-                    rating = rating
+                    rating = rating,
+                    customCover = customCover
                 )
             )
         }

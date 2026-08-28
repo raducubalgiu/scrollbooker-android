@@ -12,11 +12,13 @@ class UpdatePostUseCase @Inject constructor(
     suspend operator fun invoke(
         postId: Int,
         description: String?,
-        linkedProductIds: List<Int>
+        linkedProductIds: List<Int>,
+        customCover: String?
     ): Result<Post> {
         val request = UpdatePostRequest(
             description = description,
-            linkedProductIds = linkedProductIds
+            linkedProductIds = linkedProductIds,
+            customCover = customCover
         )
 
         return try {

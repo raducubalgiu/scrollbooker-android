@@ -108,7 +108,8 @@ fun PostMediaFileDto.toDomain(): PostMediaFile {
         thumbnailUrl = thumbnailUrl,
         duration = duration,
         postId = postId,
-        orderIndex = orderIndex
+        orderIndex = orderIndex,
+        customCoverUrl = customCoverUrl
     )
 }
 

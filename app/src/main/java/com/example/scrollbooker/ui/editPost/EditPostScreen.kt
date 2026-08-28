@@ -15,7 +15,8 @@ import com.example.scrollbooker.core.util.FeatureState
 @Composable
 fun EditPostScreen(
     viewModel: EditPostViewModel,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onNavigateToCoverScreen: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -55,7 +56,7 @@ fun EditPostScreen(
                 onRemoveProduct = { viewModel.removeLinkedProduct(it) },
                 onConfirmSelection = { viewModel.updateLinkedProducts(it) },
                 onNavigateToPostPreview = {},
-                onNavigateToPostCover = {},
+                onNavigateToPostCover = onNavigateToCoverScreen,
                 onSave = { viewModel.editPost() },
                 onBack = onBack,
             )

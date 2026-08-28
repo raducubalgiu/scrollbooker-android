@@ -7,4 +7,7 @@ data class UpdatePostRequest(
 
     @SerializedName("linked_product_ids")
     val linkedProductIds: List<Int>,
+
+    @SerializedName("custom_cover")
+    val customCover: String? = null
 )

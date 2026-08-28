@@ -35,13 +35,15 @@ fun PostGrid(
     post: Post,
     onNavigateToPost: () -> Unit
 ) {
+    val url = post.mediaFiles.firstOrNull()?.customCoverUrl ?: post.mediaFiles.firstOrNull()?.thumbnailUrl
+
     Box(modifier = Modifier
         .aspectRatio(9f / 12f)
         .background(SurfaceBG)
         .clickable(onClick = onNavigateToPost)
     ) {
         AsyncImage(
-            model = post.mediaFiles.first().thumbnailUrl,
+            model = url,
             contentDescription = "Post Grid",
             contentScale = ContentScale.Crop,
             onError = { Timber.tag("Post Grid Error").e("ERROR: ${it.result.throwable.message}") },

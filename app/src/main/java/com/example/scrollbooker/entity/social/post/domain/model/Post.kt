@@ -71,7 +71,8 @@ data class PostMediaFile(
     val thumbnailUrl: String,
     val duration: Float?,
     val postId: Int,
-    val orderIndex: Int
+    val orderIndex: Int,
+    val customCoverUrl: String?
 )
 
 data class Hashtag(

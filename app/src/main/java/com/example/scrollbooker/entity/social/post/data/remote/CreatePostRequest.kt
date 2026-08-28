@@ -12,5 +12,8 @@ data class CreatePostRequest(
     val orderIndex: Int = 0,
 
     @SerializedName("linked_product_ids")
-    val linkedProductIds: List<Int>
+    val linkedProductIds: List<Int>,
+
+    @SerializedName("custom_cover")
+    val customCover: String? = null
 )

@@ -23,6 +23,7 @@ class CreateVideoPostUseCase @Inject constructor(
         videoUri: Uri,
         description: String?,
         linkedProductIds: List<Int>,
+        customCover: String?,
         onProgress: (Double) -> Unit
     ): Result<Unit> {
         return runCatching {
@@ -51,7 +52,8 @@ class CreateVideoPostUseCase @Inject constructor(
                     description = description,
                     provider = "cloudflare_stream",
                     providerUid = direct.providerUid,
-                    linkedProductIds = linkedProductIds
+                    linkedProductIds = linkedProductIds,
+                    customCover = customCover
                 )
             )
         }

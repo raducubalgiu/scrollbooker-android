@@ -34,6 +34,6 @@ class FeedNavigator (
     }
 
     fun toEditPost(postId: Int) {
-        navController.navigate("${MainRoute.EditPost.route}/$postId")
+        navController.navigate(MainRoute.EditPostNavigator.createRoute(postId))
     }
 }

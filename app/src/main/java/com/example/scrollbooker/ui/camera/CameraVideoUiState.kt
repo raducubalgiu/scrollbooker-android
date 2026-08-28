@@ -11,5 +11,6 @@ data class CameraVideoUiState(
     val coverUri: Uri? = null,
     val coverKey: String? = null,
     val coverTimeUs: Long? = null,
-    val isCoverLoading: Boolean = false
+    val isCoverLoading: Boolean = false,
+    val isCustomCover: Boolean = false
 )

@@ -125,7 +125,10 @@ data class PostMediaFileDto(
     val postId: Int,
 
     @SerializedName("order_index")
-    val orderIndex: Int
+    val orderIndex: Int,
+
+    @SerializedName("custom_cover_url")
+    val customCoverUrl: String?
 )
 
 data class HashtagDto(

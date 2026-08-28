@@ -18,5 +18,8 @@ data class CreateVideoReviewRequest(
     val providerUid: String,
 
     @SerializedName("order_index")
-    val orderIndex: Int = 0
+    val orderIndex: Int = 0,
+
+    @SerializedName("custom_cover")
+    val customCover: String? = null
 )

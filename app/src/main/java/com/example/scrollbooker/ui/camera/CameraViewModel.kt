@@ -2,6 +2,7 @@ package com.example.scrollbooker.ui.camera
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import androidx.core.net.toFile
@@ -15,6 +16,7 @@ import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.example.scrollbooker.core.snackbar.SnackBarUiEvent
 import com.example.scrollbooker.core.util.FeatureState
+import com.example.scrollbooker.core.util.toCoverDataUri
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.model.UserProducts
@@ -247,7 +249,8 @@ class CameraViewModel @Inject constructor(
                 selectedUri = uri,
                 selectedKey = key,
                 isCoverLoading = false,
-                coverTimeUs = null
+                coverTimeUs = null,
+                isCustomCover = false
             )
         }
 
@@ -463,15 +466,37 @@ class CameraViewModel @Inject constructor(
                     // cache entry when the user picks a different frame for the same video.
                     coverKey = if (cover != null) "${key}_$timeUs" else it.coverKey,
                     coverTimeUs = if (cover != null) timeUs else it.coverTimeUs,
-                    isCoverLoading = false
+                    isCoverLoading = false,
+                    isCustomCover = if (cover != null) true else it.isCustomCover
                 )
             }
+        }
+    }
+
+    /**
+     * Encodes the user-picked cover as a "data:image/jpeg;base64,..." URI for
+     * [CreatePostRequest.customCover] / [CreateVideoReviewRequest.customCover]. Returns null
+     * when the cover currently set is just the automatic default (BE then falls back to
+     * Cloudflare Stream's own thumbnail). Downscaled before encoding since this rides along
+     * in the JSON body, not a file upload.
+     */
+    private suspend fun getCustomCoverBase64(): String? {
+        val state = _cameraVideoUiState.value
+        if (!state.isCustomCover) return null
+        val uri = state.coverUri ?: return null
+
+        return withContext(Dispatchers.IO) {
+            runCatching {
+                BitmapFactory.decodeFile(uri.toFile().path)?.toCoverDataUri()
+            }.getOrNull()
         }
     }
 
     fun createPost(videoUri: Uri) {
         viewModelScope.launch {
             _isSaving.value = FeatureState.Loading
+
+            val customCover = getCustomCoverBase64()
 
             val result = if (appointmentId > 0 && businessOrEmployeeId > 0) {
                 withVisibleLoading {
@@ -482,6 +507,7 @@ class CameraViewModel @Inject constructor(
                         description = _description.value,
                         review = "Totul a fost excelent!",
                         rating = 5,
+                        customCover = customCover,
                         onProgress = {},
                     )
                 }
@@ -491,6 +517,7 @@ class CameraViewModel @Inject constructor(
                         videoUri = videoUri,
                         description = _description.value,
                         linkedProductIds = _linkedProducts.value.map { it.id },
+                        customCover = customCover,
                         onProgress = {}
                     )
                 }
