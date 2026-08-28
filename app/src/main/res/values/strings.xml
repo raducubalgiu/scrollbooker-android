@@ -489,6 +489,7 @@
     <string name="continueWithGoogle">Continuă cu Google</string>
     <string name="recentSearches">Căutări recente</string>
     <string name="notFoundRecentSearches">Încă nu ai efectuat nici o căutare</string>
+    <string name="notFoundBusinessMedia">Nu au fost găsite fotografii</string>
 
     <!-- Period -->
     <string name="period_seven_days">7 zile</string>

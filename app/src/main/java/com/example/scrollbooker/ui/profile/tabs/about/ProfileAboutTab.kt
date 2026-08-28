@@ -19,17 +19,18 @@ import androidx.compose.ui.text.font.FontWeight
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.customized.SchedulesSection
 import com.example.scrollbooker.components.customized.SectionMap
-import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXXL
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.rememberFlingBehavior
 import com.example.scrollbooker.entity.user.userProfile.domain.model.UserProfileAbout
 import com.example.scrollbooker.navigation.navigators.UserProfileParam
+import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.bodyLarge
+import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
@@ -69,12 +70,9 @@ fun ProfileAboutTab(
                 }
 
                 item(key = "address_section") {
-                    Text(
-                        modifier = Modifier.padding(vertical = BasePadding),
+                    ProfileAboutSectionTitle(
                         text = stringResource(R.string.address),
-                        fontWeight = FontWeight.SemiBold,
-                        style = titleMedium,
-                        fontSize = 18.sp
+                        modifier = Modifier.padding(top = BasePadding, bottom = BasePadding)
                     )
 
                     Row(
@@ -88,28 +86,34 @@ fun ProfileAboutTab(
 
                         Spacer(Modifier.width(BasePadding))
 
-                        Text(text = data.location.address)
+                        Text(text = data.location.address, style = bodyLarge)
                     }
                 }
 
-                data.description?.let { descriptionText ->
-                    item(key = "description_section") {
+                item(key = "description_section") {
+                    ProfileAboutSectionTitle(
+                        text = stringResource(R.string.description),
+                        modifier = Modifier.padding(top = SpacingXXL, bottom = BasePadding)
+                    )
+
+                    if (data.description.isNullOrBlank()) {
                         Text(
-                            modifier = Modifier.padding(
-                                top = SpacingXXL,
-                                bottom = BasePadding
-                            ),
-                            text = stringResource(R.string.description),
-                            style = titleMedium,
-                            fontSize = 18.sp
+                            text = stringResource(R.string.notFoundDescription),
+                            style = bodyMedium,
+                            color = OnBackground.copy(alpha = 0.45f)
                         )
-                        Text(text = descriptionText)
+                    } else {
+                        Text(text = data.description, style = bodyLarge)
                     }
                 }
 
                 data.location.mapUrl?.let { url ->
                     item(key = "map_section") {
-                        Spacer(Modifier.height(BasePadding))
+                        ProfileAboutSectionTitle(
+                            text = stringResource(R.string.location),
+                            modifier = Modifier.padding(top = SpacingXXL, bottom = BasePadding)
+                        )
+
                         SectionMap(
                             mapUrl = url,
                             coordinates = data.location.coordinates,
@@ -120,37 +124,38 @@ fun ProfileAboutTab(
                 }
 
                 item(key = "schedule_section") {
-                    Spacer(Modifier.height(SpacingXL))
-
-                    Text(
+                    ProfileAboutSectionTitle(
                         text = stringResource(R.string.schedule),
-                        fontWeight = FontWeight.SemiBold,
-                        style = titleMedium,
-                        fontSize = 18.sp
+                        modifier = Modifier.padding(top = SpacingXXL, bottom = BasePadding)
                     )
-
-                    Spacer(Modifier.height(BasePadding))
 
                     SchedulesSection(schedules = data.schedules)
                 }
 
                 item(key = "gallery_section") {
-                    Spacer(Modifier.height(SpacingXL))
-
-                    Text(
+                    ProfileAboutSectionTitle(
                         text = stringResource(R.string.photoGallery),
-                        fontWeight = FontWeight.SemiBold,
-                        style = titleMedium,
-                        fontSize = 18.sp
+                        modifier = Modifier.padding(top = SpacingXXL, bottom = BasePadding)
                     )
-
-                    Spacer(Modifier.height(BasePadding))
 
                     BusinessMediaGallery(mediaFiles = data.businessMedia)
 
-                    Spacer(Modifier.height(BasePadding))
+                    Spacer(Modifier.height(SpacingXXL))
                 }
             }
         }
     }
+}
+
+@Composable
+private fun ProfileAboutSectionTitle(
+    text: String,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        modifier = modifier,
+        text = text,
+        style = titleMedium,
+        fontWeight = FontWeight.SemiBold
+    )
 }
