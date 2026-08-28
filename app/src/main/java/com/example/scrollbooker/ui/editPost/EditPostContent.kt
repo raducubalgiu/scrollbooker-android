@@ -63,6 +63,7 @@ fun EditPostContent(
     onRemoveProduct: (Product) -> Unit,
     onConfirmSelection: (Set<Product>) -> Unit,
     onNavigateToPostPreview: () -> Unit,
+    onNavigateToPostCover: () -> Unit,
     onSave: () -> Unit,
     onBack: () -> Unit
 ) {
@@ -141,7 +142,7 @@ fun EditPostContent(
                     coverKey = editPostUiState.coverKey,
                     description = editPostUiState.description,
                     onDescriptionChange = onDescriptionChange,
-                    onNavigateToPostPreview = onNavigateToPostPreview
+                    onNavigateToPostPreview = onNavigateToPostCover
                 )
 
                 Row(

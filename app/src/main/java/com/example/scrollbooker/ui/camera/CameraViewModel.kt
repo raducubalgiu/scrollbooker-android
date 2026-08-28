@@ -47,6 +47,11 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.withContext
+
+private const val DEFAULT_COVER_TIME_US = 500_000L
+private const val FILMSTRIP_FRAME_HEIGHT = 220
+private const val PREVIEW_FRAME_HEIGHT = 720
 
 @HiltViewModel
 class CameraViewModel @Inject constructor(
@@ -177,6 +182,14 @@ class CameraViewModel @Inject constructor(
     private var prepareJob: Job? = null
     private var coverJob: Job? = null
 
+    // Filmstrip thumbnails for the cover picker, cached per video so revisiting the
+    // cover screen doesn't re-extract the same frames from disk every time.
+    private val _filmstrip = MutableStateFlow<List<Bitmap>>(emptyList())
+    val filmstrip: StateFlow<List<Bitmap>> = _filmstrip.asStateFlow()
+
+    private var filmstripKey: String? = null
+    private var filmstripJob: Job? = null
+
     private fun videoKey(uri: Uri): String = uri.toString()
 
     private val listener = object : Player.Listener {
@@ -225,12 +238,16 @@ class CameraViewModel @Inject constructor(
         }
 
         coverJob?.cancel()
+        filmstripJob?.cancel()
+        filmstripKey = null
+        _filmstrip.value = emptyList()
 
         _cameraVideoUiState.update {
             it.copy(
                 selectedUri = uri,
                 selectedKey = key,
-                isCoverLoading = false
+                isCoverLoading = false,
+                coverTimeUs = null
             )
         }
 
@@ -272,6 +289,10 @@ class CameraViewModel @Inject constructor(
             )
         }
 
+        filmstripJob?.cancel()
+        filmstripKey = null
+        _filmstrip.value = emptyList()
+
         releasePlayer()
     }
 
@@ -306,20 +327,96 @@ class CameraViewModel @Inject constructor(
                 it.copy(
                     coverUri = cover,
                     coverKey = key,
+                    coverTimeUs = DEFAULT_COVER_TIME_US,
                     isCoverLoading = false
                 )
             }
         }
     }
 
-    private fun createVideoCover(context: Context, uri: Uri): Uri? {
+    /**
+     * Extracts (once per video) a small set of evenly-spaced thumbnails used by the cover
+     * picker's filmstrip, and caches them so re-opening the screen doesn't redo the work.
+     */
+    fun ensureFilmstrip(durationMs: Long, count: Int = 10) {
+        val uri = _cameraVideoUiState.value.selectedUri ?: return
+        val key = _cameraVideoUiState.value.selectedKey ?: return
+
+        if (durationMs <= 0L) return
+        if (filmstripKey == key && _filmstrip.value.isNotEmpty()) return
+
+        filmstripJob?.cancel()
+        filmstripJob = viewModelScope.launch(Dispatchers.IO) {
+            val frames = extractFilmstrip(uri, durationMs, count)
+            filmstripKey = key
+            _filmstrip.value = frames
+        }
+    }
+
+    private fun extractFilmstrip(uri: Uri, durationMs: Long, count: Int): List<Bitmap> {
+        val retriever = MediaMetadataRetriever()
+        return try {
+            context.contentResolver.openFileDescriptor(uri, "r")?.use { pfd ->
+                retriever.setDataSource(pfd.fileDescriptor)
+
+                val intervalUs = (durationMs * 1_000L) / count
+                (0 until count).mapNotNull { index ->
+                    val timeUs = intervalUs * index + intervalUs / 2
+                    extractScaledFrame(retriever, timeUs, FILMSTRIP_FRAME_HEIGHT)
+                }
+            } ?: emptyList()
+        } catch (e: Exception) {
+            emptyList()
+        } finally {
+            retriever.release()
+        }
+    }
+
+    /**
+     * Extracts a single, higher-resolution frame for the cover picker's big preview.
+     * Called only once the user settles on a position (debounced on the screen side),
+     * never on every drag frame, so it stays cheap despite the larger target size than
+     * the filmstrip thumbnails.
+     */
+    suspend fun extractPreviewFrame(timeUs: Long): Bitmap? {
+        val uri = _cameraVideoUiState.value.selectedUri ?: return null
+
+        return withContext(Dispatchers.IO) {
+            val retriever = MediaMetadataRetriever()
+            try {
+                context.contentResolver.openFileDescriptor(uri, "r")?.use { pfd ->
+                    retriever.setDataSource(pfd.fileDescriptor)
+                    extractScaledFrame(retriever, timeUs, PREVIEW_FRAME_HEIGHT)
+                }
+            } catch (e: Exception) {
+                null
+            } finally {
+                retriever.release()
+            }
+        }
+    }
+
+    private fun extractScaledFrame(retriever: MediaMetadataRetriever, timeUs: Long, targetHeight: Int): Bitmap? {
+        val frame = retriever.getFrameAtTime(timeUs, MediaMetadataRetriever.OPTION_CLOSEST_SYNC) ?: return null
+        if (frame.height <= targetHeight) return frame
+
+        val scale = targetHeight / frame.height.toFloat()
+        return Bitmap.createScaledBitmap(
+            frame,
+            (frame.width * scale).toInt().coerceAtLeast(1),
+            targetHeight,
+            true
+        )
+    }
+
+    private fun createVideoCover(context: Context, uri: Uri, timeUs: Long = DEFAULT_COVER_TIME_US): Uri? {
         val retriever = MediaMetadataRetriever()
         try {
             context.contentResolver.openFileDescriptor(uri, "r")?.use { pfd ->
                 retriever.setDataSource(pfd.fileDescriptor)
 
                 val bmp = retriever.getFrameAtTime(
-                    500_000,
+                    timeUs,
                     MediaMetadataRetriever.OPTION_CLOSEST_SYNC
                 ) ?: return null
 
@@ -333,6 +430,42 @@ class CameraViewModel @Inject constructor(
             return null
         } finally {
             retriever.release()
+        }
+    }
+
+    /**
+     * Replaces the post cover with the frame at [timeUs] (microseconds) picked by the user
+     * in the cover-selection screen. The previously generated cover file is deleted once the
+     * new one is ready, mirroring the cleanup already done in [selectVideo].
+     */
+    fun setCoverAtTimestamp(timeUs: Long) {
+        val uri = _cameraVideoUiState.value.selectedUri ?: return
+        val key = _cameraVideoUiState.value.selectedKey ?: return
+
+        coverJob?.cancel()
+        coverJob = viewModelScope.launch(Dispatchers.IO) {
+            _cameraVideoUiState.update { it.copy(isCoverLoading = true) }
+
+            val previousCover = _cameraVideoUiState.value.coverUri
+            val cover = runCatching { createVideoCover(context, uri, timeUs) }.getOrNull()
+
+            if (cover != null && previousCover != null) {
+                runCatching {
+                    val f = previousCover.toFile()
+                    if (f.exists()) f.delete()
+                }
+            }
+
+            _cameraVideoUiState.update {
+                it.copy(
+                    coverUri = cover ?: it.coverUri,
+                    // A unique key (not just the video key) so Coil doesn't reuse a stale
+                    // cache entry when the user picks a different frame for the same video.
+                    coverKey = if (cover != null) "${key}_$timeUs" else it.coverKey,
+                    coverTimeUs = if (cover != null) timeUs else it.coverTimeUs,
+                    isCoverLoading = false
+                )
+            }
         }
     }
 

@@ -17,6 +17,8 @@
     <string name="dateOfBirthLabelDescription">Folosim această informație doar pentru a-ți personaliza experiența</string>
     <string name="omit">Omite</string>
     <string name="nextStep">Pasul următor</string>
+    <string name="chooseCover">Alege coperta</string>
+    <string name="selectCover">Selectează coperta</string>
     <string name="location">Locație</string>
     <string name="businessDetails">Detalii business</string>
     <string name="addYourBusinessLocation">Adaugă adresa locației unde vei primi clienții </string>

@@ -153,7 +153,7 @@ fun BaseFeedTabScreen(
 
     when (posts.loadState.refresh) {
         is LoadState.Error -> ErrorScreen()
-        is LoadState.Loading -> LoadingScreen()
+        is LoadState.Loading -> LoadingScreen(color = Color.White)
         is LoadState.NotLoading -> {
             if (posts.itemCount == 0) {
                 EmptyScreen(

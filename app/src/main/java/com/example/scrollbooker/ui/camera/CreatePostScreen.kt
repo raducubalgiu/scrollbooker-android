@@ -23,6 +23,7 @@ fun CreatePostScreen(
     viewModel: CameraViewModel,
     onBack: () -> Unit,
     onNavigateToPostPreview: () -> Unit,
+    onNavigateToCoverScreen: () -> Unit,
     onPostCreated: () -> Unit
 ) {
     val cameraVideoUiState by viewModel.cameraVideoUiState.collectAsStateWithLifecycle()
@@ -67,6 +68,7 @@ fun CreatePostScreen(
                 onRemoveProduct = { viewModel.removeLinkedProduct(it) },
                 onNavigateToPostPreview = onNavigateToPostPreview,
                 onConfirmSelection = { viewModel.updateLinkedProducts(it) },
+                onNavigateToPostCover = onNavigateToCoverScreen,
                 onSave = {
                     cameraVideoUiState.selectedUri?.let { uri ->
                         viewModel.createPost(videoUri = uri)

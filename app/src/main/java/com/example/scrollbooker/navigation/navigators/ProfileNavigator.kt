@@ -200,4 +200,8 @@ class ProfileNavigator (
     fun toCreatePostPreview() {
         navController.navigate(MainRoute.CreatePostPreview.route)
     }
+
+    fun toCreatePostCover() {
+        navController.navigate(MainRoute.CreatePostCover.route)
+    }
 }

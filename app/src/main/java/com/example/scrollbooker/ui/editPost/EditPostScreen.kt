@@ -55,6 +55,7 @@ fun EditPostScreen(
                 onRemoveProduct = { viewModel.removeLinkedProduct(it) },
                 onConfirmSelection = { viewModel.updateLinkedProducts(it) },
                 onNavigateToPostPreview = {},
+                onNavigateToPostCover = {},
                 onSave = { viewModel.editPost() },
                 onBack = onBack,
             )

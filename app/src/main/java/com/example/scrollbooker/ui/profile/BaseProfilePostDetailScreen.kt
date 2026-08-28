@@ -155,7 +155,7 @@ fun BaseProfilePostDetailScreen(
                 .fillMaxSize()
                 .background(BackgroundDark)
         ) {
-            LoadingScreen()
+            LoadingScreen(color = Color.White)
         }
         return
     }

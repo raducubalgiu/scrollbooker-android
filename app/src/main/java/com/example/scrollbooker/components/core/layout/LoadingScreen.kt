@@ -8,12 +8,15 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.scrollbooker.ui.theme.Primary
 
 @Composable
 fun LoadingScreen(
     modifier: Modifier = Modifier,
-    arrangement: Arrangement.Vertical = Arrangement.Center
+    arrangement: Arrangement.Vertical = Arrangement.Center,
+    color: Color = Primary
 ) {
     Column(
         Modifier.fillMaxSize(),
@@ -23,7 +26,8 @@ fun LoadingScreen(
         CircularProgressIndicator(
             modifier = Modifier
                 .size(30.dp)
-                .then(modifier)
+                .then(modifier),
+            color = color
         )
     }
 }

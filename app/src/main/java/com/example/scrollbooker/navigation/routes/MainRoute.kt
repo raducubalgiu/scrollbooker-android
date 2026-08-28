@@ -81,6 +81,7 @@ sealed class MainRoute(val route: String) {
     object CameraPreview: MainRoute(route = "cameraPreview")
     object CreatePost: MainRoute(route = "createPost")
     object CreatePostPreview: MainRoute(route = "createPostPreview")
+    object CreatePostCover: MainRoute(route = "createPostCover")
 
     object EditPost: MainRoute(route = "editPost")
 
