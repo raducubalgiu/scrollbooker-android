@@ -283,9 +283,10 @@
     <string name="custom">Custom</string>
     <string name="from">de la</string>
     <string name="until">Până la</string>
-    <string name="chooseWhatDoYouWantToSeeInFeed">"Alege ce vrei să vezi în Feed-ul tău</string>
+    <string name="chooseWhatDoYouWantToSeeInFeed">Alege ce vrei să vezi în Feed-ul tău</string>
     <string name="clearFilters">Elimină filtrele</string>
     <string name="filterVideoContentAccordingToYouPreferences">Filtrează conținutul video în funcție de preferințele tale</string>
+    <string name="onlyVideoReviews">Doar recenzii video</string>
     <string name="close">Închide</string>
     <string name="locationPermission">Permisiunea locației</string>
     <string name="locationPermissionDescription">Ne ajută să îți oferim servicii din apropiere și să îți personalizăm experiența</string>

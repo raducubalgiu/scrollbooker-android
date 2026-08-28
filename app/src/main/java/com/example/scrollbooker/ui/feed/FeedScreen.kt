@@ -50,6 +50,7 @@ fun FeedScreen(
     val explorePosts = exploreViewModel.posts.collectAsLazyPagingItems()
     val serviceDomains by exploreViewModel.serviceDomains.collectAsStateWithLifecycle()
     val selectedServiceIds by exploreViewModel.selectedServiceIds.collectAsStateWithLifecycle()
+    val onlyVideoReviews by exploreViewModel.onlyVideoReviews.collectAsStateWithLifecycle()
     val isFollowingTabOpened = rememberSaveable { mutableStateOf(false) }
 
     val horizontalPagerState = rememberPagerState { 2 }
@@ -74,6 +75,7 @@ fun FeedScreen(
 
     var isDrawerOpen by rememberSaveable { mutableStateOf(false) }
     var temporarySelectedIds by rememberSaveable { mutableStateOf(emptySet<Int>()) }
+    var temporaryOnlyVideoReviews by rememberSaveable { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var sheetContent by remember { mutableStateOf<PostSheetsContent>(None) }
 
@@ -119,6 +121,7 @@ fun FeedScreen(
             onAnimationFinished = { currentOpenState ->
                 if (!currentOpenState) {
                     exploreViewModel.setSelectedServiceIds(temporarySelectedIds)
+                    exploreViewModel.setOnlyVideoReviews(temporaryOnlyVideoReviews)
 
                     if (horizontalPagerState.currentPage == 1) {
                         scope.launch { horizontalPagerState.scrollToPage(0) }
@@ -129,9 +132,11 @@ fun FeedScreen(
             FeedDrawer(
                 serviceDomains = serviceDomains,
                 selectedServiceIds = selectedServiceIds,
+                onlyVideoReviews = onlyVideoReviews,
                 isDrawerOpen = isDrawerOpen,
-                onConfirm = {
-                    temporarySelectedIds = it
+                onConfirm = { newSelectedIds, newOnlyVideoReviews ->
+                    temporarySelectedIds = newSelectedIds
+                    temporaryOnlyVideoReviews = newOnlyVideoReviews
                     isDrawerOpen = false
                 }
             )
@@ -140,6 +145,7 @@ fun FeedScreen(
         FeedTabs(
             modifier = Modifier.statusBarsPadding(),
             selectedTabIndex = horizontalPagerState.currentPage,
+            activeFiltersCount = selectedServiceIds.size + if (onlyVideoReviews) 1 else 0,
             onChangeTab = { scope.launch { horizontalPagerState.scrollToPage(it) } },
             onOpenDrawer = { isDrawerOpen = true },
             onNavigateSearch = { feedNavigate.toFeedSearch() }

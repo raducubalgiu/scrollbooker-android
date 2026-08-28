@@ -1,5 +1,6 @@
 package com.example.scrollbooker.entity.nomenclature.serviceDomain.data.mappers
 
+import com.example.scrollbooker.entity.nomenclature.service.data.mappers.toDomain
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.data.remote.ServiceDomainDto
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.ServiceDomain
 
@@ -10,6 +11,6 @@ fun ServiceDomainDto.toDomain(): ServiceDomain {
         description = description,
         url = url,
         thumbnailUrl = thumbnailUrl,
-        services = services
+        services = services?.map { it.toDomain() }
     )
 }

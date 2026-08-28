@@ -7,7 +7,7 @@ data class ServiceDto(
     val name: String,
 
     @SerializedName("short_name")
-    val shortName: String,
+    val shortName: String?,
 
     val description: String?,
 

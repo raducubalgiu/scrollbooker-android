@@ -39,5 +39,5 @@ fun FeedDrawerHeader() {
         text = stringResource(R.string.chooseWhatDoYouWantToSeeInFeed)
     )
 
-    Spacer(Modifier.height(40.dp))
+    Spacer(Modifier.height(SpacingXL))
 }

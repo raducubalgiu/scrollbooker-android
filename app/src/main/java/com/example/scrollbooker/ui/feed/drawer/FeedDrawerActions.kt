@@ -33,6 +33,7 @@ import com.example.scrollbooker.ui.theme.bodyMedium
 fun FeedDrawerActions(
     isClearEnabled: Boolean,
     isConfirmEnabled: Boolean,
+    selectedCount: Int,
     onClear: () -> Unit,
     onConfirm: () -> Unit
 ) {
@@ -65,9 +66,11 @@ fun FeedDrawerActions(
             }
         }
 
+        val filterTitle = stringResource(R.string.filter)
+
         MainButton(
             onClick = onConfirm,
-            title = stringResource(R.string.filter),
+            title = if (selectedCount > 0) "$filterTitle ($selectedCount)" else filterTitle,
             enabled = isConfirmEnabled,
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFFFF6F00),

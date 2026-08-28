@@ -1,6 +1,6 @@
 package com.example.scrollbooker.entity.nomenclature.serviceDomain.data.remote
 
-import com.example.scrollbooker.entity.nomenclature.service.domain.model.Service
+import com.example.scrollbooker.entity.nomenclature.service.data.remote.ServiceDto
 import com.google.gson.annotations.SerializedName
 
 data class ServiceDomainDto(
@@ -12,5 +12,5 @@ data class ServiceDomainDto(
     @SerializedName("thumbnail_url")
     val thumbnailUrl: String?,
 
-    val services: List<Service>? = emptyList()
+    val services: List<ServiceDto>? = emptyList()
 )

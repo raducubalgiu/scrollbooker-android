@@ -43,7 +43,7 @@ class ExploreFeedViewModel @Inject constructor(
     val selectedServiceIds: StateFlow<Set<Int>> = _selectedServiceIds.asStateFlow()
 
     private val _onlyVideoReviews: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val onlyVideoReviews: Flow<Boolean> = _onlyVideoReviews.asStateFlow()
+    val onlyVideoReviews: StateFlow<Boolean> = _onlyVideoReviews.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override val posts: Flow<PagingData<Post>> = combine(
@@ -79,6 +79,13 @@ class ExploreFeedViewModel @Inject constructor(
         if (newServiceIds == _selectedServiceIds.value) return
 
         _selectedServiceIds.value = newServiceIds
+        requestScrollToTop()
+    }
+
+    fun setOnlyVideoReviews(newOnlyVideoReviews: Boolean) {
+        if (newOnlyVideoReviews == _onlyVideoReviews.value) return
+
+        _onlyVideoReviews.value = newOnlyVideoReviews
         requestScrollToTop()
     }
 

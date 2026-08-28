@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.TabRow
 import androidx.compose.runtime.Composable
@@ -20,11 +21,13 @@ import androidx.compose.ui.zIndex
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.icon.ShadowedIcon
 import com.example.scrollbooker.core.util.Dimens.BasePadding
+import com.example.scrollbooker.navigation.bottomBar.BulletBadge
 
 @Composable
 fun FeedTabs(
     modifier: Modifier = Modifier,
     selectedTabIndex: Int,
+    activeFiltersCount: Int = 0,
     onOpenDrawer: () -> Unit,
     onNavigateSearch: () -> Unit,
     onChangeTab: (Int) -> Unit,
@@ -47,37 +50,20 @@ fun FeedTabs(
             horizontalArrangement = Arrangement.Start
         ) {
             Box(modifier = Modifier.clickable(onClick = onOpenDrawer)) {
-                ShadowedIcon(
+                BadgedBox(
                     modifier = Modifier.padding(BasePadding),
-                    painter = painterResource(R.drawable.ic_menu_solid),
-                    contentDescription = "Menu",
-                    iconTintColor = Color(0xFFE0E0E0)
-                )
-
-//                if (activeFiltersCount > 0) {
-//                    Box(
-//                        modifier = Modifier
-//                            .align(Alignment.TopEnd)
-//                            .size(25.dp)
-//                            .border(
-//                                width = 2.dp,
-//                                shape = ShapeDefaults.ExtraLarge,
-//                                color = Background
-//                            )
-//                            .background(
-//                                color = Primary.copy(alpha = 0.6f),
-//                                shape = CircleShape
-//                            ),
-//                        contentAlignment = Alignment.Center
-//                    ) {
-//                        Text(
-//                            text = if(activeFiltersCount > 9) "9+" else activeFiltersCount.toString(),
-//                            color = Color.White,
-//                            fontSize = 11.sp,
-//                            fontWeight = FontWeight.Bold
-//                        )
-//                    }
-//                }
+                    badge = {
+                        if (activeFiltersCount > 0) {
+                            BulletBadge()
+                        }
+                    }
+                ) {
+                    ShadowedIcon(
+                        painter = painterResource(R.drawable.ic_menu_solid),
+                        contentDescription = "Menu",
+                        iconTintColor = Color(0xFFE0E0E0)
+                    )
+                }
             }
 
             TabRow(
