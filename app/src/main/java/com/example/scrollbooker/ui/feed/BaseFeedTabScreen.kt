@@ -240,6 +240,7 @@ fun BaseFeedTabScreen(
                                 VideoScrubber(
                                     player = player,
                                     isFocused = page == settledPage,
+                                    isPaused = userPausedSet.contains(postId),
                                     onSeekingChanged = { isSeeking = it },
                                     modifier = Modifier.align(Alignment.BottomCenter)
                                 )

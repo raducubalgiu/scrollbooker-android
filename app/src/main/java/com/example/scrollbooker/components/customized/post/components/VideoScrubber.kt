@@ -1,6 +1,7 @@
 package com.example.scrollbooker.components.customized.post.components
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
@@ -28,6 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.media3.exoplayer.ExoPlayer
@@ -36,47 +38,24 @@ import com.example.scrollbooker.ui.theme.labelLarge
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import java.util.Locale
+import kotlin.math.abs
 import kotlin.math.roundToLong
 
 private const val ProgressPollIntervalMs = 200L
 private const val MinSeekIntervalMs = 80L
+private const val ShortVideoDurationThresholdMs = 30_000L
 private val IdleTrackHeight = 2.dp
-private val DraggingTrackHeight = 4.dp
+private val ActiveTrackHeight = 4.dp
 private val IdleThumbRadius = 0.dp
-private val DraggingThumbRadius = 6.dp
+private val ActiveThumbRadius = 6.dp
 private val TouchTargetHeight = 36.dp
 private val TrackBottomInset = 2.dp
 
-/**
- * TikTok-style video scrub bar pinned to the bottom of a video: a thin line that
- * thickens and grows a thumb while being dragged, with a current/total time label
- * fading in above it during the drag.
- *
- * The touch target ([TouchTargetHeight]) is taller than the visible line on
- * purpose — the line itself stays flush with the bottom edge, the extra height is
- * an invisible, easier-to-grab catch zone above it, standard for a thin scrubber.
- *
- * Gesture handling is a manual [awaitEachGesture] rather than
- * `detectHorizontalDragGestures`: that helper requires proving movement is
- * predominantly horizontal before it engages, and a natural thumb touch easily
- * fails that slop check, especially on a thin target — the touch then falls
- * through to whatever's behind it (the page's vertical pager, or its
- * play/pause `clickable`). Here the pointer is claimed and consumed the instant
- * it goes down inside these bounds and the seek position is applied immediately,
- * which both makes grabbing the bar reliable and gives tap-to-seek for free —
- * and since the down event is consumed, nothing behind this bar (including a
- * "Book now" button elsewhere on the page) ever sees a gesture meant for it.
- *
- * [isFocused] gates the position-polling loop so only the page actually on
- * screen pays that (small) continuous cost. Passive polling only ever writes
- * state that's read inside this composable's own Canvas draw phase or inside
- * the (normally unmounted) time-label content, so a tick never recomposes
- * anything outside this bar — in particular, never the surrounding post page.
- */
 @Composable
 fun VideoScrubber(
     player: ExoPlayer,
     isFocused: Boolean,
+    isPaused: Boolean,
     onSeekingChanged: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -141,13 +120,21 @@ fun VideoScrubber(
             )
         }
 
+        val isScrubberActive = isDragging || isPaused
+        val isShortVideo = durationMs.longValue in 1 until ShortVideoDurationThresholdMs
+        val isTrackVisible = isScrubberActive || !isShortVideo
+
         val trackHeight by animateDpAsState(
-            targetValue = if (isDragging) DraggingTrackHeight else IdleTrackHeight,
+            targetValue = if (isScrubberActive) ActiveTrackHeight else IdleTrackHeight,
             label = "scrubberTrackHeight"
         )
         val thumbRadius by animateDpAsState(
-            targetValue = if (isDragging) DraggingThumbRadius else IdleThumbRadius,
+            targetValue = if (isScrubberActive) ActiveThumbRadius else IdleThumbRadius,
             label = "scrubberThumbRadius"
+        )
+        val trackAlpha by animateFloatAsState(
+            targetValue = if (isTrackVisible) 1f else 0f,
+            label = "scrubberVisibility"
         )
 
         Canvas(
@@ -159,23 +146,33 @@ fun VideoScrubber(
                     awaitEachGesture {
                         val down = awaitFirstDown(requireUnconsumed = false)
                         val pointerId = down.id
-                        down.consume()
+                        val downX = down.position.x
+                        val touchSlop = viewConfiguration.touchSlop
 
+                        var change: PointerInputChange
+                        while (true) {
+                            val event = awaitPointerEvent()
+                            change = event.changes.firstOrNull { it.id == pointerId } ?: return@awaitEachGesture
+                            if (!change.pressed) return@awaitEachGesture
+                            if (abs(change.position.x - downX) >= touchSlop) break
+                        }
+
+                        change.consume()
                         isDragging = true
                         currentOnSeekingChanged.value(true)
-                        applyDrag(fractionAt(down.position.x, size.width), forceSeek = true)
+                        applyDrag(fractionAt(change.position.x, size.width), forceSeek = true)
 
                         while (true) {
                             val event = awaitPointerEvent()
-                            val change = event.changes.firstOrNull { it.id == pointerId } ?: break
+                            val nextChange = event.changes.firstOrNull { it.id == pointerId } ?: break
 
-                            if (!change.pressed) {
-                                change.consume()
+                            if (!nextChange.pressed) {
+                                nextChange.consume()
                                 break
                             }
 
-                            change.consume()
-                            applyDrag(fractionAt(change.position.x, size.width), forceSeek = false)
+                            nextChange.consume()
+                            applyDrag(fractionAt(nextChange.position.x, size.width), forceSeek = false)
                         }
 
                         isDragging = false
@@ -189,14 +186,14 @@ fun VideoScrubber(
             val y = size.height - TrackBottomInset.toPx()
 
             drawLine(
-                color = Color.White.copy(alpha = 0.35f),
+                color = Color.White.copy(alpha = 0.35f * trackAlpha),
                 start = Offset(0f, y),
                 end = Offset(size.width, y),
                 strokeWidth = trackStrokePx,
                 cap = StrokeCap.Round
             )
             drawLine(
-                color = Color.White,
+                color = Color.White.copy(alpha = trackAlpha),
                 start = Offset(0f, y),
                 end = Offset(size.width * fraction, y),
                 strokeWidth = trackStrokePx,
@@ -204,7 +201,7 @@ fun VideoScrubber(
             )
             if (thumbRadius > 0.dp) {
                 drawCircle(
-                    color = Color.White,
+                    color = Color.White.copy(alpha = trackAlpha),
                     radius = thumbRadius.toPx(),
                     center = Offset(size.width * fraction, y)
                 )

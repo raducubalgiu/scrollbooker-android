@@ -50,7 +50,6 @@ import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.customized.post.PostPlayerWithThumbnail
 import com.example.scrollbooker.components.customized.post.components.EndOfFeedPager
 import com.example.scrollbooker.components.customized.post.components.PostOverlay
-import com.example.scrollbooker.components.customized.post.components.PostShimmer
 import com.example.scrollbooker.components.customized.post.components.VideoScrubber
 import com.example.scrollbooker.components.customized.post.handlePostSheetAction
 import com.example.scrollbooker.components.customized.post.sheets.PostSheetActionEnum
@@ -288,6 +287,7 @@ fun BaseProfilePostDetailScreen(
                                 VideoScrubber(
                                     player = player!! as ExoPlayer,
                                     isFocused = page == pagerState.settledPage,
+                                    isPaused = userPausedSet.contains(post.id),
                                     onSeekingChanged = { isSeeking = it },
                                     modifier = Modifier.align(Alignment.BottomCenter)
                                 )
