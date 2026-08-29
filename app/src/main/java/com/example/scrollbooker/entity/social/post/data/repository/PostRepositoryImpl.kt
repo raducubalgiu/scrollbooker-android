@@ -93,6 +93,10 @@ class PostRepositoryImpl @Inject constructor(
         return apiService.updatePostById(postId, request).toDomain()
     }
 
+    override suspend fun deletePostById(postId: Int) {
+        return apiService.deletePost(postId)
+    }
+
     override suspend fun getPostById(postId: Int): Post {
         return apiService.getPostById(postId).toDomain()
     }

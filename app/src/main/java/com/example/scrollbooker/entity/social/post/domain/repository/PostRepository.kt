@@ -29,6 +29,7 @@ interface PostRepository {
     suspend fun sharePost(postId: Int, channel: ShareChannelEnum)
 
     suspend fun updatePostById(postId: Int, request: UpdatePostRequest): Post
+    suspend fun deletePostById(postId: Int)
     suspend fun getPostById(postId: Int): Post
     suspend fun createPost(request: CreatePostRequest)
     suspend fun createVideoReview(request: CreateVideoReviewRequest)

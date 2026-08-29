@@ -134,6 +134,12 @@ fun BaseProfilePostDetailScreen(
                         sheetContent = PostSheetsContent.StatisticsSheet(it)
                     }
                 },
+                onOpenDeleteConfirm = {
+                    scope.launch {
+                        sheetState.hide()
+                        sheetContent = PostSheetsContent.DeletePostSheet(it)
+                    }
+                },
                 onNavigateToUserProfile = { profileNavigate.toUserProfile(it) }
             )
         }

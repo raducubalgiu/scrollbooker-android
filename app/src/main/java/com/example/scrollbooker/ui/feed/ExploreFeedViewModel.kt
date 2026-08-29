@@ -45,11 +45,15 @@ class ExploreFeedViewModel @Inject constructor(
     private val _onlyVideoReviews: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val onlyVideoReviews: StateFlow<Boolean> = _onlyVideoReviews.asStateFlow()
 
+    // deletedPostIds is combined purely as a refresh trigger: any change re-runs flatMapLatest,
+    // generating a brand new Pager (so it collects a fresh pageEventFlow) instead of trying to
+    // filter an already-cached PagingData, which crashes with "collect twice from pageEventFlow".
     @OptIn(ExperimentalCoroutinesApi::class)
     override val posts: Flow<PagingData<Post>> = combine(
         _selectedServiceIds,
-        _onlyVideoReviews
-    ) { ids, onlyVideos ->
+        _onlyVideoReviews,
+        postInteractionStore.deletedPostIds
+    ) { ids, onlyVideos, _ ->
         Pair(ids.toList(), onlyVideos)
     }.flatMapLatest { (idsList, onlyVideos) ->
         getExplorePostsUseCase(

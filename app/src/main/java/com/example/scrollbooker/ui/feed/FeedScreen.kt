@@ -98,6 +98,7 @@ fun FeedScreen(
                 },
                 onNavigateToEditPost = { feedNavigate.toEditPost(it) },
                 onOpenStatisticsSheet = { sheetContent = PostSheetsContent.StatisticsSheet(it) },
+                onOpenDeleteConfirm = { sheetContent = PostSheetsContent.DeletePostSheet(it) },
                 onNavigateToUserProfile = { feedNavigate.toUserProfile(it) }
             )
         }

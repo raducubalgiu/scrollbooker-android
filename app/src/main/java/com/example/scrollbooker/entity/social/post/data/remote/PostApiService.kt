@@ -26,6 +26,11 @@ interface PostApiService {
         @Body request: UpdatePostRequest
     ): PostDto
 
+    @DELETE("posts/{postId}")
+    suspend fun deletePost(
+        @Path("postId") postId: Int
+    )
+
     @GET("posts/{postId}")
     suspend fun getPostById(
         @Path("postId") postId: Int,

@@ -15,6 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.example.scrollbooker.components.customized.post.sheets.PendingPostAction.*
 import com.example.scrollbooker.components.customized.post.sheets.comments.CommentsSheet
+import com.example.scrollbooker.components.customized.post.sheets.deletePost.DeletePostSheet
 import com.example.scrollbooker.components.customized.post.sheets.linkedProducts.LinkedProductsSheet
 import com.example.scrollbooker.components.customized.post.sheets.more.MoreSheet
 import com.example.scrollbooker.ui.reviews.ReviewsSheet
@@ -39,6 +40,7 @@ fun PostSheets(
     onNavigateToBooking: (product: Product) -> Unit,
     onNavigateToEditPost: (Int) -> Unit,
     onOpenStatisticsSheet: (postId: Int) -> Unit,
+    onOpenDeleteConfirm: (postId: Int) -> Unit,
     onClose: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
@@ -102,10 +104,17 @@ fun PostSheets(
                         scope.launch { sheetState.hide() }
                     },
                     onOpenStatistics = { onOpenStatisticsSheet(it) },
+                    onOpenDeleteConfirm = { onOpenDeleteConfirm(it) },
                 )
             }
             is PostSheetsContent.StatisticsSheet -> {
                 PostStatisticsSheet(
+                    postId = content.postId,
+                    onClose = onClose
+                )
+            }
+            is PostSheetsContent.DeletePostSheet -> {
+                DeletePostSheet(
                     postId = content.postId,
                     onClose = onClose
                 )

@@ -10,6 +10,7 @@ import com.example.scrollbooker.entity.social.post.domain.useCase.CreatePostView
 import com.example.scrollbooker.entity.social.post.domain.useCase.CreatePostsViewEventsBulkUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.CreateVideoPostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.CreateVideoReviewUseCase
+import com.example.scrollbooker.entity.social.post.domain.useCase.DeletePostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetExplorePostsUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetFollowingPostsUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetPostAnalyticsSummaryUseCase
@@ -79,6 +80,14 @@ object PostsModule {
         repository: PostRepository,
     ): UpdatePostUseCase {
         return UpdatePostUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDeletePostUseCase(
+        repository: PostRepository,
+    ): DeletePostUseCase {
+        return DeletePostUseCase(repository)
     }
 
     @Provides

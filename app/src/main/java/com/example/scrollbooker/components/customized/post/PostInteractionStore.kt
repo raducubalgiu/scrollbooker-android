@@ -3,6 +3,7 @@ package com.example.scrollbooker.components.customized.post
 import com.example.scrollbooker.core.enums.ShareChannelEnum
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.social.post.domain.useCase.BookmarkPostUseCase
+import com.example.scrollbooker.entity.social.post.domain.useCase.DeletePostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.LikePostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.SharePostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.UnBookmarkPostUseCase
@@ -13,6 +14,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -28,11 +30,25 @@ class PostInteractionStore @Inject constructor(
     private val unLikePostUseCase: UnLikePostUseCase,
     private val bookmarkPostUseCase: BookmarkPostUseCase,
     private val unBookmarkPostUseCase: UnBookmarkPostUseCase,
-    private val sharePostUseCase: SharePostUseCase
+    private val sharePostUseCase: SharePostUseCase,
+    private val deletePostUseCase: DeletePostUseCase
 ) {
     private val storeScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private val _postUi = MutableStateFlow<Map<Int, PostActionUiState>>(emptyMap())
     private val perPostFlows = ConcurrentHashMap<Int, StateFlow<PostActionUiState>>()
+
+    private val _deletedPostIds = MutableStateFlow<Set<Int>>(emptySet())
+    val deletedPostIds: StateFlow<Set<Int>> = _deletedPostIds.asStateFlow()
+
+    suspend fun deletePost(postId: Int): Result<Unit> {
+        val result = deletePostUseCase(postId)
+
+        if (result.isSuccess) {
+            _deletedPostIds.update { it + postId }
+        }
+
+        return result
+    }
 
     fun observePostUi(postId: Int): StateFlow<PostActionUiState> =
         perPostFlows.getOrPut(postId) {

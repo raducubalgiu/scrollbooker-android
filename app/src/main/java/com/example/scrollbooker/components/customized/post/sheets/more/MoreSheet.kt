@@ -9,13 +9,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.list.ItemList
 import com.example.scrollbooker.components.core.sheet.SheetHeader
+import com.example.scrollbooker.ui.theme.Error
 
 @Composable
 fun MoreSheet(
     postId: Int,
     onClose: () -> Unit,
     onOpenStatistics: (Int) -> Unit,
-    onNavigateToEditPost: (Int) -> Unit
+    onNavigateToEditPost: (Int) -> Unit,
+    onOpenDeleteConfirm: (Int) -> Unit
 ) {
     val viewModel: MoreViewModel = hiltViewModel()
 
@@ -47,7 +49,8 @@ fun MoreSheet(
             headLine = stringResource(id = R.string.delete),
             leftIcon = painterResource(R.drawable.ic_delete_outline),
             displayRightIcon = false,
-            onClick = {}
+            color = Error,
+            onClick = { onOpenDeleteConfirm(postId) }
         )
     }
 }
