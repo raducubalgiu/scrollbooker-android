@@ -2,6 +2,7 @@ package com.example.scrollbooker.entity.social.comment.data.remote
 
 import com.example.scrollbooker.core.util.PaginatedResponseDto
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -26,7 +27,7 @@ interface CommentsApiService {
         @Path("commentId") commentId: Int
     )
 
-    @POST("comments/{commentId}/likes")
+    @DELETE("comments/{commentId}/likes")
     suspend fun unlikeComment(
         @Path("commentId") commentId: Int
     )

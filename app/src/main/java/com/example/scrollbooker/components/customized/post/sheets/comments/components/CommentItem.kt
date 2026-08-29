@@ -129,7 +129,12 @@ fun CommentItem(
 
                     Row(
                         modifier = Modifier.clickable(
-                            onClick = {  },
+                            onClick = {
+                                onLikeClick(
+                                    comment,
+                                    if (comment.isLiked) LikeCommentEnum.UNLIKE else LikeCommentEnum.LIKE
+                                )
+                            },
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null),
                         verticalAlignment = Alignment.CenterVertically

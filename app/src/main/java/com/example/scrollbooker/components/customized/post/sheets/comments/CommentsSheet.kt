@@ -5,11 +5,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.ErrorScreen
@@ -29,12 +32,24 @@ fun CommentsSheet(
 ) {
     val viewModel: CommentsViewModel = hiltViewModel()
     val comments = viewModel.commentsState.collectAsLazyPagingItems()
+    val pendingComments by viewModel.pendingComments.collectAsStateWithLifecycle()
+    val likeOverrides by viewModel.likeOverrides.collectAsStateWithLifecycle()
 
     val refreshState = comments.loadState.refresh
     val isInitialLoading = refreshState is LoadState.Loading && comments.itemCount == 0
 
+    val listState = rememberLazyListState()
+
     LaunchedEffect(postId) {
         viewModel.setPostId(newPostId = postId)
+    }
+
+    val topPendingCommentId = pendingComments.firstOrNull()?.localId
+
+    LaunchedEffect(topPendingCommentId) {
+        if (topPendingCommentId != null) {
+            listState.scrollToItem(0)
+        }
     }
 
     Column(modifier = Modifier
@@ -57,8 +72,13 @@ fun CommentsSheet(
                     else -> {
                         CommentsList(
                             comments = comments,
-                            onLikeClick = { comment, action -> },
-                            onNavigateToUserProfile = onNavigateToUserProfile
+                            pendingComments = pendingComments,
+                            likeOverrides = likeOverrides,
+                            onLikeClick = { comment, action -> viewModel.toggleLike(comment, action) },
+                            onRetryComment = { localId -> viewModel.retryComment(localId) },
+                            onDiscardComment = { localId -> viewModel.discardPendingComment(localId) },
+                            onNavigateToUserProfile = onNavigateToUserProfile,
+                            listState = listState
                         )
                     }
                 }

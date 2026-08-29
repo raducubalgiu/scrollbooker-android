@@ -21,6 +21,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -44,6 +46,9 @@ fun TextFieldComment(
     onValueChange: (TextFieldValue) -> Unit,
     onSubmit: () -> Unit,
 ) {
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -83,7 +88,11 @@ fun TextFieldComment(
                     Spacer(Modifier.width(SpacingS))
 
                     IconButton(
-                        onClick = onSubmit,
+                        onClick = {
+                            onSubmit()
+                            focusManager.clearFocus(force = true)
+                            keyboardController?.hide()
+                        },
                         enabled = isEnabled,
                         colors = IconButtonDefaults.iconButtonColors(
                             containerColor = Primary,

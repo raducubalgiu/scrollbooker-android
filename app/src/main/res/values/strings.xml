@@ -172,6 +172,9 @@
     <string name="scheduleSubheaderDescription">Adaugă intervalele orare în care locația ta este deschisă pentru clienți</string>
     <string name="comments">Comentarii</string>
     <string name="notFoundComments">Încă nu au fost adăugate comentarii</string>
+    <string name="sendingComment">Se trimite...</string>
+    <string name="commentFailedToSend">Comentariul nu a putut fi trimis</string>
+    <string name="retry">Reîncearcă</string>
     <string name="chooseDesiredCurrencies">Alege in ce valute dorești să primești plăți din partea clienților</string>
     <string name="acceptedCurrencies">Valute acceptate pentru plăți</string>
     <string name="password">Parolă</string>
