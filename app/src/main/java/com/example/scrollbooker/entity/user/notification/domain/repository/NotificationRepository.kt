@@ -6,5 +6,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface NotificationRepository {
     suspend fun getUserNotificationsNumber(): Int
+    suspend fun markNotificationAsRead(notificationIds: List<Int>)
     fun getNotifications(): Flow<PagingData<Notification>>
 }

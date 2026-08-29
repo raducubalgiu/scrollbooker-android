@@ -5,6 +5,7 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,6 +32,7 @@ import com.example.scrollbooker.ui.theme.OnError
 import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.Primary
+import kotlinx.coroutines.delay
 
 data class NotificationBadgeConfig(
     val icon: ImageVector,
@@ -40,13 +42,22 @@ data class NotificationBadgeConfig(
 @Composable
 fun NotificationItem(
     notification: Notification,
+    isRead: Boolean,
     isLocked: Boolean,
     isFollowed: Boolean?,
     onFollow: (Boolean) -> Unit,
+    onSeen: (Int) -> Unit,
     inboxNavigate: InboxNavigator,
     modifier: Modifier = Modifier
 ) {
     val description = notification.resolveDescription()
+
+    LaunchedEffect(notification.id, isRead) {
+        if (!isRead) {
+            delay(600)
+            onSeen(notification.id)
+        }
+    }
 
     val descMaxLines = remember(notification.id, notification.type) {
         if (notification.type == NotificationTypeEnum.FOLLOW) 1 else 2
@@ -137,7 +148,6 @@ fun NotificationItem(
         title = notification.sender.fullName,
         description = description,
         avatar = notification.sender.avatar ?: "",
-        isEnabled = true,
         titleMaxLines = 1,
         descriptionMaxLines = descMaxLines,
         onNavigateUserProfile = {

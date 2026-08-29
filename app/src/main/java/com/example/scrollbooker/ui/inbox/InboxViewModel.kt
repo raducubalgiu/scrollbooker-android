@@ -18,14 +18,20 @@ import com.example.scrollbooker.entity.nomenclature.consent.domain.model.Consent
 import com.example.scrollbooker.entity.nomenclature.consent.domain.useCase.GetConsentsByNameUseCase
 import com.example.scrollbooker.entity.user.notification.domain.model.Notification
 import com.example.scrollbooker.entity.user.notification.domain.useCase.GetNotificationsUseCase
+import com.example.scrollbooker.entity.user.notification.domain.useCase.MarkNotificationsAsReadUseCase
 import com.example.scrollbooker.entity.user.userSocial.domain.useCase.FollowUserUseCase
 import com.example.scrollbooker.entity.user.userSocial.domain.useCase.UnfollowUserUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
@@ -45,6 +51,7 @@ class InboxViewModel @Inject constructor(
     private val respondEmploymentRequestUseCase: RespondEmploymentRequestUseCase,
     private val getConsentsByNameUseCase: GetConsentsByNameUseCase,
     private val getEmploymentRequestByIdUseCase: GetEmploymentRequestByIdUseCase,
+    private val markNotificationsAsReadUseCase: MarkNotificationsAsReadUseCase,
     private val authDataStore: AuthDataStore,
     private val refreshTokenUseCase: RefreshTokenUseCase,
     private val saveUserSessionUseCase: SaveUserSessionUseCase
@@ -71,8 +78,48 @@ class InboxViewModel @Inject constructor(
     private val _isFollowSaving = MutableStateFlow<Set<Int>>(emptySet())
     val isFollowSaving = _isFollowSaving.asStateFlow()
 
+    private val _readState = MutableStateFlow<Set<Int>>(emptySet())
+    val readState = _readState.asStateFlow()
+
+    private val _notificationsMarkedAsRead = MutableSharedFlow<Int>(extraBufferCapacity = 8)
+    val notificationsMarkedAsRead: SharedFlow<Int> = _notificationsMarkedAsRead.asSharedFlow()
+
+    private val pendingReadIds = mutableSetOf<Int>()
+    private var markAsReadJob: Job? = null
+
     fun refreshNotifications() {
         _notificationRefreshTrigger.value += 1
+    }
+
+    fun markAsSeen(notificationId: Int) {
+        if (_readState.value.contains(notificationId)) {
+            return
+        }
+
+        pendingReadIds += notificationId
+        _readState.update { it + notificationId }
+
+        markAsReadJob?.cancel()
+        markAsReadJob = viewModelScope.launch {
+            delay(1500)
+            flushReadNotifications()
+        }
+    }
+
+    private suspend fun flushReadNotifications() {
+        if (pendingReadIds.isEmpty()) {
+            return
+        }
+
+        val ids = pendingReadIds.toList()
+        pendingReadIds.clear()
+
+        markNotificationsAsReadUseCase(ids)
+            .onSuccess { _notificationsMarkedAsRead.tryEmit(ids.size) }
+            .onFailure { e ->
+                _readState.update { it - ids.toSet() }
+                Timber.tag("Read notifications").e(e, "ERROR: on Mark Read notifications")
+            }
     }
 
     fun follow(isFollow: Boolean, userId: Int) {
@@ -92,7 +139,7 @@ class InboxViewModel @Inject constructor(
                 }
             } catch(e: Exception) {
                 _followState.update { it + (userId to isFollow) }
-                Timber.tag("Follow/Unfollow").e("ERROR: $e")
+                Timber.tag("Follow/Unfollow").e(e, "ERROR: on follow/unfollow action")
 
             } finally {
                 _isFollowSaving.update { it - userId }
@@ -153,7 +200,7 @@ class InboxViewModel @Inject constructor(
         }
 
         response.onFailure { e ->
-            Timber.tag("Employment Request").e("ERROR: on Responding Employment Request $e")
+            Timber.tag("Employment Request").e(e, "ERROR: on Responding Employment Request")
             _isSaving.value = false
         }
 

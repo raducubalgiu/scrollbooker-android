@@ -22,6 +22,7 @@ import com.example.scrollbooker.entity.user.notification.data.repository.Notific
 import com.example.scrollbooker.entity.user.notification.domain.repository.NotificationRepository
 import com.example.scrollbooker.entity.user.notification.domain.useCase.GetNotificationsUseCase
 import com.example.scrollbooker.entity.user.notification.domain.useCase.GetUserNotificationsNumberUseCase
+import com.example.scrollbooker.entity.user.notification.domain.useCase.MarkNotificationsAsReadUseCase
 import com.example.scrollbooker.entity.user.userSocial.data.remote.UserSocialDto
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -137,5 +138,14 @@ object NotificationsModule {
         repository: NotificationRepository,
     ): GetNotificationsUseCase {
         return GetNotificationsUseCase(repository)
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideMarkNotificationsAsReadUseCase(
+        repository: NotificationRepository,
+    ): MarkNotificationsAsReadUseCase {
+        return MarkNotificationsAsReadUseCase(repository)
     }
 }

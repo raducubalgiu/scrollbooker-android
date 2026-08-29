@@ -19,7 +19,8 @@ data class BottomBarController(
     val incAppointments: () -> Unit = {},
     val decAppointments: () -> Unit = {},
     val setAppointments: (Int) -> Unit = {},
-    val setNotifications: (Int) -> Unit = {}
+    val setNotifications: (Int) -> Unit = {},
+    val decNotifications: () -> Unit = {}
 )
 
 val LocalBottomBarController = staticCompositionLocalOf {

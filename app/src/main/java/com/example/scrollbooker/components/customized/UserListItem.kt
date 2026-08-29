@@ -29,7 +29,6 @@ import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodyMedium
-import com.example.scrollbooker.ui.theme.titleMedium
 
 @Composable
 fun UserListItem(
@@ -37,7 +36,6 @@ fun UserListItem(
     title: String,
     description: String,
     avatar: String,
-    isEnabled: Boolean,
     titleMaxLines: Int = 1,
     descriptionMaxLines: Int = 2,
     badgeConfig: NotificationBadgeConfig? = null,
@@ -52,7 +50,7 @@ fun UserListItem(
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
-                onClick = { if (isEnabled) onNavigateUserProfile() }
+                onClick = onNavigateUserProfile
             ),
         headlineContent = {
             Text(

@@ -57,6 +57,7 @@ fun NavGraphBuilder.mainGraph(onLogout: () -> Unit) {
                     decAppointments = mainUiViewModel::decAppointmentsNumber,
                     setAppointments = mainUiViewModel::setAppointments,
                     setNotifications = mainUiViewModel::setNotifications,
+                    decNotifications = mainUiViewModel::decNotificationsNumber,
                 )
             }
 

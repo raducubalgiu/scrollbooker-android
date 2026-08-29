@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -17,6 +18,7 @@ import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.core.layout.MessageScreen
 import com.example.scrollbooker.navigation.navigators.InboxNavigator
+import com.example.scrollbooker.ui.LocalBottomBarController
 import com.example.scrollbooker.ui.inbox.components.NotificationsList
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,6 +31,14 @@ fun InboxScreen(
     val refreshState = notifications.loadState.refresh
 
     val isInitialLoading = refreshState is LoadState.Loading && notifications.itemCount == 0
+
+    val bottomBarController = LocalBottomBarController.current
+
+    LaunchedEffect(viewModel) {
+        viewModel.notificationsMarkedAsRead.collect { count ->
+            repeat(count) { bottomBarController.decNotifications() }
+        }
+    }
 
     Scaffold(
         topBar = { Header(title = stringResource(id = R.string.inbox)) },

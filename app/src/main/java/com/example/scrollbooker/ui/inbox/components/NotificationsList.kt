@@ -24,15 +24,14 @@ fun NotificationsList(
 ) {
     val followState by viewModel.followState.collectAsStateWithLifecycle()
     val isFollowSaving by viewModel.isFollowSaving.collectAsStateWithLifecycle()
+    val readState by viewModel.readState.collectAsStateWithLifecycle()
     val appendState = notifications.loadState.append
 
     Refresh(
         isRefreshing = notifications.loadState.refresh is LoadState.Loading,
         onRefresh = { viewModel.refreshNotifications() }
     ) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize()
-        ) {
+        LazyColumn(Modifier.fillMaxSize()) {
             items(
                 count = notifications.itemCount,
                 key = { index -> notifications[index]?.id ?: index }
@@ -43,12 +42,15 @@ fun NotificationsList(
                     val senderId = notif.sender.id
                     val isLocked = isFollowSaving.contains(senderId)
                     val isFollowed = followState[senderId] ?: notif.sender.isFollow
+                    val isRead = notif.isRead || readState.contains(notif.id)
 
                     NotificationItem(
                         notification = notif,
+                        isRead = isRead,
                         isLocked = isLocked,
                         isFollowed = isFollowed,
                         onFollow = { isFollowedTarget -> onFollow(isFollowedTarget, senderId) },
+                        onSeen = { viewModel.markAsSeen(it) },
                         inboxNavigate = inboxNavigate
                     )
                 }

@@ -87,6 +87,12 @@ class MainUIViewModel @Inject constructor(
         _notifications.value = n.coerceAtLeast(0)
     }
 
+    fun decNotificationsNumber() {
+        if(_notifications.value > 0) {
+            _notifications.value--
+        }
+    }
+
     private fun loadAppointmentsNumber() {
         viewModelScope.launch {
             _appointments.value = getUserAppointmentsNumberUseCase()
