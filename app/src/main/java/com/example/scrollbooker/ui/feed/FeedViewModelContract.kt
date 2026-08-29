@@ -16,6 +16,7 @@ interface FeedViewModelContract {
     fun toggleLike(post: Post)
     fun toggleBookmark(post: Post)
     fun sharePost(post: Post, channel: ShareChannelEnum)
+    fun refreshAfterPostDeleted()
 
     fun getPlayerForIndex(index: Int): androidx.media3.common.Player?
     fun ensureWindow(centerIndex: Int, getPost: (Int) -> Post?)

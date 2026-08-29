@@ -13,12 +13,14 @@ class UpdatePostUseCase @Inject constructor(
         postId: Int,
         description: String?,
         linkedProductIds: List<Int>,
+        serviceDomainId: Int?,
         customCover: String?
     ): Result<Post> {
         val request = UpdatePostRequest(
             description = description,
             linkedProductIds = linkedProductIds,
-            customCover = customCover
+            customCover = customCover,
+            serviceDomainId = serviceDomainId
         )
 
         return try {

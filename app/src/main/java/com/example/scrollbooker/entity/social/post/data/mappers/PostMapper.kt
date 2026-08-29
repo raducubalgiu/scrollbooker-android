@@ -9,6 +9,7 @@ import com.example.scrollbooker.entity.social.post.data.remote.PostMediaFileDto
 import com.example.scrollbooker.entity.social.post.data.remote.PostProductCurrencyDto
 import com.example.scrollbooker.entity.social.post.data.remote.PostProductDto
 import com.example.scrollbooker.entity.social.post.data.remote.PostReviewDto
+import com.example.scrollbooker.entity.social.post.data.remote.PostServiceDomainDto
 import com.example.scrollbooker.entity.social.post.data.remote.PostUserDto
 import com.example.scrollbooker.entity.social.post.data.remote.UserPostActionsDto
 import com.example.scrollbooker.entity.social.post.domain.model.Hashtag
@@ -20,6 +21,7 @@ import com.example.scrollbooker.entity.social.post.domain.model.PostMediaFile
 import com.example.scrollbooker.entity.social.post.domain.model.PostProduct
 import com.example.scrollbooker.entity.social.post.domain.model.PostProductCurrency
 import com.example.scrollbooker.entity.social.post.domain.model.PostReview
+import com.example.scrollbooker.entity.social.post.domain.model.PostServiceDomain
 import com.example.scrollbooker.entity.social.post.domain.model.PostUser
 import com.example.scrollbooker.entity.social.post.domain.model.UserPostActions
 
@@ -38,6 +40,7 @@ fun PostDto.toDomain(): Post {
         isOwnPost = isOwnPost,
         businessId = businessId,
         review = review?.toDomain(),
+        serviceDomain = serviceDomain?.toDomain(),
         createdAt = createdAt,
     )
 }
@@ -153,5 +156,12 @@ fun PostReviewDto.toDomain(): PostReview {
         id = id,
         review = review,
         rating = rating
+    )
+}
+
+fun PostServiceDomainDto.toDomain(): PostServiceDomain {
+    return PostServiceDomain(
+        id = id,
+        name = name
     )
 }

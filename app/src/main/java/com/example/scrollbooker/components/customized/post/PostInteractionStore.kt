@@ -37,18 +37,7 @@ class PostInteractionStore @Inject constructor(
     private val _postUi = MutableStateFlow<Map<Int, PostActionUiState>>(emptyMap())
     private val perPostFlows = ConcurrentHashMap<Int, StateFlow<PostActionUiState>>()
 
-    private val _deletedPostIds = MutableStateFlow<Set<Int>>(emptySet())
-    val deletedPostIds: StateFlow<Set<Int>> = _deletedPostIds.asStateFlow()
-
-    suspend fun deletePost(postId: Int): Result<Unit> {
-        val result = deletePostUseCase(postId)
-
-        if (result.isSuccess) {
-            _deletedPostIds.update { it + postId }
-        }
-
-        return result
-    }
+    suspend fun deletePost(postId: Int): Result<Unit> = deletePostUseCase(postId)
 
     fun observePostUi(postId: Int): StateFlow<PostActionUiState> =
         perPostFlows.getOrPut(postId) {

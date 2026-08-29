@@ -21,6 +21,8 @@ import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.model.UserProducts
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByBusinessIdAndEmployeeIdUseCase
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.SelectedServiceDomainsWithServices
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.useCase.GetSelectedServiceDomainsWithServicesByBusinessIdUseCase
 import com.example.scrollbooker.entity.permission.domain.repository.PermissionRepository
 import com.example.scrollbooker.entity.social.post.domain.useCase.CreateVideoPostUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.CreateVideoReviewUseCase
@@ -30,6 +32,7 @@ import com.example.scrollbooker.ui.editPost.EditPostUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -46,7 +49,11 @@ import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
@@ -61,6 +68,7 @@ class CameraViewModel @Inject constructor(
     private val createVideoPostUseCase: CreateVideoPostUseCase,
     private val createVideoReviewUseCase: CreateVideoReviewUseCase,
     private val getProductsByBusinessIdAndEmployeeIdUseCase: GetProductsByBusinessIdAndEmployeeIdUseCase,
+    private val getSelectedServiceDomainsWithServicesByBusinessIdUseCase: GetSelectedServiceDomainsWithServicesByBusinessIdUseCase,
     private val authDataStore: AuthDataStore,
     savedStateHandle: SavedStateHandle,
     @ApplicationContext private val context: Context
@@ -72,6 +80,9 @@ class CameraViewModel @Inject constructor(
     private val _description = MutableStateFlow<String>("")
     private val _linkedProducts = MutableStateFlow<Set<Product>>(emptySet())
     private val _userProducts = MutableStateFlow<FeatureState<UserProducts>>(FeatureState.Loading)
+
+    private val _selectedServiceDomainId = MutableStateFlow<Int?>(null)
+    val selectedServiceDomainId: StateFlow<Int?> = _selectedServiceDomainId.asStateFlow()
 
     private val _rating = MutableStateFlow(0)
     private val _review = MutableStateFlow("")
@@ -117,6 +128,24 @@ class CameraViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = EditPostUiState.Loading
     )
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val serviceDomainsState: StateFlow<FeatureState<List<SelectedServiceDomainsWithServices>>> = authDataStore
+        .getBusinessId()
+        .filterNotNull()
+        .distinctUntilChanged()
+        .flatMapLatest { businessId ->
+            flow {
+                emit(FeatureState.Loading)
+                val result = getSelectedServiceDomainsWithServicesByBusinessIdUseCase(businessId)
+                emit(result)
+            }
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = FeatureState.Loading
+        )
 
     private val _isSaving = MutableStateFlow<FeatureState<Unit>?>(null)
     val isSaving: StateFlow<FeatureState<Unit>?> = _isSaving
@@ -182,6 +211,10 @@ class CameraViewModel @Inject constructor(
         _linkedProducts.update { currentSet ->
             currentSet - product
         }
+    }
+
+    fun setSelectedServiceDomainId(id: Int?) {
+        _selectedServiceDomainId.value = id
     }
 
     fun loadMediaThumb() {
@@ -533,6 +566,7 @@ class CameraViewModel @Inject constructor(
                         description = _description.value,
                         linkedProductIds = _linkedProducts.value.map { it.id },
                         customCover = customCover,
+                        serviceDomaiId = _selectedServiceDomainId.value,
                         onProgress = {}
                     )
                 }

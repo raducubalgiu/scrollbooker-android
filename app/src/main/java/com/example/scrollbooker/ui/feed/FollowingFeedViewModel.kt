@@ -13,6 +13,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,12 +29,9 @@ class FollowingFeedViewModel @Inject constructor(
 ) {
     override val feedScopeKey: String = PostViewSourceEnum.FOLLOWING_FEED.key
 
-    // deletedPostIds is used purely as a refresh trigger here: any change re-runs flatMapLatest,
-    // generating a brand new Pager instead of filtering an already-cached PagingData (which
-    // crashes with "collect twice from pageEventFlow").
     @OptIn(ExperimentalCoroutinesApi::class)
     override val posts: Flow<PagingData<Post>> =
-        postInteractionStore.deletedPostIds
+        postsRefreshTrigger.onStart { emit(Unit) }
             .flatMapLatest { getFollowingPostsUseCase() }
             .cachedIn(viewModelScope)
 }

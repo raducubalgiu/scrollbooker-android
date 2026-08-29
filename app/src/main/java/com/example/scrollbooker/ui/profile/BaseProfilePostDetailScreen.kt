@@ -140,6 +140,13 @@ fun BaseProfilePostDetailScreen(
                         sheetContent = PostSheetsContent.DeletePostSheet(it)
                     }
                 },
+                onPostDeleted = {
+                    scope.launch {
+                        sheetState.hide()
+                        sheetContent = None
+                        viewModel.refreshAfterPostDeleted()
+                    }
+                },
                 onNavigateToUserProfile = { profileNavigate.toUserProfile(it) }
             )
         }

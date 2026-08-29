@@ -99,6 +99,13 @@ fun FeedScreen(
                 onNavigateToEditPost = { feedNavigate.toEditPost(it) },
                 onOpenStatisticsSheet = { sheetContent = PostSheetsContent.StatisticsSheet(it) },
                 onOpenDeleteConfirm = { sheetContent = PostSheetsContent.DeletePostSheet(it) },
+                onPostDeleted = {
+                    scope.launch {
+                        sheetState.hide()
+                        sheetContent = None
+                        tabConfigs[horizontalPagerState.currentPage].viewModel.refreshAfterPostDeleted()
+                    }
+                },
                 onNavigateToUserProfile = { feedNavigate.toUserProfile(it) }
             )
         }

@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.customized.productCard.ProductCardRowPrice
 import com.example.scrollbooker.core.util.Dimens.BasePadding
@@ -47,7 +46,6 @@ fun LinkedProductRow(
                 text = product.name,
                 style = titleMedium,
                 color = OnBackground,
-                fontSize = 19.sp,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )

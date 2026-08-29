@@ -35,14 +35,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -64,16 +61,6 @@ abstract class BaseProfileViewModel(
     abstract val usernameFlow: Flow<String?>
 
     private val pagingRefreshTrigger = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
-
-    init {
-        // Re-run the posts/bookmarks/employees Pagers (instead of filtering an already-cached
-        // PagingData, which crashes with "collect twice from pageEventFlow") whenever a post
-        // gets deleted anywhere in the app.
-        postInteractionStore.deletedPostIds
-            .drop(1)
-            .onEach { pagingRefreshTrigger.tryEmit(Unit) }
-            .launchIn(viewModelScope)
-    }
 
     protected val _isFollowState = MutableStateFlow<Boolean?>(null)
     val isFollowState: StateFlow<Boolean?> = _isFollowState.asStateFlow()
@@ -222,6 +209,14 @@ abstract class BaseProfileViewModel(
 
     fun notifyPagingFinished() {
         _isRefreshing.value = false
+    }
+
+    // Called by the screen once a post's delete sheet has finished closing, so the Pager
+    // regenerates (fresh pageEventFlow) and the deleted post disappears - deliberately not
+    // triggered automatically on delete, so the re-fetch doesn't compete with the sheet's
+    // close animation.
+    override fun refreshAfterPostDeleted() {
+        pagingRefreshTrigger.tryEmit(Unit)
     }
 
     private suspend fun refreshProfileSilently() {

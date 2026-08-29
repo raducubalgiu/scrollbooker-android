@@ -20,6 +20,8 @@ fun EditPostScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    val selectedServiceDomainId by viewModel.selectedServiceDomainId.collectAsStateWithLifecycle()
+    val serviceDomains by viewModel.serviceDomainsState.collectAsStateWithLifecycle()
     val isSaving by viewModel.isSaving.collectAsStateWithLifecycle()
     val isLoading = isSaving is FeatureState.Loading
 
@@ -49,13 +51,15 @@ fun EditPostScreen(
             EditPostContent(
                 isEditMode = true,
                 isVideoReview = false,
+                selectedServiceDomainId = selectedServiceDomainId,
+                serviceDomains = serviceDomains,
                 editPostUiState = state,
                 isLoading = isLoading,
                 hostState = hostState,
                 onDescriptionChange = { viewModel.setDescription(it) },
                 onRemoveProduct = { viewModel.removeLinkedProduct(it) },
                 onConfirmSelection = { viewModel.updateLinkedProducts(it) },
-                onNavigateToPostPreview = {},
+                onSetSelectedServiceDomainId = { viewModel.setSelectedServiceDomainId(it) },
                 onNavigateToPostCover = onNavigateToCoverScreen,
                 onSave = { viewModel.editPost() },
                 onBack = onBack,

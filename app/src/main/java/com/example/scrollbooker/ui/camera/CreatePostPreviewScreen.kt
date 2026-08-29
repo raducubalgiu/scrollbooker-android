@@ -242,6 +242,7 @@ fun CreatePostPreviewScreen(
                                 isOwnPost = false,
                                 businessId = 1,
                                 review = null,
+                                serviceDomain = null,
                                 createdAt = ""
                             ),
                             isSavingLike = false,

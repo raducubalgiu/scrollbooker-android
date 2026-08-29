@@ -29,6 +29,8 @@ fun CreatePostScreen(
     val cameraVideoUiState by viewModel.cameraVideoUiState.collectAsStateWithLifecycle()
     val editUiState by viewModel.editUiState.collectAsStateWithLifecycle()
 
+    val selectedServiceDomainId by viewModel.selectedServiceDomainId.collectAsStateWithLifecycle()
+    val serviceDomains by viewModel.serviceDomainsState.collectAsStateWithLifecycle()
     val isSaving by viewModel.isSaving.collectAsStateWithLifecycle()
     val isLoading = isSaving is FeatureState.Loading
 
@@ -58,6 +60,8 @@ fun CreatePostScreen(
             EditPostContent(
                 isEditMode = false,
                 isVideoReview = viewModel.isVideoReview,
+                selectedServiceDomainId = selectedServiceDomainId,
+                serviceDomains = serviceDomains,
                 editPostUiState = createState.copy(
                     coverUrl = cameraVideoUiState.coverUri?.toString(),
                     coverKey = cameraVideoUiState.coverKey
@@ -69,7 +73,7 @@ fun CreatePostScreen(
                 onRemoveProduct = { viewModel.removeLinkedProduct(it) },
                 onRatingChange = { viewModel.setRating(it) },
                 onReviewChange = { viewModel.setReview(it) },
-                onNavigateToPostPreview = onNavigateToPostPreview,
+                onSetSelectedServiceDomainId = { viewModel.setSelectedServiceDomainId(it) },
                 onConfirmSelection = { viewModel.updateLinkedProducts(it) },
                 onNavigateToPostCover = onNavigateToCoverScreen,
                 onSave = {

@@ -8,6 +8,7 @@ import com.example.scrollbooker.components.customized.post.PostViewHeartbeatTrac
 import com.example.scrollbooker.components.customized.post.VideoPlayerManager
 import com.example.scrollbooker.core.enums.ShareChannelEnum
 import com.example.scrollbooker.entity.social.post.domain.model.Post
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,6 +23,16 @@ abstract class BaseFeedViewModel(
 
     private val _scrollToTopSignal = MutableStateFlow(0)
     override val scrollToTopSignal: StateFlow<Int> = _scrollToTopSignal.asStateFlow()
+
+    // Combined into each subclass's `posts` Pager. Emitting into it regenerates the Pager
+    // (fresh pageEventFlow) instead of filtering an already-cached PagingData, which crashes
+    // ("collect twice from pageEventFlow"). Triggered explicitly by the screen once a post's
+    // delete sheet has finished closing, so the re-fetch doesn't compete with its close animation.
+    protected val postsRefreshTrigger = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+
+    override fun refreshAfterPostDeleted() {
+        postsRefreshTrigger.tryEmit(Unit)
+    }
 
     protected fun requestScrollToTop() {
         _scrollToTopSignal.value++

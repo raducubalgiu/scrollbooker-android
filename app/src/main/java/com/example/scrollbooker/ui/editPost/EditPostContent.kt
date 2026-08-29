@@ -3,8 +3,11 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -14,7 +17,10 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SuggestionChip
+import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -26,6 +32,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
@@ -41,13 +48,17 @@ import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.SelectedServiceDomainsWithServices
 import com.example.scrollbooker.ui.camera.UserProductsSheet
 import com.example.scrollbooker.ui.camera.components.CreatePostBottomBar
 import com.example.scrollbooker.ui.camera.components.CreatePostHeader
 import com.example.scrollbooker.ui.camera.components.PostReviewSection
 import com.example.scrollbooker.ui.theme.Background
 import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.Primary
+import com.example.scrollbooker.ui.theme.bodyMedium
 import com.example.scrollbooker.ui.theme.labelLarge
 import com.example.scrollbooker.ui.theme.titleLarge
 import kotlinx.coroutines.launch
@@ -57,6 +68,8 @@ import kotlinx.coroutines.launch
 fun EditPostContent(
     isEditMode: Boolean,
     isVideoReview: Boolean,
+    selectedServiceDomainId: Int?,
+    serviceDomains: FeatureState<List<SelectedServiceDomainsWithServices>>,
     editPostUiState: EditPostUiState.Success,
     isLoading: Boolean,
     isSaveDisabled: Boolean = false,
@@ -66,7 +79,7 @@ fun EditPostContent(
     onConfirmSelection: (Set<Product>) -> Unit,
     onRatingChange: (Int) -> Unit = {},
     onReviewChange: (String) -> Unit = {},
-    onNavigateToPostPreview: () -> Unit,
+    onSetSelectedServiceDomainId: (Int?) -> Unit,
     onNavigateToPostCover: () -> Unit,
     onSave: () -> Unit,
     onBack: () -> Unit
@@ -95,6 +108,12 @@ fun EditPostContent(
                 showSheet = false
             }
         }
+    }
+
+    val serviceDomainsOptionsList = when (val s = serviceDomains) {
+        is FeatureState.Success -> s.data
+            .filter { domain -> domain.services.any { it.isSelected } }
+        else -> emptyList()
     }
 
     if (showSheet) {
@@ -163,9 +182,54 @@ fun EditPostContent(
                         )
                     }
                 } else {
+                    Column(Modifier.padding(BasePadding)) {
+                        Text(
+                            text = stringResource(R.string.categories),
+                            style = titleLarge,
+                            fontWeight = FontWeight.ExtraBold
+                        )
+
+                        Spacer(Modifier.height(2.dp))
+
+                        Text(
+                            text = "Care categorie de servicii se potriveste cel mai bine postarii tale?",
+                            style = bodyMedium,
+                            color = Color.Gray
+                        )
+
+                        Spacer(Modifier.height(BasePadding))
+
+                        FlowRow {
+                            serviceDomainsOptionsList.forEach { sd ->
+                                val isSelected = sd.id == selectedServiceDomainId
+
+                                SuggestionChip(
+                                    onClick = { onSetSelectedServiceDomainId(sd.id) },
+                                    label = {
+                                        Text(
+                                            text = sd.name,
+                                            color = if(isSelected) OnPrimary else OnBackground,
+                                            fontWeight = FontWeight.SemiBold,
+                                            fontSize = 16.sp
+                                        )
+                                    },
+                                    shape = ShapeDefaults.Medium,
+                                    colors = SuggestionChipDefaults.suggestionChipColors(
+                                        containerColor = if(isSelected) Primary else Color.Transparent
+                                    ),
+                                    border = SuggestionChipDefaults.suggestionChipBorder(
+                                        enabled = true,
+                                        borderColor = if(isSelected) Primary else Divider,
+                                        borderWidth = 1.dp
+                                    ),
+                                    modifier = Modifier.padding(end = 4.dp)
+                                )
+                            }
+                        }
+                    }
+
                     Row(
                         modifier = Modifier.padding(
-                            top = SpacingXL,
                             bottom = SpacingM,
                             start = BasePadding,
                             end = BasePadding
@@ -176,7 +240,6 @@ fun EditPostContent(
                         Text(
                             text = stringResource(R.string.linkedServices),
                             style = titleLarge,
-                            fontSize = 23.sp,
                             fontWeight = FontWeight.ExtraBold
                         )
 
@@ -194,6 +257,7 @@ fun EditPostContent(
 
                     if (editPostUiState.linkedProducts.isEmpty()) {
                         PlaceholderActionBox(
+                            modifier = Modifier.padding(BasePadding),
                             description = stringResource(R.string.linkedServicesDescription),
                             icon = Icons.Default.Add,
                             onClick = { handleShowSheet() }

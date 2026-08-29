@@ -25,8 +25,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.entity.social.post.domain.model.PostServiceDomain
 import com.example.scrollbooker.entity.social.post.domain.model.PostUser
 import com.example.scrollbooker.navigation.navigators.UserProfileParam
+import com.example.scrollbooker.ui.theme.Beauty
+import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge
 import com.example.scrollbooker.ui.theme.bodySmall
@@ -34,37 +37,56 @@ import com.example.scrollbooker.ui.theme.bodySmall
 @Composable
 fun PostOverlayUser(
     user: PostUser,
+    serviceDomain: PostServiceDomain?,
     isVideoReview: Boolean,
     onNavigateToUser: (param: UserProfileParam) -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
-    when {
-        isVideoReview -> {
-            Surface(
-                modifier = Modifier.padding(bottom = SpacingS),
-                shape = ShapeDefaults.ExtraLarge,
-                color = Color.White.copy(alpha = 0.1f),
-                contentColor = Color.White
-            ) {
-                Text(
-                    text = stringResource(R.string.videoReview),
-                    style = bodySmall,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(
-                        vertical = 10.dp,
-                        horizontal = 12.dp
-                    )
+    if(isVideoReview) {
+        Surface(
+            modifier = Modifier.padding(bottom = SpacingS),
+            shape = ShapeDefaults.ExtraLarge,
+            color = Color.White.copy(alpha = 0.1f),
+            contentColor = Color.White
+        ) {
+            Text(
+                text = stringResource(R.string.videoReview),
+                style = bodySmall,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.padding(
+                    vertical = 10.dp,
+                    horizontal = 12.dp
                 )
-            }
+            )
         }
+    }
 
+    serviceDomain?.let {
+        Surface(
+            modifier = Modifier.padding(bottom = SpacingS),
+            shape = ShapeDefaults.Small,
+            color = Beauty.copy(alpha = 0.8f),
+            contentColor = OnPrimary
+        ) {
+            Text(
+                text = it.name,
+                style = bodySmall,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.padding(
+                    vertical = 6.dp,
+                    horizontal = 8.dp
+                )
+            )
+        }
     }
 
     Column(
         modifier = Modifier
             .clickable(
-                onClick = { onNavigateToUser(UserProfileParam(user.id, user.username, user.profession)) },
+                onClick = { onNavigateToUser(
+                    UserProfileParam(user.id, user.username, user.profession)
+                )},
                 interactionSource = interactionSource,
                 indication = null
             ),

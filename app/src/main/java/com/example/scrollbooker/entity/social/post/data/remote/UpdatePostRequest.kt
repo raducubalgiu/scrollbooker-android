@@ -9,5 +9,8 @@ data class UpdatePostRequest(
     val linkedProductIds: List<Int>,
 
     @SerializedName("custom_cover")
-    val customCover: String? = null
+    val customCover: String? = null,
+
+    @SerializedName("service_domain_id")
+    val serviceDomainId: Int? = null
 )

@@ -15,6 +15,7 @@ data class Post(
     val isOwnPost: Boolean,
     val businessId: Int,
     val review: PostReview?,
+    val serviceDomain: PostServiceDomain?,
     val createdAt: String
 )
 
@@ -97,4 +98,9 @@ data class PostReview(
 
     val review: String,
     val rating: Int
+)
+
+data class PostServiceDomain(
+    val id: Int,
+    val name: String
 )

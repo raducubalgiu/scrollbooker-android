@@ -20,6 +20,8 @@ import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.model.UserProducts
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetPostLinkedProductsUseCase
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByBusinessIdAndEmployeeIdUseCase
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.SelectedServiceDomainsWithServices
+import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.useCase.GetSelectedServiceDomainsWithServicesByBusinessIdUseCase
 import com.example.scrollbooker.entity.social.post.domain.model.PostMediaFile
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetPostByIdUseCase
 import com.example.scrollbooker.entity.social.post.domain.useCase.UpdatePostUseCase
@@ -27,6 +29,7 @@ import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -36,7 +39,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -48,6 +55,7 @@ import javax.inject.Inject
 class EditPostViewModel @Inject constructor(
     private val getPostByIdUseCase: GetPostByIdUseCase,
     private val getProductsByBusinessIdAndEmployeeIdUseCase: GetProductsByBusinessIdAndEmployeeIdUseCase,
+    private val getSelectedServiceDomainsWithServicesByBusinessIdUseCase: GetSelectedServiceDomainsWithServicesByBusinessIdUseCase,
     private val getPostLinkedProductsUseCase: GetPostLinkedProductsUseCase,
     private val updatePostUseCase: UpdatePostUseCase,
     private val authDataStore: AuthDataStore,
@@ -62,7 +70,9 @@ class EditPostViewModel @Inject constructor(
     private val _catalogProducts = MutableStateFlow<FeatureState<UserProducts>>(FeatureState.Loading)
     private val _postMedia = MutableStateFlow<PostMediaFile?>(null)
 
-    // Cover picked in the cover screen, pending until the user actually saves the edit.
+    private val _selectedServiceDomainId = MutableStateFlow<Int?>(null)
+    val selectedServiceDomainId: StateFlow<Int?> = _selectedServiceDomainId.asStateFlow()
+
     private val _pendingCoverUri = MutableStateFlow<Uri?>(null)
     private var pendingCoverDataUri: String? = null
 
@@ -97,6 +107,24 @@ class EditPostViewModel @Inject constructor(
         initialValue = EditPostUiState.Loading
     )
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val serviceDomainsState: StateFlow<FeatureState<List<SelectedServiceDomainsWithServices>>> = authDataStore
+        .getBusinessId()
+        .filterNotNull()
+        .distinctUntilChanged()
+        .flatMapLatest { businessId ->
+            flow {
+                emit(FeatureState.Loading)
+                val result = getSelectedServiceDomainsWithServicesByBusinessIdUseCase(businessId)
+                emit(result)
+            }
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = FeatureState.Loading
+        )
+
     private val _events = MutableSharedFlow<SnackBarUiEvent.Show>(
         extraBufferCapacity = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
@@ -106,9 +134,6 @@ class EditPostViewModel @Inject constructor(
     private val _isSaving = MutableStateFlow<FeatureState<Unit>?>(null)
     val isSaving: StateFlow<FeatureState<Unit>?> = _isSaving.asStateFlow()
 
-    // Video preview (cover picker) - the post's video lives on Cloudflare Stream (HLS),
-    // not as a local file, so this plays the remote stream instead of using
-    // MediaMetadataRetriever like the create-post cover picker does.
     private val _player = MutableStateFlow<Player?>(null)
     val player: StateFlow<Player?> = _player.asStateFlow()
 
@@ -149,6 +174,7 @@ class EditPostViewModel @Inject constructor(
                     }
                     _description.value = post.description ?: ""
                     _postMedia.value = post.mediaFiles.firstOrNull() ?: error("Post has no media files")
+                    _selectedServiceDomainId.value = post.serviceDomain?.id
                 }
                 .onFailure { e ->
                     Timber.tag("EditPost").e(e, "Failed to load post details")
@@ -203,7 +229,9 @@ class EditPostViewModel @Inject constructor(
         _linkedProducts.value = _linkedProducts.value.minus(product)
     }
 
-    // Cover picker (edit flow) --------------------------------------------------------
+    fun setSelectedServiceDomainId(id: Int?) {
+        _selectedServiceDomainId.value = id
+    }
 
     fun ensurePlayerPrepared() {
         if (playerPrepared) return
@@ -218,11 +246,6 @@ class EditPostViewModel @Inject constructor(
         }
         p.setMediaItem(MediaItem.fromUri(url))
         p.prepare()
-    }
-
-    fun pausePlayer() {
-        exoPlayer?.playWhenReady = false
-        exoPlayer?.pause()
     }
 
     fun setFilmstrip(frames: List<Bitmap>) {
@@ -271,7 +294,13 @@ class EditPostViewModel @Inject constructor(
             val linkedProductIds = _linkedProducts.value.map { it.id }
 
             val result = withVisibleLoading {
-                updatePostUseCase(postId, description, linkedProductIds, customCover = pendingCoverDataUri)
+                updatePostUseCase(
+                    postId = postId,
+                    description = description,
+                    linkedProductIds = linkedProductIds,
+                    customCover = pendingCoverDataUri,
+                    serviceDomainId = _selectedServiceDomainId.value
+                )
             }
 
             result

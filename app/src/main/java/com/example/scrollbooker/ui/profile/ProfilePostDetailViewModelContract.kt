@@ -32,4 +32,5 @@ interface ProfilePostDetailViewModelContract {
     fun toggleLike(post: Post)
     fun toggleBookmark(post: Post)
     fun sharePost(post: Post, channel: ShareChannelEnum)
+    fun refreshAfterPostDeleted()
 }

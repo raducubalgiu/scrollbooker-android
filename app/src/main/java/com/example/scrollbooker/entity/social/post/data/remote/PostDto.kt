@@ -34,6 +34,9 @@ data class PostDto(
 
     val review: PostReviewDto?,
 
+    @SerializedName("service_domain")
+    val serviceDomain: PostServiceDomainDto?,
+
     @SerializedName("created_at")
     val createdAt: String
 )
@@ -170,4 +173,9 @@ data class PostReviewDto(
 
     val review: String,
     val rating: Int
+)
+
+data class PostServiceDomainDto(
+    val id: Int,
+    val name: String
 )

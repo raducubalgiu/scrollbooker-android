@@ -88,6 +88,7 @@ fun PostOverlay(
                     PostOverlayUser(
                         user = post.user,
                         isVideoReview = isVideoReview,
+                        serviceDomain = post.serviceDomain,
                         onNavigateToUser = onNavigateToUserProfile,
                     )
 

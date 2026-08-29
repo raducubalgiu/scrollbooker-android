@@ -41,6 +41,7 @@ fun PostSheets(
     onNavigateToEditPost: (Int) -> Unit,
     onOpenStatisticsSheet: (postId: Int) -> Unit,
     onOpenDeleteConfirm: (postId: Int) -> Unit,
+    onPostDeleted: (postId: Int) -> Unit,
     onClose: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
@@ -116,7 +117,8 @@ fun PostSheets(
             is PostSheetsContent.DeletePostSheet -> {
                 DeletePostSheet(
                     postId = content.postId,
-                    onClose = onClose
+                    onClose = onClose,
+                    onDeleted = { onPostDeleted(it) }
                 )
             }
             is PostSheetsContent.None -> Unit
