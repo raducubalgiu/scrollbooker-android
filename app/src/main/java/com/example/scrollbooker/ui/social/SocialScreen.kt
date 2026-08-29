@@ -21,7 +21,6 @@ import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.components.core.layout.MessageScreen
 import com.example.scrollbooker.navigation.navigators.SocialParam
 import com.example.scrollbooker.navigation.navigators.UserProfileParam
-import com.example.scrollbooker.ui.reviews.ReviewsSection
 import com.example.scrollbooker.ui.reviews.ReviewsViewModel
 import com.example.scrollbooker.ui.social.tab.UserFollowersTab
 import com.example.scrollbooker.ui.social.tab.UserFollowingsTab
@@ -73,11 +72,11 @@ fun SocialScreen(
                     when(post) {
                         SocialTab.Reviews -> {
                             if(socialParam.businessId != null) {
-                                ReviewsSection(
-                                    businessId = socialParam.businessId,
-                                    employeeId = socialParam.employeeId,
-                                    viewModel = reviewsViewModel
-                                )
+//                                ReviewsSection(
+//                                    businessId = socialParam.businessId,
+//                                    employeeId = socialParam.employeeId,
+//                                    viewModel = reviewsViewModel
+//                                )
                             } else {
                                 MessageScreen(
                                     icon = painterResource(R.drawable.ic_clipboard_check_outline),

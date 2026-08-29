@@ -18,7 +18,6 @@ import com.example.scrollbooker.components.customized.post.sheets.comments.Comme
 import com.example.scrollbooker.components.customized.post.sheets.deletePost.DeletePostSheet
 import com.example.scrollbooker.components.customized.post.sheets.linkedProducts.LinkedProductsSheet
 import com.example.scrollbooker.components.customized.post.sheets.more.MoreSheet
-import com.example.scrollbooker.ui.reviews.ReviewsSheet
 import com.example.scrollbooker.components.customized.post.sheets.statistics.PostStatisticsSheet
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.navigation.navigators.UserProfileParam
@@ -72,13 +71,6 @@ fun PostSheets(
         ),
     ) {
         when (val content = sheetContent) {
-            is PostSheetsContent.ReviewsSheet -> {
-                ReviewsSheet(
-                    businessId = content.businessId,
-                    employeeId = content.employeeId,
-                    onClose = onClose,
-                )
-            }
             is PostSheetsContent.CommentsSheet -> {
                 CommentsSheet(
                     postId = content.postId,

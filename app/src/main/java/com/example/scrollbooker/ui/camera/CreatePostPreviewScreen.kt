@@ -253,6 +253,7 @@ fun CreatePostPreviewScreen(
                             onBookmark = {},
                             onShare = {},
                             showBookButton = false,
+                            onNavigateToReviews = {},
                         )
                     }
                     else -> Unit

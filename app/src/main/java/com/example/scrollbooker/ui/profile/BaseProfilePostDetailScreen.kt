@@ -283,7 +283,13 @@ fun BaseProfilePostDetailScreen(
                                     post = postUi,
                                     isSavingLike = postActionState.isSavingLike,
                                     isSavingBookmark = postActionState.isSavingBookmark,
-                                    onAction = { action -> handlePostSheetAction(action, post, ::handleOpenSheet) },
+                                    onAction = { action ->
+                                        handlePostSheetAction(
+                                            action,
+                                            post,
+                                            ::handleOpenSheet
+                                        )
+                                    },
                                     onLike = { viewModel.toggleLike(post) },
                                     onBookmark = { viewModel.toggleBookmark(post) },
                                     onShare = {
@@ -292,7 +298,8 @@ fun BaseProfilePostDetailScreen(
                                         }
                                     },
                                     onNavigateToUserProfile = { profileNavigate.toUserProfile(it) },
-                                    showBookButton = false
+                                    onNavigateToReviews = { profileNavigate.toReviews(it) },
+                                    showBookButton = false,
                                 )
                             }
 

@@ -4,6 +4,7 @@ import androidx.navigation.NavHostController
 import com.example.scrollbooker.core.enums.BookingSourceEnum
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.navigation.routes.MainRoute
+import com.example.scrollbooker.ui.search.businessProfile.ReviewsSheetParams
 
 class ProfileNavigator (
     private val navController: NavHostController
@@ -42,6 +43,10 @@ class ProfileNavigator (
         navController.navigate(MainRoute.Social.createRoute(socialParam)) {
             launchSingleTop = true
         }
+    }
+
+    fun toReviews(param: ReviewsSheetParams) {
+        navController.navigate(MainRoute.ReviewsNavigator.createRoute(param))
     }
 
     fun toBookingFromProduct(product: Product, source: BookingSourceEnum) {

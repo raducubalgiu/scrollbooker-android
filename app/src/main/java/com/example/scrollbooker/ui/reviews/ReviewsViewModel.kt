@@ -1,15 +1,20 @@
 package com.example.scrollbooker.ui.reviews
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.map
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.review.domain.model.Review
 import com.example.scrollbooker.entity.booking.review.domain.model.ReviewsSummary
 import com.example.scrollbooker.entity.booking.review.domain.useCase.GetReviewsSummaryUseCase
 import com.example.scrollbooker.entity.booking.review.domain.useCase.GetReviewsUseCase
+import com.example.scrollbooker.entity.booking.review.domain.useCase.LikeWrittenReviewUseCase
+import com.example.scrollbooker.entity.booking.review.domain.useCase.UnlikeWrittenReviewUseCase
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.entity.social.post.domain.useCase.GetUserVideoReviewsPostsUseCase
+import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -17,29 +22,19 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.collections.ifEmpty
-import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.update
-import androidx.paging.map
-import com.example.scrollbooker.entity.booking.review.domain.useCase.LikeWrittenReviewUseCase
-import com.example.scrollbooker.entity.booking.review.domain.useCase.UnlikeWrittenReviewUseCase
-import com.example.scrollbooker.store.AuthDataStore
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.firstOrNull
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class ReviewsViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val getReviewsUseCase: GetReviewsUseCase,
     private val getReviewsSummaryUseCase: GetReviewsSummaryUseCase,
     private val getUserVideoReviewsPostsUseCase: GetUserVideoReviewsPostsUseCase,
@@ -49,11 +44,8 @@ class ReviewsViewModel @Inject constructor(
 ): ViewModel() {
     enum class ReviewsTab { ALL, VIDEO }
 
-    private val _businessId = MutableStateFlow<Int?>(null)
-    val businessId: StateFlow<Int?> = _businessId.asStateFlow()
-
-    private val _employeeId = MutableStateFlow<Int?>(null)
-    val employeeId: StateFlow<Int?> = _employeeId.asStateFlow()
+    val businessId: Int = savedStateHandle["businessId"] ?: error("Missing businessId")
+    val employeeId: Int? = (savedStateHandle.get<Int>("employeeId") ?: -1).takeIf { it != -1 }
 
     private val _selectedRatings = MutableStateFlow<Set<Int>>(emptySet())
     val selectedRatings: StateFlow<Set<Int>> = _selectedRatings.asStateFlow()
@@ -70,11 +62,6 @@ class ReviewsViewModel @Inject constructor(
         if(_selectedRatings.value.isNotEmpty()) {
             _selectedRatings.value = emptySet()
         }
-    }
-
-    fun setBusinessIdAndEmployeeId(businessId: Int, employeeId: Int?) {
-        _businessId.value = businessId
-        _employeeId.value = employeeId
     }
 
     fun setTab(tab: ReviewsTab) {
@@ -108,26 +95,15 @@ class ReviewsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            combine(_businessId, _employeeId) { businessId, employeeId -> businessId to employeeId }
-                .filter { (businessId, _) -> businessId != null }
-                .distinctUntilChanged()
-                .onEach { _userReviewsSummary.value = FeatureState.Loading }
-                .mapLatest { (businessId, employeeId) ->
-                    getReviewsSummaryUseCase(businessId = businessId!!, employeeId = employeeId)
-                }
-                .catch { _userReviewsSummary.value = FeatureState.Error() }
-                .collect { _userReviewsSummary.value = it }
+            _userReviewsSummary.value = FeatureState.Loading
+            _userReviewsSummary.value = getReviewsSummaryUseCase(businessId = businessId, employeeId = employeeId)
         }
     }
 
     val allReviews: Flow<PagingData<Review>> =
-        combine(
-            _businessId.filterNotNull(),
-            _employeeId,
-            _appliedRatingsByTab.map { it[ReviewsTab.ALL] ?: emptySet<Int>() }.distinctUntilChanged()
-        ) { businessId, employeeId, ratingsSet -> Triple(businessId, employeeId, ratingsSet) }
+        _appliedRatingsByTab.map { it[ReviewsTab.ALL] ?: emptySet<Int>() }
             .distinctUntilChanged()
-            .flatMapLatest { (businessId, employeeId, ratingsSet) ->
+            .flatMapLatest { ratingsSet ->
                 getReviewsUseCase(
                     businessId = businessId,
                     employeeId = employeeId,
@@ -143,14 +119,9 @@ class ReviewsViewModel @Inject constructor(
             .cachedIn(viewModelScope)
 
     val videoReviews: Flow<PagingData<Post>> =
-        combine(
-            _businessId.filterNotNull(),
-            _employeeId,
-            _appliedRatingsByTab.map { it[ReviewsTab.VIDEO] ?: emptySet<Int>() }
-                .distinctUntilChanged()
-        ) { businessId, employeeId, ratingsSet -> Triple(businessId, employeeId, ratingsSet) }
+        _appliedRatingsByTab.map { it[ReviewsTab.VIDEO] ?: emptySet<Int>() }
             .distinctUntilChanged()
-            .flatMapLatest { (businessId, employeeId, ratingsSet) ->
+            .flatMapLatest { ratingsSet ->
                 getUserVideoReviewsPostsUseCase(
                     businessId = businessId,
                     employeeId = employeeId,

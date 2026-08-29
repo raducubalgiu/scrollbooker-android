@@ -57,7 +57,6 @@ fun ReviewsSection(
     val pagerState = rememberPagerState { 2 }
 
     LaunchedEffect(businessId, employeeId) {
-        viewModel.setBusinessIdAndEmployeeId(businessId, employeeId)
         viewModel.clearRatings()
         viewModel.setTab(ReviewsViewModel.ReviewsTab.ALL)
         pagerState.scrollToPage(0)

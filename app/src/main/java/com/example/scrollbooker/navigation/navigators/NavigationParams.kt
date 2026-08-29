@@ -14,6 +14,11 @@ data class ProfilePostDetailParam(
     val userId: Int,
 )
 
+data class ReviewsDetailParam(
+    val reviewTab: String,
+    val reviewIndex: Int
+)
+
 data class SocialParam(
     val tabIndex: Int,
     val userId: Int,

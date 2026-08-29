@@ -4,6 +4,8 @@ import androidx.navigation.NavHostController
 import com.example.scrollbooker.core.enums.BookingSourceEnum
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.navigation.routes.MainRoute
+import com.example.scrollbooker.navigation.routes.MainRoute.ReviewsNavigator.createRoute
+import com.example.scrollbooker.ui.search.businessProfile.ReviewsSheetParams
 
 class FeedNavigator (
     private val navController: NavHostController
@@ -35,5 +37,9 @@ class FeedNavigator (
 
     fun toEditPost(postId: Int) {
         navController.navigate(MainRoute.EditPostNavigator.createRoute(postId))
+    }
+
+    fun toReviews(param: ReviewsSheetParams) {
+        navController.navigate(createRoute(param))
     }
 }

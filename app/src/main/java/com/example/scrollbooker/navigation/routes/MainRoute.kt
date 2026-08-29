@@ -3,8 +3,10 @@ package com.example.scrollbooker.navigation.routes
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.navigation.navigators.CameraParams
 import com.example.scrollbooker.navigation.navigators.ProfilePostDetailParam
+import com.example.scrollbooker.navigation.navigators.ReviewsDetailParam
 import com.example.scrollbooker.navigation.navigators.SocialParam
 import com.example.scrollbooker.navigation.navigators.UserProfileParam
+import com.example.scrollbooker.ui.search.businessProfile.ReviewsSheetParams
 
 sealed class MainRoute(val route: String) {
     object Shell: MainRoute(route = "shell")
@@ -51,6 +53,18 @@ sealed class MainRoute(val route: String) {
     object UserProfilePostDetail: MainRoute(route = "userProfilePostDetail/{postTab}/{postIndex}/{userId}") {
         fun createRoute(param: ProfilePostDetailParam): String {
             return "userProfilePostDetail/${param.postTab}/${param.postIndex}/${param.userId}"
+        }
+    }
+
+    object ReviewsNavigator: MainRoute(route = "reviewsNavigator/{businessId}?employeeId={employeeId}") {
+        fun createRoute(param: ReviewsSheetParams): String {
+            return "reviewsNavigator/${param.businessId}?employeeId=${param.employeeId ?: -1}"
+        }
+    }
+    object Reviews: MainRoute(route = "reviews")
+    object ReviewsDetail: MainRoute(route = "reviewsDetail/{reviewTab}/{reviewIndex}") {
+        fun createRoute(param: ReviewsDetailParam): String {
+            return "reviewsDetail/${param.reviewTab}/${param.reviewIndex}"
         }
     }
 

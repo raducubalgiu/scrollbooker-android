@@ -32,6 +32,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.core.util.Dimens.SpacingXXS
 import com.example.scrollbooker.entity.social.post.domain.model.Post
 import com.example.scrollbooker.navigation.navigators.UserProfileParam
+import com.example.scrollbooker.ui.search.businessProfile.ReviewsSheetParams
 import com.example.scrollbooker.ui.theme.OnPrimary
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyMedium
@@ -46,6 +47,7 @@ fun PostOverlay(
     onBookmark: () -> Unit,
     onShare: () -> Unit,
 
+    onNavigateToReviews: (ReviewsSheetParams) -> Unit,
     onNavigateToUserProfile: (param: UserProfileParam) -> Unit,
     showBookButton: Boolean = true
 ) {
@@ -123,6 +125,8 @@ fun PostOverlay(
                 }
 
                 PostActions(
+                    businessId = post.businessId,
+                    businessOwner = post.businessOwner,
                     user = post.user,
                     isSavingLike = isSavingLike,
                     isSavingBookmark = isSavingBookmark,
@@ -134,6 +138,7 @@ fun PostOverlay(
                     onLike = onLike,
                     onBookmark = onBookmark,
                     onShare = onShare,
+                    onNavigateToReviews = onNavigateToReviews,
                     onNavigateToUser = {
                         onNavigateToUserProfile(
                             UserProfileParam(post.user.id, post.user.username, post.user.profession)

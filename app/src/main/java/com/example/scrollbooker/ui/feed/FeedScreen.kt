@@ -174,7 +174,8 @@ fun FeedScreen(
                         isTabActive = horizontalPagerState.settledPage == tabIndex,
                         viewModel = config.viewModel,
                         onAction = { action, post -> handlePostSheetAction(action, post, ::handleOpenSheet) },
-                        onNavigateToUserProfile = { feedNavigate.toUserProfile(it) }
+                        onNavigateToUserProfile = { feedNavigate.toUserProfile(it) },
+                        onNavigateToReviews = { feedNavigate.toReviews(it) }
                     )
                 }
             }

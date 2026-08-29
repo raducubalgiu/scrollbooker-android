@@ -14,15 +14,19 @@ import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.components.core.avatar.AvatarWithRating
 import com.example.scrollbooker.components.customized.post.sheets.PostSheetActionEnum
 import com.example.scrollbooker.core.util.Dimens.SpacingS
+import com.example.scrollbooker.entity.social.post.domain.model.PostBusinessOwner
 import com.example.scrollbooker.entity.social.post.domain.model.PostCounters
 import com.example.scrollbooker.entity.social.post.domain.model.PostUser
 import com.example.scrollbooker.entity.social.post.domain.model.UserPostActions
+import com.example.scrollbooker.ui.search.businessProfile.ReviewsSheetParams
 import com.example.scrollbooker.ui.theme.BackgroundLight
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.Rating
 
 @Composable
 fun PostActions(
+    businessId: Int,
+    businessOwner: PostBusinessOwner,
     user: PostUser,
     isSavingLike: Boolean,
     isSavingBookmark: Boolean,
@@ -35,6 +39,7 @@ fun PostActions(
     onBookmark: () -> Unit,
     onShare: () -> Unit,
     onNavigateToUser: () -> Unit,
+    onNavigateToReviews: (ReviewsSheetParams) -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.Center,
@@ -76,7 +81,17 @@ fun PostActions(
                 counter = user.ratingsCount,
                 icon = R.drawable.ic_clipboard_check_solid,
                 tint = Color.White,
-                onClick = { onAction(PostSheetActionEnum.OPEN_REVIEWS) }
+                onClick = {
+                    val isEmployee = user.id != businessOwner.id
+                    val employeeId = if (isEmployee) user.id else null
+
+                    onNavigateToReviews(
+                        ReviewsSheetParams(
+                            businessId = businessId,
+                            employeeId = employeeId
+                        )
+                    )
+                }
             )
         }
 

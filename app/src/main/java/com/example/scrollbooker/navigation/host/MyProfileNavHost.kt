@@ -21,9 +21,11 @@ import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.scrollbooker.navigation.graphs.bookingGraph
 import com.example.scrollbooker.navigation.graphs.postUtilityGraph
+import com.example.scrollbooker.navigation.graphs.reviewsGraph
 import com.example.scrollbooker.navigation.graphs.socialGraph
 import com.example.scrollbooker.navigation.navigators.BookingNavigator
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
+import com.example.scrollbooker.navigation.navigators.ReviewsNavigator
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideOutToLeft
 import com.example.scrollbooker.navigation.transition.slideOutToRight
@@ -37,6 +39,7 @@ fun MyProfileNavHost(
     val viewModel: MyProfileViewModel = hiltViewModel()
     val profileNavigate = remember(navController) { ProfileNavigator(navController) }
     val bookingNavigate = remember(navController) { BookingNavigator(navController) }
+    val reviewsNavigate = remember(navController) { ReviewsNavigator(navController) }
 
     Box(
         modifier = Modifier
@@ -89,6 +92,7 @@ fun MyProfileNavHost(
             socialGraph(navController, profileNavigate)
             bookingGraph(navController, bookingNavigate)
             postUtilityGraph(navController)
+            reviewsGraph(navController, reviewsNavigate)
         }
     }
 }
