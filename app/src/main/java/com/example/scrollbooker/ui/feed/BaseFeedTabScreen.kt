@@ -57,8 +57,8 @@ import com.example.scrollbooker.core.extensions.getOrNull
 import com.example.scrollbooker.core.util.sharePost
 import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
 import com.example.scrollbooker.entity.social.post.domain.model.Post
+import com.example.scrollbooker.navigation.navigators.ReviewsParam
 import com.example.scrollbooker.navigation.navigators.UserProfileParam
-import com.example.scrollbooker.ui.search.businessProfile.ReviewsSheetParams
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 
@@ -68,7 +68,7 @@ fun BaseFeedTabScreen(
     isTabActive: Boolean,
     viewModel: FeedViewModelContract,
     onAction: (PostSheetActionEnum, Post) -> Unit,
-    onNavigateToReviews: (param: ReviewsSheetParams) -> Unit,
+    onNavigateToReviews: (param: ReviewsParam) -> Unit,
     onNavigateToUserProfile: (param: UserProfileParam) -> Unit
 ) {
     val context = LocalContext.current

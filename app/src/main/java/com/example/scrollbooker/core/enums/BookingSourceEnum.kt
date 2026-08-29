@@ -9,6 +9,7 @@ enum class BookingSourceEnum(val key: String) {
     PROFILE("profile"),
     PROFILE_GRID_POST_DETAIL("profile_grid_post_detail"),
     PROFILE_BOOKMARKS_POST_DETAIL("profile_bookmarks_post_detail"),
+    VIDEO_REVIEWS("video_reviews"),
 
     SEARCH("search"),
     SEARCH_BUSINESS_PROFILE("search_business_profile"),

@@ -23,7 +23,8 @@ import com.example.scrollbooker.entity.social.post.domain.model.Post
 
 @Composable
 fun VideoReviewsTab(
-    videoReviews: LazyPagingItems<Post>
+    videoReviews: LazyPagingItems<Post>,
+    onNavigateToDetail: (index: Int) -> Unit
 ) {
     val flingBehavior = rememberFlingBehavior()
 
@@ -56,7 +57,7 @@ fun VideoReviewsTab(
                     videoReviews[index]?.let { review ->
                         PostGrid(
                             post = review,
-                            onNavigateToPost = {}
+                            onNavigateToPost = { onNavigateToDetail(index) }
                         )
                     }
                 }

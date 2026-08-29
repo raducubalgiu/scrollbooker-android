@@ -4,17 +4,18 @@ import androidx.navigation.NavHostController
 import com.example.scrollbooker.core.enums.BookingSourceEnum
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.navigation.routes.MainRoute
-import com.example.scrollbooker.navigation.routes.MainRoute.ReviewsNavigator.createRoute
 
-class FeedNavigator (
+class ReviewsNavigator(
     private val navController: NavHostController
 ) {
     fun back() {
         navController.popBackStack()
     }
 
-    fun toFeedSearch() {
-        navController.navigate(MainRoute.FeedSearch.route) {
+    fun toReviewDetail(param: ReviewsDetailParam) {
+        val route = MainRoute.ReviewsDetail.createRoute(param)
+
+        navController.navigate(route) {
             launchSingleTop = true
         }
     }
@@ -23,22 +24,13 @@ class FeedNavigator (
         navController.navigateToUserProfile(param)
     }
 
-    fun toBooking(param: BookingParam) {
-        navController.navigateToBooking(param)
-    }
-
     fun toBookingFromProduct(product: Product, source: BookingSourceEnum) {
-        navController.navigateToBookingFromProduct(
-            product = product,
-            source = source
-        )
+        navController.navigateToBookingFromProduct(product, source)
     }
 
     fun toEditPost(postId: Int) {
-        navController.navigate(MainRoute.EditPostNavigator.createRoute(postId))
-    }
-
-    fun toReviews(param: ReviewsParam) {
-        navController.navigate(createRoute(param))
+        navController.navigate(MainRoute.EditPostNavigator.createRoute(postId)) {
+            launchSingleTop = true
+        }
     }
 }

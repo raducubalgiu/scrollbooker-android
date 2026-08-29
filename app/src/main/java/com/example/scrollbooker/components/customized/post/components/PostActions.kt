@@ -18,7 +18,7 @@ import com.example.scrollbooker.entity.social.post.domain.model.PostBusinessOwne
 import com.example.scrollbooker.entity.social.post.domain.model.PostCounters
 import com.example.scrollbooker.entity.social.post.domain.model.PostUser
 import com.example.scrollbooker.entity.social.post.domain.model.UserPostActions
-import com.example.scrollbooker.ui.search.businessProfile.ReviewsSheetParams
+import com.example.scrollbooker.navigation.navigators.ReviewsParam
 import com.example.scrollbooker.ui.theme.BackgroundLight
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.Rating
@@ -39,7 +39,7 @@ fun PostActions(
     onBookmark: () -> Unit,
     onShare: () -> Unit,
     onNavigateToUser: () -> Unit,
-    onNavigateToReviews: (ReviewsSheetParams) -> Unit
+    onNavigateToReviews: (ReviewsParam) -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.Center,
@@ -86,7 +86,7 @@ fun PostActions(
                     val employeeId = if (isEmployee) user.id else null
 
                     onNavigateToReviews(
-                        ReviewsSheetParams(
+                        ReviewsParam(
                             businessId = businessId,
                             employeeId = employeeId
                         )

@@ -50,7 +50,8 @@ import kotlin.math.roundToInt
 fun ReviewsSection(
     viewModel: ReviewsViewModel,
     businessId: Int,
-    employeeId: Int?
+    employeeId: Int?,
+    onNavigateToVideoReviewDetail: (index: Int) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val tabs = listOf(stringResource(R.string.all), stringResource(R.string.video))
@@ -142,7 +143,10 @@ fun ReviewsSection(
                                         allReviews = allReviews
                                     )
                                 }
-                                1 -> VideoReviewsTab(videoReviews)
+                                1 -> VideoReviewsTab(
+                                    videoReviews = videoReviews,
+                                    onNavigateToDetail = onNavigateToVideoReviewDetail
+                                )
                             }
                         }
                     }

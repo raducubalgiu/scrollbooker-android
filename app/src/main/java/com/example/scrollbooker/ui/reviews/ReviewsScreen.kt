@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.headers.Header
+import com.example.scrollbooker.navigation.navigators.ReviewsDetailParam
 import com.example.scrollbooker.navigation.navigators.ReviewsNavigator
 import com.example.scrollbooker.ui.theme.Background
 
@@ -30,7 +31,15 @@ fun ReviewsScreen(
             ReviewsSection(
                 viewModel = viewModel,
                 businessId = viewModel.businessId,
-                employeeId = viewModel.employeeId
+                employeeId = viewModel.employeeId,
+                onNavigateToVideoReviewDetail = { index ->
+                    reviewsNavigate.toReviewDetail(
+                        ReviewsDetailParam(
+                            reviewTab = ReviewsViewModel.ReviewsTab.VIDEO.key,
+                            reviewIndex = index
+                        )
+                    )
+                }
             )
         }
     }

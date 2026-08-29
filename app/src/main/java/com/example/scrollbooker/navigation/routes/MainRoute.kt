@@ -4,9 +4,9 @@ import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.navigation.navigators.CameraParams
 import com.example.scrollbooker.navigation.navigators.ProfilePostDetailParam
 import com.example.scrollbooker.navigation.navigators.ReviewsDetailParam
+import com.example.scrollbooker.navigation.navigators.ReviewsParam
 import com.example.scrollbooker.navigation.navigators.SocialParam
 import com.example.scrollbooker.navigation.navigators.UserProfileParam
-import com.example.scrollbooker.ui.search.businessProfile.ReviewsSheetParams
 
 sealed class MainRoute(val route: String) {
     object Shell: MainRoute(route = "shell")
@@ -57,7 +57,7 @@ sealed class MainRoute(val route: String) {
     }
 
     object ReviewsNavigator: MainRoute(route = "reviewsNavigator/{businessId}?employeeId={employeeId}") {
-        fun createRoute(param: ReviewsSheetParams): String {
+        fun createRoute(param: ReviewsParam): String {
             return "reviewsNavigator/${param.businessId}?employeeId=${param.employeeId ?: -1}"
         }
     }

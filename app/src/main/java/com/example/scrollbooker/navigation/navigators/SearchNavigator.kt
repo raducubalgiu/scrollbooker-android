@@ -37,4 +37,8 @@ class SearchNavigator (
             selectedProductId = selectedProductId
         )
     }
+
+    fun toReviews(param: ReviewsParam) {
+        navController.navigate(MainRoute.ReviewsNavigator.createRoute(param))
+    }
 }
