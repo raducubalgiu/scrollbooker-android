@@ -28,8 +28,8 @@ data class CommentDto(
     @SerializedName("reply_to_comment_id")
     val replyToCommentId: Int?,
 
-//    @SerializedName("created_at")
-//    val createdAt: Instant,
+    @SerializedName("created_at")
+    val createdAt: String,
 )
 
 data class CommentUserDto(

@@ -3,6 +3,7 @@ import com.example.scrollbooker.entity.social.comment.data.remote.CommentDto
 import com.example.scrollbooker.entity.social.comment.data.remote.CommentUserDto
 import com.example.scrollbooker.entity.social.comment.domain.model.Comment
 import com.example.scrollbooker.entity.social.comment.domain.model.CommentUser
+import org.threeten.bp.ZonedDateTime
 
 fun CommentDto.toDomain(): Comment {
     return Comment(
@@ -16,7 +17,7 @@ fun CommentDto.toDomain(): Comment {
         likedByPostAuthor = likedByPostAuthor,
         parentId = parentId,
         replyToCommentId = replyToCommentId,
-        //createdAt = createdAt
+        createdAt = ZonedDateTime.parse(createdAt)
     )
 }
 

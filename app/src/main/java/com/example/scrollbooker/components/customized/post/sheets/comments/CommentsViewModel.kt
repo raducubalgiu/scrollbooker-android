@@ -13,6 +13,7 @@ import com.example.scrollbooker.entity.social.comment.domain.useCase.LikeComment
 import com.example.scrollbooker.entity.social.comment.domain.useCase.UnLikeCommentUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
+import org.threeten.bp.ZonedDateTime
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -140,7 +141,8 @@ class CommentsViewModel @Inject constructor(
             isLiked = false,
             likedByPostAuthor = false,
             parentId = parentId,
-            replyToCommentId = replyToCommentId
+            replyToCommentId = replyToCommentId,
+            createdAt = ZonedDateTime.now()
         )
 
         _pendingComments.update {

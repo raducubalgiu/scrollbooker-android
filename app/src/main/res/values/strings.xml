@@ -178,9 +178,13 @@
     <string name="reply">Răspunde</string>
     <string name="viewMoreReplies">Vezi mai mult</string>
     <string name="hideReplies">Ascunde răspunsurile</string>
-    <string name="replyingTo">Răspunzi lui @%1$s</string>
+    <string name="replyingToPrefix">Răspunzi lui </string>
     <string name="repliesCountOne">%1$d răspuns</string>
     <string name="repliesCountOther">%1$d răspunsuri</string>
+    <string name="justNow">Acum</string>
+    <string name="minutesAgo">%1$dmin</string>
+    <string name="hoursAgo">%1$dh</string>
+    <string name="daysAgo">%1$dz</string>
     <string name="chooseDesiredCurrencies">Alege in ce valute dorești să primești plăți din partea clienților</string>
     <string name="acceptedCurrencies">Valute acceptate pentru plăți</string>
     <string name="password">Parolă</string>

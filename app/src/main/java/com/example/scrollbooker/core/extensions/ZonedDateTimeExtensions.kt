@@ -1,9 +1,14 @@
 package com.example.scrollbooker.core.extensions
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.res.stringResource
+import com.example.scrollbooker.R
 import com.example.scrollbooker.core.util.AppLocaleProvider
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.temporal.ChronoUnit
 import java.util.Locale
 
 private fun dayFmt(locale: Locale) = DateTimeFormatter.ofPattern("dd", locale)
@@ -55,4 +60,35 @@ fun ZonedDateTime.display(
     val time = dt.format(timeFmt(locale))
 
     return "$dayOfWeek, $day $month $year $time"
+}
+
+/**
+ * Compact relative label used for feed/comment timestamps (e.g. "30min", "3h", "09.03"),
+ * following the Instagram/TikTok convention.
+ */
+@Composable
+fun ZonedDateTime.relativeLabel(
+    zone: ZoneId = ZoneId.systemDefault(),
+    locale: Locale = AppLocaleProvider.current(),
+    now: ZonedDateTime = remember { ZonedDateTime.now() },
+): String {
+    val minutes = ChronoUnit.MINUTES.between(this, now)
+    val hours = ChronoUnit.HOURS.between(this, now)
+    val days = ChronoUnit.DAYS.between(this, now)
+
+    return when {
+        minutes < 1 -> stringResource(R.string.justNow)
+        minutes < 60 -> stringResource(R.string.minutesAgo, minutes)
+        hours < 24 -> stringResource(R.string.hoursAgo, hours)
+        days < 7 -> stringResource(R.string.daysAgo, days)
+        else -> {
+            val dt = toZone(zone)
+            val formatter = if (dt.year == now.year) {
+                DateTimeFormatters.uiDayMonthDot
+            } else {
+                DateTimeFormatters.uiDayMonthYearDot
+            }
+            dt.format(formatter.withLocale(locale))
+        }
+    }
 }

@@ -21,7 +21,7 @@ class CommentsPagingSource(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Comment> {
         val page = params.key ?: 1
-        val limit = 10
+        val limit = 20
 
         return try {
             val response = if(page == 1) {

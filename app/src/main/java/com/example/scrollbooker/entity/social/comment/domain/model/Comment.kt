@@ -1,5 +1,7 @@
 package com.example.scrollbooker.entity.social.comment.domain.model
 
+import org.threeten.bp.ZonedDateTime
+
 data class Comment(
     val id: Int,
     val text: String,
@@ -11,7 +13,7 @@ data class Comment(
     val likedByPostAuthor: Boolean,
     val parentId: Int?,
     val replyToCommentId: Int?,
-    //val createdAt: Instant,
+    val createdAt: ZonedDateTime,
 )
 
 data class CommentUser(

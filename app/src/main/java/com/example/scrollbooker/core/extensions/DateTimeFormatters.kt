@@ -11,6 +11,10 @@ object DateTimeFormatters {
 
     val uiTime: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
+    val uiDayMonthDot: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM")
+
+    val uiDayMonthYearDot: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+
     val uiDayMonthShort: DateTimeFormatter by lazy {
         DateTimeFormatterBuilder()
             .appendValue(ChronoField.DAY_OF_MONTH)

@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.Avatar
+import com.example.scrollbooker.core.extensions.relativeLabel
 import com.example.scrollbooker.core.util.Dimens.AvatarSizeXXS
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
@@ -55,6 +56,9 @@ import com.example.scrollbooker.navigation.navigators.UserProfileParam
 import com.example.scrollbooker.ui.theme.Error
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.bodyLarge
+import com.example.scrollbooker.ui.theme.bodyMedium
+
+val CommentAvatarSize = 35.dp
 
 @Composable
 fun CommentItem(
@@ -63,7 +67,7 @@ fun CommentItem(
     onReplyClick: (comment: Comment) -> Unit,
     onNavigateToUserProfile: (param: UserProfileParam) -> Unit,
     modifier: Modifier = Modifier,
-    avatarSize: Dp = 35.dp,
+    avatarSize: Dp = CommentAvatarSize,
     replyToUsername: String? = null
 ) {
     var scale by remember { mutableFloatStateOf(1f) }
@@ -76,7 +80,8 @@ fun CommentItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = BasePadding),
+            .padding(horizontal = BasePadding)
+            .padding(bottom = SpacingS),
     ) {
         Avatar(
             url = comment.user.avatar ?: "",
@@ -122,8 +127,8 @@ fun CommentItem(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "2d",
-                        style = bodyLarge,
+                        text = comment.createdAt.relativeLabel(),
+                        style = bodyMedium,
                         fontWeight = FontWeight.Normal,
                         color = Color.Gray
                     )
@@ -152,7 +157,7 @@ fun CommentItem(
                     if(comment.likedByPostAuthor) {
                         Avatar(
                             url = "https://media.scrollbooker.ro/frizerie-1-cover.jpg",
-                            size = AvatarSizeXXS
+                            size = 18.dp
                         )
                         Spacer(Modifier.width(BasePadding))
                     }
@@ -176,7 +181,7 @@ fun CommentItem(
                         ) {
                             Text(
                                 text = "${comment.likeCount}",
-                                style = bodyLarge,
+                                style = bodyMedium,
                                 fontWeight = FontWeight.SemiBold,
                                 color = if(comment.isLiked) Error else Color.Gray
                             )
@@ -184,7 +189,7 @@ fun CommentItem(
                         Spacer(Modifier.width(SpacingXS))
                         Icon(
                             modifier = Modifier
-                                .size(20.dp)
+                                .size(18.dp)
                                 .scale(animatedScale),
                             imageVector = if(comment.isLiked) Icons.Default.Favorite
                                           else Icons.Default.FavoriteBorder,
