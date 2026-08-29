@@ -10,6 +10,7 @@ data class Comment(
     val isLiked: Boolean,
     val likedByPostAuthor: Boolean,
     val parentId: Int?,
+    val replyToCommentId: Int?,
     //val createdAt: Instant,
 )
 

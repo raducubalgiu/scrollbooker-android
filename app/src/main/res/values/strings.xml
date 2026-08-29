@@ -175,6 +175,12 @@
     <string name="sendingComment">Se trimite...</string>
     <string name="commentFailedToSend">Comentariul nu a putut fi trimis</string>
     <string name="retry">Reîncearcă</string>
+    <string name="reply">Răspunde</string>
+    <string name="viewMoreReplies">Vezi mai mult</string>
+    <string name="hideReplies">Ascunde răspunsurile</string>
+    <string name="replyingTo">Răspunzi lui @%1$s</string>
+    <string name="repliesCountOne">%1$d răspuns</string>
+    <string name="repliesCountOther">%1$d răspunsuri</string>
     <string name="chooseDesiredCurrencies">Alege in ce valute dorești să primești plăți din partea clienților</string>
     <string name="acceptedCurrencies">Valute acceptate pentru plăți</string>
     <string name="password">Parolă</string>

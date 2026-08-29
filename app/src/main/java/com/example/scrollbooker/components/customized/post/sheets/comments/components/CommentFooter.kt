@@ -1,46 +1,87 @@
 package com.example.scrollbooker.components.customized.post.sheets.comments.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.scrollbooker.R
 import com.example.scrollbooker.components.customized.TextFieldComment
+import com.example.scrollbooker.components.customized.post.sheets.comments.ReplyTarget
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
+import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
-import com.example.scrollbooker.entity.social.comment.domain.model.CreateComment
 import com.example.scrollbooker.ui.theme.Divider
+import com.example.scrollbooker.ui.theme.OnBackground
+import com.example.scrollbooker.ui.theme.SurfaceBG
+import com.example.scrollbooker.ui.theme.bodyMedium
 
 @Composable
-fun CommentFooter(onCreateComment: (CreateComment) -> Unit) {
+fun CommentFooter(
+    replyTarget: ReplyTarget?,
+    onCancelReply: () -> Unit,
+    onCreateComment: (text: String) -> Unit
+) {
     val emoticons = listOf(
-        "\uD83D\uDC4C", "\uD83D\uDE01", "\uD83D\uDE07", "\uD83E\uDD23", "\uD83D\uDE0D", "\uD83E\uDD70"
+        "👌", "😁", "😇", "🤣", "😍", "🥰"
     )
     var fieldValue by remember { mutableStateOf(TextFieldValue("")) }
-    var parentId by remember { mutableStateOf<Int?>(null) }
 
     Column {
         HorizontalDivider(color = Divider, thickness = 0.5.dp)
+
+        if (replyTarget != null) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = BasePadding, vertical = SpacingS)
+                    .background(SurfaceBG),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(R.string.replyingTo, replyTarget.replyToUsername),
+                    style = bodyMedium,
+                    color = OnBackground
+                )
+                Icon(
+                    modifier = Modifier
+                        .size(18.dp)
+                        .clickable(onClick = onCancelReply),
+                    imageVector = Icons.Default.Close,
+                    contentDescription = null,
+                    tint = OnBackground
+                )
+            }
+        }
 
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
@@ -74,7 +115,7 @@ fun CommentFooter(onCreateComment: (CreateComment) -> Unit) {
             isEnabled = fieldValue.text.isNotEmpty(),
             onValueChange = { fieldValue = it },
             onSubmit = {
-                onCreateComment(CreateComment(fieldValue.text, parentId))
+                onCreateComment(fieldValue.text)
                 fieldValue = TextFieldValue("")
             }
         )

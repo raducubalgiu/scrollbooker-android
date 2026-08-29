@@ -6,6 +6,7 @@ import com.example.scrollbooker.entity.social.comment.domain.model.CreateComment
 fun CreateComment.toDto(): CreateCommentDto {
     return CreateCommentDto(
         text = text,
-        parentId = parentId
+        parentId = parentId,
+        replyToCommentId = replyToCommentId
     )
 }

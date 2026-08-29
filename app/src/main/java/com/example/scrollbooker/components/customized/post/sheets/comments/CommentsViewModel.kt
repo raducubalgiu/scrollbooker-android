@@ -7,6 +7,7 @@ import com.example.scrollbooker.entity.social.comment.data.remote.LikeCommentEnu
 import com.example.scrollbooker.entity.social.comment.domain.model.Comment
 import com.example.scrollbooker.entity.social.comment.domain.model.CommentUser
 import com.example.scrollbooker.entity.social.comment.domain.useCase.CreateCommentUseCase
+import com.example.scrollbooker.entity.social.comment.domain.useCase.GetCommentRepliesUseCase
 import com.example.scrollbooker.entity.social.comment.domain.useCase.GetPostCommentsUseCase
 import com.example.scrollbooker.entity.social.comment.domain.useCase.LikeCommentUseCase
 import com.example.scrollbooker.entity.social.comment.domain.useCase.UnLikeCommentUseCase
@@ -34,9 +35,26 @@ data class CommentLikeState(
     val likeCount: Int
 )
 
+data class ReplyTarget(
+    val parentId: Int,
+    val replyToCommentId: Int?,
+    val replyToUsername: String
+)
+
+data class RepliesState(
+    val items: List<Comment> = emptyList(),
+    val page: Int = 0,
+    val hasMore: Boolean = true,
+    val isLoading: Boolean = false,
+    val isExpanded: Boolean = false
+)
+
+private const val REPLIES_PAGE_SIZE = 10
+
 @HiltViewModel
 class CommentsViewModel @Inject constructor(
     private val getPostCommentsUseCase: GetPostCommentsUseCase,
+    private val getCommentRepliesUseCase: GetCommentRepliesUseCase,
     private val createCommentUseCase: CreateCommentUseCase,
     private val likeCommentUseCase: LikeCommentUseCase,
     private val unLikeCommentUseCase: UnLikeCommentUseCase,
@@ -75,6 +93,23 @@ class CommentsViewModel @Inject constructor(
         }.onEach { _currentUser.value = it }.launchIn(viewModelScope)
     }
 
+    // ---- Reply targeting ----
+
+    private val _replyTarget = MutableStateFlow<ReplyTarget?>(null)
+    val replyTarget: StateFlow<ReplyTarget?> = _replyTarget.asStateFlow()
+
+    fun setReplyTarget(comment: Comment) {
+        _replyTarget.value = if (comment.parentId == null) {
+            ReplyTarget(parentId = comment.id, replyToCommentId = null, replyToUsername = comment.user.username)
+        } else {
+            ReplyTarget(parentId = comment.parentId, replyToCommentId = comment.id, replyToUsername = comment.user.username)
+        }
+    }
+
+    fun clearReplyTarget() {
+        _replyTarget.value = null
+    }
+
     // ---- Optimistic comment creation ----
 
     private val _pendingComments = MutableStateFlow<List<PendingComment>>(emptyList())
@@ -82,11 +117,15 @@ class CommentsViewModel @Inject constructor(
 
     private var tempIdSeed = 0
 
-    fun createComment(postId: Int, text: String, parentId: Int?) {
+    fun createComment(postId: Int, text: String) {
         val user = _currentUser.value ?: run {
             Timber.tag("Comments").e("ERROR: current user is not loaded yet")
             return
         }
+
+        val target = _replyTarget.value
+        val parentId = target?.parentId
+        val replyToCommentId = target?.replyToCommentId
 
         val localId = UUID.randomUUID().toString()
         val tempId = --tempIdSeed
@@ -100,11 +139,23 @@ class CommentsViewModel @Inject constructor(
             likeCount = 0,
             isLiked = false,
             likedByPostAuthor = false,
-            parentId = parentId
+            parentId = parentId,
+            replyToCommentId = replyToCommentId
         )
 
-        _pendingComments.update { listOf(PendingComment(localId, tempComment, parentId, PendingStatus.SENDING)) + it }
-        sendPendingComment(localId, postId, text, parentId)
+        _pendingComments.update {
+            listOf(PendingComment(localId, tempComment, parentId, replyToCommentId, PendingStatus.SENDING)) + it
+        }
+
+        if (parentId != null) {
+            _repliesState.update { map ->
+                val prev = map[parentId] ?: RepliesState()
+                map + (parentId to prev.copy(isExpanded = true))
+            }
+        }
+
+        clearReplyTarget()
+        sendPendingComment(localId, postId, text, parentId, replyToCommentId)
     }
 
     fun retryComment(localId: String) {
@@ -114,16 +165,16 @@ class CommentsViewModel @Inject constructor(
             list.map { if (it.localId == localId) it.copy(status = PendingStatus.SENDING) else it }
         }
 
-        sendPendingComment(localId, pending.comment.postId, pending.comment.text, pending.parentId)
+        sendPendingComment(localId, pending.comment.postId, pending.comment.text, pending.parentId, pending.replyToCommentId)
     }
 
     fun discardPendingComment(localId: String) {
         _pendingComments.update { list -> list.filterNot { it.localId == localId } }
     }
 
-    private fun sendPendingComment(localId: String, postId: Int, text: String, parentId: Int?) {
+    private fun sendPendingComment(localId: String, postId: Int, text: String, parentId: Int?, replyToCommentId: Int?) {
         viewModelScope.launch {
-            createCommentUseCase(postId, text, parentId)
+            createCommentUseCase(postId, text, parentId, replyToCommentId)
                 .onSuccess { comment ->
                     _pendingComments.update { list ->
                         list.map { if (it.localId == localId) it.copy(comment = comment, status = PendingStatus.SENT) else it }
@@ -134,6 +185,60 @@ class CommentsViewModel @Inject constructor(
                         list.map { if (it.localId == localId) it.copy(status = PendingStatus.FAILED) else it }
                     }
                     Timber.tag("Comments").e(e, "ERROR: on creating new comment")
+                }
+        }
+    }
+
+    // ---- Replies pagination ----
+
+    private val _repliesState = MutableStateFlow<Map<Int, RepliesState>>(emptyMap())
+    val repliesState: StateFlow<Map<Int, RepliesState>> = _repliesState.asStateFlow()
+
+    fun toggleReplies(commentId: Int) {
+        val current = _repliesState.value[commentId]
+
+        if (current?.isExpanded == true) {
+            _repliesState.update { it + (commentId to current.copy(isExpanded = false)) }
+            return
+        }
+
+        _repliesState.update { it + (commentId to (current ?: RepliesState()).copy(isExpanded = true)) }
+
+        if (current == null || (current.items.isEmpty() && current.hasMore)) {
+            loadMoreReplies(commentId)
+        }
+    }
+
+    fun loadMoreReplies(commentId: Int) {
+        val postId = _postId.value ?: return
+        val state = _repliesState.value[commentId] ?: RepliesState()
+
+        if (state.isLoading || !state.hasMore) return
+
+        _repliesState.update { it + (commentId to state.copy(isLoading = true, isExpanded = true)) }
+
+        viewModelScope.launch {
+            val nextPage = state.page + 1
+
+            getCommentRepliesUseCase(postId, commentId, nextPage, REPLIES_PAGE_SIZE)
+                .onSuccess { page ->
+                    _repliesState.update { map ->
+                        val prev = map[commentId] ?: RepliesState()
+                        map + (commentId to prev.copy(
+                            items = prev.items + page.items,
+                            page = nextPage,
+                            hasMore = page.hasMore,
+                            isLoading = false,
+                            isExpanded = true
+                        ))
+                    }
+                }
+                .onFailure { e ->
+                    _repliesState.update { map ->
+                        val prev = map[commentId] ?: RepliesState()
+                        map + (commentId to prev.copy(isLoading = false))
+                    }
+                    Timber.tag("Comments").e(e, "ERROR: on loading replies for comment $commentId")
                 }
         }
     }

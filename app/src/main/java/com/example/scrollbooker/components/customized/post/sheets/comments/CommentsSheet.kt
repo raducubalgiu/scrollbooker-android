@@ -34,6 +34,8 @@ fun CommentsSheet(
     val comments = viewModel.commentsState.collectAsLazyPagingItems()
     val pendingComments by viewModel.pendingComments.collectAsStateWithLifecycle()
     val likeOverrides by viewModel.likeOverrides.collectAsStateWithLifecycle()
+    val repliesState by viewModel.repliesState.collectAsStateWithLifecycle()
+    val replyTarget by viewModel.replyTarget.collectAsStateWithLifecycle()
 
     val refreshState = comments.loadState.refresh
     val isInitialLoading = refreshState is LoadState.Loading && comments.itemCount == 0
@@ -44,7 +46,7 @@ fun CommentsSheet(
         viewModel.setPostId(newPostId = postId)
     }
 
-    val topPendingCommentId = pendingComments.firstOrNull()?.localId
+    val topPendingCommentId = pendingComments.firstOrNull { it.parentId == null }?.localId
 
     LaunchedEffect(topPendingCommentId) {
         if (topPendingCommentId != null) {
@@ -74,7 +76,11 @@ fun CommentsSheet(
                             comments = comments,
                             pendingComments = pendingComments,
                             likeOverrides = likeOverrides,
+                            repliesState = repliesState,
                             onLikeClick = { comment, action -> viewModel.toggleLike(comment, action) },
+                            onReplyClick = { comment -> viewModel.setReplyTarget(comment) },
+                            onToggleReplies = { commentId -> viewModel.toggleReplies(commentId) },
+                            onLoadMoreReplies = { commentId -> viewModel.loadMoreReplies(commentId) },
                             onRetryComment = { localId -> viewModel.retryComment(localId) },
                             onDiscardComment = { localId -> viewModel.discardPendingComment(localId) },
                             onNavigateToUserProfile = onNavigateToUserProfile,
@@ -85,12 +91,10 @@ fun CommentsSheet(
             }
 
             CommentFooter(
-                onCreateComment = {
-                    viewModel.createComment(
-                        postId = postId,
-                        text = it.text,
-                        parentId = it.parentId
-                    )
+                replyTarget = replyTarget,
+                onCancelReply = { viewModel.clearReplyTarget() },
+                onCreateComment = { text ->
+                    viewModel.createComment(postId = postId, text = text)
                 }
             )
         }

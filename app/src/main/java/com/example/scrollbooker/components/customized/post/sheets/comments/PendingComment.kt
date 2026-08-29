@@ -8,5 +8,6 @@ data class PendingComment(
     val localId: String,
     val comment: Comment,
     val parentId: Int?,
+    val replyToCommentId: Int?,
     val status: PendingStatus
 )

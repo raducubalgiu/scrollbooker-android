@@ -15,6 +15,7 @@ fun CommentDto.toDomain(): Comment {
         isLiked = isLiked,
         likedByPostAuthor = likedByPostAuthor,
         parentId = parentId,
+        replyToCommentId = replyToCommentId,
         //createdAt = createdAt
     )
 }

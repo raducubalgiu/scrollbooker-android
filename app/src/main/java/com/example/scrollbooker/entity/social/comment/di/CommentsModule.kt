@@ -5,6 +5,7 @@ import com.example.scrollbooker.entity.social.comment.data.remote.CommentsApiSer
 import com.example.scrollbooker.entity.social.comment.data.repository.CommentRepositoryImpl
 import com.example.scrollbooker.entity.social.comment.domain.repository.CommentRepository
 import com.example.scrollbooker.entity.social.comment.domain.useCase.CreateCommentUseCase
+import com.example.scrollbooker.entity.social.comment.domain.useCase.GetCommentRepliesUseCase
 import com.example.scrollbooker.entity.social.comment.domain.useCase.GetPostCommentsUseCase
 import com.example.scrollbooker.entity.social.comment.domain.useCase.LikeCommentUseCase
 import com.example.scrollbooker.entity.social.comment.domain.useCase.UnLikeCommentUseCase
@@ -43,6 +44,14 @@ object CommentsModule {
         repository: CommentRepository,
     ): GetPostCommentsUseCase {
         return GetPostCommentsUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetCommentRepliesUseCase(
+        repository: CommentRepository,
+    ): GetCommentRepliesUseCase {
+        return GetCommentRepliesUseCase(repository)
     }
 
     @Provides

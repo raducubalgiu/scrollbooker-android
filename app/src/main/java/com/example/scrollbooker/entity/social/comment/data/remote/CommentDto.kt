@@ -25,6 +25,9 @@ data class CommentDto(
     @SerializedName("parent_id")
     val parentId: Int?,
 
+    @SerializedName("reply_to_comment_id")
+    val replyToCommentId: Int?,
+
 //    @SerializedName("created_at")
 //    val createdAt: Instant,
 )

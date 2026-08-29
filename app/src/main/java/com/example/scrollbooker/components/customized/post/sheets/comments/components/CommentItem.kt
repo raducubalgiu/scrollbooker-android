@@ -33,9 +33,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.avatar.Avatar
 import com.example.scrollbooker.core.util.Dimens.AvatarSizeXXS
 import com.example.scrollbooker.core.util.Dimens.BasePadding
@@ -53,7 +60,11 @@ import com.example.scrollbooker.ui.theme.bodyLarge
 fun CommentItem(
     comment: Comment,
     onLikeClick: (comment: Comment, action: LikeCommentEnum) -> Unit,
-    onNavigateToUserProfile: (param: UserProfileParam) -> Unit
+    onReplyClick: (comment: Comment) -> Unit,
+    onNavigateToUserProfile: (param: UserProfileParam) -> Unit,
+    modifier: Modifier = Modifier,
+    avatarSize: Dp = 35.dp,
+    replyToUsername: String? = null
 ) {
     var scale by remember { mutableFloatStateOf(1f) }
     val animatedScale by animateFloatAsState(
@@ -63,13 +74,13 @@ fun CommentItem(
     )
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = BasePadding),
     ) {
         Avatar(
             url = comment.user.avatar ?: "",
-            size = 35.dp,
+            size = avatarSize,
             onClick = { onNavigateToUserProfile(
                 UserProfileParam(
                     userId = comment.user.id,
@@ -90,7 +101,18 @@ fun CommentItem(
                 overflow = TextOverflow.Ellipsis,
             )
             Spacer(Modifier.height(SpacingXXS))
-            Text(text = comment.text)
+            Text(
+                text = if (replyToUsername != null) {
+                    buildAnnotatedString {
+                        withStyle(SpanStyle(fontWeight = FontWeight.SemiBold, color = OnBackground)) {
+                            append("@$replyToUsername ")
+                        }
+                        append(comment.text)
+                    }
+                } else {
+                    AnnotatedString(comment.text)
+                }
+            )
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -106,9 +128,17 @@ fun CommentItem(
                         color = Color.Gray
                     )
                     Spacer(Modifier.width(BasePadding))
-                    Box(Modifier.padding(vertical = SpacingS)) {
+                    Box(
+                        modifier = Modifier
+                            .padding(vertical = SpacingS)
+                            .clickable(
+                                onClick = { onReplyClick(comment) },
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null
+                            )
+                    ) {
                         Text(
-                            text = "Reply",
+                            text = stringResource(R.string.reply),
                             style = bodyLarge,
                             fontWeight = FontWeight.Normal,
                             color = Color.Gray

@@ -16,6 +16,14 @@ interface CommentsApiService {
         @Query("limit") limit: Int
     ): PaginatedResponseDto<CommentDto>
 
+    @GET("posts/{postId}/comments/{parentId}/replies")
+    suspend fun getCommentReplies(
+        @Path("postId") postId: Int,
+        @Path("parentId") parentId: Int,
+        @Query("page") page: Int,
+        @Query("limit") limit: Int
+    ): PaginatedResponseDto<CommentDto>
+
     @POST("posts/{postId}/comments")
     suspend fun createComment(
         @Path("postId") postId: Int,
