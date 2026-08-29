@@ -33,6 +33,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -63,25 +64,20 @@ class ReviewsViewModel @Inject constructor(
         }
     }
 
-    val businessId: Int = savedStateHandle["businessId"] ?: error("Missing businessId")
+    val businessId: Int? = (savedStateHandle.get<Int>("businessId") ?: -1).takeIf { it != -1 }
     val employeeId: Int? = (savedStateHandle.get<Int>("employeeId") ?: -1).takeIf { it != -1 }
 
     private val _selectedRatings = MutableStateFlow<Set<Int>>(emptySet())
     val selectedRatings: StateFlow<Set<Int>> = _selectedRatings.asStateFlow()
 
     private val _currentTab = MutableStateFlow(ReviewsTab.ALL)
+    val currentTab: StateFlow<ReviewsTab> = _currentTab.asStateFlow()
 
     private val _appliedRatingsByTab =
         MutableStateFlow(mapOf(
             ReviewsTab.ALL to emptySet<Int>(),
             ReviewsTab.VIDEO to emptySet<Int>()
         ))
-
-    fun clearRatings() {
-        if(_selectedRatings.value.isNotEmpty()) {
-            _selectedRatings.value = emptySet()
-        }
-    }
 
     fun setTab(tab: ReviewsTab) {
         _currentTab.value = tab
@@ -113,9 +109,12 @@ class ReviewsViewModel @Inject constructor(
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), true)
 
     init {
-        viewModelScope.launch {
-            _userReviewsSummary.value = FeatureState.Loading
-            _userReviewsSummary.value = getReviewsSummaryUseCase(businessId = businessId, employeeId = employeeId)
+        val id = businessId
+        if (id != null) {
+            viewModelScope.launch {
+                _userReviewsSummary.value = FeatureState.Loading
+                _userReviewsSummary.value = getReviewsSummaryUseCase(businessId = id, employeeId = employeeId)
+            }
         }
     }
 
@@ -123,11 +122,16 @@ class ReviewsViewModel @Inject constructor(
         _appliedRatingsByTab.map { it[ReviewsTab.ALL] ?: emptySet<Int>() }
             .distinctUntilChanged()
             .flatMapLatest { ratingsSet ->
-                getReviewsUseCase(
-                    businessId = businessId,
-                    employeeId = employeeId,
-                    ratings = ratingsSet.ifEmpty { null }
-                )
+                val id = businessId
+                if (id == null) {
+                    flowOf(PagingData.empty())
+                } else {
+                    getReviewsUseCase(
+                        businessId = id,
+                        employeeId = employeeId,
+                        ratings = ratingsSet.ifEmpty { null }
+                    )
+                }
             }
             .map { paging: PagingData<Review> ->
                 paging.map { r: Review ->
@@ -139,9 +143,6 @@ class ReviewsViewModel @Inject constructor(
 
     private val _videoReviewsRefreshTrigger = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
 
-    // Called after a video review's underlying post gets deleted from ReviewsDetailScreen,
-    // once its sheet has finished closing (same "regenerate the Pager" approach used for
-    // feed/profile posts - see PostInteractionStore).
     fun refreshAfterPostDeleted() {
         _videoReviewsRefreshTrigger.tryEmit(Unit)
     }
@@ -152,11 +153,16 @@ class ReviewsViewModel @Inject constructor(
             _videoReviewsRefreshTrigger.onStart { emit(Unit) }
         ) { ratingsSet, _ -> ratingsSet }
             .flatMapLatest { ratingsSet ->
-                getUserVideoReviewsPostsUseCase(
-                    businessId = businessId,
-                    employeeId = employeeId,
-                    ratings = ratingsSet.ifEmpty { null }
-                )
+                val id = businessId
+                if (id == null) {
+                    flowOf(PagingData.empty())
+                } else {
+                    getUserVideoReviewsPostsUseCase(
+                        businessId = id,
+                        employeeId = employeeId,
+                        ratings = ratingsSet.ifEmpty { null }
+                    )
+                }
             }
             .cachedIn(viewModelScope)
 
@@ -218,11 +224,6 @@ class ReviewsViewModel @Inject constructor(
             _reviewUi.update { it + (reviewId to before.copy(isSavingLike = false)) }
         }
     }
-
-    // ---- Video review detail pager (ReviewsDetailScreen) ----
-    // Video reviews are regular Posts, so likes/bookmarks/share and player management reuse the
-    // same singletons every other post detail/feed screen uses (PostInteractionStore, VideoPlayerManager),
-    // instead of the written-review specific state above.
 
     val userPausedPostIds: StateFlow<Set<Int>> = videoPlayerManager.userPausedPostIds
 

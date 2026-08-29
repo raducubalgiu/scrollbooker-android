@@ -27,6 +27,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.scrollbooker.R
@@ -49,19 +50,14 @@ import kotlin.math.roundToInt
 @Composable
 fun ReviewsSection(
     viewModel: ReviewsViewModel,
-    businessId: Int,
-    employeeId: Int?,
     onNavigateToVideoReviewDetail: (index: Int) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val tabs = listOf(stringResource(R.string.all), stringResource(R.string.video))
-    val pagerState = rememberPagerState { 2 }
+    val tabIndex by viewModel.currentTab.collectAsStateWithLifecycle()
 
-    LaunchedEffect(businessId, employeeId) {
-        viewModel.clearRatings()
-        viewModel.setTab(ReviewsViewModel.ReviewsTab.ALL)
-        pagerState.scrollToPage(0)
-    }
+    val initialPage = if (tabIndex == ReviewsViewModel.ReviewsTab.VIDEO) 1 else 0
+    val pagerState = rememberPagerState(initialPage = initialPage) { 2 }
 
     val summaryState by viewModel.userReviewsSummary.collectAsState()
     val allReviews = viewModel.allReviews.collectAsLazyPagingItems()

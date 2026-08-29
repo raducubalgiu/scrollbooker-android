@@ -62,8 +62,9 @@ import com.example.scrollbooker.core.extensions.getOrNull
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.sharePost
+import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.social.post.data.mappers.applyUiState
-import com.example.scrollbooker.navigation.navigators.ReviewsNavigator
+import com.example.scrollbooker.navigation.navigators.UserProfileParam
 import com.example.scrollbooker.ui.theme.BackgroundDark
 import kotlinx.coroutines.launch
 
@@ -73,7 +74,10 @@ fun ReviewsDetailScreen(
     reviewTabKey: String,
     reviewIndex: Int,
     viewModel: ReviewsViewModel,
-    reviewsNavigate: ReviewsNavigator
+    onBack: () -> Unit,
+    onNavigateToUserProfile: (UserProfileParam) -> Unit,
+    onNavigateToBooking: (Product, BookingSourceEnum) -> Unit,
+    onNavigateToEditPost: (Int) -> Unit
 ) {
     val context = LocalContext.current
     val userPausedSet by viewModel.userPausedPostIds.collectAsStateWithLifecycle()
@@ -109,9 +113,9 @@ fun ReviewsDetailScreen(
                     }
                 },
                 onNavigateToBooking = { product ->
-                    reviewsNavigate.toBookingFromProduct(product, BookingSourceEnum.VIDEO_REVIEWS)
+                    onNavigateToBooking(product, BookingSourceEnum.VIDEO_REVIEWS)
                 },
-                onNavigateToEditPost = { reviewsNavigate.toEditPost(it) },
+                onNavigateToEditPost = { onNavigateToEditPost(it) },
                 onOpenStatisticsSheet = {
                     scope.launch {
                         sheetState.hide()
@@ -131,7 +135,7 @@ fun ReviewsDetailScreen(
                         viewModel.refreshAfterPostDeleted()
                     }
                 },
-                onNavigateToUserProfile = { reviewsNavigate.toUserProfile(it) }
+                onNavigateToUserProfile = onNavigateToUserProfile
             )
         }
     }
@@ -188,7 +192,7 @@ fun ReviewsDetailScreen(
             containerColor = BackgroundDark,
             topBar = {
                 Header(
-                    onBack = { reviewsNavigate.back() },
+                    onBack = onBack,
                     icon = Icons.Default.Close,
                     iconSize = 30.dp,
                     containerColor = Color.Transparent,
@@ -276,8 +280,8 @@ fun ReviewsDetailScreen(
                                             viewModel.sharePost(post, channel)
                                         }
                                     },
-                                    onNavigateToUserProfile = { reviewsNavigate.toUserProfile(it) },
-                                    onNavigateToReviews = { reviewsNavigate.back() },
+                                    onNavigateToUserProfile = onNavigateToUserProfile,
+                                    onNavigateToReviews = { onBack() },
                                     showBookButton = false,
                                 )
                             }

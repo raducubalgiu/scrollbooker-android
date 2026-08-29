@@ -39,7 +39,7 @@ class ProfileNavigator (
     }
 
     fun toSocial(socialParam: SocialParam) {
-        navController.navigate(MainRoute.Social.createRoute(socialParam)) {
+        navController.navigate(MainRoute.SocialNavigator.createRoute(socialParam)) {
             launchSingleTop = true
         }
     }

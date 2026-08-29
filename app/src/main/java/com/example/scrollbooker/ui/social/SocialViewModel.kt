@@ -13,6 +13,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.update
@@ -30,6 +31,15 @@ class SocialViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
     private val userId: Int = savedStateHandle["userId"] ?: error("Missing userId")
+
+    private val _selectedTabIndex = MutableStateFlow(savedStateHandle.get<Int>("tabIndex") ?: 0)
+    val selectedTabIndex: StateFlow<Int> = _selectedTabIndex.asStateFlow()
+
+    fun setSelectedTabIndex(index: Int) {
+        if (_selectedTabIndex.value != index) {
+            _selectedTabIndex.value = index
+        }
+    }
 
     private val _followersRefreshTrigger = MutableStateFlow(0)
     private val _followingsRefreshTrigger = MutableStateFlow(0)

@@ -81,7 +81,10 @@ fun NavGraphBuilder.reviewsGraph(
                 reviewTabKey = reviewTabKey,
                 reviewIndex = reviewIndex,
                 viewModel = viewModel,
-                reviewsNavigate = reviewsNavigate
+                onBack = { reviewsNavigate.back() },
+                onNavigateToUserProfile = { reviewsNavigate.toUserProfile(it) },
+                onNavigateToBooking = { product, source -> reviewsNavigate.toBookingFromProduct(product, source) },
+                onNavigateToEditPost = { reviewsNavigate.toEditPost(it) }
             )
         }
     }

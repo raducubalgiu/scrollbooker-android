@@ -30,8 +30,6 @@ fun ReviewsScreen(
         Box(Modifier.fillMaxSize().padding(innerPadding)) {
             ReviewsSection(
                 viewModel = viewModel,
-                businessId = viewModel.businessId,
-                employeeId = viewModel.employeeId,
                 onNavigateToVideoReviewDetail = { index ->
                     reviewsNavigate.toReviewDetail(
                         ReviewsDetailParam(
