@@ -104,9 +104,9 @@ fun ProductFormContent(
             initialVariant = editingVariantIndex?.let { productState.variants.getOrNull(it) },
             isSaving = isSavingVariant,
             onSave = { variant ->
-                if (editingVariantIndex != null) {
-                    // TODO: wire to the edit-variant endpoint once it exists in BE;
-                    // for now opening the sheet pre-filled is all that's implemented.
+                val index = editingVariantIndex
+                if (index != null) {
+                    viewModel.updateVariant(index, variant)
                 } else {
                     viewModel.addVariant(variant)
                 }

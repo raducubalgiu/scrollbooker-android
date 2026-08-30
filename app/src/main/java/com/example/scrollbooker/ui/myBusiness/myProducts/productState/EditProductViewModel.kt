@@ -16,14 +16,17 @@ import com.example.scrollbooker.entity.booking.products.domain.useCase.CreatePro
 import com.example.scrollbooker.entity.booking.products.domain.useCase.DeleteProductVariantUseCase
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductByIdUseCase
 import com.example.scrollbooker.entity.booking.products.domain.useCase.UpdateProductBaseInfoUseCase
+import com.example.scrollbooker.entity.booking.products.domain.useCase.UpdateProductVariantUseCase
 import com.example.scrollbooker.entity.nomenclature.filter.domain.useCase.GetFiltersByServiceUseCase
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.useCase.GetSelectedServiceDomainsWithServicesByBusinessIdUseCase
 import com.example.scrollbooker.store.AuthDataStore
 import com.example.scrollbooker.ui.myBusiness.myProducts.ProductViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -37,6 +40,7 @@ class EditProductViewModel @Inject constructor(
     private val getProductByIdUseCase: GetProductByIdUseCase,
     private val updateProductBaseInfoUseCase: UpdateProductBaseInfoUseCase,
     private val createProductVariantUseCase: CreateProductVariantUseCase,
+    private val updateProductVariantUseCase: UpdateProductVariantUseCase,
     private val deleteProductVariantUseCase: DeleteProductVariantUseCase,
     getAllEmployeesByOwnerUseCase: GetAllEmployeesByOwnerUseCase,
     getFiltersByServiceUseCase: GetFiltersByServiceUseCase,
@@ -54,6 +58,9 @@ class EditProductViewModel @Inject constructor(
 
     private val _loadingProductState = MutableStateFlow<FeatureState<Product>>(FeatureState.Loading)
     val loadingProductState: StateFlow<FeatureState<Product>> = _loadingProductState.asStateFlow()
+
+    private val _productChangedEvent = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+    val productChangedEvent = _productChangedEvent.asSharedFlow()
 
     init {
         loadProduct()
@@ -115,12 +122,8 @@ class EditProductViewModel @Inject constructor(
         }
     )
 
-    override suspend fun addVariant(variant: ProductVariantState) {
-        val id = productId.value ?: return
-
-        _isSavingVariant.value = true
-
-        val request = ProductVariantRequest(
+    private fun buildVariantRequest(variant: ProductVariantState): ProductVariantRequest {
+        return ProductVariantRequest(
             name = variant.name,
             duration = variant.duration.toIntOrNull() ?: 0,
             offerings = variant.offerings
@@ -135,16 +138,54 @@ class EditProductViewModel @Inject constructor(
                     )
                 }
         )
+    }
 
-        val result = withVisibleLoading { createProductVariantUseCase(id, request) }
+    override suspend fun addVariant(variant: ProductVariantState) {
+        val id = productId.value ?: return
+
+        _isSavingVariant.value = true
+
+        val result = withVisibleLoading {
+            createProductVariantUseCase(id, buildVariantRequest(variant))
+        }
 
         result.fold(
             onSuccess = { product ->
                 applyProduct(product)
                 _loadingProductState.value = FeatureState.Success(product)
+                _productChangedEvent.tryEmit(Unit)
             },
             onFailure = { error ->
                 Timber.Forest.tag("Edit Product").e(error, "ERROR: on Creating Variant for Product with id: $id")
+            }
+        )
+
+        _isSavingVariant.value = false
+    }
+
+    override suspend fun updateVariant(index: Int, variant: ProductVariantState) {
+        val id = productId.value
+        val variantId = variant.id
+
+        if (id == null || variantId == null) {
+            super.updateVariant(index, variant)
+            return
+        }
+
+        _isSavingVariant.value = true
+
+        val result = withVisibleLoading {
+            updateProductVariantUseCase(id, variantId, buildVariantRequest(variant))
+        }
+
+        result.fold(
+            onSuccess = { product ->
+                applyProduct(product)
+                _loadingProductState.value = FeatureState.Success(product)
+                _productChangedEvent.tryEmit(Unit)
+            },
+            onFailure = { error ->
+                Timber.Forest.tag("Edit Product").e(error, "ERROR: on Updating Variant $variantId for Product with id: $id")
             }
         )
 
@@ -169,6 +210,7 @@ class EditProductViewModel @Inject constructor(
                 _productState.update { current ->
                     current.copy(variants = current.variants.filterIndexed { i, _ -> i != index })
                 }
+                _productChangedEvent.tryEmit(Unit)
             },
             onFailure = { error ->
                 Timber.Forest.tag("Edit Product").e(error, "ERROR: on Deleting Variant $variantId for Product with id: $id")

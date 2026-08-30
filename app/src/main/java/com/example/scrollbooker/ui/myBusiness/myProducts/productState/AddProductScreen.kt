@@ -24,7 +24,6 @@ import com.example.scrollbooker.components.core.buttons.MainButton
 import com.example.scrollbooker.components.core.headers.Header
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
-import com.example.scrollbooker.core.util.FormMode
 import com.example.scrollbooker.ui.myBusiness.myProducts.MyProductsViewModel
 import com.example.scrollbooker.ui.theme.Divider
 

@@ -13,6 +13,7 @@ import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProduc
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByAppointmentIdUseCase
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByBusinessIdAndEmployeeIdUseCase
 import com.example.scrollbooker.entity.booking.products.domain.useCase.UpdateProductBaseInfoUseCase
+import com.example.scrollbooker.entity.booking.products.domain.useCase.UpdateProductVariantUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -112,5 +113,13 @@ object ProductsModule {
         repository: ProductRepository,
     ): DeleteProductVariantUseCase {
         return DeleteProductVariantUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUpdateProductVariantUseCase(
+        repository: ProductRepository,
+    ): UpdateProductVariantUseCase {
+        return UpdateProductVariantUseCase(repository)
     }
 }

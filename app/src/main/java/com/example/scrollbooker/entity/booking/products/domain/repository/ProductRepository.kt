@@ -21,5 +21,6 @@ interface ProductRepository {
 
     suspend fun updateProductBaseInfo(productId: Int, product: ProductBaseInfoUpdateRequest): Product
     suspend fun createVariant(productId: Int, request: ProductVariantRequest): Product
+    suspend fun updateVariant(productId: Int, variantId: Int, request: ProductVariantRequest): Product
     suspend fun deleteVariant(productId: Int, variantId: Int)
 }

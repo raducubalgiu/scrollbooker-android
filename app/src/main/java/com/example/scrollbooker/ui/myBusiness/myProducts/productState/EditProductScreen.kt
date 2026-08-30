@@ -54,6 +54,12 @@ fun EditProductScreen(
         }
     }
 
+    LaunchedEffect(Unit) {
+        viewModel.productChangedEvent.collect {
+            myProductsViewModel.refreshProducts()
+        }
+    }
+
     Scaffold(
         topBar = {
             Header(

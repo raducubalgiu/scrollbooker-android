@@ -63,6 +63,14 @@ class ProductRepositoryImpl @Inject constructor(
         return api.createVariant(productId, request).toDomain()
     }
 
+    override suspend fun updateVariant(
+        productId: Int,
+        variantId: Int,
+        request: ProductVariantRequest
+    ): Product {
+        return api.updateVariant(productId, variantId, request).toDomain()
+    }
+
     override suspend fun deleteVariant(productId: Int, variantId: Int) {
         return api.deleteVariant(productId, variantId)
     }

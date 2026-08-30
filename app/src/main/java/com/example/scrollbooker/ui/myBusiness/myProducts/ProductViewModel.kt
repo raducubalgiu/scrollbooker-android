@@ -169,6 +169,12 @@ abstract class ProductViewModel(
         }
     }
 
+    open suspend fun updateVariant(index: Int, variant: ProductVariantState) {
+        _productState.update { current ->
+            current.copy(variants = current.variants.mapIndexed { i, v -> if (i == index) variant else v })
+        }
+    }
+
     open suspend fun removeVariant(index: Int) {
         _productState.update { current ->
             current.copy(variants = current.variants.filterIndexed { i, _ -> i != index })
