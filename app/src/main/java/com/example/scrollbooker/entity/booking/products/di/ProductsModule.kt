@@ -5,7 +5,9 @@ import com.example.scrollbooker.entity.booking.products.data.remote.ProductsApiS
 import com.example.scrollbooker.entity.booking.products.data.repository.ProductRepositoryImpl
 import com.example.scrollbooker.entity.booking.products.domain.repository.ProductRepository
 import com.example.scrollbooker.entity.booking.products.domain.useCase.CreateProductUseCase
+import com.example.scrollbooker.entity.booking.products.domain.useCase.CreateProductVariantUseCase
 import com.example.scrollbooker.entity.booking.products.domain.useCase.DeleteProductUseCase
+import com.example.scrollbooker.entity.booking.products.domain.useCase.DeleteProductVariantUseCase
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetPostLinkedProductsUseCase
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductByIdUseCase
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductsByAppointmentIdUseCase
@@ -94,5 +96,21 @@ object ProductsModule {
         repository: ProductRepository,
     ): UpdateProductBaseInfoUseCase {
         return UpdateProductBaseInfoUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCreateProductVariantUseCase(
+        repository: ProductRepository,
+    ): CreateProductVariantUseCase {
+        return CreateProductVariantUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDeleteProductVariantUseCase(
+        repository: ProductRepository,
+    ): DeleteProductVariantUseCase {
+        return DeleteProductVariantUseCase(repository)
     }
 }

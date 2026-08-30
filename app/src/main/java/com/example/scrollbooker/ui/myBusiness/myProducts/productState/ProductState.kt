@@ -25,6 +25,8 @@ data class ProductOfferingState(
     val isSelected: Boolean
 ) {
     fun validate(context: Context): ProductOfferingValidation {
+        if (!isSelected) return ProductOfferingValidation()
+
         val priceError = checkRequired(context, price)
         val discountError = checkMinMax(context, discount, 0, 100)
 
@@ -49,6 +51,7 @@ data class ProductVariantValidation(
 
 @Immutable
 data class ProductVariantState(
+    val id: Int? = null,
     val name: String = "",
     val duration: String = "",
     val offerings: List<ProductOfferingState> = emptyList()
@@ -74,6 +77,7 @@ data class ProductVariantState(
         val offeringValidations = offerings.map { it.validate(context) }
         val offeringsError = when {
             offerings.isEmpty() -> "Este necesar să adaugi cel puțin un preț."
+            selectedOfferings.isEmpty() -> "Este necesar să selectezi cel puțin un angajat."
             else -> null
         }
 

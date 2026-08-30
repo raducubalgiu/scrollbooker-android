@@ -8,7 +8,12 @@ import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.employee.domain.useCase.GetAllEmployeesByOwnerUseCase
 import com.example.scrollbooker.entity.booking.products.data.remote.ProductBaseInfoUpdateRequest
 import com.example.scrollbooker.entity.booking.products.data.remote.ProductFilterRequest
+import com.example.scrollbooker.entity.booking.products.data.remote.ProductOfferingRequest
+import com.example.scrollbooker.entity.booking.products.data.remote.ProductVariantRequest
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
+import com.example.scrollbooker.entity.booking.products.domain.model.ProductVariant
+import com.example.scrollbooker.entity.booking.products.domain.useCase.CreateProductVariantUseCase
+import com.example.scrollbooker.entity.booking.products.domain.useCase.DeleteProductVariantUseCase
 import com.example.scrollbooker.entity.booking.products.domain.useCase.GetProductByIdUseCase
 import com.example.scrollbooker.entity.booking.products.domain.useCase.UpdateProductBaseInfoUseCase
 import com.example.scrollbooker.entity.nomenclature.filter.domain.useCase.GetFiltersByServiceUseCase
@@ -23,6 +28,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.math.BigDecimal
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,6 +36,8 @@ class EditProductViewModel @Inject constructor(
     @ApplicationContext context: Context,
     private val getProductByIdUseCase: GetProductByIdUseCase,
     private val updateProductBaseInfoUseCase: UpdateProductBaseInfoUseCase,
+    private val createProductVariantUseCase: CreateProductVariantUseCase,
+    private val deleteProductVariantUseCase: DeleteProductVariantUseCase,
     getAllEmployeesByOwnerUseCase: GetAllEmployeesByOwnerUseCase,
     getFiltersByServiceUseCase: GetFiltersByServiceUseCase,
     getSelectedServiceDomainsWithServicesByBusinessIdUseCase: GetSelectedServiceDomainsWithServicesByBusinessIdUseCase,
@@ -61,31 +69,7 @@ class EditProductViewModel @Inject constructor(
             result.fold(
                 onSuccess = { product ->
                     _currentServiceId.value = product.serviceId
-
-                    _productState.update {
-                        it.copy(
-                            name = product.name,
-                            description = product.description.orEmpty(),
-                            serviceDomainId = product.serviceDomainId.toString(),
-                            serviceId = product.serviceId.toString(),
-                            currencyId = product.currencyId.toString(),
-                            variants = product.variants.map { variant ->
-                                ProductVariantState(
-                                    name = variant.name,
-                                    duration = variant.duration.toString(),
-                                    offerings = variant.offerings.map { offering ->
-                                        ProductOfferingState(
-                                            userId = offering.user.id.toString(),
-                                            price = offering.price.toPlainString(),
-                                            discount = offering.discount.toPlainString(),
-                                            priceWithDiscount = offering.priceWithDiscount.toPlainString(),
-                                            isSelected = true
-                                        )
-                                    }
-                                )
-                            }
-                        )
-                    }
+                    applyProduct(product)
 
                     product.filters.forEach { filter ->
                         _selectedFilters.update {
@@ -101,6 +85,97 @@ class EditProductViewModel @Inject constructor(
                 }
             )
         }
+    }
+
+    private fun applyProduct(product: Product) {
+        _productState.update {
+            it.copy(
+                name = product.name,
+                description = product.description.orEmpty(),
+                serviceDomainId = product.serviceDomainId.toString(),
+                serviceId = product.serviceId.toString(),
+                currencyId = product.currencyId.toString(),
+                variants = product.variants.map { variant -> variant.toState() }
+            )
+        }
+    }
+
+    private fun ProductVariant.toState(): ProductVariantState = ProductVariantState(
+        id = id,
+        name = name,
+        duration = duration.toString(),
+        offerings = offerings.map { offering ->
+            ProductOfferingState(
+                userId = offering.user.id.toString(),
+                price = offering.price.toPlainString(),
+                discount = offering.discount.toPlainString(),
+                priceWithDiscount = offering.priceWithDiscount.toPlainString(),
+                isSelected = true
+            )
+        }
+    )
+
+    override suspend fun addVariant(variant: ProductVariantState) {
+        val id = productId.value ?: return
+
+        _isSavingVariant.value = true
+
+        val request = ProductVariantRequest(
+            name = variant.name,
+            duration = variant.duration.toIntOrNull() ?: 0,
+            offerings = variant.offerings
+                .filter { it.isSelected }
+                .distinctBy { it.userId }
+                .map { offering ->
+                    ProductOfferingRequest(
+                        userId = offering.userId.toInt(),
+                        price = offering.price.toBigDecimalOrNull() ?: BigDecimal.ZERO,
+                        discount = offering.discount.toBigDecimalOrNull() ?: BigDecimal.ZERO,
+                        priceWithDiscount = offering.priceWithDiscount.toBigDecimalOrNull() ?: BigDecimal.ZERO
+                    )
+                }
+        )
+
+        val result = withVisibleLoading { createProductVariantUseCase(id, request) }
+
+        result.fold(
+            onSuccess = { product ->
+                applyProduct(product)
+                _loadingProductState.value = FeatureState.Success(product)
+            },
+            onFailure = { error ->
+                Timber.Forest.tag("Edit Product").e(error, "ERROR: on Creating Variant for Product with id: $id")
+            }
+        )
+
+        _isSavingVariant.value = false
+    }
+
+    override suspend fun removeVariant(index: Int) {
+        val id = productId.value
+        val variantId = _productState.value.variants.getOrNull(index)?.id
+
+        if (id == null || variantId == null) {
+            super.removeVariant(index)
+            return
+        }
+
+        _isSavingVariant.value = true
+
+        val result = withVisibleLoading { deleteProductVariantUseCase(id, variantId) }
+
+        result.fold(
+            onSuccess = {
+                _productState.update { current ->
+                    current.copy(variants = current.variants.filterIndexed { i, _ -> i != index })
+                }
+            },
+            onFailure = { error ->
+                Timber.Forest.tag("Edit Product").e(error, "ERROR: on Deleting Variant $variantId for Product with id: $id")
+            }
+        )
+
+        _isSavingVariant.value = false
     }
 
     fun editProductBaseInfo() {

@@ -58,6 +58,9 @@ abstract class ProductViewModel(
     protected val _isSaving = MutableStateFlow(false)
     val isSaving: StateFlow<Boolean> = _isSaving.asStateFlow()
 
+    protected val _isSavingVariant = MutableStateFlow(false)
+    val isSavingVariant: StateFlow<Boolean> = _isSavingVariant.asStateFlow()
+
     protected val _createSuccessEvent = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
     val createSuccessEvent = _createSuccessEvent.asSharedFlow()
 
@@ -160,13 +163,13 @@ abstract class ProductViewModel(
         }
     }
 
-    fun addVariant(variant: ProductVariantState) {
+    open suspend fun addVariant(variant: ProductVariantState) {
         _productState.update { current ->
             current.copy(variants = current.variants + variant)
         }
     }
 
-    fun removeVariant(index: Int) {
+    open suspend fun removeVariant(index: Int) {
         _productState.update { current ->
             current.copy(variants = current.variants.filterIndexed { i, _ -> i != index })
         }

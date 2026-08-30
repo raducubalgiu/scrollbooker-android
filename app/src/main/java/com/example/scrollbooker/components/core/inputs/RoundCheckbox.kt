@@ -14,11 +14,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.scrollbooker.R
-import com.example.scrollbooker.ui.theme.LastMinute
+import com.example.scrollbooker.ui.theme.Primary
 
 @Composable
 fun RoundCheckbox(
@@ -26,8 +24,8 @@ fun RoundCheckbox(
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     size: Dp = 22.dp,
-    borderColor: Color = if (checked) LastMinute else Color.Gray,
-    fillColor: Color = if (checked) LastMinute else Color.Transparent,
+    borderColor: Color = if (checked) Primary else Color.Gray,
+    fillColor: Color = if (checked) Primary else Color.Transparent,
     checkmarkColor: Color = Color.White
 ) {
     Box(

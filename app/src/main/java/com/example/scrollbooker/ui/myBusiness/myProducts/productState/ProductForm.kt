@@ -21,8 +21,10 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
@@ -31,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.scrollbooker.R
+import com.example.scrollbooker.components.core.dialog.DialogConfirm
 import com.example.scrollbooker.components.core.inputs.Option
 import com.example.scrollbooker.components.customized.placeholderActionBox.PlaceholderActionBox
 import com.example.scrollbooker.components.customized.productCard.ProductVariantCard
@@ -38,11 +41,10 @@ import com.example.scrollbooker.core.extensions.formatDuration
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingS
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.core.util.FormMode
 import com.example.scrollbooker.entity.nomenclature.serviceDomain.domain.model.SelectedServiceDomainsWithServices
 import com.example.scrollbooker.ui.myBusiness.myProducts.ProductViewModel
 import com.example.scrollbooker.ui.myBusiness.myProducts.components.AddProductBaseInfo
-import com.example.scrollbooker.ui.myBusiness.myProducts.components.AddVariantSheet
+import com.example.scrollbooker.ui.myBusiness.myProducts.components.VariantSheet
 import com.example.scrollbooker.ui.theme.titleMedium
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
@@ -50,7 +52,6 @@ import java.math.BigDecimal
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductFormContent(
-    formMode: FormMode,
     viewModel: ProductViewModel,
     serviceDomains: FeatureState<List<SelectedServiceDomainsWithServices>>,
     showErrors: Boolean,
@@ -69,10 +70,14 @@ fun ProductFormContent(
     val filters by viewModel.filters.collectAsStateWithLifecycle()
     val selectedFilters by viewModel.selectedFilters.collectAsStateWithLifecycle()
     val employees by viewModel.employees.collectAsStateWithLifecycle()
+    val isSavingVariant by viewModel.isSavingVariant.collectAsStateWithLifecycle()
 
     val isLoadingServiceDomains by remember(serviceDomains) {
         derivedStateOf { serviceDomains is FeatureState.Loading }
     }
+
+    var editingVariantIndex by remember { mutableStateOf<Int?>(null) }
+    var variantIndexToDelete by remember { mutableStateOf<Int?>(null) }
 
     val serviceDomainsOptionsList = when (val s = serviceDomains) {
         is FeatureState.Success -> s.data
@@ -90,15 +95,44 @@ fun ProductFormContent(
     }
 
     if (sheetState.isVisible) {
-        AddVariantSheet(
-            formMode = formMode,
+        VariantSheet(
             sheetState = sheetState,
             hasEmployees = hasEmployees,
             employees = employees,
             ownerId = ownerId,
             defaultName = productState.name,
-            onSave = { variant -> viewModel.addVariant(variant) },
-            onClose = { scope.launch { sheetState.hide() } },
+            initialVariant = editingVariantIndex?.let { productState.variants.getOrNull(it) },
+            isSaving = isSavingVariant,
+            onSave = { variant ->
+                if (editingVariantIndex != null) {
+                    // TODO: wire to the edit-variant endpoint once it exists in BE;
+                    // for now opening the sheet pre-filled is all that's implemented.
+                } else {
+                    viewModel.addVariant(variant)
+                }
+            },
+            onClose = {
+                editingVariantIndex = null
+                scope.launch { sheetState.hide() }
+            },
+        )
+    }
+
+    variantIndexToDelete?.let { index ->
+        DialogConfirm(
+            title = stringResource(R.string.deleteOption),
+            text = stringResource(R.string.areYouSureYouWantDeleteOption),
+            confirmText = stringResource(R.string.delete),
+            isLoading = isSavingVariant,
+            onDismissRequest = {
+                if (!isSavingVariant) variantIndexToDelete = null
+            },
+            onConfirmation = {
+                scope.launch {
+                    viewModel.removeVariant(index)
+                    variantIndexToDelete = null
+                }
+            }
         )
     }
 
@@ -190,8 +224,12 @@ fun ProductFormContent(
                     isSelectable = false,
                     isEditable = true,
                     isDeletable = true,
-                    onEdit = { },
-                    onDelete = { viewModel.removeVariant(index) }
+                    onEdit = {
+                        focusManager.clearFocus()
+                        editingVariantIndex = index
+                        scope.launch { sheetState.show() }
+                    },
+                    onDelete = { variantIndexToDelete = index }
                 )
 
                 if (index < productState.variants.lastIndex) {

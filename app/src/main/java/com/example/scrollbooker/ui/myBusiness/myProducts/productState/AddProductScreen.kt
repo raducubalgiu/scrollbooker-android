@@ -76,7 +76,6 @@ fun AddProductScreen(
         }
     ) { innerPadding ->
         ProductFormContent(
-            formMode = FormMode.Create,
             viewModel = viewModel,
             serviceDomains = serviceDomains,
             showErrors = showErrors,

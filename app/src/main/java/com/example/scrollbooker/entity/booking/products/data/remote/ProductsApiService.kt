@@ -46,4 +46,16 @@ interface ProductsApiService {
         @Path("productId") productId: Int,
         @Body request: ProductBaseInfoUpdateRequest
     ): ProductDto
+
+    @POST("products/{productId}/variants")
+    suspend fun createVariant(
+        @Path("productId") productId: Int,
+        @Body request: ProductVariantRequest
+    ): ProductDto
+
+    @DELETE("products/{productId}/variants/{variantId}")
+    suspend fun deleteVariant(
+        @Path("productId") productId: Int,
+        @Path("variantId") variantId: Int
+    )
 }

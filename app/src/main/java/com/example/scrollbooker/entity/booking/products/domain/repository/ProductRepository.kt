@@ -2,6 +2,7 @@ package com.example.scrollbooker.entity.booking.products.domain.repository
 import com.example.scrollbooker.entity.booking.products.data.remote.ProductBaseInfoUpdateRequest
 import com.example.scrollbooker.entity.booking.products.data.remote.ProductCreateRequest
 import com.example.scrollbooker.entity.booking.products.data.remote.ProductFilterRequest
+import com.example.scrollbooker.entity.booking.products.data.remote.ProductVariantRequest
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.entity.booking.products.domain.model.UserProducts
 
@@ -19,4 +20,6 @@ interface ProductRepository {
     suspend fun deleteProduct(productId: Int)
 
     suspend fun updateProductBaseInfo(productId: Int, product: ProductBaseInfoUpdateRequest): Product
+    suspend fun createVariant(productId: Int, request: ProductVariantRequest): Product
+    suspend fun deleteVariant(productId: Int, variantId: Int)
 }

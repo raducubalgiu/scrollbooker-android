@@ -36,7 +36,6 @@ import com.example.scrollbooker.components.core.sheet.SheetHeader
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.Dimens.SpacingM
 import com.example.scrollbooker.core.util.FeatureState
-import com.example.scrollbooker.core.util.FormMode
 import com.example.scrollbooker.entity.booking.employee.domain.model.Employee
 import com.example.scrollbooker.ui.myBusiness.myProducts.productState.ProductOfferingState
 import com.example.scrollbooker.ui.myBusiness.myProducts.productState.ProductVariantState
@@ -46,26 +45,29 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddVariantSheet(
-    formMode: FormMode,
+fun VariantSheet(
     sheetState: SheetState,
     employees: FeatureState<List<Employee>>,
     hasEmployees: Boolean?,
     ownerId: Int?,
     defaultName: String,
-    onSave: (ProductVariantState) -> Unit,
+    initialVariant: ProductVariantState? = null,
+    isSaving: Boolean = false,
+    onSave: suspend (ProductVariantState) -> Unit,
     onClose: () -> Unit
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
     var variantState by remember {
-        mutableStateOf(ProductVariantState(name = defaultName))
+        mutableStateOf(initialVariant ?: ProductVariantState(name = defaultName))
     }
+
     var offeringsInitialized by remember { mutableStateOf(false) }
 
     LaunchedEffect(hasEmployees, employees) {
         if (offeringsInitialized) return@LaunchedEffect
+        val existingOfferings = initialVariant?.offerings.orEmpty().associateBy { it.userId }
 
         val initialOfferings = when (hasEmployees) {
             null -> return@LaunchedEffect
@@ -75,8 +77,9 @@ fun AddVariantSheet(
                     ?: return@LaunchedEffect
 
                 employeeList.map { employee ->
-                    ProductOfferingState(
-                        userId = employee.id.toString(),
+                    val userId = employee.id.toString()
+                    existingOfferings[userId] ?: ProductOfferingState(
+                        userId = userId,
                         price = "",
                         discount = "0",
                         priceWithDiscount = "",
@@ -87,9 +90,11 @@ fun AddVariantSheet(
 
             false -> {
                 val id = ownerId ?: return@LaunchedEffect
+                val userId = id.toString()
+
                 listOf(
-                    ProductOfferingState(
-                        userId = id.toString(),
+                    existingOfferings[userId] ?: ProductOfferingState(
+                        userId = userId,
                         price = "",
                         discount = "0",
                         priceWithDiscount = "",
@@ -115,10 +120,12 @@ fun AddVariantSheet(
         variantState = variantState.copy(offerings = updated)
     }
 
-    val buttonText = when (formMode) {
-        FormMode.Create -> stringResource(R.string.add)
-        FormMode.Edit -> stringResource(R.string.save)
-        else -> ""
+    val isEditingVariant = initialVariant != null
+
+    val buttonText = if (isEditingVariant) {
+        stringResource(R.string.save)
+    } else {
+        stringResource(R.string.add)
     }
 
     Sheet(
@@ -127,7 +134,11 @@ fun AddVariantSheet(
         onClose = onClose
     ) {
         SheetHeader(
-            title = stringResource(R.string.addAnOption),
+            title = if (isEditingVariant) {
+                stringResource(R.string.editOption)
+            } else {
+                stringResource(R.string.addAnOption)
+            },
             onClose = onClose
         )
 
@@ -247,14 +258,17 @@ fun AddVariantSheet(
                 MainButton(
                     modifier = Modifier.padding(horizontal = BasePadding),
                     title = buttonText,
-                    enabled = validation.isValid,
+                    isLoading = isSaving,
+                    enabled = validation.isValid && !isSaving,
                     onClick = {
                         showErrors = true
 
                         if (validation.isValid) {
-                            onSave(variantState)
-                            scope.launch { sheetState.hide() }
-                            onClose()
+                            scope.launch {
+                                onSave(variantState)
+                                sheetState.hide()
+                                onClose()
+                            }
                         }
                     },
                 )

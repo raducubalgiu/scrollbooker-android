@@ -485,6 +485,9 @@
     <string name="optionsAndPrices">Opțiuni și prețuri</string>
     <string name="prices">Prețuri</string>
     <string name="addAnOption">Adaugă o opțiune</string>
+    <string name="editOption">Editează opțiunea</string>
+    <string name="deleteOption">Șterge opțiunea</string>
+    <string name="areYouSureYouWantDeleteOption">Ești sigur că dorești să ștergi această opțiune?</string>
     <string name="optionDetails">Detalii opțiune</string>
     <string name="optionName">Numele opțiunii</string>
     <string name="addOptionsAndPricesDescription">Configurează prețul serviciului tău. Dacă este necesar, poți adăuga mai multe opțiuni personalizate.</string>
