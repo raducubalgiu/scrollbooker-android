@@ -150,13 +150,7 @@ fun ReviewsDetailScreen(
     val hasData = remember(videoReviews.itemCount) { videoReviews.itemCount > 0 }
 
     if (!hasData) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(BackgroundDark)
-        ) {
-            LoadingScreen(color = Color.White)
-        }
+        ReviewsDetailSkeleton(onBack = onBack)
         return
     }
 
@@ -317,6 +311,47 @@ fun ReviewsDetailScreen(
                     title = stringResource(R.string.bookNow),
                 )
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ReviewsDetailSkeleton(
+    onBack: () -> Unit,
+) {
+    Scaffold(
+        containerColor = BackgroundDark,
+        topBar = {
+            Header(
+                onBack = onBack,
+                icon = Icons.Default.Close,
+                iconSize = 30.dp,
+                containerColor = Color.Transparent,
+                contentColor = Color.White
+            )
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(BackgroundDark)
+                .padding(bottom = innerPadding.calculateBottomPadding())
+        ) {
+            Box(modifier = Modifier.weight(1f)) {
+                LoadingScreen(color = Color.White)
+            }
+
+            MainButton(
+                modifier = Modifier.padding(
+                    vertical = SpacingS,
+                    horizontal = BasePadding
+                ),
+                contentPadding = PaddingValues(12.dp),
+                enabled = false,
+                onClick = {},
+                title = stringResource(R.string.bookNow),
+            )
         }
     }
 }

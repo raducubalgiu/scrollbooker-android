@@ -19,11 +19,14 @@ import com.example.scrollbooker.entity.booking.availability.domain.model.Slot
 import com.example.scrollbooker.ui.shared.calendar.components.slots.FullyBookedDayMessage
 import com.example.scrollbooker.ui.shared.calendar.components.slots.SlotItem
 import com.example.scrollbooker.ui.shared.calendar.components.slots.SlotsShimmer
+import org.threeten.bp.LocalDate
 
 @Composable
 fun ContentPager(
     dayPagerState: PagerState,
     timeSlots: FeatureState<AvailableDay>,
+    nextAvailableDay: LocalDate?,
+    onNavigateToDay: (LocalDate) -> Unit,
     onSlotSelected: (Slot) -> Unit
 ) {
     HorizontalPager(
@@ -38,7 +41,11 @@ fun ContentPager(
                 val availableSlotsList = slots.data.availableSlots
 
                 if (availableSlotsList.isEmpty()) {
-                    FullyBookedDayMessage(onClick = {})
+                    FullyBookedDayMessage(
+                        onNextAvailableDayClick = nextAvailableDay?.let { day ->
+                            { onNavigateToDay(day) }
+                        }
+                    )
                 } else {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),

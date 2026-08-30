@@ -15,8 +15,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.core.extensions.displayDatePeriod
@@ -46,8 +48,13 @@ fun BookingDateTimeScreen(
 
     val totalWeeks = 26
     val totalDays = totalWeeks * 7
-    val weekPagerState = rememberPagerState(initialPage = 0) { totalWeeks }
-    val dayPagerState = rememberPagerState(initialPage = 0) { totalDays }
+
+    val initialDayIndex = remember {
+        val cachedCalendarDays = (viewModel.calendarHeader.value as? FeatureState.Success)?.data?.calendarDays
+        cachedCalendarDays?.indexOf(viewModel.selectedDay.value)?.takeIf { it >= 0 } ?: 0
+    }
+    val weekPagerState = rememberPagerState(initialPage = initialDayIndex / 7) { totalWeeks }
+    val dayPagerState = rememberPagerState(initialPage = initialDayIndex) { totalDays }
 
     BookingLayout(
         modifier = modifier,
@@ -61,7 +68,7 @@ fun BookingDateTimeScreen(
             style = headlineLarge,
             color = OnBackground,
             fontWeight = FontWeight.ExtraBold,
-            text = "Alege Ora"
+            text = stringResource(R.string.pickHour)
         )
 
         when (val header = headerState) {
@@ -74,6 +81,19 @@ fun BookingDateTimeScreen(
 
                 val availableDaysSet = remember(calendar.calendarAvailableDays) {
                     calendar.calendarAvailableDays.toSet()
+                }
+
+                val nextAvailableDay = remember(calendar.calendarAvailableDays, selectedDay) {
+                    calendar.calendarAvailableDays
+                        .filter { it.isAfter(selectedDay) }
+                        .minOrNull()
+                }
+
+                fun navigateToDay(date: LocalDate) {
+                    val targetIndex = calendarDays.indexOf(date)
+                    if (targetIndex != -1) {
+                        scope.launch { dayPagerState.animateScrollToPage(targetIndex) }
+                    }
                 }
 
                 if (calendarDays.isEmpty()) {
@@ -181,6 +201,8 @@ fun BookingDateTimeScreen(
                         ContentPager(
                             dayPagerState = dayPagerState,
                             timeSlots = timeSlots,
+                            nextAvailableDay = nextAvailableDay,
+                            onNavigateToDay = ::navigateToDay,
                             onSlotSelected = { slot ->
                                 viewModel.onSlotSelected(slot)
                                 bookingNavigate.toConfirmation()

@@ -33,7 +33,7 @@ import com.example.scrollbooker.ui.theme.titleMedium
 @Composable
 fun FullyBookedDayMessage(
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    onNextAvailableDayClick: (() -> Unit)? = null
 ) {
     Column(
         modifier = modifier
@@ -72,11 +72,13 @@ fun FullyBookedDayMessage(
             textAlign = TextAlign.Center
         )
 
-        Spacer(Modifier.height(BasePadding))
+        if (onNextAvailableDayClick != null) {
+            Spacer(Modifier.height(BasePadding))
 
-        MainButtonOutlined(
-            title = stringResource(R.string.nextOpenDay),
-            onClick = {}
-        )
+            MainButtonOutlined(
+                title = stringResource(R.string.nextOpenDay),
+                onClick = onNextAvailableDayClick
+            )
+        }
     }
 }
