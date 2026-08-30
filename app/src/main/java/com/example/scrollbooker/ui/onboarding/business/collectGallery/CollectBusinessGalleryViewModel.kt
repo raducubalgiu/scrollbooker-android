@@ -16,8 +16,11 @@ import timber.log.Timber
 import javax.inject.Inject
 
 data class BusinessPhotoUIState(
-    val images: List<Uri?> = List(5) { null }
-)
+    val images: List<Uri?> = List(5) { null },
+    val initialImages: List<Uri?> = List(5) { null }
+) {
+    val hasChanges: Boolean get() = images != initialImages
+}
 
 @HiltViewModel
 class CollectBusinessGalleryViewModel @Inject constructor(

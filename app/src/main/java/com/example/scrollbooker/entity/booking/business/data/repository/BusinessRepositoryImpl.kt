@@ -40,6 +40,7 @@ import androidx.core.graphics.scale
 import com.example.scrollbooker.core.enums.ShareChannelEnum
 import com.example.scrollbooker.entity.booking.business.data.remote.ShareBusinessProfileRequest
 import com.example.scrollbooker.entity.booking.business.data.remote.UnapprovedBusinessPagingSource
+import com.example.scrollbooker.entity.booking.business.domain.model.BusinessDetails
 import com.example.scrollbooker.entity.booking.business.domain.model.UnapprovedBusiness
 
 class BusinessRepositoryImpl @Inject constructor(
@@ -79,6 +80,10 @@ class BusinessRepositoryImpl @Inject constructor(
 
     override suspend fun getBusinessProfileByOwnerUsername(ownerUsername: String): BusinessProfile {
         return apiService.getBusinessProfileByOwnerUsername(ownerUsername).toDomain()
+    }
+
+    override suspend fun getMyBusinessDetails(): BusinessDetails {
+        return apiService.getMyBusinessDetails().toDomain()
     }
 
     override suspend fun updateBusinessHasEmployees(hasEmployees: Boolean): AuthState {
@@ -150,11 +155,16 @@ private fun uriToMultipartPart(context: Context, uri: Uri): MultipartBody.Part {
     return MultipartBody.Part.createFormData("photos", fileName, body)
 }
 
-private fun compressImage(context: Context, uri: Uri): ByteArray {
-    val resolver = context.contentResolver
+private fun readUriBytes(context: Context, uri: Uri): ByteArray {
+    return when (uri.scheme) {
+        "http", "https" -> java.net.URL(uri.toString()).openStream().use { it.readBytes() }
+        else -> context.contentResolver.openInputStream(uri)?.use { it.readBytes() }
+            ?: error("Cannot open input stream for uri=$uri")
+    }
+}
 
-    val rawBytes = resolver.openInputStream(uri)?.use { it.readBytes() }
-        ?: error("Cannot open input stream for uri=$uri")
+private fun compressImage(context: Context, uri: Uri): ByteArray {
+    val rawBytes = readUriBytes(context, uri)
 
     val boundsOptions = BitmapFactory.Options().apply { inJustDecodeBounds = true }
     BitmapFactory.decodeByteArray(rawBytes, 0, rawBytes.size, boundsOptions)

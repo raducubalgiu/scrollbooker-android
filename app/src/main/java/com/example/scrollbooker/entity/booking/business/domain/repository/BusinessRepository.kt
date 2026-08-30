@@ -7,6 +7,7 @@ import com.example.scrollbooker.entity.auth.domain.model.AuthState
 import com.example.scrollbooker.entity.booking.business.data.remote.SearchBusinessRequest
 import com.example.scrollbooker.entity.booking.business.domain.model.Business
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessAddress
+import com.example.scrollbooker.entity.booking.business.domain.model.BusinessDetails
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessMarker
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessProfile
 import com.example.scrollbooker.entity.booking.business.domain.model.BusinessSheet
@@ -22,6 +23,7 @@ interface BusinessRepository {
     ): List<SelectedServiceDomainsWithServices>
     suspend fun getBusiness(userId: Int): Business
     suspend fun getBusinessProfileByOwnerUsername(ownerUsername: String): BusinessProfile
+    suspend fun getMyBusinessDetails(): BusinessDetails
     suspend fun updateBusinessHasEmployees(hasEmployees: Boolean): AuthState
     suspend fun approveBusiness(userId: Int)
     suspend fun shareBusinessProfile(businessId: Int, channel: ShareChannelEnum)

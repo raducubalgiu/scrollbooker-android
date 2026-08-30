@@ -29,6 +29,9 @@ interface BusinessApiService {
         @Path("userId") userId: Int
     ): BusinessDto
 
+    @GET("/businesses/my-business-details")
+    suspend fun getMyBusinessDetails(): BusinessDetailsDto
+
     @GET("/businesses/unapproved-businesses")
     suspend fun getUnapprovedBusinesses(
         @Query("page") page: Int,

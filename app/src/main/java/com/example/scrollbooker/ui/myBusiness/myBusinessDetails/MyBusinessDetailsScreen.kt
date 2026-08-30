@@ -49,9 +49,11 @@ fun MyBusinessDetailsScreen(
     val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
     val selectedTabIndex = pagerState.currentPage
 
-    val business by viewModel.business.collectAsStateWithLifecycle()
     val photosState by viewModel.photosState.collectAsStateWithLifecycle()
     val isSaving by viewModel.isSaving.collectAsStateWithLifecycle()
+    val businessDetailsState by viewModel.businessDetailsState.collectAsStateWithLifecycle()
+    val schedulesState by viewModel.schedulesState.collectAsStateWithLifecycle()
+    val isSavingSchedules by viewModel.isSavingSchedules.collectAsStateWithLifecycle()
 
     val hostState = remember { SnackbarHostState() }
     val snackBarController = rememberSnackBarController(hostState)
@@ -70,11 +72,11 @@ fun MyBusinessDetailsScreen(
             ) }
         ) { innerPadding ->
             Column(Modifier.fillMaxSize().padding(innerPadding)) {
-                when(business) {
+                when(businessDetailsState) {
                     is FeatureState.Loading -> LoadingScreen()
                     is FeatureState.Error -> ErrorScreen()
                     is FeatureState.Success -> {
-                        val businessData = (business as FeatureState.Success).data
+                        val businessDetails = (businessDetailsState as FeatureState.Success).data
 
                         ScrollableTabRow(
                             containerColor = Background,
@@ -111,7 +113,7 @@ fun MyBusinessDetailsScreen(
                             key = { it }
                         ) { page ->
                             when(page) {
-                                0 -> MyBusinessSummaryTab()
+                                0 -> MyBusinessSummaryTab(businessDetails = businessDetails)
                                 1 -> MyBusinessGalleryTab(
                                     isSaving = isSaving,
                                     photosState = photosState,
@@ -119,7 +121,19 @@ fun MyBusinessDetailsScreen(
                                     onSetImage = { index, uri -> viewModel.setImage(index, uri) },
                                     onSaveGallery = { viewModel.saveBusinessGallery() }
                                 )
-                                2 -> MyBusinessSchedulesTab()
+                                2 -> MyBusinessSchedulesTab(
+                                    schedulesState = schedulesState,
+                                    isSaving = isSavingSchedules,
+                                    onUpdateRow = { schedule, start, end ->
+                                        val startTime = if(start == "null") null else start
+                                        val endTime = if(end == "null") null else end
+
+                                        viewModel.updateScheduleTime(
+                                            schedule.copy(startTime = startTime, endTime = endTime)
+                                        )
+                                    },
+                                    onSaveSchedules = { viewModel.saveBusinessSchedules() }
+                                )
                             }
                         }
                     }
