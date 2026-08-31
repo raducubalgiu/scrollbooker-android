@@ -463,6 +463,7 @@
     <string name="serviceWithoutDescription">Acest serviciu nu are o descriere disponibilă</string>
     <string name="notFoundServices">Nu au fost găsite servicii</string>
     <string name="notFoundServicesForThisCategory">Nu au fost găsite servicii pentru această categorie.</string>
+    <string name="someServicesUnavailable">Unele servicii din rezervarea anterioară nu mai sunt disponibile. Continuă selecția.</string>
     <string name="checkDetails">Verifică detaliile</string>
     <string name="cancellationPolicy">Politica de anulare</string>
     <string name="cancellationPolicyDescription">Anularea gratuită este disponibilă cu până la 24 de ore înainte de ora programată. Ulterior, se pot aplica taxe conform regulamentului afacerii.</string>

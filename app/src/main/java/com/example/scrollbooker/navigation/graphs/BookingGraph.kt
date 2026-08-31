@@ -3,6 +3,7 @@ import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
@@ -48,6 +49,10 @@ fun NavGraphBuilder.bookingGraph(
                 defaultValue = -1
             },
             navArgument("postId") {
+                type = NavType.IntType
+                defaultValue = -1
+            },
+            navArgument("appointmentId") {
                 type = NavType.IntType
                 defaultValue = -1
             }
@@ -119,7 +124,7 @@ fun NavGraphBuilder.bookingGraph(
                             bottomBarController.addNewCreatedAppointment(appointment)
 
                             navController.popBackStack(
-                                route = MainRoute.Feed.route,
+                                route = navController.graph.findStartDestination().route!!,
                                 inclusive = false
                             )
                         }

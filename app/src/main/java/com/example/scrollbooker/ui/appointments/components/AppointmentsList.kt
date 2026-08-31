@@ -5,9 +5,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
@@ -30,12 +32,20 @@ fun AppointmentsList(
     onRefresh: () -> Unit,
 ) {
     val appendState = appointments.loadState.append
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(newAppointments) {
+        if (newAppointments.isNotEmpty()) {
+            listState.scrollToItem(0)
+        }
+    }
 
     Refresh(
         isRefreshing = isRefreshing,
         onRefresh = onRefresh,
     ) {
         LazyColumn(
+            state = listState,
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(BasePadding),
         ) {

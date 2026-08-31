@@ -5,12 +5,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.example.scrollbooker.navigation.graphs.appointmentsGraph
+import com.example.scrollbooker.navigation.graphs.bookingGraph
 import com.example.scrollbooker.navigation.routes.MainRoute
 import com.example.scrollbooker.navigation.graphs.cameraGraph
 import com.example.scrollbooker.navigation.graphs.myProfileGraph
 import com.example.scrollbooker.navigation.graphs.socialGraph
 import com.example.scrollbooker.navigation.graphs.userProfileGraph
 import com.example.scrollbooker.navigation.navigators.AppointmentsNavigator
+import com.example.scrollbooker.navigation.navigators.BookingNavigator
 import com.example.scrollbooker.navigation.navigators.ProfileNavigator
 import com.example.scrollbooker.navigation.transition.slideInFromLeft
 import com.example.scrollbooker.navigation.transition.slideInFromRight
@@ -22,13 +24,9 @@ import com.example.scrollbooker.ui.profile.MyProfileViewModel
 fun AppointmentsNavHost(navController: NavHostController) {
     val viewModel: MyProfileViewModel = hiltViewModel()
 
-    val profileNavigate = remember(navController) {
-        ProfileNavigator(navController)
-    }
-
-    val appointmentNavigate = remember(navController) {
-        AppointmentsNavigator(navController)
-    }
+    val profileNavigate = remember(navController) { ProfileNavigator(navController) }
+    val appointmentNavigate = remember(navController) { AppointmentsNavigator(navController) }
+    val bookingNavigate = remember(navController) { BookingNavigator(navController) }
 
     NavHost(
         navController = navController,
@@ -38,6 +36,7 @@ fun AppointmentsNavHost(navController: NavHostController) {
         popEnterTransition = { slideInFromLeft() },
         popExitTransition = { slideOutToRight() }
     ) {
+        bookingGraph(navController, bookingNavigate)
         appointmentsGraph(appointmentNavigate)
         myProfileGraph(viewModel, profileNavigate)
         userProfileGraph(navController, profileNavigate)

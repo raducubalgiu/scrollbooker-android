@@ -197,7 +197,8 @@ fun AppointmentDetailsScreen(
                             onNavigateToCancel = {
                                 sheetContent = AppointmentSheetsContent.CancelAppointmentSheet
                                 scope.launch { sheetState.show() }
-                            }
+                            },
+                            onBookAgain = { appointmentsNavigate.toBookAgain(a) }
                         )
 
                         if (!a.hasWrittenReview && isFinished && a.isCustomer) {

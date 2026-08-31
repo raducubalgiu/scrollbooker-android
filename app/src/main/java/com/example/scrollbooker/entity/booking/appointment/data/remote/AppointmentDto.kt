@@ -61,6 +61,12 @@ data class AppointmentProductDto(
     val name: String,
     val price: BigDecimal,
 
+    @SerializedName("product_variant_id")
+    val productVariantId: Int?,
+
+    @SerializedName("offering_id")
+    val offeringId: Int?,
+
     @SerializedName("price_with_discount")
     val priceWithDiscount: BigDecimal,
 
@@ -101,6 +107,11 @@ data class BusinessCoordinatesDto(
 )
 
 data class AppointmentBusinessDto(
+    val id: Int,
+
+    @SerializedName("business_owner_id")
+    val businessOwnerId: Int,
+
     val address: String,
     val coordinates: BusinessCoordinatesDto,
     val mapUrl: String?

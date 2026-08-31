@@ -7,8 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.core.util.Dimens.SpacingS
+import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.ui.theme.OnSurfaceBG
 import com.example.scrollbooker.ui.theme.SurfaceBG
 
@@ -20,6 +19,7 @@ fun ProfileActionButton(
     shape: Shape = ShapeDefaults.ExtraLarge,
     containerColor: Color = SurfaceBG,
     contentColor: Color = OnSurfaceBG,
+    contentPadding: PaddingValues = PaddingValues(vertical = 14.dp),
     content: @Composable () -> Unit,
 ) {
     Button(
@@ -27,7 +27,7 @@ fun ProfileActionButton(
         onClick = onClick,
         enabled = isEnabled,
         shape = shape,
-        contentPadding = PaddingValues(vertical = BasePadding),
+        contentPadding = contentPadding,
         colors = ButtonDefaults.buttonColors(
             containerColor = containerColor,
             contentColor = contentColor

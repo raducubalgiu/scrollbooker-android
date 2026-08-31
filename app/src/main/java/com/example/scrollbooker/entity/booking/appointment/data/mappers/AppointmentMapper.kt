@@ -52,6 +52,8 @@ fun AppointmentProductDto.toDomain(): AppointmentProduct {
     return AppointmentProduct(
         id = id,
         name = name,
+        productVariantId = productVariantId,
+        offeringId = offeringId,
         price = price,
         priceWithDiscount = priceWithDiscount,
         duration = duration,
@@ -83,6 +85,8 @@ fun BusinessCoordinatesDto.toDomain(): BusinessCoordinates {
 
 fun AppointmentBusinessDto.toDomain(): AppointmentBusiness {
     return AppointmentBusiness(
+        id = id,
+        businessOwnerId = businessOwnerId,
         address = address,
         coordinates = coordinates.toDomain(),
         mapUrl = mapUrl

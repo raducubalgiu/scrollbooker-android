@@ -42,6 +42,8 @@ data class AppointmentWrittenReview(
 data class AppointmentProduct(
     val id: Int?,
     val name: String,
+    val productVariantId: Int?,
+    val offeringId: Int?,
     val price: BigDecimal,
     val priceWithDiscount: BigDecimal,
     val discount: BigDecimal,
@@ -67,6 +69,8 @@ data class BusinessCoordinates(
 )
 
 data class AppointmentBusiness(
+    val id: Int,
+    val businessOwnerId: Int,
     val address: String,
     val coordinates: BusinessCoordinates,
     val mapUrl: String?

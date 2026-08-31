@@ -17,7 +17,8 @@ fun AppointmentDetailsActions(
     modifier: Modifier = Modifier,
     status: AppointmentStatusEnum?,
     isCustomer: Boolean,
-    onNavigateToCancel: () -> Unit
+    onNavigateToCancel: () -> Unit,
+    onBookAgain: () -> Unit
 ) {
     Column(modifier.fillMaxWidth()) {
         when(status) {
@@ -35,7 +36,7 @@ fun AppointmentDetailsActions(
                 if(isCustomer) {
                     MainButton(
                         title = stringResource(R.string.bookAgain),
-                        onClick = {}
+                        onClick = onBookAgain
                     )
                 }
             }

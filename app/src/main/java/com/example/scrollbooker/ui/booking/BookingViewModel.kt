@@ -3,18 +3,23 @@ package com.example.scrollbooker.ui.booking
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.scrollbooker.core.snackbar.SnackBarType
 import com.example.scrollbooker.core.snackbar.SnackBarUiEvent
+import com.example.scrollbooker.core.snackbar.UiText
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.core.util.withVisibleLoading
 import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentScrollBookerCreateDto
 import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointment
 import com.example.scrollbooker.entity.booking.appointment.domain.useCase.CreateScrollBookerAppointmentUseCase
+import com.example.scrollbooker.entity.booking.appointment.domain.useCase.GetAppointmentByIdUseCase
 import com.example.scrollbooker.entity.booking.availability.domain.model.AvailableDay
 import com.example.scrollbooker.entity.booking.availability.domain.model.Slot
 import com.example.scrollbooker.entity.booking.availability.domain.useCase.GetCalendarAvailableDaysUseCase
 import com.example.scrollbooker.entity.booking.availability.domain.useCase.GetUserAvailableTimeslotsUseCase
 import com.example.scrollbooker.entity.booking.booking.domain.model.BookingFlow
 import com.example.scrollbooker.entity.booking.booking.domain.useCase.GetBookingFlowUseCase
+import com.example.scrollbooker.entity.booking.products.domain.model.toBookingItem
+import com.example.scrollbooker.R
 import com.example.scrollbooker.ui.shared.calendar.CalendarConfig
 import com.example.scrollbooker.ui.shared.calendar.CalendarHeaderState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -47,6 +52,7 @@ class BookingViewModel @Inject constructor(
     private val getCalendarAvailableDaysUseCase: GetCalendarAvailableDaysUseCase,
     private val getUserAvailableTimeslotsUseCase: GetUserAvailableTimeslotsUseCase,
     private val createScrollBookerAppointmentUseCase: CreateScrollBookerAppointmentUseCase,
+    private val getAppointmentByIdUseCase: GetAppointmentByIdUseCase,
 ): ViewModel() {
     val businessId: Int = checkNotNull(savedStateHandle["businessId"]) {
         "businessId mandatory parameter is missing in Booking flow"
@@ -62,6 +68,7 @@ class BookingViewModel @Inject constructor(
     }
     val initialSelectedProductId: Int = savedStateHandle["selectedProductId"] ?: -1
     val postId: Int = savedStateHandle["postId"] ?: -1
+    val appointmentId: Int = savedStateHandle["appointmentId"] ?: -1
 
     private val _isSaving = MutableStateFlow<Boolean>(false)
     val isSaving: StateFlow<Boolean> = _isSaving.asStateFlow()
@@ -115,11 +122,56 @@ class BookingViewModel @Inject constructor(
         initialValue = FeatureState.Loading
     )
 
-    private val _isInitialProductProcessed = MutableStateFlow(false)
-    val isInitialProductProcessed = _isInitialProductProcessed.asStateFlow()
+    private val _isInitialSelectionProcessed = MutableStateFlow(false)
+    val isInitialSelectionProcessed = _isInitialSelectionProcessed.asStateFlow()
 
-    fun markInitialProductAsProcessed() {
-        _isInitialProductProcessed.value = true
+    fun markInitialSelectionAsProcessed() {
+        _isInitialSelectionProcessed.value = true
+    }
+
+    suspend fun processAppointmentRebooking(bookingFlow: BookingFlow): Int? {
+        val appointment = runCatching { getAppointmentByIdUseCase(appointmentId) }
+            .onFailure { e ->
+                Timber.tag("Booking Flow").e(e, "ERROR: on Fetching Appointment for Book Again")
+            }
+            .getOrNull() ?: return null
+
+        val variantsWithProduct = bookingFlow.products.data
+            .flatMap { it.products }
+            .flatMap { product -> product.variants.map { variant -> product to variant } }
+
+        var unavailableCount = 0
+        var firstMatchedProductId: Int? = null
+
+        appointment.products.forEach { appointmentProduct ->
+            val match = appointmentProduct.productVariantId?.let { variantId ->
+                variantsWithProduct.find { it.second.id == variantId }
+            }
+            val isStillOffered = match != null &&
+                match.second.offerings.any { it.id == appointmentProduct.offeringId }
+
+            if (match != null && isStillOffered) {
+                val (product, variant) = match
+                selectBookingItem(variant.toBookingItem(product))
+
+                if (firstMatchedProductId == null) {
+                    firstMatchedProductId = product.id
+                }
+            } else {
+                unavailableCount++
+            }
+        }
+
+        if (unavailableCount > 0) {
+            _events.tryEmit(
+                SnackBarUiEvent.Show(
+                    message = UiText.Resource(R.string.someServicesUnavailable),
+                    type = SnackBarType.DEFAULT
+                )
+            )
+        }
+
+        return firstMatchedProductId
     }
 
     private val _selectedBookingItems = MutableStateFlow<List<SelectedBookingItem>>(emptyList())

@@ -1,6 +1,8 @@
 package com.example.scrollbooker.navigation.navigators
 
 import androidx.navigation.NavHostController
+import com.example.scrollbooker.core.enums.BookingSourceEnum
+import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointment
 import com.example.scrollbooker.navigation.routes.MainRoute
 
 class AppointmentsNavigator (
@@ -14,6 +16,13 @@ class AppointmentsNavigator (
         navController.navigate("${MainRoute.AppointmentDetails.route}/$appointmentId") {
             launchSingleTop = true
         }
+    }
+
+    fun toBookAgain(appointment: Appointment) {
+        navController.navigateToBookingFromAppointment(
+            appointment = appointment,
+            source = BookingSourceEnum.BOOK_AGAIN
+        )
     }
 
     fun toCamera(cameraParams: CameraParams) {

@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,9 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -109,10 +107,12 @@ fun ProfileShimmer() {
             Spacer(Modifier.height(SpacingXL))
 
             Row(modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(SpacingS)
             ) {
                 ProfileActionButton(
                     modifier = Modifier.weight(5f),
+                    contentPadding = PaddingValues(vertical = BasePadding),
                     containerColor = SurfaceBG,
                     contentColor = OnBackground,
                     onClick = { }
@@ -124,9 +124,10 @@ fun ProfileShimmer() {
                             .shimmerEffect()
                     )
                 }
-                Spacer(Modifier.width(SpacingS))
+
                 ProfileActionButton(
                     modifier = Modifier.weight(5f),
+                    contentPadding = PaddingValues(vertical = BasePadding),
                     onClick = {}
                 ) {
                     Spacer(
@@ -134,17 +135,6 @@ fun ProfileShimmer() {
                             .height(12.5.dp)
                             .fillMaxWidth(fraction = 0.4f)
                             .shimmerEffect()
-                    )
-                }
-                Spacer(Modifier.width(SpacingS))
-                ProfileActionButton(
-                    modifier = Modifier.weight(1.5f),
-                    onClick = {}
-                ) {
-                    Icon(
-                        modifier = Modifier.size(20.dp),
-                        imageVector = Icons.Default.ArrowDropDown,
-                        contentDescription = null
                     )
                 }
             }

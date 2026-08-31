@@ -1,5 +1,6 @@
 package com.example.scrollbooker.navigation.routes
 
+import com.example.scrollbooker.entity.booking.appointment.domain.model.Appointment
 import com.example.scrollbooker.entity.booking.products.domain.model.Product
 import com.example.scrollbooker.navigation.navigators.CameraParams
 import com.example.scrollbooker.navigation.navigators.ProfilePostDetailParam
@@ -147,7 +148,7 @@ sealed class MainRoute(val route: String) {
     object TermsAndConditions: MainRoute(route = "termsAndConditions")
 
     object BookingNavigator : MainRoute(
-        route = "bookingNavigator/{businessId}/{userId}/{businessOwnerId}/{source}?selectedProductId={selectedProductId}&postId={postId}"
+        route = "bookingNavigator/{businessId}/{userId}/{businessOwnerId}/{source}?selectedProductId={selectedProductId}&postId={postId}&appointmentId={appointmentId}"
     ) {
         fun createRoute(
             businessId: Int,
@@ -158,6 +159,16 @@ sealed class MainRoute(val route: String) {
             postId: Int? = null
         ): String {
             return "bookingNavigator/${businessId}/${userId}/${businessOwnerId}/${source}?selectedProductId=${selectedProductId}&postId=${postId}"
+        }
+
+        fun createRouteFromAppointment(
+            appointment: Appointment,
+            source: String
+        ): String {
+            val userId = appointment.user.id ?: appointment.business.businessOwnerId
+
+            return "bookingNavigator/${appointment.business.id}/$userId/${appointment.business.businessOwnerId}/$source" +
+                "?appointmentId=${appointment.id}"
         }
 
         fun createRouteFromProfile(

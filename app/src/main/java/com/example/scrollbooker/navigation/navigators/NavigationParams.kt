@@ -38,7 +38,8 @@ data class BookingParam(
     val businessId: Int,
     val businessOwnerId: Int,
     val source: BookingSourceEnum,
-    val selectedProductId: Int? = null
+    val selectedProductId: Int? = null,
+    val appointmentId: Int? = null
 )
 
 data class CameraParams(
