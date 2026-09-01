@@ -20,8 +20,8 @@ import com.example.scrollbooker.entity.booking.booking.domain.model.BookingFlow
 import com.example.scrollbooker.entity.booking.booking.domain.useCase.GetBookingFlowUseCase
 import com.example.scrollbooker.entity.booking.products.domain.model.toBookingItem
 import com.example.scrollbooker.R
-import com.example.scrollbooker.ui.shared.calendar.CalendarConfig
-import com.example.scrollbooker.ui.shared.calendar.CalendarHeaderState
+import com.example.scrollbooker.components.customized.calendar.CalendarConfig
+import com.example.scrollbooker.components.customized.calendar.CalendarHeaderState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

@@ -16,9 +16,9 @@ import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.availability.domain.model.AvailableDay
 import com.example.scrollbooker.entity.booking.availability.domain.model.Slot
-import com.example.scrollbooker.ui.shared.calendar.components.slots.FullyBookedDayMessage
-import com.example.scrollbooker.ui.shared.calendar.components.slots.SlotItem
-import com.example.scrollbooker.ui.shared.calendar.components.slots.SlotsShimmer
+import com.example.scrollbooker.components.customized.calendar.FullyBookedDayMessage
+import com.example.scrollbooker.components.customized.calendar.SlotItem
+import com.example.scrollbooker.components.customized.calendar.SlotsShimmer
 import org.threeten.bp.LocalDate
 
 @Composable

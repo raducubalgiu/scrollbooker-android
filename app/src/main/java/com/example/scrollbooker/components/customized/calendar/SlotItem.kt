@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.calendar.components.slots
+package com.example.scrollbooker.components.customized.calendar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.extensions.formatHour
 import com.example.scrollbooker.core.util.Dimens.SpacingS
-import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.util.Dimens.SpacingXS
 import com.example.scrollbooker.entity.booking.availability.domain.model.Slot
 import com.example.scrollbooker.ui.theme.Divider

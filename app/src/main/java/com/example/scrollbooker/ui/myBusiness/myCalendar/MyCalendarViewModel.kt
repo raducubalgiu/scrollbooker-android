@@ -20,8 +20,8 @@ import com.example.scrollbooker.entity.booking.availability.domain.useCase.GetUs
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
 import com.example.scrollbooker.entity.booking.schedule.domain.useCase.GetSchedulesByUserIdUseCase
 import com.example.scrollbooker.store.AuthDataStore
-import com.example.scrollbooker.ui.shared.calendar.CalendarConfig
-import com.example.scrollbooker.ui.shared.calendar.CalendarHeaderState
+import com.example.scrollbooker.components.customized.calendar.CalendarConfig
+import com.example.scrollbooker.components.customized.calendar.CalendarHeaderState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BufferOverflow

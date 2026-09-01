@@ -25,7 +25,7 @@ import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCal
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderActionsStateAction.HandlePreviousWeek
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderActionsStateAction.OnBlockToggle
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderActionsStateAction.OnSlotChange
-import com.example.scrollbooker.ui.shared.calendar.components.CalendarDayTab
+import com.example.scrollbooker.components.customized.calendar.CalendarDayTab
 import com.example.scrollbooker.ui.theme.OnBackground
 import com.example.scrollbooker.ui.theme.Primary
 import com.example.scrollbooker.ui.theme.bodyLarge

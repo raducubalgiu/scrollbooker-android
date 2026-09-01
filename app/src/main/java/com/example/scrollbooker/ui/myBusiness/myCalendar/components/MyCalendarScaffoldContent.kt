@@ -25,7 +25,7 @@ import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCal
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderStateAction.HandlePreviousWeek
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderStateAction.OnChangeTab
 import com.example.scrollbooker.ui.myBusiness.myCalendar.components.header.MyCalendarHeaderStateAction.OnSlotChange
-import com.example.scrollbooker.ui.shared.calendar.CalendarHeaderState
+import com.example.scrollbooker.components.customized.calendar.CalendarHeaderState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

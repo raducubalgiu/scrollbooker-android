@@ -1,4 +1,4 @@
-package com.example.scrollbooker.ui.shared.calendar
+package com.example.scrollbooker.components.customized.calendar
 import org.threeten.bp.LocalDate
 
 data class CalendarConfig(

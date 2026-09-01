@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.example.scrollbooker.core.extensions.displayShortDayOfWeek
 import com.example.scrollbooker.core.util.AppLocaleProvider
 import com.example.scrollbooker.core.util.Dimens.BasePadding
-import com.example.scrollbooker.ui.shared.calendar.components.CalendarDayTab
+import com.example.scrollbooker.components.customized.calendar.CalendarDayTab
 import com.example.scrollbooker.ui.theme.Primary
 import org.threeten.bp.LocalDate
 
