@@ -10,6 +10,7 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -19,10 +20,12 @@ import com.example.scrollbooker.R
 import com.example.scrollbooker.components.core.layout.ErrorScreen
 import com.example.scrollbooker.components.core.layout.LoadingScreen
 import com.example.scrollbooker.components.core.layout.MessageScreen
+import com.example.scrollbooker.core.extensions.parseTimeStringToLocalTime
 import com.example.scrollbooker.core.util.Dimens.BasePadding
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEvents
 import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEventsSlot
+import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
 import com.example.scrollbooker.ui.myBusiness.myCalendar.BlockUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -30,11 +33,15 @@ import com.example.scrollbooker.ui.myBusiness.myCalendar.BlockUiState
 fun MyCalendarPagerSection(
     dayPagerState: PagerState,
     calendarEvents: FeatureState<CalendarEvents>,
+    daySchedule: Schedule?,
     slotDuration: Int,
     blockUiState: BlockUiState,
     onSlotClick: (CalendarEventsSlot) -> Unit,
     onDayRefresh: () -> Unit
 ) {
+    val scheduleStart = remember(daySchedule) { parseTimeStringToLocalTime(daySchedule?.startTime) }
+    val scheduleEnd = remember(daySchedule) { parseTimeStringToLocalTime(daySchedule?.endTime) }
+
     HorizontalPager(
         state = dayPagerState,
         pageSize = PageSize.Fill,
@@ -52,10 +59,16 @@ fun MyCalendarPagerSection(
                 is FeatureState.Loading -> LoadingScreen()
                 is FeatureState.Success -> {
                     val calendarEvents = events.data
+                    val slots = calendarEvents.days.firstOrNull()?.slots ?: emptyList()
 
-                    val dayStart = calendarEvents.minSlotTime?.toLocalTime()
-                    val dayEnd = calendarEvents.maxSlotTime?.toLocalTime()
-                    val slots = events.data.days.first().slots
+                    // The schedule's open/close hours are only a lower bound on the visible range:
+                    // real slots (e.g. a booking taken outside business hours) must never be
+                    // clipped out of the timeline, so we widen the range to cover them too.
+                    val slotsStart = remember(slots) { slots.mapNotNull { it.startDateLocale?.toLocalTime() }.minOrNull() }
+                    val slotsEnd = remember(slots) { slots.mapNotNull { it.endDateLocale?.toLocalTime() }.maxOrNull() }
+
+                    val dayStart = listOfNotNull(scheduleStart, slotsStart).minOrNull()
+                    val dayEnd = listOfNotNull(scheduleEnd, slotsEnd).maxOrNull()
 
                     if(dayStart != null && dayEnd != null) {
                         PullToRefreshBox(

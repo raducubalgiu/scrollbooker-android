@@ -40,11 +40,19 @@ class AvailabilityRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getUserCalendarEvents(
+        businessId: Int,
+        employeeId: Int?,
         startDate: String,
         endDate: String,
-        userId: Int,
         slotDuration: Int
     ): CalendarEvents {
-        return apiService.getUserCalendarEvents(startDate, endDate, userId, slotDuration).toDomain()
+        return apiService.getUserCalendarEvents(
+            businessId = businessId,
+            employeeId = employeeId,
+            startDate = startDate,
+            endDate = endDate,
+            slotDuration = slotDuration
+        )
+        .toDomain()
     }
 }

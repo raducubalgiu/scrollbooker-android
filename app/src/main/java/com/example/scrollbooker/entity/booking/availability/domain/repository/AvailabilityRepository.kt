@@ -20,9 +20,10 @@ interface AvailabilityRepository {
     ): AvailableDay
 
     suspend fun getUserCalendarEvents(
+        businessId: Int,
+        employeeId: Int?,
         startDate: String,
         endDate: String,
-        userId: Int,
         slotDuration: Int
     ): CalendarEvents
 }

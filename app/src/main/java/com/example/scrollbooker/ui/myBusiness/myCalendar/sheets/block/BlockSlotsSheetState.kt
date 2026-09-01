@@ -9,7 +9,8 @@ data class BlockSlotsSheetState(
     val slotCount: Int,
     val selectedSlots: Set<LocalDateTime>,
     val selectedDay: LocalDate?,
-    val isSaving: Boolean
+    val isSaving: Boolean,
+    val successTick: Int
 )
 
 sealed interface BlockSlotsAction {

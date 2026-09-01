@@ -10,9 +10,23 @@ data class AppointmentOwnClientCreateDto(
     @SerializedName("end_date")
     val endDate: String,
 
+    @SerializedName("user_id")
+    val userId: Int,
+
     @SerializedName("customer_fullname")
     val customerFullname: String,
 
+    @SerializedName("payment_currency_id")
+    val paymentCurrencyId: Int,
+
+    @SerializedName("custom_product")
+    val customProduct: AppointmentCustomProductDto?,
+
+    @SerializedName("product_variants")
+    val productVariants: List<AppointmentProductVariantCreateDto>? = null,
+)
+
+data class AppointmentCustomProductDto(
     @SerializedName("product_name")
     val productName: String,
 

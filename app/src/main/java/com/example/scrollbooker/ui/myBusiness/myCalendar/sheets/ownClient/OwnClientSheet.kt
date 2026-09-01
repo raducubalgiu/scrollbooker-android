@@ -45,6 +45,7 @@ import com.example.scrollbooker.core.util.Dimens.SpacingXL
 import com.example.scrollbooker.core.extensions.parseDateStringFromLocalDateTimeString
 import com.example.scrollbooker.core.extensions.parseTimeStringFromLocalDateTimeString
 import com.example.scrollbooker.entity.booking.appointment.data.remote.AppointmentLastMinuteRequest
+import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentCustomProduct
 import com.example.scrollbooker.entity.booking.appointment.domain.model.AppointmentOwnClientCreate
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.ownClient.OwnClientAction.Close
 import com.example.scrollbooker.ui.myBusiness.myCalendar.sheets.ownClient.OwnClientAction.CreateLastMinute
@@ -99,7 +100,14 @@ fun OwnClientSheet(
         if(previousIsSaving && !isSaving) {
             focusManager.clearFocus(force = true)
             keyboard?.hide()
+        }
+        previousIsSaving = isSaving
+    }
 
+    var baselineSuccessTick by rememberSaveable { mutableStateOf(state.successTick) }
+
+    LaunchedEffect(state.successTick) {
+        if(state.successTick != baselineSuccessTick) {
             if(imeVisible) {
                 withTimeoutOrNull(500) {
                     snapshotFlow { imeVisible }
@@ -111,7 +119,7 @@ fun OwnClientSheet(
 
             onAction(Close)
         }
-        previousIsSaving = isSaving
+        baselineSuccessTick = state.successTick
     }
 
     Column(modifier = Modifier.statusBarsPadding()) {
@@ -210,19 +218,26 @@ fun OwnClientSheet(
 
                             if(!validation.isValid) return@MainButton
 
-                            selectedOwnClientSlot?.let { slot ->
-                                onAction(CreateOwnClient(
-                                    AppointmentOwnClientCreate(
-                                        startDate = slot.startDateUtc,
-                                        endDate = slot.endDateUtc,
-                                        customerFullname = form.customerName,
-                                        productName = form.productName,
-                                        price = BigDecimal(form.price),
-                                        priceWithDiscount = BigDecimal(form.price),
-                                        discount = BigDecimal(0),
-                                        duration = state.slotDuration,
-                                    )
-                                ))
+                            val userId = state.userId
+
+                            if(userId != null) {
+                                selectedOwnClientSlot?.let { slot ->
+                                    onAction(CreateOwnClient(
+                                        AppointmentOwnClientCreate(
+                                            startDate = slot.startDateUtc,
+                                            endDate = slot.endDateUtc,
+                                            userId = userId,
+                                            customerFullname = form.customerName,
+                                            customProduct = AppointmentCustomProduct(
+                                                productName = form.productName,
+                                                price = BigDecimal(form.price),
+                                                priceWithDiscount = BigDecimal(form.price),
+                                                discount = BigDecimal(0),
+                                                duration = state.slotDuration,
+                                            )
+                                        )
+                                    ))
+                                }
                             }
                         } else {
                             selectedOwnClientSlot?.let { slot ->

@@ -18,7 +18,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -41,6 +42,7 @@ class MySchedulesViewModel @Inject constructor(
     private val _isSaving = MutableStateFlow<Boolean>(false)
     val isSaving: StateFlow<Boolean> = _isSaving.asStateFlow()
 
+
     init {
         loadSchedules()
     }
@@ -49,19 +51,19 @@ class MySchedulesViewModel @Inject constructor(
         viewModelScope.launch {
             _schedulesState.value = FeatureState.Loading
 
-            val userId = authDataStore.getUserId().firstOrNull()
-
-            if(userId == null) {
-                Timber.tag("Schedules").e("User Id not found in datastore")
-                _schedulesState.value = FeatureState.Error()
-                return@launch
-            }
+            val userId = authDataStore.getUserId().filterNotNull().first()
 
             val result = withVisibleLoading {
                 getSchedulesByUserIdUseCase(userId)
             }
 
-            _schedulesState.value = result
+            _schedulesState.value = result.fold(
+                onSuccess = { FeatureState.Success(it) },
+                onFailure = { e ->
+                    Timber.tag("Schedules").e("ERROR: on Fetching Schedules By User Id $e")
+                    FeatureState.Error(e)
+                }
+            )
         }
     }
 

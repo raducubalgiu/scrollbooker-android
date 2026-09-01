@@ -22,11 +22,12 @@ interface AvailabilityApiService {
         @Query("slot_duration") slotDuration: Int
     ): AvailableDayDto
 
-    @GET("availability/calendar-events")
+    @GET("availability/{businessId}/calendar-events")
     suspend fun getUserCalendarEvents(
+        @Path("businessId") businessId: Int,
+        @Query("employee_id") employeeId: Int?,
         @Query("start_date") startDate: String,
         @Query("end_date") endDate: String,
-        @Query("user_id") userId: Int,
-        @Query("slot_duration") slotDuration: Int,
+        @Query("slot_duration") slotDuration: Int
     ): CalendarEventsDto
 }

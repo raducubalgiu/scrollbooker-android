@@ -19,9 +19,11 @@ import org.threeten.bp.LocalDate
 
 data class OwnClientSheetState(
     val isSaving: Boolean,
+    val userId: Int?,
     val selectedDay: LocalDate?,
     val selectedOwnClientSlot: CalendarEventsSlot?,
-    val slotDuration: Int
+    val slotDuration: Int,
+    val successTick: Int
 )
 
 sealed interface OwnClientAction {

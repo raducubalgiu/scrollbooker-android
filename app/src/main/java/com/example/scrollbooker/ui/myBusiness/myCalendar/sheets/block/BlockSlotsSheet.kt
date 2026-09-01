@@ -78,7 +78,14 @@ fun BlockSlotsSheet(
         if(previousIsSaving && !isSaving) {
             focusManager.clearFocus(force = true)
             keyboard?.hide()
+        }
+        previousIsSaving = isSaving
+    }
 
+    var baselineSuccessTick by rememberSaveable { mutableStateOf(state.successTick) }
+
+    LaunchedEffect(state.successTick) {
+        if(state.successTick != baselineSuccessTick) {
             if(imeVisible) {
                 withTimeoutOrNull(500) {
                     snapshotFlow { imeVisible }
@@ -90,7 +97,7 @@ fun BlockSlotsSheet(
 
             onAction(BlockSlotsAction.Dismiss)
         }
-        previousIsSaving = isSaving
+        baselineSuccessTick = state.successTick
     }
 
     val minLength = 3

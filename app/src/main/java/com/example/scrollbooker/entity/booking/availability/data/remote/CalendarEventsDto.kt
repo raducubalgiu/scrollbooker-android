@@ -69,6 +69,8 @@ data class CalendarEventsCustomerDto(
 data class CalendarEventsInfoDto(
     val channel: String,
     val customer: CalendarEventsCustomer?,
+
+    @SerializedName("blocked_message")
     val message: String?,
 
     @SerializedName("total_price")

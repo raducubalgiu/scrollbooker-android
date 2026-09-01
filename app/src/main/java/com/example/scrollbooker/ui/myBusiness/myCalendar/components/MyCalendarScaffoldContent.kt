@@ -14,6 +14,7 @@ import com.example.scrollbooker.core.extensions.displayDatePeriod
 import com.example.scrollbooker.core.util.FeatureState
 import com.example.scrollbooker.entity.booking.availability.domain.model.CalendarEvents
 import com.example.scrollbooker.entity.booking.availability.domain.model.hasDayFreeSlots
+import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
 import com.example.scrollbooker.ui.myBusiness.myCalendar.BlockUiState
 import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarAction
 import com.example.scrollbooker.ui.myBusiness.myCalendar.MyCalendarAction.*
@@ -32,6 +33,7 @@ import kotlinx.coroutines.launch
 fun MyCalendarScaffoldContent(
     headerState: FeatureState<CalendarHeaderState>,
     calendarEvents: FeatureState<CalendarEvents>,
+    daySchedule: Schedule?,
     slotDuration: Int,
     blockUiState: BlockUiState,
     onAction: (MyCalendarAction) -> Unit
@@ -112,6 +114,7 @@ fun MyCalendarScaffoldContent(
                 MyCalendarPagerSection(
                     dayPagerState = dayPagerState,
                     calendarEvents = calendarEvents,
+                    daySchedule = daySchedule,
                     slotDuration = slotDuration,
                     blockUiState = blockUiState,
                     onSlotClick = { onAction(SlotClick(it)) },
