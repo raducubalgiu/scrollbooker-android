@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,7 +41,15 @@ class UserScheduleSheetViewModel @Inject constructor(
                     getSchedulesByUserIdUseCase(userId)
                 }
 
-                emit(result)
+                emit(
+                    result.fold(
+                        onSuccess = { FeatureState.Success(it) },
+                        onFailure = { e ->
+                            Timber.tag("Schedules").e("ERROR: on Fetching Schedules By User Id $e")
+                            FeatureState.Error(e)
+                        }
+                    )
+                )
             }
         }
         .stateIn(

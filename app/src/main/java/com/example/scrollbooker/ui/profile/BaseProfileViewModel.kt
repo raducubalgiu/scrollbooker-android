@@ -43,6 +43,7 @@ import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 abstract class BaseProfileViewModel(
     private val shouldShowVisibleLoading: Boolean,
@@ -177,7 +178,18 @@ abstract class BaseProfileViewModel(
             .flatMapLatest { currentUserId ->
                 flow {
                     emit(FeatureState.Loading)
-                    emit(getSchedulesByUserIdUseCase(currentUserId))
+
+                    val result = getSchedulesByUserIdUseCase(currentUserId)
+
+                    emit(
+                        result.fold(
+                            onSuccess = { FeatureState.Success(it) },
+                            onFailure = { e ->
+                                Timber.tag("Schedules").e("ERROR: on Fetching Schedules By User Id $e")
+                                FeatureState.Error(e)
+                            }
+                        )
+                    )
                 }
             }
             .stateIn(viewModelScope, SharingStarted.Lazily, FeatureState.Loading)

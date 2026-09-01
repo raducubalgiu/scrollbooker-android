@@ -13,7 +13,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -39,19 +40,19 @@ class CollectBusinessSchedulesViewModel @Inject constructor(
         viewModelScope.launch {
             _schedulesState.value = FeatureState.Loading
 
-            val userId = authDataStore.getUserId().firstOrNull()
-
-            if(userId == null) {
-                Timber.Forest.tag("Schedules").e("User Id not found in datastore")
-                _schedulesState.value = FeatureState.Error()
-                return@launch
-            }
+            val userId = authDataStore.getUserId().filterNotNull().first()
 
             val result = withVisibleLoading {
                 getSchedulesByUserIdUseCase(userId)
             }
 
-            _schedulesState.value = result
+            _schedulesState.value = result.fold(
+                onSuccess = { FeatureState.Success(it) },
+                onFailure = { e ->
+                    Timber.Forest.tag("Schedules").e("ERROR: on Fetching Schedules By User Id $e")
+                    FeatureState.Error(e)
+                }
+            )
         }
     }
 
