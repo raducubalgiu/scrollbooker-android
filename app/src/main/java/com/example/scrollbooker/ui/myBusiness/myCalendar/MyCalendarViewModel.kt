@@ -1,6 +1,5 @@
 package com.example.scrollbooker.ui.myBusiness.myCalendar
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.snackbar.SnackBarUiEvent
 import com.example.scrollbooker.core.util.FeatureState
@@ -20,8 +19,8 @@ import com.example.scrollbooker.entity.booking.availability.domain.useCase.GetUs
 import com.example.scrollbooker.entity.booking.schedule.domain.model.Schedule
 import com.example.scrollbooker.entity.booking.schedule.domain.useCase.GetSchedulesByUserIdUseCase
 import com.example.scrollbooker.store.AuthDataStore
-import com.example.scrollbooker.components.customized.calendar.CalendarConfig
-import com.example.scrollbooker.components.customized.calendar.CalendarHeaderState
+import com.example.scrollbooker.components.customized.calendar.BaseCalendarViewModel
+import com.example.scrollbooker.components.customized.calendar.CalendarContext
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BufferOverflow
@@ -57,12 +56,12 @@ import javax.inject.Inject
 class MyCalendarViewModel @Inject constructor(
     authDataStore: AuthDataStore,
     private val getSchedulesByUserIdUseCase: GetSchedulesByUserIdUseCase,
-    private val getCalendarAvailableDaysUseCase: GetCalendarAvailableDaysUseCase,
+    getCalendarAvailableDaysUseCase: GetCalendarAvailableDaysUseCase,
     private val getCalendarEventsUseCase: GetUserCalendarEventsUseCase,
     private val createBlockAppointmentsUseCase: CreateBlockAppointmentsUseCase,
     private val createOwnClientAppointmentUseCase: CreateOwnClientAppointmentUseCase,
     private val createLastMinuteAppointmentUseCase: CreateLastMinuteAppointmentUseCase
-): ViewModel() {
+): BaseCalendarViewModel(getCalendarAvailableDaysUseCase) {
     private val _selectedDay = MutableStateFlow<LocalDate?>(LocalDate.now())
     val selectedDay: StateFlow<LocalDate?> = _selectedDay.asStateFlow()
 
@@ -116,16 +115,22 @@ class MyCalendarViewModel @Inject constructor(
         "$userId:$businessId:${employeeId ?: "-"}:${day.format(dateFmt)}:$slot"
 
     // Shared availability context (userId/businessId/employeeId/slotDuration) that both the
-    // header (26-week overview) and the day events flow are keyed on, so they never drift apart.
-    private val calendarContextFlow: Flow<CalendarHeaderParams> =
+    // header (26-week overview, built by BaseCalendarViewModel) and the day events flow are
+    // keyed on, so they never drift apart.
+    override val calendarContextFlow: Flow<CalendarContext> =
         combine(
             userIdFlow.filterNotNull(),
             businessIdFlow.filterNotNull(),
             employeeIdFlow,
             slotDuration
         ) { userId, businessId, employeeId, slot ->
-            CalendarHeaderParams(userId, businessId, employeeId, slot)
+            CalendarContext(userId, businessId, employeeId, slot)
         }.distinctUntilChanged()
+
+    // MyCalendar shows 6 months in the past and 6 months in the future, centered on today -
+    // unlike BookingViewModel, which only looks 6 months into the future.
+    override fun calendarWindow(currentMonday: LocalDate): Pair<LocalDate, LocalDate> =
+        currentMonday.minusWeeks(13) to currentMonday.plusWeeks(13)
 
     private val paramsFlow: Flow<CalendarParams> =
         combine(
@@ -142,61 +147,6 @@ class MyCalendarViewModel @Inject constructor(
                 refresh = refresh
             )
         }.distinctUntilChanged()
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val calendarHeader: StateFlow<FeatureState<CalendarHeaderState>> = calendarContextFlow
-        .flatMapLatest { params ->
-            flow {
-                emit(FeatureState.Loading)
-
-                val today = LocalDate.now()
-                val currentMonday = today.with(DayOfWeek.MONDAY)
-
-                val startDate = currentMonday.minusWeeks(13)
-                val endDate = currentMonday.plusWeeks(13)
-
-                val totalWeeks = 26
-                val calendarDays = (0 until (totalWeeks * 7)).map {
-                    startDate.plusDays(it.toLong())
-                }
-
-                val result = withVisibleLoading {
-                    getCalendarAvailableDaysUseCase(
-                        businessId = params.businessId,
-                        employeeId = params.employeeId,
-                        startDate = startDate.toString(),
-                        endDate = endDate.toString(),
-                        slotDuration = params.slotDuration
-                    )
-                }
-
-                result.fold(
-                    onSuccess = { availableDays ->
-                        emit(
-                            FeatureState.Success(
-                                CalendarHeaderState(
-                                    config = CalendarConfig(
-                                        userId = params.userId,
-                                        startDate = startDate,
-                                        endDate = endDate,
-                                        totalWeeks = totalWeeks,
-                                        initialWeekPage = totalWeeks / 2,
-                                        initialDayPage = today.dayOfWeek.ordinal,
-                                        selectedDay = today
-                                    ),
-                                    calendarDays = calendarDays,
-                                    calendarAvailableDays = availableDays.map { LocalDate.parse(it) },
-                                )
-                            )
-                        )
-                    },
-                    onFailure = { e -> emit(FeatureState.Error(e)) }
-                )
-            }.catch { e ->
-                emit(FeatureState.Error(e))
-            }
-        }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, FeatureState.Loading)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val schedules: StateFlow<FeatureState<List<Schedule>>> = userIdFlow

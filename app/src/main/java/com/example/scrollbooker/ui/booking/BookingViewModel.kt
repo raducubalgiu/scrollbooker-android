@@ -1,7 +1,6 @@
 package com.example.scrollbooker.ui.booking
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.scrollbooker.core.snackbar.SnackBarType
 import com.example.scrollbooker.core.snackbar.SnackBarUiEvent
@@ -20,12 +19,13 @@ import com.example.scrollbooker.entity.booking.booking.domain.model.BookingFlow
 import com.example.scrollbooker.entity.booking.booking.domain.useCase.GetBookingFlowUseCase
 import com.example.scrollbooker.entity.booking.products.domain.model.toBookingItem
 import com.example.scrollbooker.R
-import com.example.scrollbooker.components.customized.calendar.CalendarConfig
-import com.example.scrollbooker.components.customized.calendar.CalendarHeaderState
+import com.example.scrollbooker.components.customized.calendar.BaseCalendarViewModel
+import com.example.scrollbooker.components.customized.calendar.CalendarContext
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -34,12 +34,12 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import org.threeten.bp.DayOfWeek
 import org.threeten.bp.LocalDate
 import timber.log.Timber
 import java.math.BigDecimal
@@ -49,11 +49,11 @@ import javax.inject.Inject
 class BookingViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getBookingFlowUseCase: GetBookingFlowUseCase,
-    private val getCalendarAvailableDaysUseCase: GetCalendarAvailableDaysUseCase,
+    getCalendarAvailableDaysUseCase: GetCalendarAvailableDaysUseCase,
     private val getUserAvailableTimeslotsUseCase: GetUserAvailableTimeslotsUseCase,
     private val createScrollBookerAppointmentUseCase: CreateScrollBookerAppointmentUseCase,
     private val getAppointmentByIdUseCase: GetAppointmentByIdUseCase,
-): ViewModel() {
+): BaseCalendarViewModel(getCalendarAvailableDaysUseCase) {
     val businessId: Int = checkNotNull(savedStateHandle["businessId"]) {
         "businessId mandatory parameter is missing in Booking flow"
     }
@@ -247,74 +247,17 @@ class BookingViewModel @Inject constructor(
             initialValue = 0
         )
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val calendarHeader: StateFlow<FeatureState<CalendarHeaderState>> = combine(
+    // Booking only ever looks 6 months into the future - unlike MyCalendarViewModel, which also
+    // shows 6 months in the past.
+    override val calendarContextFlow: Flow<CalendarContext> = combine(
         _selectedEmployeeId,
         slotDuration
-    ) { empId, duration ->
-        Pair(empId, duration)
-    }
-        .flatMapLatest { (currentEmployeeId, currentDuration) ->
-            flow {
-                emit(FeatureState.Loading)
+    ) { employeeId, duration ->
+        CalendarContext(userId, businessId, employeeId, duration)
+    }.distinctUntilChanged()
 
-                val today = LocalDate.now()
-                val currentMonday = today.with(DayOfWeek.MONDAY)
-                val startDate = currentMonday
-                val endDate = currentMonday.plusWeeks(26)
-                val totalWeeks = 26
-
-                val calendarDays = (0 until (totalWeeks * 7)).map {
-                    startDate.plusDays(it.toLong())
-                }
-
-                val result = withVisibleLoading {
-                    getCalendarAvailableDaysUseCase(
-                        businessId = businessId,
-                        employeeId = currentEmployeeId,
-                        slotDuration = currentDuration,
-                        startDate = startDate.toString(),
-                        endDate = endDate.toString()
-                    )
-                }
-
-                val state = result.fold(
-                    onSuccess = { availableDays ->
-                        FeatureState.Success(
-                            CalendarHeaderState(
-                                config = CalendarConfig(
-                                    userId = userId,
-                                    startDate = startDate,
-                                    endDate = endDate,
-                                    totalWeeks = totalWeeks,
-                                    initialWeekPage = 0,
-                                    initialDayPage = today.dayOfWeek.ordinal,
-                                    selectedDay = today
-                                ),
-                                calendarDays = calendarDays,
-                                calendarAvailableDays = availableDays.map { LocalDate.parse(it) },
-                            )
-                        )
-                    },
-                    onFailure = { throwable ->
-                        Timber.tag("Calendar").e(throwable, "ERROR: on Fetching Calendar Available Days")
-                        FeatureState.Error(throwable as? Exception ?: Exception(throwable))
-                    }
-                )
-
-                emit(state)
-            }
-                .flowOn(Dispatchers.Default)
-                .catch { e ->
-                    Timber.tag("Calendar").e(e, "Fatal Calendar Header Flow Exception")
-                    emit(FeatureState.Error(e as? Exception ?: Exception(e)))
-                }
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Lazily,
-            initialValue = FeatureState.Loading
-        )
+    override fun calendarWindow(currentMonday: LocalDate): Pair<LocalDate, LocalDate> =
+        currentMonday to currentMonday.plusWeeks(26)
 
     private val slotsCache = mutableMapOf<Triple<LocalDate, Int, Int?>, AvailableDay>()
 
